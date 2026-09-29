@@ -1,0 +1,19 @@
+{
+  "conditions": [
+    {
+      "condition": "minecraft:any_of",
+      "terms": [
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "betterstrongholds:chests/grand_library"
+        },
+        {
+          "condition": "neoforge:loot_table_id",
+          "loot_table_id": "betterstrongholds:chests/library_md"
+        }
+      ]
+    }
+  ],
+  "table": "wayfarer:books/keepers",
+  "type": "neoforge:add_table"
+}

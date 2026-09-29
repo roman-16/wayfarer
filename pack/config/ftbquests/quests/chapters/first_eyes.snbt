@@ -1,0 +1,178 @@
+{
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "first_eyes"
+	group: ""
+	icon: {
+		count: 1
+		id: "endrem:old_eye"
+	}
+	id: "7C798ECC2B9A5401"
+	images: [ ]
+	order_index: 1
+	quest_links: [ ]
+	quests: [
+		{
+			dependencies: [
+				"59A94CF76A50E7E5"
+			]
+			icon: {
+				count: 1
+				id: "endrem:black_eye"
+			}
+			id: "222F374116D43F6E"
+			tasks: [
+				{
+					id: "35EFEAC89581E24C"
+					structure: "wayfarer:shrine/black"
+					type: "structure"
+				}
+				{
+					id: "04331595D8887465"
+					item: {
+						count: 1
+						id: "endrem:black_eye"
+					}
+					type: "item"
+				}
+			]
+			x: -3.75d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"59A94CF76A50E7E5"
+			]
+			icon: {
+				count: 1
+				id: "endrem:cold_eye"
+			}
+			id: "561974079BDDC906"
+			tasks: [
+				{
+					id: "2AF606A7F6D3932D"
+					structure: "wayfarer:shrine/cold"
+					type: "structure"
+				}
+				{
+					id: "4E04F7F8FF408124"
+					item: {
+						count: 1
+						id: "endrem:cold_eye"
+					}
+					type: "item"
+				}
+			]
+			x: -2.25d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"59A94CF76A50E7E5"
+			]
+			icon: {
+				count: 1
+				id: "endrem:lost_eye"
+			}
+			id: "2DA690872EB9B59C"
+			tasks: [
+				{
+					id: "3748EAA82F4E38CD"
+					structure: "wayfarer:shrine/lost"
+					type: "structure"
+				}
+				{
+					id: "2FFCB22763D5B81F"
+					item: {
+						count: 1
+						id: "endrem:lost_eye"
+					}
+					type: "item"
+				}
+			]
+			x: -0.75d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"59A94CF76A50E7E5"
+			]
+			icon: {
+				count: 1
+				id: "endrem:old_eye"
+			}
+			id: "2175E7A68087A9E6"
+			tasks: [
+				{
+					id: "243A070122B24800"
+					structure: "wayfarer:shrine/old"
+					type: "structure"
+				}
+				{
+					id: "00B9BB3016B0FAD6"
+					item: {
+						count: 1
+						id: "endrem:old_eye"
+					}
+					type: "item"
+				}
+			]
+			x: 0.75d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"59A94CF76A50E7E5"
+			]
+			icon: {
+				count: 1
+				id: "endrem:rogue_eye"
+			}
+			id: "0D544FDE29EF4D0A"
+			tasks: [
+				{
+					id: "1E09606CA64AEA2D"
+					structure: "wayfarer:shrine/rogue"
+					type: "structure"
+				}
+				{
+					id: "400DF67EE03821A1"
+					item: {
+						count: 1
+						id: "endrem:rogue_eye"
+					}
+					type: "item"
+				}
+			]
+			x: 2.25d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"59A94CF76A50E7E5"
+			]
+			icon: {
+				count: 1
+				id: "endrem:witch_eye"
+			}
+			id: "6BBEE9273C494FAD"
+			tasks: [
+				{
+					id: "1BF94A29A9746877"
+					structure: "wayfarer:shrine/witch"
+					type: "structure"
+				}
+				{
+					id: "47D1B5734EF58D16"
+					item: {
+						count: 1
+						id: "endrem:witch_eye"
+					}
+					type: "item"
+				}
+			]
+			x: 3.75d
+			y: 0.0d
+		}
+	]
+}

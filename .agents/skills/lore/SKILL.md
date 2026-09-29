@@ -21,9 +21,9 @@ Read `story/lore.md`. It is the only source of what is true in this world. When 
 
 | Text | File |
 |---|---|
-| Shrine books (per eye) | `generator/eyes.toml`, `people` and `lore` |
+| Shrine books and eye quests (per eye) | `generator/eyes.toml`, `people`, `hint` and `lore` |
 | The Last Camp journal and grave | `generator/generate.py`, `last_camp` |
 | Mod messages, HUD, item names | `mod/src/main/resources/assets/wayfarer/lang/en_us.json` |
-| Quests | `pack/config/ftbquests/quests/` |
+| The quest book: chapters, quests, the book title | `story/quests.toml` |
 
-All text is English. After editing, run `just generate` for generated text and `just lint`, which fails on a translation key the code uses but the language file does not name.
+All text is English. After editing, run `just generate` for generated text and `just lint`, which fails on a translation key the code uses but the language file does not name, and on a quest that comes after a quest that does not exist.

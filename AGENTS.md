@@ -6,14 +6,15 @@ A personal modpack repository: it reproduces on any machine from `direnv allow` 
 
 - **The lore decides.** `story/lore.md` is the source of truth. Every mechanic needs a reason there, and every quest, book and item text is written from it with the `lore` skill. A mechanic the lore cannot explain is a mechanic to drop or to give a reason first.
 - **There is no Nether.** Nothing may bring it back: no lit portals, no Nether structures, no recipe that needs a Nether-only item without an Overworld source. `just test` audits every recipe in every jar against `generator/nether.toml`; a finding is fixed by an Overworld source or accepted there as unobtainable, never ignored.
-- **Every number lives once.** Balancing numbers are in `balance.toml`, and the mod, the generator and the boot test all read them from there. Eyes, their biomes, palettes and lore are in `generator/eyes.toml`.
+- **Every number lives once.** Balancing numbers are in `balance.toml`, and the mod, the generator and the boot test all read them from there. Eyes, their biomes, palettes, lore and shrine spacing are in `generator/eyes.toml`.
+- **Shrine spacing is measured, not guessed.** Biome layout decides how far a shrine really is, so each eye's `spacing` is tuned by `just survey apply` against the trip targets in `balance.toml`. One survey is noisy (about ±30%): apply, `just generate`, survey again, and stop once the medians sit near the targets.
 - **Singleplayer and server behave the same.** Rules live in the mod jar (code and data) or in `pack/config`, never in a world save or a client-only setting.
 
 ## Where things go
 
-- `mod/src/generated/` and `pack/config/EndRemastered-NeoForge/Eyes/` and `pack/config/sparsestructures.json5` are written by `just generate`. Change the generator or its sources, never the output.
+- `mod/src/generated/`, `pack/config/EndRemastered-NeoForge/Eyes/`, `pack/config/ftbquests/quests/`, `pack/config/iris.properties` and `pack/config/sparsestructures.json5` are written by `just generate`. Change the generator or its sources (`story/quests.toml` for the quest book), never the output.
 - `pack/` is managed by packwiz. Add a mod with `packwiz modrinth add <slug>` from `pack/`; use CurseForge only for a mod that is not on Modrinth. Every mod is `client` or `both`: singleplayer runs the server inside the client, so a `server` mod would be missing there.
-- A new config for a mod starts from the default the mod writes on its first boot (`build/server/config` after `just test`), with only the changed keys edited.
+- A new config for a mod starts from the default the mod writes on its first boot (`build/server/config` after `just test`, `build/client/config` after `just client`). Ship only the keys the pack changes when the mod fills in the rest itself, so machine-specific defaults (thread counts and the like) stay per machine.
 
 ## Seeing the game
 
@@ -34,7 +35,7 @@ The client opens on the user's display in the showroom dimension `wayfarer:showr
 | `/<command>` | Runs a command as the player |
 | `click <x> <y>` | Clicks the open screen at GUI coordinates |
 | `close` | Closes the open screen |
-| `find <block> [radius]` | Lists the nearest positions of a block within the radius (default 32) |
+| `find <block> [radius]` | Lists the nearest positions of a block within the horizontal radius (default 32), at any height |
 | `fly on\|off` | Toggles creative flight |
 | `gui on\|off` | Shows or hides the HUD |
 | `key <mapping>` | Presses a key mapping (`key.inventory`); `key escape` closes the open screen |

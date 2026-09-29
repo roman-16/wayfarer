@@ -10,7 +10,7 @@ The source of truth for every quest, book and item text, and the reason behind e
 | Why one eye, and how could it use it? | To guard more than one world, the dragon gave up one of its own eyes. It was set into the portal between worlds, and through it the dragon watched everything the portal touched |
 | Endermen and ender pearls | Endermen carry splinters of that gaze, which is why they hate being looked at. Ender pearls are those splinters; mixed with blaze powder they fly home to the portal. That is why the vanilla eye of ender works at all |
 | Why does it hunt settlements? | The Eye sees what stays still. The longer a place is lived in, the brighter it shines in its sight, and cities shine brightest |
-| What happened? | The Ancient Cities were the first great civilisation and shone so brightly that the dragon reached through. They drew their power from the Nether and built their own gate to strike back (the portal-shaped frame in every Ancient City), and failed. The sculk is the silence that swallowed them, and the Warden is their last guard |
+| What happened? | The Ancient Cities were the first great civilisation and shone so brightly that the dragon reached through. They drew their power from the Nether and built their own gate to strike back (the portal-shaped frame in every Ancient City), and failed: it opened once, and what came through was silence. The sculk is that silence, spreading across the stone, and the Warden is their last guard |
 | Who broke the Eye? | The survivors became the first Wayfarers. They tore the Eye out of the portal, broke it into twelve shards and gave each shard to a people at the far ends of the world. Blind, the dragon faded and the portal went dark. They swore the oath: never settle |
 | Who built the strongholds? | The Keepers: Wayfarers who stayed to guard the empty gates, as far from everyone as they could. Their libraries hold the old records |
 | Why is there no Nether? | When the Ancient Cities' gate failed, the Keepers sealed the Nether forever, so nobody could repeat it. Obsidian no longer takes a spark |
@@ -19,6 +19,9 @@ The source of truth for every quest, book and item text, and the reason behind e
 | Why are the shrines hidden? | The Twelve Peoples hid them so that neither the dragon nor the Gazebound could find them. Only the ember can |
 | Why are nights so hard? | At night the dragon's gaze presses hardest. Every fifth night it turns fully towards the world (horde nights), and a blood moon is its Eye reflected in the sky |
 | Why do monsters grow stronger? | The longer you carry the ember and the more of the Eye you gather, the clearer the gaze sees you |
+| Why can ships only sail with four shards? | On open water a lone ember shines like a beacon, and the gaze finds every ship that carries one. Four shards together dim it enough to cross |
+| Why can aircraft only fly with six? | In the air the ember flickers and the phantoms see it. Six shards steady it enough to fly, for a while |
+| What is an Ember Veil? | Phantom membrane woven around the ember hides its light from the phantoms that shed it. Gaze tears remember how not to be seen and echo shards carry the deep dark's silence, and each deepens the veil |
 | Why is the sky dangerous? | The sky belongs to the dragon, and phantoms are its eyes in the air. In the air the ember flickers and the gaze sees it, and the pull of the shards fades away from the ground |
 | Why are gaze tears? | Phantoms weep what they have seen. Brewers call them ghast tears after a creature nobody alive has met |
 | Why is a tent safe? | A Wayfarer tent is folded space that is not anywhere, and the gaze cannot see what is not anywhere |

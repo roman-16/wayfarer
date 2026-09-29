@@ -1,0 +1,55 @@
+{
+  "pools": [
+    {
+      "conditions": [
+        {
+          "chance": 0.5,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "functions": [
+            {
+              "components": {
+                "minecraft:written_book_content": {
+                  "author": "An archivist of the deep city",
+                  "pages": [
+                    "\"We were the brightest city the world had ever seen, and we were proud of it. Our lamps burned day and night. We did not know that every lamp was a word shouted at the sky.\"",
+                    "\"Then the dragon looked. Not at a traveller, not at a village. At us. The light went cold in the streets, and the first of us stopped moving where they stood.\""
+                  ],
+                  "title": "Record of the Bright Years"
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "minecraft:written_book",
+          "type": "minecraft:item"
+        },
+        {
+          "functions": [
+            {
+              "components": {
+                "minecraft:written_book_content": {
+                  "author": "An archivist of the deep city",
+                  "pages": [
+                    "\"Our masters found power in the burning world below and built a gate of our own, to strike back through the dark. You have seen its frame at the heart of the city.\"",
+                    "\"It opened once. What came through was silence, and the silence spread across the stone like moss. We call it sculk now. It remembers every sound we ever made.\"",
+                    "\"Do not wake the guard. It is the last of us, and it no longer knows friend from enemy. Walk softly, take what you need, and leave us to the quiet.\""
+                  ],
+                  "title": "The Gate We Built"
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "minecraft:written_book",
+          "type": "minecraft:item"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "type": "minecraft:chest"
+}

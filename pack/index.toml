@@ -1,6 +1,10 @@
 hash-format = "sha256"
 
 [[files]]
+file = "config/DistantHorizons.toml"
+hash = "2816586c56aeaf0d8b22ec0078d6fa43810345acb83921814ad915a8c6e2a306"
+
+[[files]]
 file = "config/EndRemastered-NeoForge/Eyes/black_eye.json"
 hash = "21a883007fd0a1ac7d6d4b930e7fad7d22c1a4457918fe1cfc0090605ee71188"
 
@@ -53,8 +57,60 @@ file = "config/EndRemastered-NeoForge/endrem.json"
 hash = "c33f117ee215030b666b6a2d6b31df6297b81b978322319d1f5b3cc7e7349f5a"
 
 [[files]]
+file = "config/enhancedcelestials2core/translations.json"
+hash = "24c34c89632454822eb2acc91d2b38b1a72fd370925c544c796396b2b174a205"
+
+[[files]]
+file = "config/ftbquests/quests/chapter_groups.snbt"
+hash = "e57d8311aec9f524911ed1313cabf138bb7fa5a2d3ba985a00a2a267ff35ef78"
+
+[[files]]
+file = "config/ftbquests/quests/chapters/dragon.snbt"
+hash = "8802576b7285ec8041aef3b080eb31faf317b36b2f1aa8553501b9c792c8eb7d"
+
+[[files]]
+file = "config/ftbquests/quests/chapters/far_eyes.snbt"
+hash = "ee5c21222e643ec0d950a251b63ed575d14ee8fd0dd399cc419533b29fd4ca7f"
+
+[[files]]
+file = "config/ftbquests/quests/chapters/first_eyes.snbt"
+hash = "b7ddcc2fa3eddf6f283d63590a39cd9282b355878190426404b63e95f74cb962"
+
+[[files]]
+file = "config/ftbquests/quests/chapters/home.snbt"
+hash = "053ae7a0a2fb7ae4490cab82787b7966e0a0e9144e4ed2f7b70dfa590cc6535c"
+
+[[files]]
+file = "config/ftbquests/quests/chapters/last_road.snbt"
+hash = "927679b8f32fe71f90cf9621bcad279f0b541c2a4ec72d689c9e7fbc7b47bd1a"
+
+[[files]]
+file = "config/ftbquests/quests/chapters/oath.snbt"
+hash = "eddd2353f4a6e85212500f5bdd002d99dca931dcb5e1e9e09408c57b2dbe8548"
+
+[[files]]
+file = "config/ftbquests/quests/chapters/sea.snbt"
+hash = "28a365c040468f57004a24c120664dd0bad551723b0cc594ac4ce99709395b00"
+
+[[files]]
+file = "config/ftbquests/quests/data.snbt"
+hash = "f5d82f6dc6effa6595748e5bf306c1d482cec1ab7ac8303406d9b66d6c4a8894"
+
+[[files]]
+file = "config/ftbquests/quests/lang/en_us.snbt"
+hash = "12bed68c8ab647524ea00389bce267e971b875f1cd1ffbfe3b52a9eff427c990"
+
+[[files]]
 file = "config/hordes-common.toml"
 hash = "27a1a99f4a80d59116cf3fca2a105d41448e9878ee41f7e33ae3be2bbd4d1834"
+
+[[files]]
+file = "config/improvedmobs/client.toml"
+hash = "4ff0c1634c0549f0a91dfcc1f53ca780cadb6655302e195fb6ec2278d57b3948"
+
+[[files]]
+file = "config/iris.properties"
+hash = "11f5c69a972ea8c240f59ef2fd9ab36993918842038aad770c4d6f90e238226f"
 
 [[files]]
 file = "config/jade/jade.json"

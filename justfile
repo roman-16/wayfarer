@@ -18,7 +18,7 @@ client fresh="":
 clean:
     rm --recursive --force build dist mod/build mod/run
 
-[doc("Regenerate the shrines, structure sets, templates and removals from the generator's sources and balance.toml")]
+[doc("Regenerate the shrines, structure sets, templates, removals, textures and the quest book from their sources and balance.toml")]
 generate:
     python3 generator/generate.py
 
@@ -48,6 +48,11 @@ pack: build
 server: build
     python3 scripts/instance.py server build/server {{ jar }}
     cd build/server && printf 'eula=true\n' > eula.txt && bash run.sh --nogui
+
+[doc("Locate every shrine from many points on a fresh headless server and print how far each is against balance.toml's trip targets; `just survey apply` writes the tuned spacings")]
+survey apply="": build
+    python3 scripts/instance.py server build/server {{ jar }}
+    python3 scripts/boot.py build/server --survey 16 {{ if apply == "apply" { "--apply" } else { "" } }}
 
 [doc("Run the mod's game tests headless, then boot the whole pack on a headless dedicated server")]
 test: build

@@ -1,6 +1,7 @@
 package io.github.roman16.wayfarer;
 
 import com.google.gson.JsonParser;
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.logging.LogUtils;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +17,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -60,7 +60,6 @@ public final class Driver {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Deque<String> steps = new ArrayDeque<>();
     private static final List<String> log = new ArrayList<>();
-    private static final AtomicInteger pendingShots = new AtomicInteger();
     private static boolean opened;
     private static boolean running;
     private static boolean synced = true;
@@ -114,7 +113,7 @@ public final class Driver {
                 return;
             }
         }
-        if ((minecraft.player != null && !sync(minecraft)) || pendingShots.get() > 0) {
+        if (minecraft.player != null && !sync(minecraft)) {
             return;
         }
         finish(folder);
@@ -302,9 +301,14 @@ public final class Driver {
     }
 
     private static void shot(Minecraft minecraft, String name) {
-        pendingShots.incrementAndGet();
-        Screenshot.grab(minecraft.gameDirectory, name + ".png", minecraft.getMainRenderTarget(), message -> pendingShots.decrementAndGet());
-        note("screenshot: " + minecraft.gameDirectory.toPath().resolve("screenshots").resolve(name + ".png").toAbsolutePath().normalize());
+        Path path = minecraft.gameDirectory.toPath().resolve("screenshots").resolve(name + ".png").toAbsolutePath().normalize();
+        try (NativeImage image = Screenshot.takeScreenshot(minecraft.getMainRenderTarget())) {
+            Files.createDirectories(path.getParent());
+            image.writeToFile(path);
+            note("screenshot: " + path);
+        } catch (IOException exception) {
+            note("error: cannot save " + path + ": " + exception.getMessage());
+        }
     }
 
     private static void find(Minecraft minecraft, String argument) {
@@ -317,7 +321,9 @@ public final class Driver {
             return;
         }
         BlockPos center = minecraft.player.blockPosition();
-        List<BlockPos> found = BlockPos.betweenClosedStream(center.offset(-radius, -radius, -radius), center.offset(radius, radius, radius))
+        BlockPos low = new BlockPos(center.getX() - radius, minecraft.level.getMinBuildHeight(), center.getZ() - radius);
+        BlockPos high = new BlockPos(center.getX() + radius, minecraft.level.getMaxBuildHeight() - 1, center.getZ() + radius);
+        List<BlockPos> found = BlockPos.betweenClosedStream(low, high)
                 .filter(pos -> minecraft.level.getBlockState(pos).is(block))
                 .map(BlockPos::immutable)
                 .sorted(Comparator.comparingDouble(pos -> pos.distSqr(center)))
@@ -345,8 +351,9 @@ public final class Driver {
             note("error: no screen to click");
             return;
         }
-        minecraft.screen.mouseClicked(x, y, GLFW.GLFW_MOUSE_BUTTON_LEFT);
-        minecraft.screen.mouseReleased(x, y, GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        Screen screen = minecraft.screen;
+        screen.mouseClicked(x, y, GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        screen.mouseReleased(x, y, GLFW.GLFW_MOUSE_BUTTON_LEFT);
     }
 
     private static void press(Minecraft minecraft, String label) {

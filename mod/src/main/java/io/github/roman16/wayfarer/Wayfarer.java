@@ -42,6 +42,8 @@ public final class Wayfarer {
             () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
     public static final Supplier<AttachmentType<Integer>> GAZE = ATTACHMENTS.register("gaze",
             () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
+    public static final Supplier<AttachmentType<Boolean>> JOURNAL_GIVEN = ATTACHMENTS.register("journal_given",
+            () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
 
     public static final DeferredHolder<StructurePlacementType<?>, StructurePlacementType<ExactRingPlacement>> EXACT_RING =
             PLACEMENTS.register("exact_ring", () -> () -> ExactRingPlacement.CODEC);
@@ -79,6 +81,7 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Compass.class);
         NeoForge.EVENT_BUS.register(Difficulty.class);
         NeoForge.EVENT_BUS.register(Gaze.class);
+        NeoForge.EVENT_BUS.register(Journal.class);
         NeoForge.EVENT_BUS.register(Rules.class);
         NeoForge.EVENT_BUS.register(Shrines.class);
         NeoForge.EVENT_BUS.register(WorldSetup.class);

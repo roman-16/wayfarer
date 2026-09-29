@@ -1,0 +1,82 @@
+[[collections]]
+author = "The Keepers"
+chance = 0.6
+id = "keepers"
+targets = ["betterstrongholds:chests/grand_library", "betterstrongholds:chests/library_md"]
+
+[[collections.books]]
+pages = [
+  "Year one of the watch. We built this hall as far from everyone as our legs could carry the stone. The gate sleeps below us. It is only a frame now, and we mean to keep it that way.",
+  "Rule of the watch: no Keeper lights a fire bigger than a hand. No Keeper plants what takes more than a season to grow. We are the only people in the world allowed to stay, and we must stay small.",
+  "If you are reading this, the watch has ended or the Eye is coming home. Either way, you are welcome at our table. There is not much left on it.",
+]
+title = "The First Watch"
+
+[[collections.books]]
+pages = [
+  "Why so far? Because the gaze sees what stays still, and a gate stays stiller than anything. We carried this one out past the edge of every map, so that whatever it shone, it shone on nobody.",
+  "Twelve halls like this one stand in a ring, all the same distance from where the first fire was lit, and every one of them guards a gate. The ember will lead you to the nearest.",
+  "Do not blame us for the walk. Every step between you and home is a step between home and the dragon.",
+]
+title = "On the Distance of the Gate"
+
+[[collections.books]]
+pages = [
+  "The last entry. The others have gone down to sleep with the old Keepers. I stay to write, because someone should.",
+  "The shards are waking. We hear them at night, calling to each other across the world. A Wayfarer will come, or the Gazebound will. We have left the doors open either way. We are too tired to hold them.",
+  "Wayfarer, if it is you: set the Eye, finish it, and then go home. You will have earned a home. We never did.",
+]
+title = "The Last Keeper"
+
+[[collections]]
+author = "An archivist of the deep city"
+chance = 0.5
+id = "first_gate"
+targets = ["minecraft:chests/ancient_city"]
+
+[[collections.books]]
+pages = [
+  "We were the brightest city the world had ever seen, and we were proud of it. Our lamps burned day and night. We did not know that every lamp was a word shouted at the sky.",
+  "Then the dragon looked. Not at a traveller, not at a village. At us. The light went cold in the streets, and the first of us stopped moving where they stood.",
+]
+title = "Record of the Bright Years"
+
+[[collections.books]]
+pages = [
+  "Our masters found power in the burning world below and built a gate of our own, to strike back through the dark. You have seen its frame at the heart of the city.",
+  "It opened once. What came through was silence, and the silence spread across the stone like moss. We call it sculk now. It remembers every sound we ever made.",
+  "Do not wake the guard. It is the last of us, and it no longer knows friend from enemy. Walk softly, take what you need, and leave us to the quiet.",
+]
+title = "The Gate We Built"
+
+[[collections]]
+author = "The Gazebound"
+chance = 0.4
+id = "gazebound"
+targets = [
+  "minecraft:chests/illager_mansion/library_chest",
+  "minecraft:chests/pillager_outpost",
+  "nova_structures:chests/illager_hideout_library",
+  "nova_structures:chests/pillager_outpost_treasure",
+]
+
+[[collections.books]]
+pages = [
+  "Brothers, the Grass King saw what the dragon sees, and for one summer he ruled as a god. Then his people, cowards all, tore the sight from his crown.",
+  "We are his heirs. We will finish what he began: gather the twelve shards, open the true gate, and let the dragon see the world again, through our eyes and for our purposes.",
+]
+title = "The Crown of the Grass King"
+
+[[collections.books]]
+pages = [
+  "Orders for the captains. The shards are waking and calling to each other. Listen for them in the high places, the dead places, the drowned places.",
+  "A Wayfarer is walking again. The ember is hard to see and harder to catch, but it is not invisible: it must sleep, and it must light fires. Watch the smoke.",
+]
+title = "Orders for the Captains"
+
+[[collections.books]]
+pages = [
+  "Why do we build our mansions in the dark woods? Because the Shadow Circle built there first. We copied their halls stone by stone, and still their power would not come to us.",
+  "They say the burden is the point. They say the shard must be carried, not kept. They are dead, and we are not. Keep searching.",
+]
+title = "The Halls of the Shadow Circle"

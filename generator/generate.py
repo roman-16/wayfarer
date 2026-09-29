@@ -1,6 +1,5 @@
 import hashlib
 import json
-import math
 import shutil
 from pathlib import Path
 
@@ -13,6 +12,10 @@ ROOT = Path(__file__).resolve().parent.parent
 MAIN = ROOT / "mod/src/generated/resources"
 DEV = ROOT / "mod/src/generated/dev"
 ENDREM_EYES = ROOT / "pack/config/EndRemastered-NeoForge/Eyes"
+QUESTS = ROOT / "pack/config/ftbquests/quests"
+IRIS = ROOT / "pack/config/iris.properties"
+QUEST_FILE_VERSION = 13
+QUEST_SPACING = 1.5
 LANG = ROOT / "mod/src/main/resources/assets/wayfarer/lang/en_us.json"
 SPARSE_STRUCTURES = ROOT / "pack/config/sparsestructures.json5"
 DATA_VERSION = 3955
@@ -376,6 +379,7 @@ def showroom(eyes):
         ]
     lines += ["wait 20", f"/tp @s 0.5 {y} 8.5 180 0"]
     write_json(DEV / "wayfarer/showroom.json", {"steps": lines})
+    write_json(DEV / "assets/showroom/lang/en_us.json", {"travelerstitles.wayfarer.showroom": "Showroom"})
     write_json(
         DEV / "data/wayfarer/dimension/showroom.json",
         {
@@ -406,6 +410,190 @@ def textures(spec):
             png.write(MAIN / f"assets/wayfarer/textures/item/{variant}.png", pixels)
 
 
+def snbt(value, indent=0):
+    pad = "\t" * (indent + 1)
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, float):
+        return f"{value}d"
+    if isinstance(value, str):
+        return json.dumps(value)
+    if isinstance(value, list):
+        if not value:
+            return "[ ]"
+        items = [snbt(item, indent + 1) for item in value]
+        return "[\n" + "".join(f"{pad}{item}\n" for item in items) + "\t" * indent + "]"
+    keys = sorted(value)
+    lines = []
+    for key in keys:
+        name = key if key.replace("_", "").isalnum() else json.dumps(key)
+        lines.append(f"{pad}{name}: {snbt(value[key], indent + 1)}\n")
+    return "{\n" + "".join(lines) + "\t" * indent + "}"
+
+
+def quest_id(kind, name):
+    number = int.from_bytes(hashlib.sha256(f"wayfarer/{kind}/{name}".encode()).digest()[:8], "big") & 0x7FFFFFFFFFFFFFFF
+    return f"{max(number, 2):016X}"
+
+
+def task(spec, owner, index):
+    entry = {"id": quest_id("task", f"{owner}/{index}")}
+    if "checkmark" in spec:
+        entry["type"] = "checkmark"
+    elif "item" in spec:
+        entry |= {"item": {"count": 1, "id": spec["item"]}, "type": "item"}
+    elif "structure" in spec:
+        entry |= {"structure": spec["structure"], "type": "structure"}
+    elif "dimension" in spec:
+        entry |= {"dimension": spec["dimension"], "type": "dimension"}
+    elif "kill" in spec:
+        entry |= {"entity": spec["kill"], "type": "kill", "value": 1}
+    else:
+        raise ValueError(f"unknown task {spec}")
+    return entry
+
+
+def reward(spec, owner, index):
+    return {"id": quest_id("reward", f"{owner}/{index}"), "item": {"count": 1, "id": spec["item"]}, "type": "item"}
+
+
+def eye_quests(eyes, tier, spec):
+    names = [eye for eye in sorted(eyes) if eyes[eye]["tier"] == tier]
+    for index, eye in enumerate(names):
+        yield {
+            "after": spec["after"],
+            "description": [eyes[eye]["hint"]],
+            "icon": f"endrem:{eye}_eye",
+            "id": f"eye_{eye}",
+            "subtitle": f"The {eye.title()} Eye",
+            "tasks": [{"structure": f"wayfarer:shrine/{eye}"}, {"item": f"endrem:{eye}_eye"}],
+            "title": eyes[eye]["people"],
+            "x": (index - (len(names) - 1) / 2) * QUEST_SPACING,
+            "y": spec["y"],
+        }
+
+
+def quests(book, eyes):
+    lang = {f"file.{1:016X}.title": book["title"]}
+    tiers = {tier: [f"eye_{eye}" for eye in sorted(eyes) if eyes[eye]["tier"] == tier] for tier in (1, 2)}
+    for order, chapter in enumerate(book["chapters"]):
+        chapter_id = quest_id("chapter", chapter["id"])
+        lang[f"chapter.{chapter_id}.title"] = chapter["title"]
+        lang[f"chapter.{chapter_id}.chapter_subtitle"] = chapter["subtitle"]
+        entries = chapter.get("quests", []) + list(eye_quests(eyes, chapter.get("eyes"), chapter.get("eye_quests", {})))
+        written = []
+        for spec in entries:
+            identifier = quest_id("quest", spec["id"])
+            after = spec.get("after", []) + tiers.get(spec.get("after_eyes"), [])
+            entry = {
+                "dependencies": [quest_id("quest", name) for name in after],
+                "id": identifier,
+                "tasks": [task(item, spec["id"], index) for index, item in enumerate(spec["tasks"])],
+                "x": float(spec["x"]),
+                "y": float(spec["y"]),
+            }
+            if "icon" in spec:
+                entry["icon"] = {"count": 1, "id": spec["icon"]}
+            if "min_after" in spec:
+                entry["min_required_dependencies"] = spec["min_after"]
+            if spec.get("rewards"):
+                entry["rewards"] = [reward(item, spec["id"], index) for index, item in enumerate(spec["rewards"])]
+            written.append(entry)
+            lang[f"quest.{identifier}.title"] = spec["title"]
+            lang[f"quest.{identifier}.quest_subtitle"] = spec["subtitle"]
+            lang[f"quest.{identifier}.quest_desc"] = spec["description"]
+        data = {
+            "default_hide_dependency_lines": False,
+            "default_quest_shape": "",
+            "filename": chapter["id"],
+            "group": "",
+            "icon": {"count": 1, "id": chapter["icon"]},
+            "id": chapter_id,
+            "images": [],
+            "order_index": order,
+            "quest_links": [],
+            "quests": written,
+        }
+        path = QUESTS / f"chapters/{chapter['id']}.snbt"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(snbt(data) + "\n")
+    (QUESTS / "lang").mkdir(parents=True, exist_ok=True)
+    (QUESTS / "lang/en_us.snbt").write_text(snbt(lang) + "\n")
+    (QUESTS / "chapter_groups.snbt").write_text(snbt({"chapter_groups": []}) + "\n")
+    (QUESTS / "data.snbt").write_text(snbt({"fallback_locale": "en_us", "version": QUEST_FILE_VERSION}) + "\n")
+
+
+def books(spec):
+    modifiers = sorted(
+        f"wayfarer:{path.stem}"
+        for path in (ROOT / "mod/src/main/resources/data/wayfarer/loot_modifiers").glob("*.json")
+    )
+    for collection in spec["collections"]:
+        entries = [
+            {
+                "functions": [
+                    {
+                        "components": {
+                            "minecraft:written_book_content": {
+                                "author": collection["author"],
+                                "pages": [text(page) for page in book["pages"]],
+                                "title": book["title"],
+                            }
+                        },
+                        "function": "minecraft:set_components",
+                    }
+                ],
+                "name": "minecraft:written_book",
+                "type": "minecraft:item",
+            }
+            for book in collection["books"]
+        ]
+        write_json(
+            MAIN / f"data/wayfarer/loot_table/books/{collection['id']}.json",
+            {
+                "pools": [
+                    {
+                        "conditions": [{"chance": collection["chance"], "condition": "minecraft:random_chance"}],
+                        "entries": entries,
+                        "rolls": 1,
+                    }
+                ],
+                "type": "minecraft:chest",
+            },
+        )
+        write_json(
+            MAIN / f"data/wayfarer/loot_modifiers/books/{collection['id']}.json",
+            {
+                "conditions": [
+                    {
+                        "condition": "minecraft:any_of",
+                        "terms": [
+                            {"condition": "neoforge:loot_table_id", "loot_table_id": target}
+                            for target in collection["targets"]
+                        ],
+                    }
+                ],
+                "table": f"wayfarer:books/{collection['id']}",
+                "type": "neoforge:add_table",
+            },
+        )
+        modifiers.append(f"wayfarer:books/{collection['id']}")
+    write_json(
+        MAIN / "data/neoforge/loot_modifiers/global_loot_modifiers.json",
+        {"entries": sorted(modifiers), "replace": False},
+    )
+
+
+def shaders():
+    shader = tomllib.loads((ROOT / "pack/shaderpacks/complementary-reimagined.pw.toml").read_text())["filename"]
+    patcher = tomllib.loads((ROOT / "pack/mods/euphoria-patches.pw.toml").read_text())["filename"]
+    patches = patcher.split("-")[1]
+    pack = f"{shader.removesuffix('.zip')} + EuphoriaPatches_{patches}"
+    IRIS.write_text(f"disableUpdateMessage=true\nenableShaders=true\nshaderPack={pack}\n")
+
+
 def write_json(path, data):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n")
@@ -416,10 +604,6 @@ def salt(name):
 
 
 def worldgen(eyes, balance):
-    tiers = {
-        1: balance["shrines"]["tier_one_blocks"],
-        2: balance["shrines"]["tier_two_blocks"],
-    }
     for eye, spec in eyes.items():
         key = f"wayfarer:shrine/{eye}"
         write_json(
@@ -453,7 +637,7 @@ def worldgen(eyes, balance):
                 "type": "wayfarer:shrine",
             },
         )
-        spacing = max(2, round(tiers[spec["tier"]] * math.sqrt(spec["share"]) / CHUNK))
+        spacing = spec["spacing"]
         write_json(
             MAIN / f"data/wayfarer/worldgen/structure_set/shrine/{eye}.json",
             {
@@ -538,7 +722,7 @@ def removals(spec):
 def main():
     eyes = tomllib.loads((ROOT / "generator/eyes.toml").read_text())
     balance = tomllib.loads((ROOT / "balance.toml").read_text())
-    for directory in (DEV, ENDREM_EYES, MAIN):
+    for directory in (DEV, ENDREM_EYES, MAIN, QUESTS):
         shutil.rmtree(directory, ignore_errors=True)
     worldgen(eyes, balance)
     spread(eyes, balance)
@@ -552,6 +736,9 @@ def main():
     empty()
     showroom(eyes)
     textures(tomllib.loads((ROOT / "generator/textures.toml").read_text()))
+    quests(tomllib.loads((ROOT / "story/quests.toml").read_text()), eyes)
+    books(tomllib.loads((ROOT / "story/books.toml").read_text()))
+    shaders()
 
 
 main()

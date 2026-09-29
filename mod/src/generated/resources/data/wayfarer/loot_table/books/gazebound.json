@@ -1,0 +1,73 @@
+{
+  "pools": [
+    {
+      "conditions": [
+        {
+          "chance": 0.4,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "functions": [
+            {
+              "components": {
+                "minecraft:written_book_content": {
+                  "author": "The Gazebound",
+                  "pages": [
+                    "\"Brothers, the Grass King saw what the dragon sees, and for one summer he ruled as a god. Then his people, cowards all, tore the sight from his crown.\"",
+                    "\"We are his heirs. We will finish what he began: gather the twelve shards, open the true gate, and let the dragon see the world again, through our eyes and for our purposes.\""
+                  ],
+                  "title": "The Crown of the Grass King"
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "minecraft:written_book",
+          "type": "minecraft:item"
+        },
+        {
+          "functions": [
+            {
+              "components": {
+                "minecraft:written_book_content": {
+                  "author": "The Gazebound",
+                  "pages": [
+                    "\"Orders for the captains. The shards are waking and calling to each other. Listen for them in the high places, the dead places, the drowned places.\"",
+                    "\"A Wayfarer is walking again. The ember is hard to see and harder to catch, but it is not invisible: it must sleep, and it must light fires. Watch the smoke.\""
+                  ],
+                  "title": "Orders for the Captains"
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "minecraft:written_book",
+          "type": "minecraft:item"
+        },
+        {
+          "functions": [
+            {
+              "components": {
+                "minecraft:written_book_content": {
+                  "author": "The Gazebound",
+                  "pages": [
+                    "\"Why do we build our mansions in the dark woods? Because the Shadow Circle built there first. We copied their halls stone by stone, and still their power would not come to us.\"",
+                    "\"They say the burden is the point. They say the shard must be carried, not kept. They are dead, and we are not. Keep searching.\""
+                  ],
+                  "title": "The Halls of the Shadow Circle"
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "minecraft:written_book",
+          "type": "minecraft:item"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "type": "minecraft:chest"
+}

@@ -1,0 +1,30 @@
+{
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "home"
+	group: ""
+	icon: {
+		count: 1
+		id: "minecraft:red_bed"
+	}
+	id: "7BF88F89BD57B35D"
+	images: [ ]
+	order_index: 6
+	quest_links: [ ]
+	quests: [
+		{
+			dependencies: [
+				"7F416EC4B9D960EC"
+			]
+			id: "6B59AE1F40767245"
+			tasks: [
+				{
+					id: "69514BB10429FFFC"
+					type: "checkmark"
+				}
+			]
+			x: 0.0d
+			y: 0.0d
+		}
+	]
+}

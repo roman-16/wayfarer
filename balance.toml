@@ -15,8 +15,8 @@ hunt_interval_seconds = 10
 hunt_phantoms = 2
 
 [shrines]
-tier_one_blocks = 7500
-tier_two_blocks = 12000
+tier_one_trip_blocks = 3750
+tier_two_trip_blocks = 6000
 
 [sleep]
 players_percentage = 66

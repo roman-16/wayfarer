@@ -1,0 +1,76 @@
+{
+  "pools": [
+    {
+      "conditions": [
+        {
+          "chance": 0.6,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "functions": [
+            {
+              "components": {
+                "minecraft:written_book_content": {
+                  "author": "The Keepers",
+                  "pages": [
+                    "\"Year one of the watch. We built this hall as far from everyone as our legs could carry the stone. The gate sleeps below us. It is only a frame now, and we mean to keep it that way.\"",
+                    "\"Rule of the watch: no Keeper lights a fire bigger than a hand. No Keeper plants what takes more than a season to grow. We are the only people in the world allowed to stay, and we must stay small.\"",
+                    "\"If you are reading this, the watch has ended or the Eye is coming home. Either way, you are welcome at our table. There is not much left on it.\""
+                  ],
+                  "title": "The First Watch"
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "minecraft:written_book",
+          "type": "minecraft:item"
+        },
+        {
+          "functions": [
+            {
+              "components": {
+                "minecraft:written_book_content": {
+                  "author": "The Keepers",
+                  "pages": [
+                    "\"Why so far? Because the gaze sees what stays still, and a gate stays stiller than anything. We carried this one out past the edge of every map, so that whatever it shone, it shone on nobody.\"",
+                    "\"Twelve halls like this one stand in a ring, all the same distance from where the first fire was lit, and every one of them guards a gate. The ember will lead you to the nearest.\"",
+                    "\"Do not blame us for the walk. Every step between you and home is a step between home and the dragon.\""
+                  ],
+                  "title": "On the Distance of the Gate"
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "minecraft:written_book",
+          "type": "minecraft:item"
+        },
+        {
+          "functions": [
+            {
+              "components": {
+                "minecraft:written_book_content": {
+                  "author": "The Keepers",
+                  "pages": [
+                    "\"The last entry. The others have gone down to sleep with the old Keepers. I stay to write, because someone should.\"",
+                    "\"The shards are waking. We hear them at night, calling to each other across the world. A Wayfarer will come, or the Gazebound will. We have left the doors open either way. We are too tired to hold them.\"",
+                    "\"Wayfarer, if it is you: set the Eye, finish it, and then go home. You will have earned a home. We never did.\""
+                  ],
+                  "title": "The Last Keeper"
+                }
+              },
+              "function": "minecraft:set_components"
+            }
+          ],
+          "name": "minecraft:written_book",
+          "type": "minecraft:item"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "type": "minecraft:chest"
+}

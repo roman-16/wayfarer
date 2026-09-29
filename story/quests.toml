@@ -1,0 +1,252 @@
+title = "The Last Wayfarer's Journal"
+
+[[chapters]]
+icon = "minecraft:campfire"
+id = "oath"
+subtitle = ["Never settle. Never stay. Carry the ember."]
+title = "The Oath"
+
+[[chapters.quests]]
+description = [
+  "You sat at my fire when nobody else would, so the ember is yours now. I could not carry it one more day.",
+  "Read my journal at the camp, then take the tent I leave you.",
+]
+icon = "minecraft:writable_book"
+id = "last_fire"
+rewards = [{ item = "nomadictents:tiny_yurt" }]
+subtitle = "A stranger's fire, a stranger's ember"
+tasks = [{ checkmark = true }]
+title = "The Last Fire"
+x = 0.0
+y = 0.0
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "A Wayfarer tent is folded space, and the gaze cannot see what is not anywhere.",
+  "Pitch your tent before your first night and sleep inside it.",
+]
+icon = "nomadictents:tiny_yurt"
+id = "tent"
+subtitle = "Safe, because it is nowhere"
+tasks = [{ checkmark = true }]
+title = "A Roof That Is Nowhere"
+x = -1.5
+y = 1.5
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "A Wayfarer owns only what they can carry, and leaves the rest for the next traveller.",
+  "Make a backpack and keep everything you need in it.",
+]
+id = "backpack"
+subtitle = "Everything you own, on your back"
+tasks = [{ item = "travelersbackpack:standard" }]
+title = "Carry What You Own"
+x = 0.0
+y = 1.5
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "The ember is bound to fire. Wherever you light one, it brings you back when you fall.",
+  "Make a campfire and light it wherever you rest.",
+]
+id = "campfire"
+subtitle = "Where the ember brings you back"
+tasks = [{ item = "minecraft:campfire" }]
+title = "Keep a Fire"
+x = 1.5
+y = 1.5
+
+[[chapters.quests]]
+after = ["backpack"]
+description = [
+  "Roads are the only thing a Wayfarer leaves behind.",
+  "Make an atlas and let it remember where you have been.",
+]
+id = "atlas"
+subtitle = "The only thing we leave behind"
+tasks = [{ item = "map_atlases:atlas" }]
+title = "Map the Road"
+x = 0.0
+y = 3.0
+
+[[chapters.quests]]
+after = ["tent", "campfire"]
+description = [
+  "Look to the top of your sight: the ember tells you whether you walk warmer or colder. Within five hundred blocks the shard answers, and you will know exactly where it is.",
+  "Walk until the first shard answers.",
+]
+icon = "minecraft:blaze_powder"
+id = "ember"
+subtitle = "Warmer, colder"
+tasks = [{ checkmark = true }]
+title = "Follow the Ember"
+x = 0.0
+y = 4.5
+
+[[chapters]]
+eyes = 1
+icon = "endrem:old_eye"
+id = "first_eyes"
+subtitle = ["Six shards lie near the four winds. The ember finds the nearest first."]
+title = "The First Eyes"
+
+[chapters.eye_quests]
+after = ["ember"]
+y = 0.0
+
+[[chapters]]
+icon = "smallships:oak_cog"
+id = "sea"
+subtitle = ["Four shards, and the sea carries you. Six, and the sky does for a while."]
+title = "The Sea"
+
+[[chapters.quests]]
+after_eyes = 1
+description = [
+  "On open water a lone ember shines like a beacon, and the gaze finds every ship that carries one. Four shards together are enough to dim it.",
+  "Build a ship and sail.",
+]
+id = "sea_opens"
+min_after = 4
+subtitle = "Four shards"
+tasks = [{ item = "smallships:oak_cog" }]
+title = "The Sea Opens"
+x = 0.0
+y = 0.0
+
+[[chapters.quests]]
+after_eyes = 1
+description = [
+  "In the air the ember flickers and the phantoms see it. With six shards it burns steady enough to fly, for a while.",
+  "Build an aircraft, and land before the gaze fills.",
+]
+id = "sky_opens"
+subtitle = "Six shards"
+tasks = [{ item = "immersive_aircraft:biplane" }]
+title = "The Sky, For a While"
+x = 0.0
+y = 1.5
+
+[[chapters.quests]]
+after = ["sky_opens"]
+description = [
+  "Phantom membrane woven around the ember hides its light from the phantoms that shed it.",
+  "Make an Ember Veil and wear it as a charm.",
+]
+id = "veil_1"
+subtitle = "Longer flight"
+tasks = [{ item = "wayfarer:ember_veil_1" }]
+title = "A Veil Against the Gaze"
+x = -1.5
+y = 3.0
+
+[[chapters.quests]]
+after = ["veil_1"]
+description = [
+  "Phantoms weep what they have seen, and their tears remember how not to be seen.",
+  "Weave gaze tears into your veil.",
+]
+id = "veil_2"
+subtitle = "Longer still"
+tasks = [{ item = "wayfarer:ember_veil_2" }]
+title = "A Thicker Veil"
+x = 0.0
+y = 3.0
+
+[[chapters.quests]]
+after = ["veil_2"]
+description = [
+  "The deep dark swallowed the Ancient Cities, and its echoes swallow light too.",
+  "Weave echo shards into your veil.",
+]
+id = "veil_3"
+subtitle = "As long as the sky allows"
+tasks = [{ item = "wayfarer:ember_veil_3" }]
+title = "The Last Veil"
+x = 1.5
+y = 3.0
+
+[[chapters]]
+eyes = 2
+icon = "endrem:cryptic_eye"
+id = "far_eyes"
+subtitle = ["Six shards at the edges of the world. The gaze is watching you now."]
+title = "The Far Eyes"
+
+[chapters.eye_quests]
+after = ["sky_opens"]
+y = 0.0
+
+[[chapters]]
+icon = "minecraft:end_portal_frame"
+id = "last_road"
+subtitle = ["Twelve shards remember where the Eye was torn out."]
+title = "The Last Road"
+
+[[chapters.quests]]
+after_eyes = 2
+description = [
+  "With all twelve shards, the ember remembers the true gate, farther out than anyone walks now. The Keepers have guarded it alone ever since the Eye was broken.",
+  "Follow the ember to the Keepers' stronghold.",
+]
+id = "true_gate"
+subtitle = "Farther than anyone walks"
+tasks = [{ structure = "betterstrongholds:stronghold" }]
+title = "The True Gate"
+x = 0.0
+y = 0.0
+
+[[chapters.quests]]
+after = ["true_gate"]
+description = [
+  "Twelve shards, twelve sockets, one Eye. When it is whole the gate opens, and the dragon feels it.",
+  "Set every shard in the frame and step through.",
+]
+id = "set_the_eye"
+subtitle = "One Eye again"
+tasks = [{ dimension = "minecraft:the_end" }]
+title = "Set the Eye"
+x = 0.0
+y = 1.5
+
+[[chapters]]
+icon = "minecraft:dragon_head"
+id = "dragon"
+subtitle = ["It will never be weaker than now."]
+title = "The Dragon"
+
+[[chapters.quests]]
+after = ["set_the_eye"]
+description = [
+  "It is still half-blind, and it will never be weaker than it is today. When it dies, the ember goes out for everyone who fought it.",
+  "Kill the dragon.",
+]
+id = "dragon"
+subtitle = "Finish what we could not"
+tasks = [{ kill = "minecraft:ender_dragon" }]
+title = "The Half-Blind Dragon"
+x = 0.0
+y = 0.0
+
+[[chapters]]
+icon = "minecraft:red_bed"
+id = "home"
+subtitle = ["The oath is kept. You may stay."]
+title = "Build a Home"
+
+[[chapters.quests]]
+after = ["dragon"]
+description = [
+  "The ember is out and the sky is yours. Nothing is watching any more.",
+  "Stay somewhere at last, and build a home.",
+]
+id = "home"
+subtitle = "The last page"
+tasks = [{ checkmark = true }]
+title = "Build a Home"
+x = 0.0
+y = 0.0

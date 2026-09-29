@@ -1,0 +1,8 @@
+[client.advanced.autoUpdater]
+enableAutoUpdater = false
+
+[client.advanced.graphics.quality]
+lodChunkRenderDistanceRadius = 128
+
+[common.logging.warning]
+showGarbageCollectorWarning = false

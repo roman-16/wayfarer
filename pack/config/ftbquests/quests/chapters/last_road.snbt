@@ -1,0 +1,51 @@
+{
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "last_road"
+	group: ""
+	icon: {
+		count: 1
+		id: "minecraft:end_portal_frame"
+	}
+	id: "3EB6CD4567B99D7A"
+	images: [ ]
+	order_index: 4
+	quest_links: [ ]
+	quests: [
+		{
+			dependencies: [
+				"35E0A4F7756E75D3"
+				"1657378EFFB576B0"
+				"1D8122D0BB559969"
+				"646F360A7556B8EE"
+				"0A1B1F899EB0A922"
+				"77EB315F472DEA0B"
+			]
+			id: "467796D56D014FF1"
+			tasks: [
+				{
+					id: "26F4C09476309C5B"
+					structure: "betterstrongholds:stronghold"
+					type: "structure"
+				}
+			]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"467796D56D014FF1"
+			]
+			id: "19915A5C482101B0"
+			tasks: [
+				{
+					dimension: "minecraft:the_end"
+					id: "1E80EEA957E78BBB"
+					type: "dimension"
+				}
+			]
+			x: 0.0d
+			y: 1.5d
+		}
+	]
+}

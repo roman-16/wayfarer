@@ -47,3 +47,17 @@ type = "optional"
 versionRange = "*"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "ftbquests"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "terralith"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
