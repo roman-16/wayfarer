@@ -1,0 +1,10 @@
+.devbox/
+.env
+.ruff_cache/
+.venv/
+/build/
+/dist/
+__pycache__/
+mod/.gradle/
+mod/build/
+mod/run/

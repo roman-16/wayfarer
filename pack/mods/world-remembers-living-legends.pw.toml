@@ -1,0 +1,13 @@
+name = "World Remembers Living Legends"
+filename = "living_legends-neoforge-1.1.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/6aFhMDEW/versions/cnnSNPCP/living_legends-neoforge-1.1.0.jar"
+hash-format = "sha512"
+hash = "41eff7407cf3afc088b9af3d8d3761054da385e6fa6da75e2e0c6109ad1f49da4d7a71d9996d051145aeee6ad30fd25499bc5abe584f5839268ecfd8c2eb8008"
+
+[update]
+[update.modrinth]
+mod-id = "6aFhMDEW"
+version = "cnnSNPCP"

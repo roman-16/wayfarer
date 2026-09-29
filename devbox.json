@@ -1,0 +1,29 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.17.5/.schema/devbox.schema.json",
+  "packages": {
+    "alsa-lib": "latest",
+    "git": "latest",
+    "imagemagick": "latest",
+    "jdk": "21",
+    "jq": "latest",
+    "just": "latest",
+    "libGL": "latest",
+    "libpulseaudio": "latest",
+    "packwiz": "latest",
+    "python": "3.14",
+    "ruff": "latest",
+    "shellcheck": "latest",
+    "taplo": "latest",
+    "xorg.libX11": "latest",
+    "xorg.libXcursor": "latest",
+    "xorg.libXext": "latest",
+    "xorg.libXi": "latest",
+    "xorg.libXrandr": "latest",
+    "xorg.libXxf86vm": "latest"
+  },
+  "shell": {
+    "init_hook": [
+      "if [ -f .env ]; then set -a; . ./.env; set +a; fi"
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+[compass]
+exact_blocks = 500
+far_rounding_blocks = 1000
+refresh_ticks = 20
+research_after_blocks = 256
+trail_blocks = 20
+
+[difficulty]
+per_eye = 10.0
+
+[gaze]
+capacity_seconds = [180, 300, 480, 720]
+drain_factor = 4
+hunt_interval_seconds = 10
+hunt_phantoms = 2
+
+[shrines]
+tier_one_blocks = 7500
+tier_two_blocks = 12000
+
+[sleep]
+players_percentage = 66
+
+[strongholds]
+count = 12
+jitter_blocks = 1000
+radius_blocks = 35000
+
+[unlocks]
+aircraft_eyes = 6
+sailing_ship_eyes = 4
+
+[structures]
+spread_factor = 3
+unspread = [
+  "betterstrongholds:stronghold",
+  "minecraft:ancient_cities",
+  "minecraft:buried_treasures",
+  "minecraft:mineshafts",
+]

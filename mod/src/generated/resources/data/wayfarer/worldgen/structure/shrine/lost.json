@@ -1,0 +1,40 @@
+{
+  "biomes": "#wayfarer:has_structure/shrine/lost",
+  "layout": {
+    "cover": 3,
+    "entrance": [
+      7,
+      2,
+      21
+    ],
+    "max_steps": 48,
+    "mouth": [
+      2,
+      1,
+      1
+    ],
+    "shaft": [
+      7,
+      11,
+      3
+    ],
+    "stair": [
+      1,
+      1,
+      0
+    ]
+  },
+  "pieces": {
+    "cap": "wayfarer:shrine/cap",
+    "hall": "wayfarer:shrine/lost/hall",
+    "marker": "wayfarer:shrine/marker/cairn",
+    "open_step": "wayfarer:shrine/lost/open_step",
+    "seal": "wayfarer:shrine/lost/seal",
+    "shaft": "wayfarer:shrine/shaft",
+    "step": "wayfarer:shrine/lost/step"
+  },
+  "spawn_overrides": {},
+  "step": "underground_structures",
+  "terrain_adaptation": "none",
+  "type": "wayfarer:shrine"
+}

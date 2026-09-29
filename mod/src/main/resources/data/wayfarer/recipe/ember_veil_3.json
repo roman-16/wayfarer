@@ -1,0 +1,21 @@
+{
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "wayfarer:ember_veil_2"
+    },
+    "R": {
+      "item": "minecraft:echo_shard"
+    }
+  },
+  "pattern": [
+    " R ",
+    "RCR",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "wayfarer:ember_veil_3"
+  },
+  "type": "minecraft:crafting_shaped"
+}

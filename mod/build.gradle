@@ -1,0 +1,130 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.148'
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = mod_id
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+sourceSets {
+    dev {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+configurations {
+    devCompileOnly.extendsFrom compileOnly
+    devImplementation.extendsFrom implementation
+}
+
+repositories {
+    maven {
+        name = 'Architectury'
+        url = 'https://maven.architectury.dev'
+        content { includeGroup 'dev.architectury' }
+    }
+    maven {
+        name = 'Curios'
+        url = 'https://maven.theillusivec4.top'
+        content { includeGroup 'top.theillusivec4.curios' }
+    }
+    maven {
+        name = 'FTB'
+        url = 'https://maven.ftb.dev/releases'
+        content { includeGroup 'dev.ftb.mods' }
+    }
+    maven {
+        name = 'Modrinth'
+        url = 'https://api.modrinth.com/maven'
+        content { includeGroup 'maven.modrinth' }
+    }
+}
+
+neoForge {
+    version = neo_version
+    addModdingDependenciesTo sourceSets.dev
+
+    parchment {
+        mappingsVersion = parchment_mappings_version
+        minecraftVersion = parchment_minecraft_version
+    }
+
+    runs {
+        configureEach {
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+        }
+        client {
+            client()
+            gameDirectory = file('../build/client')
+            jvmArgument '-Xmx8G'
+            programArguments.addAll '--height', '720', '--username', 'Wayfarer', '--width', '1280'
+            sourceSet = sourceSets.dev
+        }
+        gameTestServer {
+            type = 'gameTestServer'
+            sourceSet = sourceSets.dev
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+            sourceSet(sourceSets.dev)
+        }
+    }
+}
+
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
+
+sourceSets.dev.resources {
+    srcDir 'src/generated/dev'
+}
+
+dependencies {
+    compileOnly "maven.modrinth:endrem:${endrem_version}"
+    compileOnly "maven.modrinth:the-hordes:${hordes_version}"
+    implementation "dev.architectury:architectury-neoforge:${architectury_version}"
+    implementation "dev.ftb.mods:ftb-library-neoforge:${ftb_library_version}"
+    implementation "dev.ftb.mods:ftb-teams-neoforge:${ftb_teams_version}"
+    implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+}
+
+var generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    var replaceProperties = [
+            curios_version_range      : curios_version_range,
+            ftb_teams_version_range   : ftb_teams_version_range,
+            loader_version_range      : loader_version_range,
+            minecraft_version_range   : minecraft_version_range,
+            mod_id                    : mod_id,
+            mod_license               : mod_license,
+            mod_name                  : mod_name,
+            mod_version               : mod_version,
+            neo_version               : neo_version,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into 'build/generated/sources/modMetadata'
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+processResources {
+    from(rootProject.file('../balance.toml')) {
+        into 'wayfarer'
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-Xlint:all' << '-Werror'
+}

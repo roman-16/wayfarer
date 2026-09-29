@@ -1,0 +1,10 @@
+{
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "betterwitchhuts:chests/hut_0"
+    }
+  ],
+  "table": "wayfarer:inject/witch_hut",
+  "type": "neoforge:add_table"
+}

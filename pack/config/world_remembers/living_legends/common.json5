@@ -1,0 +1,690 @@
+// World Remembers: Living Legends config.
+{
+  // Basic mod settings.
+  "general": {
+    // Turns the mod on or off. If false, new events are ignored.
+    "enabled": true,
+    // Legacy alias for enabled. Keep it the same as enabled.
+    "enableMod": true,
+    // Config schema version. Leave this alone unless migrating by hand.
+    "configVersion": 4,
+    // Preferred language hint for future config/UI text.
+    "locale": "en_us",
+    // How often Minecraft may autosave world data, in seconds. Values below 30 reset to the safe default 300.
+    "autosaveIntervalSeconds": 300
+  },
+  // Automatic place generation settings. These affect new generation, not existing places.
+  "generation": {
+    // Config value: generation.enabled.
+    "enabled": true,
+    // Legacy radius value. The mod stays event-driven and does not scan the world.
+    "scanRadiusChunks": 8,
+    // Minimum event count used by older generation logic.
+    "minEventsForNamedPlace": 4,
+    // Maximum generated places per chunk candidate.
+    "maxGeneratedPlacesPerChunk": 1,
+    // Legacy merge distance in blocks.
+    "mergeDistanceBlocks": 96,
+    // Default horizontal radius for generated places, in blocks. Must be positive.
+    "defaultHorizontalRadiusBlocks": 64,
+    // Default vertical radius for generated places, in blocks. Must be positive.
+    "defaultVerticalRadiusBlocks": 48,
+    // Maximum distance for merging normal area places, in blocks.
+    "placeMaxMergeDistanceBlocks": 96,
+    // Maximum radius for normal area place clusters, in blocks.
+    "placeMaxClusterRadiusBlocks": 64,
+    // Maximum center movement on one update, in blocks.
+    "placeMaxCenterShiftOnUpdateBlocks": 24,
+    // Maximum distance for merging death sites, in blocks.
+    "deathSiteMaxMergeDistanceBlocks": 48,
+    // Maximum radius for death-site clusters, in blocks.
+    "deathSiteMaxClusterRadiusBlocks": 40,
+    // Maximum death-site center movement on one update, in blocks.
+    "deathSiteMaxCenterShiftOnUpdateBlocks": 12,
+    // Minimum Y gap for separate vertical places, in blocks.
+    "verticalSeparationMinYGap": 32,
+    // If true, death sites may mix cave/surface/etc. False keeps them separate.
+    "allowMixedDeathSiteEnvironments": false,
+    // Allows UNKNOWN death-site environment to merge with known environments.
+    "allowUnknownDeathSiteEnvironmentFallback": false,
+    // Maximum merge distance for general landmarks, in blocks.
+    "generalLandmarkMaxMergeDistanceBlocks": 48,
+    // Maximum cluster radius for general landmarks, in blocks.
+    "generalLandmarkMaxClusterRadiusBlocks": 48,
+    // Maximum center movement for general landmarks, in blocks.
+    "generalLandmarkMaxCenterShiftOnUpdateBlocks": 12,
+    // Maximum merge distance for portal landmarks, in blocks.
+    "portalLandmarkMaxMergeDistanceBlocks": 48,
+    // Maximum radius for portal landmarks, in blocks.
+    "portalLandmarkMaxClusterRadiusBlocks": 24,
+    // Maximum center movement for portal landmarks, in blocks.
+    "portalLandmarkMaxCenterShiftOnUpdateBlocks": 12,
+    // Maximum merge distance for point-like places, in blocks.
+    "pointPlaceMaxMergeDistanceBlocks": 24,
+    // Maximum radius for point-like places, in blocks.
+    "pointPlaceMaxClusterRadiusBlocks": 16,
+    // Maximum center movement for point-like places, in blocks.
+    "pointPlaceMaxCenterShiftOnUpdateBlocks": 8,
+    // If true, deleted places leave markers that prevent auto-recreation.
+    "deletedPlaceSuppressionEnabled": true,
+    // How long deleted markers prevent auto-recreation, in Minecraft days. -1 forever, 0 disables.
+    "deletedPlaceSuppressionDays": -1,
+    // Extra spacing rules for sparse place types. Existing places are not renamed or removed.
+    "spacing": {
+      // If true, applies per-place-type spacing before creating new places.
+      "enabled": true,
+      // Minimum distance from another place of the same type before a new place can be created. Values below 0 are clamped.
+      "sameTypeMinDistanceBlocks": {
+        // GENERAL_LANDMARK is intentionally sparse because it represents casual travel/activity. Increase if generic places are too dense; decrease for a denser map.
+        "GENERAL_LANDMARK": 256
+      },
+      // Minimum distance from any existing NamedPlace before this place type can be created. Only configured types are affected. Values below 0 are clamped.
+      "anyPlaceMinDistanceBlocks": {
+        // Prevents generic landmarks from cluttering around more specific named places.
+        "GENERAL_LANDMARK": 96
+      },
+      // Distance where a nearby candidate may update an existing place instead of creating a new one. It is clamped to the same-type spacing distance.
+      "mergeDistanceBlocks": {
+        // GENERAL_LANDMARK candidates beyond this distance are suppressed instead of moving an existing landmark across the map.
+        "GENERAL_LANDMARK": 64
+      }
+    }
+  },
+  // Legacy rarity and minimum thresholds.
+  "thresholds": {
+    // Threshold value used for rarity or legacy generation checks.
+    "namedPlaceScore": 25.0,
+    // Threshold value used for rarity or legacy generation checks.
+    "rarePlaceScore": 75.0,
+    // Threshold value used for rarity or legacy generation checks.
+    "legendaryPlaceScore": 150.0,
+    // Threshold value used for rarity or legacy generation checks.
+    "mythicPlaceScore": 300.0,
+    // Threshold value used for rarity or legacy generation checks.
+    "minimumUniqueVisitors": 1,
+    // Threshold value used for rarity or legacy generation checks.
+    "minimumEvents": 3
+  },
+  // Raw event counts required before a place can become a candidate.
+  "requiredCounts": {
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "playerDeathsForDeathSite": 5,
+    // Minimum accepted combat events in the local cluster before a battlefield can generate. Anti-farm still filters repetitive farm-like kills.
+    "hostileKillsForBattlefield": 8,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "passiveKillsForSlaughterField": 30,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "pvpDeathsForPvpArena": 5,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "valuableBlocksForMiningSite": 5,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "portalUsesForLandmark": 16,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "visitsForGeneralLandmark": 80,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "blocksPlacedForSettlementCandidate": 250,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "respawnPointsForSettlementCandidate": 3,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "bossKillsForBossSite": 1,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "petDeathsForPetMemorial": 1,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "namedMobDeathsForMemorial": 1,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "raidWinsForRaidSite": 1,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "firstDimensionEntryForDiscovery": 1,
+    // Required raw count. Higher values make this place type rarer. Values below 1 are clamped.
+    "firstMajorDiscovery": 1
+  },
+  // Score thresholds required before a place can become a candidate.
+  "scoreThresholds": {
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "deathSite": 100.0,
+    // Controls how much local combat is required before a battlefield is named. Lower values make combat sites appear more often. Anti-farm still filters repetitive farm-like kills.
+    "battlefield": 56.0,
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "slaughterField": 180.0,
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "pvpArena": 100.0,
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "miningSite": 100.0,
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "portalLandmark": 140.0,
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "generalLandmark": 240.0,
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "settlement": 250.0,
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "firstDiscovery": 20.0,
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "bossSite": 30.0,
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "petMemorial": 20.0,
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "namedMobMemorial": 20.0,
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "raidSite": 40.0,
+    // Required score. Higher values make this place type rarer. Negative or non-finite values are clamped to 0.
+    "dimensionThreshold": 30.0
+  },
+  // Player-facing display settings.
+  "display": {
+    // Shows discovery messages when places are found.
+    "discoveryMessages": true,
+    // Shows coordinates in player-facing place messages.
+    "showCoordinates": false,
+    // Shows place rarity in player-facing messages.
+    "showRarity": true,
+    // Radius used for nearby place checks, in blocks.
+    "nearbyPlaceRadiusBlocks": 128,
+    // Maximum places shown per /places list page.
+    "maxPlacesInList": 20
+  },
+  // Performance limits. The mod remains event-driven and does not scan the world.
+  "performance": {
+    // Maximum dirty chunks scored per server tick.
+    "maxScoreEvaluationsPerTick": 4,
+    // Cooldown before the same chunk can create candidate logs again, in ticks. 0 disables this cooldown.
+    "candidateGenerationCooldownTicks": 1200,
+    // Maximum cluster radius for neighboring candidate chunks, in chunks.
+    "maxClusterRadiusChunks": 2,
+    // How often player visits are sampled, in ticks. Values below 20 reset to the safe default 400.
+    "visitSampleIntervalTicks": 400,
+    // How often display checks run, in ticks. Values below 20 reset to the safe default 100.
+    "displayCheckIntervalTicks": 100,
+    // How often structure discovery checks run for a player, in ticks. Values below 20 reset to the safe default 200.
+    "structureDiscoveryCheckIntervalTicks": 200
+  },
+  // Event collection settings. These affect which events are counted before generation.
+  "eventCollection": {
+    // If false, future creative-mode event hooks may be ignored for automatic generation.
+    "countCreativeModeEvents": true
+  },
+  // Anti-farm protection for repeated mob kills.
+  "antiFarm": {
+    // Anti-farm tuning. Higher limits are more permissive.
+    "enabled": true,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "repeatEventCooldownSeconds": 120,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "samePositionRadiusBlocks": 8,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "maxEventsPerPlayerPerMinute": 12,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "maxKillsPerSmallAreaInTenMinutes": 40,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "minimumSamplesForVarianceChecks": 8,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "minimumPlayerPositionSpreadBlocks": 1.5,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "minimumMobDeathPositionSpreadBlocks": 1.5,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "sameEntityTypeKillThreshold": 16,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "strictMode": false,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "localSuppressionWindowSeconds": 600,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "strictModeMinimumKills": 10,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "strictModeSameEntityTypeRatio": 0.8,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "strictModeMaximumPlayerSpreadBlocks": 2.5,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "strictModeMaximumMobSpreadBlocks": 4.0,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "debugFarmRejections": false,
+    // Anti-farm tuning. Higher limits are more permissive.
+    "repeatedEventScoreMultiplier": 0.25
+  },
+  // Naming settings for newly generated places. Existing places keep saved recipes.
+  "naming": {
+    // Naming option. Existing saved NameRecipe data is not regenerated automatically.
+    "enabled": true,
+    // Naming option. Existing saved NameRecipe data is not regenerated automatically.
+    "enableNamePacks": true,
+    // Default naming style for newly generated places. Unknown styles fall back to vanilla_adventure.
+    "defaultStyle": "vanilla_adventure",
+    // Styles available for random or weighted style selection. Unknown styles are ignored/fixed safely.
+    "enabledStyles": [
+      "vanilla_adventure"
+    ],
+    // How naming style is selected: DEFAULT_ONLY, RANDOM_ENABLED, WEIGHTED, or PER_PLACE_TYPE.
+    "styleSelectionMode": "DEFAULT_ONLY",
+    // Weights used when styleSelectionMode is WEIGHTED.
+    "styleWeights": {
+      // Style weight. 0 means this style will not be selected by weighted mode. Negative values are clamped to 0.
+      "vanilla_adventure": 100,
+      // Style weight. 0 means this style will not be selected by weighted mode. Negative values are clamped to 0.
+      "dark_fantasy": 0,
+      // Style weight. 0 means this style will not be selected by weighted mode. Negative values are clamped to 0.
+      "cozy_survival": 0,
+      // Style weight. 0 means this style will not be selected by weighted mode. Negative values are clamped to 0.
+      "epic_mythology": 0,
+      // Style weight. 0 means this style will not be selected by weighted mode. Negative values are clamped to 0.
+      "neutral_server": 0,
+      // Style weight. 0 means this style will not be selected by weighted mode. Negative values are clamped to 0.
+      "funny_community": 0
+    },
+    // Naming option. Existing saved NameRecipe data is not regenerated automatically.
+    "allowMixedStyleTokens": false,
+    // Naming option. Existing saved NameRecipe data is not regenerated automatically.
+    "existingPlacesKeepOriginalStyle": true,
+    // Naming option. Existing saved NameRecipe data is not regenerated automatically.
+    "allowAutoRenameOnCauseShift": false,
+    // Naming option. Existing saved NameRecipe data is not regenerated automatically.
+    "allowPerPlaceTypeStyleOverrides": true,
+    // Naming option. Existing saved NameRecipe data is not regenerated automatically.
+    "placeTypeStyleOverrides": {},
+    // Naming option. Existing saved NameRecipe data is not regenerated automatically.
+    "fallbackName": "Unnamed Place",
+    // Naming option. Existing saved NameRecipe data is not regenerated automatically.
+    "maxNameLength": 48,
+    // Naming option. Existing saved NameRecipe data is not regenerated automatically.
+    "duplicateNameAvoidanceRadiusBlocks": 192,
+    // Naming option. Existing saved NameRecipe data is not regenerated automatically.
+    "allowPlayerNamesInGeneratedNames": false
+  },
+  // Command permission settings.
+  "commands": {
+    // OP level required for admin commands. Valid range: 0 to 4.
+    "requiredOpLevel": 2
+  },
+  // Controls automatic generation of each place type.
+  "placeTypes": {
+    // If true, existing disabled-type places are still shown to players.
+    "displayExistingWhenDisabled": true,
+    // If true, OPs can manually create disabled place types.
+    "allowManualCreateWhenDisabled": true,
+    // These toggles control automatic generation only. They do not delete existing places.
+    "autoGeneration": {
+      // Places created from repeated player deaths. Environment decides surface/cave/water/mountain naming.
+      "DEATH_SITE": true,
+      // Places created from combat with hostile or neutral mobs.
+      "BATTLEFIELD": true,
+      // Places created from repeated passive mob kills. Anti-farm checks still apply.
+      "SLAUGHTER_FIELD": true,
+      // Places created from repeated PvP deaths/kills. Mostly useful on servers.
+      "PVP_ARENA": true,
+      // Places created from valuable block mining, such as diamond ore or ancient debris.
+      "MINING_SITE": true,
+      // Places created from frequent portal or dimension travel.
+      "PORTAL_LANDMARK": true,
+      // Fallback landmarks created from repeated visits or mixed low-specificity activity.
+      "GENERAL_LANDMARK": true,
+      // World-first discoveries, such as first Nether entry, first diamond, first stronghold.
+      "FIRST_DISCOVERY": true,
+      // Places created from boss or boss-like mob kills.
+      "BOSS_SITE": true,
+      // Places created from pet deaths. Rare/sentimental place type.
+      "PET_MEMORIAL": true,
+      // Places created from deaths of custom-named mobs.
+      "NAMED_MOB_MEMORIAL": true,
+      // Places created from raid victories or raid-related events.
+      "RAID_SITE": true,
+      // Places created from major dimension transition milestones.
+      "DIMENSION_THRESHOLD": true,
+      // Places created from base-like activity such as building and respawn points.
+      "SETTLEMENT": true,
+      // Manual/custom places created by commands or external integrations.
+      "CUSTOM": true
+    }
+  },
+  // Biome theme mapping for generic landmarks. Useful for modded biomes later.
+  "biomeThemes": {
+    // If true, biome metadata is used when naming general landmarks.
+    "enabled": true,
+    // If true, GENERAL_LANDMARK names may use the biome at the place center.
+    "useBiomeForGeneralLandmarks": true,
+    // Fallback biome group when a biome is missing or unmapped.
+    "unknownBiomeFallbackGroup": "unknown",
+    // Maps biome ids to simple groups like forest, desert, plains, nether, or end.
+    "mappings": {
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:plains": "plains",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:sunflower_plains": "plains",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:forest": "forest",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:flower_forest": "forest",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:birch_forest": "birch_forest",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:old_growth_birch_forest": "birch_forest",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:dark_forest": "dark_forest",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:taiga": "taiga",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:old_growth_pine_taiga": "taiga",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:old_growth_spruce_taiga": "taiga",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:snowy_plains": "snowy",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:ice_spikes": "snowy",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:snowy_taiga": "snowy",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:desert": "desert",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:savanna": "savanna",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:savanna_plateau": "savanna",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:jungle": "jungle",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:sparse_jungle": "jungle",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:bamboo_jungle": "jungle",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:swamp": "swamp",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:mangrove_swamp": "mangrove_swamp",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:stony_peaks": "mountain",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:jagged_peaks": "mountain",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:frozen_peaks": "mountain",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:meadow": "meadow",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:cherry_grove": "cherry_grove",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:river": "river",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:frozen_river": "river",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:beach": "beach",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:snowy_beach": "beach",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:ocean": "ocean",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:deep_ocean": "ocean",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:warm_ocean": "ocean",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:lukewarm_ocean": "ocean",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:cold_ocean": "ocean",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:frozen_ocean": "ocean",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:badlands": "badlands",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:eroded_badlands": "badlands",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:wooded_badlands": "badlands",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:deep_dark": "cave_or_underground",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:dripstone_caves": "cave_or_underground",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:lush_caves": "cave_or_underground",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:nether_wastes": "nether",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:crimson_forest": "nether",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:warped_forest": "nether",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:soul_sand_valley": "nether",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:basalt_deltas": "nether",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:the_end": "end",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:end_highlands": "end",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:end_midlands": "end",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:small_end_islands": "end",
+      // Biome id to biome group. Add modded biome ids here for custom packs.
+      "minecraft:end_barrens": "end"
+    }
+  },
+  // Chat notifications shown when a new place is automatically created.
+  "notifications": {
+    // Lore-style chat messages for newly created places. This does not affect generation.
+    "placeCreated": {
+      // Turns new-place chat messages on or off.
+      "enabled": true,
+      // If true, all online players receive new-place messages.
+      "sendToAllPlayers": true,
+      // If true, only nearby players in the same dimension receive messages.
+      "sendToNearbyPlayersOnly": false,
+      // Nearby notification radius, in blocks. 0 means only exact-position checks where applicable.
+      "nearbyRadiusBlocks": 256,
+      // If true, messages include a small coordinate hint.
+      "includeCoordinates": true,
+      // If true, messages include the dimension id.
+      "includeDimension": false,
+      // If true, messages include the place type.
+      "includePlaceType": false,
+      // If true, manual /places create can show notifications in future command paths.
+      "notifyManualCreate": false,
+      // Maximum new-place messages per minute. 0 disables rate limiting.
+      "maxNotificationsPerMinute": 5,
+      // Per-place-type notification toggles. Disabling a type only hides messages.
+      "perType": {
+        // If false, this place type will not send place-created chat messages.
+        "DEATH_SITE": true,
+        // If false, this place type will not send place-created chat messages.
+        "BATTLEFIELD": true,
+        // If false, this place type will not send place-created chat messages.
+        "SLAUGHTER_FIELD": true,
+        // If false, this place type will not send place-created chat messages.
+        "PVP_ARENA": true,
+        // If false, this place type will not send place-created chat messages.
+        "MINING_SITE": true,
+        // If false, this place type will not send place-created chat messages.
+        "PORTAL_LANDMARK": true,
+        // If false, this place type will not send place-created chat messages.
+        "GENERAL_LANDMARK": true,
+        // If false, this place type will not send place-created chat messages.
+        "FIRST_DISCOVERY": true,
+        // If false, this place type will not send place-created chat messages.
+        "BOSS_SITE": true,
+        // If false, this place type will not send place-created chat messages.
+        "PET_MEMORIAL": true,
+        // If false, this place type will not send place-created chat messages.
+        "NAMED_MOB_MEMORIAL": true,
+        // If false, this place type will not send place-created chat messages.
+        "RAID_SITE": true,
+        // If false, this place type will not send place-created chat messages.
+        "DIMENSION_THRESHOLD": true,
+        // If false, this place type will not send place-created chat messages.
+        "SETTLEMENT": true,
+        // If false, this place type will not send place-created chat messages.
+        "CUSTOM": false
+      }
+    }
+  },
+  // Server-side title overlay checks. Only saved NamedPlace objects can trigger titles.
+  "titleOverlay": {
+    // Turns NamedPlace title overlay packets on or off.
+    "enabled": false,
+    // How often the server checks whether players entered a named place. Values below 1 reset to 10; values above 200 are clamped.
+    "checkIntervalTicks": 10,
+    // Small places use at least this radius for title entry checks. Must be positive.
+    "minTitleRadius": 24,
+    // Extra radius used only for leaving a place. Prevents title border flicker. Values below 0 are clamped.
+    "exitPaddingBlocks": 8,
+    // Minimum time between any two title overlays for one player.
+    "globalCooldownTicks": 100,
+    // Minimum time before the same place can show again for one player.
+    "samePlaceCooldownTicks": 12000,
+    // Longer repeat cooldown for GENERAL_LANDMARK titles because they are background travel content.
+    "generalLandmarkCooldownTicks": 24000,
+    // Delay after teleport or dimension change before entry titles can appear.
+    "teleportDelayTicks": 40,
+    // If true, entering a saved NamedPlace can show a title.
+    "showOnEnter": true,
+    // If true, a newly created saved NamedPlace can show a title to players inside it.
+    "showOnPlaceCreated": true,
+    // If true, GENERAL_LANDMARK places may show titles.
+    "showGeneralLandmarks": true,
+    // If true, GENERAL_LANDMARK titles are suppressed when a more specific place also contains the player.
+    "generalLandmarkOnlyIfNoHigherPriority": true,
+    // Y-distance tolerance for horizontal title checks. Cave/mining/portal-like places still use 3D distance.
+    "verticalToleranceBlocks": 48
+  },
+  // Optional client map integrations. These settings are server-controlled and safe when a map mod is missing.
+  "mapIntegration": {
+    // Master switch for all optional map integration output.
+    "enabled": true,
+    // JourneyMap-specific settings. JourneyMap remains optional and client-side.
+    "journeyMap": {
+      // If true, clients with JourneyMap may receive Living Legends map labels and destinations.
+      "enabled": true
+    },
+    // Xaero-specific settings. Xaero's Minimap remains optional and client-side.
+    "xaero": {
+      // If true, clients with Xaero's Minimap can set one manual destination waypoint from the journal.
+      "enabled": true
+    },
+    // FTB Chunks-specific settings. FTB Chunks remains optional and client-side.
+    "ftbChunks": {
+      // If true, clients with FTB Chunks can set one manual destination waypoint from the journal.
+      "enabled": true
+    },
+    // Persistent per-player map labels for places the player has discovered. Xaero and FTB Chunks do not use these labels.
+    "placeLabels": {
+      // If true, discovered places can appear as map labels in providers that support labels, currently JourneyMap.
+      "enabled": true,
+      // If true, GENERAL_LANDMARK labels can appear on the map. False keeps background landmarks hidden by default.
+      "showGeneralLandmarks": false,
+      // If true, supported map labels include hover text.
+      "showTooltips": true,
+      // Reserved for map providers that support technical hover fields. JourneyMap labels keep hover text player-facing.
+      "showCoordinatesInTooltip": true,
+      // Reserved for map providers that support technical hover fields. JourneyMap labels keep hover text player-facing.
+      "showDimensionInTooltip": true,
+      // If true, supported label hover text may include the place type.
+      "showPlaceTypeInTooltip": true
+    },
+    // Temporary destinations players set manually from the World Journal.
+    "destinations": {
+      // If true, supported map mods can create temporary personal destinations from the journal.
+      "enabled": true,
+      // If true, setting a new Living Legends destination clears previous Living Legends destinations.
+      "onlyOneActiveDestination": true,
+      // If true, destinations clear once the player enters the saved place radius.
+      "clearWhenEnteringPlaceRadius": true,
+      // Fallback distance for clearing a destination, in blocks. Values outside 1 to 1024 reset to 16.
+      "fallbackClearDistanceBlocks": 16
+    }
+  },
+  // Future decay settings for old importance.
+  "decay": {
+    // Decay setting. Existing places are kept unless future decay logic says otherwise.
+    "enabled": false,
+    // Decay setting. Existing places are kept unless future decay logic says otherwise.
+    "inactiveDaysBeforeDecay": 30,
+    // Decay setting. Existing places are kept unless future decay logic says otherwise.
+    "dailyScoreRetention": 0.995,
+    // Decay setting. Existing places are kept unless future decay logic says otherwise.
+    "minimumScoreAfterDecay": 10.0
+  },
+  // Candidate decay affects only activity that has not yet become a NamedPlace. Existing named places are never reduced, renamed, or removed by candidate decay.
+  "candidateDecay": {
+    // If true, stale unpromoted candidate activity can fade after the grace period.
+    "enabled": true,
+    // How often stale candidate activity loses score, in ticks. Values below 20 reset to the safe default 24000. 24000 ticks = 1 Minecraft day.
+    "intervalTicks": 24000,
+    // How long fresh unpromoted activity is protected before decay can start. Values below 0 are clamped.
+    "gracePeriodTicks": 1728000,
+    // Base score removed each interval before applying the place-type multiplier. Values below 0 are clamped.
+    "baseDecayPerInterval": 1.0,
+    // Lowest score candidate decay may leave behind.
+    "minCandidateScore": 0.0,
+    // If true, very small candidate scores are clamped to the minimum candidate score.
+    "pruneBelowScore": true,
+    // Candidate scores at or below this value are treated as empty when pruning is enabled.
+    "pruneThreshold": 0.1,
+    // If true, decay passes print one compact summary. Keep false on normal servers.
+    "debugLogging": false,
+    // Per-place-type decay multipliers for unpromoted candidates only. Set a multiplier to 0 to disable decay for that type.
+    "typeMultipliers": {
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "DEATH_SITE": 1.0,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "BATTLEFIELD": 1.0,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "SLAUGHTER_FIELD": 1.0,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "PVP_ARENA": 0.8,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "MINING_SITE": 1.0,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "PORTAL_LANDMARK": 0.5,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "GENERAL_LANDMARK": 1.2,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "SETTLEMENT": 0.3,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "FIRST_DISCOVERY": 0.0,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "BOSS_SITE": 0.0,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "PET_MEMORIAL": 0.0,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "NAMED_MOB_MEMORIAL": 0.0,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "RAID_SITE": 0.4,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "DIMENSION_THRESHOLD": 0.5,
+      // Decay multiplier for this place type. Existing NamedPlace objects are protected regardless of this value.
+      "CUSTOM": 0.0
+    }
+  },
+  // World Journal item and GUI settings.
+  "journal": {
+    // If true, players can open the World Journal item GUI.
+    "enabled": true,
+    // ALL_KNOWN shows all active places. VISITED_BY_PLAYER shows only places discovered by that player.
+    "visibilityMode": "ALL_KNOWN",
+    // Controls who may rename/delete/restore names through the journal: SINGLEPLAYER_OWNER_AND_OP, OP_ONLY, ALL_PLAYERS, or DISABLED.
+    "managementMode": "SINGLEPLAYER_OWNER_AND_OP",
+    // Upper limit for places returned per journal page. Values outside 5 to 100 reset to the safe default 20. The book UI currently caps visible pages at 4 entries for readability.
+    "pageSize": 20,
+    // If true, journal details can show exact saved place coordinates.
+    "showExactCoordinates": true,
+    // If true, OPs and cheat-enabled players can teleport from the journal.
+    "allowTeleportForOps": true,
+    // Maximum length for names entered through the journal rename button. Values outside 8 to 128 reset to the safe default 64.
+    "maxManualNameLength": 64
+  },
+  // Legacy permission settings used by older commands.
+  "permissions": {
+    // Permission setting. OP levels are from 0 to 4.
+    "reloadPermissionLevel": 2,
+    // Permission setting. OP levels are from 0 to 4.
+    "exportPermissionLevel": 2,
+    // Permission setting. OP levels are from 0 to 4.
+    "allowClientPlaceQueries": true
+  },
+  // Debug settings for development. Keep disabled on public servers.
+  "debug": {
+    // Enables debug logs for development. Keep false on public servers.
+    "enabled": false,
+    // Debug logging option.
+    "logConfigLoad": true,
+    // Debug logging option.
+    "logGeneratedNames": false,
+    // Debug logging option.
+    "logScoring": false,
+    // Logs detailed naming candidate rejection reasons. Useful for debugging name generation, but can spam logs. Keep disabled on normal servers.
+    "namingVerbose": false,
+    // Debug logging option.
+    "writeDebugExports": false,
+    // Uses very low thresholds for testing. Keep false for normal worlds.
+    "useTestingThresholds": false
+  }
+}
+

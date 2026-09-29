@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "modid": "betterstrongholds",
+      "type": "neoforge:mod_loaded"
+    }
+  ],
+  "placement": {
+    "count": 12,
+    "jitter_blocks": 1000,
+    "preferred_biomes": "#minecraft:stronghold_biased_to",
+    "radius_blocks": 35000,
+    "salt": 0,
+    "type": "wayfarer:exact_ring"
+  },
+  "structures": [
+    {
+      "structure": "betterstrongholds:stronghold",
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "values": [
+    {
+      "id": "smallships:brigg",
+      "required": false
+    },
+    {
+      "id": "smallships:cog",
+      "required": false
+    },
+    {
+      "id": "smallships:dhow",
+      "required": false
+    },
+    {
+      "id": "smallships:drakkar",
+      "required": false
+    },
+    {
+      "id": "smallships:galley",
+      "required": false
+    },
+    {
+      "id": "smallships:war_galley",
+      "required": false
+    }
+  ]
+}

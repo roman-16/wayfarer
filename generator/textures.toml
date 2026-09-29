@@ -1,0 +1,41 @@
+[ember_veil]
+rows = [
+  "................",
+  "................",
+  "......oooo......",
+  "......oego......",
+  ".....ohggso.....",
+  ".....ohccso.....",
+  "....ohcccsso....",
+  "....ohccscso....",
+  "...ohcccscsso...",
+  "...ohccscccso...",
+  "..ohcccsccscso..",
+  "..ohccscccscso..",
+  ".ohcccsccscccso.",
+  ".ohccscccsccsso.",
+  "ohcccsccscccscso",
+  "o.cs.cs.sc.sc.o.",
+]
+
+[ember_veil.colors]
+e = "#ffd27a"
+g = "#ff7a1f"
+
+[ember_veil.variants.ember_veil_1]
+c = "#8a7fa8"
+h = "#b3a9cc"
+o = "#2e2940"
+s = "#5f567a"
+
+[ember_veil.variants.ember_veil_2]
+c = "#b7c9d6"
+h = "#e3eef5"
+o = "#34414d"
+s = "#7f95a6"
+
+[ember_veil.variants.ember_veil_3]
+c = "#1f6f75"
+h = "#3fa6a8"
+o = "#06282b"
+s = "#0f4448"

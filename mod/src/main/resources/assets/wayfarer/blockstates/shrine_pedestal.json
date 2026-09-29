@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "wayfarer:block/shrine_pedestal"
+    }
+  }
+}

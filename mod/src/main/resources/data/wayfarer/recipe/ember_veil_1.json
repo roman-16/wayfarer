@@ -1,0 +1,21 @@
+{
+  "category": "equipment",
+  "key": {
+    "C": {
+      "item": "minecraft:campfire"
+    },
+    "R": {
+      "item": "minecraft:phantom_membrane"
+    }
+  },
+  "pattern": [
+    " R ",
+    "RCR",
+    " R "
+  ],
+  "result": {
+    "count": 1,
+    "id": "wayfarer:ember_veil_1"
+  },
+  "type": "minecraft:crafting_shaped"
+}

@@ -1,0 +1,13 @@
+name = "Campsite Structures"
+filename = "campsite_structures-1.21.1-NEOFORGE-1.0.4.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/gA6575EW/versions/OiMaoXMZ/campsite_structures-1.21.1-NEOFORGE-1.0.4.jar"
+hash-format = "sha512"
+hash = "8de5f02ecb3b7e1184f5531d9b3401ec2a53147815004711ab75e5eb6da7204928c5e591a3b74b64e538fe9b304fda9440b4be90de2ee10116aca1ffcb78f9ea"
+
+[update]
+[update.modrinth]
+mod-id = "gA6575EW"
+version = "OiMaoXMZ"

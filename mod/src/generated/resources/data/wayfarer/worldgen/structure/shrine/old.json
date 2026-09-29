@@ -1,0 +1,40 @@
+{
+  "biomes": "#wayfarer:has_structure/shrine/old",
+  "layout": {
+    "cover": 3,
+    "entrance": [
+      7,
+      2,
+      21
+    ],
+    "max_steps": 48,
+    "mouth": [
+      2,
+      1,
+      1
+    ],
+    "shaft": [
+      7,
+      11,
+      3
+    ],
+    "stair": [
+      1,
+      1,
+      0
+    ]
+  },
+  "pieces": {
+    "cap": "wayfarer:shrine/cap",
+    "hall": "wayfarer:shrine/old/hall",
+    "marker": "wayfarer:shrine/marker/cairn",
+    "open_step": "wayfarer:shrine/old/open_step",
+    "seal": "wayfarer:shrine/old/seal",
+    "shaft": "wayfarer:shrine/shaft",
+    "step": "wayfarer:shrine/old/step"
+  },
+  "spawn_overrides": {},
+  "step": "underground_structures",
+  "terrain_adaptation": "none",
+  "type": "wayfarer:shrine"
+}

@@ -1,0 +1,99 @@
+package io.github.roman16.wayfarer;
+
+import com.mojang.serialization.Codec;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.levelgen.structure.StructureType;
+import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
+import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
+import net.minecraft.world.level.material.MapColor;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.registries.DeferredBlock;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredItem;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+
+@Mod(Wayfarer.MODID)
+public final class Wayfarer {
+    public static final String MODID = "wayfarer";
+
+    private static final DeferredRegister<AttachmentType<?>> ATTACHMENTS = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, MODID);
+    private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
+    private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+    private static final DeferredRegister<StructurePieceType> PIECES = DeferredRegister.create(Registries.STRUCTURE_PIECE, MODID);
+    private static final DeferredRegister<StructurePlacementType<?>> PLACEMENTS = DeferredRegister.create(Registries.STRUCTURE_PLACEMENT, MODID);
+    private static final DeferredRegister<StructureType<?>> STRUCTURES = DeferredRegister.create(Registries.STRUCTURE_TYPE, MODID);
+
+    public static final Supplier<AttachmentType<Integer>> EYE_STEPS = ATTACHMENTS.register("eye_steps",
+            () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
+    public static final Supplier<AttachmentType<Integer>> GAZE = ATTACHMENTS.register("gaze",
+            () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
+
+    public static final DeferredHolder<StructurePlacementType<?>, StructurePlacementType<ExactRingPlacement>> EXACT_RING =
+            PLACEMENTS.register("exact_ring", () -> () -> ExactRingPlacement.CODEC);
+
+    public static final DeferredHolder<StructureType<?>, StructureType<ShrineStructure>> SHRINE =
+            STRUCTURES.register("shrine", () -> () -> ShrineStructure.CODEC);
+
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> SHRINE_PIECE =
+            PIECES.register("shrine", () -> (StructurePieceType.StructureTemplateType) ShrinePiece::new);
+
+    public static final DeferredBlock<ShrinePedestalBlock> SHRINE_PEDESTAL = BLOCKS.registerBlock("shrine_pedestal", ShrinePedestalBlock::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .strength(-1, 3_600_000)
+                    .lightLevel(state -> 7)
+                    .sound(SoundType.AMETHYST)
+                    .noOcclusion());
+
+    public static final List<DeferredItem<Item>> VEILS = IntStream.rangeClosed(1, 3)
+            .mapToObj(level -> ITEMS.registerSimpleItem("ember_veil_" + level, new Item.Properties().stacksTo(1).rarity(Rarity.values()[level])))
+            .toList();
+
+    static {
+        ITEMS.registerSimpleBlockItem(SHRINE_PEDESTAL);
+    }
+
+    public Wayfarer(IEventBus modBus) {
+        ATTACHMENTS.register(modBus);
+        BLOCKS.register(modBus);
+        ITEMS.register(modBus);
+        PIECES.register(modBus);
+        PLACEMENTS.register(modBus);
+        STRUCTURES.register(modBus);
+        modBus.addListener(Wayfarer::registerPayloads);
+        NeoForge.EVENT_BUS.register(Compass.class);
+        NeoForge.EVENT_BUS.register(Difficulty.class);
+        NeoForge.EVENT_BUS.register(Gaze.class);
+        NeoForge.EVENT_BUS.register(Rules.class);
+        NeoForge.EVENT_BUS.register(Shrines.class);
+        NeoForge.EVENT_BUS.register(WorldSetup.class);
+        if (ModList.get().isLoaded("hordes")) {
+            NeoForge.EVENT_BUS.register(HordeRefuge.class);
+        }
+    }
+
+    public static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    }
+
+    private static void registerPayloads(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registrar = event.registrar("1");
+        registrar.playToClient(CompassPayload.TYPE, CompassPayload.STREAM_CODEC, (payload, context) -> HudState.compass = payload);
+        registrar.playToClient(GazePayload.TYPE, GazePayload.STREAM_CODEC, (payload, context) -> HudState.gaze = payload);
+    }
+}

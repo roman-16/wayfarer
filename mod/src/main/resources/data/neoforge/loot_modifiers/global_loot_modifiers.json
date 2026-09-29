@@ -1,0 +1,11 @@
+{
+  "entries": [
+    "wayfarer:ancient_city",
+    "wayfarer:dungeon",
+    "wayfarer:mineshaft",
+    "wayfarer:phantom",
+    "wayfarer:witch",
+    "wayfarer:witch_hut"
+  ],
+  "replace": false
+}

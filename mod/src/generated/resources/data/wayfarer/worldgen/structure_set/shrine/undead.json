@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "salt": 1208697351,
+    "separation": 53,
+    "spacing": 106,
+    "type": "minecraft:random_spread"
+  },
+  "structures": [
+    {
+      "structure": "wayfarer:shrine/undead",
+      "weight": 1
+    }
+  ]
+}

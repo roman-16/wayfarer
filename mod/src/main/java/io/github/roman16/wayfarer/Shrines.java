@@ -1,0 +1,131 @@
+package io.github.roman16.wayfarer;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
+import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+
+public final class Shrines {
+    public static final TagKey<Structure> ALL = TagKey.create(Registries.STRUCTURE, Wayfarer.id("shrines"));
+    public static final TagKey<Structure> TIER_ONE = TagKey.create(Registries.STRUCTURE, Wayfarer.id("shrines/tier_one"));
+    public static final TagKey<Structure> TIER_TWO = TagKey.create(Registries.STRUCTURE, Wayfarer.id("shrines/tier_two"));
+
+    private static final int TITLE_CHECK_TICKS = 20;
+    private static final Map<UUID, ResourceLocation> INSIDE = new HashMap<>();
+
+    private Shrines() {}
+
+    public static Optional<ResourceLocation> inside(ServerLevel level, BlockPos pos) {
+        StructureStart start = level.structureManager().getStructureWithPieceAt(pos, ALL);
+        if (!start.isValid() || !(start.getStructure() instanceof ShrineStructure shrine)) {
+            return Optional.empty();
+        }
+        boolean hall = start.getPieces().stream().anyMatch(piece -> piece instanceof ShrinePiece part
+                && part.is(shrine.pieces().hall())
+                && piece.getBoundingBox().isInside(pos));
+        return hall ? Optional.ofNullable(level.registryAccess().registryOrThrow(Registries.STRUCTURE).getKey(shrine)) : Optional.empty();
+    }
+
+    public static List<Holder<Structure>> tier(ServerLevel level, TagKey<Structure> tier) {
+        return level.registryAccess().registryOrThrow(Registries.STRUCTURE).getTag(tier)
+                .map(set -> set.stream().toList())
+                .orElse(List.of());
+    }
+
+    public static ResourceLocation key(Holder<Structure> shrine) {
+        return shrine.unwrapKey().orElseThrow().location();
+    }
+
+    public static Item eye(ResourceLocation shrine) {
+        return BuiltInRegistries.ITEM.get(eyeId(shrine));
+    }
+
+    public static Component eyeName(ResourceLocation shrine) {
+        return Component.translatable("item." + eyeId(shrine).toLanguageKey());
+    }
+
+    private static ResourceLocation eyeId(ResourceLocation shrine) {
+        String eye = shrine.getPath().substring(shrine.getPath().lastIndexOf('/') + 1);
+        return ResourceLocation.fromNamespaceAndPath("endrem", eye + "_eye");
+    }
+
+    public static void claim(ServerPlayer player, BlockPos pedestal) {
+        Optional<ResourceLocation> found = inside(player.serverLevel(), pedestal);
+        if (found.isEmpty()) {
+            player.displayClientMessage(Component.translatable("wayfarer.shrine.silent").withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
+        ResourceLocation shrine = found.get();
+        if (!Journey.of(player.server).claim(Teams.id(player), shrine)) {
+            player.displayClientMessage(Component.translatable("wayfarer.shrine.spent", eyeName(shrine)).withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
+        ItemStack eye = new ItemStack(eye(shrine));
+        if (!player.getInventory().add(eye)) {
+            player.drop(eye, false);
+        }
+        player.serverLevel().playSound(null, pedestal, SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.BLOCKS, 1, 1);
+        Component message = Component.translatable("wayfarer.shrine.claimed", player.getDisplayName(), eyeName(shrine)).withStyle(ChatFormatting.GOLD);
+        for (ServerPlayer member : Teams.onlineMembers(player)) {
+            member.sendSystemMessage(message);
+            Compass.forget(member);
+            Difficulty.catchUp(member);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onPotentialSpawns(LevelEvent.PotentialSpawns event) {
+        if (event.getMobCategory() == MobCategory.MONSTER
+                && event.getLevel() instanceof ServerLevel level
+                && inside(level, event.getPos()).isPresent()) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || player.tickCount % TITLE_CHECK_TICKS != 0) {
+            return;
+        }
+        ResourceLocation shrine = inside(player.serverLevel(), player.blockPosition()).orElse(null);
+        ResourceLocation before = shrine == null ? INSIDE.remove(player.getUUID()) : INSIDE.put(player.getUUID(), shrine);
+        if (shrine != null && !shrine.equals(before)) {
+            player.connection.send(new ClientboundSetTitlesAnimationPacket(20, 60, 30));
+            player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("wayfarer.shrine.title", eyeName(shrine))));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        INSIDE.remove(event.getEntity().getUUID());
+    }
+
+    public static boolean inside(ServerPlayer player) {
+        return inside(player.serverLevel(), player.blockPosition()).isPresent();
+    }
+}

@@ -1,0 +1,70 @@
+{
+  "customSpreadFactors": [
+    {
+      "factor": 1,
+      "structure": "betterstrongholds:stronghold"
+    },
+    {
+      "factor": 1,
+      "structure": "minecraft:ancient_cities"
+    },
+    {
+      "factor": 1,
+      "structure": "minecraft:buried_treasures"
+    },
+    {
+      "factor": 1,
+      "structure": "minecraft:mineshafts"
+    },
+    {
+      "factor": 1,
+      "structure": "wayfarer:shrine/black"
+    },
+    {
+      "factor": 1,
+      "structure": "wayfarer:shrine/cold"
+    },
+    {
+      "factor": 1,
+      "structure": "wayfarer:shrine/corrupted"
+    },
+    {
+      "factor": 1,
+      "structure": "wayfarer:shrine/cryptic"
+    },
+    {
+      "factor": 1,
+      "structure": "wayfarer:shrine/evil"
+    },
+    {
+      "factor": 1,
+      "structure": "wayfarer:shrine/exotic"
+    },
+    {
+      "factor": 1,
+      "structure": "wayfarer:shrine/lost"
+    },
+    {
+      "factor": 1,
+      "structure": "wayfarer:shrine/magical"
+    },
+    {
+      "factor": 1,
+      "structure": "wayfarer:shrine/old"
+    },
+    {
+      "factor": 1,
+      "structure": "wayfarer:shrine/rogue"
+    },
+    {
+      "factor": 1,
+      "structure": "wayfarer:shrine/undead"
+    },
+    {
+      "factor": 1,
+      "structure": "wayfarer:shrine/witch"
+    }
+  ],
+  "idBasedSalt": true,
+  "spreadFactor": 3
+}

@@ -1,0 +1,13 @@
+name = "Wayfarer"
+author = "roman-16"
+version = "0.1.0"
+pack-format = "packwiz:1.1.0"
+
+[index]
+file = "index.toml"
+hash-format = "sha256"
+hash = "1685fb8a57cc8a217c3d67acc2e4215394469162d634605d3f0415a4643f2053"
+
+[versions]
+minecraft = "1.21.1"
+neoforge = "21.1.252"

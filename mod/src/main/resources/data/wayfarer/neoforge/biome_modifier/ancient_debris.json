@@ -1,0 +1,6 @@
+{
+  "biomes": "minecraft:deep_dark",
+  "features": "wayfarer:ancient_debris",
+  "step": "underground_ores",
+  "type": "neoforge:add_features"
+}

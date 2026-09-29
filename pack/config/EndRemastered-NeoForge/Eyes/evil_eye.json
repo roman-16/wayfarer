@@ -1,0 +1,6 @@
+{
+  "id": "evil_eye",
+  "loot_tables_id": [],
+  "loot_to_inject_id": "minecraft:empty",
+  "rarity": "epic"
+}

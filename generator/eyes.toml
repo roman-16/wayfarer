@@ -1,0 +1,169 @@
+[black]
+tier = 1
+biomes = [
+  "#c:is_beach",
+  "#c:is_stony_shores",
+  "#minecraft:is_beach",
+  "minecraft:stony_shore",
+]
+share = 0.03
+marker = "fire_ring"
+palette = { floor = "minecraft:dark_prismarine", light = "minecraft:sea_lantern", pillar = "minecraft:polished_deepslate", plant = "minecraft:blue_orchid", shell = "minecraft:deepslate_tiles", stairs = "minecraft:dark_prismarine_stairs", trim = "minecraft:prismarine_bricks" }
+people = "The Tide Folk"
+lore = [
+  "The Tide Folk lived where the land gives up and the sea begins. They took the black shard because no one else wanted a thing that drank the light.",
+  "They buried it the way they buried everything worth keeping: below the tideline, under a fire that was never lit twice in the same place.",
+  "If you are reading this, the fire was lit again. Take the shard. The sea will forget us, as it should.",
+]
+
+[cold]
+tier = 1
+biomes = ["#c:is_snowy", "#c:is_icy"]
+share = 0.12
+marker = "standing_stone"
+palette = { floor = "minecraft:polished_diorite", light = "minecraft:sea_lantern", pillar = "minecraft:calcite", plant = "minecraft:lily_of_the_valley", shell = "minecraft:packed_ice", stairs = "minecraft:polished_diorite_stairs", trim = "minecraft:blue_ice" }
+people = "The Frost Walkers"
+lore = [
+  "The Frost Walkers never stopped moving. Their villages were tracks in the snow, gone by morning.",
+  "They carried the cold shard for a hundred winters and said it was the only fire that never burned them.",
+  "When the last of them grew too old to walk, they set it here, under the ice, where nothing stays still long enough to be seen.",
+]
+
+[corrupted]
+tier = 2
+biomes = ["#c:is_savanna", "#minecraft:is_savanna"]
+share = 0.05
+marker = "cairn"
+palette = { floor = "minecraft:acacia_planks", light = "minecraft:ochre_froglight", pillar = "minecraft:stripped_acacia_log", plant = "minecraft:red_tulip", shell = "minecraft:terracotta", stairs = "minecraft:acacia_stairs", trim = "minecraft:red_terracotta" }
+people = "The Grass Kingdom"
+lore = [
+  "The Grass Kingdom was given its shard to hide. Its king kept it instead, on a throne, where everyone could see it.",
+  "The shard showed him what the dragon sees, and he wanted more. He was the first of the Gazebound.",
+  "His own people tore the shard from his crown and sealed it here. The throne is dust. Do not keep what you carry.",
+]
+
+[cryptic]
+tier = 2
+biomes = ["#c:is_mountain", "#minecraft:is_mountain"]
+share = 0.10
+marker = "standing_stone"
+palette = { floor = "minecraft:smooth_stone", light = "minecraft:sea_lantern", pillar = "minecraft:chiseled_bookshelf", plant = "minecraft:cornflower", shell = "minecraft:calcite", stairs = "minecraft:stone_stairs", trim = "minecraft:bookshelf" }
+people = "The Scribes of the Peaks"
+lore = [
+  "The Scribes climbed as high as the land would let them and wrote down everything the shard whispered.",
+  "Most of it was madness. Some of it was the way the true gate was built, and why it must never be built again.",
+  "We burned the madness and kept the rest. The shard we leave to you. Read before you carry it.",
+]
+
+[evil]
+tier = 2
+biomes = [
+  "#c:is_plains",
+  "minecraft:meadow",
+  "minecraft:plains",
+  "minecraft:sunflower_plains",
+]
+share = 0.08
+marker = "fire_ring"
+palette = { floor = "minecraft:polished_andesite", light = "minecraft:lantern", pillar = "minecraft:chiseled_stone_bricks", plant = "minecraft:azure_bluet", shell = "minecraft:stone_bricks", stairs = "minecraft:stone_brick_stairs", trim = "minecraft:cracked_stone_bricks" }
+people = "The First Village"
+lore = [
+  "The First Village was built by Wayfarers who swore they would only stay one winter.",
+  "They stayed a hundred. Their priests said the shard in their temple kept them safe. It was the shard that kept them seen.",
+  "When the gaze came, the last priest carried it out into the grass and buried it here. The village is gone. The grass remembers.",
+]
+
+[exotic]
+tier = 2
+biomes = ["#c:is_badlands", "#minecraft:is_badlands"]
+share = 0.02
+marker = "standing_stone"
+palette = { floor = "minecraft:smooth_red_sandstone", light = "minecraft:pearlescent_froglight", pillar = "minecraft:chiseled_red_sandstone", plant = "minecraft:torchflower", shell = "minecraft:orange_terracotta", stairs = "minecraft:red_sandstone_stairs", trim = "minecraft:cut_red_sandstone" }
+people = "The Drowned City"
+lore = [
+  "Before the sea took it, the Drowned City was the most beautiful place in the world. Beautiful things are seen.",
+  "The few who swam out carried the exotic shard inland, as far from water as they could, into the red canyons.",
+  "They never saw the sea again. They said it was worth it. We hope you agree.",
+]
+
+[lost]
+tier = 1
+biomes = ["#c:is_forest", "#minecraft:is_forest"]
+share = 0.12
+marker = "cairn"
+palette = { floor = "minecraft:cobbled_deepslate", light = "minecraft:lantern", pillar = "minecraft:deepslate_bricks", plant = "minecraft:brown_mushroom", shell = "minecraft:stone", stairs = "minecraft:cobbled_deepslate_stairs", trim = "minecraft:polished_deepslate" }
+people = "The Diggers"
+lore = [
+  "The Diggers went down because down was the only way the gaze did not follow. Their tunnels run under half the world.",
+  "They lost the shard three times, and found it three times, and in the end they built it a hall so it would stop wandering.",
+  "If it wanders again, let it wander with you.",
+]
+
+[magical]
+tier = 2
+biomes = ["#c:is_dark_forest", "minecraft:dark_forest"]
+share = 0.03
+marker = "standing_stone"
+palette = { floor = "minecraft:dark_oak_planks", light = "minecraft:pearlescent_froglight", pillar = "minecraft:dark_oak_log", plant = "minecraft:allium", shell = "minecraft:deepslate_bricks", stairs = "minecraft:dark_oak_stairs", trim = "minecraft:amethyst_block" }
+people = "The Shadow Circle"
+lore = [
+  "The Shadow Circle learned to bend the shard's light into spells. The Illagers learned from them, and learned the wrong lessons.",
+  "Their mansions in the dark woods are copies of our halls, built by people who wanted the shard's power without its burden.",
+  "The burden is the point. Carry it.",
+]
+
+[old]
+tier = 1
+biomes = ["#c:is_desert", "minecraft:desert"]
+share = 0.05
+marker = "cairn"
+palette = { floor = "minecraft:smooth_sandstone", light = "minecraft:ochre_froglight", pillar = "minecraft:chiseled_sandstone", plant = "minecraft:dead_bush", shell = "minecraft:sandstone", stairs = "minecraft:sandstone_stairs", trim = "minecraft:cut_sandstone" }
+people = "The Sand Singers"
+lore = [
+  "The Sand Singers say a great worm sleeps under the desert, and that it swallowed the old shard to keep it safe.",
+  "The truth is simpler. We dug this hall and let the sand cover it, and the worm is a story we told to keep treasure hunters away.",
+  "The worm is not a story. Walk softly.",
+]
+
+[rogue]
+tier = 1
+biomes = ["#c:is_jungle", "#minecraft:is_jungle"]
+share = 0.04
+marker = "standing_stone"
+palette = { floor = "minecraft:mossy_stone_bricks", light = "minecraft:verdant_froglight", pillar = "minecraft:chiseled_stone_bricks", plant = "minecraft:fern", shell = "minecraft:mossy_cobblestone", stairs = "minecraft:mossy_stone_brick_stairs", trim = "minecraft:redstone_block" }
+people = "The Jungle Folk"
+lore = [
+  "The rogue shard taught the Jungle Folk how red dust carries a thought from one stone to the next.",
+  "They built doors that opened themselves and traps that never slept, and still the gaze found their temples.",
+  "No lock keeps out a god. Only leaving does. So we left, and left the shard to you.",
+]
+
+[undead]
+tier = 2
+biomes = [
+  "minecraft:old_growth_pine_taiga",
+  "minecraft:old_growth_spruce_taiga",
+  "#c:is_old_growth",
+]
+share = 0.02
+marker = "cairn"
+palette = { floor = "minecraft:polished_tuff", light = "minecraft:pearlescent_froglight", pillar = "minecraft:chiseled_tuff", plant = "minecraft:brown_mushroom", shell = "minecraft:tuff", stairs = "minecraft:tuff_brick_stairs", trim = "minecraft:bone_block" }
+people = "The Grave Keepers"
+lore = [
+  "The Grave Keepers buried the Wayfarers who fell on the road, under the oldest trees, where the ground is soft.",
+  "They noticed that the dead are never seen by the gaze, and they took the undead shard to hide among them.",
+  "We are among them now. Take the shard and keep walking. We will keep the graves.",
+]
+
+[witch]
+tier = 1
+biomes = ["#c:is_swamp", "minecraft:mangrove_swamp", "minecraft:swamp"]
+share = 0.03
+marker = "fire_ring"
+palette = { floor = "minecraft:packed_mud", light = "minecraft:verdant_froglight", pillar = "minecraft:mangrove_log", plant = "minecraft:red_mushroom", shell = "minecraft:mud_bricks", stairs = "minecraft:mud_brick_stairs", trim = "minecraft:mangrove_planks" }
+people = "The Marsh Mothers"
+lore = [
+  "The Marsh Mothers brewed with everything the swamp gave them, and the witch shard gave them sight.",
+  "They saw the dragon seeing them, and they stopped brewing, and they sank the shard into the mud where no reflection lives.",
+  "The witches in their huts still remember us. They do not remember why.",
+]
