@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -15,11 +16,21 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 public final class Rules {
     public static final TagKey<EntityType<?>> SAILING_SHIPS = TagKey.create(Registries.ENTITY_TYPE, Wayfarer.id("sailing_ships"));
 
+    private static final int PORTAL_WITNESS_BLOCKS = 8;
+
     private Rules() {}
 
     @SubscribeEvent
     public static void onPortalSpawn(BlockEvent.PortalSpawnEvent event) {
         event.setCanceled(true);
+        if (event.getLevel() instanceof ServerLevel level) {
+            for (ServerPlayer player : level.players()) {
+                if (player.blockPosition().closerThan(event.getPos(), PORTAL_WITNESS_BLOCKS)) {
+                    player.displayClientMessage(Component.translatable("wayfarer.first.portal").withStyle(ChatFormatting.GRAY), true);
+                    Notes.first(player, "portal");
+                }
+            }
+        }
     }
 
     @SubscribeEvent

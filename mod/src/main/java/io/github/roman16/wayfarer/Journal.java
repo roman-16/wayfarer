@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,6 +38,7 @@ public final class Journal {
             }
         });
         player.setData(Wayfarer.JOURNAL_GIVEN, true);
+        Notes.trigger(player, "start");
     }
 
     @SubscribeEvent
@@ -65,26 +67,32 @@ public final class Journal {
     public static void openShrineBook(ServerPlayer player, ResourceLocation shrine) {
         List<ResourceLocation> claimed = Journey.claimed(player);
         int index = claimed.contains(shrine) ? claimed.indexOf(shrine) : claimed.size();
-        List<String> pages = new ArrayList<>();
+        List<Component> pages = new ArrayList<>();
         String memory = Library.INSTANCE.memory(index);
-        Library.INSTANCE.book(memory).ifPresent(book -> pages.addAll(book.pages()));
+        Library.INSTANCE.book(memory).ifPresent(book -> book.pages().forEach(page -> pages.add(Component.literal(page))));
         read(player, memory);
         Library.INSTANCE.people(shrine).ifPresent(people -> {
-            pages.addAll(people.pages());
+            people.pages().forEach(page -> pages.add(Component.literal(page)));
             read(player, Library.INSTANCE.people().get(shrine));
         });
+        Leads.place(player, shrine).ifPresent(pages::add);
         PacketDistributor.sendToPlayer(player, new BookPayload(pages));
     }
 
     public static void read(ServerPlayer player, String id) {
-        if (!ModList.get().isLoaded(FTB_QUESTS)) {
+        Library.INSTANCE.book(id).ifPresent(book -> {
+            complete(player, book.quest());
+            Notes.trigger(player, "book:" + id);
+        });
+    }
+
+    public static void complete(ServerPlayer player, String quest) {
+        if (!ModList.get().isLoaded(FTB_QUESTS) || quest.isEmpty()) {
             return;
         }
-        Library.INSTANCE.book(id).ifPresent(book -> {
-            ServerLevel level = player.serverLevel();
-            String command = "ftbquests change_progress " + player.getGameProfile().getName() + " complete " + book.quest();
-            level.getServer().getCommands().performPrefixedCommand(level.getServer().createCommandSourceStack().withSuppressedOutput(), command);
-        });
+        ServerLevel level = player.serverLevel();
+        String command = "ftbquests change_progress " + player.getGameProfile().getName() + " complete " + quest;
+        level.getServer().getCommands().performPrefixedCommand(level.getServer().createCommandSourceStack().withSuppressedOutput(), command);
     }
 
     private static Optional<String> id(ItemStack stack) {

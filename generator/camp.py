@@ -176,3 +176,51 @@ def camp(journal):
     journal_stand(t, journal)
     supplies(t)
     return t
+
+
+OLD_SIZE = 9
+OLD_CENTRE = OLD_SIZE // 2
+MOSS = Material(
+    "old_camp/stones", [("minecraft:mossy_cobblestone", 55), ("minecraft:cobblestone", 25), ("minecraft:andesite", 20)]
+)
+
+
+def old_camp(kind):
+    t = Template()
+    fallen = kind == "last_camp"
+    for x in range(OLD_SIZE):
+        for z in range(OLD_SIZE):
+            d = math.hypot(x - OLD_CENTRE, z - OLD_CENTRE)
+            if d + (coherent(f"{kind}/edge", (x, 0, z)) - 0.5) * 3 > 3.6:
+                t.set((x, 0, z), "minecraft:grass_block", snowy=False)
+                if coherent(f"{kind}/growth", (x, 1, z)) > 0.6:
+                    t.set((x, 1, z), "minecraft:short_grass" if fallen else "minecraft:fern")
+            else:
+                t.set((x, 0, z), "minecraft:podzol" if fallen else "minecraft:coarse_dirt", snowy=False)
+    t.set((OLD_CENTRE, 0, OLD_CENTRE), "minecraft:coarse_dirt")
+    t.set(
+        (OLD_CENTRE, 1, OLD_CENTRE),
+        "minecraft:campfire",
+        facing="south",
+        lit=False,
+        signal_fire=False,
+        waterlogged=False,
+    )
+    for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        t.set((OLD_CENTRE + dx, 0, OLD_CENTRE + dz), MOSS if fallen else STONES)
+    for index, (dx, dz) in enumerate(((1, 1), (-1, 1), (1, -1), (-1, -1))):
+        if not fallen or index % 2:
+            t.set((OLD_CENTRE + dx, 1, OLD_CENTRE + dz), SLABS[index % len(SLABS)], type="bottom", waterlogged=False)
+    if fallen:
+        for x, z in ((1, 2), (6, 1), (7, 5)):
+            t.set((x, 1, z), "minecraft:mossy_cobblestone")
+        t.set((2, 1, 6), "minecraft:stripped_spruce_log", axis="x")
+        t.set((3, 1, 6), "minecraft:stripped_spruce_log", axis="x")
+        t.set((6, 1, 6), "minecraft:brown_mushroom")
+    else:
+        for x in (2, 3, 4):
+            t.set((x, 1, 1), "minecraft:stripped_spruce_log", axis="x")
+        t.set((7, 1, 3), "minecraft:stripped_spruce_log", axis="z")
+        t.set((7, 1, 4), "minecraft:stripped_spruce_log", axis="z")
+        t.set((1, 1, 6), "minecraft:spruce_sapling", stage=0)
+    return t

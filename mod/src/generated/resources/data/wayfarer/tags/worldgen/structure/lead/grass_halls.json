@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "minecraft:mansion",
+      "required": false
+    },
+    {
+      "id": "nova_structures:illager_hideout",
+      "required": false
+    },
+    {
+      "id": "nova_structures:illager_manor",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/rare/abandoned_castle_pillager",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/rare/pillager_mansion",
+      "required": false
+    }
+  ]
+}

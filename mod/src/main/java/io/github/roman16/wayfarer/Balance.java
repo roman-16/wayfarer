@@ -11,23 +11,38 @@ import java.util.List;
 public record Balance(
         Compass compass,
         Difficulty difficulty,
+        Fire fire,
+        Gate gate,
         Gaze gaze,
         Hunger hunger,
+        Leads leads,
         Nights nights,
+        Sight sight,
         Sleep sleep,
+        Stillness stillness,
         Unlocks unlocks) {
 
     public record Compass(int exactBlocks, int farRoundingBlocks, int refreshTicks, int researchAfterBlocks, int trailBlocks) {}
 
     public record Difficulty(float perEye) {}
 
+    public record Fire(int circleBlocks, int lineSeconds, int restBlocks, int restSeconds) {}
+
+    public record Gate(int bandSize, int reachBlocks) {}
+
     public record Gaze(List<Integer> capacitySeconds, int drainFactor, int huntIntervalSeconds, int huntPhantoms) {}
 
-    public record Hunger(float exhaustionFactor) {}
+    public record Hunger(float exhaustionFactor, float warmExhaustionFactor) {}
+
+    public record Leads(int campBlocks, int campReachBlocks, int searchChunks) {}
 
     public record Nights(int bloodMoonEvery, int hordeEvery) {}
 
+    public record Sight(int reachBlocks, int shards) {}
+
     public record Sleep(int playersPercentage) {}
+
+    public record Stillness(int dimmingDays, int hordeDays, int radiusBlocks) {}
 
     public record Unlocks(int aircraftEyes, int sailingShipEyes) {}
 
@@ -47,14 +62,25 @@ public record Balance(
                             toml.getInt("compass.research_after_blocks"),
                             toml.getInt("compass.trail_blocks")),
                     new Difficulty(toml.<Number>get("difficulty.per_eye").floatValue()),
+                    new Fire(
+                            toml.getInt("fire.circle_blocks"),
+                            toml.getInt("fire.line_seconds"),
+                            toml.getInt("fire.rest_blocks"),
+                            toml.getInt("fire.rest_seconds")),
+                    new Gate(toml.getInt("gate.band_size"), toml.getInt("gate.reach_blocks")),
                     new Gaze(
                             toml.<List<Number>>get("gaze.capacity_seconds").stream().map(Number::intValue).toList(),
                             toml.getInt("gaze.drain_factor"),
                             toml.getInt("gaze.hunt_interval_seconds"),
                             toml.getInt("gaze.hunt_phantoms")),
-                    new Hunger(toml.<Number>get("hunger.exhaustion_factor").floatValue()),
+                    new Hunger(
+                            toml.<Number>get("hunger.exhaustion_factor").floatValue(),
+                            toml.<Number>get("hunger.warm_exhaustion_factor").floatValue()),
+                    new Leads(toml.getInt("leads.camp_blocks"), toml.getInt("leads.camp_reach_blocks"), toml.getInt("leads.search_chunks")),
                     new Nights(toml.getInt("nights.blood_moon_every"), toml.getInt("nights.horde_every")),
+                    new Sight(toml.getInt("sight.reach_blocks"), toml.getInt("sight.shards")),
                     new Sleep(toml.getInt("sleep.players_percentage")),
+                    new Stillness(toml.getInt("stillness.dimming_days"), toml.getInt("stillness.horde_days"), toml.getInt("stillness.radius_blocks")),
                     new Unlocks(toml.getInt("unlocks.aircraft_eyes"), toml.getInt("unlocks.sailing_ship_eyes")));
         } catch (IOException e) {
             throw new UncheckedIOException(e);

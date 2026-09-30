@@ -1,0 +1,20 @@
+{
+  "values": [
+    {
+      "id": "betterwitchhuts:witch_hut",
+      "required": false
+    },
+    {
+      "id": "minecraft:swamp_hut",
+      "required": false
+    },
+    {
+      "id": "nova_structures:mangrove_witch_hut",
+      "required": false
+    },
+    {
+      "id": "terralith:witch_hut",
+      "required": false
+    }
+  ]
+}

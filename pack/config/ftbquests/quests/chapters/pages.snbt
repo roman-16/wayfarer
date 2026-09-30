@@ -10,7 +10,7 @@
 	}
 	id: "3A0F0CCE5F6E6B94"
 	images: [ ]
-	order_index: 8
+	order_index: 11
 	quest_links: [ ]
 	quests: [
 		{
@@ -240,6 +240,91 @@
 				count: 1
 				id: "minecraft:written_book"
 			}
+			id: "424082E0213C5055"
+			invisible: true
+			tasks: [
+				{
+					id: "68DB91566592F8C5"
+					type: "checkmark"
+				}
+			]
+			x: 1.5d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:written_book"
+			}
+			id: "02C39168BF837B58"
+			invisible: true
+			tasks: [
+				{
+					id: "0AD176BB45904C81"
+					type: "checkmark"
+				}
+			]
+			x: 3.0d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:written_book"
+			}
+			id: "23F063A3744DA5FB"
+			invisible: true
+			tasks: [
+				{
+					id: "5D403791B09D2112"
+					type: "checkmark"
+				}
+			]
+			x: 4.5d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:written_book"
+			}
+			id: "798270FE0F4DD012"
+			invisible: true
+			tasks: [
+				{
+					id: "4F0F5AD45D0C4345"
+					type: "checkmark"
+				}
+			]
+			x: 6.0d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:written_book"
+			}
+			id: "43ED2D66D4D957FC"
+			invisible: true
+			tasks: [
+				{
+					id: "0DA471704F53D580"
+					type: "checkmark"
+				}
+			]
+			x: 7.5d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:written_book"
+			}
 			id: "5408EF29663538D2"
 			invisible: true
 			tasks: [
@@ -248,8 +333,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 1.5d
-			y: 3.0d
+			x: 0.0d
+			y: 4.5d
 		}
 		{
 			dependencies: [ ]
@@ -265,8 +350,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 3.0d
-			y: 3.0d
+			x: 1.5d
+			y: 4.5d
 		}
 		{
 			dependencies: [ ]
@@ -282,8 +367,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 4.5d
-			y: 3.0d
+			x: 3.0d
+			y: 4.5d
 		}
 		{
 			dependencies: [ ]
@@ -299,8 +384,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 6.0d
-			y: 3.0d
+			x: 4.5d
+			y: 4.5d
 		}
 		{
 			dependencies: [ ]
@@ -316,8 +401,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 7.5d
-			y: 3.0d
+			x: 6.0d
+			y: 4.5d
 		}
 		{
 			dependencies: [ ]
@@ -333,7 +418,7 @@
 					type: "checkmark"
 				}
 			]
-			x: 0.0d
+			x: 7.5d
 			y: 4.5d
 		}
 		{
@@ -350,8 +435,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 1.5d
-			y: 4.5d
+			x: 0.0d
+			y: 6.0d
 		}
 		{
 			dependencies: [ ]
@@ -367,8 +452,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 3.0d
-			y: 4.5d
+			x: 1.5d
+			y: 6.0d
 		}
 		{
 			dependencies: [ ]
@@ -384,8 +469,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 4.5d
-			y: 4.5d
+			x: 3.0d
+			y: 6.0d
 		}
 		{
 			dependencies: [ ]
@@ -401,8 +486,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 6.0d
-			y: 4.5d
+			x: 4.5d
+			y: 6.0d
 		}
 		{
 			dependencies: [ ]
@@ -418,8 +503,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 7.5d
-			y: 4.5d
+			x: 6.0d
+			y: 6.0d
 		}
 		{
 			dependencies: [ ]
@@ -435,7 +520,7 @@
 					type: "checkmark"
 				}
 			]
-			x: 0.0d
+			x: 7.5d
 			y: 6.0d
 		}
 		{
@@ -452,8 +537,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 1.5d
-			y: 6.0d
+			x: 0.0d
+			y: 7.5d
 		}
 		{
 			dependencies: [ ]
@@ -469,8 +554,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 3.0d
-			y: 6.0d
+			x: 1.5d
+			y: 7.5d
 		}
 		{
 			dependencies: [ ]
@@ -486,8 +571,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 4.5d
-			y: 6.0d
+			x: 3.0d
+			y: 7.5d
 		}
 		{
 			dependencies: [ ]
@@ -503,8 +588,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 6.0d
-			y: 6.0d
+			x: 4.5d
+			y: 7.5d
 		}
 		{
 			dependencies: [ ]
@@ -520,8 +605,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 7.5d
-			y: 6.0d
+			x: 6.0d
+			y: 7.5d
 		}
 		{
 			dependencies: [ ]
@@ -537,7 +622,7 @@
 					type: "checkmark"
 				}
 			]
-			x: 0.0d
+			x: 7.5d
 			y: 7.5d
 		}
 		{
@@ -554,8 +639,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 1.5d
-			y: 7.5d
+			x: 0.0d
+			y: 9.0d
 		}
 		{
 			dependencies: [ ]
@@ -571,8 +656,8 @@
 					type: "checkmark"
 				}
 			]
-			x: 3.0d
-			y: 7.5d
+			x: 1.5d
+			y: 9.0d
 		}
 	]
 }

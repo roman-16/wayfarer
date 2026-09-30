@@ -1,0 +1,192 @@
+package io.github.roman16.wayfarer;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.world.entity.raid.Raider;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.entity.CampfireBlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+
+public final class Fire {
+    private static final int SCAN_TICKS = 10;
+    private static final int REST_CHECK_TICKS = 20;
+    private static final int TICKS_PER_SECOND = 20;
+    private static final int FLEE_MARGIN = 6;
+    private static final double FLEE_SPEED = 1.2;
+    private static final double STILL_BLOCKS = 0.2;
+    private static final long TICKS_PER_DAY = 24000;
+    private static final long DUSK = 12000;
+    private static final Map<UUID, BlockPos> SHELTERED = new HashMap<>();
+    private static final Map<UUID, Rest> RESTS = new HashMap<>();
+
+    private record Rest(Vec3 at, int seconds) {}
+
+    private Fire() {}
+
+    public static boolean fears(Entity entity) {
+        return entity instanceof Mob
+                && entity instanceof Enemy
+                && !(entity instanceof Raider)
+                && !(entity instanceof Warden)
+                && !(entity instanceof EnderDragon)
+                && !(entity instanceof WitherBoss);
+    }
+
+    public static boolean inside(BlockPos fire, Vec3 at, int radius) {
+        return Vec3.atCenterOf(fire).distanceToSqr(at) < (double) radius * radius;
+    }
+
+    public static int untilTomorrowsDusk(long dayTime) {
+        long toDusk = Math.floorMod(DUSK - dayTime, TICKS_PER_DAY);
+        return (int) (toDusk < TICKS_PER_DAY / 2 ? toDusk + TICKS_PER_DAY : toDusk);
+    }
+
+    public static Optional<BlockPos> nearest(ServerLevel level, Vec3 at, int radius) {
+        return fires(level, BlockPos.containing(at), radius).stream()
+                .filter(fire -> inside(fire, at, radius))
+                .min(Comparator.comparingDouble(fire -> Vec3.atCenterOf(fire).distanceToSqr(at)));
+    }
+
+    private static List<BlockPos> fires(ServerLevel level, BlockPos center, int radius) {
+        List<BlockPos> fires = new ArrayList<>();
+        ChunkPos low = new ChunkPos(center.offset(-radius, 0, -radius));
+        ChunkPos high = new ChunkPos(center.offset(radius, 0, radius));
+        for (int x = low.x; x <= high.x; x++) {
+            for (int z = low.z; z <= high.z; z++) {
+                LevelChunk chunk = level.getChunkSource().getChunkNow(x, z);
+                if (chunk == null) {
+                    continue;
+                }
+                chunk.getBlockEntities().values().stream()
+                        .filter(entity -> entity instanceof CampfireBlockEntity && CampfireBlock.isLitCampfire(entity.getBlockState()))
+                        .forEach(entity -> fires.add(entity.getBlockPos()));
+            }
+        }
+        return fires;
+    }
+
+    public static List<ServerPlayer> around(ServerPlayer player, BlockPos fire) {
+        int radius = Balance.INSTANCE.fire().circleBlocks();
+        List<ServerPlayer> listeners = new ArrayList<>();
+        for (ServerPlayer member : Teams.onlineMembers(player)) {
+            if (member == player || member.level() == player.level() && inside(fire, member.position(), radius)) {
+                listeners.add(member);
+            }
+        }
+        return listeners;
+    }
+
+    @SubscribeEvent
+    public static void onLevelTick(LevelTickEvent.Post event) {
+        if (!(event.getLevel() instanceof ServerLevel level) || level.getGameTime() % SCAN_TICKS != 0 || Tents.isTent(level.dimension())) {
+            return;
+        }
+        int radius = Balance.INSTANCE.fire().circleBlocks();
+        Set<BlockPos> holding = new HashSet<>();
+        for (ServerPlayer player : level.players()) {
+            Optional<BlockPos> fire = Nights.fearless(player) ? Optional.empty() : nearest(level, player.position(), radius);
+            if (fire.isPresent()) {
+                SHELTERED.put(player.getUUID(), fire.get());
+                holding.add(fire.get());
+            } else {
+                SHELTERED.remove(player.getUUID());
+            }
+        }
+        for (BlockPos fire : holding) {
+            for (Mob mob : level.getEntitiesOfClass(Mob.class, new AABB(fire).inflate(radius + 2), Fire::fears)) {
+                if (mob.getTarget() instanceof ServerPlayer target && SHELTERED.containsKey(target.getUUID())) {
+                    mob.setTarget(null);
+                }
+                if (inside(fire, mob.position(), radius)) {
+                    flee(mob, fire, radius);
+                }
+            }
+        }
+    }
+
+    private static void flee(Mob mob, BlockPos fire, int radius) {
+        Vec3 centre = Vec3.atCenterOf(fire);
+        Vec3 away = mob.position().subtract(centre).multiply(1, 0, 1);
+        if (away.lengthSqr() < 1.0E-4) {
+            away = new Vec3(mob.getRandom().nextDouble() - 0.5, 0, mob.getRandom().nextDouble() - 0.5);
+        }
+        Vec3 goal = centre.add(away.normalize().scale(radius + FLEE_MARGIN));
+        mob.getNavigation().moveTo(goal.x, mob.getY(), goal.z, FLEE_SPEED);
+    }
+
+    @SubscribeEvent
+    public static void onChangeTarget(LivingChangeTargetEvent event) {
+        if (fears(event.getEntity())
+                && event.getNewAboutToBeSetTarget() instanceof ServerPlayer player
+                && SHELTERED.containsKey(player.getUUID())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || player.tickCount % REST_CHECK_TICKS != 0) {
+            return;
+        }
+        Balance.Fire balance = Balance.INSTANCE.fire();
+        Optional<BlockPos> fire = Tents.isTent(player.level().dimension()) || Gaze.airborne(player) || player.isSpectator()
+                ? Optional.empty()
+                : nearest(player.serverLevel(), player.position(), balance.restBlocks());
+        Rest before = RESTS.get(player.getUUID());
+        if (fire.isEmpty()) {
+            RESTS.remove(player.getUUID());
+            return;
+        }
+        boolean still = before != null && before.at().distanceTo(player.position()) < STILL_BLOCKS;
+        int seconds = still ? before.seconds() + REST_CHECK_TICKS / TICKS_PER_SECOND : 0;
+        RESTS.put(player.getUUID(), new Rest(still ? before.at() : player.position(), seconds));
+        if (seconds == balance.restSeconds()) {
+            rest(player, fire.get());
+        }
+    }
+
+    private static void rest(ServerPlayer player, BlockPos fire) {
+        boolean warm = player.hasEffect(Wayfarer.WARM);
+        if (!Journey.slain(player)) {
+            player.addEffect(new MobEffectInstance(Wayfarer.WARM, untilTomorrowsDusk(player.server.overworld().getDayTime()), 0, true, false, true));
+            if (!warm) {
+                player.displayClientMessage(Component.translatable("wayfarer.fire.warm").withStyle(ChatFormatting.GOLD), false);
+                Notes.first(player, "warm");
+            }
+        }
+        Story.rest(player, fire);
+    }
+
+    @SubscribeEvent
+    public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        SHELTERED.remove(event.getEntity().getUUID());
+        RESTS.remove(event.getEntity().getUUID());
+    }
+}

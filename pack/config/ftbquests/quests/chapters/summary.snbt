@@ -1,0 +1,425 @@
+{
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "summary"
+	group: ""
+	hide_quest_until_deps_complete: true
+	icon: {
+		count: 1
+		id: "minecraft:filled_map"
+	}
+	id: "65AF0CCC00A83FEA"
+	images: [ ]
+	order_index: 8
+	quest_links: [ ]
+	quests: [
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "05E9F82454353B4A"
+			invisible: true
+			tasks: [
+				{
+					id: "46413CF09B9F5E3E"
+					type: "checkmark"
+				}
+			]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "7DD3601BC85C87CA"
+			invisible: true
+			tasks: [
+				{
+					id: "0AA4F47D58AC61EE"
+					type: "checkmark"
+				}
+			]
+			x: 1.5d
+			y: 0.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "451F7030BDCBCC70"
+			invisible: true
+			tasks: [
+				{
+					id: "7944F34F9BE17BE5"
+					type: "checkmark"
+				}
+			]
+			x: 3.0d
+			y: 0.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "2808F38F47555988"
+			invisible: true
+			tasks: [
+				{
+					id: "114948D5A3021399"
+					type: "checkmark"
+				}
+			]
+			x: 4.5d
+			y: 0.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "4172C804BDC50FAF"
+			invisible: true
+			tasks: [
+				{
+					id: "1382B2FE1DA2B7A0"
+					type: "checkmark"
+				}
+			]
+			x: 6.0d
+			y: 0.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "0D64F287B9DF2B6D"
+			invisible: true
+			tasks: [
+				{
+					id: "035CF05DB065AEBD"
+					type: "checkmark"
+				}
+			]
+			x: 7.5d
+			y: 0.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "7862A4CBA742B7AB"
+			invisible: true
+			tasks: [
+				{
+					id: "05E72073969BDEFD"
+					type: "checkmark"
+				}
+			]
+			x: 0.0d
+			y: 1.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "35319BE7C24D1B15"
+			invisible: true
+			tasks: [
+				{
+					id: "53F1A81D130CD692"
+					type: "checkmark"
+				}
+			]
+			x: 1.5d
+			y: 1.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "444C90037E06D7AA"
+			invisible: true
+			tasks: [
+				{
+					id: "64A02B0D07A47AE4"
+					type: "checkmark"
+				}
+			]
+			x: 3.0d
+			y: 1.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "229A61F549820904"
+			invisible: true
+			tasks: [
+				{
+					id: "785AC227152BBF44"
+					type: "checkmark"
+				}
+			]
+			x: 4.5d
+			y: 1.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "1A23754640A19F17"
+			invisible: true
+			tasks: [
+				{
+					id: "02EE6D998F736C2A"
+					type: "checkmark"
+				}
+			]
+			x: 6.0d
+			y: 1.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "32A2A4D9C3E0EE31"
+			invisible: true
+			tasks: [
+				{
+					id: "1827E92B97F9770F"
+					type: "checkmark"
+				}
+			]
+			x: 7.5d
+			y: 1.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "3B193B2218B81BB3"
+			invisible: true
+			tasks: [
+				{
+					id: "31E4E75CF90DF4F8"
+					type: "checkmark"
+				}
+			]
+			x: 0.0d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "363B86466DCE4DD8"
+			invisible: true
+			tasks: [
+				{
+					id: "7E1B33FB1E6CDABA"
+					type: "checkmark"
+				}
+			]
+			x: 1.5d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "05E9A91739B397F6"
+			invisible: true
+			tasks: [
+				{
+					id: "7DF7FF7ECC8C487C"
+					type: "checkmark"
+				}
+			]
+			x: 3.0d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "133414933B2E8A14"
+			invisible: true
+			tasks: [
+				{
+					id: "25D1B5D961E3F055"
+					type: "checkmark"
+				}
+			]
+			x: 4.5d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "3FCB9043EAC9398A"
+			invisible: true
+			tasks: [
+				{
+					id: "30DC66B8356FA3B7"
+					type: "checkmark"
+				}
+			]
+			x: 6.0d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "0D1D83B356838C94"
+			invisible: true
+			tasks: [
+				{
+					id: "4F65EBB1D313C18C"
+					type: "checkmark"
+				}
+			]
+			x: 7.5d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "04D0FC8324F21404"
+			invisible: true
+			tasks: [
+				{
+					id: "2750B78268F44954"
+					type: "checkmark"
+				}
+			]
+			x: 0.0d
+			y: 4.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "46BA011A146DC53F"
+			invisible: true
+			tasks: [
+				{
+					id: "01819102ADE70165"
+					type: "checkmark"
+				}
+			]
+			x: 1.5d
+			y: 4.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "7B63C9A0B156F311"
+			invisible: true
+			tasks: [
+				{
+					id: "0BB0D2CCB7F2E4C1"
+					type: "checkmark"
+				}
+			]
+			x: 3.0d
+			y: 4.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "47893EE6465D1483"
+			invisible: true
+			tasks: [
+				{
+					id: "32D1E5A90E527A82"
+					type: "checkmark"
+				}
+			]
+			x: 4.5d
+			y: 4.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "5C6CBC7F375F0DCB"
+			invisible: true
+			tasks: [
+				{
+					id: "509EA7AECFD3068F"
+					type: "checkmark"
+				}
+			]
+			x: 6.0d
+			y: 4.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:paper"
+			}
+			id: "093DF3DB3976A891"
+			invisible: true
+			tasks: [
+				{
+					id: "52C95101320ECA8C"
+					type: "checkmark"
+				}
+			]
+			x: 7.5d
+			y: 4.5d
+		}
+	]
+}

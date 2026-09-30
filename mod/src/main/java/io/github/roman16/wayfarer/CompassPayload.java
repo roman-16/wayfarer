@@ -7,11 +7,20 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
 public record CompassPayload(
-        Mode mode, ResourceLocation target, int heat, int distance, int targetX, int targetZ, List<ResourceLocation> claimed, List<Marker> markers)
+        Mode mode,
+        ResourceLocation target,
+        int heat,
+        int distance,
+        int targetX,
+        int targetZ,
+        List<ResourceLocation> claimed,
+        List<Marker> markers,
+        boolean sight)
         implements CustomPacketPayload {
 
     public enum Mode {
         AIR,
+        DIM,
         FAR,
         HIDDEN,
         LOST,
@@ -20,6 +29,7 @@ public record CompassPayload(
 
     public enum Kind {
         GRAVE,
+        LEAD,
         TEAMMATE
     }
 
@@ -30,7 +40,7 @@ public record CompassPayload(
     public static final ResourceLocation NOTHING = Wayfarer.id("nothing");
 
     public static CompassPayload hidden(List<ResourceLocation> claimed) {
-        return new CompassPayload(Mode.HIDDEN, NOTHING, 0, 0, 0, 0, claimed, List.of());
+        return new CompassPayload(Mode.HIDDEN, NOTHING, 0, 0, 0, 0, claimed, List.of(), false);
     }
 
     private CompassPayload(FriendlyByteBuf buf) {
@@ -42,7 +52,8 @@ public record CompassPayload(
                 buf.readVarInt(),
                 buf.readVarInt(),
                 buf.readList(FriendlyByteBuf::readResourceLocation),
-                buf.readList(marker -> new Marker(marker.readEnum(Kind.class), marker.readUtf(), marker.readVarInt(), marker.readVarInt())));
+                buf.readList(marker -> new Marker(marker.readEnum(Kind.class), marker.readUtf(), marker.readVarInt(), marker.readVarInt())),
+                buf.readBoolean());
     }
 
     private void write(FriendlyByteBuf buf) {
@@ -59,6 +70,7 @@ public record CompassPayload(
             out.writeVarInt(marker.x());
             out.writeVarInt(marker.z());
         });
+        buf.writeBoolean(sight);
     }
 
     @Override

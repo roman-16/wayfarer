@@ -1,9 +1,11 @@
 package io.github.roman16.wayfarer;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -11,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -48,6 +51,13 @@ public final class Graves {
         CompoundTag loadout = new CompoundTag();
         loadout.put(SLOTS, slots);
         player.setData(Wayfarer.GRAVE_CURIOS, loadout);
+    }
+
+    @SubscribeEvent
+    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (!event.isEndConquered() && event.getEntity() instanceof ServerPlayer player && Notes.first(player, "death")) {
+            player.sendSystemMessage(Component.translatable("wayfarer.first.death").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        }
     }
 
     @SubscribeEvent

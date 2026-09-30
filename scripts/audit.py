@@ -33,12 +33,12 @@ def overridden(recipe):
     return any((base / namespace / "recipe" / f"{path}.json").exists() for base in OVERRIDES)
 
 
-def main():
+def recipes(jars):
     nether = tomllib.loads((ROOT / "generator/nether.toml").read_text())
     accepted = set(nether["unobtainable"])
     unsourced = set(nether["unsourced_items"]) | {"#" + tag for tag in nether["unsourced_tags"]}
     findings = {}
-    for jar in sorted(Path(sys.argv[1]).glob("*.jar")):
+    for jar in jars:
         with zipfile.ZipFile(jar) as archive:
             for name in archive.namelist():
                 parts = name.split("/")
@@ -60,12 +60,42 @@ def main():
                 if needs:
                     findings[recipe] = (jar.name, needs)
     for recipe, (jar, needs) in sorted(findings.items()):
-        print(f"{recipe} ({jar}) needs {', '.join(needs)}")
+        yield f"{recipe} ({jar}) needs {', '.join(needs)}: give it an Overworld source or list it in generator/nether.toml"
+
+
+def shared_biomes(jars):
+    emptied = {"#" + tag for tag in tomllib.loads((ROOT / "generator/removals.toml").read_text())["structure_biomes"]}
+    users = {tag: set() for tag in emptied}
+    for jar in jars:
+        with zipfile.ZipFile(jar) as archive:
+            for name in archive.namelist():
+                parts = name.split("/")
+                if (
+                    len(parts) < 5
+                    or parts[0] != "data"
+                    or parts[2:4] != ["worldgen", "structure"]
+                    or not name.endswith(".json")
+                ):
+                    continue
+                try:
+                    biomes = json.loads(archive.read(name).decode("utf-8-sig")).get("biomes")
+                except ValueError:
+                    continue
+                if isinstance(biomes, str) and biomes in users:
+                    users[biomes].add(f"{parts[1]}:{'/'.join(parts[4:])[:-5]}")
+    for tag, structures in sorted(users.items()):
+        if len(structures) > 1:
+            yield f"generator/removals.toml empties {tag}, which {', '.join(sorted(structures))} all use: remove the one structure through its structure set instead"
+
+
+def main():
+    jars = sorted(Path(sys.argv[1]).glob("*.jar"))
+    findings = [*recipes(jars), *shared_biomes(jars)]
+    for finding in findings:
+        print(finding)
     if findings:
-        sys.exit(
-            f"{len(findings)} recipes need a Nether-only item: give them an Overworld source or list them in generator/nether.toml"
-        )
-    print("no recipe needs a Nether-only item")
+        sys.exit(f"{len(findings)} audit findings")
+    print("no recipe needs a Nether-only item, and no emptied biome tag removes more than its structure")
 
 
 main()

@@ -15,6 +15,15 @@ public final class Difficulty {
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             catchUp(player);
+            if (Journey.slain(player)) {
+                hold(player);
+            }
+        }
+    }
+
+    public static void hold(ServerPlayer player) {
+        if (ModList.get().isLoaded(IMPROVED_MOBS)) {
+            run(player, "improvedmobs difficulty pause player " + player.getGameProfile().getName());
         }
     }
 
@@ -29,7 +38,10 @@ public final class Difficulty {
             return;
         }
         float added = (eyes - applied) * Balance.INSTANCE.difficulty().perEye();
-        String command = String.format(Locale.ROOT, "improvedmobs difficulty player %s add %.2f", player.getGameProfile().getName(), added);
+        run(player, String.format(Locale.ROOT, "improvedmobs difficulty player %s add %.2f", player.getGameProfile().getName(), added));
+    }
+
+    private static void run(ServerPlayer player, String command) {
         player.server.getCommands().performPrefixedCommand(player.server.createCommandSourceStack().withSuppressedOutput(), command);
     }
 }

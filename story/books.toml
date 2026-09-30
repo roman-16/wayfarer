@@ -6,8 +6,9 @@ pages = [
   "Long ago the dragon at the end of the world gave up an eye to watch every land its portal touched. The first Wayfarers tore that Eye out, broke it into twelve shards and hid them at the far ends of the world.",
   "The ember I gave you is the last light of that Eye. It pulls towards the shards. Far away it is only a feeling: it flares when you walk towards one and gutters when you walk away. Close by, it knows the way to the door.",
   "The ember wakes once you have lived one day as we do. Carry everything you own. Light a fire where you rest, for the ember brings you back to fire when you fall. Pitch your tent before dark and sleep in it.",
-  "The Eye sees what stays still. Linger in one place and the gaze finds you, and what walks at night grows stronger. A tent is folded space, and the gaze cannot see what is not anywhere. Nothing follows you through its door.",
-  "Some nights are worse. Every fourth night the gaze turns fully towards the world and nobody sleeps; the ember burns too bright to fold into a tent. Every fifth, the moon turns red. The ember warns you each morning.",
+  "The Eye sees what stays still. Linger in one place and the ember dims, and the gaze sends its horde to find you. Every day you carry the ember and every shard you take, it sees you more clearly, and what walks at night grows stronger.",
+  "Its creatures cannot bear a fire's light: none is born near one or steps close. Rest at your fire and the ember burns it instead of your food. A tent is folded space; the gaze cannot see what is not anywhere, and nothing follows you in.",
+  "Some nights are worse. Every fourth night the gaze turns fully towards the world: nobody sleeps, no tent opens, and its horde walks through fire. Every fifth, the moon turns red and fire frightens nothing. The ember warns you each morning.",
   "Do not take to the sea or the sky too early. A lone ember shines like a beacon on open water, and the phantoms see it flicker in the air. Every shard you gather dims it.",
   "The Gazebound hunt the shards too. Gather all twelve before they do, find the true gate, and finish what we could not. Watch the smoke, stranger. I always did.",
 ]
@@ -41,7 +42,7 @@ title = "The Third Memory"
 id = "memory/4"
 pages = [
   "We walked to the frame of black stone where the Eye sat, and we tore it out. It screamed with a voice that was not a sound.",
-  "Blind, the dragon faded back into the end of the world, and the portal went dark. We had won. We held the Eye in our hands and were afraid of it.",
+  "Blind, the dragon faded back into the end of the world, and the portal went dark. We had won. We held the Eye in our hands and were afraid of it. An eye remembers whose it is.",
 ]
 title = "The Fourth Memory"
 
@@ -56,58 +57,104 @@ title = "The Fifth Memory"
 [[memories]]
 id = "memory/6"
 pages = [
-  "Some of us would not walk. They carried the empty gates out past the edge of every map and stayed to guard them, as far from everyone as they could. We called them the Keepers.",
-  "They sealed the burning world below, so no one could build our gate again. Since that day obsidian takes no spark.",
+  "Each of us kept a sliver of the Eye's light, so we could find the shards if we ever had to. We called it the ember. It passes only at a fire shared freely, and it goes dim in anyone who stops walking.",
+  "The empty portal broke into twelve frames. Some of us would not walk: they carried the frames out past the edge of every map and stayed to guard them. They sealed the burning world below, and obsidian takes no spark.",
 ]
 title = "The Sixth Memory"
 
 [[memories]]
 id = "memory/7"
 pages = [
-  "Each of us carried a sliver of the Eye's light, so we could always find the shards if we had to. We called it the ember.",
-  "An ember passes only at a fire shared freely. It cannot be stolen. And it goes dim in anyone who stops walking, until it no longer answers them at all.",
+  "A king of the grasslands kept his people's shard in his crown instead of hiding it. It spoke to him in his dead father's voice, and for one summer he saw everything that stood still in his kingdom.",
+  "His own people tore it from his crown and sealed it under the savanna, and drove out his heirs and all who followed them. Those outcasts became the first Illagers. They call themselves the Gazebound.",
 ]
 title = "The Seventh Memory"
 
 [[memories]]
 id = "memory/8"
 pages = [
-  "A king of the grasslands kept his people's shard in his crown and looked through it. For one summer he saw what the dragon sees, and he ruled like a god.",
-  "His own people tore it from his crown and sealed it away. His heirs never forgave them. They learned only this: without an ember no shrine can be found, and an ember cannot be taken.",
+  "Years became ages. People forgot the oath, villages grew into towns, and the world began to shine again. The Gazebound hunted Wayfarers, and every ember they took from a dead hand went out.",
+  "An ember cannot be taken, and without one no shrine can be found. So the Gazebound stopped hunting us, and began to feed us instead.",
 ]
 title = "The Eighth Memory"
 
 [[memories]]
 id = "memory/9"
 pages = [
-  "Years became ages. People forgot the oath. Villages grew into towns and towns into capitals, and the world began to shine again.",
-  "The king's heirs called themselves the Gazebound. They hunted Wayfarers, and every ember they took from a dead hand went out. So they stopped hunting us, and began to feed us instead.",
+  "One of us grew tired of the road. The Gazebound gave him a warm hall, a full table and a name: Wend. He stayed a winter, then a year, then twenty, and his ember went dark.",
+  "They made him their captain anyway, because he still carried one. All those years he sat still in the grass halls, and something watched him sit. It learned his face. It learned his voice.",
 ]
 title = "The Ninth Memory"
 
 [[memories]]
 id = "memory/10"
 pages = [
-  "One of us grew tired of the road. The Gazebound gave him a warm hall, a full table and a name. He stayed a winter, then a year, then twenty.",
-  "His ember went dim. It stopped answering him, and he could not find a single shrine. They made him their captain anyway, because he still carried one.",
+  "When he was old and dying, the captain lit a fire by a road, where its smoke could be seen from far away, and waited for someone kind enough to sit with him.",
+  "Someone did. He gave them his ember and a Wayfarer's story, and told them to gather all twelve. No Wayfarer would ever ask that. We remember your face in his firelight.",
 ]
 title = "The Tenth Memory"
 
 [[memories]]
 id = "memory/11"
 pages = [
-  "When he was old and dying, the captain lit a fire by a road, where its smoke could be seen from far away, and waited for someone kind enough to sit with him.",
-  "Someone did. He gave them his ember and a Wayfarer's story, and told them to gather all twelve. No Wayfarer would ever ask that. We remember your face in his firelight.",
+  "Listen to us. We do not speak at fires. The dead do not speak at all. Wend lies under the stone where you buried him.",
+  "What speaks to you with his voice watched him sit still for twenty years. It is the gaze, reaching through its own Eye as the Eye comes together in your ember.",
 ]
 title = "The Eleventh Memory"
 
 [[memories]]
 id = "memory/12"
 pages = [
-  "The Eye is whole again, and it rests in your ember. This is what the Gazebound wanted: someone to find what they could not, and carry it to the gate for them.",
-  "Do not give it to them, and do not let it be seen. Open the true gate and kill the dragon while it is still half-blind. Then the ember goes out, and you are free. We never were.",
+  "The Eye is whole again, and it rests in your ember. The Gazebound want you at the gate, and so does the gaze. It will promise you anything. It cannot look away; it told you so itself.",
+  "Set the Eye anyway, and kill the dragon while it is still half-blind. Then the ember goes out, and you are free. We never were.",
 ]
 title = "The Twelfth Memory"
+
+[[found]]
+author = "A young Wayfarer"
+id = "wend/first_camp"
+pages = [
+  "First night on my own road. I own a tent, a mallet and a fire, and I have never been this happy. Tomorrow I walk until the ember gutters, then I turn.",
+  "Whoever finds this: the road gives more than it takes. Eat what it gives, keep your fire small, and never stay where they are kind to you for long.",
+]
+title = "A Young Man's Page"
+
+[[found]]
+author = "An old Wayfarer"
+id = "wend/last_camp"
+pages = [
+  "I stopped walking here. My feet hurt and the road was long, and the men in grass cloaks were kind.",
+  "They left bread by my fire. I ate it. Tomorrow I will walk on. I wrote that yesterday too.",
+]
+title = "The Last Page"
+
+[[found]]
+author = "Maren"
+id = "maren/unsent"
+pages = [
+  "Captain Wend. I know you cannot read this. I write it anyway, the way you taught me to talk to the fire.",
+  "The one you chose is walking. The captains have me follow the smoke for them. You chose well: they stopped for a dying man when nobody else would. I have not decided what that means.",
+]
+title = "A Letter Never Sent"
+
+[[found]]
+author = "The Gazebound"
+id = "gazebound/ledger"
+pages = [
+  "Captain Wend, taken in at the grass halls in the first winter. Eats well. Asks for nothing. Walks the halls at night as if they were a road.",
+  "Ninth winter: the captain's ember went dark. He hears nothing in it now. We keep him anyway, for the day it can be passed.",
+  "Twentieth winter: the captain is old. The captains agree: let him light his fire by the road, and follow whoever he gives it to.",
+]
+title = "The Captain's Ledger"
+
+[[found]]
+author = "Wend"
+id = "wend/letter"
+pages = [
+  "For Maren. Open it at the gate.",
+  "Watch the smoke, Maren. Someone kind is carrying my ember to the gate. Help them finish it, then go and build a home.",
+]
+title = "For Maren"
 
 [[collections]]
 author = "The Keepers"

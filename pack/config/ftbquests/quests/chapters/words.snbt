@@ -1,0 +1,595 @@
+{
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "words"
+	group: ""
+	hide_quest_until_deps_complete: true
+	icon: {
+		count: 1
+		id: "minecraft:name_tag"
+	}
+	id: "463FAE381DDC9E0E"
+	images: [ ]
+	order_index: 9
+	quest_links: [ ]
+	quests: [
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "783D37BF49BFBE4F"
+			invisible: true
+			tasks: [
+				{
+					id: "7A7C682279B3E89D"
+					type: "checkmark"
+				}
+			]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "767F1956E3A1B924"
+			invisible: true
+			tasks: [
+				{
+					id: "066B2613C3FEE977"
+					type: "checkmark"
+				}
+			]
+			x: 1.5d
+			y: 0.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "66D3F27D0FA028E3"
+			invisible: true
+			tasks: [
+				{
+					id: "37FFB8472F45CDEC"
+					type: "checkmark"
+				}
+			]
+			x: 3.0d
+			y: 0.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "5CF1AB9345FD65AD"
+			invisible: true
+			tasks: [
+				{
+					id: "2CC35BBD70E71010"
+					type: "checkmark"
+				}
+			]
+			x: 4.5d
+			y: 0.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "11FF00D387924191"
+			invisible: true
+			tasks: [
+				{
+					id: "77EB3F9B3528CB29"
+					type: "checkmark"
+				}
+			]
+			x: 6.0d
+			y: 0.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "494E57C0808B5C09"
+			invisible: true
+			tasks: [
+				{
+					id: "6B4BEF231B8D4334"
+					type: "checkmark"
+				}
+			]
+			x: 7.5d
+			y: 0.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "06E298592058C68D"
+			invisible: true
+			tasks: [
+				{
+					id: "790D60F3131D2BED"
+					type: "checkmark"
+				}
+			]
+			x: 0.0d
+			y: 1.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "728D4B884E67F23F"
+			invisible: true
+			tasks: [
+				{
+					id: "622CCF07100FCD35"
+					type: "checkmark"
+				}
+			]
+			x: 1.5d
+			y: 1.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "3B0457F3A275E0C8"
+			invisible: true
+			tasks: [
+				{
+					id: "737FC85182E85DDD"
+					type: "checkmark"
+				}
+			]
+			x: 3.0d
+			y: 1.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "7114A15DCA5CAD10"
+			invisible: true
+			tasks: [
+				{
+					id: "367AB0C59D88C0F0"
+					type: "checkmark"
+				}
+			]
+			x: 4.5d
+			y: 1.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "5181325CF2402CD0"
+			invisible: true
+			tasks: [
+				{
+					id: "7DF462346B743535"
+					type: "checkmark"
+				}
+			]
+			x: 6.0d
+			y: 1.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "1D180FDA7B88430D"
+			invisible: true
+			tasks: [
+				{
+					id: "60CC9138BE154AEE"
+					type: "checkmark"
+				}
+			]
+			x: 7.5d
+			y: 1.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "5FAD900A0CF32342"
+			invisible: true
+			tasks: [
+				{
+					id: "335467D60CC71D5B"
+					type: "checkmark"
+				}
+			]
+			x: 0.0d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "0200657138563A00"
+			invisible: true
+			tasks: [
+				{
+					id: "4FB1F368CB7CD006"
+					type: "checkmark"
+				}
+			]
+			x: 1.5d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "179DE8CE5FD1DB76"
+			invisible: true
+			tasks: [
+				{
+					id: "478CE29A362811C8"
+					type: "checkmark"
+				}
+			]
+			x: 3.0d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "0A8F570543ABDB54"
+			invisible: true
+			tasks: [
+				{
+					id: "5029575D6B8B4E2C"
+					type: "checkmark"
+				}
+			]
+			x: 4.5d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "5D39F3F9CE3E753C"
+			invisible: true
+			tasks: [
+				{
+					id: "2F2E2B2DDFDA9653"
+					type: "checkmark"
+				}
+			]
+			x: 6.0d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "2FF45265F8FB13CE"
+			invisible: true
+			tasks: [
+				{
+					id: "5A7D56DD3B0BCA15"
+					type: "checkmark"
+				}
+			]
+			x: 7.5d
+			y: 3.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "6A23B5CCD0445038"
+			invisible: true
+			tasks: [
+				{
+					id: "4812B7BCA7353508"
+					type: "checkmark"
+				}
+			]
+			x: 0.0d
+			y: 4.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "3FACF244FC2DB54F"
+			invisible: true
+			tasks: [
+				{
+					id: "4B4244B3DAC3FE53"
+					type: "checkmark"
+				}
+			]
+			x: 1.5d
+			y: 4.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "1F814E7775F39F39"
+			invisible: true
+			tasks: [
+				{
+					id: "22AF7388FF84AE43"
+					type: "checkmark"
+				}
+			]
+			x: 3.0d
+			y: 4.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "6E123492013216CF"
+			invisible: true
+			tasks: [
+				{
+					id: "68E042A806BCAC93"
+					type: "checkmark"
+				}
+			]
+			x: 4.5d
+			y: 4.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "571A1B187CC7AFA5"
+			invisible: true
+			tasks: [
+				{
+					id: "765A007229D12164"
+					type: "checkmark"
+				}
+			]
+			x: 6.0d
+			y: 4.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "073EB44C91BEC5F1"
+			invisible: true
+			tasks: [
+				{
+					id: "715BBB4E940CDCF7"
+					type: "checkmark"
+				}
+			]
+			x: 7.5d
+			y: 4.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "707056AE5D072408"
+			invisible: true
+			tasks: [
+				{
+					id: "5B067DA3FCD78D81"
+					type: "checkmark"
+				}
+			]
+			x: 0.0d
+			y: 6.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "21E32E9D88C4D34A"
+			invisible: true
+			tasks: [
+				{
+					id: "6F1F88461853AC96"
+					type: "checkmark"
+				}
+			]
+			x: 1.5d
+			y: 6.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "09D4C1CBCC81B0F3"
+			invisible: true
+			tasks: [
+				{
+					id: "40AC8222D4432447"
+					type: "checkmark"
+				}
+			]
+			x: 3.0d
+			y: 6.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "16185CB487143BF7"
+			invisible: true
+			tasks: [
+				{
+					id: "7E7DAE130B764109"
+					type: "checkmark"
+				}
+			]
+			x: 4.5d
+			y: 6.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "1078E714048D551F"
+			invisible: true
+			tasks: [
+				{
+					id: "5CD8539D7C843236"
+					type: "checkmark"
+				}
+			]
+			x: 6.0d
+			y: 6.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "4D9460C1B2465F85"
+			invisible: true
+			tasks: [
+				{
+					id: "4AAB971D9DE1186B"
+					type: "checkmark"
+				}
+			]
+			x: 7.5d
+			y: 6.0d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "326B932334026BDD"
+			invisible: true
+			tasks: [
+				{
+					id: "0D99869FD50C212A"
+					type: "checkmark"
+				}
+			]
+			x: 0.0d
+			y: 7.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "5DED105452F92D72"
+			invisible: true
+			tasks: [
+				{
+					id: "31317967BC4DEE42"
+					type: "checkmark"
+				}
+			]
+			x: 1.5d
+			y: 7.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "367FA76372FA8E17"
+			invisible: true
+			tasks: [
+				{
+					id: "3A5EF2744E5470AC"
+					type: "checkmark"
+				}
+			]
+			x: 3.0d
+			y: 7.5d
+		}
+		{
+			dependencies: [ ]
+			icon: {
+				count: 1
+				id: "minecraft:name_tag"
+			}
+			id: "616E920CF50BCE8B"
+			invisible: true
+			tasks: [
+				{
+					id: "5A93AE546028AA6E"
+					type: "checkmark"
+				}
+			]
+			x: 4.5d
+			y: 7.5d
+		}
+	]
+}

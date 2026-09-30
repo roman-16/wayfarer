@@ -1,0 +1,1382 @@
+{
+  "books": {
+    "first_gate/bright_years": {
+      "author": "An archivist of the deep city",
+      "pages": [
+        "We were the brightest city the world had ever seen, and we were proud of it. Our lamps burned day and night. We did not know that every lamp was a word shouted at the sky.",
+        "Then the dragon looked. Not at a traveller, not at a village. At us. The light went cold in the streets, and the first of us stopped moving where they stood."
+      ],
+      "quest": "02CAED0C4FA34E3B",
+      "title": "Record of the Bright Years"
+    },
+    "first_gate/gate_we_built": {
+      "author": "An archivist of the deep city",
+      "pages": [
+        "Our masters found power in the burning world below and built a gate of our own, to strike back through the dark. You have seen its frame at the heart of the city.",
+        "It opened once. What came through was silence, and the silence spread across the stone like moss. We call it sculk now. It remembers every sound we ever made.",
+        "Do not wake the guard. It is the last of us, and it no longer knows friend from enemy. Walk softly, take what you need, and leave us to the quiet."
+      ],
+      "quest": "5644728837DAE04F",
+      "title": "The Gate We Built"
+    },
+    "gazebound/grass_king": {
+      "author": "The Gazebound",
+      "pages": [
+        "Brothers, the Grass King saw what the dragon sees, and for one summer he ruled as a god. Then his people, cowards all, tore the sight from his crown.",
+        "We are his heirs. We will finish what he began: gather the twelve shards, open the true gate, and let the dragon see the world again, through our eyes and for our purposes."
+      ],
+      "quest": "3A1A84C6E4C93459",
+      "title": "The Crown of the Grass King"
+    },
+    "gazebound/ledger": {
+      "author": "The Gazebound",
+      "pages": [
+        "Captain Wend, taken in at the grass halls in the first winter. Eats well. Asks for nothing. Walks the halls at night as if they were a road.",
+        "Ninth winter: the captain's ember went dark. He hears nothing in it now. We keep him anyway, for the day it can be passed.",
+        "Twentieth winter: the captain is old. The captains agree: let him light his fire by the road, and follow whoever he gives it to."
+      ],
+      "quest": "798270FE0F4DD012",
+      "title": "The Captain's Ledger"
+    },
+    "gazebound/orders": {
+      "author": "The Gazebound",
+      "pages": [
+        "Orders for the captains. The shards are waking and calling to each other. Listen for them in the high places, the dead places, the drowned places.",
+        "A Wayfarer is walking again, and gathering for us without knowing it. Do not touch the ember. Let it find what we cannot, and follow its smoke to the gate."
+      ],
+      "quest": "4805D0E165AF4166",
+      "title": "Orders for the Captains"
+    },
+    "gazebound/shadow_circle": {
+      "author": "The Gazebound",
+      "pages": [
+        "Why do we build our mansions in the dark woods? Because the Shadow Circle built there first. We copied their halls stone by stone, and still their power would not come to us.",
+        "They say the burden is the point. They say the shard must be carried, not kept. They are dead, and we are not. Keep searching."
+      ],
+      "quest": "10F1C180EF1D5E5F",
+      "title": "The Halls of the Shadow Circle"
+    },
+    "journal": {
+      "author": "The Last Wayfarer",
+      "pages": [
+        "I do not know your name, stranger, and you will not learn mine. It does not matter. Wayfarers have no names, only roads.",
+        "Long ago the dragon at the end of the world gave up an eye to watch every land its portal touched. The first Wayfarers tore that Eye out, broke it into twelve shards and hid them at the far ends of the world.",
+        "The ember I gave you is the last light of that Eye. It pulls towards the shards. Far away it is only a feeling: it flares when you walk towards one and gutters when you walk away. Close by, it knows the way to the door.",
+        "The ember wakes once you have lived one day as we do. Carry everything you own. Light a fire where you rest, for the ember brings you back to fire when you fall. Pitch your tent before dark and sleep in it.",
+        "The Eye sees what stays still. Linger in one place and the ember dims, and the gaze sends its horde to find you. Every day you carry the ember and every shard you take, it sees you more clearly, and what walks at night grows stronger.",
+        "Its creatures cannot bear a fire's light: none is born near one or steps close. Rest at your fire and the ember burns it instead of your food. A tent is folded space; the gaze cannot see what is not anywhere, and nothing follows you in.",
+        "Some nights are worse. Every fourth night the gaze turns fully towards the world: nobody sleeps, no tent opens, and its horde walks through fire. Every fifth, the moon turns red and fire frightens nothing. The ember warns you each morning.",
+        "Do not take to the sea or the sky too early. A lone ember shines like a beacon on open water, and the phantoms see it flicker in the air. Every shard you gather dims it.",
+        "The Gazebound hunt the shards too. Gather all twelve before they do, find the true gate, and finish what we could not. Watch the smoke, stranger. I always did."
+      ],
+      "quest": "4C5B5C48382F6064",
+      "title": "The Last Wayfarer's Journal"
+    },
+    "keepers/distance": {
+      "author": "The Keepers",
+      "pages": [
+        "Why so far? Because the gaze sees what stays still, and a gate stays stiller than anything. We carried this one out past the edge of every map, so that whatever it shone, it shone on nobody.",
+        "Twelve halls like this one stand in a ring, all the same distance from where the first fire was lit, and every one of them guards a gate. The ember will lead you to the nearest.",
+        "Do not blame us for the walk. Every step between you and home is a step between home and the dragon."
+      ],
+      "quest": "0FFA5652ED4FAEAB",
+      "title": "On the Distance of the Gate"
+    },
+    "keepers/first_watch": {
+      "author": "The Keepers",
+      "pages": [
+        "Year one of the watch. We built this hall as far from everyone as our legs could carry the stone. The gate sleeps below us. It is only a frame now, and we mean to keep it that way.",
+        "Rule of the watch: no Keeper lights a fire bigger than a hand. No Keeper plants what takes more than a season to grow. We are the only people in the world allowed to stay, and we must stay small.",
+        "If you are reading this, the watch has ended or the Eye is coming home. Either way, you are welcome at our table. There is not much left on it."
+      ],
+      "quest": "6E4261D89D0E8D90",
+      "title": "The First Watch"
+    },
+    "keepers/last_keeper": {
+      "author": "The Keepers",
+      "pages": [
+        "The last entry. The others have gone down to sleep with the old Keepers. I stay to write, because someone should.",
+        "Years ago a Wayfarer came to our door, the only one in my lifetime. His ember was dim, and he wore the grass crown of the Gazebound under his cloak. He asked where the twelve shrines lie. No Wayfarer asks that.",
+        "We sent him away. If he found someone to carry what he could not, and it is you: do not open this gate for them. Open it for yourself, finish it, and then go home."
+      ],
+      "quest": "38633E8CA0C64C69",
+      "title": "The Last Keeper"
+    },
+    "maren/unsent": {
+      "author": "Maren",
+      "pages": [
+        "Captain Wend. I know you cannot read this. I write it anyway, the way you taught me to talk to the fire.",
+        "The one you chose is walking. The captains have me follow the smoke for them. You chose well: they stopped for a dying man when nobody else would. I have not decided what that means."
+      ],
+      "quest": "23F063A3744DA5FB",
+      "title": "A Letter Never Sent"
+    },
+    "memory/1": {
+      "author": "The Eye",
+      "pages": [
+        "We were proud once. Our cities lay deep in the stone, and their lamps burned day and night, brighter than anything the world had seen.",
+        "We did not know that far away, in a frame of black stone, an eye was watching. The dragon had given it up to guard every land its portal touched. Every lamp we lit was a word shouted at it."
+      ],
+      "quest": "7A9514E8721CCAF1",
+      "title": "The First Memory"
+    },
+    "memory/10": {
+      "author": "The Eye",
+      "pages": [
+        "When he was old and dying, the captain lit a fire by a road, where its smoke could be seen from far away, and waited for someone kind enough to sit with him.",
+        "Someone did. He gave them his ember and a Wayfarer's story, and told them to gather all twelve. No Wayfarer would ever ask that. We remember your face in his firelight."
+      ],
+      "quest": "3EC744FC57E9BE2D",
+      "title": "The Tenth Memory"
+    },
+    "memory/11": {
+      "author": "The Eye",
+      "pages": [
+        "Listen to us. We do not speak at fires. The dead do not speak at all. Wend lies under the stone where you buried him.",
+        "What speaks to you with his voice watched him sit still for twenty years. It is the gaze, reaching through its own Eye as the Eye comes together in your ember."
+      ],
+      "quest": "66F768BAF62764CE",
+      "title": "The Eleventh Memory"
+    },
+    "memory/12": {
+      "author": "The Eye",
+      "pages": [
+        "The Eye is whole again, and it rests in your ember. The Gazebound want you at the gate, and so does the gaze. It will promise you anything. It cannot look away; it told you so itself.",
+        "Set the Eye anyway, and kill the dragon while it is still half-blind. Then the ember goes out, and you are free. We never were."
+      ],
+      "quest": "414D9A677ECA669F",
+      "title": "The Twelfth Memory"
+    },
+    "memory/2": {
+      "author": "The Eye",
+      "pages": [
+        "The dragon looked at us. Not at a traveller, not at a village: at a whole people. Light went cold in our streets, and the first of us stopped moving where they stood.",
+        "Our masters found fire in the burning world below and built a gate of our own, to strike back through the dark. We were proud of that too."
+      ],
+      "quest": "2F232113C3CCA23C",
+      "title": "The Second Memory"
+    },
+    "memory/3": {
+      "author": "The Eye",
+      "pages": [
+        "The gate opened once. What came through was silence. It spread across the stone like moss and remembered every sound we had ever made.",
+        "Our cities went quiet. The last of our guards still walks there, blind, and knows no friend. The few of us who lived climbed into the daylight and did not go back."
+      ],
+      "quest": "69D6727479B70168",
+      "title": "The Third Memory"
+    },
+    "memory/4": {
+      "author": "The Eye",
+      "pages": [
+        "We walked to the frame of black stone where the Eye sat, and we tore it out. It screamed with a voice that was not a sound.",
+        "Blind, the dragon faded back into the end of the world, and the portal went dark. We had won. We held the Eye in our hands and were afraid of it. An eye remembers whose it is."
+      ],
+      "quest": "0510D52F7854F280",
+      "title": "The Fourth Memory"
+    },
+    "memory/5": {
+      "author": "The Eye",
+      "pages": [
+        "We broke the Eye into twelve. Twelve peoples at the far ends of the world each took one shard and hid it where no one would think to look.",
+        "Then we swore the oath: never settle, never shine, and never let the shards come together again. We called ourselves Wayfarers, because a road was the only home we trusted."
+      ],
+      "quest": "4CEEBC61395003BA",
+      "title": "The Fifth Memory"
+    },
+    "memory/6": {
+      "author": "The Eye",
+      "pages": [
+        "Each of us kept a sliver of the Eye's light, so we could find the shards if we ever had to. We called it the ember. It passes only at a fire shared freely, and it goes dim in anyone who stops walking.",
+        "The empty portal broke into twelve frames. Some of us would not walk: they carried the frames out past the edge of every map and stayed to guard them. They sealed the burning world below, and obsidian takes no spark."
+      ],
+      "quest": "40A7CBB5757D6ACE",
+      "title": "The Sixth Memory"
+    },
+    "memory/7": {
+      "author": "The Eye",
+      "pages": [
+        "A king of the grasslands kept his people's shard in his crown instead of hiding it. It spoke to him in his dead father's voice, and for one summer he saw everything that stood still in his kingdom.",
+        "His own people tore it from his crown and sealed it under the savanna, and drove out his heirs and all who followed them. Those outcasts became the first Illagers. They call themselves the Gazebound."
+      ],
+      "quest": "227598422D385AAA",
+      "title": "The Seventh Memory"
+    },
+    "memory/8": {
+      "author": "The Eye",
+      "pages": [
+        "Years became ages. People forgot the oath, villages grew into towns, and the world began to shine again. The Gazebound hunted Wayfarers, and every ember they took from a dead hand went out.",
+        "An ember cannot be taken, and without one no shrine can be found. So the Gazebound stopped hunting us, and began to feed us instead."
+      ],
+      "quest": "4FF12C4BB177020E",
+      "title": "The Eighth Memory"
+    },
+    "memory/9": {
+      "author": "The Eye",
+      "pages": [
+        "One of us grew tired of the road. The Gazebound gave him a warm hall, a full table and a name: Wend. He stayed a winter, then a year, then twenty, and his ember went dark.",
+        "They made him their captain anyway, because he still carried one. All those years he sat still in the grass halls, and something watched him sit. It learned his face. It learned his voice."
+      ],
+      "quest": "743096F786C754BA",
+      "title": "The Ninth Memory"
+    },
+    "people/black": {
+      "author": "The Tide Folk",
+      "pages": [
+        "The Tide Folk lived where the land gives up and the sea begins. They took the black shard because no one else wanted a thing that drank the light.",
+        "They buried it the way they buried everything worth keeping: below the tideline, under a fire that was never lit twice in the same place.",
+        "If you are reading this, the fire was lit again. Take the shard. The sea will forget us, as it should."
+      ],
+      "quest": "5408EF29663538D2",
+      "title": "The Tide Folk"
+    },
+    "people/cold": {
+      "author": "The Frost Walkers",
+      "pages": [
+        "The Frost Walkers never stopped moving. Their villages were tracks in the snow, gone by morning.",
+        "They carried the cold shard for a hundred winters and said it was the only fire that never burned them.",
+        "When the last of them grew too old to walk, they set it here, under the ice, where nothing stays still long enough to be seen."
+      ],
+      "quest": "3EA9506F98D8AF12",
+      "title": "The Frost Walkers"
+    },
+    "people/corrupted": {
+      "author": "The Grass Kingdom",
+      "pages": [
+        "The Grass Kingdom was given its shard to hide. Its king kept it instead, on a throne, where everyone could see it.",
+        "The shard showed him what the dragon sees, and he wanted more. He was the first of the Gazebound.",
+        "His own people tore the shard from his crown and sealed it here. The throne is dust. Do not keep what you carry."
+      ],
+      "quest": "20BF0A9AAF50803F",
+      "title": "The Grass Kingdom"
+    },
+    "people/cryptic": {
+      "author": "The Scribes of the Peaks",
+      "pages": [
+        "The Scribes climbed as high as the land would let them and wrote down everything the shard whispered.",
+        "Most of it was madness. Some of it was the way the true gate was built, and why it must never be built again.",
+        "We burned the madness and kept the rest. The shard we leave to you. Read before you carry it."
+      ],
+      "quest": "4042C8EC9C2A6959",
+      "title": "The Scribes of the Peaks"
+    },
+    "people/evil": {
+      "author": "The First Village",
+      "pages": [
+        "The First Village was built by Wayfarers who swore they would only stay one winter.",
+        "They stayed a hundred. Their priests said the shard in their temple kept them safe. It was the shard that kept them seen.",
+        "When the gaze came, the last priest carried it out into the grass and buried it here. The village is gone. The grass remembers."
+      ],
+      "quest": "08C2683CC8429FCC",
+      "title": "The First Village"
+    },
+    "people/exotic": {
+      "author": "The Drowned City",
+      "pages": [
+        "Before the sea took it, the Drowned City was the most beautiful place in the world. Beautiful things are seen.",
+        "The few who swam out carried the exotic shard inland, as far from water as they could, into the red canyons.",
+        "They never saw the sea again. They said it was worth it. We hope you agree."
+      ],
+      "quest": "7D5792B5EBA74299",
+      "title": "The Drowned City"
+    },
+    "people/lost": {
+      "author": "The Diggers",
+      "pages": [
+        "The Diggers went down because down was the only way the gaze did not follow. Their tunnels run under half the world.",
+        "They lost the shard three times, and found it three times, and in the end they built it a hall so it would stop wandering.",
+        "If it wanders again, let it wander with you."
+      ],
+      "quest": "4771AC22B3226B9D",
+      "title": "The Diggers"
+    },
+    "people/magical": {
+      "author": "The Shadow Circle",
+      "pages": [
+        "The Shadow Circle learned to bend the shard's light into spells. The Illagers learned from them, and learned the wrong lessons.",
+        "Their mansions in the dark woods are copies of our halls, built by people who wanted the shard's power without its burden.",
+        "The burden is the point. Carry it."
+      ],
+      "quest": "04C9BE86F7DAD3AB",
+      "title": "The Shadow Circle"
+    },
+    "people/old": {
+      "author": "The Sand Singers",
+      "pages": [
+        "The Sand Singers say a great worm sleeps under the desert, and that it swallowed the old shard to keep it safe.",
+        "The truth is simpler. We dug this hall and let the sand cover it, and the worm is a story we told to keep treasure hunters away.",
+        "The worm is not a story. Walk softly."
+      ],
+      "quest": "474CE26DC91E7D50",
+      "title": "The Sand Singers"
+    },
+    "people/rogue": {
+      "author": "The Jungle Folk",
+      "pages": [
+        "The rogue shard taught the Jungle Folk how red dust carries a thought from one stone to the next.",
+        "They built doors that opened themselves and traps that never slept, and still the gaze found their temples.",
+        "No lock keeps out a god. Only leaving does. So we left, and left the shard to you."
+      ],
+      "quest": "4C6FA41CAD189D2C",
+      "title": "The Jungle Folk"
+    },
+    "people/undead": {
+      "author": "The Grave Keepers",
+      "pages": [
+        "The Grave Keepers buried the Wayfarers who fell on the road, under the oldest trees, where the ground is soft.",
+        "They noticed that the dead are never seen by the gaze, and they took the undead shard to hide among them.",
+        "We are among them now. Take the shard and keep walking. We will keep the graves."
+      ],
+      "quest": "5E4284B95E2E40FC",
+      "title": "The Grave Keepers"
+    },
+    "people/witch": {
+      "author": "The Marsh Mothers",
+      "pages": [
+        "The Marsh Mothers brewed with everything the swamp gave them, and the witch shard gave them sight.",
+        "They saw the dragon seeing them, and they stopped brewing, and they sank the shard into the mud where no reflection lives.",
+        "The witches in their huts still remember us. They do not remember why."
+      ],
+      "quest": "53A33592FD0B54BC",
+      "title": "The Marsh Mothers"
+    },
+    "wend/first_camp": {
+      "author": "A young Wayfarer",
+      "pages": [
+        "First night on my own road. I own a tent, a mallet and a fire, and I have never been this happy. Tomorrow I walk until the ember gutters, then I turn.",
+        "Whoever finds this: the road gives more than it takes. Eat what it gives, keep your fire small, and never stay where they are kind to you for long."
+      ],
+      "quest": "424082E0213C5055",
+      "title": "A Young Man's Page"
+    },
+    "wend/last_camp": {
+      "author": "An old Wayfarer",
+      "pages": [
+        "I stopped walking here. My feet hurt and the road was long, and the men in grass cloaks were kind.",
+        "They left bread by my fire. I ate it. Tomorrow I will walk on. I wrote that yesterday too."
+      ],
+      "quest": "02C39168BF837B58",
+      "title": "The Last Page"
+    },
+    "wend/letter": {
+      "author": "Wend",
+      "pages": [
+        "For Maren. Open it at the gate.",
+        "Watch the smoke, Maren. Someone kind is carrying my ember to the gate. Help them finish it, then go and build a home."
+      ],
+      "quest": "43ED2D66D4D957FC",
+      "title": "For Maren"
+    }
+  },
+  "leads": {
+    "deep_city": {
+      "find": [
+        "The deep city. Its lamps went out long ago, and the silence is older than the gaze. Leave its guard asleep."
+      ],
+      "found_task": "12D9CB319CD2489B",
+      "given_task": "61BB8A4BE55E7297",
+      "items": [],
+      "line": "",
+      "mark": "The deep city",
+      "page": "",
+      "structures": "wayfarer:lead/deep_city"
+    },
+    "first_camp": {
+      "camp": "wayfarer:lead/first_camp",
+      "find": [
+        "Under the hearthstones, wrapped in oilcloth: a page in a young man's hand, and what he left for the road."
+      ],
+      "found_task": "6FEF510C0C682281",
+      "given_task": "038A4E3E279A1FFB",
+      "items": [
+        {
+          "count": 6,
+          "item": "minecraft:bread",
+          "name": ""
+        },
+        {
+          "count": 4,
+          "item": "minecraft:iron_ingot",
+          "name": ""
+        },
+        {
+          "count": 16,
+          "item": "minecraft:arrow",
+          "name": ""
+        }
+      ],
+      "line": "",
+      "mark": "His first camp",
+      "page": "wend/first_camp"
+    },
+    "grass_halls": {
+      "find": [
+        "His room is as he left it: a narrow bed, a crown of dry grass on a nail, and a ledger open on the table."
+      ],
+      "found_task": "39FFC19AD8FE1791",
+      "given_task": "3259B55EDD5C6004",
+      "items": [],
+      "line": "",
+      "mark": "The grass halls",
+      "page": "gazebound/ledger",
+      "structures": "wayfarer:lead/grass_halls"
+    },
+    "last_camp": {
+      "camp": "wayfarer:lead/last_camp",
+      "find": [
+        "The hearth is cold and its stones have fallen. Under them, one more page, in an older hand."
+      ],
+      "found_task": "44EA0AD468DECA43",
+      "given_task": "18C655B873B612D7",
+      "items": [
+        {
+          "count": 3,
+          "item": "minecraft:bread",
+          "name": ""
+        }
+      ],
+      "line": "",
+      "mark": "His last camp",
+      "page": "wend/last_camp"
+    },
+    "outpost": {
+      "find": [
+        "Among the Gazebound's things, folded small: a letter that was never sent."
+      ],
+      "found_task": "2696651EEB26773F",
+      "given_task": "16E23C8A24F53584",
+      "items": [],
+      "line": "",
+      "mark": "Their outpost",
+      "page": "maren/unsent",
+      "structures": "wayfarer:lead/outpost"
+    },
+    "people/black": {
+      "find": [
+        "The Tide Folk's last ship. Under the rotten deck, wrapped in oiled skin, something they could not carry."
+      ],
+      "found_task": "4B234551290D0F20",
+      "given_task": "5D05B101330080C1",
+      "items": [
+        {
+          "count": 1,
+          "item": "artifacts:snorkel",
+          "name": "The Tide Folk's Snorkel"
+        }
+      ],
+      "line": "Our last ship lies wrecked {lead}. What we could not carry is still aboard.",
+      "mark": "Their ship",
+      "page": "",
+      "structures": "wayfarer:lead/people/black"
+    },
+    "people/cold": {
+      "find": [
+        "A house of snow the Frost Walkers built. By the cold hearth, a pair of their shoes."
+      ],
+      "found_task": "3FB4DB293CCD6003",
+      "given_task": "0E7DCF498E682AF0",
+      "items": [
+        {
+          "count": 1,
+          "item": "artifacts:snowshoes",
+          "name": "The Frost Walkers' Snowshoes"
+        }
+      ],
+      "line": "Once a winter we built a house of snow, {lead}. Something of ours still waits in it.",
+      "mark": "Their winter house",
+      "page": "",
+      "structures": "wayfarer:lead/people/cold"
+    },
+    "people/corrupted": {
+      "find": [
+        "The Grass Kingdom's people still live here. They give the jewel from the king's crown to whoever took his shard."
+      ],
+      "found_task": "05CCF80CEF318552",
+      "given_task": "39EF2C6512FF1884",
+      "items": [
+        {
+          "count": 1,
+          "item": "artifacts:crystal_heart",
+          "name": "The Grass King's Jewel"
+        }
+      ],
+      "line": "His people still live in the grass, {lead}. They kept the jewel that sat beside the shard in his crown.",
+      "mark": "His people",
+      "page": "",
+      "structures": "wayfarer:lead/people/corrupted"
+    },
+    "people/cryptic": {
+      "find": [
+        "High among the peaks, where the Scribes lived. On a shelf of books nobody can read any more, a bottle of cloud."
+      ],
+      "found_task": "1F1347D0231193C1",
+      "given_task": "73CF523142112BF7",
+      "items": [
+        {
+          "count": 1,
+          "item": "artifacts:cloud_in_a_bottle",
+          "name": "The Scribes' Bottled Cloud"
+        }
+      ],
+      "line": "We lived where the peaks meet the sky, {lead}. Climb up and take what we left.",
+      "mark": "Their house",
+      "page": "",
+      "structures": "wayfarer:lead/people/cryptic"
+    },
+    "people/evil": {
+      "find": [
+        "The ruins of the First Village. In the dust of the temple, the last priest's charm."
+      ],
+      "found_task": "032D384939AD57D2",
+      "given_task": "555224EBC7673E37",
+      "items": [
+        {
+          "count": 1,
+          "item": "artifacts:cross_necklace",
+          "name": "The Last Priest's Charm"
+        }
+      ],
+      "line": "The ruins of the village stand {lead}. The last priest left his charm there.",
+      "mark": "The first village",
+      "page": "",
+      "structures": "wayfarer:lead/people/evil"
+    },
+    "people/exotic": {
+      "find": [
+        "The swimmers' last home, dry as bone. Hung on a wall, fins that have not touched water in an age."
+      ],
+      "found_task": "56ACE597ACB1716F",
+      "given_task": "205DD9C23A9CC936",
+      "items": [
+        {
+          "count": 1,
+          "item": "artifacts:flippers",
+          "name": "The Swimmers' Flippers"
+        }
+      ],
+      "line": "The swimmers settled {lead}, among the red stone. They never swam again, but they kept their fins.",
+      "mark": "Where they settled",
+      "page": "",
+      "structures": "wayfarer:lead/people/exotic"
+    },
+    "people/lost": {
+      "find": [
+        "The Diggers' tunnels. On a beam, a pair of claws worn smooth by half the world's stone."
+      ],
+      "found_task": "0A6EB7D24AF63D09",
+      "given_task": "31DD5F9EF14EB263",
+      "items": [
+        {
+          "count": 1,
+          "item": "artifacts:digging_claws",
+          "name": "The Diggers' Claws"
+        }
+      ],
+      "line": "Our tunnels start {lead}. What we could not carry is still down there.",
+      "mark": "Their tunnels",
+      "page": "",
+      "structures": "wayfarer:lead/people/lost"
+    },
+    "people/magical": {
+      "find": [
+        "The Illagers copied the Shadow Circle's halls here. In a cellar they never found, a pair of lenses for the dark."
+      ],
+      "found_task": "5F80C21496DA5F1F",
+      "given_task": "1A879783B75EA35F",
+      "items": [
+        {
+          "count": 1,
+          "item": "artifacts:night_vision_goggles",
+          "name": "The Shadow Circle's Lenses"
+        }
+      ],
+      "line": "The Illagers copied our halls {lead}. Our cellar under them is still hidden.",
+      "mark": "Their cellar",
+      "page": "",
+      "structures": "wayfarer:lead/people/magical"
+    },
+    "people/old": {
+      "find": [
+        "The Sand Singers' first hall, half under the dunes. Leaning in a corner, their shade against the sun."
+      ],
+      "found_task": "1269F14751A49E1D",
+      "given_task": "08FA737078B434A4",
+      "items": [
+        {
+          "count": 1,
+          "item": "artifacts:umbrella",
+          "name": "The Sand Singers' Shade"
+        }
+      ],
+      "line": "Our first hall lies buried {lead}. We left our shade there.",
+      "mark": "Their buried hall",
+      "page": "",
+      "structures": "wayfarer:lead/people/old"
+    },
+    "people/rogue": {
+      "find": [
+        "The Jungle Folk's temple. Among the dust, one of the little pistons that carried their thoughts from stone to stone."
+      ],
+      "found_task": "6FC90422400A94F3",
+      "given_task": "6B07A2F1AEA77F1E",
+      "items": [
+        {
+          "count": 1,
+          "item": "artifacts:pocket_piston",
+          "name": "The Jungle Folk's Piston"
+        }
+      ],
+      "line": "Our temple stands {lead}. Mind the locks; they never sleep.",
+      "mark": "Their temple",
+      "page": "",
+      "structures": "wayfarer:lead/people/rogue"
+    },
+    "people/undead": {
+      "find": [
+        "The Grave Keepers' graves. Folded on a stone, the scarf they wore among the dead."
+      ],
+      "found_task": "0B2C9E9F54066A1C",
+      "given_task": "08B79189359D4790",
+      "items": [
+        {
+          "count": 1,
+          "item": "artifacts:scarf_of_invisibility",
+          "name": "The Grave Keepers' Scarf"
+        }
+      ],
+      "line": "Our graves lie {lead}. The dead are never seen, and neither is what we left them.",
+      "mark": "Their graves",
+      "page": "",
+      "structures": "wayfarer:lead/people/undead"
+    },
+    "people/witch": {
+      "find": [
+        "A hut the witches keep for the Marsh Mothers. On the shelf, their last good brew."
+      ],
+      "found_task": "4814D756E9321635",
+      "given_task": "3BBCCA2C63E6AEB6",
+      "items": [
+        {
+          "count": 1,
+          "item": "artifacts:antidote_vessel",
+          "name": "The Marsh Mothers' Brew"
+        }
+      ],
+      "line": "The witches keep our last hut {lead}. They do not remember why; they only keep it.",
+      "mark": "Their hut",
+      "page": "",
+      "structures": "wayfarer:lead/people/witch"
+    }
+  },
+  "memories": [
+    "memory/1",
+    "memory/2",
+    "memory/3",
+    "memory/4",
+    "memory/5",
+    "memory/6",
+    "memory/7",
+    "memory/8",
+    "memory/9",
+    "memory/10",
+    "memory/11",
+    "memory/12"
+  ],
+  "notes": {
+    "awake": [
+      "7DD3601BC85C87CA"
+    ],
+    "book:memory/2": [
+      "783D37BF49BFBE4F"
+    ],
+    "book:memory/3": [
+      "6E123492013216CF"
+    ],
+    "book:memory/5": [
+      "6A23B5CCD0445038"
+    ],
+    "book:memory/6": [
+      "179DE8CE5FD1DB76"
+    ],
+    "book:memory/7": [
+      "0200657138563A00",
+      "5181325CF2402CD0"
+    ],
+    "first:blood_moon": [
+      "3FACF244FC2DB54F"
+    ],
+    "first:death": [
+      "1D180FDA7B88430D"
+    ],
+    "first:dimming": [
+      "767F1956E3A1B924"
+    ],
+    "first:horde": [
+      "21E32E9D88C4D34A"
+    ],
+    "first:portal": [
+      "616E920CF50BCE8B"
+    ],
+    "first:shrine": [
+      "1078E714048D551F",
+      "707056AE5D072408"
+    ],
+    "first:tent": [
+      "09D4C1CBCC81B0F3"
+    ],
+    "first:warm": [
+      "326B932334026BDD",
+      "494E57C0808B5C09"
+    ],
+    "first:waystone": [
+      "5DED105452F92D72"
+    ],
+    "lead:deep_city": [
+      "7862A4CBA742B7AB"
+    ],
+    "lead:first_camp": [
+      "4172C804BDC50FAF"
+    ],
+    "lead:grass_halls": [
+      "3B193B2218B81BB3"
+    ],
+    "lead:last_camp": [
+      "229A61F549820904"
+    ],
+    "lead:outpost": [
+      "444C90037E06D7AA"
+    ],
+    "scene:gate_arrival": [
+      "0A8F570543ABDB54",
+      "7B63C9A0B156F311"
+    ],
+    "scene:gate_letter": [
+      "47893EE6465D1483"
+    ],
+    "shards:1": [
+      "451F7030BDCBCC70",
+      "571A1B187CC7AFA5"
+    ],
+    "shards:12": [
+      "16185CB487143BF7",
+      "46BA011A146DC53F"
+    ],
+    "shards:4": [
+      "1F814E7775F39F39",
+      "35319BE7C24D1B15"
+    ],
+    "shards:6": [
+      "06E298592058C68D",
+      "1A23754640A19F17"
+    ],
+    "slain": [
+      "5C6CBC7F375F0DCB"
+    ],
+    "start": [
+      "05E9F82454353B4A",
+      "073EB44C91BEC5F1",
+      "11FF00D387924191",
+      "5CF1AB9345FD65AD",
+      "5FAD900A0CF32342",
+      "66D3F27D0FA028E3",
+      "728D4B884E67F23F"
+    ],
+    "step:bargain": [
+      "04D0FC8324F21404"
+    ],
+    "step:captains": [
+      "3FCB9043EAC9398A"
+    ],
+    "step:carry_me_home": [
+      "133414933B2E8A14"
+    ],
+    "step:confession": [
+      "32A2A4D9C3E0EE31"
+    ],
+    "step:first_camp": [
+      "5D39F3F9CE3E753C"
+    ],
+    "step:first_words": [
+      "2808F38F47555988",
+      "4D9460C1B2465F85"
+    ],
+    "step:hooded": [
+      "0D64F287B9DF2B6D"
+    ],
+    "step:just_a_fire": [
+      "093DF3DB3976A891"
+    ],
+    "step:ledger": [
+      "363B86466DCE4DD8"
+    ],
+    "step:maren_names": [
+      "2FF45265F8FB13CE",
+      "367FA76372FA8E17",
+      "3B0457F3A275E0C8"
+    ],
+    "step:sight": [
+      "05E9A91739B397F6",
+      "7114A15DCA5CAD10"
+    ],
+    "step:unmasked": [
+      "0D1D83B356838C94"
+    ]
+  },
+  "people": {
+    "wayfarer:shrine/black": "people/black",
+    "wayfarer:shrine/cold": "people/cold",
+    "wayfarer:shrine/corrupted": "people/corrupted",
+    "wayfarer:shrine/cryptic": "people/cryptic",
+    "wayfarer:shrine/evil": "people/evil",
+    "wayfarer:shrine/exotic": "people/exotic",
+    "wayfarer:shrine/lost": "people/lost",
+    "wayfarer:shrine/magical": "people/magical",
+    "wayfarer:shrine/old": "people/old",
+    "wayfarer:shrine/rogue": "people/rogue",
+    "wayfarer:shrine/undead": "people/undead",
+    "wayfarer:shrine/witch": "people/witch"
+  },
+  "places": {
+    "wayfarer:shrine/black": "people/black",
+    "wayfarer:shrine/cold": "people/cold",
+    "wayfarer:shrine/corrupted": "people/corrupted",
+    "wayfarer:shrine/cryptic": "people/cryptic",
+    "wayfarer:shrine/evil": "people/evil",
+    "wayfarer:shrine/exotic": "people/exotic",
+    "wayfarer:shrine/lost": "people/lost",
+    "wayfarer:shrine/magical": "people/magical",
+    "wayfarer:shrine/old": "people/old",
+    "wayfarer:shrine/rogue": "people/rogue",
+    "wayfarer:shrine/undead": "people/undead",
+    "wayfarer:shrine/witch": "people/witch"
+  },
+  "scenes": {
+    "dimming": {
+      "book": "",
+      "lines": [
+        "Stay if you need to. I stayed twenty years."
+      ],
+      "speaker": "voice"
+    },
+    "end_arrival": {
+      "book": "",
+      "lines": [
+        "You came. You really came."
+      ],
+      "speaker": "voice"
+    },
+    "gate_arrival": {
+      "book": "",
+      "lines": [
+        "You brought it all the way. He said you would."
+      ],
+      "speaker": "maren"
+    },
+    "gate_cleared": {
+      "book": "",
+      "lines": [
+        "Go. Finish it. I'll find a road of my own."
+      ],
+      "speaker": "maren"
+    },
+    "gate_letter": {
+      "book": "wend/letter",
+      "lines": [
+        "He told me to open this at the gate.",
+        "\"Watch the smoke, Maren. Someone kind is carrying my ember to the gate. Help them finish it, then go and build a home.\"",
+        "Stand aside, brothers. No? Then stand against me."
+      ],
+      "speaker": "maren"
+    },
+    "last_crystal": {
+      "book": "",
+      "lines": [
+        "Stop. I only wanted to see."
+      ],
+      "speaker": "voice"
+    }
+  },
+  "speakers": {
+    "maren": {
+      "color": "dark_green",
+      "names": [
+        {
+          "after": "",
+          "name": "A hooded traveller"
+        },
+        {
+          "after": "maren_names",
+          "name": "Maren"
+        }
+      ]
+    },
+    "voice": {
+      "color": "gold",
+      "names": [
+        {
+          "after": "",
+          "name": "The stranger"
+        },
+        {
+          "after": "maren_names",
+          "name": "Wend"
+        },
+        {
+          "after": "unmasked",
+          "name": "The gaze"
+        }
+      ]
+    }
+  },
+  "steps": [
+    {
+      "after": [],
+      "found": [],
+      "id": "first_words",
+      "lead": "",
+      "lines": [
+        "Two shards. I felt them touch. Don't be afraid, it's only me.",
+        "Sit a while. I talk best when you're still."
+      ],
+      "quest": "743AF7569F7B0C3C",
+      "shards": 2,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "first_words"
+      ],
+      "found": [],
+      "id": "first_camp",
+      "lead": "first_camp",
+      "lines": [
+        "I was young once, and I walked like you. My first camp lies {lead}.",
+        "I left something under the hearthstones. Go and see who I was, if you like."
+      ],
+      "quest": "2F0304E8796E55ED",
+      "shards": 2,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "first_words"
+      ],
+      "found": [],
+      "id": "hooded",
+      "lead": "",
+      "lines": [
+        "You carry his smoke. I'd know it anywhere.",
+        "Eat. He never ate enough either."
+      ],
+      "quest": "7E01742D87FA0667",
+      "shards": 3,
+      "slain": false,
+      "speaker": "maren",
+      "visit": [
+        {
+          "count": 4,
+          "item": "minecraft:bread",
+          "name": ""
+        },
+        {
+          "count": 2,
+          "item": "minecraft:honey_bottle",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "after": [
+        "hooded"
+      ],
+      "found": [],
+      "id": "dont_follow",
+      "lead": "",
+      "lines": [
+        "She's gone? Good. Eat the bread, but don't follow her.",
+        "Her people feed Wayfarers. That's how they catch them."
+      ],
+      "quest": "1D5DA331E524E759",
+      "shards": 3,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "first_words"
+      ],
+      "found": [],
+      "id": "not_cruel",
+      "lead": "",
+      "lines": [
+        "You feel it on the hard nights, don't you? The gaze turning towards you.",
+        "It can't stop looking. It isn't cruel. It's only an eye that was never allowed to close."
+      ],
+      "quest": "72A6CF8828A368B6",
+      "shards": 3,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "not_cruel"
+      ],
+      "found": [],
+      "id": "deep_city",
+      "lead": "deep_city",
+      "lines": [
+        "Go and see where it all started. The deep city lies {lead}, far below the stone.",
+        "Walk softly there. The silence remembers every sound, and its guard does not fear your fire."
+      ],
+      "quest": "05B0C45EDD6D21EF",
+      "shards": 3,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "first_words"
+      ],
+      "found": [],
+      "id": "sea",
+      "lead": "",
+      "lines": [
+        "Four shards. Your light is dim enough for the sea now.",
+        "I sailed once. I was sick the whole way. Don't tell anyone."
+      ],
+      "quest": "4CBE58EE1F1F7DFB",
+      "shards": 4,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "hooded"
+      ],
+      "found": [],
+      "id": "outpost",
+      "lead": "outpost",
+      "lines": [
+        "Her people keep an outpost {lead}. Stay clear of it.",
+        "Nothing there is meant for you."
+      ],
+      "quest": "38E1538D1656C28B",
+      "shards": 4,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "first_words"
+      ],
+      "found": [],
+      "id": "stronger",
+      "lead": "",
+      "lines": [
+        "They hit harder every day you carry me, and harder with every shard. Have you noticed?",
+        "The gaze sees you more clearly the longer you burn. So be quick."
+      ],
+      "quest": "2FA257702DA3A1FC",
+      "shards": 4,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "first_words"
+      ],
+      "found": [],
+      "id": "home",
+      "lead": "",
+      "lines": [
+        "Where are you from? No, don't tell me. A home is a thing you lose.",
+        "I had one once. Don't."
+      ],
+      "quest": "4FE206097212E792",
+      "shards": 5,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "home"
+      ],
+      "found": [],
+      "id": "last_camp",
+      "lead": "last_camp",
+      "lines": [
+        "There's a place {lead} where I stopped walking. My last camp.",
+        "Go if you want. I never went back."
+      ],
+      "quest": "05B3E0633F440402",
+      "shards": 5,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "first_words"
+      ],
+      "found": [],
+      "id": "sky",
+      "lead": "",
+      "lines": [
+        "Six. You could fly now, for a while, if you're careful.",
+        "The phantoms are its eyes up there. Land before they look."
+      ],
+      "quest": "2850866C92603F14",
+      "shards": 6,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "hooded"
+      ],
+      "found": [],
+      "id": "maren_names",
+      "lead": "grass_halls",
+      "lines": [
+        "My name is Maren. The man who gave you his ember was Wend, captain of the Gazebound, the Grass King's heirs.",
+        "He raised me. He taught me the road, so I could follow smoke like his.",
+        "You don't believe me. His room in the grass halls is still as he left it, {lead}."
+      ],
+      "quest": "12D3751DE826D0D0",
+      "shards": 6,
+      "slain": false,
+      "speaker": "maren",
+      "visit": [
+        {
+          "count": 3,
+          "item": "minecraft:cooked_mutton",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "after": [
+        "maren_names"
+      ],
+      "found": [],
+      "id": "confession",
+      "lead": "",
+      "lines": [
+        "She told you. Yes. Twenty winters at their table.",
+        "I lied about what I was, not about what you must do."
+      ],
+      "quest": "728DFFA4C29E37B7",
+      "shards": 6,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "first_words"
+      ],
+      "found": [],
+      "id": "sight",
+      "lead": "",
+      "lines": [
+        "Stand still in the dark tonight and look around you. You'll see them through the stone.",
+        "That's the shards, showing you what the gaze sees. The Grass King saw like that, for one summer."
+      ],
+      "quest": "2336C021E54694B2",
+      "shards": 7,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "sight"
+      ],
+      "found": [],
+      "id": "ridge",
+      "lead": "",
+      "lines": [
+        "Three of them came over the ridge behind you today. Grass cloaks.",
+        "Don't ask how I know. Keep walking."
+      ],
+      "quest": "1A86CD2853DE8004",
+      "shards": 7,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "confession"
+      ],
+      "found": [
+        "grass_halls"
+      ],
+      "id": "ledger",
+      "lead": "",
+      "lines": [
+        "You've been in my room. I can smell the grass on you.",
+        "The ledger's wrong. My ember never went dark. Who else would be talking to you?"
+      ],
+      "quest": "6AFA4C05D245CCF7",
+      "shards": 8,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "first_words"
+      ],
+      "found": [],
+      "id": "carry_me_home",
+      "lead": "",
+      "lines": [
+        "Nine. I can almost see the gate from here.",
+        "Don't stop now. Carry me home."
+      ],
+      "quest": "64B53EE176C31149",
+      "shards": 9,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "maren_names"
+      ],
+      "found": [],
+      "id": "captains",
+      "lead": "",
+      "lines": [
+        "The captains are behind me now. They know you're close.",
+        "At the gate we take what you carry. I'm sorry. I'd rather it were anyone else."
+      ],
+      "quest": "19F76937C8F2D8F8",
+      "shards": 9,
+      "slain": false,
+      "speaker": "maren",
+      "visit": [
+        {
+          "count": 2,
+          "item": "minecraft:golden_carrot",
+          "name": ""
+        }
+      ]
+    },
+    {
+      "after": [
+        "carry_me_home"
+      ],
+      "found": [],
+      "id": "stay",
+      "lead": "",
+      "lines": [
+        "You're tired. So was I. Stay by the fire a little longer tonight.",
+        "The road will wait. It always waited for me."
+      ],
+      "quest": "044B1C5B3DD84068",
+      "shards": 10,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "stay"
+      ],
+      "found": [],
+      "id": "watching",
+      "lead": "",
+      "lines": [
+        "Do you remember my fire? You were the only one who sat down.",
+        "I watched you from across it. I've been watching you ever since."
+      ],
+      "quest": "268AB6132D5AC5E4",
+      "shards": 10,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "first_words"
+      ],
+      "found": [],
+      "id": "unmasked",
+      "lead": "",
+      "lines": [
+        "You've read it now. Yes.",
+        "He sat still for twenty years, and I watched him. I learned his voice the way you learn a song.",
+        "You've been seeing with my eye for weeks."
+      ],
+      "quest": "0A85F723023662E8",
+      "shards": 11,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "unmasked"
+      ],
+      "found": [],
+      "id": "bargain",
+      "lead": "",
+      "lines": [
+        "Bring me my eye, and I will look away from you.",
+        "Build your house anywhere. Nothing will come in the night. I promise."
+      ],
+      "quest": "3B954BE86C8B9071",
+      "shards": 11,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "bargain"
+      ],
+      "found": [],
+      "id": "please",
+      "lead": "",
+      "lines": [
+        "Twelve. I can see the gate through you.",
+        "Set it. Please."
+      ],
+      "quest": "08744B30FA186CD9",
+      "shards": 12,
+      "slain": false,
+      "speaker": "voice",
+      "visit": null
+    },
+    {
+      "after": [
+        "hooded"
+      ],
+      "found": [],
+      "id": "just_a_fire",
+      "lead": "",
+      "lines": [
+        "May I sit?",
+        "No voice in the fire tonight. Just a fire."
+      ],
+      "quest": "51C1C80F75978CFB",
+      "shards": 0,
+      "slain": true,
+      "speaker": "maren",
+      "visit": []
+    }
+  ]
+}

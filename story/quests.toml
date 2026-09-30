@@ -56,8 +56,8 @@ y = 1.5
 [[chapters.quests]]
 after = ["last_fire"]
 description = [
-  "The ember is bound to fire. Wherever you light one, it brings you back when you fall.",
-  "Make a campfire and light it wherever you rest.",
+  "The ember is bound to fire: wherever you light one, it brings you back when you fall. The gaze's creatures cannot bear its light, so on an ordinary night none is born within twelve blocks of it, none steps closer, and none goes for you while you stand there.",
+  "Make a campfire, light it where you rest, and stand still beside it for half a minute. The ember warms, and until tomorrow's dusk it burns the fire instead of your food.",
 ]
 id = "campfire"
 rewards = [{ count = 4, item = "minecraft:cooked_beef" }]
@@ -71,7 +71,7 @@ y = 1.5
 after = ["last_fire"]
 description = [
   "The ember burns what you eat, twice what a settled stomach would. The more kinds of food you eat, the stronger it keeps you.",
-  "Open the Food button in your inventory to see what variety has earned you, then eat something new.",
+  "Eat something you have not eaten on this road yet; its tooltip tells you when a food is new to you.",
 ]
 icon = "minecraft:baked_potato"
 id = "food"
@@ -81,6 +81,21 @@ tasks = [{ checkmark = true }]
 title = "Eat What the Road Gives"
 x = 2.25
 y = 1.5
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "When you share a fire, the ember splits. Everyone on a team carries every shard any of you takes, and hears the fire together.",
+  "Travel with friends by joining one team with the team button at the top left of the inventory screen, or walk alone.",
+]
+icon = "minecraft:soul_campfire"
+id = "share"
+rewards = [{ xp_levels = 1 }]
+subtitle = "The ember splits"
+tasks = [{ checkmark = true }]
+title = "Share a Fire"
+x = 0.75
+y = 3.0
 
 [[chapters.quests]]
 after = ["backpack"]
@@ -100,7 +115,7 @@ y = 3.0
 after = ["atlas", "campfire", "tent"]
 description = [
   "You have lived a Wayfarer's first day, and the ember answers. Look to the top of your sight: a compass that turns with you. Far from a shard, the ember only flares when you walk towards it and gutters when you walk away.",
-  "Within five hundred blocks the shard itself appears on the compass, at the door of its shrine. Walk until it answers.",
+  "Within five hundred blocks the shard itself appears on the compass, at the stair down to its shrine. The Twelve Peoples hid every stair under a cover that looks like nothing to anyone without an ember. Walk until it answers.",
 ]
 icon = "minecraft:blaze_powder"
 id = "ember"
@@ -395,7 +410,7 @@ title = "The Last Road"
 [[chapters.quests]]
 after_eyes = 2
 description = [
-  "With all twelve shards, the ember remembers the true gate, farther out than anyone walks now. The Keepers have guarded it alone ever since the Eye was broken.",
+  "With all twelve shards, the ember remembers where the Eye was torn out. The portal broke into twelve frames, and the Keepers carried them out to a ring far past every map; any frame takes the whole Eye, and the ember leads you to the nearest.",
   "Follow the ember to the Keepers' stronghold.",
 ]
 id = "true_gate"
@@ -409,6 +424,21 @@ y = 0.0
 [[chapters.quests]]
 after = ["true_gate"]
 description = [
+  "The Gazebound followed your smoke all the way, and the Keepers' ward keeps the frame shut while any of them stands in the hall.",
+  "Touch the frame, and drive the Gazebound from the hall.",
+]
+icon = "minecraft:crossbow"
+id = "gate_band"
+rewards = [{ xp_levels = 10 }]
+subtitle = "The Keepers' ward"
+tasks = [{ advancement = "wayfarer:gate" }]
+title = "The Gazebound at the Gate"
+x = 0.0
+y = 1.5
+
+[[chapters.quests]]
+after = ["gate_band"]
+description = [
   "Twelve shards, twelve sockets, one Eye. Touch any frame with all twelve in your ember, and they set themselves.",
   "Set the Eye and step through.",
 ]
@@ -418,7 +448,7 @@ subtitle = "One Eye again"
 tasks = [{ dimension = "minecraft:the_end" }]
 title = "Set the Eye"
 x = 0.0
-y = 1.5
+y = 3.0
 
 [[chapters]]
 icon = "minecraft:dragon_head"
@@ -449,7 +479,7 @@ title = "Build a Home"
 [[chapters.quests]]
 after = ["dragon"]
 description = [
-  "The ember is out and the sky is yours. Nothing is watching any more.",
+  "The ember is out and nothing is watching any more. You eat like a settled person, no night is sleepless, the moon stays white, and the sky is yours. Fire still remembers you, and brings you back when you fall.",
   "Stay somewhere at last, and build a home.",
 ]
 id = "home"
@@ -459,6 +489,27 @@ tasks = [{ checkmark = true }]
 title = "Build a Home"
 x = 0.0
 y = 0.0
+
+[[chapters]]
+icon = "minecraft:filled_map"
+id = "summary"
+notes = "summary"
+subtitle = ["What happened on the road, as I learned it."]
+title = "The Road So Far"
+
+[[chapters]]
+icon = "minecraft:name_tag"
+id = "words"
+notes = "words"
+subtitle = ["Every word the road taught me."]
+title = "Words of the Road"
+
+[[chapters]]
+fire = true
+icon = "minecraft:campfire"
+id = "fire"
+subtitle = ["Everything said at my fire, and every place I was told the way to."]
+title = "At the Fire"
 
 [[chapters]]
 icon = "minecraft:writable_book"

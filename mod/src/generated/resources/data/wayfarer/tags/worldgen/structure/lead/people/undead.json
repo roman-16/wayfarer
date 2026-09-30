@@ -1,0 +1,24 @@
+{
+  "values": [
+    {
+      "id": "explorify:mausoleum",
+      "required": false
+    },
+    {
+      "id": "nova_structures:creeping_crypt",
+      "required": false
+    },
+    {
+      "id": "nova_structures:remnant_graveyard",
+      "required": false
+    },
+    {
+      "id": "structory:graveyard",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/graveyard",
+      "required": false
+    }
+  ]
+}

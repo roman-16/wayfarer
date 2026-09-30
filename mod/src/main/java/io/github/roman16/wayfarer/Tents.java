@@ -15,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -47,19 +46,20 @@ public final class Tents {
             if (advancement != null) {
                 player.getAdvancements().award(advancement, SLEPT);
             }
+            Notes.first(player, "tent");
         }
     }
 
     @SubscribeEvent
     public static void onTravel(EntityTravelToDimensionEvent event) {
-        if (!isTent(event.getDimension()) || !(event.getEntity().level() instanceof ServerLevel level)) {
+        if (!isTent(event.getDimension()) || event.getEntity().level().isClientSide()) {
             return;
         }
-        if (!(event.getEntity() instanceof Player player)) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) {
             event.setCanceled(true);
             return;
         }
-        if (Nights.tentsShut(level.getServer().overworld())) {
+        if (Nights.tentsShut(player)) {
             event.setCanceled(true);
             player.displayClientMessage(Component.translatable("wayfarer.night.tent").withStyle(ChatFormatting.RED), true);
         }

@@ -1,0 +1,16 @@
+{
+  "values": [
+    {
+      "id": "betterdeserttemples:desert_temple",
+      "required": false
+    },
+    {
+      "id": "minecraft:desert_pyramid",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/small_pyramide",
+      "required": false
+    }
+  ]
+}

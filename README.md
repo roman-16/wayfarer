@@ -33,7 +33,7 @@ To look at the pack without installing it anywhere:
 $ just demo
 ```
 
-This opens a creative dev client in the **showroom**: a flat world with all twelve shrines in a row (the signs name them), the Last Camp at spawn and a wall of every Wayfarer item. The showroom is rebuilt on every launch, so it always shows the current generator output. The compass runs there as a demo, pointing at a waymark 750 blocks west of the camp, with a companion circling the camp and the camp's grave marked, so walking to the waymark and back shows every reading. A natural world with a fixed seed sits beside it and is kept between launches: `/execute in minecraft:overworld run tp @s 0 200 0` goes there.
+This opens a creative dev client in the **showroom**: a flat world with all twelve shrines in a row (the signs name them), the Last Camp at spawn with the stranger's two old camps beside it and a wall of every Wayfarer item. The showroom is rebuilt on every launch, so it always shows the current generator output. The compass runs there as a demo, pointing at a waymark 750 blocks west of the camp, with a companion circling the camp and the camp's grave marked, so walking to the waymark and back shows every reading. A natural world with a fixed seed sits beside it and is kept between launches: `/execute in minecraft:overworld run tp @s 0 200 0` goes there.
 
 To play the pack the way a player meets it, on a fresh world in survival:
 
@@ -69,9 +69,9 @@ Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftE
 
 | Path | Holds |
 |---|---|
-| `balance.toml` | Every balancing number: compass, difficulty, gaze, hunger, nights, unlocks, shrine legs and stronghold distances, structure spread |
-| `generator/` | The structure generator (the twelve halls, their surface covers, the Last Camp), the twelve eyes and each tier's shrine spacing (`eyes.toml`), the recipe and structure removals, the Nether audit list |
+| `balance.toml` | Every balancing number: compass, difficulty, fire, gate, gaze, hunger, leads, nights, sight, stillness, unlocks, shrine legs and stronghold distances, structure spread |
+| `generator/` | The structure generator (the twelve halls, their surface covers, the Last Camp and the stranger's old camps), the twelve eyes, their peoples' places and each tier's shrine spacing (`eyes.toml`), the recipe and structure removals, the Nether audit list |
 | `mod/` | The Wayfarer mod (NeoForge, Java 21); `src/dev` holds the game tests and the dev client's driver, which never ship |
 | `pack/` | The packwiz pack: one file per mod, and the pack's configs |
-| `scripts/` | The server pack builder, the boot test, the Nether audit, the rule checks and the dev client driver with its screenshot tour |
-| `story/` | The lore everything else is written from, the books (`books.toml`), the quest book (`quests.toml`) and the narration cast (`narration.md`) |
+| `scripts/` | The server pack builder, the boot test, the Nether and structure removal audit, the rule checks and the dev client driver with its screenshot tour |
+| `story/` | The lore everything else is written from, the books (`books.toml`), the voice at the fire, Maren and the leads (`fire.toml`), the journal's summary and word list (`notes.toml`), the quest book (`quests.toml`) and the narration cast (`narration.md`) |

@@ -1,0 +1,16 @@
+{
+  "values": [
+    {
+      "id": "minecraft:shipwreck_beached",
+      "required": false
+    },
+    {
+      "id": "minecraft:shipwreck",
+      "required": false
+    },
+    {
+      "id": "structory:boat",
+      "required": false
+    }
+  ]
+}

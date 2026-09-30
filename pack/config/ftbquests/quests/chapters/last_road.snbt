@@ -44,6 +44,33 @@
 			dependencies: [
 				"467796D56D014FF1"
 			]
+			icon: {
+				count: 1
+				id: "minecraft:crossbow"
+			}
+			id: "49E3A63EC7AD7C28"
+			rewards: [
+				{
+					id: "72462FCBC847A36B"
+					type: "xp_levels"
+					xp_levels: 10
+				}
+			]
+			tasks: [
+				{
+					advancement: "wayfarer:gate"
+					criterion: ""
+					id: "7C61D41BCFDD4CC4"
+					type: "advancement"
+				}
+			]
+			x: 0.0d
+			y: 1.5d
+		}
+		{
+			dependencies: [
+				"49E3A63EC7AD7C28"
+			]
 			id: "19915A5C482101B0"
 			rewards: [
 				{
@@ -60,7 +87,7 @@
 				}
 			]
 			x: 0.0d
-			y: 1.5d
+			y: 3.0d
 		}
 	]
 }

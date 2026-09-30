@@ -22,10 +22,13 @@ Read `story/lore.md`. It is the only source of what is true in this world. When 
 | Text | File |
 |---|---|
 | Shrine books and eye quests (per eye) | `generator/eyes.toml`, `people`, `hint` and `lore` |
-| The Last Camp journal, the twelve memories, the loot books | `story/books.toml` |
-| The Last Camp grave | `generator/generate.py`, `last_camp` |
+| Each people's place: its line in the shrine book, what is found there, the gift | `generator/eyes.toml`, `place` |
+| The Last Camp journal, the twelve memories, the loot books, the pages found on the road | `story/books.toml` |
+| The voice at the fire, Maren, the gate and End lines, the leads and what they hold | `story/fire.toml` |
+| The Road So Far and Words of the Road | `story/notes.toml`; a summary entry tells what the player knew at that moment, a word states only facts that stay true, so neither ever spoils a twist |
+| The Last Camp grave | `generator/camp.py`, `GRAVE_LINES` |
 | Mod messages, HUD, item names | `mod/src/main/resources/assets/wayfarer/lang/en_us.json` |
 | Another mod's text the pack rewords | `mod/src/main/resources/assets/<that mod's namespace>/lang/en_us.json`; only a file in the same namespace reliably wins |
 | The quest book: chapters, quests, the book title | `story/quests.toml` |
 
-All text is English. After editing, run `just generate` for generated text and `just lint`, which fails on a translation key the code uses but the language file does not name, and on a quest that comes after a quest that does not exist.
+All text is English. After editing, run `just generate` for generated text and `just lint`, which fails on a translation key the code uses but the language file does not name, on a quest that comes after a quest that does not exist, and on a step, lead, scene or note that names something that does not exist.

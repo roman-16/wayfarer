@@ -36,6 +36,7 @@ public final class Shrines {
     public static final TagKey<Structure> TIER_TWO = TagKey.create(Registries.STRUCTURE, Wayfarer.id("shrines/tier_two"));
 
     private static final int TITLE_CHECK_TICKS = 20;
+    private static final int STIRRING_SHARDS = 2;
     private static final Map<UUID, ResourceLocation> INSIDE = new HashMap<>();
 
     private Shrines() {}
@@ -111,11 +112,18 @@ public final class Shrines {
             member.sendSystemMessage(message);
             Library.INSTANCE.book(memory).ifPresent(book -> member.sendSystemMessage(
                     Component.translatable("wayfarer.shrine.memory", book.title()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)));
+            if (taken == 1) {
+                member.sendSystemMessage(Component.translatable("wayfarer.shrine.sinks").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            }
+            if (taken == STIRRING_SHARDS) {
+                member.sendSystemMessage(Component.translatable("wayfarer.shrine.stirs").withStyle(ChatFormatting.GOLD, ChatFormatting.ITALIC));
+            }
             Shards.sync(member);
             Compass.forget(member);
             Difficulty.catchUp(member);
         }
         Journal.read(player, memory);
+        Notes.trigger(player, "shards:" + taken);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -134,6 +142,9 @@ public final class Shrines {
         }
         ResourceLocation shrine = inside(player.serverLevel(), player.blockPosition()).orElse(null);
         ResourceLocation before = shrine == null ? INSIDE.remove(player.getUUID()) : INSIDE.put(player.getUUID(), shrine);
+        if (shrine != null && !shrine.equals(before) && Notes.first(player, "shrine")) {
+            player.sendSystemMessage(Component.translatable("wayfarer.first.shrine").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        }
         if (shrine != null && !shrine.equals(before)) {
             player.connection.send(new ClientboundSetTitlesAnimationPacket(20, 60, 30));
             player.connection.send(new ClientboundSetSubtitleTextPacket(people(shrine)));

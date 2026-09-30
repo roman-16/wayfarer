@@ -68,13 +68,32 @@ public final class Nights {
         return night % Balance.INSTANCE.nights().bloodMoonEvery() == 0;
     }
 
-    public static NightPayload forecast(Level overworld) {
-        long night = tonight(overworld);
-        return new NightPayload(horde(night), bloodMoon(night));
+    public static boolean sleepless(ServerPlayer player) {
+        return !Journey.slain(player) && (horde(tonight(player.server.overworld())) || Stillness.found(player));
     }
 
-    public static boolean tentsShut(Level overworld) {
-        return horde(tonight(overworld)) && overworld.getDayTime() % TICKS_PER_DAY >= DUSK;
+    public static boolean redMoon(MinecraftServer server) {
+        return bloodMoon(tonight(server.overworld())) && !Journey.dragonDead(server);
+    }
+
+    public static boolean night(Level overworld) {
+        return overworld.getDayTime() % TICKS_PER_DAY >= DUSK;
+    }
+
+    public static boolean fearless(ServerPlayer player) {
+        return night(player.server.overworld()) && (sleepless(player) || redMoon(player.server));
+    }
+
+    public static NightPayload forecast(ServerPlayer player) {
+        return new NightPayload(sleepless(player), redMoon(player.server));
+    }
+
+    public static boolean tentsShut(ServerPlayer player) {
+        return sleepless(player) && night(player.server.overworld());
+    }
+
+    public static void sync(ServerPlayer player) {
+        PacketDistributor.sendToPlayer(player, forecast(player));
     }
 
     private static long tonight(Level overworld) {
@@ -90,12 +109,11 @@ public final class Nights {
         State state = level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(State::new, State::load, null), NAME);
         long day = level.getDayTime() / TICKS_PER_DAY;
         long time = level.getDayTime() % TICKS_PER_DAY;
-        long night = day + 1;
         if (state.dawn != day) {
             state.dawn = day;
             state.setDirty();
-            NightPayload forecast = forecast(level);
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                NightPayload forecast = forecast(player);
                 PacketDistributor.sendToPlayer(player, forecast);
                 if (forecast.hard()) {
                     warn(player, forecast);
@@ -105,23 +123,33 @@ public final class Nights {
         if (time >= DUSK && state.dusk != day) {
             state.dusk = day;
             state.setDirty();
-            if (horde(night)) {
-                server.getPlayerList().getPlayers().stream().filter(player -> Tents.isTent(player.level().dimension())).forEach(Tents::eject);
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                if (sleepless(player)) {
+                    Notes.first(player, "horde");
+                    if (Tents.isTent(player.level().dimension())) {
+                        Tents.eject(player);
+                    }
+                }
+                if (redMoon(server)) {
+                    Notes.first(player, "blood_moon");
+                }
             }
         }
-        if (time >= MOONRISE && state.moon != day && bloodMoon(night)) {
+        if (time >= MOONRISE && state.moon != day && redMoon(server)) {
             state.moon = day;
             state.setDirty();
             if (ModList.get().isLoaded(CELESTIALS)) {
                 command(server, "enhancedcelestials2core setLunarEvent " + BLOOD_MOON);
             }
         }
-        if (time >= MIDNIGHT && state.horde != day && horde(night)) {
+        if (time >= MIDNIGHT && state.horde != day) {
             state.horde = day;
             state.setDirty();
             if (ModList.get().isLoaded(HORDES)) {
                 for (ServerPlayer player : level.players()) {
-                    command(server, "hordes start " + player.getGameProfile().getName() + " " + (TICKS_PER_DAY - time));
+                    if (sleepless(player)) {
+                        command(server, "hordes start " + player.getGameProfile().getName() + " " + (TICKS_PER_DAY - time));
+                    }
                 }
             }
         }
@@ -132,7 +160,7 @@ public final class Nights {
         if (!(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }
-        NightPayload forecast = forecast(player.server.overworld());
+        NightPayload forecast = forecast(player);
         PacketDistributor.sendToPlayer(player, forecast);
         if (forecast.hard()) {
             player.sendSystemMessage(Component.translatable("wayfarer.night." + kind(forecast) + ".chat").withStyle(ChatFormatting.RED));
@@ -142,7 +170,7 @@ public final class Nights {
     @SubscribeEvent
     public static void onSleep(CanPlayerSleepEvent event) {
         ServerPlayer player = event.getEntity();
-        if (event.getProblem() == null && horde(tonight(player.server.overworld()))) {
+        if (event.getProblem() == null && sleepless(player)) {
             event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
             player.displayClientMessage(Component.translatable("wayfarer.night.no_sleep").withStyle(ChatFormatting.RED), true);
         }

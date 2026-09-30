@@ -1,0 +1,399 @@
+[speakers.maren]
+color = "dark_green"
+names = [{ name = "A hooded traveller" }, { after = "maren_names", name = "Maren" }]
+
+[speakers.voice]
+color = "gold"
+names = [
+  { name = "The stranger" },
+  { after = "maren_names", name = "Wend" },
+  { after = "unmasked", name = "The gaze" },
+]
+
+[[steps]]
+id = "first_words"
+lines = [
+  "Two shards. I felt them touch. Don't be afraid, it's only me.",
+  "Sit a while. I talk best when you're still.",
+]
+shards = 2
+speaker = "voice"
+title = "Two Shards Touch"
+
+[[steps]]
+after = ["first_words"]
+id = "first_camp"
+lead = "first_camp"
+lines = [
+  "I was young once, and I walked like you. My first camp lies {lead}.",
+  "I left something under the hearthstones. Go and see who I was, if you like.",
+]
+shards = 2
+speaker = "voice"
+title = "His First Camp"
+
+[[steps]]
+after = ["first_words"]
+id = "hooded"
+lines = ["You carry his smoke. I'd know it anywhere.", "Eat. He never ate enough either."]
+shards = 3
+speaker = "maren"
+title = "A Hooded Traveller"
+visit = [{ count = 4, item = "minecraft:bread" }, { count = 2, item = "minecraft:honey_bottle" }]
+
+[[steps]]
+after = ["hooded"]
+id = "dont_follow"
+lines = [
+  "She's gone? Good. Eat the bread, but don't follow her.",
+  "Her people feed Wayfarers. That's how they catch them.",
+]
+shards = 3
+speaker = "voice"
+title = "Bread by the Fire"
+
+[[steps]]
+after = ["first_words"]
+id = "not_cruel"
+lines = [
+  "You feel it on the hard nights, don't you? The gaze turning towards you.",
+  "It can't stop looking. It isn't cruel. It's only an eye that was never allowed to close.",
+]
+shards = 3
+speaker = "voice"
+title = "It Isn't Cruel"
+
+[[steps]]
+after = ["not_cruel"]
+id = "deep_city"
+lead = "deep_city"
+lines = [
+  "Go and see where it all started. The deep city lies {lead}, far below the stone.",
+  "Walk softly there. The silence remembers every sound, and its guard does not fear your fire.",
+]
+shards = 3
+speaker = "voice"
+title = "Where It Started"
+
+[[steps]]
+after = ["first_words"]
+id = "sea"
+lines = [
+  "Four shards. Your light is dim enough for the sea now.",
+  "I sailed once. I was sick the whole way. Don't tell anyone.",
+]
+shards = 4
+speaker = "voice"
+title = "The Sea Opens"
+
+[[steps]]
+after = ["hooded"]
+id = "outpost"
+lead = "outpost"
+lines = ["Her people keep an outpost {lead}. Stay clear of it.", "Nothing there is meant for you."]
+shards = 4
+speaker = "voice"
+title = "Stay Clear"
+
+[[steps]]
+after = ["first_words"]
+id = "stronger"
+lines = [
+  "They hit harder every day you carry me, and harder with every shard. Have you noticed?",
+  "The gaze sees you more clearly the longer you burn. So be quick.",
+]
+shards = 4
+speaker = "voice"
+title = "Stronger Every Day"
+
+[[steps]]
+after = ["first_words"]
+id = "home"
+lines = [
+  "Where are you from? No, don't tell me. A home is a thing you lose.",
+  "I had one once. Don't.",
+]
+shards = 5
+speaker = "voice"
+title = "A Home"
+
+[[steps]]
+after = ["home"]
+id = "last_camp"
+lead = "last_camp"
+lines = [
+  "There's a place {lead} where I stopped walking. My last camp.",
+  "Go if you want. I never went back.",
+]
+shards = 5
+speaker = "voice"
+title = "Where I Stopped"
+
+[[steps]]
+after = ["first_words"]
+id = "sky"
+lines = [
+  "Six. You could fly now, for a while, if you're careful.",
+  "The phantoms are its eyes up there. Land before they look.",
+]
+shards = 6
+speaker = "voice"
+title = "The Sky, For a While"
+
+[[steps]]
+after = ["hooded"]
+id = "maren_names"
+lead = "grass_halls"
+lines = [
+  "My name is Maren. The man who gave you his ember was Wend, captain of the Gazebound, the Grass King's heirs.",
+  "He raised me. He taught me the road, so I could follow smoke like his.",
+  "You don't believe me. His room in the grass halls is still as he left it, {lead}.",
+]
+shards = 6
+speaker = "maren"
+title = "Maren"
+visit = [{ count = 3, item = "minecraft:cooked_mutton" }]
+
+[[steps]]
+after = ["maren_names"]
+id = "confession"
+lines = [
+  "She told you. Yes. Twenty winters at their table.",
+  "I lied about what I was, not about what you must do.",
+]
+shards = 6
+speaker = "voice"
+title = "Twenty Winters"
+
+[[steps]]
+after = ["first_words"]
+id = "sight"
+lines = [
+  "Stand still in the dark tonight and look around you. You'll see them through the stone.",
+  "That's the shards, showing you what the gaze sees. The Grass King saw like that, for one summer.",
+]
+shards = 7
+speaker = "voice"
+title = "The Grass King's Sight"
+
+[[steps]]
+after = ["sight"]
+id = "ridge"
+lines = [
+  "Three of them came over the ridge behind you today. Grass cloaks.",
+  "Don't ask how I know. Keep walking.",
+]
+shards = 7
+speaker = "voice"
+title = "Behind You"
+
+[[steps]]
+after = ["confession"]
+found = ["grass_halls"]
+id = "ledger"
+lines = [
+  "You've been in my room. I can smell the grass on you.",
+  "The ledger's wrong. My ember never went dark. Who else would be talking to you?",
+]
+shards = 8
+speaker = "voice"
+title = "The Ledger"
+
+[[steps]]
+after = ["first_words"]
+id = "carry_me_home"
+lines = ["Nine. I can almost see the gate from here.", "Don't stop now. Carry me home."]
+shards = 9
+speaker = "voice"
+title = "Carry Me Home"
+
+[[steps]]
+after = ["maren_names"]
+id = "captains"
+lines = [
+  "The captains are behind me now. They know you're close.",
+  "At the gate we take what you carry. I'm sorry. I'd rather it were anyone else.",
+]
+shards = 9
+speaker = "maren"
+title = "The Captains"
+visit = [{ count = 2, item = "minecraft:golden_carrot" }]
+
+[[steps]]
+after = ["carry_me_home"]
+id = "stay"
+lines = [
+  "You're tired. So was I. Stay by the fire a little longer tonight.",
+  "The road will wait. It always waited for me.",
+]
+shards = 10
+speaker = "voice"
+title = "A Little Longer"
+
+[[steps]]
+after = ["stay"]
+id = "watching"
+lines = [
+  "Do you remember my fire? You were the only one who sat down.",
+  "I watched you from across it. I've been watching you ever since.",
+]
+shards = 10
+speaker = "voice"
+title = "Across the Fire"
+
+[[steps]]
+after = ["first_words"]
+id = "unmasked"
+lines = [
+  "You've read it now. Yes.",
+  "He sat still for twenty years, and I watched him. I learned his voice the way you learn a song.",
+  "You've been seeing with my eye for weeks.",
+]
+shards = 11
+speaker = "voice"
+title = "The Voice at the Fire"
+
+[[steps]]
+after = ["unmasked"]
+id = "bargain"
+lines = [
+  "Bring me my eye, and I will look away from you.",
+  "Build your house anywhere. Nothing will come in the night. I promise.",
+]
+shards = 11
+speaker = "voice"
+title = "A Bargain"
+
+[[steps]]
+after = ["bargain"]
+id = "please"
+lines = ["Twelve. I can see the gate through you.", "Set it. Please."]
+shards = 12
+speaker = "voice"
+title = "Set It"
+
+[[steps]]
+after = ["hooded"]
+id = "just_a_fire"
+lines = ["May I sit?", "No voice in the fire tonight. Just a fire."]
+slain = true
+speaker = "maren"
+title = "Just a Fire"
+visit = []
+
+[[leads]]
+camp = "wayfarer:lead/first_camp"
+find = ["Under the hearthstones, wrapped in oilcloth: a page in a young man's hand, and what he left for the road."]
+page = "wend/first_camp"
+id = "first_camp"
+items = [
+  { count = 6, item = "minecraft:bread" },
+  { count = 4, item = "minecraft:iron_ingot" },
+  { count = 16, item = "minecraft:arrow" },
+]
+mark = "His first camp"
+title = "His First Camp"
+
+[[leads]]
+find = ["The deep city. Its lamps went out long ago, and the silence is older than the gaze. Leave its guard asleep."]
+id = "deep_city"
+mark = "The deep city"
+structures = ["minecraft:ancient_city"]
+title = "The Deep City"
+
+[[leads]]
+find = ["Among the Gazebound's things, folded small: a letter that was never sent."]
+page = "maren/unsent"
+id = "outpost"
+mark = "Their outpost"
+structures = [
+  "ctov:pillager_outpost_badlands",
+  "ctov:pillager_outpost_beach",
+  "ctov:pillager_outpost_dark_forest",
+  "ctov:pillager_outpost_desert",
+  "ctov:pillager_outpost_jungle",
+  "ctov:pillager_outpost_mesa",
+  "ctov:pillager_outpost_mountain",
+  "ctov:pillager_outpost_plains",
+  "ctov:pillager_outpost_savanna",
+  "ctov:pillager_outpost_snowy",
+  "ctov:pillager_outpost_swamp",
+  "ctov:pillager_outpost_taiga",
+  "minecraft:pillager_outpost",
+  "towns_and_towers:pillager_outpost_badlands",
+  "towns_and_towers:pillager_outpost_beach",
+  "towns_and_towers:pillager_outpost_birch_forest",
+  "towns_and_towers:pillager_outpost_desert",
+  "towns_and_towers:pillager_outpost_flower_forest",
+  "towns_and_towers:pillager_outpost_forest",
+  "towns_and_towers:pillager_outpost_grove",
+  "towns_and_towers:pillager_outpost_jungle",
+  "towns_and_towers:pillager_outpost_meadow",
+  "towns_and_towers:pillager_outpost_old_growth_taiga",
+  "towns_and_towers:pillager_outpost_savanna",
+  "towns_and_towers:pillager_outpost_snowy_plains",
+  "towns_and_towers:pillager_outpost_snowy_taiga",
+  "towns_and_towers:pillager_outpost_swamp",
+  "towns_and_towers:pillager_outpost_taiga",
+]
+title = "Their Outpost"
+
+[[leads]]
+camp = "wayfarer:lead/last_camp"
+find = ["The hearth is cold and its stones have fallen. Under them, one more page, in an older hand."]
+page = "wend/last_camp"
+id = "last_camp"
+items = [{ count = 3, item = "minecraft:bread" }]
+mark = "His last camp"
+title = "Where He Stopped"
+
+[[leads]]
+find = [
+  "His room is as he left it: a narrow bed, a crown of dry grass on a nail, and a ledger open on the table.",
+]
+page = "gazebound/ledger"
+id = "grass_halls"
+mark = "The grass halls"
+structures = [
+  "minecraft:mansion",
+  "nova_structures:illager_hideout",
+  "nova_structures:illager_manor",
+  "trek:overworld/rare/abandoned_castle_pillager",
+  "trek:overworld/rare/pillager_mansion",
+]
+title = "The Grass Halls"
+
+[[scenes]]
+id = "dimming"
+lines = ["Stay if you need to. I stayed twenty years."]
+speaker = "voice"
+
+[[scenes]]
+id = "gate_arrival"
+lines = ["You brought it all the way. He said you would."]
+speaker = "maren"
+
+[[scenes]]
+book = "wend/letter"
+id = "gate_letter"
+lines = [
+  "He told me to open this at the gate.",
+  "\"Watch the smoke, Maren. Someone kind is carrying my ember to the gate. Help them finish it, then go and build a home.\"",
+  "Stand aside, brothers. No? Then stand against me.",
+]
+speaker = "maren"
+
+[[scenes]]
+id = "gate_cleared"
+lines = ["Go. Finish it. I'll find a road of my own."]
+speaker = "maren"
+
+[[scenes]]
+id = "end_arrival"
+lines = ["You came. You really came."]
+speaker = "voice"
+
+[[scenes]]
+id = "last_crystal"
+lines = ["Stop. I only wanted to see."]
+speaker = "voice"

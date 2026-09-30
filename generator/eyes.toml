@@ -20,6 +20,18 @@ lore = [
   "If you are reading this, the fire was lit again. Take the shard. The sea will forget us, as it should.",
 ]
 
+[eyes.black.place]
+find = "The Tide Folk's last ship. Under the rotten deck, wrapped in oiled skin, something they could not carry."
+gift = { item = "artifacts:snorkel", name = "The Tide Folk's Snorkel" }
+line = "Our last ship lies wrecked {lead}. What we could not carry is still aboard."
+mark = "Their ship"
+structures = [
+  "minecraft:shipwreck_beached",
+  "minecraft:shipwreck",
+  "structory:boat",
+]
+title = "The Tide Folk's Ship"
+
 [eyes.cold]
 tier = 1
 biomes = ["#c:is_snowy", "#c:is_icy"]
@@ -30,6 +42,20 @@ lore = [
   "They carried the cold shard for a hundred winters and said it was the only fire that never burned them.",
   "When the last of them grew too old to walk, they set it here, under the ice, where nothing stays still long enough to be seen.",
 ]
+
+[eyes.cold.place]
+find = "A house of snow the Frost Walkers built. By the cold hearth, a pair of their shoes."
+gift = { item = "artifacts:snowshoes", name = "The Frost Walkers' Snowshoes" }
+line = "Once a winter we built a house of snow, {lead}. Something of ours still waits in it."
+mark = "Their winter house"
+structures = [
+  "minecraft:igloo",
+  "mvs:medium_igloo_1",
+  "mvs:medium_igloo_2",
+  "mvs:small_igloo",
+  "terralith:igloo",
+]
+title = "The Frost Walkers' House"
 
 [eyes.corrupted]
 tier = 2
@@ -42,6 +68,20 @@ lore = [
   "His own people tore the shard from his crown and sealed it here. The throne is dust. Do not keep what you carry.",
 ]
 
+[eyes.corrupted.place]
+find = "The Grass Kingdom's people still live here. They give the jewel from the king's crown to whoever took his shard."
+gift = { item = "artifacts:crystal_heart", name = "The Grass King's Jewel" }
+line = "His people still live in the grass, {lead}. They kept the jewel that sat beside the shard in his crown."
+mark = "His people"
+structures = [
+  "ctov:large/village_savanna",
+  "ctov:medium/village_savanna",
+  "ctov:small/village_savanna",
+  "minecraft:village_savanna",
+  "trek:village/savanna",
+]
+title = "The Grass Kingdom"
+
 [eyes.cryptic]
 tier = 2
 biomes = ["#c:is_mountain", "#minecraft:is_mountain"]
@@ -52,6 +92,21 @@ lore = [
   "Most of it was madness. Some of it was the way the true gate was built, and why it must never be built again.",
   "We burned the madness and kept the rest. The shard we leave to you. Read before you carry it.",
 ]
+
+[eyes.cryptic.place]
+find = "High among the peaks, where the Scribes lived. On a shelf of books nobody can read any more, a bottle of cloud."
+gift = { item = "artifacts:cloud_in_a_bottle", name = "The Scribes' Bottled Cloud" }
+line = "We lived where the peaks meet the sky, {lead}. Climb up and take what we left."
+mark = "Their house"
+structures = [
+  "ctov:medium/village_mountain",
+  "ctov:medium/village_mountain_alpine",
+  "ctov:small/village_mountain",
+  "ctov:small/village_mountain_alpine",
+  "terralith:rubble_mountain",
+  "trek:overworld/medium/all_abandoned",
+]
+title = "The Scribes' House"
 
 [eyes.evil]
 tier = 2
@@ -69,6 +124,20 @@ lore = [
   "When the gaze came, the last priest carried it out into the grass and buried it here. The village is gone. The grass remembers.",
 ]
 
+[eyes.evil.place]
+find = "The ruins of the First Village. In the dust of the temple, the last priest's charm."
+gift = { item = "artifacts:cross_necklace", name = "The Last Priest's Charm" }
+line = "The ruins of the village stand {lead}. The last priest left his charm there."
+mark = "The first village"
+structures = [
+  "explorify:ruins",
+  "nova_structures:remnant_classic_village",
+  "nova_structures:ruin_town",
+  "structory:ruin_grassy",
+  "towns_and_towers:village_forest",
+]
+title = "The First Village"
+
 [eyes.exotic]
 tier = 2
 biomes = ["#c:is_badlands", "#minecraft:is_badlands"]
@@ -79,6 +148,19 @@ lore = [
   "The few who swam out carried the exotic shard inland, as far from water as they could, into the red canyons.",
   "They never saw the sea again. They said it was worth it. We hope you agree.",
 ]
+
+[eyes.exotic.place]
+find = "The swimmers' last home, dry as bone. Hung on a wall, fins that have not touched water in an age."
+gift = { item = "artifacts:flippers", name = "The Swimmers' Flippers" }
+line = "The swimmers settled {lead}, among the red stone. They never swam again, but they kept their fins."
+mark = "Where they settled"
+structures = [
+  "ctov:medium/village_mesa",
+  "ctov:small/village_mesa",
+  "explorify:badlands_pyramid",
+  "towns_and_towers:village_badlands",
+]
+title = "Where the Swimmers Settled"
 
 [eyes.lost]
 tier = 1
@@ -91,6 +173,30 @@ lore = [
   "If it wanders again, let it wander with you.",
 ]
 
+[eyes.lost.place]
+find = "The Diggers' tunnels. On a beam, a pair of claws worn smooth by half the world's stone."
+gift = { item = "artifacts:digging_claws", name = "The Diggers' Claws" }
+line = "Our tunnels start {lead}. What we could not carry is still down there."
+mark = "Their tunnels"
+structures = [
+  "bettermineshafts:mineshaft_acacia",
+  "bettermineshafts:mineshaft_desert",
+  "bettermineshafts:mineshaft_dripstone",
+  "bettermineshafts:mineshaft_ice",
+  "bettermineshafts:mineshaft_jungle",
+  "bettermineshafts:mineshaft_lush",
+  "bettermineshafts:mineshaft_mesa",
+  "bettermineshafts:mineshaft_mushroom",
+  "bettermineshafts:mineshaft_oak",
+  "bettermineshafts:mineshaft_overgrown",
+  "bettermineshafts:mineshaft_red_desert",
+  "bettermineshafts:mineshaft_spruce",
+  "bettermineshafts:mineshaft_spruce_snowy",
+  "minecraft:mineshaft",
+  "minecraft:mineshaft_mesa",
+]
+title = "The Diggers' Tunnels"
+
 [eyes.magical]
 tier = 2
 biomes = ["#c:is_dark_forest", "minecraft:dark_forest"]
@@ -101,6 +207,19 @@ lore = [
   "Their mansions in the dark woods are copies of our halls, built by people who wanted the shard's power without its burden.",
   "The burden is the point. Carry it.",
 ]
+
+[eyes.magical.place]
+find = "The Illagers copied the Shadow Circle's halls here. In a cellar they never found, a pair of lenses for the dark."
+gift = { item = "artifacts:night_vision_goggles", name = "The Shadow Circle's Lenses" }
+line = "The Illagers copied our halls {lead}. Our cellar under them is still hidden."
+mark = "Their cellar"
+structures = [
+  "explorify:dark_forest_settlement",
+  "minecraft:mansion",
+  "nova_structures:illager_manor",
+  "trek:overworld/rare/pillager_mansion",
+]
+title = "The Shadow Circle's Cellar"
 
 [eyes.old]
 tier = 1
@@ -113,6 +232,18 @@ lore = [
   "The worm is not a story. Walk softly.",
 ]
 
+[eyes.old.place]
+find = "The Sand Singers' first hall, half under the dunes. Leaning in a corner, their shade against the sun."
+gift = { item = "artifacts:umbrella", name = "The Sand Singers' Shade" }
+line = "Our first hall lies buried {lead}. We left our shade there."
+mark = "Their buried hall"
+structures = [
+  "betterdeserttemples:desert_temple",
+  "minecraft:desert_pyramid",
+  "trek:overworld/medium/small_pyramide",
+]
+title = "The Sand Singers' Hall"
+
 [eyes.rogue]
 tier = 1
 biomes = ["#c:is_jungle", "#minecraft:is_jungle"]
@@ -123,6 +254,19 @@ lore = [
   "They built doors that opened themselves and traps that never slept, and still the gaze found their temples.",
   "No lock keeps out a god. Only leaving does. So we left, and left the shard to you.",
 ]
+
+[eyes.rogue.place]
+find = "The Jungle Folk's temple. Among the dust, one of the little pistons that carried their thoughts from stone to stone."
+gift = { item = "artifacts:pocket_piston", name = "The Jungle Folk's Piston" }
+line = "Our temple stands {lead}. Mind the locks; they never sleep."
+mark = "Their temple"
+structures = [
+  "betterjungletemples:jungle_temple",
+  "minecraft:jungle_pyramid",
+  "nova_structures:jungle_ruins",
+  "structory:jungle_ruin",
+]
+title = "The Jungle Folk's Temple"
 
 [eyes.undead]
 tier = 2
@@ -139,6 +283,20 @@ lore = [
   "We are among them now. Take the shard and keep walking. We will keep the graves.",
 ]
 
+[eyes.undead.place]
+find = "The Grave Keepers' graves. Folded on a stone, the scarf they wore among the dead."
+gift = { item = "artifacts:scarf_of_invisibility", name = "The Grave Keepers' Scarf" }
+line = "Our graves lie {lead}. The dead are never seen, and neither is what we left them."
+mark = "Their graves"
+structures = [
+  "explorify:mausoleum",
+  "nova_structures:creeping_crypt",
+  "nova_structures:remnant_graveyard",
+  "structory:graveyard",
+  "trek:overworld/medium/graveyard",
+]
+title = "The Grave Keepers' Graves"
+
 [eyes.witch]
 tier = 1
 biomes = ["#c:is_swamp", "minecraft:mangrove_swamp", "minecraft:swamp"]
@@ -149,3 +307,16 @@ lore = [
   "They saw the dragon seeing them, and they stopped brewing, and they sank the shard into the mud where no reflection lives.",
   "The witches in their huts still remember us. They do not remember why.",
 ]
+
+[eyes.witch.place]
+find = "A hut the witches keep for the Marsh Mothers. On the shelf, their last good brew."
+gift = { item = "artifacts:antidote_vessel", name = "The Marsh Mothers' Brew" }
+line = "The witches keep our last hut {lead}. They do not remember why; they only keep it."
+mark = "Their hut"
+structures = [
+  "betterwitchhuts:witch_hut",
+  "minecraft:swamp_hut",
+  "nova_structures:mangrove_witch_hut",
+  "terralith:witch_hut",
+]
+title = "The Marsh Mothers' Hut"

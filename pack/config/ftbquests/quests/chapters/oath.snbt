@@ -181,6 +181,31 @@
 		}
 		{
 			dependencies: [
+				"1F1980B9A1FF2B71"
+			]
+			icon: {
+				count: 1
+				id: "minecraft:soul_campfire"
+			}
+			id: "365041126A787594"
+			rewards: [
+				{
+					id: "14AC4CD3462FD715"
+					type: "xp_levels"
+					xp_levels: 1
+				}
+			]
+			tasks: [
+				{
+					id: "18725AFA61BFA3A7"
+					type: "checkmark"
+				}
+			]
+			x: 0.75d
+			y: 3.0d
+		}
+		{
+			dependencies: [
 				"070C745D06E746A9"
 			]
 			id: "12A733126EEC4BAF"

@@ -9,6 +9,16 @@ trail_blocks = 20
 per_day = 0.333
 per_eye = 3.33
 
+[fire]
+circle_blocks = 12
+line_seconds = 3
+rest_blocks = 4
+rest_seconds = 30
+
+[gate]
+band_size = 8
+reach_blocks = 48
+
 [gaze]
 capacity_seconds = [180, 300, 480, 720]
 drain_factor = 4
@@ -17,6 +27,12 @@ hunt_phantoms = 2
 
 [hunger]
 exhaustion_factor = 2.0
+warm_exhaustion_factor = 1.0
+
+[leads]
+camp_blocks = 1200
+camp_reach_blocks = 8
+search_chunks = 256
 
 [nights]
 blood_moon_every = 5
@@ -26,8 +42,17 @@ horde_every = 4
 tier_one_leg_blocks = 3750
 tier_two_leg_blocks = 6000
 
+[sight]
+reach_blocks = 32
+shards = 7
+
 [sleep]
 players_percentage = 66
+
+[stillness]
+dimming_days = 1
+horde_days = 2
+radius_blocks = 256
 
 [strongholds]
 count = 12

@@ -30,6 +30,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 public final class Gate {
     private static final ResourceLocation FRAME = ResourceLocation.fromNamespaceAndPath("endrem", "ancient_portal_frame");
     private static final int PORTAL_REACH = 4;
+    private static final String BAND_ARRIVES = "gate_arrival";
 
     private Gate() {}
 
@@ -48,9 +49,18 @@ public final class Gate {
                     Component.translatable("wayfarer.gate.incomplete", claimed.size(), needed).withStyle(ChatFormatting.GRAY), true);
             return;
         }
+        BlockPos center = event.getPos();
+        if (!Journey.tale(player).said(BAND_ARRIVES)) {
+            Maren.gather(player, center);
+            ward(player);
+            return;
+        }
+        if (Maren.bandNear(level, center)) {
+            ward(player);
+            return;
+        }
         Set<Item> set = new HashSet<>();
         Deque<BlockPos> empty = new ArrayDeque<>();
-        BlockPos center = event.getPos();
         for (BlockPos pos : BlockPos.betweenClosed(center.offset(-PORTAL_REACH, 0, -PORTAL_REACH), center.offset(PORTAL_REACH, 0, PORTAL_REACH))) {
             BlockState state = level.getBlockState(pos);
             if (!frame(state)) {
@@ -72,6 +82,10 @@ public final class Gate {
             eye.useOn(new UseOnContext(level, player, InteractionHand.MAIN_HAND, new ItemStack(eye), hit));
             set.add(eye);
         }
+    }
+
+    private static void ward(ServerPlayer player) {
+        player.displayClientMessage(Component.translatable("wayfarer.gate.ward").withStyle(ChatFormatting.RED), true);
     }
 
     private static boolean frame(BlockState state) {

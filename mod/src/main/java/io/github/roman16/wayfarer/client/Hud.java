@@ -1,11 +1,14 @@
 package io.github.roman16.wayfarer.client;
 
+import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Compass;
 import io.github.roman16.wayfarer.CompassPayload;
 import io.github.roman16.wayfarer.GazePayload;
 import io.github.roman16.wayfarer.HudState;
 import io.github.roman16.wayfarer.NightPayload;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
@@ -31,6 +34,8 @@ public final class Hud {
     private static final int EYE_COLOR = 0x55FFFF;
     private static final int STRONGHOLD_COLOR = 0xFF55FF;
     private static final int GRAVE_COLOR = 0xE0E0E0;
+    private static final int LEAD_COLOR = 0xFFAA55;
+    private static final String LEAD_MARK = "✦";
     private static final int GAP = "    ".length();
     private static final int HALF_WIDTH = 90;
     private static final float HALF_VIEW_DEGREES = 90;
@@ -57,6 +62,10 @@ public final class Hud {
             y += RIBBON_HEIGHT + POINTER;
             line(graphics, font, caption(reading).append(night(HudState.night)), y);
             y += LINE;
+            for (Component lead : leads(reading, player)) {
+                line(graphics, font, lead, y);
+                y += LINE;
+            }
         } else if (HudState.night.hard()) {
             line(graphics, font, night(HudState.night), y);
             y += LINE;
@@ -89,9 +98,17 @@ public final class Hud {
             graphics.drawString(font, label, x - font.width(label) / 2 + 1, y + 1, color);
         }
         for (CompassPayload.Marker marker : reading.markers()) {
-            boolean grave = marker.kind() == CompassPayload.Kind.GRAVE;
-            int color = grave ? GRAVE_COLOR : TEAMMATE_COLORS[Math.floorMod(marker.name().hashCode(), TEAMMATE_COLORS.length)];
-            mark(graphics, font, grave ? "✝" : "☻", color, bearing(marker.x(), marker.z(), player), center, y);
+            String symbol = switch (marker.kind()) {
+                case GRAVE -> "✝";
+                case LEAD -> LEAD_MARK;
+                case TEAMMATE -> "☻";
+            };
+            int color = switch (marker.kind()) {
+                case GRAVE -> GRAVE_COLOR;
+                case LEAD -> LEAD_COLOR;
+                case TEAMMATE -> TEAMMATE_COLORS[Math.floorMod(marker.name().hashCode(), TEAMMATE_COLORS.length)];
+            };
+            mark(graphics, font, symbol, color, bearing(marker.x(), marker.z(), player), center, y);
         }
         if (reading.mode() == CompassPayload.Mode.NEAR) {
             boolean stronghold = reading.target().equals(Compass.STRONGHOLD);
@@ -118,9 +135,25 @@ public final class Hud {
         return Mth.wrapDegrees(bearing - player.getYRot());
     }
 
+    private static List<Component> leads(CompassPayload reading, LocalPlayer player) {
+        int exact = Balance.INSTANCE.compass().exactBlocks();
+        List<Component> lines = new ArrayList<>();
+        for (CompassPayload.Marker marker : reading.markers()) {
+            int distance = (int) Math.hypot(marker.x() + 0.5 - player.getX(), marker.z() + 0.5 - player.getZ());
+            if (marker.kind() == CompassPayload.Kind.LEAD && distance <= exact) {
+                lines.add(Component.literal(LEAD_MARK + " ").withStyle(style -> style.withColor(LEAD_COLOR))
+                        .append(Component.literal(marker.name()).withStyle(ChatFormatting.WHITE))
+                        .append(separator())
+                        .append(Component.translatable("wayfarer.compass.exact", blocks(distance))));
+            }
+        }
+        return lines;
+    }
+
     private static MutableComponent caption(CompassPayload reading) {
         return switch (reading.mode()) {
             case AIR -> Component.translatable("wayfarer.compass.air").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
+            case DIM -> Component.translatable("wayfarer.compass.dim").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
             case LOST, HIDDEN -> Component.translatable("wayfarer.compass.lost").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
             case FAR -> target(reading)
                     .append(separator())

@@ -89,16 +89,21 @@ public final class Compass {
         }
         bearing.aim(event.aim());
         List<CompassPayload.Marker> markers = List.copyOf(event.markers());
+        boolean sight = claimed.size() >= Balance.INSTANCE.sight().shards() && !Journey.slain(player);
         if (Gaze.airborne(player)) {
-            return new CompassPayload(CompassPayload.Mode.AIR, CompassPayload.NOTHING, 0, 0, 0, 0, claimed, markers);
+            return new CompassPayload(CompassPayload.Mode.AIR, CompassPayload.NOTHING, 0, 0, 0, 0, claimed, markers, sight);
+        }
+        if (Stillness.found(player)) {
+            return new CompassPayload(CompassPayload.Mode.DIM, CompassPayload.NOTHING, 0, 0, 0, 0, claimed, markers, sight);
         }
         Aim aim = bearing.aim;
         if (aim.pos() == null) {
-            return new CompassPayload(CompassPayload.Mode.LOST, CompassPayload.NOTHING, 0, 0, 0, 0, claimed, markers);
+            return new CompassPayload(CompassPayload.Mode.LOST, CompassPayload.NOTHING, 0, 0, 0, 0, claimed, markers, sight);
         }
         int distance = (int) horizontal(pos, aim.pos());
         if (distance <= balance.exactBlocks()) {
-            return new CompassPayload(CompassPayload.Mode.NEAR, aim.target(), 0, distance, aim.pos().getX(), aim.pos().getZ(), claimed, markers);
+            return new CompassPayload(
+                    CompassPayload.Mode.NEAR, aim.target(), 0, distance, aim.pos().getX(), aim.pos().getZ(), claimed, markers, sight);
         }
         if (bearing.trailStart == null) {
             bearing.trailStart = pos;
@@ -110,7 +115,7 @@ public final class Compass {
         }
         int rounding = balance.farRoundingBlocks();
         int rounded = Math.max(rounding, Math.round((float) distance / rounding) * rounding);
-        return new CompassPayload(CompassPayload.Mode.FAR, aim.target(), bearing.heat, rounded, 0, 0, claimed, markers);
+        return new CompassPayload(CompassPayload.Mode.FAR, aim.target(), bearing.heat, rounded, 0, 0, claimed, markers, sight);
     }
 
     private static List<CompassPayload.Marker> markers(ServerPlayer player) {
@@ -122,6 +127,9 @@ public final class Compass {
             }
         }
         grave(player).ifPresent(grave -> markers.add(new CompassPayload.Marker(CompassPayload.Kind.GRAVE, "", grave.getX(), grave.getZ())));
+        if (player.level().dimension() == Level.OVERWORLD) {
+            markers.addAll(Leads.markers(player));
+        }
         return markers;
     }
 

@@ -77,6 +77,10 @@ file = "config/ftbquests/quests/chapters/far_eyes.snbt"
 hash = "bb5be8d6b2d514b1e9943de41015b90e24a2b2b328bb2cf823a106471833ed45"
 
 [[files]]
+file = "config/ftbquests/quests/chapters/fire.snbt"
+hash = "e9f7d84b41394745ccf18384de40164d2bec277639ed04b2ef0bc75a6b47d9f6"
+
+[[files]]
 file = "config/ftbquests/quests/chapters/first_eyes.snbt"
 hash = "b38c63543a48da5ffd2988ffeea930a37f9652c4336dc76ee3c637ebda4234c8"
 
@@ -86,15 +90,15 @@ hash = "aca7acaf4c48f2bf54f523b023ffe70c2cbc4a3f1474aae34cafca3792d56732"
 
 [[files]]
 file = "config/ftbquests/quests/chapters/last_road.snbt"
-hash = "a939345db3e5f311c66f28ef163e76ade277a3e8c514773cb47bba0ddda48a7f"
+hash = "0d60c0b4911e817fdc3b8f0365cc50309020322d50207d2a9b3d069c351163b5"
 
 [[files]]
 file = "config/ftbquests/quests/chapters/oath.snbt"
-hash = "d12d29f69afd7d2ca11633153dcd07010770944808e3a2e992185c91b1348b04"
+hash = "ff4ea5a68d64222465fb4e1274ce190efac7f5e8490c34ecdc6a288d1fb5236f"
 
 [[files]]
 file = "config/ftbquests/quests/chapters/pages.snbt"
-hash = "d95334476598be90d0ead4200c829824b14fbd75484fc318da0deee66cc5c4a0"
+hash = "5e9bf584c9c982a377b32c93dd7c8549e6cbaf72f51cb13a1a5198586e8d5ac5"
 
 [[files]]
 file = "config/ftbquests/quests/chapters/road.snbt"
@@ -105,12 +109,20 @@ file = "config/ftbquests/quests/chapters/sea.snbt"
 hash = "480fabf97a37eb22cd58041c315a000bb7219c8f816c3264b280bb37a6b5a738"
 
 [[files]]
+file = "config/ftbquests/quests/chapters/summary.snbt"
+hash = "ff145c31ec54a4d2f55e00451393c20aa91f096f1201a6041cc24e30960131f1"
+
+[[files]]
+file = "config/ftbquests/quests/chapters/words.snbt"
+hash = "9a40b99a940726800dc7329041019e357c97b1a89042b3cb24ad930565a95f4f"
+
+[[files]]
 file = "config/ftbquests/quests/data.snbt"
 hash = "f5d82f6dc6effa6595748e5bf306c1d482cec1ab7ac8303406d9b66d6c4a8894"
 
 [[files]]
 file = "config/ftbquests/quests/lang/en_us.snbt"
-hash = "80c8d2e76760593b630d175b138ee5fe22d15b9d5fd2ac9d43256c1d89270562"
+hash = "fca9e14cf975f6c58ce89c409b37d33ce42bcd00738ead145c6620843748e2ed"
 
 [[files]]
 file = "config/hordes-common.toml"
@@ -138,7 +150,7 @@ hash = "94c99843a2135cade988f4b39ef92ac0f95dd64b6fa79c969b8d02cf75c2e470"
 
 [[files]]
 file = "config/nohostilesaroundcampfire.json5"
-hash = "bd4f46fac884ff00de1ae3335698200965b848aed1a594686068c248be3e3b62"
+hash = "f65a32c4ca9612269ccbb5e51a2438c6787763f169010aa2ddf3b39dec008dbf"
 
 [[files]]
 file = "config/nomadictents-common.toml"
@@ -149,8 +161,16 @@ file = "config/roadarchitect.json"
 hash = "eaf542318a4f69e29e7fff3d803acd04fd9782b66400872c6944afef285e41f4"
 
 [[files]]
+file = "config/solonion-client.json"
+hash = "3491b93fb6219daa6204c5fd251a00158e6e1fe7db40fb4e4e74ac33678a5118"
+
+[[files]]
 file = "config/sparsestructures.json5"
 hash = "55d9783986a1fbf4f30df0894dcd9f8c25b6c969e4e2ae77448ef2b56ca298ae"
+
+[[files]]
+file = "config/subtle_effects/general.toml"
+hash = "acdd4a35a9bb8a89e667245a10481f73f2fb1b0f137ecb9c77ef6605dc4f15d4"
 
 [[files]]
 file = "config/tectonic.json"

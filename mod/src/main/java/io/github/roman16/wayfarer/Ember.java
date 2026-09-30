@@ -29,6 +29,7 @@ public final class Ember {
         if (Journey.of(player.server).wake(Teams.id(player))) {
             Component message = Component.translatable("wayfarer.ember.awake").withStyle(ChatFormatting.GOLD);
             Teams.onlineMembers(player).forEach(member -> member.sendSystemMessage(message));
+            Notes.trigger(player, "awake");
         }
     }
 }
