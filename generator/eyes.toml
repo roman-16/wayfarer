@@ -1,4 +1,10 @@
-[black]
+[tiers.1]
+spacing = 106
+
+[tiers.2]
+spacing = 194
+
+[eyes.black]
 tier = 1
 biomes = [
   "#c:is_beach",
@@ -6,9 +12,6 @@ biomes = [
   "#minecraft:is_beach",
   "minecraft:stony_shore",
 ]
-spacing = 94
-marker = "fire_ring"
-palette = { floor = "minecraft:dark_prismarine", light = "minecraft:sea_lantern", pillar = "minecraft:polished_deepslate", plant = "minecraft:blue_orchid", shell = "minecraft:deepslate_tiles", stairs = "minecraft:dark_prismarine_stairs", trim = "minecraft:prismarine_bricks" }
 people = "The Tide Folk"
 hint = "The Tide Folk kept their shard where the land gives up and the sea begins. Walk the beaches and stony shores until the ember answers."
 lore = [
@@ -17,12 +20,9 @@ lore = [
   "If you are reading this, the fire was lit again. Take the shard. The sea will forget us, as it should.",
 ]
 
-[cold]
+[eyes.cold]
 tier = 1
 biomes = ["#c:is_snowy", "#c:is_icy"]
-spacing = 112
-marker = "standing_stone"
-palette = { floor = "minecraft:polished_diorite", light = "minecraft:sea_lantern", pillar = "minecraft:calcite", plant = "minecraft:lily_of_the_valley", shell = "minecraft:packed_ice", stairs = "minecraft:polished_diorite_stairs", trim = "minecraft:blue_ice" }
 people = "The Frost Walkers"
 hint = "The Frost Walkers never stayed anywhere the snow could not cover their tracks. Go where the cold is deepest and listen for the ember."
 lore = [
@@ -31,12 +31,9 @@ lore = [
   "When the last of them grew too old to walk, they set it here, under the ice, where nothing stays still long enough to be seen.",
 ]
 
-[corrupted]
+[eyes.corrupted]
 tier = 2
 biomes = ["#c:is_savanna", "#minecraft:is_savanna"]
-spacing = 163
-marker = "cairn"
-palette = { floor = "minecraft:acacia_planks", light = "minecraft:ochre_froglight", pillar = "minecraft:stripped_acacia_log", plant = "minecraft:red_tulip", shell = "minecraft:terracotta", stairs = "minecraft:acacia_stairs", trim = "minecraft:red_terracotta" }
 people = "The Grass Kingdom"
 hint = "A king kept this shard on his throne, and it made him the first of the Gazebound. It sleeps under the savanna grass now; find it before his heirs do."
 lore = [
@@ -45,12 +42,9 @@ lore = [
   "His own people tore the shard from his crown and sealed it here. The throne is dust. Do not keep what you carry.",
 ]
 
-[cryptic]
+[eyes.cryptic]
 tier = 2
 biomes = ["#c:is_mountain", "#minecraft:is_mountain"]
-spacing = 164
-marker = "standing_stone"
-palette = { floor = "minecraft:smooth_stone", light = "minecraft:sea_lantern", pillar = "minecraft:chiseled_bookshelf", plant = "minecraft:cornflower", shell = "minecraft:calcite", stairs = "minecraft:stone_stairs", trim = "minecraft:bookshelf" }
 people = "The Scribes of the Peaks"
 hint = "The Scribes climbed as high as the land allows and wrote down what the shard whispered. Search the mountains, and read their book before you take it."
 lore = [
@@ -59,7 +53,7 @@ lore = [
   "We burned the madness and kept the rest. The shard we leave to you. Read before you carry it.",
 ]
 
-[evil]
+[eyes.evil]
 tier = 2
 biomes = [
   "#c:is_plains",
@@ -67,9 +61,6 @@ biomes = [
   "minecraft:plains",
   "minecraft:sunflower_plains",
 ]
-spacing = 208
-marker = "fire_ring"
-palette = { floor = "minecraft:polished_andesite", light = "minecraft:lantern", pillar = "minecraft:chiseled_stone_bricks", plant = "minecraft:azure_bluet", shell = "minecraft:stone_bricks", stairs = "minecraft:stone_brick_stairs", trim = "minecraft:cracked_stone_bricks" }
 people = "The First Village"
 hint = "The First Village forgot the oath and was seen. Its shard lies under the plains and meadows where the village once stood."
 lore = [
@@ -78,12 +69,9 @@ lore = [
   "When the gaze came, the last priest carried it out into the grass and buried it here. The village is gone. The grass remembers.",
 ]
 
-[exotic]
+[eyes.exotic]
 tier = 2
 biomes = ["#c:is_badlands", "#minecraft:is_badlands"]
-spacing = 95
-marker = "standing_stone"
-palette = { floor = "minecraft:smooth_red_sandstone", light = "minecraft:pearlescent_froglight", pillar = "minecraft:chiseled_red_sandstone", plant = "minecraft:torchflower", shell = "minecraft:orange_terracotta", stairs = "minecraft:red_sandstone_stairs", trim = "minecraft:cut_red_sandstone" }
 people = "The Drowned City"
 hint = "The last of the Drowned City fled as far from the sea as they could. Search the red canyons of the badlands."
 lore = [
@@ -92,12 +80,9 @@ lore = [
   "They never saw the sea again. They said it was worth it. We hope you agree.",
 ]
 
-[lost]
+[eyes.lost]
 tier = 1
 biomes = ["#c:is_forest", "#minecraft:is_forest"]
-spacing = 151
-marker = "cairn"
-palette = { floor = "minecraft:cobbled_deepslate", light = "minecraft:lantern", pillar = "minecraft:deepslate_bricks", plant = "minecraft:brown_mushroom", shell = "minecraft:stone", stairs = "minecraft:cobbled_deepslate_stairs", trim = "minecraft:polished_deepslate" }
 people = "The Diggers"
 hint = "The Diggers lost their shard three times before they built it a hall. It waits under a forest; let the ember lead you down."
 lore = [
@@ -106,12 +91,9 @@ lore = [
   "If it wanders again, let it wander with you.",
 ]
 
-[magical]
+[eyes.magical]
 tier = 2
 biomes = ["#c:is_dark_forest", "minecraft:dark_forest"]
-spacing = 84
-marker = "standing_stone"
-palette = { floor = "minecraft:dark_oak_planks", light = "minecraft:pearlescent_froglight", pillar = "minecraft:dark_oak_log", plant = "minecraft:allium", shell = "minecraft:deepslate_bricks", stairs = "minecraft:dark_oak_stairs", trim = "minecraft:amethyst_block" }
 people = "The Shadow Circle"
 hint = "The Shadow Circle taught the Illagers more than it should have. Its shard is hidden in the dark forests, not far from the mansions it inspired."
 lore = [
@@ -120,12 +102,9 @@ lore = [
   "The burden is the point. Carry it.",
 ]
 
-[old]
+[eyes.old]
 tier = 1
 biomes = ["#c:is_desert", "minecraft:desert"]
-spacing = 35
-marker = "cairn"
-palette = { floor = "minecraft:smooth_sandstone", light = "minecraft:ochre_froglight", pillar = "minecraft:chiseled_sandstone", plant = "minecraft:dead_bush", shell = "minecraft:sandstone", stairs = "minecraft:sandstone_stairs", trim = "minecraft:cut_sandstone" }
 people = "The Sand Singers"
 hint = "The Sand Singers let the desert bury their hall. Cross the dunes and dig where the ember burns hottest."
 lore = [
@@ -134,12 +113,9 @@ lore = [
   "The worm is not a story. Walk softly.",
 ]
 
-[rogue]
+[eyes.rogue]
 tier = 1
 biomes = ["#c:is_jungle", "#minecraft:is_jungle"]
-spacing = 68
-marker = "standing_stone"
-palette = { floor = "minecraft:mossy_stone_bricks", light = "minecraft:verdant_froglight", pillar = "minecraft:chiseled_stone_bricks", plant = "minecraft:fern", shell = "minecraft:mossy_cobblestone", stairs = "minecraft:mossy_stone_brick_stairs", trim = "minecraft:redstone_block" }
 people = "The Jungle Folk"
 hint = "The Jungle Folk built locks that never slept, and still they had to leave. Their shard waits somewhere under the jungle."
 lore = [
@@ -148,16 +124,13 @@ lore = [
   "No lock keeps out a god. Only leaving does. So we left, and left the shard to you.",
 ]
 
-[undead]
+[eyes.undead]
 tier = 2
 biomes = [
   "minecraft:old_growth_pine_taiga",
   "minecraft:old_growth_spruce_taiga",
   "#c:is_old_growth",
 ]
-spacing = 117
-marker = "cairn"
-palette = { floor = "minecraft:polished_tuff", light = "minecraft:pearlescent_froglight", pillar = "minecraft:chiseled_tuff", plant = "minecraft:brown_mushroom", shell = "minecraft:tuff", stairs = "minecraft:tuff_brick_stairs", trim = "minecraft:bone_block" }
 people = "The Grave Keepers"
 hint = "The Grave Keepers hid their shard among the dead, under the oldest trees. Walk the old-growth taiga and keep your voice low."
 lore = [
@@ -166,12 +139,9 @@ lore = [
   "We are among them now. Take the shard and keep walking. We will keep the graves.",
 ]
 
-[witch]
+[eyes.witch]
 tier = 1
 biomes = ["#c:is_swamp", "minecraft:mangrove_swamp", "minecraft:swamp"]
-spacing = 23
-marker = "fire_ring"
-palette = { floor = "minecraft:packed_mud", light = "minecraft:verdant_froglight", pillar = "minecraft:mangrove_log", plant = "minecraft:red_mushroom", shell = "minecraft:mud_bricks", stairs = "minecraft:mud_brick_stairs", trim = "minecraft:mangrove_planks" }
 people = "The Marsh Mothers"
 hint = "The Marsh Mothers sank their shard where no reflection lives. Wade into the swamps and follow the ember."
 lore = [

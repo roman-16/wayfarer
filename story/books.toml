@@ -1,3 +1,114 @@
+[journal]
+author = "The Last Wayfarer"
+id = "journal"
+pages = [
+  "I do not know your name, stranger, and you will not learn mine. It does not matter. Wayfarers have no names, only roads.",
+  "Long ago the dragon at the end of the world gave up an eye to watch every land its portal touched. The first Wayfarers tore that Eye out, broke it into twelve shards and hid them at the far ends of the world.",
+  "The ember I gave you is the last light of that Eye. It pulls towards the shards. Far away it is only a feeling: it flares when you walk towards one and gutters when you walk away. Close by, it knows the way to the door.",
+  "The ember wakes once you have lived one day as we do. Carry everything you own. Light a fire where you rest, for the ember brings you back to fire when you fall. Pitch your tent before dark and sleep in it.",
+  "The Eye sees what stays still. Linger in one place and the gaze finds you, and what walks at night grows stronger. A tent is folded space, and the gaze cannot see what is not anywhere. Nothing follows you through its door.",
+  "Some nights are worse. Every fourth night the gaze turns fully towards the world and nobody sleeps; the ember burns too bright to fold into a tent. Every fifth, the moon turns red. The ember warns you each morning.",
+  "Do not take to the sea or the sky too early. A lone ember shines like a beacon on open water, and the phantoms see it flicker in the air. Every shard you gather dims it.",
+  "The Gazebound hunt the shards too. Gather all twelve before they do, find the true gate, and finish what we could not. Watch the smoke, stranger. I always did.",
+]
+title = "The Last Wayfarer's Journal"
+
+[[memories]]
+id = "memory/1"
+pages = [
+  "We were proud once. Our cities lay deep in the stone, and their lamps burned day and night, brighter than anything the world had seen.",
+  "We did not know that far away, in a frame of black stone, an eye was watching. The dragon had given it up to guard every land its portal touched. Every lamp we lit was a word shouted at it.",
+]
+title = "The First Memory"
+
+[[memories]]
+id = "memory/2"
+pages = [
+  "The dragon looked at us. Not at a traveller, not at a village: at a whole people. Light went cold in our streets, and the first of us stopped moving where they stood.",
+  "Our masters found fire in the burning world below and built a gate of our own, to strike back through the dark. We were proud of that too.",
+]
+title = "The Second Memory"
+
+[[memories]]
+id = "memory/3"
+pages = [
+  "The gate opened once. What came through was silence. It spread across the stone like moss and remembered every sound we had ever made.",
+  "Our cities went quiet. The last of our guards still walks there, blind, and knows no friend. The few of us who lived climbed into the daylight and did not go back.",
+]
+title = "The Third Memory"
+
+[[memories]]
+id = "memory/4"
+pages = [
+  "We walked to the frame of black stone where the Eye sat, and we tore it out. It screamed with a voice that was not a sound.",
+  "Blind, the dragon faded back into the end of the world, and the portal went dark. We had won. We held the Eye in our hands and were afraid of it.",
+]
+title = "The Fourth Memory"
+
+[[memories]]
+id = "memory/5"
+pages = [
+  "We broke the Eye into twelve. Twelve peoples at the far ends of the world each took one shard and hid it where no one would think to look.",
+  "Then we swore the oath: never settle, never shine, and never let the shards come together again. We called ourselves Wayfarers, because a road was the only home we trusted.",
+]
+title = "The Fifth Memory"
+
+[[memories]]
+id = "memory/6"
+pages = [
+  "Some of us would not walk. They carried the empty gates out past the edge of every map and stayed to guard them, as far from everyone as they could. We called them the Keepers.",
+  "They sealed the burning world below, so no one could build our gate again. Since that day obsidian takes no spark.",
+]
+title = "The Sixth Memory"
+
+[[memories]]
+id = "memory/7"
+pages = [
+  "Each of us carried a sliver of the Eye's light, so we could always find the shards if we had to. We called it the ember.",
+  "An ember passes only at a fire shared freely. It cannot be stolen. And it goes dim in anyone who stops walking, until it no longer answers them at all.",
+]
+title = "The Seventh Memory"
+
+[[memories]]
+id = "memory/8"
+pages = [
+  "A king of the grasslands kept his people's shard in his crown and looked through it. For one summer he saw what the dragon sees, and he ruled like a god.",
+  "His own people tore it from his crown and sealed it away. His heirs never forgave them. They learned only this: without an ember no shrine can be found, and an ember cannot be taken.",
+]
+title = "The Eighth Memory"
+
+[[memories]]
+id = "memory/9"
+pages = [
+  "Years became ages. People forgot the oath. Villages grew into towns and towns into capitals, and the world began to shine again.",
+  "The king's heirs called themselves the Gazebound. They hunted Wayfarers, and every ember they took from a dead hand went out. So they stopped hunting us, and began to feed us instead.",
+]
+title = "The Ninth Memory"
+
+[[memories]]
+id = "memory/10"
+pages = [
+  "One of us grew tired of the road. The Gazebound gave him a warm hall, a full table and a name. He stayed a winter, then a year, then twenty.",
+  "His ember went dim. It stopped answering him, and he could not find a single shrine. They made him their captain anyway, because he still carried one.",
+]
+title = "The Tenth Memory"
+
+[[memories]]
+id = "memory/11"
+pages = [
+  "When he was old and dying, the captain lit a fire by a road, where its smoke could be seen from far away, and waited for someone kind enough to sit with him.",
+  "Someone did. He gave them his ember and a Wayfarer's story, and told them to gather all twelve. No Wayfarer would ever ask that. We remember your face in his firelight.",
+]
+title = "The Eleventh Memory"
+
+[[memories]]
+id = "memory/12"
+pages = [
+  "The Eye is whole again, and it rests in your ember. This is what the Gazebound wanted: someone to find what they could not, and carry it to the gate for them.",
+  "Do not give it to them, and do not let it be seen. Open the true gate and kill the dragon while it is still half-blind. Then the ember goes out, and you are free. We never were.",
+]
+title = "The Twelfth Memory"
+
 [[collections]]
 author = "The Keepers"
 chance = 0.6
@@ -5,6 +116,7 @@ id = "keepers"
 targets = ["betterstrongholds:chests/grand_library", "betterstrongholds:chests/library_md"]
 
 [[collections.books]]
+id = "keepers/first_watch"
 pages = [
   "Year one of the watch. We built this hall as far from everyone as our legs could carry the stone. The gate sleeps below us. It is only a frame now, and we mean to keep it that way.",
   "Rule of the watch: no Keeper lights a fire bigger than a hand. No Keeper plants what takes more than a season to grow. We are the only people in the world allowed to stay, and we must stay small.",
@@ -13,6 +125,7 @@ pages = [
 title = "The First Watch"
 
 [[collections.books]]
+id = "keepers/distance"
 pages = [
   "Why so far? Because the gaze sees what stays still, and a gate stays stiller than anything. We carried this one out past the edge of every map, so that whatever it shone, it shone on nobody.",
   "Twelve halls like this one stand in a ring, all the same distance from where the first fire was lit, and every one of them guards a gate. The ember will lead you to the nearest.",
@@ -21,10 +134,11 @@ pages = [
 title = "On the Distance of the Gate"
 
 [[collections.books]]
+id = "keepers/last_keeper"
 pages = [
   "The last entry. The others have gone down to sleep with the old Keepers. I stay to write, because someone should.",
-  "The shards are waking. We hear them at night, calling to each other across the world. A Wayfarer will come, or the Gazebound will. We have left the doors open either way. We are too tired to hold them.",
-  "Wayfarer, if it is you: set the Eye, finish it, and then go home. You will have earned a home. We never did.",
+  "Years ago a Wayfarer came to our door, the only one in my lifetime. His ember was dim, and he wore the grass crown of the Gazebound under his cloak. He asked where the twelve shrines lie. No Wayfarer asks that.",
+  "We sent him away. If he found someone to carry what he could not, and it is you: do not open this gate for them. Open it for yourself, finish it, and then go home.",
 ]
 title = "The Last Keeper"
 
@@ -35,6 +149,7 @@ id = "first_gate"
 targets = ["minecraft:chests/ancient_city"]
 
 [[collections.books]]
+id = "first_gate/bright_years"
 pages = [
   "We were the brightest city the world had ever seen, and we were proud of it. Our lamps burned day and night. We did not know that every lamp was a word shouted at the sky.",
   "Then the dragon looked. Not at a traveller, not at a village. At us. The light went cold in the streets, and the first of us stopped moving where they stood.",
@@ -42,6 +157,7 @@ pages = [
 title = "Record of the Bright Years"
 
 [[collections.books]]
+id = "first_gate/gate_we_built"
 pages = [
   "Our masters found power in the burning world below and built a gate of our own, to strike back through the dark. You have seen its frame at the heart of the city.",
   "It opened once. What came through was silence, and the silence spread across the stone like moss. We call it sculk now. It remembers every sound we ever made.",
@@ -61,6 +177,7 @@ targets = [
 ]
 
 [[collections.books]]
+id = "gazebound/grass_king"
 pages = [
   "Brothers, the Grass King saw what the dragon sees, and for one summer he ruled as a god. Then his people, cowards all, tore the sight from his crown.",
   "We are his heirs. We will finish what he began: gather the twelve shards, open the true gate, and let the dragon see the world again, through our eyes and for our purposes.",
@@ -68,13 +185,15 @@ pages = [
 title = "The Crown of the Grass King"
 
 [[collections.books]]
+id = "gazebound/orders"
 pages = [
   "Orders for the captains. The shards are waking and calling to each other. Listen for them in the high places, the dead places, the drowned places.",
-  "A Wayfarer is walking again. The ember is hard to see and harder to catch, but it is not invisible: it must sleep, and it must light fires. Watch the smoke.",
+  "A Wayfarer is walking again, and gathering for us without knowing it. Do not touch the ember. Let it find what we cannot, and follow its smoke to the gate.",
 ]
 title = "Orders for the Captains"
 
 [[collections.books]]
+id = "gazebound/shadow_circle"
 pages = [
   "Why do we build our mansions in the dark woods? Because the Shadow Circle built there first. We copied their halls stone by stone, and still their power would not come to us.",
   "They say the burden is the point. They say the shard must be carried, not kept. They are dead, and we are not. Keep searching.",

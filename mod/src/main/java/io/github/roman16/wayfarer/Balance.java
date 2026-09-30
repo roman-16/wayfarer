@@ -12,6 +12,8 @@ public record Balance(
         Compass compass,
         Difficulty difficulty,
         Gaze gaze,
+        Hunger hunger,
+        Nights nights,
         Sleep sleep,
         Unlocks unlocks) {
 
@@ -20,6 +22,10 @@ public record Balance(
     public record Difficulty(float perEye) {}
 
     public record Gaze(List<Integer> capacitySeconds, int drainFactor, int huntIntervalSeconds, int huntPhantoms) {}
+
+    public record Hunger(float exhaustionFactor) {}
+
+    public record Nights(int bloodMoonEvery, int hordeEvery) {}
 
     public record Sleep(int playersPercentage) {}
 
@@ -46,6 +52,8 @@ public record Balance(
                             toml.getInt("gaze.drain_factor"),
                             toml.getInt("gaze.hunt_interval_seconds"),
                             toml.getInt("gaze.hunt_phantoms")),
+                    new Hunger(toml.<Number>get("hunger.exhaustion_factor").floatValue()),
+                    new Nights(toml.getInt("nights.blood_moon_every"), toml.getInt("nights.horde_every")),
                     new Sleep(toml.getInt("sleep.players_percentage")),
                     new Unlocks(toml.getInt("unlocks.aircraft_eyes"), toml.getInt("unlocks.sailing_ship_eyes")));
         } catch (IOException e) {

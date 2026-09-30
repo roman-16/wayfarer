@@ -2,36 +2,210 @@
   "biomes": "#wayfarer:has_structure/shrine/undead",
   "layout": {
     "cover": 3,
-    "entrance": [
-      7,
+    "door": [
+      4,
       2,
-      21
-    ],
-    "max_steps": 48,
-    "mouth": [
-      2,
-      1,
-      1
-    ],
-    "shaft": [
-      7,
-      11,
-      3
-    ],
-    "stair": [
-      1,
-      1,
-      0
+      10
     ]
   },
   "pieces": {
-    "cap": "wayfarer:shrine/cap",
-    "hall": "wayfarer:shrine/undead/hall",
-    "marker": "wayfarer:shrine/marker/cairn",
-    "open_step": "wayfarer:shrine/undead/open_step",
-    "seal": "wayfarer:shrine/undead/seal",
-    "shaft": "wayfarer:shrine/shaft",
-    "step": "wayfarer:shrine/undead/step"
+    "entrance": "wayfarer:shrine/undead/entrance",
+    "hall": "wayfarer:shrine/undead/hall"
+  },
+  "shaft": {
+    "landing": [
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff_bricks"
+      },
+      {
+        "Name": "minecraft:tuff_bricks"
+      },
+      {
+        "Name": "minecraft:tuff_bricks"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      },
+      {
+        "Name": "minecraft:coarse_dirt"
+      },
+      {
+        "Name": "minecraft:coarse_dirt"
+      },
+      {
+        "Name": "minecraft:coarse_dirt"
+      },
+      {
+        "Name": "minecraft:rooted_dirt"
+      },
+      {
+        "Name": "minecraft:rooted_dirt"
+      }
+    ],
+    "light": {
+      "Name": "minecraft:pearlescent_froglight"
+    },
+    "pillar": [
+      {
+        "Name": "minecraft:chiseled_tuff"
+      },
+      {
+        "Name": "minecraft:chiseled_tuff"
+      },
+      {
+        "Name": "minecraft:chiseled_tuff"
+      },
+      {
+        "Name": "minecraft:chiseled_tuff"
+      },
+      {
+        "Name": "minecraft:chiseled_tuff"
+      },
+      {
+        "Name": "minecraft:chiseled_tuff"
+      },
+      {
+        "Name": "minecraft:chiseled_tuff"
+      },
+      {
+        "Name": "minecraft:chiseled_tuff"
+      },
+      {
+        "Name": "minecraft:chiseled_tuff"
+      },
+      {
+        "Name": "minecraft:chiseled_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      }
+    ],
+    "stairs": {
+      "Name": "minecraft:tuff_brick_stairs"
+    },
+    "style": "ladder",
+    "wall": [
+      {
+        "Name": "minecraft:tuff_bricks"
+      },
+      {
+        "Name": "minecraft:tuff_bricks"
+      },
+      {
+        "Name": "minecraft:tuff_bricks"
+      },
+      {
+        "Name": "minecraft:tuff_bricks"
+      },
+      {
+        "Name": "minecraft:tuff_bricks"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:polished_tuff"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      },
+      {
+        "Name": "minecraft:andesite"
+      },
+      {
+        "Name": "minecraft:andesite"
+      },
+      {
+        "Name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "Name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "Name": "minecraft:cobbled_deepslate"
+      }
+    ]
   },
   "spawn_overrides": {},
   "step": "underground_structures",

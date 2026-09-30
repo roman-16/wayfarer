@@ -3,13 +3,14 @@
 	default_quest_shape: ""
 	filename: "last_road"
 	group: ""
+	hide_quest_until_deps_complete: true
 	icon: {
 		count: 1
 		id: "minecraft:end_portal_frame"
 	}
 	id: "3EB6CD4567B99D7A"
 	images: [ ]
-	order_index: 4
+	order_index: 5
 	quest_links: [ ]
 	quests: [
 		{
@@ -22,6 +23,13 @@
 				"77EB315F472DEA0B"
 			]
 			id: "467796D56D014FF1"
+			rewards: [
+				{
+					id: "192A1A9203FAE71C"
+					type: "xp_levels"
+					xp_levels: 10
+				}
+			]
 			tasks: [
 				{
 					id: "26F4C09476309C5B"
@@ -37,6 +45,13 @@
 				"467796D56D014FF1"
 			]
 			id: "19915A5C482101B0"
+			rewards: [
+				{
+					id: "2E761C0477A57B2D"
+					type: "xp_levels"
+					xp_levels: 10
+				}
+			]
 			tasks: [
 				{
 					dimension: "minecraft:the_end"

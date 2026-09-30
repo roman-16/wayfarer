@@ -60,12 +60,15 @@ neoForge {
         configureEach {
             systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
-        client {
-            client()
-            gameDirectory = file('../build/client')
-            jvmArgument '-Xmx8G'
-            programArguments.addAll '--height', '720', '--username', 'Wayfarer', '--width', '1280'
-            sourceSet = sourceSets.dev
+        [client: false, demo: true].each { name, showroom ->
+            create(name) {
+                client()
+                gameDirectory = file('../build/client')
+                jvmArgument '-Xmx8G'
+                programArguments.addAll '--height', '720', '--username', 'Wayfarer', '--width', '1280'
+                sourceSet = sourceSets.dev
+                systemProperty "${mod_id}.showroom", showroom.toString()
+            }
         }
         gameTestServer {
             type = 'gameTestServer'

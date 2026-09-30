@@ -6,7 +6,8 @@ research_after_blocks = 256
 trail_blocks = 20
 
 [difficulty]
-per_eye = 10.0
+per_day = 0.333
+per_eye = 3.33
 
 [gaze]
 capacity_seconds = [180, 300, 480, 720]
@@ -14,9 +15,16 @@ drain_factor = 4
 hunt_interval_seconds = 10
 hunt_phantoms = 2
 
+[hunger]
+exhaustion_factor = 2.0
+
+[nights]
+blood_moon_every = 5
+horde_every = 4
+
 [shrines]
-tier_one_trip_blocks = 3750
-tier_two_trip_blocks = 6000
+tier_one_leg_blocks = 3750
+tier_two_leg_blocks = 6000
 
 [sleep]
 players_percentage = 66
@@ -26,15 +34,16 @@ count = 12
 jitter_blocks = 1000
 radius_blocks = 35000
 
-[unlocks]
-aircraft_eyes = 6
-sailing_ship_eyes = 4
-
 [structures]
-spread_factor = 3
+campsite_rarity_chunks = 4000
+spread_factor = 4.25
 unspread = [
   "betterstrongholds:stronghold",
   "minecraft:ancient_cities",
   "minecraft:buried_treasures",
   "minecraft:mineshafts",
 ]
+
+[unlocks]
+aircraft_eyes = 6
+sailing_ship_eyes = 4

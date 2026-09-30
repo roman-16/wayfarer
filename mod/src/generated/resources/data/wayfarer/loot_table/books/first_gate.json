@@ -22,6 +22,10 @@
                 }
               },
               "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{wayfarer_book:\"first_gate/bright_years\"}"
             }
           ],
           "name": "minecraft:written_book",
@@ -42,6 +46,10 @@
                 }
               },
               "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{wayfarer_book:\"first_gate/gate_we_built\"}"
             }
           ],
           "name": "minecraft:written_book",

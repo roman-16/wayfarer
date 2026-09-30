@@ -23,6 +23,10 @@
                 }
               },
               "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{wayfarer_book:\"keepers/first_watch\"}"
             }
           ],
           "name": "minecraft:written_book",
@@ -43,6 +47,10 @@
                 }
               },
               "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{wayfarer_book:\"keepers/distance\"}"
             }
           ],
           "name": "minecraft:written_book",
@@ -56,13 +64,17 @@
                   "author": "The Keepers",
                   "pages": [
                     "\"The last entry. The others have gone down to sleep with the old Keepers. I stay to write, because someone should.\"",
-                    "\"The shards are waking. We hear them at night, calling to each other across the world. A Wayfarer will come, or the Gazebound will. We have left the doors open either way. We are too tired to hold them.\"",
-                    "\"Wayfarer, if it is you: set the Eye, finish it, and then go home. You will have earned a home. We never did.\""
+                    "\"Years ago a Wayfarer came to our door, the only one in my lifetime. His ember was dim, and he wore the grass crown of the Gazebound under his cloak. He asked where the twelve shrines lie. No Wayfarer asks that.\"",
+                    "\"We sent him away. If he found someone to carry what he could not, and it is you: do not open this gate for them. Open it for yourself, finish it, and then go home.\""
                   ],
                   "title": "The Last Keeper"
                 }
               },
               "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{wayfarer_book:\"keepers/last_keeper\"}"
             }
           ],
           "name": "minecraft:written_book",

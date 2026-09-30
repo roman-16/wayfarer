@@ -8,7 +8,8 @@
   },
   "minVersion": "0.8",
   "mixins": [
-    "ChunkGeneratorStructureStateMixin"
+    "ChunkGeneratorStructureStateMixin",
+    "FoodDataMixin"
   ],
   "package": "io.github.roman16.wayfarer.mixin",
   "required": true

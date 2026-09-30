@@ -7,10 +7,18 @@
 		"Six shards at the edges of the world. The gaze is watching you now."
 	]
 	"chapter.0FF7C6E728E512B3.title": "The Far Eyes"
+	"chapter.3A0F0CCE5F6E6B94.chapter_subtitle": [
+		"Every page I found, copied so the road remembers."
+	]
+	"chapter.3A0F0CCE5F6E6B94.title": "Pages"
 	"chapter.3EB6CD4567B99D7A.chapter_subtitle": [
 		"Twelve shards remember where the Eye was torn out."
 	]
 	"chapter.3EB6CD4567B99D7A.title": "The Last Road"
+	"chapter.62ED0B1528C43564.chapter_subtitle": [
+		"Everything here fits on a Wayfarer's back."
+	]
+	"chapter.62ED0B1528C43564.title": "The Road Provides"
 	"chapter.6C1796BCBDAE8758.chapter_subtitle": [
 		"Never settle. Never stay. Carry the ember."
 	]
@@ -28,12 +36,52 @@
 	]
 	"chapter.7C798ECC2B9A5401.title": "The First Eyes"
 	"file.0000000000000001.title": "The Last Wayfarer's Journal"
+	"quest.02CAED0C4FA34E3B.quest_desc": [
+		"We were the brightest city the world had ever seen, and we were proud of it. Our lamps burned day and night. We did not know that every lamp was a word shouted at the sky."
+		"{@pagebreak}"
+		"Then the dragon looked. Not at a traveller, not at a village. At us. The light went cold in the streets, and the first of us stopped moving where they stood."
+	]
+	"quest.02CAED0C4FA34E3B.quest_subtitle": "An archivist of the deep city"
+	"quest.02CAED0C4FA34E3B.title": "Record of the Bright Years"
+	"quest.04C9BE86F7DAD3AB.quest_desc": [
+		"The Shadow Circle learned to bend the shard's light into spells. The Illagers learned from them, and learned the wrong lessons."
+		"{@pagebreak}"
+		"Their mansions in the dark woods are copies of our halls, built by people who wanted the shard's power without its burden."
+		"{@pagebreak}"
+		"The burden is the point. Carry it."
+	]
+	"quest.04C9BE86F7DAD3AB.quest_subtitle": "The Shadow Circle"
+	"quest.04C9BE86F7DAD3AB.title": "The Shadow Circle"
+	"quest.0510D52F7854F280.quest_desc": [
+		"We walked to the frame of black stone where the Eye sat, and we tore it out. It screamed with a voice that was not a sound."
+		"{@pagebreak}"
+		"Blind, the dragon faded back into the end of the world, and the portal went dark. We had won. We held the Eye in our hands and were afraid of it."
+	]
+	"quest.0510D52F7854F280.quest_subtitle": "The Eye"
+	"quest.0510D52F7854F280.title": "The Fourth Memory"
 	"quest.070C745D06E746A9.quest_desc": [
 		"A Wayfarer owns only what they can carry, and leaves the rest for the next traveller."
-		"Make a backpack and keep everything you need in it."
+		""
+		"Make a backpack and wear it on your back."
 	]
 	"quest.070C745D06E746A9.quest_subtitle": "Everything you own, on your back"
 	"quest.070C745D06E746A9.title": "Carry What You Own"
+	"quest.08C2683CC8429FCC.quest_desc": [
+		"The First Village was built by Wayfarers who swore they would only stay one winter."
+		"{@pagebreak}"
+		"They stayed a hundred. Their priests said the shard in their temple kept them safe. It was the shard that kept them seen."
+		"{@pagebreak}"
+		"When the gaze came, the last priest carried it out into the grass and buried it here. The village is gone. The grass remembers."
+	]
+	"quest.08C2683CC8429FCC.quest_subtitle": "The First Village"
+	"quest.08C2683CC8429FCC.title": "The First Village"
+	"quest.09E14986761DBA84.quest_desc": [
+		"The hordes find you on the nights the gaze turns. Meet them in iron."
+		""
+		"Make an iron chestplate."
+	]
+	"quest.09E14986761DBA84.quest_subtitle": "Meet them in iron"
+	"quest.09E14986761DBA84.title": "Iron on Your Back"
 	"quest.0A1B1F899EB0A922.quest_desc": [
 		"The Shadow Circle taught the Illagers more than it should have. Its shard is hidden in the dark forests, not far from the mansions it inspired."
 	]
@@ -44,8 +92,25 @@
 	]
 	"quest.0D544FDE29EF4D0A.quest_subtitle": "The Rogue Eye"
 	"quest.0D544FDE29EF4D0A.title": "The Jungle Folk"
+	"quest.0FFA5652ED4FAEAB.quest_desc": [
+		"Why so far? Because the gaze sees what stays still, and a gate stays stiller than anything. We carried this one out past the edge of every map, so that whatever it shone, it shone on nobody."
+		"{@pagebreak}"
+		"Twelve halls like this one stand in a ring, all the same distance from where the first fire was lit, and every one of them guards a gate. The ember will lead you to the nearest."
+		"{@pagebreak}"
+		"Do not blame us for the walk. Every step between you and home is a step between home and the dragon."
+	]
+	"quest.0FFA5652ED4FAEAB.quest_subtitle": "The Keepers"
+	"quest.0FFA5652ED4FAEAB.title": "On the Distance of the Gate"
+	"quest.10F1C180EF1D5E5F.quest_desc": [
+		"Why do we build our mansions in the dark woods? Because the Shadow Circle built there first. We copied their halls stone by stone, and still their power would not come to us."
+		"{@pagebreak}"
+		"They say the burden is the point. They say the shard must be carried, not kept. They are dead, and we are not. Keep searching."
+	]
+	"quest.10F1C180EF1D5E5F.quest_subtitle": "The Gazebound"
+	"quest.10F1C180EF1D5E5F.title": "The Halls of the Shadow Circle"
 	"quest.12A733126EEC4BAF.quest_desc": [
 		"Roads are the only thing a Wayfarer leaves behind."
+		""
 		"Make an atlas and let it remember where you have been."
 	]
 	"quest.12A733126EEC4BAF.quest_subtitle": "The only thing we leave behind"
@@ -57,13 +122,15 @@
 	"quest.1657378EFFB576B0.title": "The Scribes of the Peaks"
 	"quest.18FABCBB8F977965.quest_desc": [
 		"Phantoms weep what they have seen, and their tears remember how not to be seen."
+		""
 		"Weave gaze tears into your veil."
 	]
 	"quest.18FABCBB8F977965.quest_subtitle": "Longer still"
 	"quest.18FABCBB8F977965.title": "A Thicker Veil"
 	"quest.19915A5C482101B0.quest_desc": [
-		"Twelve shards, twelve sockets, one Eye. When it is whole the gate opens, and the dragon feels it."
-		"Set every shard in the frame and step through."
+		"Twelve shards, twelve sockets, one Eye. Touch any frame with all twelve in your ember, and they set themselves."
+		""
+		"Set the Eye and step through."
 	]
 	"quest.19915A5C482101B0.quest_subtitle": "One Eye again"
 	"quest.19915A5C482101B0.title": "Set the Eye"
@@ -74,10 +141,20 @@
 	"quest.1D8122D0BB559969.title": "The First Village"
 	"quest.1F1980B9A1FF2B71.quest_desc": [
 		"You sat at my fire when nobody else would, so the ember is yours now. I could not carry it one more day."
-		"Read my journal at the camp, then take the tent I leave you."
+		""
+		"Read my journal at the lectern, then take what I leave you: my tent, my mallet and my bedroll."
 	]
 	"quest.1F1980B9A1FF2B71.quest_subtitle": "A stranger's fire, a stranger's ember"
 	"quest.1F1980B9A1FF2B71.title": "The Last Fire"
+	"quest.20BF0A9AAF50803F.quest_desc": [
+		"The Grass Kingdom was given its shard to hide. Its king kept it instead, on a throne, where everyone could see it."
+		"{@pagebreak}"
+		"The shard showed him what the dragon sees, and he wanted more. He was the first of the Gazebound."
+		"{@pagebreak}"
+		"His own people tore the shard from his crown and sealed it here. The throne is dust. Do not keep what you carry."
+	]
+	"quest.20BF0A9AAF50803F.quest_subtitle": "The Grass Kingdom"
+	"quest.20BF0A9AAF50803F.title": "The Grass Kingdom"
 	"quest.2175E7A68087A9E6.quest_desc": [
 		"The Sand Singers let the desert bury their hall. Cross the dunes and dig where the ember burns hottest."
 	]
@@ -88,92 +165,404 @@
 	]
 	"quest.222F374116D43F6E.quest_subtitle": "The Black Eye"
 	"quest.222F374116D43F6E.title": "The Tide Folk"
+	"quest.227598422D385AAA.quest_desc": [
+		"Each of us carried a sliver of the Eye's light, so we could always find the shards if we had to. We called it the ember."
+		"{@pagebreak}"
+		"An ember passes only at a fire shared freely. It cannot be stolen. And it goes dim in anyone who stops walking, until it no longer answers them at all."
+	]
+	"quest.227598422D385AAA.quest_subtitle": "The Eye"
+	"quest.227598422D385AAA.title": "The Seventh Memory"
 	"quest.2780BF6F53F2FCF0.quest_desc": [
 		"The deep dark swallowed the Ancient Cities, and its echoes swallow light too."
+		""
 		"Weave echo shards into your veil."
 	]
 	"quest.2780BF6F53F2FCF0.quest_subtitle": "As long as the sky allows"
 	"quest.2780BF6F53F2FCF0.title": "The Last Veil"
+	"quest.28A5CDC1C2749AA8.quest_desc": [
+		"An airship carries more than you can and drifts where the wind lets it. The gaze fills just the same."
+		""
+		"Build an airship."
+	]
+	"quest.28A5CDC1C2749AA8.quest_subtitle": "A hold in the sky"
+	"quest.28A5CDC1C2749AA8.title": "A Hold in the Sky"
+	"quest.2C7CAD828D1B1351.quest_desc": [
+		"A glide from a cliff is over before the phantoms look up."
+		""
+		"Make a hang glider."
+	]
+	"quest.2C7CAD828D1B1351.quest_subtitle": "Down without falling"
+	"quest.2C7CAD828D1B1351.title": "Down Without Falling"
+	"quest.2D3C3724F0320F37.quest_desc": [
+		"You will never pass this way again. A picture remembers it for you."
+		""
+		"Make a camera."
+	]
+	"quest.2D3C3724F0320F37.quest_subtitle": "Keep what you saw"
+	"quest.2D3C3724F0320F37.title": "Keep What You Saw"
 	"quest.2DA690872EB9B59C.quest_desc": [
 		"The Diggers lost their shard three times before they built it a hall. It waits under a forest; let the ember lead you down."
 	]
 	"quest.2DA690872EB9B59C.quest_subtitle": "The Lost Eye"
 	"quest.2DA690872EB9B59C.title": "The Diggers"
+	"quest.2F232113C3CCA23C.quest_desc": [
+		"The dragon looked at us. Not at a traveller, not at a village: at a whole people. Light went cold in our streets, and the first of us stopped moving where they stood."
+		"{@pagebreak}"
+		"Our masters found fire in the burning world below and built a gate of our own, to strike back through the dark. We were proud of that too."
+	]
+	"quest.2F232113C3CCA23C.quest_subtitle": "The Eye"
+	"quest.2F232113C3CCA23C.title": "The Second Memory"
 	"quest.35E0A4F7756E75D3.quest_desc": [
 		"A king kept this shard on his throne, and it made him the first of the Gazebound. It sleeps under the savanna grass now; find it before his heirs do."
 	]
 	"quest.35E0A4F7756E75D3.quest_subtitle": "The Corrupted Eye"
 	"quest.35E0A4F7756E75D3.title": "The Grass Kingdom"
+	"quest.38633E8CA0C64C69.quest_desc": [
+		"The last entry. The others have gone down to sleep with the old Keepers. I stay to write, because someone should."
+		"{@pagebreak}"
+		"Years ago a Wayfarer came to our door, the only one in my lifetime. His ember was dim, and he wore the grass crown of the Gazebound under his cloak. He asked where the twelve shrines lie. No Wayfarer asks that."
+		"{@pagebreak}"
+		"We sent him away. If he found someone to carry what he could not, and it is you: do not open this gate for them. Open it for yourself, finish it, and then go home."
+	]
+	"quest.38633E8CA0C64C69.quest_subtitle": "The Keepers"
+	"quest.38633E8CA0C64C69.title": "The Last Keeper"
+	"quest.3A1A84C6E4C93459.quest_desc": [
+		"Brothers, the Grass King saw what the dragon sees, and for one summer he ruled as a god. Then his people, cowards all, tore the sight from his crown."
+		"{@pagebreak}"
+		"We are his heirs. We will finish what he began: gather the twelve shards, open the true gate, and let the dragon see the world again, through our eyes and for our purposes."
+	]
+	"quest.3A1A84C6E4C93459.quest_subtitle": "The Gazebound"
+	"quest.3A1A84C6E4C93459.title": "The Crown of the Grass King"
+	"quest.3C5E7D941AAB9BB4.quest_desc": [
+		"Villages pay a traveller for what they cannot fetch themselves. Take what they give and move on before dark."
+		""
+		"Find or make a bounty board."
+	]
+	"quest.3C5E7D941AAB9BB4.quest_subtitle": "Work for strangers"
+	"quest.3C5E7D941AAB9BB4.title": "Work for Strangers"
+	"quest.3EA9506F98D8AF12.quest_desc": [
+		"The Frost Walkers never stopped moving. Their villages were tracks in the snow, gone by morning."
+		"{@pagebreak}"
+		"They carried the cold shard for a hundred winters and said it was the only fire that never burned them."
+		"{@pagebreak}"
+		"When the last of them grew too old to walk, they set it here, under the ice, where nothing stays still long enough to be seen."
+	]
+	"quest.3EA9506F98D8AF12.quest_subtitle": "The Frost Walkers"
+	"quest.3EA9506F98D8AF12.title": "The Frost Walkers"
+	"quest.3EC744FC57E9BE2D.quest_desc": [
+		"One of us grew tired of the road. The Gazebound gave him a warm hall, a full table and a name. He stayed a winter, then a year, then twenty."
+		"{@pagebreak}"
+		"His ember went dim. It stopped answering him, and he could not find a single shrine. They made him their captain anyway, because he still carried one."
+	]
+	"quest.3EC744FC57E9BE2D.quest_subtitle": "The Eye"
+	"quest.3EC744FC57E9BE2D.title": "The Tenth Memory"
+	"quest.4042C8EC9C2A6959.quest_desc": [
+		"The Scribes climbed as high as the land would let them and wrote down everything the shard whispered."
+		"{@pagebreak}"
+		"Most of it was madness. Some of it was the way the true gate was built, and why it must never be built again."
+		"{@pagebreak}"
+		"We burned the madness and kept the rest. The shard we leave to you. Read before you carry it."
+	]
+	"quest.4042C8EC9C2A6959.quest_subtitle": "The Scribes of the Peaks"
+	"quest.4042C8EC9C2A6959.title": "The Scribes of the Peaks"
+	"quest.40A7CBB5757D6ACE.quest_desc": [
+		"Some of us would not walk. They carried the empty gates out past the edge of every map and stayed to guard them, as far from everyone as they could. We called them the Keepers."
+		"{@pagebreak}"
+		"They sealed the burning world below, so no one could build our gate again. Since that day obsidian takes no spark."
+	]
+	"quest.40A7CBB5757D6ACE.quest_subtitle": "The Eye"
+	"quest.40A7CBB5757D6ACE.title": "The Sixth Memory"
+	"quest.414D9A677ECA669F.quest_desc": [
+		"The Eye is whole again, and it rests in your ember. This is what the Gazebound wanted: someone to find what they could not, and carry it to the gate for them."
+		"{@pagebreak}"
+		"Do not give it to them, and do not let it be seen. Open the true gate and kill the dragon while it is still half-blind. Then the ember goes out, and you are free. We never were."
+	]
+	"quest.414D9A677ECA669F.quest_subtitle": "The Eye"
+	"quest.414D9A677ECA669F.title": "The Twelfth Memory"
 	"quest.431098B789E8D6C0.quest_desc": [
 		"The ember is bound to fire. Wherever you light one, it brings you back when you fall."
+		""
 		"Make a campfire and light it wherever you rest."
 	]
 	"quest.431098B789E8D6C0.quest_subtitle": "Where the ember brings you back"
 	"quest.431098B789E8D6C0.title": "Keep a Fire"
+	"quest.4322D9895974EDF2.quest_desc": [
+		"Cliffs and ravines cost a Wayfarer days. A hook costs seconds."
+		""
+		"Make an iron grappling hook."
+	]
+	"quest.4322D9895974EDF2.quest_subtitle": "Up without climbing"
+	"quest.4322D9895974EDF2.title": "Up Without Climbing"
 	"quest.45299B9DA91E63B5.quest_desc": [
 		"Phantom membrane woven around the ember hides its light from the phantoms that shed it."
+		""
 		"Make an Ember Veil and wear it as a charm."
 	]
 	"quest.45299B9DA91E63B5.quest_subtitle": "Longer flight"
 	"quest.45299B9DA91E63B5.title": "A Veil Against the Gaze"
 	"quest.467796D56D014FF1.quest_desc": [
 		"With all twelve shards, the ember remembers the true gate, farther out than anyone walks now. The Keepers have guarded it alone ever since the Eye was broken."
+		""
 		"Follow the ember to the Keepers' stronghold."
 	]
 	"quest.467796D56D014FF1.quest_subtitle": "Farther than anyone walks"
 	"quest.467796D56D014FF1.title": "The True Gate"
+	"quest.468C31B47FC1ABEA.quest_desc": [
+		"Stew goes further than raw meat, and the ember is always hungry."
+		""
+		"Make a cooking pot."
+	]
+	"quest.468C31B47FC1ABEA.quest_subtitle": "Further than raw meat"
+	"quest.468C31B47FC1ABEA.title": "A Pot Over the Fire"
+	"quest.474CE26DC91E7D50.quest_desc": [
+		"The Sand Singers say a great worm sleeps under the desert, and that it swallowed the old shard to keep it safe."
+		"{@pagebreak}"
+		"The truth is simpler. We dug this hall and let the sand cover it, and the worm is a story we told to keep treasure hunters away."
+		"{@pagebreak}"
+		"The worm is not a story. Walk softly."
+	]
+	"quest.474CE26DC91E7D50.quest_subtitle": "The Sand Singers"
+	"quest.474CE26DC91E7D50.title": "The Sand Singers"
+	"quest.4771AC22B3226B9D.quest_desc": [
+		"The Diggers went down because down was the only way the gaze did not follow. Their tunnels run under half the world."
+		"{@pagebreak}"
+		"They lost the shard three times, and found it three times, and in the end they built it a hall so it would stop wandering."
+		"{@pagebreak}"
+		"If it wanders again, let it wander with you."
+	]
+	"quest.4771AC22B3226B9D.quest_subtitle": "The Diggers"
+	"quest.4771AC22B3226B9D.title": "The Diggers"
+	"quest.4805D0E165AF4166.quest_desc": [
+		"Orders for the captains. The shards are waking and calling to each other. Listen for them in the high places, the dead places, the drowned places."
+		"{@pagebreak}"
+		"A Wayfarer is walking again, and gathering for us without knowing it. Do not touch the ember. Let it find what we cannot, and follow its smoke to the gate."
+	]
+	"quest.4805D0E165AF4166.quest_subtitle": "The Gazebound"
+	"quest.4805D0E165AF4166.title": "Orders for the Captains"
 	"quest.4C497D37D2175788.quest_desc": [
-		"A Wayfarer tent is folded space, and the gaze cannot see what is not anywhere."
-		"Pitch your tent before your first night and sleep inside it."
+		"A Wayfarer tent is folded space, and the gaze cannot see what is not anywhere. One blow of the mallet raises it."
+		""
+		"Pitch your tent before dark and sleep inside it."
 	]
 	"quest.4C497D37D2175788.quest_subtitle": "Safe, because it is nowhere"
 	"quest.4C497D37D2175788.title": "A Roof That Is Nowhere"
+	"quest.4C5B5C48382F6064.quest_desc": [
+		"I do not know your name, stranger, and you will not learn mine. It does not matter. Wayfarers have no names, only roads."
+		"{@pagebreak}"
+		"Long ago the dragon at the end of the world gave up an eye to watch every land its portal touched. The first Wayfarers tore that Eye out, broke it into twelve shards and hid them at the far ends of the world."
+		"{@pagebreak}"
+		"The ember I gave you is the last light of that Eye. It pulls towards the shards. Far away it is only a feeling: it flares when you walk towards one and gutters when you walk away. Close by, it knows the way to the door."
+		"{@pagebreak}"
+		"The ember wakes once you have lived one day as we do. Carry everything you own. Light a fire where you rest, for the ember brings you back to fire when you fall. Pitch your tent before dark and sleep in it."
+		"{@pagebreak}"
+		"The Eye sees what stays still. Linger in one place and the gaze finds you, and what walks at night grows stronger. A tent is folded space, and the gaze cannot see what is not anywhere. Nothing follows you through its door."
+		"{@pagebreak}"
+		"Some nights are worse. Every fourth night the gaze turns fully towards the world and nobody sleeps; the ember burns too bright to fold into a tent. Every fifth, the moon turns red. The ember warns you each morning."
+		"{@pagebreak}"
+		"Do not take to the sea or the sky too early. A lone ember shines like a beacon on open water, and the phantoms see it flicker in the air. Every shard you gather dims it."
+		"{@pagebreak}"
+		"The Gazebound hunt the shards too. Gather all twelve before they do, find the true gate, and finish what we could not. Watch the smoke, stranger. I always did."
+	]
+	"quest.4C5B5C48382F6064.quest_subtitle": "The Last Wayfarer"
+	"quest.4C5B5C48382F6064.title": "The Last Wayfarer's Journal"
+	"quest.4C6FA41CAD189D2C.quest_desc": [
+		"The rogue shard taught the Jungle Folk how red dust carries a thought from one stone to the next."
+		"{@pagebreak}"
+		"They built doors that opened themselves and traps that never slept, and still the gaze found their temples."
+		"{@pagebreak}"
+		"No lock keeps out a god. Only leaving does. So we left, and left the shard to you."
+	]
+	"quest.4C6FA41CAD189D2C.quest_subtitle": "The Jungle Folk"
+	"quest.4C6FA41CAD189D2C.title": "The Jungle Folk"
+	"quest.4CEEBC61395003BA.quest_desc": [
+		"We broke the Eye into twelve. Twelve peoples at the far ends of the world each took one shard and hid it where no one would think to look."
+		"{@pagebreak}"
+		"Then we swore the oath: never settle, never shine, and never let the shards come together again. We called ourselves Wayfarers, because a road was the only home we trusted."
+	]
+	"quest.4CEEBC61395003BA.quest_subtitle": "The Eye"
+	"quest.4CEEBC61395003BA.title": "The Fifth Memory"
+	"quest.4D09474253C5776E.quest_desc": [
+		"A gyrodyne needs no fuel but your legs. It is slow, and it is quiet."
+		""
+		"Build a gyrodyne."
+	]
+	"quest.4D09474253C5776E.quest_subtitle": "A wing you pedal"
+	"quest.4D09474253C5776E.title": "A Wing You Pedal"
 	"quest.4DA8B70BAC72D780.quest_desc": [
 		"In the air the ember flickers and the phantoms see it. With six shards it burns steady enough to fly, for a while."
+		""
 		"Build an aircraft, and land before the gaze fills."
 	]
 	"quest.4DA8B70BAC72D780.quest_subtitle": "Six shards"
 	"quest.4DA8B70BAC72D780.title": "The Sky, For a While"
+	"quest.4FF12C4BB177020E.quest_desc": [
+		"A king of the grasslands kept his people's shard in his crown and looked through it. For one summer he saw what the dragon sees, and he ruled like a god."
+		"{@pagebreak}"
+		"His own people tore it from his crown and sealed it away. His heirs never forgave them. They learned only this: without an ember no shrine can be found, and an ember cannot be taken."
+	]
+	"quest.4FF12C4BB177020E.quest_subtitle": "The Eye"
+	"quest.4FF12C4BB177020E.title": "The Eighth Memory"
 	"quest.518A36EA76C97501.quest_desc": [
 		"On open water a lone ember shines like a beacon, and the gaze finds every ship that carries one. Four shards together are enough to dim it."
+		""
 		"Build a ship and sail."
 	]
 	"quest.518A36EA76C97501.quest_subtitle": "Four shards"
 	"quest.518A36EA76C97501.title": "The Sea Opens"
+	"quest.5200296821A71E70.quest_desc": [
+		"The ember burns what you eat, twice what a settled stomach would. The more kinds of food you eat, the stronger it keeps you."
+		""
+		"Open the Food button in your inventory to see what variety has earned you, then eat something new."
+	]
+	"quest.5200296821A71E70.quest_subtitle": "Eat the road"
+	"quest.5200296821A71E70.title": "Eat What the Road Gives"
+	"quest.53423CBA615A90F1.quest_desc": [
+		"Every fourth night nothing shelters you but what you carry. Carry a shield."
+		""
+		"Make an iron heater shield."
+	]
+	"quest.53423CBA615A90F1.quest_subtitle": "For the nights no tent opens"
+	"quest.53423CBA615A90F1.title": "A Shield on Your Arm"
+	"quest.53A33592FD0B54BC.quest_desc": [
+		"The Marsh Mothers brewed with everything the swamp gave them, and the witch shard gave them sight."
+		"{@pagebreak}"
+		"They saw the dragon seeing them, and they stopped brewing, and they sank the shard into the mud where no reflection lives."
+		"{@pagebreak}"
+		"The witches in their huts still remember us. They do not remember why."
+	]
+	"quest.53A33592FD0B54BC.quest_subtitle": "The Marsh Mothers"
+	"quest.53A33592FD0B54BC.title": "The Marsh Mothers"
+	"quest.5408EF29663538D2.quest_desc": [
+		"The Tide Folk lived where the land gives up and the sea begins. They took the black shard because no one else wanted a thing that drank the light."
+		"{@pagebreak}"
+		"They buried it the way they buried everything worth keeping: below the tideline, under a fire that was never lit twice in the same place."
+		"{@pagebreak}"
+		"If you are reading this, the fire was lit again. Take the shard. The sea will forget us, as it should."
+	]
+	"quest.5408EF29663538D2.quest_subtitle": "The Tide Folk"
+	"quest.5408EF29663538D2.title": "The Tide Folk"
 	"quest.561974079BDDC906.quest_desc": [
 		"The Frost Walkers never stayed anywhere the snow could not cover their tracks. Go where the cold is deepest and listen for the ember."
 	]
 	"quest.561974079BDDC906.quest_subtitle": "The Cold Eye"
 	"quest.561974079BDDC906.title": "The Frost Walkers"
-	"quest.59A94CF76A50E7E5.quest_desc": [
-		"Look to the top of your sight: the ember tells you whether you walk warmer or colder. Within five hundred blocks the shard answers, and you will know exactly where it is."
-		"Walk until the first shard answers."
+	"quest.5644728837DAE04F.quest_desc": [
+		"Our masters found power in the burning world below and built a gate of our own, to strike back through the dark. You have seen its frame at the heart of the city."
+		"{@pagebreak}"
+		"It opened once. What came through was silence, and the silence spread across the stone like moss. We call it sculk now. It remembers every sound we ever made."
+		"{@pagebreak}"
+		"Do not wake the guard. It is the last of us, and it no longer knows friend from enemy. Walk softly, take what you need, and leave us to the quiet."
 	]
-	"quest.59A94CF76A50E7E5.quest_subtitle": "Warmer, colder"
-	"quest.59A94CF76A50E7E5.title": "Follow the Ember"
+	"quest.5644728837DAE04F.quest_subtitle": "An archivist of the deep city"
+	"quest.5644728837DAE04F.title": "The Gate We Built"
+	"quest.57BA6A83EB0C0274.quest_desc": [
+		"A quadrocopter hovers where a biplane cannot: over a shrine's door, or a cliff's edge."
+		""
+		"Build a quadrocopter."
+	]
+	"quest.57BA6A83EB0C0274.quest_subtitle": "Four small wings"
+	"quest.57BA6A83EB0C0274.title": "Four Small Wings"
+	"quest.58D4C9DD3C4EA2FE.quest_desc": [
+		"The road is long, and not everything on it is friendly. A longer blade keeps it at arm's length."
+		""
+		"Forge an iron longsword."
+	]
+	"quest.58D4C9DD3C4EA2FE.quest_subtitle": "Arm's length"
+	"quest.58D4C9DD3C4EA2FE.title": "A Better Blade"
+	"quest.59A94CF76A50E7E5.quest_desc": [
+		"You have lived a Wayfarer's first day, and the ember answers. Look to the top of your sight: a compass that turns with you. Far from a shard, the ember only flares when you walk towards it and gutters when you walk away."
+		""
+		"Within five hundred blocks the shard itself appears on the compass, at the door of its shrine. Walk until it answers."
+	]
+	"quest.59A94CF76A50E7E5.quest_subtitle": "Flaring, guttering"
+	"quest.59A94CF76A50E7E5.title": "The Ember Wakes"
+	"quest.5E4284B95E2E40FC.quest_desc": [
+		"The Grave Keepers buried the Wayfarers who fell on the road, under the oldest trees, where the ground is soft."
+		"{@pagebreak}"
+		"They noticed that the dead are never seen by the gaze, and they took the undead shard to hide among them."
+		"{@pagebreak}"
+		"We are among them now. Take the shard and keep walking. We will keep the graves."
+	]
+	"quest.5E4284B95E2E40FC.quest_subtitle": "The Grave Keepers"
+	"quest.5E4284B95E2E40FC.title": "The Grave Keepers"
 	"quest.646F360A7556B8EE.quest_desc": [
 		"The last of the Drowned City fled as far from the sea as they could. Search the red canyons of the badlands."
 	]
 	"quest.646F360A7556B8EE.quest_subtitle": "The Exotic Eye"
 	"quest.646F360A7556B8EE.title": "The Drowned City"
+	"quest.66F768BAF62764CE.quest_desc": [
+		"When he was old and dying, the captain lit a fire by a road, where its smoke could be seen from far away, and waited for someone kind enough to sit with him."
+		"{@pagebreak}"
+		"Someone did. He gave them his ember and a Wayfarer's story, and told them to gather all twelve. No Wayfarer would ever ask that. We remember your face in his firelight."
+	]
+	"quest.66F768BAF62764CE.quest_subtitle": "The Eye"
+	"quest.66F768BAF62764CE.title": "The Eleventh Memory"
+	"quest.69D6727479B70168.quest_desc": [
+		"The gate opened once. What came through was silence. It spread across the stone like moss and remembered every sound we had ever made."
+		"{@pagebreak}"
+		"Our cities went quiet. The last of our guards still walks there, blind, and knows no friend. The few of us who lived climbed into the daylight and did not go back."
+	]
+	"quest.69D6727479B70168.quest_subtitle": "The Eye"
+	"quest.69D6727479B70168.title": "The Third Memory"
 	"quest.6B59AE1F40767245.quest_desc": [
 		"The ember is out and the sky is yours. Nothing is watching any more."
+		""
 		"Stay somewhere at last, and build a home."
 	]
 	"quest.6B59AE1F40767245.quest_subtitle": "The last page"
 	"quest.6B59AE1F40767245.title": "Build a Home"
+	"quest.6B5CE6724696EF8D.quest_desc": [
+		"The ember finds shards, not lands. Each people hid its shard in its own land, and this compass finds lands."
+		""
+		"Make a Nature's Compass."
+	]
+	"quest.6B5CE6724696EF8D.quest_subtitle": "Where each people lived"
+	"quest.6B5CE6724696EF8D.title": "The Land's Own Compass"
 	"quest.6BBEE9273C494FAD.quest_desc": [
 		"The Marsh Mothers sank their shard where no reflection lives. Wade into the swamps and follow the ember."
 	]
 	"quest.6BBEE9273C494FAD.quest_subtitle": "The Witch Eye"
 	"quest.6BBEE9273C494FAD.title": "The Marsh Mothers"
+	"quest.6E4261D89D0E8D90.quest_desc": [
+		"Year one of the watch. We built this hall as far from everyone as our legs could carry the stone. The gate sleeps below us. It is only a frame now, and we mean to keep it that way."
+		"{@pagebreak}"
+		"Rule of the watch: no Keeper lights a fire bigger than a hand. No Keeper plants what takes more than a season to grow. We are the only people in the world allowed to stay, and we must stay small."
+		"{@pagebreak}"
+		"If you are reading this, the watch has ended or the Eye is coming home. Either way, you are welcome at our table. There is not much left on it."
+	]
+	"quest.6E4261D89D0E8D90.quest_subtitle": "The Keepers"
+	"quest.6E4261D89D0E8D90.title": "The First Watch"
+	"quest.743096F786C754BA.quest_desc": [
+		"Years became ages. People forgot the oath. Villages grew into towns and towns into capitals, and the world began to shine again."
+		"{@pagebreak}"
+		"The king's heirs called themselves the Gazebound. They hunted Wayfarers, and every ember they took from a dead hand went out. So they stopped hunting us, and began to feed us instead."
+	]
+	"quest.743096F786C754BA.quest_subtitle": "The Eye"
+	"quest.743096F786C754BA.title": "The Ninth Memory"
 	"quest.77EB315F472DEA0B.quest_desc": [
 		"The Grave Keepers hid their shard among the dead, under the oldest trees. Walk the old-growth taiga and keep your voice low."
 	]
 	"quest.77EB315F472DEA0B.quest_subtitle": "The Undead Eye"
 	"quest.77EB315F472DEA0B.title": "The Grave Keepers"
+	"quest.7A9514E8721CCAF1.quest_desc": [
+		"We were proud once. Our cities lay deep in the stone, and their lamps burned day and night, brighter than anything the world had seen."
+		"{@pagebreak}"
+		"We did not know that far away, in a frame of black stone, an eye was watching. The dragon had given it up to guard every land its portal touched. Every lamp we lit was a word shouted at it."
+	]
+	"quest.7A9514E8721CCAF1.quest_subtitle": "The Eye"
+	"quest.7A9514E8721CCAF1.title": "The First Memory"
+	"quest.7D5792B5EBA74299.quest_desc": [
+		"Before the sea took it, the Drowned City was the most beautiful place in the world. Beautiful things are seen."
+		"{@pagebreak}"
+		"The few who swam out carried the exotic shard inland, as far from water as they could, into the red canyons."
+		"{@pagebreak}"
+		"They never saw the sea again. They said it was worth it. We hope you agree."
+	]
+	"quest.7D5792B5EBA74299.quest_subtitle": "The Drowned City"
+	"quest.7D5792B5EBA74299.title": "The Drowned City"
 	"quest.7F416EC4B9D960EC.quest_desc": [
 		"It is still half-blind, and it will never be weaker than it is today. When it dies, the ember goes out for everyone who fought it."
+		""
 		"Kill the dragon."
 	]
 	"quest.7F416EC4B9D960EC.quest_subtitle": "Finish what we could not"

@@ -22,6 +22,10 @@
                 }
               },
               "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{wayfarer_book:\"gazebound/grass_king\"}"
             }
           ],
           "name": "minecraft:written_book",
@@ -35,12 +39,16 @@
                   "author": "The Gazebound",
                   "pages": [
                     "\"Orders for the captains. The shards are waking and calling to each other. Listen for them in the high places, the dead places, the drowned places.\"",
-                    "\"A Wayfarer is walking again. The ember is hard to see and harder to catch, but it is not invisible: it must sleep, and it must light fires. Watch the smoke.\""
+                    "\"A Wayfarer is walking again, and gathering for us without knowing it. Do not touch the ember. Let it find what we cannot, and follow its smoke to the gate.\""
                   ],
                   "title": "Orders for the Captains"
                 }
               },
               "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{wayfarer_book:\"gazebound/orders\"}"
             }
           ],
           "name": "minecraft:written_book",
@@ -60,6 +68,10 @@
                 }
               },
               "function": "minecraft:set_components"
+            },
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{wayfarer_book:\"gazebound/shadow_circle\"}"
             }
           ],
           "name": "minecraft:written_book",

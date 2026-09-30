@@ -94,7 +94,18 @@ public final class WayfarerTests {
         check(helper, progress.claim(team, Wayfarer.id("shrine/test")), "the first claim takes the eye");
         check(helper, !progress.claim(team, Wayfarer.id("shrine/test")), "the second claim finds the shrine spent");
         check(helper, progress.claim(UUID.randomUUID(), Wayfarer.id("shrine/test")), "another team still finds its eye");
+        check(helper, progress.claim(team, Wayfarer.id("shrine/second")), "a second shrine adds a second shard");
         check(helper, progress.slay(team) && !progress.slay(team), "a team slays the dragon once");
+        check(helper, progress.wake(team) && !progress.wake(team), "a team's ember wakes once");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void nightsFollowTheCalendar(GameTestHelper helper) {
+        check(helper, !Nights.horde(1) && !Nights.bloodMoon(1), "the first night is calm");
+        check(helper, Nights.horde(4) && !Nights.bloodMoon(4), "the fourth night brings a horde");
+        check(helper, Nights.bloodMoon(5) && !Nights.horde(5), "the fifth night brings a blood moon");
+        check(helper, Nights.horde(20) && Nights.bloodMoon(20), "the twentieth night brings both");
         helper.succeed();
     }
 }

@@ -32,7 +32,7 @@
 	#Set to false to completely disable the horde event and anything relating to it.
 	enableHordeEvent = true
 	#Set to true to disable natural horde spawns (hordes can only be spawned with commands).
-	hordesCommandOnly = false
+	hordesCommandOnly = true
 	#Amount of mobs to spawn per wave.
 	spawnAmount = 15
 	#Multiplier by which the spawn amount increases by each time the event naturally spawns. (Set to 1 to disable scaling.)
@@ -43,10 +43,6 @@
 	hordeSpawnInterval = 600
 	#What time of day does the horde event start? eg 18000 is midnight with default day length.
 	hordeStartTime = 18000
-	#Amount of days between horde spawns.
-	# Default: 10
-	# Range: > 1
-	hordeSpawnDays = 5
 	#Amount of days a horde event can be randomly delayed by
 	hordeSpawnVariation = 0
 	#Max cap for the number of entities that can exist from the horde at once.

@@ -2,36 +2,220 @@
   "biomes": "#wayfarer:has_structure/shrine/old",
   "layout": {
     "cover": 3,
-    "entrance": [
-      7,
+    "door": [
+      10,
       2,
-      21
+      40
     ],
-    "max_steps": 48,
-    "mouth": [
-      2,
-      1,
-      1
-    ],
-    "shaft": [
-      7,
-      11,
-      3
-    ],
-    "stair": [
-      1,
-      1,
-      0
-    ]
+    "oculus": {
+      "at": [
+        10,
+        16,
+        4
+      ],
+      "cap": "wayfarer:shrine/old/skylight_cap",
+      "column": "wayfarer:shrine/skylight",
+      "seal": "wayfarer:shrine/old/skylight_seal"
+    }
   },
   "pieces": {
-    "cap": "wayfarer:shrine/cap",
-    "hall": "wayfarer:shrine/old/hall",
-    "marker": "wayfarer:shrine/marker/cairn",
-    "open_step": "wayfarer:shrine/old/open_step",
-    "seal": "wayfarer:shrine/old/seal",
-    "shaft": "wayfarer:shrine/shaft",
-    "step": "wayfarer:shrine/old/step"
+    "entrance": "wayfarer:shrine/old/entrance",
+    "hall": "wayfarer:shrine/old/hall"
+  },
+  "shaft": {
+    "landing": [
+      {
+        "Name": "minecraft:smooth_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sand"
+      },
+      {
+        "Name": "minecraft:sand"
+      },
+      {
+        "Name": "minecraft:sand"
+      }
+    ],
+    "light": {
+      "Name": "minecraft:ochre_froglight"
+    },
+    "pillar": [
+      {
+        "Name": "minecraft:chiseled_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      }
+    ],
+    "stairs": {
+      "Name": "minecraft:sandstone_stairs"
+    },
+    "style": "switchback",
+    "wall": [
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      },
+      {
+        "Name": "minecraft:sandstone"
+      }
+    ]
   },
   "spawn_overrides": {},
   "step": "underground_structures",

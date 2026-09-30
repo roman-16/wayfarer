@@ -8,11 +8,13 @@ import subprocess
 import sys
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import tomllib
 
 TIMEOUT_SECONDS = 900
+LOCATE_SECONDS = 300
 READY = "Done ("
 ROOT = Path(__file__).resolve().parent.parent
 FOUND = re.compile(r"The nearest (\S+) is at \[(-?\d+), [^,]+, (-?\d+)\] \((\d+) blocks away\)")
@@ -22,40 +24,72 @@ CHECK_SECONDS = 0.2
 MAX_STEP = 2.0
 SURVEY_RADIUS_BLOCKS = 10000
 SURVEY_SEEDS = (1, 2, 3, 4, 5)
+SURVEY_PORT = 25600
+VOICE_PORT = 24600
+SHARED = ("libraries", "mods")
+WALK_BLOCKS_PER_SECOND = 4.317
 REJECTED = re.compile(r"Tried to load invalid item|\[FTB Quests/\]: failed to|Couldn't parse element .*\]:wayfarer:")
 
 
-def locate(process, lines, structure, at=None):
-    start = len(lines)
+class Console:
+    def __init__(self, process):
+        self.process = process
+        self.lines = []
+        self.changed = threading.Condition()
+
+    def append(self, line):
+        with self.changed:
+            self.lines.append(line)
+            self.changed.notify_all()
+
+    def ask(self, command, answer):
+        with self.changed:
+            seen = len(self.lines)
+        self.process.stdin.write(command + "\n")
+        self.process.stdin.flush()
+        deadline = time.monotonic() + LOCATE_SECONDS
+        with self.changed:
+            while True:
+                for line in self.lines[seen:]:
+                    reply = answer(line)
+                    if reply is not None:
+                        return reply
+                seen = len(self.lines)
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    return None
+                self.changed.wait(remaining)
+
+
+def locate(console, structure, at=None):
     prefix = f"execute positioned {at[0]} 0 {at[1]} run " if at else ""
-    process.stdin.write(f"{prefix}locate structure {structure}\n")
-    process.stdin.flush()
-    deadline = time.monotonic() + 300
-    while time.monotonic() < deadline:
-        for line in lines[start:]:
-            found = FOUND.search(line)
-            if found and found.group(1) == structure:
-                return int(found.group(4))
-            if MISSING.search(line) and structure in line:
-                return None
-        time.sleep(0.5)
-    return None
+
+    def answer(line):
+        found = FOUND.search(line)
+        if found and found.group(1) == structure:
+            return int(found.group(4)), int(found.group(2)), int(found.group(3))
+        if MISSING.search(line) and structure in line:
+            return ()
+        return None
+
+    return console.ask(f"{prefix}locate structure {structure}", answer) or None
 
 
-def check(process, lines):
+def check(console):
     balance = tomllib.loads((ROOT / "balance.toml").read_text())["strongholds"]
-    eyes = sorted(tomllib.loads((ROOT / "generator/eyes.toml").read_text()))
-    failures = [f"the game rejects our data: {line.strip()[:300]}" for line in lines if REJECTED.search(line)]
-    ring = locate(process, lines, "betterstrongholds:stronghold")
+    eyes = sorted(tomllib.loads((ROOT / "generator/eyes.toml").read_text())["eyes"])
+    failures = [f"the game rejects our data: {line.strip()[:300]}" for line in console.lines if REJECTED.search(line)]
+    found = locate(console, "betterstrongholds:stronghold")
+    ring = found[0] if found else None
     low = balance["radius_blocks"] - balance["jitter_blocks"] - BIOME_SHIFT_BLOCKS * 4
     high = balance["radius_blocks"] + balance["jitter_blocks"] + BIOME_SHIFT_BLOCKS * 4
     print(f"nearest stronghold: {ring} blocks")
     if ring is None or not low <= ring <= high:
         failures.append(f"the nearest stronghold is {ring} blocks from spawn, not {low}-{high}")
     for eye in eyes:
-        distance = locate(process, lines, f"wayfarer:shrine/{eye}")
-        print(f"nearest {eye} shrine: {distance} blocks")
-        if distance is None:
+        found = locate(console, f"wayfarer:shrine/{eye}")
+        print(f"nearest {eye} shrine: {found[0] if found else None} blocks")
+        if found is None:
             failures.append(f"no {eye} shrine was found")
     return failures
 
@@ -68,42 +102,83 @@ def points(count):
         yield round(radius * math.cos(angle)), round(radius * math.sin(angle))
 
 
-def seeded(server, seed):
-    properties = server / "server.properties"
-    lines = [line for line in properties.read_text().splitlines() if not line.startswith("level-seed=")]
-    properties.write_text("\n".join([*lines, f"level-seed={seed}"]) + "\n")
-    shutil.rmtree(server / "world", ignore_errors=True)
+def world(server, seed):
+    target = server.parent / "survey" / str(seed)
+    shutil.rmtree(target, ignore_errors=True)
+    target.mkdir(parents=True)
+    for name in SHARED:
+        (target / name).symlink_to(server / name)
+    for path in server.iterdir():
+        if path.is_file() and path.suffix != ".log":
+            shutil.copy2(path, target / path.name)
+    shutil.copytree(server / "config", target / "config")
+    properties = target / "server.properties"
+    overrides = {"level-seed": seed, "max-tick-time": -1, "server-port": SURVEY_PORT + seed}
+    lines = [line for line in properties.read_text().splitlines() if line.split("=", 1)[0] not in overrides]
+    properties.write_text("\n".join([*lines, *(f"{key}={value}" for key, value in overrides.items())]) + "\n")
+    voice = target / "config/voicechat/voicechat-server.properties"
+    voice.parent.mkdir(parents=True, exist_ok=True)
+    voice.write_text(f"port={VOICE_PORT + seed}\n")
+    return target
+
+
+def journey(console, eyes, start, legs):
+    pos = start
+    for tier in legs:
+        remaining = [eye for eye in sorted(eyes) if eyes[eye]["tier"] == tier]
+        while remaining:
+            found = [(hit, eye) for eye in remaining if (hit := locate(console, f"wayfarer:shrine/{eye}", pos))]
+            if not found:
+                break
+            (distance, x, z), eye = min(found)
+            legs[tier].append(distance)
+            pos = (x, z)
+            remaining.remove(eye)
+
+
+def minutes(blocks):
+    return blocks / WALK_BLOCKS_PER_SECOND / 60
 
 
 def survey(server, count, apply):
     balance = tomllib.loads((ROOT / "balance.toml").read_text())["shrines"]
-    targets = {1: balance["tier_one_trip_blocks"], 2: balance["tier_two_trip_blocks"]}
+    targets = {1: balance["tier_one_leg_blocks"], 2: balance["tier_two_leg_blocks"]}
     eyes_path = ROOT / "generator/eyes.toml"
-    eyes = tomllib.loads(eyes_path.read_text())
-    samples = list(points(count))
-    distances = {eye: [] for eye in eyes}
+    shrines = tomllib.loads(eyes_path.read_text())
+    starts = list(points(count))
 
-    def measure(process, lines):
-        for eye in sorted(eyes):
-            for at in samples:
-                distance = locate(process, lines, f"wayfarer:shrine/{eye}", at)
-                if distance is not None:
-                    distances[eye].append(distance)
-        return []
+    def walk(seed):
+        legs = {tier: [] for tier in targets}
 
-    for seed in SURVEY_SEEDS:
-        seeded(server, seed)
-        boot(server, measure)
+        def measure(console):
+            for start in starts:
+                journey(console, shrines["eyes"], start, legs)
+            return []
+
+        boot(world(server, seed), measure)
+        return legs
+
+    legs = {tier: [] for tier in targets}
+    with ThreadPoolExecutor(max_workers=len(SURVEY_SEEDS)) as pool:
+        for found in pool.map(walk, SURVEY_SEEDS):
+            for tier, distances in found.items():
+                legs[tier] += distances
     text = eyes_path.read_text()
-    print(f"{'eye':<10} {'tier':>4} {'spacing':>7} {'median':>7} {'target':>7} {'tuned':>6}")
-    for eye, spec in sorted(eyes.items()):
-        found = distances[eye]
-        median = statistics.median(found) if found else None
-        target = targets[spec["tier"]]
+    print(
+        f"{'tier':<4} {'legs':>5} {'spacing':>7} {'median':>7} {'walk':>7} {'shortest':>8} {'target':>7} {'walk':>7} {'tuned':>6}"
+    )
+    for tier, target in targets.items():
+        spacing = shrines["tiers"][str(tier)]["spacing"]
+        found = legs[tier]
+        median = statistics.median(found) if found else 0
         ratio = min(MAX_STEP, max(1 / MAX_STEP, math.sqrt(target / median))) if median else 1
-        tuned = max(2, round(spec["spacing"] * ratio))
-        print(f"{eye:<10} {spec['tier']:>4} {spec['spacing']:>7} {median or 0:>7.0f} {target:>7} {tuned:>6}")
-        text = re.sub(rf"(\[{eye}\]\n(?:[^\[].*\n|\n)*?)spacing = \d+", rf"\g<1>spacing = {tuned}", text, count=1)
+        tuned = max(2, round(spacing * ratio))
+        shortest = min(found) if found else 0
+        print(
+            f"{tier:<4} {len(found):>5} {spacing:>7} {median:>7.0f} {minutes(median):>5.0f} m {shortest:>8}"
+            + f" {target:>7} {minutes(target):>5.0f} m {tuned:>6}"
+        )
+        text = re.sub(rf"(\[tiers\.{tier}\]\n)spacing = \d+", rf"\g<1>spacing = {tuned}", text, count=1)
     if apply:
         eyes_path.write_text(text)
         print(
@@ -122,16 +197,16 @@ def boot(server, action):
         stderr=subprocess.STDOUT,
         text=True,
     )
+    console = Console(process)
     crashes = server / "crash-reports"
     before = set(crashes.glob("*")) if crashes.exists() else set()
     ready = threading.Event()
-    lines = []
 
     def read():
         with log.open("w") as out:
             for line in process.stdout:
                 out.write(line)
-                lines.append(line)
+                console.append(line)
                 if READY in line:
                     ready.set()
 
@@ -143,7 +218,7 @@ def boot(server, action):
         crashed = sorted(set(crashes.glob("*")) - before) if crashes.exists() else []
         if crashed:
             break
-    failures = action(process, lines) if ready.is_set() else []
+    failures = action(console) if ready.is_set() else []
     if ready.is_set():
         process.stdin.write("stop\n")
         process.stdin.flush()
@@ -155,7 +230,7 @@ def boot(server, action):
         print(crashed[0].read_text()[:6000], file=sys.stderr)
         sys.exit(f"the server crashed while starting; report in {crashed[0]}")
     if not ready.is_set():
-        print("".join(lines[-80:]), file=sys.stderr)
+        print("".join(console.lines[-80:]), file=sys.stderr)
         sys.exit(f"the server did not finish starting; full log in {log}")
     if failures:
         sys.exit("\n".join(failures))
@@ -170,8 +245,8 @@ def main():
     parser.add_argument(
         "--survey",
         type=int,
-        metavar="POINTS",
-        help="locate every shrine from this many points in each survey world instead of checking",
+        metavar="JOURNEYS",
+        help="in each survey world at once, walk this many journeys to the nearest shrine not yet taken, instead of checking",
     )
     parser.add_argument("--apply", action="store_true", help="write the survey's tuned spacings to generator/eyes.toml")
     arguments = parser.parse_args()

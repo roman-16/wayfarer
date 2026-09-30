@@ -1,0 +1,351 @@
+{
+  "books": {
+    "first_gate/bright_years": {
+      "author": "An archivist of the deep city",
+      "pages": [
+        "We were the brightest city the world had ever seen, and we were proud of it. Our lamps burned day and night. We did not know that every lamp was a word shouted at the sky.",
+        "Then the dragon looked. Not at a traveller, not at a village. At us. The light went cold in the streets, and the first of us stopped moving where they stood."
+      ],
+      "quest": "02CAED0C4FA34E3B",
+      "title": "Record of the Bright Years"
+    },
+    "first_gate/gate_we_built": {
+      "author": "An archivist of the deep city",
+      "pages": [
+        "Our masters found power in the burning world below and built a gate of our own, to strike back through the dark. You have seen its frame at the heart of the city.",
+        "It opened once. What came through was silence, and the silence spread across the stone like moss. We call it sculk now. It remembers every sound we ever made.",
+        "Do not wake the guard. It is the last of us, and it no longer knows friend from enemy. Walk softly, take what you need, and leave us to the quiet."
+      ],
+      "quest": "5644728837DAE04F",
+      "title": "The Gate We Built"
+    },
+    "gazebound/grass_king": {
+      "author": "The Gazebound",
+      "pages": [
+        "Brothers, the Grass King saw what the dragon sees, and for one summer he ruled as a god. Then his people, cowards all, tore the sight from his crown.",
+        "We are his heirs. We will finish what he began: gather the twelve shards, open the true gate, and let the dragon see the world again, through our eyes and for our purposes."
+      ],
+      "quest": "3A1A84C6E4C93459",
+      "title": "The Crown of the Grass King"
+    },
+    "gazebound/orders": {
+      "author": "The Gazebound",
+      "pages": [
+        "Orders for the captains. The shards are waking and calling to each other. Listen for them in the high places, the dead places, the drowned places.",
+        "A Wayfarer is walking again, and gathering for us without knowing it. Do not touch the ember. Let it find what we cannot, and follow its smoke to the gate."
+      ],
+      "quest": "4805D0E165AF4166",
+      "title": "Orders for the Captains"
+    },
+    "gazebound/shadow_circle": {
+      "author": "The Gazebound",
+      "pages": [
+        "Why do we build our mansions in the dark woods? Because the Shadow Circle built there first. We copied their halls stone by stone, and still their power would not come to us.",
+        "They say the burden is the point. They say the shard must be carried, not kept. They are dead, and we are not. Keep searching."
+      ],
+      "quest": "10F1C180EF1D5E5F",
+      "title": "The Halls of the Shadow Circle"
+    },
+    "journal": {
+      "author": "The Last Wayfarer",
+      "pages": [
+        "I do not know your name, stranger, and you will not learn mine. It does not matter. Wayfarers have no names, only roads.",
+        "Long ago the dragon at the end of the world gave up an eye to watch every land its portal touched. The first Wayfarers tore that Eye out, broke it into twelve shards and hid them at the far ends of the world.",
+        "The ember I gave you is the last light of that Eye. It pulls towards the shards. Far away it is only a feeling: it flares when you walk towards one and gutters when you walk away. Close by, it knows the way to the door.",
+        "The ember wakes once you have lived one day as we do. Carry everything you own. Light a fire where you rest, for the ember brings you back to fire when you fall. Pitch your tent before dark and sleep in it.",
+        "The Eye sees what stays still. Linger in one place and the gaze finds you, and what walks at night grows stronger. A tent is folded space, and the gaze cannot see what is not anywhere. Nothing follows you through its door.",
+        "Some nights are worse. Every fourth night the gaze turns fully towards the world and nobody sleeps; the ember burns too bright to fold into a tent. Every fifth, the moon turns red. The ember warns you each morning.",
+        "Do not take to the sea or the sky too early. A lone ember shines like a beacon on open water, and the phantoms see it flicker in the air. Every shard you gather dims it.",
+        "The Gazebound hunt the shards too. Gather all twelve before they do, find the true gate, and finish what we could not. Watch the smoke, stranger. I always did."
+      ],
+      "quest": "4C5B5C48382F6064",
+      "title": "The Last Wayfarer's Journal"
+    },
+    "keepers/distance": {
+      "author": "The Keepers",
+      "pages": [
+        "Why so far? Because the gaze sees what stays still, and a gate stays stiller than anything. We carried this one out past the edge of every map, so that whatever it shone, it shone on nobody.",
+        "Twelve halls like this one stand in a ring, all the same distance from where the first fire was lit, and every one of them guards a gate. The ember will lead you to the nearest.",
+        "Do not blame us for the walk. Every step between you and home is a step between home and the dragon."
+      ],
+      "quest": "0FFA5652ED4FAEAB",
+      "title": "On the Distance of the Gate"
+    },
+    "keepers/first_watch": {
+      "author": "The Keepers",
+      "pages": [
+        "Year one of the watch. We built this hall as far from everyone as our legs could carry the stone. The gate sleeps below us. It is only a frame now, and we mean to keep it that way.",
+        "Rule of the watch: no Keeper lights a fire bigger than a hand. No Keeper plants what takes more than a season to grow. We are the only people in the world allowed to stay, and we must stay small.",
+        "If you are reading this, the watch has ended or the Eye is coming home. Either way, you are welcome at our table. There is not much left on it."
+      ],
+      "quest": "6E4261D89D0E8D90",
+      "title": "The First Watch"
+    },
+    "keepers/last_keeper": {
+      "author": "The Keepers",
+      "pages": [
+        "The last entry. The others have gone down to sleep with the old Keepers. I stay to write, because someone should.",
+        "Years ago a Wayfarer came to our door, the only one in my lifetime. His ember was dim, and he wore the grass crown of the Gazebound under his cloak. He asked where the twelve shrines lie. No Wayfarer asks that.",
+        "We sent him away. If he found someone to carry what he could not, and it is you: do not open this gate for them. Open it for yourself, finish it, and then go home."
+      ],
+      "quest": "38633E8CA0C64C69",
+      "title": "The Last Keeper"
+    },
+    "memory/1": {
+      "author": "The Eye",
+      "pages": [
+        "We were proud once. Our cities lay deep in the stone, and their lamps burned day and night, brighter than anything the world had seen.",
+        "We did not know that far away, in a frame of black stone, an eye was watching. The dragon had given it up to guard every land its portal touched. Every lamp we lit was a word shouted at it."
+      ],
+      "quest": "7A9514E8721CCAF1",
+      "title": "The First Memory"
+    },
+    "memory/10": {
+      "author": "The Eye",
+      "pages": [
+        "One of us grew tired of the road. The Gazebound gave him a warm hall, a full table and a name. He stayed a winter, then a year, then twenty.",
+        "His ember went dim. It stopped answering him, and he could not find a single shrine. They made him their captain anyway, because he still carried one."
+      ],
+      "quest": "3EC744FC57E9BE2D",
+      "title": "The Tenth Memory"
+    },
+    "memory/11": {
+      "author": "The Eye",
+      "pages": [
+        "When he was old and dying, the captain lit a fire by a road, where its smoke could be seen from far away, and waited for someone kind enough to sit with him.",
+        "Someone did. He gave them his ember and a Wayfarer's story, and told them to gather all twelve. No Wayfarer would ever ask that. We remember your face in his firelight."
+      ],
+      "quest": "66F768BAF62764CE",
+      "title": "The Eleventh Memory"
+    },
+    "memory/12": {
+      "author": "The Eye",
+      "pages": [
+        "The Eye is whole again, and it rests in your ember. This is what the Gazebound wanted: someone to find what they could not, and carry it to the gate for them.",
+        "Do not give it to them, and do not let it be seen. Open the true gate and kill the dragon while it is still half-blind. Then the ember goes out, and you are free. We never were."
+      ],
+      "quest": "414D9A677ECA669F",
+      "title": "The Twelfth Memory"
+    },
+    "memory/2": {
+      "author": "The Eye",
+      "pages": [
+        "The dragon looked at us. Not at a traveller, not at a village: at a whole people. Light went cold in our streets, and the first of us stopped moving where they stood.",
+        "Our masters found fire in the burning world below and built a gate of our own, to strike back through the dark. We were proud of that too."
+      ],
+      "quest": "2F232113C3CCA23C",
+      "title": "The Second Memory"
+    },
+    "memory/3": {
+      "author": "The Eye",
+      "pages": [
+        "The gate opened once. What came through was silence. It spread across the stone like moss and remembered every sound we had ever made.",
+        "Our cities went quiet. The last of our guards still walks there, blind, and knows no friend. The few of us who lived climbed into the daylight and did not go back."
+      ],
+      "quest": "69D6727479B70168",
+      "title": "The Third Memory"
+    },
+    "memory/4": {
+      "author": "The Eye",
+      "pages": [
+        "We walked to the frame of black stone where the Eye sat, and we tore it out. It screamed with a voice that was not a sound.",
+        "Blind, the dragon faded back into the end of the world, and the portal went dark. We had won. We held the Eye in our hands and were afraid of it."
+      ],
+      "quest": "0510D52F7854F280",
+      "title": "The Fourth Memory"
+    },
+    "memory/5": {
+      "author": "The Eye",
+      "pages": [
+        "We broke the Eye into twelve. Twelve peoples at the far ends of the world each took one shard and hid it where no one would think to look.",
+        "Then we swore the oath: never settle, never shine, and never let the shards come together again. We called ourselves Wayfarers, because a road was the only home we trusted."
+      ],
+      "quest": "4CEEBC61395003BA",
+      "title": "The Fifth Memory"
+    },
+    "memory/6": {
+      "author": "The Eye",
+      "pages": [
+        "Some of us would not walk. They carried the empty gates out past the edge of every map and stayed to guard them, as far from everyone as they could. We called them the Keepers.",
+        "They sealed the burning world below, so no one could build our gate again. Since that day obsidian takes no spark."
+      ],
+      "quest": "40A7CBB5757D6ACE",
+      "title": "The Sixth Memory"
+    },
+    "memory/7": {
+      "author": "The Eye",
+      "pages": [
+        "Each of us carried a sliver of the Eye's light, so we could always find the shards if we had to. We called it the ember.",
+        "An ember passes only at a fire shared freely. It cannot be stolen. And it goes dim in anyone who stops walking, until it no longer answers them at all."
+      ],
+      "quest": "227598422D385AAA",
+      "title": "The Seventh Memory"
+    },
+    "memory/8": {
+      "author": "The Eye",
+      "pages": [
+        "A king of the grasslands kept his people's shard in his crown and looked through it. For one summer he saw what the dragon sees, and he ruled like a god.",
+        "His own people tore it from his crown and sealed it away. His heirs never forgave them. They learned only this: without an ember no shrine can be found, and an ember cannot be taken."
+      ],
+      "quest": "4FF12C4BB177020E",
+      "title": "The Eighth Memory"
+    },
+    "memory/9": {
+      "author": "The Eye",
+      "pages": [
+        "Years became ages. People forgot the oath. Villages grew into towns and towns into capitals, and the world began to shine again.",
+        "The king's heirs called themselves the Gazebound. They hunted Wayfarers, and every ember they took from a dead hand went out. So they stopped hunting us, and began to feed us instead."
+      ],
+      "quest": "743096F786C754BA",
+      "title": "The Ninth Memory"
+    },
+    "people/black": {
+      "author": "The Tide Folk",
+      "pages": [
+        "The Tide Folk lived where the land gives up and the sea begins. They took the black shard because no one else wanted a thing that drank the light.",
+        "They buried it the way they buried everything worth keeping: below the tideline, under a fire that was never lit twice in the same place.",
+        "If you are reading this, the fire was lit again. Take the shard. The sea will forget us, as it should."
+      ],
+      "quest": "5408EF29663538D2",
+      "title": "The Tide Folk"
+    },
+    "people/cold": {
+      "author": "The Frost Walkers",
+      "pages": [
+        "The Frost Walkers never stopped moving. Their villages were tracks in the snow, gone by morning.",
+        "They carried the cold shard for a hundred winters and said it was the only fire that never burned them.",
+        "When the last of them grew too old to walk, they set it here, under the ice, where nothing stays still long enough to be seen."
+      ],
+      "quest": "3EA9506F98D8AF12",
+      "title": "The Frost Walkers"
+    },
+    "people/corrupted": {
+      "author": "The Grass Kingdom",
+      "pages": [
+        "The Grass Kingdom was given its shard to hide. Its king kept it instead, on a throne, where everyone could see it.",
+        "The shard showed him what the dragon sees, and he wanted more. He was the first of the Gazebound.",
+        "His own people tore the shard from his crown and sealed it here. The throne is dust. Do not keep what you carry."
+      ],
+      "quest": "20BF0A9AAF50803F",
+      "title": "The Grass Kingdom"
+    },
+    "people/cryptic": {
+      "author": "The Scribes of the Peaks",
+      "pages": [
+        "The Scribes climbed as high as the land would let them and wrote down everything the shard whispered.",
+        "Most of it was madness. Some of it was the way the true gate was built, and why it must never be built again.",
+        "We burned the madness and kept the rest. The shard we leave to you. Read before you carry it."
+      ],
+      "quest": "4042C8EC9C2A6959",
+      "title": "The Scribes of the Peaks"
+    },
+    "people/evil": {
+      "author": "The First Village",
+      "pages": [
+        "The First Village was built by Wayfarers who swore they would only stay one winter.",
+        "They stayed a hundred. Their priests said the shard in their temple kept them safe. It was the shard that kept them seen.",
+        "When the gaze came, the last priest carried it out into the grass and buried it here. The village is gone. The grass remembers."
+      ],
+      "quest": "08C2683CC8429FCC",
+      "title": "The First Village"
+    },
+    "people/exotic": {
+      "author": "The Drowned City",
+      "pages": [
+        "Before the sea took it, the Drowned City was the most beautiful place in the world. Beautiful things are seen.",
+        "The few who swam out carried the exotic shard inland, as far from water as they could, into the red canyons.",
+        "They never saw the sea again. They said it was worth it. We hope you agree."
+      ],
+      "quest": "7D5792B5EBA74299",
+      "title": "The Drowned City"
+    },
+    "people/lost": {
+      "author": "The Diggers",
+      "pages": [
+        "The Diggers went down because down was the only way the gaze did not follow. Their tunnels run under half the world.",
+        "They lost the shard three times, and found it three times, and in the end they built it a hall so it would stop wandering.",
+        "If it wanders again, let it wander with you."
+      ],
+      "quest": "4771AC22B3226B9D",
+      "title": "The Diggers"
+    },
+    "people/magical": {
+      "author": "The Shadow Circle",
+      "pages": [
+        "The Shadow Circle learned to bend the shard's light into spells. The Illagers learned from them, and learned the wrong lessons.",
+        "Their mansions in the dark woods are copies of our halls, built by people who wanted the shard's power without its burden.",
+        "The burden is the point. Carry it."
+      ],
+      "quest": "04C9BE86F7DAD3AB",
+      "title": "The Shadow Circle"
+    },
+    "people/old": {
+      "author": "The Sand Singers",
+      "pages": [
+        "The Sand Singers say a great worm sleeps under the desert, and that it swallowed the old shard to keep it safe.",
+        "The truth is simpler. We dug this hall and let the sand cover it, and the worm is a story we told to keep treasure hunters away.",
+        "The worm is not a story. Walk softly."
+      ],
+      "quest": "474CE26DC91E7D50",
+      "title": "The Sand Singers"
+    },
+    "people/rogue": {
+      "author": "The Jungle Folk",
+      "pages": [
+        "The rogue shard taught the Jungle Folk how red dust carries a thought from one stone to the next.",
+        "They built doors that opened themselves and traps that never slept, and still the gaze found their temples.",
+        "No lock keeps out a god. Only leaving does. So we left, and left the shard to you."
+      ],
+      "quest": "4C6FA41CAD189D2C",
+      "title": "The Jungle Folk"
+    },
+    "people/undead": {
+      "author": "The Grave Keepers",
+      "pages": [
+        "The Grave Keepers buried the Wayfarers who fell on the road, under the oldest trees, where the ground is soft.",
+        "They noticed that the dead are never seen by the gaze, and they took the undead shard to hide among them.",
+        "We are among them now. Take the shard and keep walking. We will keep the graves."
+      ],
+      "quest": "5E4284B95E2E40FC",
+      "title": "The Grave Keepers"
+    },
+    "people/witch": {
+      "author": "The Marsh Mothers",
+      "pages": [
+        "The Marsh Mothers brewed with everything the swamp gave them, and the witch shard gave them sight.",
+        "They saw the dragon seeing them, and they stopped brewing, and they sank the shard into the mud where no reflection lives.",
+        "The witches in their huts still remember us. They do not remember why."
+      ],
+      "quest": "53A33592FD0B54BC",
+      "title": "The Marsh Mothers"
+    }
+  },
+  "memories": [
+    "memory/1",
+    "memory/2",
+    "memory/3",
+    "memory/4",
+    "memory/5",
+    "memory/6",
+    "memory/7",
+    "memory/8",
+    "memory/9",
+    "memory/10",
+    "memory/11",
+    "memory/12"
+  ],
+  "people": {
+    "wayfarer:shrine/black": "people/black",
+    "wayfarer:shrine/cold": "people/cold",
+    "wayfarer:shrine/corrupted": "people/corrupted",
+    "wayfarer:shrine/cryptic": "people/cryptic",
+    "wayfarer:shrine/evil": "people/evil",
+    "wayfarer:shrine/exotic": "people/exotic",
+    "wayfarer:shrine/lost": "people/lost",
+    "wayfarer:shrine/magical": "people/magical",
+    "wayfarer:shrine/old": "people/old",
+    "wayfarer:shrine/rogue": "people/rogue",
+    "wayfarer:shrine/undead": "people/undead",
+    "wayfarer:shrine/witch": "people/witch"
+  }
+}

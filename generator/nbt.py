@@ -9,16 +9,11 @@ class Byte:
 
 
 @dataclass(frozen=True)
-class Double:
-    value: float
-
-
-@dataclass(frozen=True)
 class Float:
     value: float
 
 
-END, BYTE, INT, FLOAT, DOUBLE, STRING, LIST, COMPOUND = 0, 1, 3, 5, 6, 8, 9, 10
+END, BYTE, INT, FLOAT, STRING, LIST, COMPOUND = 0, 1, 3, 5, 8, 9, 10
 
 
 def kind(value):
@@ -28,8 +23,6 @@ def kind(value):
         return INT
     if isinstance(value, Float):
         return FLOAT
-    if isinstance(value, Double):
-        return DOUBLE
     if isinstance(value, str):
         return STRING
     if isinstance(value, list):
@@ -52,8 +45,6 @@ def payload(value):
         return struct.pack(">i", value)
     if tag == FLOAT:
         return struct.pack(">f", value.value)
-    if tag == DOUBLE:
-        return struct.pack(">d", value.value)
     if tag == STRING:
         return string(value)
     if tag == LIST:

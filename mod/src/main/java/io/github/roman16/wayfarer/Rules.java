@@ -5,18 +5,14 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 
 public final class Rules {
-    public static final TagKey<Item> EYE_SHARDS = TagKey.create(Registries.ITEM, Wayfarer.id("eye_shards"));
     public static final TagKey<EntityType<?>> SAILING_SHIPS = TagKey.create(Registries.ENTITY_TYPE, Wayfarer.id("sailing_ships"));
 
     private Rules() {}
@@ -24,15 +20,6 @@ public final class Rules {
     @SubscribeEvent
     public static void onPortalSpawn(BlockEvent.PortalSpawnEvent event) {
         event.setCanceled(true);
-    }
-
-    @SubscribeEvent
-    public static void onThrow(PlayerInteractEvent.RightClickItem event) {
-        if (event.getItemStack().is(EYE_SHARDS)) {
-            event.setCanceled(true);
-            event.setCancellationResult(InteractionResult.FAIL);
-            event.getEntity().displayClientMessage(Component.translatable("wayfarer.eye.held").withStyle(ChatFormatting.GRAY), true);
-        }
     }
 
     @SubscribeEvent
@@ -53,6 +40,6 @@ public final class Rules {
     }
 
     private static int claimed(Player player) {
-        return player instanceof ServerPlayer serverPlayer ? Journey.claimed(serverPlayer).size() : HudState.compass.claimed();
+        return player instanceof ServerPlayer serverPlayer ? Journey.claimed(serverPlayer).size() : HudState.compass.claimed().size();
     }
 }

@@ -1,14 +1,27 @@
 package io.github.roman16.wayfarer;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Journal {
     private static final ResourceLocation BOOK = ResourceLocation.fromNamespaceAndPath("ftbquests", "book");
+    private static final String BOOK_ID = "wayfarer_book";
+    private static final String FTB_QUESTS = "ftbquests";
 
     private Journal() {}
 
@@ -24,5 +37,61 @@ public final class Journal {
             }
         });
         player.setData(Wayfarer.JOURNAL_GIVEN, true);
+    }
+
+    @SubscribeEvent
+    public static void onReadItem(PlayerInteractEvent.RightClickItem event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            id(event.getItemStack()).ifPresent(book -> read(player, book));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onReadLectern(PlayerInteractEvent.RightClickBlock event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)
+                || !(player.level().getBlockEntity(event.getPos()) instanceof LecternBlockEntity lectern)) {
+            return;
+        }
+        Optional<ResourceLocation> shrine = Shrines.inside(player.serverLevel(), event.getPos());
+        if (shrine.isEmpty()) {
+            id(lectern.getBook()).ifPresent(book -> read(player, book));
+            return;
+        }
+        event.setCanceled(true);
+        event.setCancellationResult(InteractionResult.SUCCESS);
+        openShrineBook(player, shrine.get());
+    }
+
+    public static void openShrineBook(ServerPlayer player, ResourceLocation shrine) {
+        List<ResourceLocation> claimed = Journey.claimed(player);
+        int index = claimed.contains(shrine) ? claimed.indexOf(shrine) : claimed.size();
+        List<String> pages = new ArrayList<>();
+        String memory = Library.INSTANCE.memory(index);
+        Library.INSTANCE.book(memory).ifPresent(book -> pages.addAll(book.pages()));
+        read(player, memory);
+        Library.INSTANCE.people(shrine).ifPresent(people -> {
+            pages.addAll(people.pages());
+            read(player, Library.INSTANCE.people().get(shrine));
+        });
+        PacketDistributor.sendToPlayer(player, new BookPayload(pages));
+    }
+
+    public static void read(ServerPlayer player, String id) {
+        if (!ModList.get().isLoaded(FTB_QUESTS)) {
+            return;
+        }
+        Library.INSTANCE.book(id).ifPresent(book -> {
+            ServerLevel level = player.serverLevel();
+            String command = "ftbquests change_progress " + player.getGameProfile().getName() + " complete " + book.quest();
+            level.getServer().getCommands().performPrefixedCommand(level.getServer().createCommandSourceStack().withSuppressedOutput(), command);
+        });
+    }
+
+    private static Optional<String> id(ItemStack stack) {
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        if (data == null || !data.contains(BOOK_ID)) {
+            return Optional.empty();
+        }
+        return Optional.of(data.copyTag().getString(BOOK_ID));
     }
 }

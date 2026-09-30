@@ -5,13 +5,13 @@ unobtainable = [
   "farmersdelight:nether_salad",
   "farmersdelight:salvaging/nether_bricks",
   "immersive_aircraft:nether_engine",
+  "sophisticatedbackpacks:advanced_mob_catcher_upgrade",
+  "sophisticatedbackpacks:alchemy_upgrade",
+  "sophisticatedcore:ender_linker",
   "spelunkery:blackstone_pebble",
   "spelunkery:netherrack_pebble",
   "supplementaries:blackstone_lamp",
   "supplementaries:checker",
-  "travelersbackpack:blaze",
-  "travelersbackpack:nether",
-  "travelersbackpack:wither",
 ]
 unsourced_items = [
   "minecraft:basalt",

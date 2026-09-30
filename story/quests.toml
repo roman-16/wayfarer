@@ -9,11 +9,15 @@ title = "The Oath"
 [[chapters.quests]]
 description = [
   "You sat at my fire when nobody else would, so the ember is yours now. I could not carry it one more day.",
-  "Read my journal at the camp, then take the tent I leave you.",
+  "Read my journal at the lectern, then take what I leave you: my tent, my mallet and my bedroll.",
 ]
 icon = "minecraft:writable_book"
 id = "last_fire"
-rewards = [{ item = "nomadictents:tiny_yurt" }]
+rewards = [
+  { item = "nomadictents:tiny_yurt" },
+  { components = { "minecraft:custom_name" = "\"Wayfarer's Mallet\"", "minecraft:unbreakable" = {} }, item = "nomadictents:golden_mallet" },
+  { item = "comforts:sleeping_bag_brown" },
+]
 subtitle = "A stranger's fire, a stranger's ember"
 tasks = [{ checkmark = true }]
 title = "The Last Fire"
@@ -23,28 +27,30 @@ y = 0.0
 [[chapters.quests]]
 after = ["last_fire"]
 description = [
-  "A Wayfarer tent is folded space, and the gaze cannot see what is not anywhere.",
-  "Pitch your tent before your first night and sleep inside it.",
+  "A Wayfarer tent is folded space, and the gaze cannot see what is not anywhere. One blow of the mallet raises it.",
+  "Pitch your tent before dark and sleep inside it.",
 ]
 icon = "nomadictents:tiny_yurt"
 id = "tent"
+rewards = [{ count = 6, item = "minecraft:bread" }]
 subtitle = "Safe, because it is nowhere"
-tasks = [{ checkmark = true }]
+tasks = [{ advancement = "wayfarer:nowhere" }]
 title = "A Roof That Is Nowhere"
-x = -1.5
+x = -2.25
 y = 1.5
 
 [[chapters.quests]]
 after = ["last_fire"]
 description = [
   "A Wayfarer owns only what they can carry, and leaves the rest for the next traveller.",
-  "Make a backpack and keep everything you need in it.",
+  "Make a backpack and wear it on your back.",
 ]
 id = "backpack"
+rewards = [{ xp_levels = 3 }]
 subtitle = "Everything you own, on your back"
-tasks = [{ item = "travelersbackpack:standard" }]
+tasks = [{ item = "sophisticatedbackpacks:backpack" }]
 title = "Carry What You Own"
-x = 0.0
+x = -0.75
 y = 1.5
 
 [[chapters.quests]]
@@ -54,10 +60,26 @@ description = [
   "Make a campfire and light it wherever you rest.",
 ]
 id = "campfire"
+rewards = [{ count = 4, item = "minecraft:cooked_beef" }]
 subtitle = "Where the ember brings you back"
 tasks = [{ item = "minecraft:campfire" }]
 title = "Keep a Fire"
-x = 1.5
+x = 0.75
+y = 1.5
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "The ember burns what you eat, twice what a settled stomach would. The more kinds of food you eat, the stronger it keeps you.",
+  "Open the Food button in your inventory to see what variety has earned you, then eat something new.",
+]
+icon = "minecraft:baked_potato"
+id = "food"
+rewards = [{ count = 4, item = "minecraft:apple" }, { count = 4, item = "minecraft:baked_potato" }]
+subtitle = "Eat the road"
+tasks = [{ checkmark = true }]
+title = "Eat What the Road Gives"
+x = 2.25
 y = 1.5
 
 [[chapters.quests]]
@@ -67,25 +89,159 @@ description = [
   "Make an atlas and let it remember where you have been.",
 ]
 id = "atlas"
+rewards = [{ count = 16, item = "minecraft:paper" }]
 subtitle = "The only thing we leave behind"
 tasks = [{ item = "map_atlases:atlas" }]
 title = "Map the Road"
+x = -0.75
+y = 3.0
+
+[[chapters.quests]]
+after = ["atlas", "campfire", "tent"]
+description = [
+  "You have lived a Wayfarer's first day, and the ember answers. Look to the top of your sight: a compass that turns with you. Far from a shard, the ember only flares when you walk towards it and gutters when you walk away.",
+  "Within five hundred blocks the shard itself appears on the compass, at the door of its shrine. Walk until it answers.",
+]
+icon = "minecraft:blaze_powder"
+id = "ember"
+rewards = [{ auto = "invisible", command = "/wayfarer ember {p}" }]
+subtitle = "Flaring, guttering"
+tasks = [{ stat = "minecraft:play_time", value = 1 }]
+title = "The Ember Wakes"
+x = 0.0
+y = 4.5
+
+[[chapters]]
+icon = "simplyswords:iron_longsword"
+id = "road"
+subtitle = ["Everything here fits on a Wayfarer's back."]
+title = "The Road Provides"
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "The road is long, and not everything on it is friendly. A longer blade keeps it at arm's length.",
+  "Forge an iron longsword.",
+]
+id = "blade"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Arm's length"
+tasks = [{ item = "simplyswords:iron_longsword" }]
+title = "A Better Blade"
+x = -1.5
+y = 0.0
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "Every fourth night nothing shelters you but what you carry. Carry a shield.",
+  "Make an iron heater shield.",
+]
+id = "shield"
+rewards = [{ xp_levels = 3 }]
+subtitle = "For the nights no tent opens"
+tasks = [{ item = "magistuarmory:iron_heatershield" }]
+title = "A Shield on Your Arm"
+x = 0.0
+y = 0.0
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "The hordes find you on the nights the gaze turns. Meet them in iron.",
+  "Make an iron chestplate.",
+]
+id = "armor"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Meet them in iron"
+tasks = [{ item = "minecraft:iron_chestplate" }]
+title = "Iron on Your Back"
+x = 1.5
+y = 0.0
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "The ember finds shards, not lands. Each people hid its shard in its own land, and this compass finds lands.",
+  "Make a Nature's Compass.",
+]
+id = "biomes"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Where each people lived"
+tasks = [{ item = "naturescompass:naturescompass" }]
+title = "The Land's Own Compass"
+x = -1.5
+y = 1.5
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "Cliffs and ravines cost a Wayfarer days. A hook costs seconds.",
+  "Make an iron grappling hook.",
+]
+id = "hook"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Up without climbing"
+tasks = [{ item = "yo_hooks:iron_grappling_hook" }]
+title = "Up Without Climbing"
+x = 0.0
+y = 1.5
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "A glide from a cliff is over before the phantoms look up.",
+  "Make a hang glider.",
+]
+id = "glider"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Down without falling"
+tasks = [{ item = "hangglider:hang_glider" }]
+title = "Down Without Falling"
+x = 1.5
+y = 1.5
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "Stew goes further than raw meat, and the ember is always hungry.",
+  "Make a cooking pot.",
+]
+id = "pot"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Further than raw meat"
+tasks = [{ item = "farmersdelight:cooking_pot" }]
+title = "A Pot Over the Fire"
+x = -1.5
+y = 3.0
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "Villages pay a traveller for what they cannot fetch themselves. Take what they give and move on before dark.",
+  "Find or make a bounty board.",
+]
+id = "bounty"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Work for strangers"
+tasks = [{ item = "bountiful:bountyboard" }]
+title = "Work for Strangers"
 x = 0.0
 y = 3.0
 
 [[chapters.quests]]
-after = ["tent", "campfire"]
+after = ["last_fire"]
 description = [
-  "Look to the top of your sight: the ember tells you whether you walk warmer or colder. Within five hundred blocks the shard answers, and you will know exactly where it is.",
-  "Walk until the first shard answers.",
+  "You will never pass this way again. A picture remembers it for you.",
+  "Make a camera.",
 ]
-icon = "minecraft:blaze_powder"
-id = "ember"
-subtitle = "Warmer, colder"
-tasks = [{ checkmark = true }]
-title = "Follow the Ember"
-x = 0.0
-y = 4.5
+id = "camera"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Keep what you saw"
+tasks = [{ item = "exposure:camera" }]
+title = "Keep What You Saw"
+x = 1.5
+y = 3.0
 
 [[chapters]]
 eyes = 1
@@ -96,6 +252,7 @@ title = "The First Eyes"
 
 [chapters.eye_quests]
 after = ["ember"]
+rewards = [{ xp_levels = 5 }]
 y = 0.0
 
 [[chapters]]
@@ -112,6 +269,7 @@ description = [
 ]
 id = "sea_opens"
 min_after = 4
+rewards = [{ xp_levels = 5 }]
 subtitle = "Four shards"
 tasks = [{ item = "smallships:oak_cog" }]
 title = "The Sea Opens"
@@ -125,6 +283,7 @@ description = [
   "Build an aircraft, and land before the gaze fills.",
 ]
 id = "sky_opens"
+rewards = [{ xp_levels = 5 }]
 subtitle = "Six shards"
 tasks = [{ item = "immersive_aircraft:biplane" }]
 title = "The Sky, For a While"
@@ -134,15 +293,58 @@ y = 1.5
 [[chapters.quests]]
 after = ["sky_opens"]
 description = [
+  "A gyrodyne needs no fuel but your legs. It is slow, and it is quiet.",
+  "Build a gyrodyne.",
+]
+id = "gyrodyne"
+rewards = [{ xp_levels = 3 }]
+subtitle = "A wing you pedal"
+tasks = [{ item = "immersive_aircraft:gyrodyne" }]
+title = "A Wing You Pedal"
+x = -1.5
+y = 3.0
+
+[[chapters.quests]]
+after = ["sky_opens"]
+description = [
+  "A quadrocopter hovers where a biplane cannot: over a shrine's door, or a cliff's edge.",
+  "Build a quadrocopter.",
+]
+id = "quadrocopter"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Four small wings"
+tasks = [{ item = "immersive_aircraft:quadrocopter" }]
+title = "Four Small Wings"
+x = 0.0
+y = 3.0
+
+[[chapters.quests]]
+after = ["sky_opens"]
+description = [
+  "An airship carries more than you can and drifts where the wind lets it. The gaze fills just the same.",
+  "Build an airship.",
+]
+id = "airship"
+rewards = [{ xp_levels = 3 }]
+subtitle = "A hold in the sky"
+tasks = [{ item = "immersive_aircraft:airship" }]
+title = "A Hold in the Sky"
+x = 1.5
+y = 3.0
+
+[[chapters.quests]]
+after = ["sky_opens"]
+description = [
   "Phantom membrane woven around the ember hides its light from the phantoms that shed it.",
   "Make an Ember Veil and wear it as a charm.",
 ]
 id = "veil_1"
+rewards = [{ xp_levels = 3 }]
 subtitle = "Longer flight"
 tasks = [{ item = "wayfarer:ember_veil_1" }]
 title = "A Veil Against the Gaze"
 x = -1.5
-y = 3.0
+y = 4.5
 
 [[chapters.quests]]
 after = ["veil_1"]
@@ -151,11 +353,12 @@ description = [
   "Weave gaze tears into your veil.",
 ]
 id = "veil_2"
+rewards = [{ xp_levels = 5 }]
 subtitle = "Longer still"
 tasks = [{ item = "wayfarer:ember_veil_2" }]
 title = "A Thicker Veil"
 x = 0.0
-y = 3.0
+y = 4.5
 
 [[chapters.quests]]
 after = ["veil_2"]
@@ -164,11 +367,12 @@ description = [
   "Weave echo shards into your veil.",
 ]
 id = "veil_3"
+rewards = [{ xp_levels = 8 }]
 subtitle = "As long as the sky allows"
 tasks = [{ item = "wayfarer:ember_veil_3" }]
 title = "The Last Veil"
 x = 1.5
-y = 3.0
+y = 4.5
 
 [[chapters]]
 eyes = 2
@@ -179,6 +383,7 @@ title = "The Far Eyes"
 
 [chapters.eye_quests]
 after = ["sky_opens"]
+rewards = [{ xp_levels = 8 }]
 y = 0.0
 
 [[chapters]]
@@ -194,6 +399,7 @@ description = [
   "Follow the ember to the Keepers' stronghold.",
 ]
 id = "true_gate"
+rewards = [{ xp_levels = 10 }]
 subtitle = "Farther than anyone walks"
 tasks = [{ structure = "betterstrongholds:stronghold" }]
 title = "The True Gate"
@@ -203,10 +409,11 @@ y = 0.0
 [[chapters.quests]]
 after = ["true_gate"]
 description = [
-  "Twelve shards, twelve sockets, one Eye. When it is whole the gate opens, and the dragon feels it.",
-  "Set every shard in the frame and step through.",
+  "Twelve shards, twelve sockets, one Eye. Touch any frame with all twelve in your ember, and they set themselves.",
+  "Set the Eye and step through.",
 ]
 id = "set_the_eye"
+rewards = [{ xp_levels = 10 }]
 subtitle = "One Eye again"
 tasks = [{ dimension = "minecraft:the_end" }]
 title = "Set the Eye"
@@ -226,6 +433,7 @@ description = [
   "Kill the dragon.",
 ]
 id = "dragon"
+rewards = [{ xp_levels = 30 }]
 subtitle = "Finish what we could not"
 tasks = [{ kill = "minecraft:ender_dragon" }]
 title = "The Half-Blind Dragon"
@@ -245,8 +453,16 @@ description = [
   "Stay somewhere at last, and build a home.",
 ]
 id = "home"
+rewards = [{ item = "minecraft:red_bed" }]
 subtitle = "The last page"
 tasks = [{ checkmark = true }]
 title = "Build a Home"
 x = 0.0
 y = 0.0
+
+[[chapters]]
+icon = "minecraft:writable_book"
+id = "pages"
+pages = true
+subtitle = ["Every page I found, copied so the road remembers."]
+title = "Pages"

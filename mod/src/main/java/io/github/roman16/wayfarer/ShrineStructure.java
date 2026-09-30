@@ -3,10 +3,10 @@ package io.github.roman16.wayfarer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
@@ -22,53 +22,52 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 
 public final class ShrineStructure extends Structure {
-    public record Layout(int cover, BlockPos entrance, int maxSteps, BlockPos mouth, BlockPos shaft, BlockPos stair) {
+    public record Oculus(BlockPos at, ResourceLocation cap, ResourceLocation column, ResourceLocation seal) {
+        static final Codec<Oculus> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                        BlockPos.CODEC.fieldOf("at").forGetter(Oculus::at),
+                        ResourceLocation.CODEC.fieldOf("cap").forGetter(Oculus::cap),
+                        ResourceLocation.CODEC.fieldOf("column").forGetter(Oculus::column),
+                        ResourceLocation.CODEC.fieldOf("seal").forGetter(Oculus::seal))
+                .apply(instance, Oculus::new));
+    }
+
+    public record Layout(int cover, BlockPos door, Optional<Oculus> oculus) {
         static final Codec<Layout> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                         Codec.INT.fieldOf("cover").forGetter(Layout::cover),
-                        BlockPos.CODEC.fieldOf("entrance").forGetter(Layout::entrance),
-                        Codec.INT.fieldOf("max_steps").forGetter(Layout::maxSteps),
-                        BlockPos.CODEC.fieldOf("mouth").forGetter(Layout::mouth),
-                        BlockPos.CODEC.fieldOf("shaft").forGetter(Layout::shaft),
-                        BlockPos.CODEC.fieldOf("stair").forGetter(Layout::stair))
+                        BlockPos.CODEC.fieldOf("door").forGetter(Layout::door),
+                        Oculus.CODEC.optionalFieldOf("oculus").forGetter(Layout::oculus))
                 .apply(instance, Layout::new));
     }
 
-    public record Pieces(
-            ResourceLocation cap,
-            ResourceLocation hall,
-            ResourceLocation marker,
-            ResourceLocation openStep,
-            ResourceLocation seal,
-            ResourceLocation shaft,
-            ResourceLocation step) {
+    public record Pieces(ResourceLocation entrance, ResourceLocation hall) {
         static final Codec<Pieces> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                        ResourceLocation.CODEC.fieldOf("cap").forGetter(Pieces::cap),
-                        ResourceLocation.CODEC.fieldOf("hall").forGetter(Pieces::hall),
-                        ResourceLocation.CODEC.fieldOf("marker").forGetter(Pieces::marker),
-                        ResourceLocation.CODEC.fieldOf("open_step").forGetter(Pieces::openStep),
-                        ResourceLocation.CODEC.fieldOf("seal").forGetter(Pieces::seal),
-                        ResourceLocation.CODEC.fieldOf("shaft").forGetter(Pieces::shaft),
-                        ResourceLocation.CODEC.fieldOf("step").forGetter(Pieces::step))
+                        ResourceLocation.CODEC.fieldOf("entrance").forGetter(Pieces::entrance),
+                        ResourceLocation.CODEC.fieldOf("hall").forGetter(Pieces::hall))
                 .apply(instance, Pieces::new));
     }
 
     public static final MapCodec<ShrineStructure> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     settingsCodec(instance),
                     Layout.CODEC.fieldOf("layout").forGetter(ShrineStructure::layout),
-                    Pieces.CODEC.fieldOf("pieces").forGetter(ShrineStructure::pieces))
+                    Pieces.CODEC.fieldOf("pieces").forGetter(ShrineStructure::pieces),
+                    ShaftPiece.Design.CODEC.fieldOf("shaft").forGetter(ShrineStructure::shaft))
             .apply(instance, ShrineStructure::new));
+
+    private static final int MIN_DEPTH = 6;
 
     private record Column(int floor, boolean wet) {}
 
-    private record Plan(Rotation rotation, BlockPos origin, List<Boolean> closed, Column light, BlockPos mouth) {}
+    private record Plan(Rotation rotation, BlockPos hall, BlockPos shaft, int floor, int top, Direction exit, Optional<Column> light) {}
 
     private final Layout layout;
     private final Pieces pieces;
+    private final ShaftPiece.Design shaft;
 
-    public ShrineStructure(StructureSettings settings, Layout layout, Pieces pieces) {
+    public ShrineStructure(StructureSettings settings, Layout layout, Pieces pieces, ShaftPiece.Design shaft) {
         super(settings);
         this.layout = layout;
         this.pieces = pieces;
+        this.shaft = shaft;
     }
 
     public Layout layout() {
@@ -77,6 +76,10 @@ public final class ShrineStructure extends Structure {
 
     public Pieces pieces() {
         return pieces;
+    }
+
+    public ShaftPiece.Design shaft() {
+        return shaft;
     }
 
     @Override
@@ -96,25 +99,29 @@ public final class ShrineStructure extends Structure {
         if (!context.validBiome().test(biome)) {
             return Optional.empty();
         }
-        return Optional.of(new GenerationStub(surface, builder -> build(builder, context, plan(context, center))));
+        return plan(context, center).map(plan -> new GenerationStub(surface, builder -> build(builder, context, plan)));
     }
 
-    private Plan plan(GenerationContext context, BlockPos center) {
-        StructureTemplateManager templates = context.structureTemplateManager();
-        Vec3i hall = templates.getOrCreate(pieces.hall()).getSize();
-        int ceiling = templates.getOrCreate(pieces.step()).getSize().getY() - 1 - layout.stair().getY();
+    private Optional<Plan> plan(GenerationContext context, BlockPos center) {
+        Vec3i hall = context.structureTemplateManager().getOrCreate(pieces.hall()).getSize();
         Plan best = null;
         for (Rotation rotation : Rotation.values()) {
-            Plan plan = plan(context, rotation, hall, ceiling, center);
-            if (best == null || plan.closed().size() < best.closed().size()) {
+            Plan plan = plan(context, rotation, hall, center);
+            if (plan != null && (best == null || plan.top() - plan.floor() < best.top() - best.floor())) {
                 best = plan;
             }
         }
-        return best;
+        return Optional.ofNullable(best);
     }
 
-    private Plan plan(GenerationContext context, Rotation rotation, Vec3i hall, int ceiling, BlockPos center) {
+    private Plan plan(GenerationContext context, Rotation rotation, Vec3i hall, BlockPos center) {
         BlockPos corner = center.subtract(turn(new BlockPos(hall.getX() / 2, 0, hall.getZ() / 2), rotation));
+        int size = this.shaft.style().size;
+        BlockPos shaftLocal = new BlockPos(layout.door().getX() - size / 2, 0, layout.door().getZ() + 1);
+        BlockPos shaft = place(corner, shaftLocal, rotation);
+        if (column(context, place(shaft, new BlockPos(size / 2, 0, size / 2), rotation)).wet()) {
+            return null;
+        }
         List<BlockPos> footprint = List.of(
                 BlockPos.ZERO,
                 new BlockPos(hall.getX() - 1, 0, 0),
@@ -125,46 +132,78 @@ public final class ShrineStructure extends Structure {
                 .mapToInt(local -> column(context, place(corner, local, rotation)).floor())
                 .min()
                 .orElseThrow();
-        Column light = column(context, place(corner, layout.shaft(), rotation));
-        int floor = Math.max(lowest - hall.getY() - layout.cover(), context.heightAccessor().getMinBuildHeight() + 1);
-        BlockPos origin = corner.atY(floor);
-        List<Boolean> closed = new ArrayList<>();
-        for (int step = 0; step < layout.maxSteps(); step++) {
-            BlockPos stair = layout.entrance().offset(0, step, step);
-            Column ground = column(context, place(origin, stair, rotation));
-            int stairY = floor + stair.getY();
-            if (!ground.wet() && stairY >= ground.floor() - 1) {
-                closed.add(false);
-                break;
+        int deepestFloor = lowest - hall.getY() - layout.cover() + layout.door().getY();
+        Plan best = null;
+        for (Direction exit : this.shaft.style().exits) {
+            Column outside = column(context, place(shaft, outside(exit, size), rotation));
+            if (outside.wet()) {
+                continue;
             }
-            closed.add(ground.wet() || stairY + ceiling < ground.floor());
+            int top = outside.floor();
+            int depth = this.shaft.style().depth(Math.max(MIN_DEPTH, top - deepestFloor), exit);
+            int floor = top - depth;
+            if (floor - layout.door().getY() <= context.heightAccessor().getMinBuildHeight() + 1) {
+                continue;
+            }
+            if (best == null || depth < best.top() - best.floor()) {
+                Optional<Column> light = layout.oculus().map(oculus -> column(context, place(corner, oculus.at(), rotation)));
+                best = new Plan(rotation, corner.atY(floor - layout.door().getY()), shaft, floor, top, exit, light);
+            }
         }
-        BlockPos last = layout.entrance().offset(0, closed.size() - 1, closed.size());
-        BlockPos mouth = place(origin, last, rotation);
-        return new Plan(rotation, origin, closed, light, mouth.atY(column(context, mouth).floor()));
+        return best;
+    }
+
+    private static BlockPos outside(Direction exit, int size) {
+        int middle = size / 2;
+        return switch (exit) {
+            case SOUTH -> new BlockPos(middle, 0, size);
+            case NORTH -> new BlockPos(middle, 0, -1);
+            case EAST -> new BlockPos(size, 0, middle);
+            default -> new BlockPos(-1, 0, middle);
+        };
     }
 
     private void build(StructurePiecesBuilder builder, GenerationContext context, Plan plan) {
         StructureTemplateManager templates = context.structureTemplateManager();
         Rotation rotation = plan.rotation();
-        BlockPos origin = plan.origin();
-        builder.addPiece(new ShrinePiece(templates, pieces.hall(), origin, rotation));
-        for (int step = 0; step < plan.closed().size(); step++) {
-            BlockPos local = layout.entrance().offset(0, step, step).subtract(layout.stair());
-            ResourceLocation template = plan.closed().get(step) ? pieces.step() : pieces.openStep();
-            builder.addPiece(new ShrinePiece(templates, template, place(origin, local, rotation), rotation));
-        }
-        BlockPos shaft = place(origin, layout.shaft(), rotation);
-        if (plan.light().wet()) {
-            builder.addPiece(new ShrinePiece(templates, pieces.seal(), shaft.below(), rotation));
-        } else {
-            int top = plan.light().floor() - 1;
-            for (int y = shaft.getY(); y < top; y++) {
-                builder.addPiece(new ShrinePiece(templates, pieces.shaft(), shaft.atY(y), rotation));
+        builder.addPiece(new ShrinePiece(templates, pieces.hall(), plan.hall(), rotation));
+        builder.addPiece(new ShaftPiece(plan.shaft(), rotation, plan.floor(), plan.top(), plan.exit(), shaft));
+        Rotation facing = rotation.getRotated(turning(plan.exit()));
+        int width = templates.getOrCreate(pieces.entrance()).getSize().getX();
+        int size = shaft.style().size;
+        int inset = (width - size) / 2;
+        BlockPos entrance = aligned(plan.shaft().atY(plan.top() - 1), rotation, facing, width, inset, size);
+        builder.addPiece(new EntrancePiece(templates, pieces.entrance(), entrance, facing, inset));
+        plan.light().ifPresent(light -> {
+            Oculus oculus = layout.oculus().orElseThrow();
+            BlockPos at = place(plan.hall(), oculus.at(), rotation);
+            if (light.wet()) {
+                builder.addPiece(new ShrinePiece(templates, oculus.seal(), at.below(), rotation));
+                return;
             }
-            builder.addPiece(new ShrinePiece(templates, pieces.cap(), shaft.atY(top), rotation));
-        }
-        builder.addPiece(new ShrinePiece(templates, pieces.marker(), plan.mouth().subtract(turn(layout.mouth(), rotation)), rotation));
+            int top = light.floor() - 1;
+            for (int y = at.getY(); y < top; y++) {
+                builder.addPiece(new ShrinePiece(templates, oculus.column(), at.atY(y), rotation));
+            }
+            builder.addPiece(new ShrinePiece(templates, oculus.cap(), at.atY(top), rotation));
+        });
+    }
+
+    private static Rotation turning(Direction exit) {
+        return switch (exit) {
+            case WEST -> Rotation.CLOCKWISE_90;
+            case NORTH -> Rotation.CLOCKWISE_180;
+            case EAST -> Rotation.COUNTERCLOCKWISE_90;
+            default -> Rotation.NONE;
+        };
+    }
+
+    private static BlockPos aligned(BlockPos shaft, Rotation shaftRotation, Rotation entranceRotation, int width, int inset, int size) {
+        int last = size - 1;
+        BlockPos far = place(shaft, new BlockPos(last, 0, last), shaftRotation);
+        BlockPos min = new BlockPos(Math.min(shaft.getX(), far.getX()) - inset, shaft.getY(), Math.min(shaft.getZ(), far.getZ()) - inset);
+        BlockPos spread = turn(new BlockPos(width - 1, 0, width - 1), entranceRotation);
+        return min.offset(-Math.min(0, spread.getX()), 0, -Math.min(0, spread.getZ()));
     }
 
     private static BlockPos turn(BlockPos local, Rotation rotation) {

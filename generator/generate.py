@@ -1,12 +1,16 @@
 import hashlib
 import json
+import math
 import shutil
 from pathlib import Path
 
-import nbt
 import png
 import tomllib
-from nbt import Byte, Double
+from blocks import Template, box, cuboid, text
+from camp import FIRE, HEADSTONE, camp
+from camp import SIZE as CAMP
+from entrances import ENTRANCES, Cover
+from halls import HALLS
 
 ROOT = Path(__file__).resolve().parent.parent
 MAIN = ROOT / "mod/src/generated/resources"
@@ -14,28 +18,21 @@ DEV = ROOT / "mod/src/generated/dev"
 ENDREM_EYES = ROOT / "pack/config/EndRemastered-NeoForge/Eyes"
 QUESTS = ROOT / "pack/config/ftbquests/quests"
 IRIS = ROOT / "pack/config/iris.properties"
+IMPROVED_MOBS = ROOT / "pack/config/improvedmobs/common.toml"
 QUEST_FILE_VERSION = 13
 QUEST_SPACING = 1.5
+PAGES_PER_ROW = 6
+PAGEBREAK = "{@pagebreak}"
 LANG = ROOT / "mod/src/main/resources/assets/wayfarer/lang/en_us.json"
 SPARSE_STRUCTURES = ROOT / "pack/config/sparsestructures.json5"
-DATA_VERSION = 3955
 CHUNK = 16
+TICKS_PER_DAY = 24000
+IMPROVED_MOBS_STEP_TICKS = 2400
+IMPROVED_MOBS_CAP = 250.0
+CAMPSITES = ["armorer", "butcher", "cartographer", "cleric", "farmer", "fisher"]
+TIER_NAMES = {1: "tier_one", 2: "tier_two"}
 
-HALL_WIDTH = 15
-HALL_LENGTH = 21
-HALL_CEILING = 10
-AISLE = HALL_WIDTH // 2
-PEDESTAL_Z = 3
 COVER = 3
-HANGING_LIGHTS = {"minecraft:lantern", "minecraft:soul_lantern"}
-HEADROOM = 3
-MAX_STEPS = 48
-STAIR = (1, 1, 0)
-STEP_CEILING = STAIR[1] + HEADROOM + 1
-STAIR_STATE = {"facing": "south", "half": "bottom", "shape": "straight", "waterlogged": False}
-MOUTH = (2, 1, 1)
-MARKER_SIZE = [5, 4, 6]
-CAMP = 9
 SHOWROOM_LAYERS = [
     ("minecraft:bedrock", 1),
     ("minecraft:stone", 60),
@@ -44,292 +41,93 @@ SHOWROOM_LAYERS = [
 ]
 WORLD_BOTTOM = -64
 SHOWROOM_ROW_Z = 64
-SHOWROOM_SPACING = 32
+SHOWROOM_SPACING = 40
+EYE_HEIGHT = 1.62
+SEE_THROUGH = ("_carpet", "candle", "chain", "cobweb", "lantern", "_pane", "rail", "vine", "vines", "_bars", "torch")
 SHOWROOM_WALL_Z = -10
+SHOWROOM_SIGN_OFFSET = 17
+DEMO_DISTANCE = 750
+DEMO_COMPANION = {"name": "Companion", "radius": 24, "seconds": 60}
 
 
-class Template:
-    def __init__(self):
-        self.blocks = {}
-        self.entities = []
-
-    def set(self, pos, name, entity=None, **properties):
-        self.blocks[pos] = (
-            name,
-            tuple(sorted((key, str(value).lower()) for key, value in properties.items())),
-            entity,
-        )
-
-    def entity(self, pos, data):
-        self.entities.append((pos, data))
-
-    def save(self, path, size=None):
-        if size is None:
-            size = [max(pos[axis] for pos in self.blocks) + 1 for axis in range(3)]
-        palette = []
-        indices = {}
-        blocks = []
-        for pos in sorted(self.blocks, key=lambda p: (p[1], p[2], p[0])):
-            name, properties, entity = self.blocks[pos]
-            state = (name, properties)
-            if state not in indices:
-                indices[state] = len(palette)
-                entry = {"Name": name}
-                if properties:
-                    entry["Properties"] = dict(properties)
-                palette.append(entry)
-            block = {"pos": list(pos), "state": indices[state]}
-            if entity is not None:
-                block["nbt"] = entity
-            blocks.append(block)
-        entities = [
-            {
-                "blockPos": [int(x), int(y), int(z)],
-                "nbt": data,
-                "pos": [Double(x), Double(y), Double(z)],
-            }
-            for (x, y, z), data in self.entities
-        ]
-        nbt.write(
-            path,
-            {
-                "DataVersion": DATA_VERSION,
-                "blocks": blocks,
-                "entities": entities,
-                "palette": palette,
-                "size": size,
-            },
-        )
+def passable(room, pos):
+    block = room.get(pos)
+    return block is not None and (block in ("minecraft:air", "minecraft:water") or block.endswith(SEE_THROUGH))
 
 
-def text(line):
-    return json.dumps(line)
+def visible(room, at, look):
+    eye = (at[0] + 0.5, at[1] + EYE_HEIGHT, at[2] + 0.5)
+    steps = max(1, int(math.dist(eye, look) * 4))
+    for step in range(1, steps):
+        point = [eye[axis] + (look[axis] - eye[axis]) * step / steps for axis in range(3)]
+        cell = tuple(math.floor(value) for value in point)
+        if math.dist(point, look) > 1.2 and not passable(room, cell):
+            return False
+    return True
 
 
-def book(title, author, pages):
-    return {
-        "components": {
-            "minecraft:written_book_content": {
-                "author": author,
-                "pages": [{"raw": text(page)} for page in pages],
-                "resolved": Byte(1),
-                "title": {"raw": title},
-            }
-        },
-        "count": 1,
-        "id": "minecraft:written_book",
+def opening(room, pos, look=None):
+    x, y, z = pos
+    for reach in range(9):
+        for dx, dy, dz in sorted(
+            cuboid((-reach, -reach, -reach), (reach, reach, reach)), key=lambda d: abs(d[0]) + abs(d[1]) + abs(d[2])
+        ):
+            near = (x + dx, y + dy, z + dz)
+            if (
+                near in room.open
+                and room.get(near) == "minecraft:air"
+                and room.get((near[0], near[1] + 1, near[2])) == "minecraft:air"
+                and (look is None or visible(room, near, look))
+            ):
+                return near
+    return pos
+
+
+def cameras(room, layout):
+    width, height, length = room.size
+    door_x, floor, door_z = layout["door"]
+    pedestal = next(pos for pos, block in room.t.blocks.items() if block[0] == "wayfarer:shrine_pedestal")
+    target = (pedestal[0] + 0.5, pedestal[1] + 1.2, pedestal[2] + 0.5)
+    middle = length // 2
+    wall = next((x for x in range(width // 2, -1, -1) if (x, floor + 1, middle) not in room.open), 0)
+    looks = {
+        "hall": ((door_x, floor, door_z - 1), target),
+        "high": ((door_x, floor + height - 7, length - 4), target),
+        "pedestal": ((pedestal[0], pedestal[1], pedestal[2] + 3), target),
+        "wall": ((wall + 4, floor, middle), (wall + 0.5, floor + 2, middle + 0.5)),
+        "corner": ((width // 2, floor + 1, middle), (width - 1.5, floor + height - 4, 1.5)),
+        "ceiling": ((width // 2, floor, middle), (width // 2 + 0.5, height, middle - 3.5)),
     }
+    views = {name: (opening(room, at, look), look) for name, (at, look) in looks.items()}
+    return [
+        {"at": [at[0] + 0.5, at[1], at[2] + 0.5], "look": list(look), "name": name}
+        for name, (at, look) in views.items()
+    ]
 
 
-def lectern(template, pos, facing, title, author, pages):
-    template.set(
-        pos,
-        "minecraft:lectern",
-        entity={
-            "Book": book(title, author, pages),
-            "Page": 0,
-            "id": "minecraft:lectern",
-        },
-        facing=facing,
-        has_book=True,
-        powered=False,
-    )
-
-
-def box(template, low, high, name, **properties):
-    for x in range(low[0], high[0] + 1):
-        for y in range(low[1], high[1] + 1):
-            for z in range(low[2], high[2] + 1):
-                template.set((x, y, z), name, **properties)
-
-
-def hall(eye, spec):
-    palette = spec["palette"]
-    t = Template()
-    box(t, (0, 0, 0), (HALL_WIDTH - 1, HALL_CEILING, HALL_LENGTH - 1), palette["shell"])
-    box(t, (1, 1, 1), (HALL_WIDTH - 2, 1, HALL_LENGTH - 2), palette["floor"])
-    box(
-        t,
-        (1, 2, 1),
-        (HALL_WIDTH - 2, HALL_CEILING - 1, HALL_LENGTH - 2),
-        "minecraft:air",
-    )
-    for z in range(1, HALL_LENGTH - 1):
-        t.set((0, 6, z), palette["trim"])
-        t.set((HALL_WIDTH - 1, 6, z), palette["trim"])
-    for x in range(1, HALL_WIDTH - 1):
-        t.set((x, 6, 0), palette["trim"])
-    for z in range(PEDESTAL_Z + 6, HALL_LENGTH - 1):
-        t.set((AISLE, 1, z), palette["trim"])
-    for z in (4, 8, 12, 16):
-        for x in (2, HALL_WIDTH - 3):
-            box(t, (x, 2, z), (x, HALL_CEILING - 1, z), palette["pillar"])
-        for x in (4, HALL_WIDTH - 5):
-            if palette["light"] in HANGING_LIGHTS:
-                t.set((x, HALL_CEILING - 1, z), palette["light"], hanging=True, waterlogged=False)
-            else:
-                t.set((x, HALL_CEILING, z), palette["light"])
-    for x in range(AISLE - 1, AISLE + 2):
-        for z in range(PEDESTAL_Z + 3, PEDESTAL_Z + 6):
-            t.set((x, 1, z), "minecraft:water", level=0)
-    for x0, z0 in (
-        (1, 1),
-        (HALL_WIDTH - 4, 1),
-        (1, HALL_LENGTH - 4),
-        (HALL_WIDTH - 4, HALL_LENGTH - 4),
-    ):
-        for x in range(x0, x0 + 3):
-            for z in range(z0, z0 + 3):
-                t.set((x, 1, z), "minecraft:moss_block")
-                t.set(
-                    (x, 2, z),
-                    palette["plant"] if (x + z) % 2 == 0 else "minecraft:moss_carpet",
+def shrines(eyes):
+    for eye, spec in eyes.items():
+        room, layout = HALLS[eye](eye, spec)
+        pedestal = next(pos for pos, block in room.t.blocks.items() if block[0] == "wayfarer:shrine_pedestal")
+        layout = layout | {"cameras": cameras(room, layout), "pedestal": list(pedestal), "size": list(room.size)}
+        room.save(MAIN / f"data/wayfarer/structure/shrine/{eye}/hall.nbt")
+        cover = Cover(layout["shaft"]["style"], eye)
+        ENTRANCES[eye](cover, room.shell)
+        cover.save(MAIN / f"data/wayfarer/structure/shrine/{eye}/entrance.nbt")
+        if "oculus" in layout:
+            seal = Template()
+            seal.set((0, 0, 0), room.shell)
+            seal.save(MAIN / f"data/wayfarer/structure/shrine/{eye}/skylight_seal.nbt")
+            cap = Template()
+            for y, block in enumerate(layout["oculus"]["cap"]):
+                cap.set(
+                    (0, y, 0), block, east="none", north="none", south="none", up=True, waterlogged=False, west="none"
                 )
-    t.set((AISLE, 2, PEDESTAL_Z), "wayfarer:shrine_pedestal")
-    t.set((AISLE, 1, PEDESTAL_Z), palette["trim"])
-    t.entity(
-        (AISLE + 0.5, 3.4, PEDESTAL_Z + 0.5),
-        {
-            "billboard": "vertical",
-            "id": "minecraft:item_display",
-            "item": {"count": 1, "id": f"endrem:{eye}_eye"},
-        },
-    )
-    lectern(
-        t,
-        (AISLE - 2, 2, PEDESTAL_Z + 1),
-        "south",
-        spec["people"],
-        "The Keepers",
-        spec["lore"],
-    )
-    t.set((AISLE, HALL_CEILING, PEDESTAL_Z), "minecraft:air")
-    box(t, (AISLE, 2, HALL_LENGTH - 1), (AISLE, 1 + HEADROOM, HALL_LENGTH - 1), "minecraft:air")
-    t.save(MAIN / f"data/wayfarer/structure/shrine/{eye}/hall.nbt")
-
-
-def steps(eye, spec):
-    palette = spec["palette"]
-    closed = Template()
-    for side in (0, 2):
-        box(closed, (side, 0, 0), (side, STEP_CEILING, 0), palette["shell"])
-    closed.set((1, 0, 0), palette["shell"])
-    closed.set((1, STAIR[1], 0), palette["stairs"], **STAIR_STATE)
-    box(closed, (1, STAIR[1] + 1, 0), (1, STAIR[1] + HEADROOM, 0), "minecraft:air")
-    closed.set((1, STEP_CEILING, 0), palette["shell"])
-    closed.save(MAIN / f"data/wayfarer/structure/shrine/{eye}/step.nbt")
-    opened = Template()
-    opened.set((1, 0, 0), palette["shell"])
-    opened.set((1, STAIR[1], 0), palette["stairs"], **STAIR_STATE)
-    box(opened, (1, STAIR[1] + 1, 0), (1, STAIR[1] + HEADROOM, 0), "minecraft:air")
-    opened.save(MAIN / f"data/wayfarer/structure/shrine/{eye}/open_step.nbt", size=[3, STEP_CEILING + 1, 1])
-    seal = Template()
-    seal.set((0, 0, 0), palette["shell"])
-    seal.save(MAIN / f"data/wayfarer/structure/shrine/{eye}/seal.nbt")
-
-
-def shaft():
+            cap.save(MAIN / f"data/wayfarer/structure/shrine/{eye}/skylight_cap.nbt")
+        yield eye, layout
     column = Template()
     column.set((0, 0, 0), "minecraft:air")
-    column.save(MAIN / "data/wayfarer/structure/shrine/shaft.nbt")
-    cap = Template()
-    cap.set((0, 0, 0), "minecraft:azalea_leaves", distance=1, persistent=True, waterlogged=False)
-    cap.save(MAIN / "data/wayfarer/structure/shrine/cap.nbt")
-
-
-def markers():
-    wall = {"east": "none", "north": "none", "south": "none", "up": True, "waterlogged": False, "west": "none"}
-    mx, my, mz = MOUTH
-    cairn = Template()
-    cairn.set((mx + 1, my, mz), "minecraft:mossy_cobblestone")
-    cairn.set((mx + 2, my, mz + 1), "minecraft:cobblestone")
-    cairn.set((mx + 1, my + 1, mz), "minecraft:mossy_cobblestone_wall", **wall)
-    cairn.save(MAIN / "data/wayfarer/structure/shrine/marker/cairn.nbt", size=MARKER_SIZE)
-    stone = Template()
-    box(stone, (mx + 2, my, mz - 1), (mx + 2, my + 1, mz - 1), "minecraft:mossy_stone_bricks")
-    stone.set((mx + 2, my + 2, mz - 1), "minecraft:mossy_stone_brick_wall", **wall)
-    stone.set((mx + 2, my, mz), "minecraft:vine", east=False, north=True, south=False, up=False, west=False)
-    stone.save(MAIN / "data/wayfarer/structure/shrine/marker/standing_stone.nbt", size=MARKER_SIZE)
-    ring = Template()
-    center = (mx, my, mz + 3)
-    ring.set(center, "minecraft:campfire", facing="north", lit=False, signal_fire=False, waterlogged=False)
-    for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, -1), (1, -1), (-1, 1)):
-        ring.set((center[0] + dx, my - 1, center[2] + dz), "minecraft:cobblestone")
-    ring.save(MAIN / "data/wayfarer/structure/shrine/marker/fire_ring.nbt", size=MARKER_SIZE)
-
-
-def last_camp():
-    t = Template()
-    box(t, (0, 0, 0), (8, 0, 8), "minecraft:coarse_dirt")
-    for x, z in ((0, 0), (8, 0), (0, 8), (8, 8), (1, 0), (0, 1)):
-        t.set((x, 0, z), "minecraft:grass_block", snowy=False)
-    t.set(
-        (4, 1, 4),
-        "minecraft:campfire",
-        facing="north",
-        lit=False,
-        signal_fire=False,
-        waterlogged=False,
-    )
-    for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-        t.set((4 + dx, 0, 4 + dz), "minecraft:cobblestone")
-    t.set(
-        (6, 1, 4),
-        "comforts:sleeping_bag_brown",
-        facing="east",
-        occupied=False,
-        part="foot",
-    )
-    t.set(
-        (7, 1, 4),
-        "comforts:sleeping_bag_brown",
-        facing="east",
-        occupied=False,
-        part="head",
-    )
-    t.set((2, 0, 6), "minecraft:rooted_dirt")
-    t.set((2, 0, 7), "minecraft:rooted_dirt")
-    t.set(
-        (2, 1, 5),
-        "minecraft:mossy_cobblestone_wall",
-        east="none",
-        north="none",
-        south="none",
-        up=True,
-        waterlogged=False,
-        west="none",
-    )
-    lines = ["Here rests", "the last", "Wayfarer.", "Carry the ember."]
-    sign = {
-        "back_text": {
-            "color": "black",
-            "has_glowing_text": Byte(0),
-            "messages": [text("")] * 4,
-        },
-        "front_text": {
-            "color": "black",
-            "has_glowing_text": Byte(0),
-            "messages": [text(line) for line in lines],
-        },
-        "id": "minecraft:sign",
-        "is_waxed": Byte(1),
-    }
-    t.set((2, 1, 4), "minecraft:spruce_sign", entity=sign, rotation=8, waterlogged=False)
-    journal = [
-        "I do not know your name, stranger, and you will not learn mine. It does not matter. Wayfarers have no names, only roads.",
-        "The ember I gave you is the last light of the Eye. It pulls towards the twelve shards. Follow it.",
-        "Never stay. Never build. The gaze finds what stays still. Sleep in your tent, keep your fire lit, and move on.",
-        "Gather the twelve before the Gazebound do. Then find the true gate, and finish what we could not.",
-    ]
-    lectern(
-        t,
-        (6, 1, 6),
-        "west",
-        "The Last Wayfarer's Journal",
-        "The Last Wayfarer",
-        journal,
-    )
-    t.save(MAIN / "data/wayfarer/structure/last_camp.nbt", size=[CAMP, 3, CAMP])
+    column.save(MAIN / "data/wayfarer/structure/shrine/skylight.nbt")
 
 
 def empty():
@@ -374,11 +172,25 @@ def showroom(eyes):
             f"/tp @s {center} {y + 20} {row}",
             "settle",
             f"/place structure wayfarer:shrine/{eye} {x} {y} {SHOWROOM_ROW_Z}",
-            f"/setblock {center} {y} {row - HALL_LENGTH // 2 - 2} minecraft:oak_sign[rotation=8]"
+            f"/setblock {center} {y} {row - SHOWROOM_SIGN_OFFSET} minecraft:oak_sign[rotation=8]"
             + f"{{front_text:{{messages:[{blank},{name},{blank},{blank}]}}}}",
         ]
-    lines += ["wait 20", f"/tp @s 0.5 {y} 8.5 180 0"]
-    write_json(DEV / "wayfarer/showroom.json", {"steps": lines})
+    target = (-DEMO_DISTANCE, 0)
+    lines += [
+        f"/tp @s {target[0] + 0.5} {y + 20} {target[1] + 0.5}",
+        "settle",
+        f"/fill {target[0] - 1} {y} {target[1] - 1} {target[0] + 1} {y} {target[1] + 1} minecraft:mossy_cobblestone",
+        f"/setblock {target[0]} {y + 1} {target[1]} minecraft:cobblestone_wall",
+        f"/setblock {target[0]} {y + 2} {target[1]} minecraft:lantern",
+        "wait 20",
+        f"/tp @s 0.5 {y} 8.5 180 0",
+    ]
+    demo = {
+        "companion": DEMO_COMPANION | {"centre": [FIRE[0] - CAMP // 2, FIRE[1] - CAMP // 2]},
+        "grave": [HEADSTONE[0] - CAMP // 2, HEADSTONE[1] - CAMP // 2],
+        "target": {"at": [target[0], y, target[1]], "shrine": f"wayfarer:shrine/{sorted(eyes)[0]}"},
+    }
+    write_json(DEV / "wayfarer/showroom.json", {"demo": demo, "steps": lines})
     write_json(DEV / "assets/showroom/lang/en_us.json", {"travelerstitles.wayfarer.showroom": "Showroom"})
     write_json(
         DEV / "data/wayfarer/dimension/showroom.json",
@@ -394,6 +206,46 @@ def showroom(eyes):
                 "type": "minecraft:flat",
             },
             "type": "minecraft:overworld",
+        },
+    )
+
+
+def tour(eyes, layouts):
+    surface = WORLD_BOTTOM + sum(height for _, height in SHOWROOM_LAYERS)
+    camp_origin = [-(CAMP // 2), surface - 1, -(CAMP // 2)]
+    fire = CAMP // 2 + 0.5
+    camp_views = {
+        "north-west": ((-2, 6, -2), (fire, 1, fire)),
+        "north-east": ((CAMP + 2, 6, -2), (fire, 1, fire)),
+        "south-east": ((CAMP + 2, 6, CAMP + 2), (fire, 1, fire)),
+        "south-west": ((-2, 6, CAMP + 2), (fire, 1, fire)),
+        "tent": ((11.5, 1, 8.5), (11.5, 1.5, 3.5)),
+        "grave": ((6.5, 1, 14.5), (HEADSTONE[0] + 0.5, 1.5, HEADSTONE[1] + 0.5)),
+        "journal": ((11.5, 1, 6.5), (11.5, 1.2, 10.5)),
+        "above": ((fire, 22, fire + 8), (fire, 0, fire)),
+    }
+    write_json(
+        DEV / "wayfarer/tour.json",
+        {
+            "camp": {
+                "cameras": [
+                    {"at": list(at), "look": list(look), "name": name} for name, (at, look) in camp_views.items()
+                ],
+                "origin": camp_origin,
+            },
+            "shrines": [
+                {
+                    "cameras": layouts[eye]["cameras"],
+                    "centre": [SHOWROOM_SPACING * (index + 1) + CHUNK // 2, SHOWROOM_ROW_Z + CHUNK // 2],
+                    "door": list(layouts[eye]["door"]),
+                    "eye": eye,
+                    "pedestal": layouts[eye]["pedestal"],
+                    "shaft": layouts[eye]["shaft"]["style"],
+                    "size": layouts[eye]["size"],
+                }
+                for index, eye in enumerate(sorted(eyes))
+            ],
+            "surface": surface,
         },
     )
 
@@ -441,22 +293,45 @@ def quest_id(kind, name):
 def task(spec, owner, index):
     entry = {"id": quest_id("task", f"{owner}/{index}")}
     if "checkmark" in spec:
-        entry["type"] = "checkmark"
-    elif "item" in spec:
-        entry |= {"item": {"count": 1, "id": spec["item"]}, "type": "item"}
-    elif "structure" in spec:
-        entry |= {"structure": spec["structure"], "type": "structure"}
-    elif "dimension" in spec:
-        entry |= {"dimension": spec["dimension"], "type": "dimension"}
-    elif "kill" in spec:
-        entry |= {"entity": spec["kill"], "type": "kill", "value": 1}
-    else:
-        raise ValueError(f"unknown task {spec}")
-    return entry
+        return entry | {"type": "checkmark"}
+    if "item" in spec:
+        return entry | {"item": {"count": 1, "id": spec["item"]}, "type": "item"}
+    if "advancement" in spec:
+        return entry | {"advancement": spec["advancement"], "criterion": "", "type": "advancement"}
+    if "stat" in spec:
+        return entry | {"stat": spec["stat"], "type": "stat", "value": spec["value"]}
+    if "structure" in spec:
+        return entry | {"structure": spec["structure"], "type": "structure"}
+    if "dimension" in spec:
+        return entry | {"dimension": spec["dimension"], "type": "dimension"}
+    if "kill" in spec:
+        return entry | {"entity": spec["kill"], "type": "kill", "value": 1}
+    raise ValueError(f"unknown task {spec}")
 
 
 def reward(spec, owner, index):
-    return {"id": quest_id("reward", f"{owner}/{index}"), "item": {"count": 1, "id": spec["item"]}, "type": "item"}
+    entry = {"id": quest_id("reward", f"{owner}/{index}")}
+    if "auto" in spec:
+        entry["auto"] = spec["auto"]
+    if "item" in spec:
+        item = {"count": spec.get("count", 1), "id": spec["item"]}
+        if "components" in spec:
+            item["components"] = spec["components"]
+        return entry | {"item": item, "type": "item"}
+    if "xp_levels" in spec:
+        return entry | {"type": "xp_levels", "xp_levels": spec["xp_levels"]}
+    if "command" in spec:
+        return entry | {"command": spec["command"], "permission_level": 2, "silent": True, "type": "command"}
+    raise ValueError(f"unknown reward {spec}")
+
+
+def paragraphs(description):
+    lines = []
+    for paragraph in description:
+        if lines:
+            lines.append("")
+        lines.append(paragraph)
+    return lines
 
 
 def eye_quests(eyes, tier, spec):
@@ -467,22 +342,45 @@ def eye_quests(eyes, tier, spec):
             "description": [eyes[eye]["hint"]],
             "icon": f"endrem:{eye}_eye",
             "id": f"eye_{eye}",
+            "rewards": spec.get("rewards", []),
             "subtitle": f"The {eye.title()} Eye",
-            "tasks": [{"structure": f"wayfarer:shrine/{eye}"}, {"item": f"endrem:{eye}_eye"}],
+            "tasks": [{"structure": f"wayfarer:shrine/{eye}"}, {"advancement": f"wayfarer:shards/{eye}"}],
             "title": eyes[eye]["people"],
             "x": (index - (len(names) - 1) / 2) * QUEST_SPACING,
             "y": spec["y"],
         }
 
 
-def quests(book, eyes):
+def page_quests(library):
+    for index, (identifier, entry) in enumerate(library.items()):
+        pages = []
+        for page in entry["pages"]:
+            if pages:
+                pages.append(PAGEBREAK)
+            pages.append(page)
+        yield {
+            "description": pages,
+            "icon": "minecraft:written_book",
+            "id": f"page/{identifier}",
+            "invisible": True,
+            "subtitle": entry["author"],
+            "tasks": [{"checkmark": True}],
+            "title": entry["title"],
+            "x": (index % PAGES_PER_ROW) * QUEST_SPACING,
+            "y": (index // PAGES_PER_ROW) * QUEST_SPACING,
+        }
+
+
+def quests(book, eyes, library):
     lang = {f"file.{1:016X}.title": book["title"]}
-    tiers = {tier: [f"eye_{eye}" for eye in sorted(eyes) if eyes[eye]["tier"] == tier] for tier in (1, 2)}
+    tiers = {tier: [f"eye_{eye}" for eye in sorted(eyes) if eyes[eye]["tier"] == tier] for tier in TIER_NAMES}
     for order, chapter in enumerate(book["chapters"]):
         chapter_id = quest_id("chapter", chapter["id"])
         lang[f"chapter.{chapter_id}.title"] = chapter["title"]
         lang[f"chapter.{chapter_id}.chapter_subtitle"] = chapter["subtitle"]
         entries = chapter.get("quests", []) + list(eye_quests(eyes, chapter.get("eyes"), chapter.get("eye_quests", {})))
+        if chapter.get("pages"):
+            entries += list(page_quests(library))
         written = []
         for spec in entries:
             identifier = quest_id("quest", spec["id"])
@@ -498,17 +396,21 @@ def quests(book, eyes):
                 entry["icon"] = {"count": 1, "id": spec["icon"]}
             if "min_after" in spec:
                 entry["min_required_dependencies"] = spec["min_after"]
+            if spec.get("invisible"):
+                entry["invisible"] = True
             if spec.get("rewards"):
                 entry["rewards"] = [reward(item, spec["id"], index) for index, item in enumerate(spec["rewards"])]
             written.append(entry)
             lang[f"quest.{identifier}.title"] = spec["title"]
             lang[f"quest.{identifier}.quest_subtitle"] = spec["subtitle"]
-            lang[f"quest.{identifier}.quest_desc"] = spec["description"]
+            description = spec["description"] if spec.get("invisible") else paragraphs(spec["description"])
+            lang[f"quest.{identifier}.quest_desc"] = description
         data = {
             "default_hide_dependency_lines": False,
             "default_quest_shape": "",
             "filename": chapter["id"],
             "group": "",
+            "hide_quest_until_deps_complete": True,
             "icon": {"count": 1, "id": chapter["icon"]},
             "id": chapter_id,
             "images": [],
@@ -525,30 +427,47 @@ def quests(book, eyes):
     (QUESTS / "data.snbt").write_text(snbt({"fallback_locale": "en_us", "version": QUEST_FILE_VERSION}) + "\n")
 
 
-def books(spec):
+def library(spec, eyes):
+    entries = {spec["journal"]["id"]: spec["journal"]}
+    for memory in spec["memories"]:
+        entries[memory["id"]] = memory | {"author": "The Eye"}
+    for eye, eye_spec in sorted(eyes.items()):
+        entries[f"people/{eye}"] = {
+            "author": eye_spec["people"],
+            "pages": eye_spec["lore"],
+            "title": eye_spec["people"],
+        }
+    for collection in spec["collections"]:
+        for entry in collection["books"]:
+            entries[entry["id"]] = entry | {"author": collection["author"]}
+    return entries
+
+
+def books(spec, eyes, entries):
     modifiers = sorted(
         f"wayfarer:{path.stem}"
         for path in (ROOT / "mod/src/main/resources/data/wayfarer/loot_modifiers").glob("*.json")
     )
     for collection in spec["collections"]:
-        entries = [
+        pool = [
             {
                 "functions": [
                     {
                         "components": {
                             "minecraft:written_book_content": {
                                 "author": collection["author"],
-                                "pages": [text(page) for page in book["pages"]],
-                                "title": book["title"],
+                                "pages": [text(page) for page in entry["pages"]],
+                                "title": entry["title"],
                             }
                         },
                         "function": "minecraft:set_components",
-                    }
+                    },
+                    {"function": "minecraft:set_custom_data", "tag": snbt_tag({"wayfarer_book": entry["id"]})},
                 ],
                 "name": "minecraft:written_book",
                 "type": "minecraft:item",
             }
-            for book in collection["books"]
+            for entry in collection["books"]
         ]
         write_json(
             MAIN / f"data/wayfarer/loot_table/books/{collection['id']}.json",
@@ -556,7 +475,7 @@ def books(spec):
                 "pools": [
                     {
                         "conditions": [{"chance": collection["chance"], "condition": "minecraft:random_chance"}],
-                        "entries": entries,
+                        "entries": pool,
                         "rolls": 1,
                     }
                 ],
@@ -584,6 +503,26 @@ def books(spec):
         MAIN / "data/neoforge/loot_modifiers/global_loot_modifiers.json",
         {"entries": sorted(modifiers), "replace": False},
     )
+    write_json(
+        MAIN / "wayfarer/books.json",
+        {
+            "books": {
+                identifier: {
+                    "author": entry["author"],
+                    "pages": entry["pages"],
+                    "quest": quest_id("quest", f"page/{identifier}"),
+                    "title": entry["title"],
+                }
+                for identifier, entry in entries.items()
+            },
+            "memories": [memory["id"] for memory in spec["memories"]],
+            "people": {f"wayfarer:shrine/{eye}": f"people/{eye}" for eye in sorted(eyes)},
+        },
+    )
+
+
+def snbt_tag(value):
+    return "{" + ",".join(f"{key}:{json.dumps(item)}" for key, item in sorted(value.items())) + "}"
 
 
 def shaders():
@@ -603,9 +542,20 @@ def salt(name):
     return int.from_bytes(hashlib.sha256(name.encode()).digest()[:4], "big") & 0x7FFFFFFF
 
 
-def worldgen(eyes, balance):
+def states(value):
+    return [{"Name": name} for name in value] if isinstance(value, list) else {"Name": value}
+
+
+def worldgen(eyes, layouts, tiers, balance):
     for eye, spec in eyes.items():
-        key = f"wayfarer:shrine/{eye}"
+        layout = {"cover": COVER, "door": list(layouts[eye]["door"])}
+        if "oculus" in layouts[eye]:
+            layout["oculus"] = {
+                "at": list(layouts[eye]["oculus"]["at"]),
+                "cap": f"wayfarer:shrine/{eye}/skylight_cap",
+                "column": "wayfarer:shrine/skylight",
+                "seal": f"wayfarer:shrine/{eye}/skylight_seal",
+            }
         write_json(
             MAIN / f"data/wayfarer/tags/worldgen/biome/has_structure/shrine/{eye}.json",
             {"values": [{"id": biome, "required": False} for biome in spec["biomes"]]},
@@ -614,40 +564,15 @@ def worldgen(eyes, balance):
             MAIN / f"data/wayfarer/worldgen/structure/shrine/{eye}.json",
             {
                 "biomes": f"#wayfarer:has_structure/shrine/{eye}",
-                "layout": {
-                    "cover": COVER,
-                    "entrance": [AISLE, 2, HALL_LENGTH],
-                    "max_steps": MAX_STEPS,
-                    "mouth": list(MOUTH),
-                    "shaft": [AISLE, HALL_CEILING + 1, PEDESTAL_Z],
-                    "stair": list(STAIR),
-                },
-                "pieces": {
-                    "cap": "wayfarer:shrine/cap",
-                    "hall": f"wayfarer:shrine/{eye}/hall",
-                    "marker": f"wayfarer:shrine/marker/{spec['marker']}",
-                    "open_step": f"wayfarer:shrine/{eye}/open_step",
-                    "seal": f"wayfarer:shrine/{eye}/seal",
-                    "shaft": "wayfarer:shrine/shaft",
-                    "step": f"wayfarer:shrine/{eye}/step",
+                "layout": layout,
+                "pieces": {"entrance": f"wayfarer:shrine/{eye}/entrance", "hall": f"wayfarer:shrine/{eye}/hall"},
+                "shaft": {
+                    key: value if key == "style" else states(value) for key, value in layouts[eye]["shaft"].items()
                 },
                 "spawn_overrides": {},
                 "step": "underground_structures",
                 "terrain_adaptation": "none",
                 "type": "wayfarer:shrine",
-            },
-        )
-        spacing = spec["spacing"]
-        write_json(
-            MAIN / f"data/wayfarer/worldgen/structure_set/shrine/{eye}.json",
-            {
-                "placement": {
-                    "salt": salt(key),
-                    "separation": spacing // 2,
-                    "spacing": spacing,
-                    "type": "minecraft:random_spread",
-                },
-                "structures": [{"structure": key, "weight": 1}],
             },
         )
         write_json(
@@ -659,18 +584,33 @@ def worldgen(eyes, balance):
                 "rarity": "rare" if spec["tier"] == 1 else "epic",
             },
         )
+        write_json(
+            MAIN / f"data/wayfarer/advancement/shards/{eye}.json",
+            {"criteria": {"taken": {"trigger": "minecraft:impossible"}}},
+        )
     names = sorted(eyes)
     write_json(
         MAIN / "data/wayfarer/tags/worldgen/structure/shrines.json",
         {"values": [f"wayfarer:shrine/{eye}" for eye in names]},
     )
-    for tier, name in ((1, "tier_one"), (2, "tier_two")):
+    for tier, name in TIER_NAMES.items():
+        members = [f"wayfarer:shrine/{eye}" for eye in names if eyes[eye]["tier"] == tier]
+        write_json(MAIN / f"data/wayfarer/tags/worldgen/structure/shrines/{name}.json", {"values": members})
+        spacing = tiers[str(tier)]["spacing"]
         write_json(
-            MAIN / f"data/wayfarer/tags/worldgen/structure/shrines/{name}.json",
-            {"values": [f"wayfarer:shrine/{eye}" for eye in names if eyes[eye]["tier"] == tier]},
+            MAIN / f"data/wayfarer/worldgen/structure_set/shrines/{name}.json",
+            {
+                "placement": {
+                    "salt": salt(f"wayfarer:shrines/{name}"),
+                    "separation": spacing * 3 // 4,
+                    "spacing": spacing,
+                    "type": "minecraft:random_spread",
+                },
+                "structures": [{"structure": member, "weight": 1} for member in members],
+            },
         )
     write_json(
-        MAIN / "data/wayfarer/tags/item/eye_shards.json",
+        MAIN / "data/curios/tags/item/shard.json",
         {"values": [{"id": f"endrem:{eye}_eye", "required": False} for eye in names]},
     )
     strongholds = balance["strongholds"]
@@ -689,11 +629,15 @@ def worldgen(eyes, balance):
             "structures": [{"structure": "betterstrongholds:stronghold", "weight": 1}],
         },
     )
+    write_json(
+        MAIN / "data/betterstrongholds/tags/worldgen/biome/has_structure/better_stronghold.json",
+        {"replace": False, "values": ["#minecraft:is_overworld"]},
+    )
 
 
-def spread(eyes, balance):
+def spread(balance):
     structures = balance["structures"]
-    unspread = sorted(structures["unspread"] + [f"wayfarer:shrine/{eye}" for eye in eyes])
+    unspread = sorted(structures["unspread"] + [f"wayfarer:shrines/{name}" for name in TIER_NAMES.values()])
     write_json(
         SPARSE_STRUCTURES,
         {
@@ -701,6 +645,40 @@ def spread(eyes, balance):
             "idBasedSalt": True,
             "spreadFactor": structures["spread_factor"],
         },
+    )
+
+
+def campsites(balance):
+    rarity = balance["structures"]["campsite_rarity_chunks"]
+    for kind in CAMPSITES:
+        write_json(
+            MAIN / f"data/campsite_structures/worldgen/placed_feature/{kind}_campsite_feature.json",
+            {
+                "feature": f"campsite_structures:{kind}_campsite_feature",
+                "neoforge:conditions": [{"modid": "campsite_structures", "type": "neoforge:mod_loaded"}],
+                "placement": [
+                    {"chance": rarity, "type": "minecraft:rarity_filter"},
+                    {"type": "minecraft:in_square"},
+                    {"heightmap": "OCEAN_FLOOR_WG", "type": "minecraft:heightmap"},
+                    {
+                        "predicate": {
+                            "blocks": "minecraft:grass_block",
+                            "offset": [0, -1, 0],
+                            "type": "minecraft:matching_blocks",
+                        },
+                        "type": "minecraft:block_predicate_filter",
+                    },
+                    {"type": "minecraft:biome"},
+                ],
+            },
+        )
+
+
+def difficulty(balance):
+    per_step = balance["difficulty"]["per_day"] * IMPROVED_MOBS_STEP_TICKS / TICKS_PER_DAY
+    IMPROVED_MOBS.write_text(
+        "[general]\n"
+        + f'\t"Difficulty Increase" = ["0.0;difficulty + {per_step:.5f}", "{IMPROVED_MOBS_CAP};difficulty"]\n'
     )
 
 
@@ -720,24 +698,26 @@ def removals(spec):
 
 
 def main():
-    eyes = tomllib.loads((ROOT / "generator/eyes.toml").read_text())
+    source = tomllib.loads((ROOT / "generator/eyes.toml").read_text())
+    eyes = source["eyes"]
     balance = tomllib.loads((ROOT / "balance.toml").read_text())
+    story = tomllib.loads((ROOT / "story/books.toml").read_text())
     for directory in (DEV, ENDREM_EYES, MAIN, QUESTS):
         shutil.rmtree(directory, ignore_errors=True)
-    worldgen(eyes, balance)
-    spread(eyes, balance)
+    layouts = dict(shrines(eyes))
+    worldgen(eyes, layouts, source["tiers"], balance)
+    tour(eyes, layouts)
+    spread(balance)
+    campsites(balance)
+    difficulty(balance)
     removals(tomllib.loads((ROOT / "generator/removals.toml").read_text()))
-    for eye, spec in eyes.items():
-        hall(eye, spec)
-        steps(eye, spec)
-    shaft()
-    markers()
-    last_camp()
+    camp(story["journal"]).save(MAIN / "data/wayfarer/structure/last_camp.nbt")
     empty()
     showroom(eyes)
     textures(tomllib.loads((ROOT / "generator/textures.toml").read_text()))
-    quests(tomllib.loads((ROOT / "story/quests.toml").read_text()), eyes)
-    books(tomllib.loads((ROOT / "story/books.toml").read_text()))
+    entries = library(story, eyes)
+    quests(tomllib.loads((ROOT / "story/quests.toml").read_text()), eyes, entries)
+    books(story, eyes, entries)
     shaders()
 
 

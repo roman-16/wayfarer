@@ -58,6 +58,10 @@ recipes = [
   "waystones:yellow_sharestone",
 ]
 structure_biomes = [
+  "dungeons_arise:has_structure/heavenly_challenger_biomes",
+  "dungeons_arise:has_structure/heavenly_conqueror_biomes",
+  "dungeons_arise:has_structure/heavenly_rider_biomes",
+  "dungeons_arise:has_structure/small_blimp_biomes",
   "minecraft:has_structure/ruined_portal_desert",
   "minecraft:has_structure/ruined_portal_jungle",
   "minecraft:has_structure/ruined_portal_mountain",

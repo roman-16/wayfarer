@@ -1,0 +1,2 @@
+[general]
+	"Difficulty Increase" = ["0.0;difficulty + 0.03330", "250.0;difficulty"]

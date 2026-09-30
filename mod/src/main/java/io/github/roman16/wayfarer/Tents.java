@@ -1,0 +1,110 @@
+package io.github.roman16.wayfarer;
+
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.stream.Stream;
+import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerWakeUpEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
+
+public final class Tents {
+    private static final String NAMESPACE = "nomadictents";
+    private static final String SPAWN_DIMENSION = "spawn_dim";
+    private static final String SPAWN_POINT = "spawnpoint";
+    private static final String SPAWN_ROTATION = "spawn_rot";
+    private static final String SLEPT = "slept";
+    private static final ResourceLocation NOWHERE = Wayfarer.id("nowhere");
+    private static final int DOOR_SEARCH_CHUNKS = 1;
+
+    private Tents() {}
+
+    public static boolean isTent(ResourceKey<Level> dimension) {
+        return dimension.location().getNamespace().equals(NAMESPACE);
+    }
+
+    @SubscribeEvent
+    public static void onWake(PlayerWakeUpEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player && isTent(player.level().dimension())) {
+            AdvancementHolder advancement = player.server.getAdvancements().get(NOWHERE);
+            if (advancement != null) {
+                player.getAdvancements().award(advancement, SLEPT);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onTravel(EntityTravelToDimensionEvent event) {
+        if (!isTent(event.getDimension()) || !(event.getEntity().level() instanceof ServerLevel level)) {
+            return;
+        }
+        if (!(event.getEntity() instanceof Player player)) {
+            event.setCanceled(true);
+            return;
+        }
+        if (Nights.tentsShut(level.getServer().overworld())) {
+            event.setCanceled(true);
+            player.displayClientMessage(Component.translatable("wayfarer.night.tent").withStyle(ChatFormatting.RED), true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPotentialSpawns(LevelEvent.PotentialSpawns event) {
+        if (event.getMobCategory() == MobCategory.MONSTER && event.getLevel() instanceof ServerLevel level && isTent(level.dimension())) {
+            event.setCanceled(true);
+        }
+    }
+
+    public static void eject(ServerPlayer player) {
+        ServerLevel tent = player.serverLevel();
+        Optional<CompoundTag> door = doors(tent, player.chunkPosition())
+                .min(Comparator.comparingDouble(entity -> entity.getBlockPos().distSqr(player.blockPosition())))
+                .map(entity -> entity.saveWithoutMetadata(tent.registryAccess()));
+        ServerLevel target = door.map(tag -> player.server.getLevel(
+                        ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(tag.getString(SPAWN_DIMENSION)))))
+                .orElse(null);
+        if (target != null) {
+            CompoundTag point = door.get().getCompound(SPAWN_POINT);
+            player.teleportTo(target, point.getDouble("X"), point.getDouble("Y"), point.getDouble("Z"), door.get().getFloat(SPAWN_ROTATION), player.getXRot());
+        } else {
+            ServerLevel overworld = player.server.overworld();
+            BlockPos spawn = overworld.getSharedSpawnPos();
+            player.teleportTo(overworld, spawn.getX() + 0.5, spawn.getY(), spawn.getZ() + 0.5, player.getYRot(), player.getXRot());
+        }
+        player.displayClientMessage(Component.translatable("wayfarer.night.ejected").withStyle(ChatFormatting.RED), false);
+    }
+
+    private static Stream<BlockEntity> doors(ServerLevel tent, ChunkPos center) {
+        Stream.Builder<BlockEntity> doors = Stream.builder();
+        for (int dx = -DOOR_SEARCH_CHUNKS; dx <= DOOR_SEARCH_CHUNKS; dx++) {
+            for (int dz = -DOOR_SEARCH_CHUNKS; dz <= DOOR_SEARCH_CHUNKS; dz++) {
+                LevelChunk chunk = tent.getChunkSource().getChunkNow(center.x + dx, center.z + dz);
+                if (chunk == null) {
+                    continue;
+                }
+                chunk.getBlockEntities().values().stream()
+                        .filter(entity -> BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(entity.getType()).getNamespace().equals(NAMESPACE))
+                        .filter(entity -> entity.saveWithoutMetadata(tent.registryAccess()).contains(SPAWN_DIMENSION))
+                        .forEach(doors);
+            }
+        }
+        return doors.build();
+    }
+}

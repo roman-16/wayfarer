@@ -7,14 +7,14 @@ A personal modpack repository: it reproduces on any machine from `direnv allow` 
 - **The lore decides.** `story/lore.md` is the source of truth. Every mechanic needs a reason there, and every quest, book and item text is written from it with the `lore` skill. A mechanic the lore cannot explain is a mechanic to drop or to give a reason first.
 - **There is no Nether.** Nothing may bring it back: no lit portals, no Nether structures, no recipe that needs a Nether-only item without an Overworld source. `just test` audits every recipe in every jar against `generator/nether.toml`; a finding is fixed by an Overworld source or accepted there as unobtainable, never ignored.
 - **Every number lives once.** Balancing numbers are in `balance.toml`, and the mod, the generator and the boot test all read them from there. Eyes, their biomes, palettes, lore and shrine spacing are in `generator/eyes.toml`.
-- **Shrine spacing is measured, not guessed.** Biome layout decides how far a shrine really is, so each eye's `spacing` is tuned by `just survey apply` against the trip targets in `balance.toml`. One survey is noisy (about ±30%): apply, `just generate`, survey again, and stop once the medians sit near the targets.
+- **Shrine spacing is measured, not guessed.** Biome layout decides how far the next shrine really is, so each tier's `spacing` is tuned by `just survey apply`, which walks journeys to the nearest shrine not yet taken and compares the legs with the targets in `balance.toml`. One survey is noisy (about ±30%): apply, `just generate`, survey again, and stop once the medians sit near the targets.
 - **Singleplayer and server behave the same.** Rules live in the mod jar (code and data) or in `pack/config`, never in a world save or a client-only setting.
 
 ## Where things go
 
-- `mod/src/generated/`, `pack/config/EndRemastered-NeoForge/Eyes/`, `pack/config/ftbquests/quests/`, `pack/config/iris.properties` and `pack/config/sparsestructures.json5` are written by `just generate`. Change the generator or its sources (`story/quests.toml` for the quest book), never the output.
+- `mod/src/generated/`, `pack/config/EndRemastered-NeoForge/Eyes/`, `pack/config/ftbquests/quests/`, `pack/config/improvedmobs/common.toml`, `pack/config/iris.properties` and `pack/config/sparsestructures.json5` are written by `just generate`. Change the generator or its sources (`story/quests.toml` for the quest book, `story/books.toml` for the books), never the output.
 - `pack/` is managed by packwiz. Add a mod with `packwiz modrinth add <slug>` from `pack/`; use CurseForge only for a mod that is not on Modrinth. Every mod is `client` or `both`: singleplayer runs the server inside the client, so a `server` mod would be missing there.
-- A new config for a mod starts from the default the mod writes on its first boot (`build/server/config` after `just test`, `build/client/config` after `just client`). Ship only the keys the pack changes when the mod fills in the rest itself, so machine-specific defaults (thread counts and the like) stay per machine.
+- A new config for a mod starts from the default the mod writes on its first boot (`build/server/config` after `just test`, `build/client/config` after `just demo`). Ship only the keys the pack changes when the mod fills in the rest itself, so machine-specific defaults (thread counts and the like) stay per machine.
 
 ## Seeing the game
 
@@ -22,13 +22,18 @@ Never wait by sleeping. Gates and builds run in the foreground with a generous t
 
 ```console
 $ python3 scripts/client.py start            # launch unless running; returns once the showroom is built
-$ python3 scripts/client.py run 'fly on' '/tp @s 40.5 -9 78 180 10' settle 'shot hall'
+$ python3 scripts/client.py run 'fly on' '/tp @s 48.5 12 60 0 20' settle 'shot row'
 $ python3 scripts/client.py stop             # returns once the game has exited
+$ python3 scripts/client.py tour [eye|camp ...]   # launch, photograph every shrine and the Last Camp, quit
 ```
 
-`run` prints the batch log: each step, every chat line the game received (command replies included), errors, and the absolute path of each screenshot, which is written before `run` returns. Steps can also come one per line on stdin. `start --fresh` starts the natural world anew. A batch that does not finish within `--timeout` is aborted and its log shows where it stuck.
+The game runs on the user's display from `start` until `stop`, so close every session you open: `stop` as soon as the looking is done, and never hand back to the user with the client still running.
 
-The client opens on the user's display in the showroom dimension `wayfarer:showroom`: the Last Camp at spawn, an item frame wall at z = -10, and the shrines in alphabetical order along x at 32-block steps (hall centres at x = 40, 72, ...; z = 72; hall floor y = -12), each with its name sign on the north side. `/locate` finds nothing there; the natural overworld next to it (`/execute in minecraft:overworld run ...`) is kept between launches.
+`run` prints the batch log: each step, every chat line the game received (command replies included), errors, and the absolute path of each screenshot, which is written before `run` returns. Steps can also come one per line on stdin. `start --fresh` opens a fresh natural world in survival (`just client`) instead of the showroom (`just demo`). A batch that does not finish within `--timeout` is aborted and its log shows where it stuck.
+
+The client opens on the user's display in the showroom dimension `wayfarer:showroom`: the Last Camp at spawn, an item frame wall at z = -10, and the shrines in alphabetical order along x at 40-block steps (hall centres at x = 48, 88, ...; z = 72; the surface at y = 1, each hall as deep as its way down needs), each with its name sign on the north side. The compass works there as a demo: it points at a waymark 750 blocks west of the camp, shows a companion circling the camp and marks the camp's grave. `/locate` finds nothing there; the natural overworld next to it (`/execute in minecraft:overworld run ...`) is kept between launches.
+
+`tour` shoots each shrine from its surface cover down the shaft into the hall, and the Last Camp from every side, into one labelled contact sheet per subject in `build/client/tour/<subject>.jpg`; the hall cameras come from the generator (`mod/src/generated/dev/wayfarer/tour.json`), so every hall is framed from open air with a clear line to what it looks at. It starts the client itself and quits it when done; a whole tour takes about three minutes.
 
 | Step | Does |
 |---|---|

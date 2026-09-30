@@ -3,6 +3,7 @@
 	default_quest_shape: ""
 	filename: "oath"
 	group: ""
+	hide_quest_until_deps_complete: true
 	icon: {
 		count: 1
 		id: "minecraft:campfire"
@@ -28,6 +29,27 @@
 					}
 					type: "item"
 				}
+				{
+					id: "0B6BCCC8AE413EE5"
+					item: {
+						components: {
+							"minecraft:custom_name": "\"Wayfarer's Mallet\""
+							"minecraft:unbreakable": {
+							}
+						}
+						count: 1
+						id: "nomadictents:golden_mallet"
+					}
+					type: "item"
+				}
+				{
+					id: "43EC92D88E6182E9"
+					item: {
+						count: 1
+						id: "comforts:sleeping_bag_brown"
+					}
+					type: "item"
+				}
 			]
 			tasks: [
 				{
@@ -47,13 +69,25 @@
 				id: "nomadictents:tiny_yurt"
 			}
 			id: "4C497D37D2175788"
-			tasks: [
+			rewards: [
 				{
-					id: "59637633A8619493"
-					type: "checkmark"
+					id: "69FDA33CCED8B5A4"
+					item: {
+						count: 6
+						id: "minecraft:bread"
+					}
+					type: "item"
 				}
 			]
-			x: -1.5d
+			tasks: [
+				{
+					advancement: "wayfarer:nowhere"
+					criterion: ""
+					id: "59637633A8619493"
+					type: "advancement"
+				}
+			]
+			x: -2.25d
 			y: 1.5d
 		}
 		{
@@ -61,17 +95,24 @@
 				"1F1980B9A1FF2B71"
 			]
 			id: "070C745D06E746A9"
+			rewards: [
+				{
+					id: "22536ACCBE2D3905"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
 			tasks: [
 				{
 					id: "3426BE8D11A09F4F"
 					item: {
 						count: 1
-						id: "travelersbackpack:standard"
+						id: "sophisticatedbackpacks:backpack"
 					}
 					type: "item"
 				}
 			]
-			x: 0.0d
+			x: -0.75d
 			y: 1.5d
 		}
 		{
@@ -79,6 +120,16 @@
 				"1F1980B9A1FF2B71"
 			]
 			id: "431098B789E8D6C0"
+			rewards: [
+				{
+					id: "2DB12F6C3E3A56BD"
+					item: {
+						count: 4
+						id: "minecraft:cooked_beef"
+					}
+					type: "item"
+				}
+			]
 			tasks: [
 				{
 					id: "1A2E6512FFF0D6B3"
@@ -89,7 +140,43 @@
 					type: "item"
 				}
 			]
-			x: 1.5d
+			x: 0.75d
+			y: 1.5d
+		}
+		{
+			dependencies: [
+				"1F1980B9A1FF2B71"
+			]
+			icon: {
+				count: 1
+				id: "minecraft:baked_potato"
+			}
+			id: "5200296821A71E70"
+			rewards: [
+				{
+					id: "5D9E3B0C2A62A756"
+					item: {
+						count: 4
+						id: "minecraft:apple"
+					}
+					type: "item"
+				}
+				{
+					id: "1085D948C9A0FAB4"
+					item: {
+						count: 4
+						id: "minecraft:baked_potato"
+					}
+					type: "item"
+				}
+			]
+			tasks: [
+				{
+					id: "047CC2C00AB99F9A"
+					type: "checkmark"
+				}
+			]
+			x: 2.25d
 			y: 1.5d
 		}
 		{
@@ -97,6 +184,16 @@
 				"070C745D06E746A9"
 			]
 			id: "12A733126EEC4BAF"
+			rewards: [
+				{
+					id: "065EA41A27E18E27"
+					item: {
+						count: 16
+						id: "minecraft:paper"
+					}
+					type: "item"
+				}
+			]
 			tasks: [
 				{
 					id: "03D3AA1989F5DAEE"
@@ -107,23 +204,36 @@
 					type: "item"
 				}
 			]
-			x: 0.0d
+			x: -0.75d
 			y: 3.0d
 		}
 		{
 			dependencies: [
-				"4C497D37D2175788"
+				"12A733126EEC4BAF"
 				"431098B789E8D6C0"
+				"4C497D37D2175788"
 			]
 			icon: {
 				count: 1
 				id: "minecraft:blaze_powder"
 			}
 			id: "59A94CF76A50E7E5"
+			rewards: [
+				{
+					auto: "invisible"
+					command: "/wayfarer ember {p}"
+					id: "387DE2DDE57F8966"
+					permission_level: 2
+					silent: true
+					type: "command"
+				}
+			]
 			tasks: [
 				{
 					id: "6A459864866C7634"
-					type: "checkmark"
+					stat: "minecraft:play_time"
+					type: "stat"
+					value: 1
 				}
 			]
 			x: 0.0d

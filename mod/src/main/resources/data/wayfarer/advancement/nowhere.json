@@ -1,0 +1,7 @@
+{
+  "criteria": {
+    "slept": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

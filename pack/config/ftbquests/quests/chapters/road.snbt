@@ -1,0 +1,242 @@
+{
+	default_hide_dependency_lines: false
+	default_quest_shape: ""
+	filename: "road"
+	group: ""
+	hide_quest_until_deps_complete: true
+	icon: {
+		count: 1
+		id: "simplyswords:iron_longsword"
+	}
+	id: "62ED0B1528C43564"
+	images: [ ]
+	order_index: 1
+	quest_links: [ ]
+	quests: [
+		{
+			dependencies: [
+				"1F1980B9A1FF2B71"
+			]
+			id: "58D4C9DD3C4EA2FE"
+			rewards: [
+				{
+					id: "7CDC5DFBD5A12A6E"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
+			tasks: [
+				{
+					id: "560006C46BDD602E"
+					item: {
+						count: 1
+						id: "simplyswords:iron_longsword"
+					}
+					type: "item"
+				}
+			]
+			x: -1.5d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"1F1980B9A1FF2B71"
+			]
+			id: "53423CBA615A90F1"
+			rewards: [
+				{
+					id: "5B6BC0A9BA980575"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
+			tasks: [
+				{
+					id: "0C7D9C21E652A5DF"
+					item: {
+						count: 1
+						id: "magistuarmory:iron_heatershield"
+					}
+					type: "item"
+				}
+			]
+			x: 0.0d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"1F1980B9A1FF2B71"
+			]
+			id: "09E14986761DBA84"
+			rewards: [
+				{
+					id: "4C5B7D8FE4C9171E"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
+			tasks: [
+				{
+					id: "3E39D9BEFC4CD6FD"
+					item: {
+						count: 1
+						id: "minecraft:iron_chestplate"
+					}
+					type: "item"
+				}
+			]
+			x: 1.5d
+			y: 0.0d
+		}
+		{
+			dependencies: [
+				"1F1980B9A1FF2B71"
+			]
+			id: "6B5CE6724696EF8D"
+			rewards: [
+				{
+					id: "2EBA2763FF68D8C0"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
+			tasks: [
+				{
+					id: "76B304CF3CFD4E6C"
+					item: {
+						count: 1
+						id: "naturescompass:naturescompass"
+					}
+					type: "item"
+				}
+			]
+			x: -1.5d
+			y: 1.5d
+		}
+		{
+			dependencies: [
+				"1F1980B9A1FF2B71"
+			]
+			id: "4322D9895974EDF2"
+			rewards: [
+				{
+					id: "31EBE6B009EC7CDA"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
+			tasks: [
+				{
+					id: "0435BE16EAB21A82"
+					item: {
+						count: 1
+						id: "yo_hooks:iron_grappling_hook"
+					}
+					type: "item"
+				}
+			]
+			x: 0.0d
+			y: 1.5d
+		}
+		{
+			dependencies: [
+				"1F1980B9A1FF2B71"
+			]
+			id: "2C7CAD828D1B1351"
+			rewards: [
+				{
+					id: "5328D5569CEFE648"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
+			tasks: [
+				{
+					id: "23F87637B704B99D"
+					item: {
+						count: 1
+						id: "hangglider:hang_glider"
+					}
+					type: "item"
+				}
+			]
+			x: 1.5d
+			y: 1.5d
+		}
+		{
+			dependencies: [
+				"1F1980B9A1FF2B71"
+			]
+			id: "468C31B47FC1ABEA"
+			rewards: [
+				{
+					id: "7FA40F54F38C7D07"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
+			tasks: [
+				{
+					id: "0E26B7F775F7DB6B"
+					item: {
+						count: 1
+						id: "farmersdelight:cooking_pot"
+					}
+					type: "item"
+				}
+			]
+			x: -1.5d
+			y: 3.0d
+		}
+		{
+			dependencies: [
+				"1F1980B9A1FF2B71"
+			]
+			id: "3C5E7D941AAB9BB4"
+			rewards: [
+				{
+					id: "5126D48010808F49"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
+			tasks: [
+				{
+					id: "7AEB62B8816B3CD0"
+					item: {
+						count: 1
+						id: "bountiful:bountyboard"
+					}
+					type: "item"
+				}
+			]
+			x: 0.0d
+			y: 3.0d
+		}
+		{
+			dependencies: [
+				"1F1980B9A1FF2B71"
+			]
+			id: "2D3C3724F0320F37"
+			rewards: [
+				{
+					id: "334C5EB7728E032F"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
+			tasks: [
+				{
+					id: "5CB8B9F348076D4D"
+					item: {
+						count: 1
+						id: "exposure:camera"
+					}
+					type: "item"
+				}
+			]
+			x: 1.5d
+			y: 3.0d
+		}
+	]
+}

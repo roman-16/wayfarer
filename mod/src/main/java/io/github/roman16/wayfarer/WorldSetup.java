@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -17,6 +18,7 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
 public final class WorldSetup {
     private static final String NAME = "wayfarer_world";
+    private static final int CLEARANCE = 10;
 
     private WorldSetup() {}
 
@@ -59,6 +61,17 @@ public final class WorldSetup {
         level.getChunk(spawn);
         int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, spawn.getX(), spawn.getZ());
         BlockPos origin = new BlockPos(x, y - 1, z);
+        for (int dx = 0; dx < size.getX(); dx++) {
+            for (int dz = 0; dz < size.getZ(); dz++) {
+                int column = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x + dx, z + dz);
+                for (int fill = column; fill < origin.getY(); fill++) {
+                    level.setBlock(new BlockPos(x + dx, fill, z + dz), Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
+                }
+                for (int clear = origin.getY() + 1; clear <= origin.getY() + CLEARANCE; clear++) {
+                    level.setBlock(new BlockPos(x + dx, clear, z + dz), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                }
+            }
+        }
         camp.placeInWorld(level, origin, origin, new StructurePlaceSettings(), level.random, Block.UPDATE_CLIENTS);
     }
 }

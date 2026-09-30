@@ -2,36 +2,210 @@
   "biomes": "#wayfarer:has_structure/shrine/rogue",
   "layout": {
     "cover": 3,
-    "entrance": [
-      7,
+    "door": [
+      12,
       2,
-      21
-    ],
-    "max_steps": 48,
-    "mouth": [
-      2,
-      1,
-      1
-    ],
-    "shaft": [
-      7,
-      11,
-      3
-    ],
-    "stair": [
-      1,
-      1,
-      0
+      32
     ]
   },
   "pieces": {
-    "cap": "wayfarer:shrine/cap",
-    "hall": "wayfarer:shrine/rogue/hall",
-    "marker": "wayfarer:shrine/marker/standing_stone",
-    "open_step": "wayfarer:shrine/rogue/open_step",
-    "seal": "wayfarer:shrine/rogue/seal",
-    "shaft": "wayfarer:shrine/shaft",
-    "step": "wayfarer:shrine/rogue/step"
+    "entrance": "wayfarer:shrine/rogue/entrance",
+    "hall": "wayfarer:shrine/rogue/hall"
+  },
+  "shaft": {
+    "landing": [
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:stone_bricks"
+      },
+      {
+        "Name": "minecraft:stone_bricks"
+      },
+      {
+        "Name": "minecraft:stone_bricks"
+      },
+      {
+        "Name": "minecraft:stone_bricks"
+      },
+      {
+        "Name": "minecraft:cracked_stone_bricks"
+      },
+      {
+        "Name": "minecraft:cracked_stone_bricks"
+      },
+      {
+        "Name": "minecraft:cracked_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "Name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "Name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "Name": "minecraft:moss_block"
+      },
+      {
+        "Name": "minecraft:moss_block"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      }
+    ],
+    "light": {
+      "Name": "minecraft:verdant_froglight"
+    },
+    "pillar": [
+      {
+        "Name": "minecraft:chiseled_stone_bricks"
+      },
+      {
+        "Name": "minecraft:chiseled_stone_bricks"
+      },
+      {
+        "Name": "minecraft:chiseled_stone_bricks"
+      },
+      {
+        "Name": "minecraft:chiseled_stone_bricks"
+      },
+      {
+        "Name": "minecraft:chiseled_stone_bricks"
+      },
+      {
+        "Name": "minecraft:chiseled_stone_bricks"
+      },
+      {
+        "Name": "minecraft:chiseled_stone_bricks"
+      },
+      {
+        "Name": "minecraft:chiseled_stone_bricks"
+      },
+      {
+        "Name": "minecraft:chiseled_stone_bricks"
+      },
+      {
+        "Name": "minecraft:chiseled_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      }
+    ],
+    "stairs": {
+      "Name": "minecraft:mossy_stone_brick_stairs"
+    },
+    "style": "spiral",
+    "wall": [
+      {
+        "Name": "minecraft:stone_bricks"
+      },
+      {
+        "Name": "minecraft:stone_bricks"
+      },
+      {
+        "Name": "minecraft:stone_bricks"
+      },
+      {
+        "Name": "minecraft:stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_stone_bricks"
+      },
+      {
+        "Name": "minecraft:cracked_stone_bricks"
+      },
+      {
+        "Name": "minecraft:cracked_stone_bricks"
+      },
+      {
+        "Name": "minecraft:cracked_stone_bricks"
+      },
+      {
+        "Name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "Name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "Name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "Name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      },
+      {
+        "Name": "minecraft:moss_block"
+      }
+    ]
   },
   "spawn_overrides": {},
   "step": "underground_structures",

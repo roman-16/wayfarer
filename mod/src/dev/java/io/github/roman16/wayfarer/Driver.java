@@ -49,7 +49,9 @@ import org.slf4j.Logger;
 
 @EventBusSubscriber(modid = Wayfarer.MODID, value = Dist.CLIENT)
 public final class Driver {
-    private static final String WORLD = "wayfarer";
+    private static final boolean SHOWROOM = Boolean.getBoolean(Wayfarer.MODID + ".showroom");
+    private static final String DEMO_WORLD = "demo";
+    private static final String PLAY_WORLD = "play";
     private static final long SEED = 20260929L;
     private static final int FIND_LIMIT = 20;
     private static final int FIND_RADIUS = 32;
@@ -155,17 +157,25 @@ public final class Driver {
         } catch (IOException exception) {
             throw new UncheckedIOException(exception);
         }
-        begin(JsonParser.parseString(resource("/wayfarer/showroom.json")).getAsJsonObject().getAsJsonArray("steps").asList().stream()
-                .map(step -> step.getAsString())
-                .toList());
-        if (minecraft.getLevelSource().levelExists(WORLD)) {
-            minecraft.createWorldOpenFlows().openWorld(WORLD, () -> minecraft.setScreen(new TitleScreen()));
+        if (SHOWROOM) {
+            begin(JsonParser.parseString(resource("/wayfarer/showroom.json")).getAsJsonObject().getAsJsonArray("steps").asList().stream()
+                    .map(step -> step.getAsString())
+                    .toList());
+            enter(minecraft, DEMO_WORLD, GameType.CREATIVE, SEED);
+        } else {
+            begin(List.of("settle"));
+            enter(minecraft, PLAY_WORLD, GameType.SURVIVAL, WorldOptions.randomSeed());
+        }
+    }
+
+    private static void enter(Minecraft minecraft, String world, GameType mode, long seed) {
+        if (minecraft.getLevelSource().levelExists(world)) {
+            minecraft.createWorldOpenFlows().openWorld(world, () -> minecraft.setScreen(new TitleScreen()));
             return;
         }
-        LevelSettings settings = new LevelSettings(
-                WORLD, GameType.CREATIVE, false, Difficulty.HARD, true, new GameRules(), WorldDataConfiguration.DEFAULT);
+        LevelSettings settings = new LevelSettings(world, mode, false, Difficulty.HARD, true, new GameRules(), WorldDataConfiguration.DEFAULT);
         minecraft.createWorldOpenFlows().createFreshLevel(
-                WORLD, settings, new WorldOptions(SEED, true, false), WorldPresets::createNormalWorldDimensions, new TitleScreen());
+                world, settings, new WorldOptions(seed, true, false), WorldPresets::createNormalWorldDimensions, new TitleScreen());
     }
 
     private static String resource(String name) {

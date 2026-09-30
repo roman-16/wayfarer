@@ -3,13 +3,14 @@
 	default_quest_shape: ""
 	filename: "first_eyes"
 	group: ""
+	hide_quest_until_deps_complete: true
 	icon: {
 		count: 1
 		id: "endrem:old_eye"
 	}
 	id: "7C798ECC2B9A5401"
 	images: [ ]
-	order_index: 1
+	order_index: 2
 	quest_links: [ ]
 	quests: [
 		{
@@ -21,6 +22,13 @@
 				id: "endrem:black_eye"
 			}
 			id: "222F374116D43F6E"
+			rewards: [
+				{
+					id: "15BC1060D5BE5D2D"
+					type: "xp_levels"
+					xp_levels: 5
+				}
+			]
 			tasks: [
 				{
 					id: "35EFEAC89581E24C"
@@ -28,12 +36,10 @@
 					type: "structure"
 				}
 				{
+					advancement: "wayfarer:shards/black"
+					criterion: ""
 					id: "04331595D8887465"
-					item: {
-						count: 1
-						id: "endrem:black_eye"
-					}
-					type: "item"
+					type: "advancement"
 				}
 			]
 			x: -3.75d
@@ -48,6 +54,13 @@
 				id: "endrem:cold_eye"
 			}
 			id: "561974079BDDC906"
+			rewards: [
+				{
+					id: "4B353A3230461DF6"
+					type: "xp_levels"
+					xp_levels: 5
+				}
+			]
 			tasks: [
 				{
 					id: "2AF606A7F6D3932D"
@@ -55,12 +68,10 @@
 					type: "structure"
 				}
 				{
+					advancement: "wayfarer:shards/cold"
+					criterion: ""
 					id: "4E04F7F8FF408124"
-					item: {
-						count: 1
-						id: "endrem:cold_eye"
-					}
-					type: "item"
+					type: "advancement"
 				}
 			]
 			x: -2.25d
@@ -75,6 +86,13 @@
 				id: "endrem:lost_eye"
 			}
 			id: "2DA690872EB9B59C"
+			rewards: [
+				{
+					id: "50C80890BDC88AC1"
+					type: "xp_levels"
+					xp_levels: 5
+				}
+			]
 			tasks: [
 				{
 					id: "3748EAA82F4E38CD"
@@ -82,12 +100,10 @@
 					type: "structure"
 				}
 				{
+					advancement: "wayfarer:shards/lost"
+					criterion: ""
 					id: "2FFCB22763D5B81F"
-					item: {
-						count: 1
-						id: "endrem:lost_eye"
-					}
-					type: "item"
+					type: "advancement"
 				}
 			]
 			x: -0.75d
@@ -102,6 +118,13 @@
 				id: "endrem:old_eye"
 			}
 			id: "2175E7A68087A9E6"
+			rewards: [
+				{
+					id: "4E2CEEA37AEB2F21"
+					type: "xp_levels"
+					xp_levels: 5
+				}
+			]
 			tasks: [
 				{
 					id: "243A070122B24800"
@@ -109,12 +132,10 @@
 					type: "structure"
 				}
 				{
+					advancement: "wayfarer:shards/old"
+					criterion: ""
 					id: "00B9BB3016B0FAD6"
-					item: {
-						count: 1
-						id: "endrem:old_eye"
-					}
-					type: "item"
+					type: "advancement"
 				}
 			]
 			x: 0.75d
@@ -129,6 +150,13 @@
 				id: "endrem:rogue_eye"
 			}
 			id: "0D544FDE29EF4D0A"
+			rewards: [
+				{
+					id: "64C065262EA0C2CE"
+					type: "xp_levels"
+					xp_levels: 5
+				}
+			]
 			tasks: [
 				{
 					id: "1E09606CA64AEA2D"
@@ -136,12 +164,10 @@
 					type: "structure"
 				}
 				{
+					advancement: "wayfarer:shards/rogue"
+					criterion: ""
 					id: "400DF67EE03821A1"
-					item: {
-						count: 1
-						id: "endrem:rogue_eye"
-					}
-					type: "item"
+					type: "advancement"
 				}
 			]
 			x: 2.25d
@@ -156,6 +182,13 @@
 				id: "endrem:witch_eye"
 			}
 			id: "6BBEE9273C494FAD"
+			rewards: [
+				{
+					id: "65E2DF3FCCB6ABF5"
+					type: "xp_levels"
+					xp_levels: 5
+				}
+			]
 			tasks: [
 				{
 					id: "1BF94A29A9746877"
@@ -163,12 +196,10 @@
 					type: "structure"
 				}
 				{
+					advancement: "wayfarer:shards/witch"
+					criterion: ""
 					id: "47D1B5734EF58D16"
-					item: {
-						count: 1
-						id: "endrem:witch_eye"
-					}
-					type: "item"
+					type: "advancement"
 				}
 			]
 			x: 3.75d

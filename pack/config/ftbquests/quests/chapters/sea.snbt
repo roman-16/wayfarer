@@ -3,13 +3,14 @@
 	default_quest_shape: ""
 	filename: "sea"
 	group: ""
+	hide_quest_until_deps_complete: true
 	icon: {
 		count: 1
 		id: "smallships:oak_cog"
 	}
 	id: "07AD1C5323AE3C5A"
 	images: [ ]
-	order_index: 2
+	order_index: 3
 	quest_links: [ ]
 	quests: [
 		{
@@ -23,6 +24,13 @@
 			]
 			id: "518A36EA76C97501"
 			min_required_dependencies: 4
+			rewards: [
+				{
+					id: "497C4930DFFF81DF"
+					type: "xp_levels"
+					xp_levels: 5
+				}
+			]
 			tasks: [
 				{
 					id: "1912A6B2F19AF0AF"
@@ -46,6 +54,13 @@
 				"6BBEE9273C494FAD"
 			]
 			id: "4DA8B70BAC72D780"
+			rewards: [
+				{
+					id: "16EE332590EAA697"
+					type: "xp_levels"
+					xp_levels: 5
+				}
+			]
 			tasks: [
 				{
 					id: "67155BEE4714F12F"
@@ -63,7 +78,89 @@
 			dependencies: [
 				"4DA8B70BAC72D780"
 			]
+			id: "4D09474253C5776E"
+			rewards: [
+				{
+					id: "11207F3E3027141D"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
+			tasks: [
+				{
+					id: "227A13769BBFC69B"
+					item: {
+						count: 1
+						id: "immersive_aircraft:gyrodyne"
+					}
+					type: "item"
+				}
+			]
+			x: -1.5d
+			y: 3.0d
+		}
+		{
+			dependencies: [
+				"4DA8B70BAC72D780"
+			]
+			id: "57BA6A83EB0C0274"
+			rewards: [
+				{
+					id: "2993D25523BED10F"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
+			tasks: [
+				{
+					id: "4D53A3D8482C09B1"
+					item: {
+						count: 1
+						id: "immersive_aircraft:quadrocopter"
+					}
+					type: "item"
+				}
+			]
+			x: 0.0d
+			y: 3.0d
+		}
+		{
+			dependencies: [
+				"4DA8B70BAC72D780"
+			]
+			id: "28A5CDC1C2749AA8"
+			rewards: [
+				{
+					id: "6BABBE44AB398254"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
+			tasks: [
+				{
+					id: "1D1486C0F20D1714"
+					item: {
+						count: 1
+						id: "immersive_aircraft:airship"
+					}
+					type: "item"
+				}
+			]
+			x: 1.5d
+			y: 3.0d
+		}
+		{
+			dependencies: [
+				"4DA8B70BAC72D780"
+			]
 			id: "45299B9DA91E63B5"
+			rewards: [
+				{
+					id: "065EAFC78935C99F"
+					type: "xp_levels"
+					xp_levels: 3
+				}
+			]
 			tasks: [
 				{
 					id: "022254F98D1D732F"
@@ -75,13 +172,20 @@
 				}
 			]
 			x: -1.5d
-			y: 3.0d
+			y: 4.5d
 		}
 		{
 			dependencies: [
 				"45299B9DA91E63B5"
 			]
 			id: "18FABCBB8F977965"
+			rewards: [
+				{
+					id: "09E6CE074411420F"
+					type: "xp_levels"
+					xp_levels: 5
+				}
+			]
 			tasks: [
 				{
 					id: "29EE8075D915AB67"
@@ -93,13 +197,20 @@
 				}
 			]
 			x: 0.0d
-			y: 3.0d
+			y: 4.5d
 		}
 		{
 			dependencies: [
 				"18FABCBB8F977965"
 			]
 			id: "2780BF6F53F2FCF0"
+			rewards: [
+				{
+					id: "2D19BF8532E7662B"
+					type: "xp_levels"
+					xp_levels: 8
+				}
+			]
 			tasks: [
 				{
 					id: "75643A32AD9A895D"
@@ -111,7 +222,7 @@
 				}
 			]
 			x: 1.5d
-			y: 3.0d
+			y: 4.5d
 		}
 	]
 }

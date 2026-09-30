@@ -3,13 +3,14 @@
 	default_quest_shape: ""
 	filename: "dragon"
 	group: ""
+	hide_quest_until_deps_complete: true
 	icon: {
 		count: 1
 		id: "minecraft:dragon_head"
 	}
 	id: "7573400028229C54"
 	images: [ ]
-	order_index: 5
+	order_index: 6
 	quest_links: [ ]
 	quests: [
 		{
@@ -17,6 +18,13 @@
 				"19915A5C482101B0"
 			]
 			id: "7F416EC4B9D960EC"
+			rewards: [
+				{
+					id: "4A61494A2BDB3AA0"
+					type: "xp_levels"
+					xp_levels: 30
+				}
+			]
 			tasks: [
 				{
 					entity: "minecraft:ender_dragon"

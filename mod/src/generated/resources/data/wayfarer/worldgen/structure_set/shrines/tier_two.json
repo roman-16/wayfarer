@@ -1,0 +1,34 @@
+{
+  "placement": {
+    "salt": 556518346,
+    "separation": 145,
+    "spacing": 194,
+    "type": "minecraft:random_spread"
+  },
+  "structures": [
+    {
+      "structure": "wayfarer:shrine/corrupted",
+      "weight": 1
+    },
+    {
+      "structure": "wayfarer:shrine/cryptic",
+      "weight": 1
+    },
+    {
+      "structure": "wayfarer:shrine/evil",
+      "weight": 1
+    },
+    {
+      "structure": "wayfarer:shrine/exotic",
+      "weight": 1
+    },
+    {
+      "structure": "wayfarer:shrine/magical",
+      "weight": 1
+    },
+    {
+      "structure": "wayfarer:shrine/undead",
+      "weight": 1
+    }
+  ]
+}
