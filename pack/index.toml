@@ -61,8 +61,16 @@ file = "config/asynclocator.toml"
 hash = "bd946e5d04c34cb73cddf39a43aa62364a043c83a7d0dfd05171544c0449bd41"
 
 [[files]]
+file = "config/c2me.toml"
+hash = "01064a300391147f410c79abfb7c5955bf049c4d700827832fbb97a6bc374482"
+
+[[files]]
 file = "config/defaultoptions/keybindings.txt"
 hash = "e125891af3c0a7dea4f8438ba585e5aeef33b4d950c2623cd82ca800730b2f8c"
+
+[[files]]
+file = "config/dynamic_fps.json"
+hash = "c3e1984f020b1a8a07da3020c03bbf57e401baed0d096be6d6027cd3e7a5c685"
 
 [[files]]
 file = "config/enhancedcelestials2core/translations.json"
@@ -242,6 +250,11 @@ metafile = true
 [[files]]
 file = "mods/bountiful.pw.toml"
 hash = "ba3b9990bc44bedb8eacbe11b2beffb7457cc6ddd854e78fcaf8d73d8f2578db"
+metafile = true
+
+[[files]]
+file = "mods/c2me-neoforge.pw.toml"
+hash = "b29065f7eb51b2fa53043366d0df737483b600c2f549d31c783fe52c4d72bfb5"
 metafile = true
 
 [[files]]
