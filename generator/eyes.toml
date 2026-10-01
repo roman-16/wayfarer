@@ -1,8 +1,8 @@
 [tiers.1]
-spacing = 106
+spacing = 129
 
 [tiers.2]
-spacing = 194
+spacing = 282
 
 [eyes.black]
 tier = 1

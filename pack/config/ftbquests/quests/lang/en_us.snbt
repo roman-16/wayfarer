@@ -71,6 +71,8 @@
 		"Wend: You're tired. So was I. Stay by the fire a little longer tonight."
 		""
 		"Wend: The road will wait. It always waited for me."
+		""
+		"Wend: Sit. I like it when you're still."
 	]
 	"quest.044B1C5B3DD84068.quest_subtitle": "Wend"
 	"quest.044B1C5B3DD84068.title": "A Little Longer"
@@ -96,14 +98,18 @@
 	"quest.0510D52F7854F280.quest_subtitle": "The Eye"
 	"quest.0510D52F7854F280.title": "The Fourth Memory"
 	"quest.05B0C45EDD6D21EF.quest_desc": [
-		"The stranger: Go and see where it all started. The deep city lies where your compass marks it, far below the stone."
+		"The stranger: Go and see where it all started. The deep city lies where your compass can mark it, far below the stone."
+		""
+		"The stranger: They were the brightest people the world ever had, and the first to be seen."
 		""
 		"The stranger: Walk softly there. The silence remembers every sound, and its guard does not fear your fire."
 	]
 	"quest.05B0C45EDD6D21EF.quest_subtitle": "The stranger"
 	"quest.05B0C45EDD6D21EF.title": "Where It Started"
 	"quest.05B3E0633F440402.quest_desc": [
-		"The stranger: There's a place where your compass marks it where I stopped walking. My last camp."
+		"The stranger: There's a place where your compass can mark it where I stopped walking. My last camp."
+		""
+		"The stranger: I was tired. That's all it takes, in the end. You get tired, and you sit down."
 		""
 		"The stranger: Go if you want. I never went back."
 	]
@@ -120,7 +126,9 @@
 	"quest.05E9F82454353B4A.quest_subtitle": "The Road So Far"
 	"quest.05E9F82454353B4A.title": "The Last Camp"
 	"quest.06407E07F8F3E3C3.quest_desc": [
-		"Our temple stands where your compass marks it. Mind the locks; they never sleep."
+		"Our temple stands where your compass can mark it. Mind the locks; they never sleep."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark people/rogue\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark people/rogue\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.06407E07F8F3E3C3.quest_subtitle": "A place you were told the way to"
 	"quest.06407E07F8F3E3C3.title": "The Jungle Folk's Temple"
@@ -143,6 +151,8 @@
 	"quest.073EB44C91BEC5F1.title": "Sharing a fire"
 	"quest.08744B30FA186CD9.quest_desc": [
 		"The gaze: Twelve. I can see the gate through you."
+		""
+		"The gaze: It's so close now. I can almost see."
 		""
 		"The gaze: Set it. Please."
 	]
@@ -167,24 +177,33 @@
 	]
 	"quest.09D4C1CBCC81B0F3.quest_subtitle": "Words of the Road"
 	"quest.09D4C1CBCC81B0F3.title": "The tent"
-	"quest.09E14986761DBA84.quest_desc": [
-		"The hordes find you on the nights the gaze turns. Meet them in iron."
+	"quest.09FAA0949716E744.quest_desc": [
+		"Iron bands hold more than copper, and a long road needs more."
 		""
-		"Make an iron chestplate."
+		"Upgrade your backpack to iron."
 	]
-	"quest.09E14986761DBA84.quest_subtitle": "Meet them in iron"
-	"quest.09E14986761DBA84.title": "Iron on Your Back"
+	"quest.09FAA0949716E744.quest_subtitle": "Heavier still"
+	"quest.09FAA0949716E744.title": "Iron Bands"
 	"quest.0A1B1F899EB0A922.quest_desc": [
 		"The Shadow Circle taught the Illagers more than it should have. Its shard is hidden in the dark forests, not far from the mansions it inspired."
 	]
 	"quest.0A1B1F899EB0A922.quest_subtitle": "The Magical Eye"
 	"quest.0A1B1F899EB0A922.title": "The Shadow Circle"
+	"quest.0A814BE3D1BDEFB9.quest_desc": [
+		"The road is long, and not everything on it is friendly. Iron keeps it at arm's length."
+		""
+		"Make a sword with a blade of iron or better."
+	]
+	"quest.0A814BE3D1BDEFB9.quest_subtitle": "Arm's length"
+	"quest.0A814BE3D1BDEFB9.title": "A Blade of Your Own"
 	"quest.0A85F723023662E8.quest_desc": [
 		"The gaze: You've read it now. Yes."
 		""
 		"The gaze: He sat still for twenty years, and I watched him. I learned his voice the way you learn a song."
 		""
 		"The gaze: You've been seeing with my eye for weeks."
+		""
+		"The gaze: I'm not angry. I only wanted to see again."
 	]
 	"quest.0A85F723023662E8.quest_subtitle": "The gaze"
 	"quest.0A85F723023662E8.title": "The Voice at the Fire"
@@ -193,6 +212,13 @@
 	]
 	"quest.0A8F570543ABDB54.quest_subtitle": "Words of the Road"
 	"quest.0A8F570543ABDB54.title": "The Keepers' ward"
+	"quest.0CF6FC4B95265B80.quest_desc": [
+		"Diamond and bort turn a blow that iron only slows."
+		""
+		"Make a chestplate with plates of diamond or bort."
+	]
+	"quest.0CF6FC4B95265B80.quest_subtitle": "Harder than iron"
+	"quest.0CF6FC4B95265B80.title": "Plates of the Deep"
 	"quest.0D1D83B356838C94.quest_desc": [
 		"The eleventh memory said the dead do not speak. The voice at your fire is the gaze, which learned Wend's voice by watching him sit still for twenty years."
 	]
@@ -229,15 +255,22 @@
 	]
 	"quest.10F1C180EF1D5E5F.quest_subtitle": "The Gazebound"
 	"quest.10F1C180EF1D5E5F.title": "The Halls of the Shadow Circle"
+	"quest.1176C5AD6CA16E9D.quest_desc": [
+		"A crossbow is slow to load and hard to argue with."
+		""
+		"Make a crossbow."
+	]
+	"quest.1176C5AD6CA16E9D.quest_subtitle": "One shot that counts"
+	"quest.1176C5AD6CA16E9D.title": "A Crossbow"
 	"quest.11FF00D387924191.quest_desc": [
 		"The eye the dragon gave up to watch every land its portal touched. The first Wayfarers tore it out and broke it into twelve shards."
 	]
 	"quest.11FF00D387924191.quest_subtitle": "Words of the Road"
 	"quest.11FF00D387924191.title": "The Eye"
 	"quest.12A733126EEC4BAF.quest_desc": [
-		"Roads are the only thing a Wayfarer leaves behind."
+		"Roads are the only thing a Wayfarer leaves behind, and an atlas remembers every one."
 		""
-		"Make an atlas and let it remember where you have been."
+		"Make an empty map, open it once, then bind it into a book: that is an atlas."
 	]
 	"quest.12A733126EEC4BAF.quest_subtitle": "The only thing we leave behind"
 	"quest.12A733126EEC4BAF.title": "Map the Road"
@@ -246,7 +279,9 @@
 		""
 		"Maren: He raised me. He taught me the road, so I could follow smoke like his."
 		""
-		"Maren: You don't believe me. His room in the grass halls is still as he left it, where your compass marks it."
+		"Maren: You don't believe me. His room in the grass halls is still as he left it, where your compass can mark it."
+		""
+		"Maren: I'm not asking you to trust me. Just go and look."
 	]
 	"quest.12D3751DE826D0D0.quest_subtitle": "Maren"
 	"quest.12D3751DE826D0D0.title": "Maren"
@@ -265,11 +300,25 @@
 	]
 	"quest.1657378EFFB576B0.quest_subtitle": "The Cryptic Eye"
 	"quest.1657378EFFB576B0.title": "The Scribes of the Peaks"
+	"quest.1750F049DD6A059A.quest_desc": [
+		"Azure electrum armour is light enough to forget you wear it, and hard enough to remember why."
+		""
+		"Make a chestplate of azure electrum."
+	]
+	"quest.1750F049DD6A059A.quest_subtitle": "Light as the sky"
+	"quest.1750F049DD6A059A.title": "Azure Electrum"
 	"quest.179DE8CE5FD1DB76.quest_desc": [
 		"Wayfarers who would not walk. They carried the broken portal's twelve frames out past every map, sealed the world below, and stayed to guard the frames."
 	]
 	"quest.179DE8CE5FD1DB76.quest_subtitle": "Words of the Road"
 	"quest.179DE8CE5FD1DB76.title": "The Keepers"
+	"quest.185B144BECE13615.quest_desc": [
+		"Gold bands, then diamond: half a camp fits on your back now."
+		""
+		"Upgrade your backpack through gold to diamond."
+	]
+	"quest.185B144BECE13615.quest_subtitle": "Gold, then diamond"
+	"quest.185B144BECE13615.title": "Diamond Bands"
 	"quest.18FABCBB8F977965.quest_desc": [
 		"Phantoms weep what they have seen, and their tears remember how not to be seen."
 		""
@@ -287,10 +336,19 @@
 	"quest.19F76937C8F2D8F8.quest_desc": [
 		"Maren: The captains are behind me now. They know you're close."
 		""
+		"Maren: They'll wait for you at the gate, all of them. They can't find it without you."
+		""
 		"Maren: At the gate we take what you carry. I'm sorry. I'd rather it were anyone else."
 	]
 	"quest.19F76937C8F2D8F8.quest_subtitle": "Maren"
 	"quest.19F76937C8F2D8F8.title": "The Captains"
+	"quest.1A0858BB3D7254E1.quest_desc": [
+		"The road runs through stone as often as grass, and a pickaxe you made yourself is the first thing worth carrying."
+		""
+		"Make a pickaxe from its parts."
+	]
+	"quest.1A0858BB3D7254E1.quest_subtitle": "Every material its own temper"
+	"quest.1A0858BB3D7254E1.title": "A Pickaxe of Your Own"
 	"quest.1A23754640A19F17.quest_desc": [
 		"Six shards steadied the ember enough to fly, for a while."
 	]
@@ -299,17 +357,30 @@
 	"quest.1A86CD2853DE8004.quest_desc": [
 		"Wend: Three of them came over the ridge behind you today. Grass cloaks."
 		""
+		"Wend: They walk where your smoke goes. They always will."
+		""
 		"Wend: Don't ask how I know. Keep walking."
 	]
 	"quest.1A86CD2853DE8004.quest_subtitle": "Wend"
 	"quest.1A86CD2853DE8004.title": "Behind You"
+	"quest.1AAB6B109830977C.quest_desc": [
+		"Some metals no mine gives you. You make them in a forge."
+		""
+		"Make an alloy forge."
+	]
+	"quest.1AAB6B109830977C.quest_subtitle": "Metals no mine gives"
+	"quest.1AAB6B109830977C.title": "The Alloy Forge"
 	"quest.1B60770C67387F89.quest_desc": [
-		"The ruins of the village stand where your compass marks it. The last priest left his charm there."
+		"The ruins of the village stand where your compass can mark it. The last priest left his charm there."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark people/evil\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark people/evil\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.1B60770C67387F89.quest_subtitle": "A place you were told the way to"
 	"quest.1B60770C67387F89.title": "The First Village"
 	"quest.1C8CA924E0050003.quest_desc": [
-		"I was young once, and I walked like you. My first camp lies where your compass marks it."
+		"I was young once, and I walked like you. My first camp lies where your compass can mark it."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark first_camp\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark first_camp\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.1C8CA924E0050003.quest_subtitle": "A place you were told the way to"
 	"quest.1C8CA924E0050003.title": "His First Camp"
@@ -318,10 +389,19 @@
 	]
 	"quest.1D180FDA7B88430D.quest_subtitle": "Words of the Road"
 	"quest.1D180FDA7B88430D.title": "The grave stone"
+	"quest.1D3CC7B5DCE279B2.quest_desc": [
+		"A slingshot throws what the road gives you. It is a poor bow and a good start."
+		""
+		"Make a slingshot."
+	]
+	"quest.1D3CC7B5DCE279B2.quest_subtitle": "Reach before they do"
+	"quest.1D3CC7B5DCE279B2.title": "Stones at a Distance"
 	"quest.1D5DA331E524E759.quest_desc": [
 		"The stranger: She's gone? Good. Eat the bread, but don't follow her."
 		""
 		"The stranger: Her people feed Wayfarers. That's how they catch them."
+		""
+		"The stranger: They can't find a shrine without an ember. They can only follow one."
 	]
 	"quest.1D5DA331E524E759.quest_subtitle": "The stranger"
 	"quest.1D5DA331E524E759.title": "Bread by the Fire"
@@ -330,15 +410,24 @@
 	]
 	"quest.1D8122D0BB559969.quest_subtitle": "The Evil Eye"
 	"quest.1D8122D0BB559969.title": "The First Village"
+	"quest.1D9EB890AFA8AF3A.quest_desc": [
+		"A ring carries a material's gift without its weight, and nobody takes it off a Wayfarer."
+		""
+		"Make a ring of your own and wear it."
+	]
+	"quest.1D9EB890AFA8AF3A.quest_subtitle": "A gift without weight"
+	"quest.1D9EB890AFA8AF3A.title": "A Ring"
 	"quest.1ECEDA4D122E0157.quest_desc": [
-		"The witches keep our last hut where your compass marks it. They do not remember why; they only keep it."
+		"The witches keep our last hut where your compass can mark it. They do not remember why; they only keep it."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark people/witch\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark people/witch\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.1ECEDA4D122E0157.quest_subtitle": "A place you were told the way to"
 	"quest.1ECEDA4D122E0157.title": "The Marsh Mothers' Hut"
 	"quest.1F1980B9A1FF2B71.quest_desc": [
 		"You sat at my fire when nobody else would, so the ember is yours now. I could not carry it one more day."
 		""
-		"Read my journal at the lectern, then take what I leave you: my tent, my mallet and my bedroll."
+		"Read my letter at the lectern, then take what I leave you: my tent, my mallet and my bedroll."
 	]
 	"quest.1F1980B9A1FF2B71.quest_subtitle": "A stranger's fire, a stranger's ember"
 	"quest.1F1980B9A1FF2B71.title": "The Last Fire"
@@ -347,6 +436,13 @@
 	]
 	"quest.1F814E7775F39F39.quest_subtitle": "Words of the Road"
 	"quest.1F814E7775F39F39.title": "Sailing"
+	"quest.208AEEBFD33CD043.quest_desc": [
+		"A Wayfarer owns only what they can carry, so carry more. Copper bands hold a bigger load."
+		""
+		"Upgrade your backpack to copper."
+	]
+	"quest.208AEEBFD33CD043.quest_subtitle": "More on your back"
+	"quest.208AEEBFD33CD043.title": "A Bigger Load"
 	"quest.20BF0A9AAF50803F.quest_desc": [
 		"The Grass Kingdom was given its shard to hide. Its king kept it instead, on a throne, where everyone could see it."
 		"{@pagebreak}"
@@ -384,7 +480,9 @@
 	"quest.229A61F549820904.quest_subtitle": "The Road So Far"
 	"quest.229A61F549820904.title": "Where He Stopped"
 	"quest.231BD3CCAB30C304.quest_desc": [
-		"Her people keep an outpost where your compass marks it. Stay clear of it."
+		"Her people keep an outpost where your compass can mark it. Stay clear of it."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark outpost\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark outpost\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.231BD3CCAB30C304.quest_subtitle": "A place you were told the way to"
 	"quest.231BD3CCAB30C304.title": "Their Outpost"
@@ -392,6 +490,8 @@
 		"Wend: Stand still in the dark tonight and look around you. You'll see them through the stone."
 		""
 		"Wend: That's the shards, showing you what the gaze sees. The Grass King saw like that, for one summer."
+		""
+		"Wend: His own people tore it from his crown. See, but don't stare."
 	]
 	"quest.2336C021E54694B2.quest_subtitle": "Wend"
 	"quest.2336C021E54694B2.title": "The Grass King's Sight"
@@ -406,11 +506,15 @@
 		"Wend: Do you remember my fire? You were the only one who sat down."
 		""
 		"Wend: I watched you from across it. I've been watching you ever since."
+		""
+		"Wend: You have kind eyes. I noticed that first."
 	]
 	"quest.268AB6132D5AC5E4.quest_subtitle": "Wend"
 	"quest.268AB6132D5AC5E4.title": "Across the Fire"
 	"quest.26FFDC27786D3A11.quest_desc": [
-		"There's a place where your compass marks it where I stopped walking. My last camp."
+		"There's a place where your compass can mark it where I stopped walking. My last camp."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark last_camp\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark last_camp\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.26FFDC27786D3A11.quest_subtitle": "A place you were told the way to"
 	"quest.26FFDC27786D3A11.title": "Where He Stopped"
@@ -430,6 +534,8 @@
 		"The stranger: Six. You could fly now, for a while, if you're careful."
 		""
 		"The stranger: The phantoms are its eyes up there. Land before they look."
+		""
+		"The stranger: And never fly at night. Up there in the dark it sees you at once."
 	]
 	"quest.2850866C92603F14.quest_subtitle": "The stranger"
 	"quest.2850866C92603F14.title": "The Sky, For a While"
@@ -441,7 +547,9 @@
 	"quest.28A5CDC1C2749AA8.quest_subtitle": "A hold in the sky"
 	"quest.28A5CDC1C2749AA8.title": "A Hold in the Sky"
 	"quest.2B2DCD160C730915.quest_desc": [
-		"Our graves lie where your compass marks it. The dead are never seen, and neither is what we left them."
+		"Our graves lie where your compass can mark it. The dead are never seen, and neither is what we left them."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark people/undead\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark people/undead\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.2B2DCD160C730915.quest_subtitle": "A place you were told the way to"
 	"quest.2B2DCD160C730915.title": "The Grave Keepers' Graves"
@@ -450,14 +558,14 @@
 		""
 		"Make a hang glider."
 	]
-	"quest.2C7CAD828D1B1351.quest_subtitle": "Down without falling"
+	"quest.2C7CAD828D1B1351.quest_subtitle": "Over before they look up"
 	"quest.2C7CAD828D1B1351.title": "Down Without Falling"
 	"quest.2D3C3724F0320F37.quest_desc": [
 		"You will never pass this way again. A picture remembers it for you."
 		""
 		"Make a camera."
 	]
-	"quest.2D3C3724F0320F37.quest_subtitle": "Keep what you saw"
+	"quest.2D3C3724F0320F37.quest_subtitle": "You will not pass this way again"
 	"quest.2D3C3724F0320F37.title": "Keep What You Saw"
 	"quest.2DA690872EB9B59C.quest_desc": [
 		"The Diggers lost their shard three times before they built it a hall. It waits under a forest; let the ember lead you down."
@@ -465,7 +573,9 @@
 	"quest.2DA690872EB9B59C.quest_subtitle": "The Lost Eye"
 	"quest.2DA690872EB9B59C.title": "The Diggers"
 	"quest.2F0304E8796E55ED.quest_desc": [
-		"The stranger: I was young once, and I walked like you. My first camp lies where your compass marks it."
+		"The stranger: I was young once, and I walked like you. My first camp lies where your compass can mark it."
+		""
+		"The stranger: I was happy there. I didn't know yet how long a road can be."
 		""
 		"The stranger: I left something under the hearthstones. Go and see who I was, if you like."
 	]
@@ -481,7 +591,9 @@
 	"quest.2FA257702DA3A1FC.quest_desc": [
 		"The stranger: They hit harder every day you carry me, and harder with every shard. Have you noticed?"
 		""
-		"The stranger: The gaze sees you more clearly the longer you burn. So be quick."
+		"The stranger: The gaze sees you more clearly the longer you burn."
+		""
+		"The stranger: Make better gear while you can. And be quick."
 	]
 	"quest.2FA257702DA3A1FC.quest_subtitle": "The stranger"
 	"quest.2FA257702DA3A1FC.title": "Stronger Every Day"
@@ -490,13 +602,22 @@
 	]
 	"quest.2FF45265F8FB13CE.quest_subtitle": "Words of the Road"
 	"quest.2FF45265F8FB13CE.title": "Maren"
+	"quest.3111FBBE4F2C73DC.quest_desc": [
+		"Nobody sells a Wayfarer tools. We make them from parts, and every material lends the part its own temper."
+		""
+		"Draw a knife's blueprint, cut the blade from flint or stone, and join it to a rod."
+	]
+	"quest.3111FBBE4F2C73DC.quest_subtitle": "Parts, not a recipe"
+	"quest.3111FBBE4F2C73DC.title": "A Knife for the Road"
 	"quest.326B932334026BDD.quest_desc": [
 		"Rest still at a lit fire for half a minute and the ember warms. Until tomorrow's dusk it burns the fire instead of your food."
 	]
 	"quest.326B932334026BDD.quest_subtitle": "Words of the Road"
 	"quest.326B932334026BDD.title": "Warm"
 	"quest.328BEA36E4397966.quest_desc": [
-		"The Illagers copied our halls where your compass marks it. Our cellar under them is still hidden."
+		"The Illagers copied our halls where your compass can mark it. Our cellar under them is still hidden."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark people/magical\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark people/magical\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.328BEA36E4397966.quest_subtitle": "A place you were told the way to"
 	"quest.328BEA36E4397966.title": "The Shadow Circle's Cellar"
@@ -505,8 +626,17 @@
 	]
 	"quest.32A2A4D9C3E0EE31.quest_subtitle": "The Road So Far"
 	"quest.32A2A4D9C3E0EE31.title": "Wend"
+	"quest.330188A67C00EA7F.quest_desc": [
+		"A hammer breaks stone nine blocks at a time, and a day of digging becomes an hour."
+		""
+		"Make a hammer."
+	]
+	"quest.330188A67C00EA7F.quest_subtitle": "Big jobs, short days"
+	"quest.330188A67C00EA7F.title": "Three by Three"
 	"quest.349C97D99E1873BE.quest_desc": [
-		"Our last ship lies wrecked where your compass marks it. What we could not carry is still aboard."
+		"Our last ship lies wrecked where your compass can mark it. What we could not carry is still aboard."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark people/black\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark people/black\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.349C97D99E1873BE.quest_subtitle": "A place you were told the way to"
 	"quest.349C97D99E1873BE.title": "The Tide Folk's Ship"
@@ -526,7 +656,7 @@
 	"quest.363B86466DCE4DD8.quest_subtitle": "The Road So Far"
 	"quest.363B86466DCE4DD8.title": "The Ledger"
 	"quest.365041126A787594.quest_desc": [
-		"When you share a fire, the ember splits. Everyone on a team carries every shard any of you takes, and hears the fire together."
+		"When you share a fire, the ember splits. Everyone on a team carries every shard any of you takes, hears the fire together and shows on each other's compass."
 		""
 		"Travel with friends by joining one team with the team button at the top left of the inventory screen, or walk alone."
 	]
@@ -538,7 +668,9 @@
 	"quest.367FA76372FA8E17.quest_subtitle": "Words of the Road"
 	"quest.367FA76372FA8E17.title": "Wend"
 	"quest.384591F0B10F2B65.quest_desc": [
-		"Our first hall lies buried where your compass marks it. We left our shade there."
+		"Our first hall lies buried where your compass can mark it. We left our shade there."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark people/old\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark people/old\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.384591F0B10F2B65.quest_subtitle": "A place you were told the way to"
 	"quest.384591F0B10F2B65.title": "The Sand Singers' Hall"
@@ -551,8 +683,17 @@
 	]
 	"quest.38633E8CA0C64C69.quest_subtitle": "The Keepers"
 	"quest.38633E8CA0C64C69.title": "The Last Keeper"
+	"quest.3873E75FB99E82E2.quest_desc": [
+		"A Wayfarer cannot carry a crafting table everywhere, but a backpack can."
+		""
+		"Make a crafting upgrade and fit it to your backpack."
+	]
+	"quest.3873E75FB99E82E2.quest_subtitle": "Craft anywhere"
+	"quest.3873E75FB99E82E2.title": "A Bench on Your Back"
 	"quest.38E1538D1656C28B.quest_desc": [
-		"The stranger: Her people keep an outpost where your compass marks it. Stay clear of it."
+		"The stranger: Her people keep an outpost where your compass can mark it. Stay clear of it."
+		""
+		"The stranger: They'd sooner feed you than fight you, and that's worse."
 		""
 		"The stranger: Nothing there is meant for you."
 	]
@@ -579,6 +720,8 @@
 		"The gaze: Bring me my eye, and I will look away from you."
 		""
 		"The gaze: Build your house anywhere. Nothing will come in the night. I promise."
+		""
+		"The gaze: Think of it. A door you can close, and nobody watching."
 	]
 	"quest.3B954BE86C8B9071.quest_subtitle": "The gaze"
 	"quest.3B954BE86C8B9071.title": "A Bargain"
@@ -587,10 +730,12 @@
 		""
 		"Find or make a bounty board."
 	]
-	"quest.3C5E7D941AAB9BB4.quest_subtitle": "Work for strangers"
+	"quest.3C5E7D941AAB9BB4.quest_subtitle": "Pay for the road"
 	"quest.3C5E7D941AAB9BB4.title": "Work for Strangers"
 	"quest.3CD76FDC8496A75F.quest_desc": [
-		"Once a winter we built a house of snow, where your compass marks it. Something of ours still waits in it."
+		"Once a winter we built a house of snow, where your compass can mark it. Something of ours still waits in it."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark people/cold\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark people/cold\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.3CD76FDC8496A75F.quest_subtitle": "A place you were told the way to"
 	"quest.3CD76FDC8496A75F.title": "The Frost Walkers' House"
@@ -655,6 +800,13 @@
 	]
 	"quest.424082E0213C5055.quest_subtitle": "A young Wayfarer"
 	"quest.424082E0213C5055.title": "A Young Man's Page"
+	"quest.42FD214321FF084C.quest_desc": [
+		"A mattock digs earth and fells wood alike, so you carry one tool instead of two."
+		""
+		"Make a mattock."
+	]
+	"quest.42FD214321FF084C.quest_subtitle": "One tool for two"
+	"quest.42FD214321FF084C.title": "Earth and Wood Alike"
 	"quest.431098B789E8D6C0.quest_desc": [
 		"The ember is bound to fire: wherever you light one, it brings you back when you fall. The gaze's creatures cannot bear its light, so on an ordinary night none is born within twelve blocks of it, none steps closer, and none goes for you while you stand there."
 		""
@@ -662,13 +814,6 @@
 	]
 	"quest.431098B789E8D6C0.quest_subtitle": "Where the ember brings you back"
 	"quest.431098B789E8D6C0.title": "Keep a Fire"
-	"quest.4322D9895974EDF2.quest_desc": [
-		"Cliffs and ravines cost a Wayfarer days. A hook costs seconds."
-		""
-		"Make an iron grappling hook."
-	]
-	"quest.4322D9895974EDF2.quest_subtitle": "Up without climbing"
-	"quest.4322D9895974EDF2.title": "Up Without Climbing"
 	"quest.43ED2D66D4D957FC.quest_desc": [
 		"For Maren. Open it at the gate."
 		"{@pagebreak}"
@@ -693,6 +838,13 @@
 	]
 	"quest.45299B9DA91E63B5.quest_subtitle": "Longer flight"
 	"quest.45299B9DA91E63B5.title": "A Veil Against the Gaze"
+	"quest.452F1097D4910C9A.quest_desc": [
+		"The Ancient Cities drew their power from the world below, and its crimson iron still lies in the deep stone around them. Steel made from it holds an edge like nothing else."
+		""
+		"Make crimson steel and a spear."
+	]
+	"quest.452F1097D4910C9A.quest_subtitle": "The iron the cities drew up"
+	"quest.452F1097D4910C9A.title": "Crimson Steel"
 	"quest.467796D56D014FF1.quest_desc": [
 		"With all twelve shards, the ember remembers where the Eye was torn out. The portal broke into twelve frames, and the Keepers carried them out to a ring far past every map; any frame takes the whole Eye, and the ember leads you to the nearest."
 		""
@@ -754,6 +906,13 @@
 	]
 	"quest.49E3A63EC7AD7C28.quest_subtitle": "The Keepers' ward"
 	"quest.49E3A63EC7AD7C28.title": "The Gazebound at the Gate"
+	"quest.4BF3E9AA8280BB5B.quest_desc": [
+		"A diamond hook bites into stone that would throw an iron one back."
+		""
+		"Make a diamond grappling hook."
+	]
+	"quest.4BF3E9AA8280BB5B.quest_subtitle": "Up the tallest cliff"
+	"quest.4BF3E9AA8280BB5B.title": "A Diamond Hook"
 	"quest.4C497D37D2175788.quest_desc": [
 		"A Wayfarer tent is folded space, and the gaze cannot see what is not anywhere. One blow of the mallet raises it."
 		""
@@ -761,27 +920,6 @@
 	]
 	"quest.4C497D37D2175788.quest_subtitle": "Safe, because it is nowhere"
 	"quest.4C497D37D2175788.title": "A Roof That Is Nowhere"
-	"quest.4C5B5C48382F6064.quest_desc": [
-		"I do not know your name, stranger, and you will not learn mine. It does not matter. Wayfarers have no names, only roads."
-		"{@pagebreak}"
-		"Long ago the dragon at the end of the world gave up an eye to watch every land its portal touched. The first Wayfarers tore that Eye out, broke it into twelve shards and hid them at the far ends of the world."
-		"{@pagebreak}"
-		"The ember I gave you is the last light of that Eye. It pulls towards the shards. Far away it is only a feeling: it flares when you walk towards one and gutters when you walk away. Close by, it knows the way to the door."
-		"{@pagebreak}"
-		"The ember wakes once you have lived one day as we do. Carry everything you own. Light a fire where you rest, for the ember brings you back to fire when you fall. Pitch your tent before dark and sleep in it."
-		"{@pagebreak}"
-		"The Eye sees what stays still. Linger in one place and the ember dims, and the gaze sends its horde to find you. Every day you carry the ember and every shard you take, it sees you more clearly, and what walks at night grows stronger."
-		"{@pagebreak}"
-		"Its creatures cannot bear a fire's light: none is born near one or steps close. Rest at your fire and the ember burns it instead of your food. A tent is folded space; the gaze cannot see what is not anywhere, and nothing follows you in."
-		"{@pagebreak}"
-		"Some nights are worse. Every fourth night the gaze turns fully towards the world: nobody sleeps, no tent opens, and its horde walks through fire. Every fifth, the moon turns red and fire frightens nothing. The ember warns you each morning."
-		"{@pagebreak}"
-		"Do not take to the sea or the sky too early. A lone ember shines like a beacon on open water, and the phantoms see it flicker in the air. Every shard you gather dims it."
-		"{@pagebreak}"
-		"The Gazebound hunt the shards too. Gather all twelve before they do, find the true gate, and finish what we could not. Watch the smoke, stranger. I always did."
-	]
-	"quest.4C5B5C48382F6064.quest_subtitle": "The Last Wayfarer"
-	"quest.4C5B5C48382F6064.title": "The Last Wayfarer's Journal"
 	"quest.4C6FA41CAD189D2C.quest_desc": [
 		"The rogue shard taught the Jungle Folk how red dust carries a thought from one stone to the next."
 		"{@pagebreak}"
@@ -794,12 +932,16 @@
 	"quest.4CBE58EE1F1F7DFB.quest_desc": [
 		"The stranger: Four shards. Your light is dim enough for the sea now."
 		""
+		"The stranger: Out on the water a lone ember shines like a beacon. Four together hide it well enough."
+		""
 		"The stranger: I sailed once. I was sick the whole way. Don't tell anyone."
 	]
 	"quest.4CBE58EE1F1F7DFB.quest_subtitle": "The stranger"
 	"quest.4CBE58EE1F1F7DFB.title": "The Sea Opens"
 	"quest.4CE5A3FDAF57A312.quest_desc": [
-		"The swimmers settled where your compass marks it, among the red stone. They never swam again, but they kept their fins."
+		"The swimmers settled where your compass can mark it, among the red stone. They never swam again, but they kept their fins."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark people/exotic\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark people/exotic\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.4CE5A3FDAF57A312.quest_subtitle": "A place you were told the way to"
 	"quest.4CE5A3FDAF57A312.title": "Where the Swimmers Settled"
@@ -832,6 +974,8 @@
 	"quest.4FE206097212E792.quest_desc": [
 		"The stranger: Where are you from? No, don't tell me. A home is a thing you lose."
 		""
+		"The stranger: The longer a place is lived in, the brighter it shines to the gaze. Towns shine. Cities blaze."
+		""
 		"The stranger: I had one once. Don't."
 	]
 	"quest.4FE206097212E792.quest_subtitle": "The stranger"
@@ -844,10 +988,19 @@
 	"quest.4FF12C4BB177020E.quest_subtitle": "The Eye"
 	"quest.4FF12C4BB177020E.title": "The Eighth Memory"
 	"quest.501D4DE50DB19F3F.quest_desc": [
-		"You don't believe me. His room in the grass halls is still as he left it, where your compass marks it."
+		"You don't believe me. His room in the grass halls is still as he left it, where your compass can mark it."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark grass_halls\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark grass_halls\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.501D4DE50DB19F3F.quest_subtitle": "A place you were told the way to"
 	"quest.501D4DE50DB19F3F.title": "The Grass Halls"
+	"quest.50E26B189B4CF3EF.quest_desc": [
+		"Deep in the stone lies bort, a gem as hard as diamond and far more common. A katana edged with it cuts before the night can close."
+		""
+		"Find bort and make a katana."
+	]
+	"quest.50E26B189B4CF3EF.quest_subtitle": "Faster than the night"
+	"quest.50E26B189B4CF3EF.title": "An Edge of the Deep"
 	"quest.5181325CF2402CD0.quest_desc": [
 		"A king of the grasslands who kept his people's shard in his crown. It spoke to him in his dead father's voice, and for one summer he saw what the dragon sees."
 	]
@@ -864,6 +1017,8 @@
 		"Maren: May I sit?"
 		""
 		"Maren: No voice in the fire tonight. Just a fire."
+		""
+		"Maren: He'd have liked this. Sitting still, with nothing watching."
 	]
 	"quest.51C1C80F75978CFB.quest_subtitle": "Maren"
 	"quest.51C1C80F75978CFB.title": "Just a Fire"
@@ -877,7 +1032,7 @@
 	"quest.53423CBA615A90F1.quest_desc": [
 		"Every fourth night nothing shelters you but what you carry. Carry a shield."
 		""
-		"Make an iron heater shield."
+		"Make a shield of your own."
 	]
 	"quest.53423CBA615A90F1.quest_subtitle": "For the nights no tent opens"
 	"quest.53423CBA615A90F1.title": "A Shield on Your Arm"
@@ -900,15 +1055,31 @@
 	"quest.5408EF29663538D2.quest_subtitle": "The Tide Folk"
 	"quest.5408EF29663538D2.title": "The Tide Folk"
 	"quest.550504138A6F559F.quest_desc": [
-		"Our tunnels start where your compass marks it. What we could not carry is still down there."
+		"Our tunnels start where your compass can mark it. What we could not carry is still down there."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark people/lost\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark people/lost\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.550504138A6F559F.quest_subtitle": "A place you were told the way to"
 	"quest.550504138A6F559F.title": "The Diggers' Tunnels"
+	"quest.5568FA1278149CCE.quest_desc": [
+		"A bracelet holds a second gift on the other wrist."
+		""
+		"Make a bracelet of your own and wear it."
+	]
+	"quest.5568FA1278149CCE.quest_subtitle": "A second gift"
+	"quest.5568FA1278149CCE.title": "A Bracelet"
 	"quest.561974079BDDC906.quest_desc": [
 		"The Frost Walkers never stayed anywhere the snow could not cover their tracks. Go where the cold is deepest and listen for the ember."
 	]
 	"quest.561974079BDDC906.quest_subtitle": "The Cold Eye"
 	"quest.561974079BDDC906.title": "The Frost Walkers"
+	"quest.5622D04CE279A078.quest_desc": [
+		"Netherite holds where every other hook gives way."
+		""
+		"Make a netherite grappling hook."
+	]
+	"quest.5622D04CE279A078.quest_subtitle": "Nothing holds it back"
+	"quest.5622D04CE279A078.title": "A Netherite Hook"
 	"quest.5644728837DAE04F.quest_desc": [
 		"Our masters found power in the burning world below and built a gate of our own, to strike back through the dark. You have seen its frame at the heart of the city."
 		"{@pagebreak}"
@@ -930,37 +1101,46 @@
 	]
 	"quest.57BA6A83EB0C0274.quest_subtitle": "Four small wings"
 	"quest.57BA6A83EB0C0274.title": "Four Small Wings"
-	"quest.58D4C9DD3C4EA2FE.quest_desc": [
-		"The road is long, and not everything on it is friendly. A longer blade keeps it at arm's length."
-		""
-		"Forge an iron longsword."
-	]
-	"quest.58D4C9DD3C4EA2FE.quest_subtitle": "Arm's length"
-	"quest.58D4C9DD3C4EA2FE.title": "A Better Blade"
 	"quest.59A94CF76A50E7E5.quest_desc": [
-		"You have lived a Wayfarer's first day, and the ember answers. Look to the top of your sight: a compass that turns with you. Far from a shard, the ember only flares when you walk towards it and gutters when you walk away."
+		"You have lived a Wayfarer's first day, and the ember answers. The compass at the top of your sight feels the shards now: far from one, the ember only flares when you walk towards it and gutters when you walk away."
 		""
 		"Within five hundred blocks the shard itself appears on the compass, at the stair down to its shrine. The Twelve Peoples hid every stair under a cover that looks like nothing to anyone without an ember. Walk until it answers."
 	]
 	"quest.59A94CF76A50E7E5.quest_subtitle": "Flaring, guttering"
 	"quest.59A94CF76A50E7E5.title": "The Ember Wakes"
+	"quest.5BB8A509B4ABAD77.quest_desc": [
+		"Cliffs and ravines cost a Wayfarer days. A hook costs seconds."
+		""
+		"Make a copper grappling hook."
+	]
+	"quest.5BB8A509B4ABAD77.quest_subtitle": "A hook costs seconds"
+	"quest.5BB8A509B4ABAD77.title": "Up Without Climbing"
 	"quest.5C6CBC7F375F0DCB.quest_desc": [
 		"You set the Eye and killed the half-blind dragon. The ember went out, and nothing is watching any more."
 	]
 	"quest.5C6CBC7F375F0DCB.quest_subtitle": "The Road So Far"
 	"quest.5C6CBC7F375F0DCB.title": "The Dragon"
+	"quest.5C79F9145807606E.quest_desc": [
+		"A necklace sits closest to the ember, and its gift burns brightest."
+		""
+		"Make a necklace of your own and wear it."
+	]
+	"quest.5C79F9145807606E.quest_subtitle": "Closest to the ember"
+	"quest.5C79F9145807606E.title": "A Necklace"
 	"quest.5CF1AB9345FD65AD.quest_desc": [
-		"A sliver of the Eye's own light. It passes only at a fire shared freely, pulls towards the shards, and brings you back to the last fire you lit."
+		"A sliver of an old light. It passes only at a fire shared freely, pulls towards the shards, and brings you back to the last fire you lit."
 	]
 	"quest.5CF1AB9345FD65AD.quest_subtitle": "Words of the Road"
 	"quest.5CF1AB9345FD65AD.title": "The ember"
 	"quest.5D39F3F9CE3E753C.quest_desc": [
-		"Places someone told you the way to. The compass marks each one from then on, and At the Fire keeps it until you find it."
+		"Places someone told you the way to. At the Fire keeps each one until you find it, and the compass marks the ones you choose to follow."
 	]
 	"quest.5D39F3F9CE3E753C.quest_subtitle": "Words of the Road"
 	"quest.5D39F3F9CE3E753C.title": "Leads"
 	"quest.5D68EAC61DE8F6E5.quest_desc": [
-		"Go and see where it all started. The deep city lies where your compass marks it, far below the stone."
+		"Go and see where it all started. The deep city lies where your compass can mark it, far below the stone."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark deep_city\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark deep_city\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.5D68EAC61DE8F6E5.quest_subtitle": "A place you were told the way to"
 	"quest.5D68EAC61DE8F6E5.title": "The Deep City"
@@ -978,6 +1158,13 @@
 	]
 	"quest.5E4284B95E2E40FC.quest_subtitle": "The Grave Keepers"
 	"quest.5E4284B95E2E40FC.title": "The Grave Keepers"
+	"quest.5ED2817A02D2EE54.quest_desc": [
+		"Netherite bands carry everything a Wayfarer could own, and nothing burns them."
+		""
+		"Upgrade your backpack to netherite."
+	]
+	"quest.5ED2817A02D2EE54.quest_subtitle": "Everything you own"
+	"quest.5ED2817A02D2EE54.title": "Netherite Bands"
 	"quest.5FAD900A0CF32342.quest_desc": [
 		"The ember burns what you eat, twice what a settled person needs, unless it is warm from a fire. The more kinds of food you eat, the stronger it keeps you."
 	]
@@ -988,6 +1175,13 @@
 	]
 	"quest.616E920CF50BCE8B.quest_subtitle": "Words of the Road"
 	"quest.616E920CF50BCE8B.title": "The world below"
+	"quest.6414BBCD5E040AC2.quest_desc": [
+		"A worn-out tool is still its parts, and the salvager gives them back."
+		""
+		"Make a salvager."
+	]
+	"quest.6414BBCD5E040AC2.quest_subtitle": "Parts from broken gear"
+	"quest.6414BBCD5E040AC2.title": "Nothing Wasted"
 	"quest.646F360A7556B8EE.quest_desc": [
 		"The last of the Drowned City fled as far from the sea as they could. Search the red canyons of the badlands."
 	]
@@ -995,6 +1189,8 @@
 	"quest.646F360A7556B8EE.title": "The Drowned City"
 	"quest.64B53EE176C31149.quest_desc": [
 		"Wend: Nine. I can almost see the gate from here."
+		""
+		"Wend: Three more, and the ember will remember where the Eye was torn out."
 		""
 		"Wend: Don't stop now. Carry me home."
 	]
@@ -1012,6 +1208,20 @@
 	]
 	"quest.66F768BAF62764CE.quest_subtitle": "The Eye"
 	"quest.66F768BAF62764CE.title": "The Eleventh Memory"
+	"quest.691CBE2BDEEF518B.quest_desc": [
+		"In the air the ember flickers and the phantoms see it. With six shards it burns steady enough for wings too, for a while."
+		""
+		"Make wings of your own and glide."
+	]
+	"quest.691CBE2BDEEF518B.quest_subtitle": "Six shards"
+	"quest.691CBE2BDEEF518B.title": "Wings of Your Own"
+	"quest.69B5F244D7DDA398.quest_desc": [
+		"A reinforced glider holds in wind that would fold a plain one."
+		""
+		"Reinforce your hang glider."
+	]
+	"quest.69B5F244D7DDA398.quest_subtitle": "Wind that would fold it"
+	"quest.69B5F244D7DDA398.title": "A Stronger Wing"
 	"quest.69D6727479B70168.quest_desc": [
 		"The gate opened once. What came through was silence. It spread across the stone like moss and remembered every sound we had ever made."
 		"{@pagebreak}"
@@ -1028,9 +1238,18 @@
 		"Wend: You've been in my room. I can smell the grass on you."
 		""
 		"Wend: The ledger's wrong. My ember never went dark. Who else would be talking to you?"
+		""
+		"Wend: Clerks write what they're told to. Burn it if you like."
 	]
 	"quest.6AFA4C05D245CCF7.quest_subtitle": "Wend"
 	"quest.6AFA4C05D245CCF7.title": "The Ledger"
+	"quest.6B1ED9BE8BF0E38A.quest_desc": [
+		"A bow keeps the night at the edge of your fire, where it belongs."
+		""
+		"Make a bow."
+	]
+	"quest.6B1ED9BE8BF0E38A.quest_subtitle": "Keep them at the edge"
+	"quest.6B1ED9BE8BF0E38A.title": "A Bow"
 	"quest.6B59AE1F40767245.quest_desc": [
 		"The ember is out and nothing is watching any more. You eat like a settled person, no night is sleepless, the moon stays white, and the sky is yours. Fire still remembers you, and brings you back when you fall."
 		""
@@ -1050,6 +1269,26 @@
 	]
 	"quest.6BBEE9273C494FAD.quest_subtitle": "The Witch Eye"
 	"quest.6BBEE9273C494FAD.title": "The Marsh Mothers"
+	"quest.6CFB307388B1349F.quest_desc": [
+		"Crimson steel turns what iron and diamond only soften."
+		""
+		"Make a chestplate of crimson steel."
+	]
+	"quest.6CFB307388B1349F.quest_subtitle": "Steel the deep remembers"
+	"quest.6CFB307388B1349F.title": "Armour of the Deep"
+	"quest.6D896824F3835EDC.quest_desc": [
+		"I do not know your name, stranger, and you will not learn mine. It does not matter. Wayfarers have no names, only roads."
+		"{@pagebreak}"
+		"The ember I gave you is a sliver of something broken long ago, and it pulls towards the other pieces. Far away it is only a feeling: it flares when you walk towards one and gutters when you walk away."
+		"{@pagebreak}"
+		"It wakes once you have lived one day as we do. Carry everything you own. Light a fire where you rest, for the ember brings you back to fire when you fall. Pitch your tent before dark and sleep in it."
+		"{@pagebreak}"
+		"Monsters cannot bear a fire's light, and a tent is folded space that nothing follows you into. But never stay long in one place. The gaze sees what stays still, and it sends its horde to find it."
+		"{@pagebreak}"
+		"My journal is yours now. It will teach you the rest as you walk. Watch the smoke, stranger. I always did."
+	]
+	"quest.6D896824F3835EDC.quest_subtitle": "The Last Wayfarer"
+	"quest.6D896824F3835EDC.title": "To the One Who Sat With Me"
 	"quest.6E123492013216CF.quest_desc": [
 		"The silence that came through the Ancient Cities' gate. It spreads across the stone and remembers every sound. Its guard, the Warden, does not fear fire."
 	]
@@ -1064,6 +1303,13 @@
 	]
 	"quest.6E4261D89D0E8D90.quest_subtitle": "The Keepers"
 	"quest.6E4261D89D0E8D90.title": "The First Watch"
+	"quest.6F06E0017F1FF8BC.quest_desc": [
+		"Not every ingot is equal. A grader finds the best of a batch, and better stock makes better parts."
+		""
+		"Make a material grader."
+	]
+	"quest.6F06E0017F1FF8BC.quest_subtitle": "Better stock, better parts"
+	"quest.6F06E0017F1FF8BC.title": "Grade the Metal"
 	"quest.707056AE5D072408.quest_desc": [
 		"The halls the Twelve Peoples hid their shards in, under covers that look like nothing to anyone without an ember. No monster is born inside, and no horde follows you in."
 	]
@@ -1075,17 +1321,21 @@
 	"quest.7114A15DCA5CAD10.quest_subtitle": "Words of the Road"
 	"quest.7114A15DCA5CAD10.title": "The glimpse"
 	"quest.719A2C684491217C.quest_desc": [
-		"We lived where the peaks meet the sky, where your compass marks it. Climb up and take what we left."
+		"We lived where the peaks meet the sky, where your compass can mark it. Climb up and take what we left."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark people/cryptic\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark people/cryptic\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.719A2C684491217C.quest_subtitle": "A place you were told the way to"
 	"quest.719A2C684491217C.title": "The Scribes' House"
 	"quest.728D4B884E67F23F.quest_desc": [
-		"The dragon's sight. It sees what stays still, presses hardest at night, and sees you more clearly every day you carry the ember and with every shard you take."
+		"What watches the world. It sees what stays still, presses hardest at night, and sees you more clearly every day you carry the ember and with every shard you take."
 	]
 	"quest.728D4B884E67F23F.quest_subtitle": "Words of the Road"
 	"quest.728D4B884E67F23F.title": "The gaze"
 	"quest.728DFFA4C29E37B7.quest_desc": [
 		"Wend: She told you. Yes. Twenty winters at their table."
+		""
+		"Wend: I was tired of the road, and they fed me, and I stayed."
 		""
 		"Wend: I lied about what I was, not about what you must do."
 	]
@@ -1095,9 +1345,25 @@
 		"The stranger: You feel it on the hard nights, don't you? The gaze turning towards you."
 		""
 		"The stranger: It can't stop looking. It isn't cruel. It's only an eye that was never allowed to close."
+		""
+		"The stranger: Sleep in your tent when you can. It can't see what isn't anywhere."
 	]
 	"quest.72A6CF8828A368B6.quest_subtitle": "The stranger"
 	"quest.72A6CF8828A368B6.title": "It Isn't Cruel"
+	"quest.7365C5A34444A8D2.quest_desc": [
+		"An iron hook reaches further and holds a heavier climber."
+		""
+		"Make an iron grappling hook."
+	]
+	"quest.7365C5A34444A8D2.quest_subtitle": "Further and harder"
+	"quest.7365C5A34444A8D2.title": "A Stronger Hook"
+	"quest.737D95C88679C657.quest_desc": [
+		"The ember is always hungry, and a feeding upgrade feeds it before you notice."
+		""
+		"Make a feeding upgrade and fit it to your backpack."
+	]
+	"quest.737D95C88679C657.quest_subtitle": "Eat while you walk"
+	"quest.737D95C88679C657.title": "The Pack Feeds You"
 	"quest.743096F786C754BA.quest_desc": [
 		"One of us grew tired of the road. The Gazebound gave him a warm hall, a full table and a name: Wend. He stayed a winter, then a year, then twenty, and his ember went dark."
 		"{@pagebreak}"
@@ -1108,10 +1374,25 @@
 	"quest.743AF7569F7B0C3C.quest_desc": [
 		"The stranger: Two shards. I felt them touch. Don't be afraid, it's only me."
 		""
-		"The stranger: Sit a while. I talk best when you're still."
+		"The stranger: You buried me by the road, I know. The ember remembers who carried it."
+		""
+		"The stranger: I can only reach you like this, while you sit still by a fire. So sit a while. I talk best when you're still."
+		""
+		"The stranger: Every shard you take makes me a little clearer. I'll be with you more as they come together."
+		""
+		"The stranger: I'll tell you what I can, one fire at a time. Some nights I'll have nothing to say."
+		""
+		"The stranger: Keep walking. The shards won't come to you."
 	]
 	"quest.743AF7569F7B0C3C.quest_subtitle": "The stranger"
 	"quest.743AF7569F7B0C3C.title": "Two Shards Touch"
+	"quest.75D403AFEB2103B4.quest_desc": [
+		"Super alloy takes the best of every metal. A paxel of it digs, chops and shovels like three tools in one."
+		""
+		"Make super alloy and a paxel."
+	]
+	"quest.75D403AFEB2103B4.quest_subtitle": "One tool for everything"
+	"quest.75D403AFEB2103B4.title": "Super Alloy"
 	"quest.767F1956E3A1B924.quest_desc": [
 		"Stay within about 256 blocks of one place and on the second day the ember dims. On the third the gaze finds you, and its horde comes that night and every night you stay."
 	]
@@ -1133,10 +1414,19 @@
 	"quest.7862A4CBA742B7AB.quest_subtitle": "The Road So Far"
 	"quest.7862A4CBA742B7AB.title": "The Deep City"
 	"quest.7868B800C663C1C3.quest_desc": [
-		"His people still live in the grass, where your compass marks it. They kept the jewel that sat beside the shard in his crown."
+		"His people still live in the grass, where your compass can mark it. They kept the jewel that sat beside the shard in his crown."
+		""
+		"[\"\", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead mark people/corrupted\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.mark.hover\"}}, \"translate\": \"wayfarer.lead.mark.link\"}, \"  \", {\"clickEvent\": {\"action\": \"run_command\", \"value\": \"/wayfarer lead unmark people/corrupted\"}, \"color\": \"gold\", \"hoverEvent\": {\"action\": \"show_text\", \"contents\": {\"translate\": \"wayfarer.lead.unmark.hover\"}}, \"translate\": \"wayfarer.lead.unmark.link\"}]"
 	]
 	"quest.7868B800C663C1C3.quest_subtitle": "A place you were told the way to"
 	"quest.7868B800C663C1C3.title": "The Grass Kingdom"
+	"quest.78BBFE853F7934EB.quest_desc": [
+		"A saw fells a whole tree at once, and firewood is never far."
+		""
+		"Make a saw."
+	]
+	"quest.78BBFE853F7934EB.quest_subtitle": "Firewood is never far"
+	"quest.78BBFE853F7934EB.title": "A Tree at a Time"
 	"quest.798270FE0F4DD012.quest_desc": [
 		"Captain Wend, taken in at the grass halls in the first winter. Eats well. Asks for nothing. Walks the halls at night as if they were a road."
 		"{@pagebreak}"
@@ -1146,6 +1436,13 @@
 	]
 	"quest.798270FE0F4DD012.quest_subtitle": "The Gazebound"
 	"quest.798270FE0F4DD012.title": "The Captain's Ledger"
+	"quest.79F9FF71EB640CF4.quest_desc": [
+		"The hordes find you on the nights the gaze turns. Meet them in iron."
+		""
+		"Make a helmet, a chestplate, leggings and boots of your own."
+	]
+	"quest.79F9FF71EB640CF4.quest_subtitle": "Meet them in iron"
+	"quest.79F9FF71EB640CF4.title": "Iron on Your Back"
 	"quest.7A9514E8721CCAF1.quest_desc": [
 		"We were proud once. Our cities lay deep in the stone, and their lamps burned day and night, brighter than anything the world had seen."
 		"{@pagebreak}"
@@ -1153,6 +1450,13 @@
 	]
 	"quest.7A9514E8721CCAF1.quest_subtitle": "The Eye"
 	"quest.7A9514E8721CCAF1.title": "The First Memory"
+	"quest.7AB0899593CEBE4F.quest_desc": [
+		"With the dragon dead, the End's silver is yours to take. Tyrian steel is the hardest thing a smith can make from it."
+		""
+		"Make tyrian steel and a mace."
+	]
+	"quest.7AB0899593CEBE4F.quest_subtitle": "What the free carry"
+	"quest.7AB0899593CEBE4F.title": "Tyrian Steel"
 	"quest.7B63C9A0B156F311.quest_desc": [
 		"Maren and a Gazebound war band were waiting at the frame. The Keepers' ward kept it shut while they stood in the hall."
 	]
@@ -1168,12 +1472,14 @@
 	"quest.7D5792B5EBA74299.quest_subtitle": "The Drowned City"
 	"quest.7D5792B5EBA74299.title": "The Drowned City"
 	"quest.7DD3601BC85C87CA.quest_desc": [
-		"You lived a Wayfarer's first day, and the ember answered. It pulls towards the twelve shards of the dragon's broken Eye."
+		"You lived a Wayfarer's first day, and the ember answered. It pulls towards twelve shards of something broken long ago."
 	]
 	"quest.7DD3601BC85C87CA.quest_subtitle": "The Road So Far"
 	"quest.7DD3601BC85C87CA.title": "The Ember Wakes"
 	"quest.7E01742D87FA0667.quest_desc": [
 		"A hooded traveller: You carry his smoke. I'd know it anywhere."
+		""
+		"A hooded traveller: Leave your blade where it is. Nothing fights at a fire shared freely."
 		""
 		"A hooded traveller: Eat. He never ate enough either."
 	]
@@ -1186,4 +1492,11 @@
 	]
 	"quest.7F416EC4B9D960EC.quest_subtitle": "Finish what we could not"
 	"quest.7F416EC4B9D960EC.title": "The Half-Blind Dragon"
+	"quest.7F5B9DE7D6B888E4.quest_desc": [
+		"A trident comes back to the hand that threw it, and it fishes as well as it fights."
+		""
+		"Make a trident."
+	]
+	"quest.7F5B9DE7D6B888E4.quest_subtitle": "Thrown, and back"
+	"quest.7F5B9DE7D6B888E4.title": "A Trident"
 }

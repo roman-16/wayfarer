@@ -17,6 +17,7 @@ The source of truth for every quest, book and item text, and the reason behind e
 | Which is the true gate? | Any of the twelve frames. Each was part of the portal, and each takes the whole Eye. The ember leads to the nearest |
 | Why does a frame refuse while Gazebound stand in the hall? | The Keepers warded every frame against the Gazebound: it will not take the Eye while one of them stands in its hall |
 | Why is there no Nether? | When the Ancient Cities' gate failed, the Keepers sealed the Nether forever, so nobody could repeat it. Obsidian no longer takes a spark |
+| Why is there netherite and crimson iron in the deep dark? | The Ancient Cities drew their power from the Nether, and what they drew up still lies in the deep stone around them |
 | Who are the Gazebound? | An Illager cult that wants the dragon's sight back to rule through it. They are the heirs of the Grass King |
 | Who was the Grass King? | The king of the grasslands, whose people were one of the Twelve Peoples. He kept his people's shard in his crown instead of hiding it, and it spoke to him in his dead father's voice. For one summer he saw everything that stood still in his kingdom and ruled like a god. His own people tore it from his crown and sealed it under the savanna, and drove out his heirs and everyone who followed them |
 | Where do the Illagers come from? | They are the Grass Kingdom's outcasts and their children. Their outposts, raids and mansions are the Gazebound's |
@@ -26,11 +27,12 @@ The source of truth for every quest, book and item text, and the reason behind e
 | Why are the shrines hidden? | The Twelve Peoples hid them so that neither the dragon nor the Gazebound could find them. Only the ember can. They set them far apart, so that no one would ever carry two shards by accident, and hid every stair under a cover that looks like nothing to anyone without an ember |
 | What are the Twelve Peoples' places? | Each people left something of theirs near its shrine: a ship, a house, a temple, a grave. Its book names the place, and what they could not carry is still there for the one who took their shard |
 | Why are nights so hard? | At night the dragon's gaze presses hardest. Every fourth night it turns fully towards the world (a Sleepless Night): nobody sleeps, the ember burns too bright to fold into a tent, and its horde comes. Every fifth night the Eye is reflected in the moon (a Red Dawn), and monsters walk thicker and stronger. Every twentieth night brings both |
+| Why do monsters crumble at dawn? | The gaze presses hardest at night, and by day it looks away. Whatever it sent that still stands under the open sky has nothing holding it together and crumbles to dust; in caves and shadow its creatures wait for night. Illagers are people, and the sun does nothing to them |
 | Why does a fire keep monsters away? | Fire is the ember's kin, a light of the Eye's own kind, and the gaze's creatures cannot bear to be seen by it. On an ordinary night none is born in a fire's circle, none steps into it, and none will go for someone standing in it |
 | Why does the circle fail on hard nights? | On a Red Dawn the Eye looks down from the moon, and its creatures are not afraid of being seen. On a Sleepless Night the gaze itself turns towards the world, and its horde walks straight through the fire. Illagers never fear a fire: they are people |
 | Why do monsters grow stronger? | Every day you carry the ember and every shard you take, the gaze sees you more clearly |
 | Why can ships only sail with four shards? | On open water a lone ember shines like a beacon, and the gaze finds every ship that carries one. Four shards together dim it enough to cross |
-| Why can aircraft only fly with six? | In the air the ember flickers and the phantoms see it. Six shards steady it enough to fly, for a while |
+| Why can I only fly with six? | In the air the ember flickers and the phantoms see it. Six shards steady it enough to fly, for a while, on an aircraft or on wings |
 | What is an Ember Veil? | Phantom membrane woven around the ember hides its light from the phantoms that shed it. Gaze tears remember how not to be seen and echo shards carry the deep dark's silence, and each deepens the veil |
 | Why is the sky dangerous? | The sky belongs to the dragon, and phantoms are its eyes in the air. In the air the ember flickers and the gaze sees it, and the pull of the shards fades away from the ground |
 | Why are gaze tears? | Phantoms weep what they have seen. Brewers call them ghast tears after a creature nobody alive has met |
@@ -43,8 +45,9 @@ The source of truth for every quest, book and item text, and the reason behind e
 | Question | Answer |
 |---|---|
 | Who am I? | No one special: a traveller who shared a fire with a dying stranger |
-| Why me? | Before he died he passed you the ember, a sliver of the Eye's own light that every Wayfarer has carried since the Eye was broken. The journal he left you is your quest book |
+| Why me? | Before he died he passed you the ember, a sliver of the Eye's own light that every Wayfarer has carried since the Eye was broken. The journal he left you is your quest book, and the letter on his lectern tells you only what you need for the first day |
 | Why does the ember wake only after the first day? | An ember answers only someone who keeps the oath. It wakes once you have lived a Wayfarer's first day: a tent pitched and slept in, a fire lit, everything carried |
+| What does my compass show before the ember wakes? | A sleeping ember still knows its own: the embers split from it at your fire, and the stone where you fell. From the first day the compass shows your friends and your grave; the shards wait until it wakes |
 | Why do I feel where the next eye is? | The ember pulls towards the shards it came from. Far away it is a feeling: it flares when you walk towards one and gutters when you walk away. Within about 500 blocks the shard answers, and you know exactly where its way down begins |
 | Where do the shards go when I take them? | Into the ember. A shard sinks into the light it came from and never leaves it again: it cannot be dropped, lost or given away, not even by dying |
 | Why do my friends feel the same? | When you share a fire, the ember splits. Joining a team is sharing your fire, and a shard one of you takes sinks into every ember at that fire. The voice at the fire speaks to everyone at it |
@@ -55,12 +58,12 @@ The source of truth for every quest, book and item text, and the reason behind e
 | Why do I respawn at campfires? | The ember is bound to fire. Wherever you light one, it brings you back |
 | What does resting at a fire do? | Standing still at a lit fire for half a minute warms the ember. Until tomorrow's dusk it burns the fire instead of your food, so you eat like a settled person. Resting is also when the voice speaks |
 | What happens to my things when I fall? | The road keeps them under a stone where you fell, each in its place, until you come back for them. The compass marks the stone |
-| Why am I always hungry? | The ember burns what you eat. A Wayfarer eats twice what a settled person does, unless the ember is warm from a fire |
+| Why am I always hungry? | The ember burns what you eat. A Wayfarer eats twice what a settled person does, unless the ember is warm from a fire. It burns on the water too: steering a boat or ship costs food |
 | Why does varied food make me stronger? | The ember feeds on the world it passes through. A settled person eats the same bread every day; a Wayfarer eats the road, and the more kinds of it you eat, the stronger it keeps you |
 | Why do I know in the morning that the night will be hard? | The ember feels the gaze turn before it turns. At dawn of a hard night, its carrier knows. The warning comes from the gaze itself |
 | Why can't I settle? | The ember marks you. Stay within about 256 blocks of one place and on the second day the ember dims; on the third the gaze finds you, and its horde comes that night and every night you stay, through fire and tent alike. Walk on and the ember brightens. Nights in a tent count as staying, and a shrine still shelters you |
 | Why do I see monsters through stone? | From the seventh shard the Eye in your ember is whole enough to see with. Stand still in the dark and you see what the gaze sees: everything that walks within about 32 blocks. The Grass King saw like that, for one summer |
-| What are leads? | Places someone told you the way to: the voice, Maren, or a people's book. A lead always comes with a direction and a distance, the compass marks it from then on, and the journal keeps it until you find it. Leads are never needed to go on; they pay in story and supplies |
+| What are leads? | Places someone told you the way to: the voice, Maren, or a people's book. A lead always comes with a direction and a distance, the journal keeps it until you find it, and the compass marks the ones you choose to follow. Leads are never needed to go on; they pay in story and supplies |
 | How does it end? | When the dragon dies, the ember goes out for those who killed it and they are free. The road's rules end with it: you eat like a settled person, no night is sleepless, the moon stays white once the dragon is dead, the ember never dims, monsters stop growing stronger, and the sky is yours. Fire still brings you back when you fall; it remembers you. The last quest is "Build a home" |
 
 ## The stranger
@@ -99,8 +102,8 @@ The source of truth for every quest, book and item text, and the reason behind e
 
 ## Quest chapters
 
-1. The Oath: the first tent, the backpack, a campfire camp, the atlas, food, sharing a fire; the ember wakes.
-2. The Road Provides: gear, tools and gadgets that help on the road.
+1. The Oath: the first tent, the backpack, a campfire camp, food, sharing a fire; the ember wakes.
+2. The Road Provides: tools, weapons, armour and jewellery a Wayfarer makes from parts, in rows from flint to crimson steel and, after the dragon, the metals of the End; and the gadgets that help on the road, the atlas among them.
 3. The First Eyes: eyes 1-6 on foot; sailing ships unlock at four.
 4. The Sea: sailing ships, then aircraft and veils.
 5. The Far Eyes: eyes 7-12.

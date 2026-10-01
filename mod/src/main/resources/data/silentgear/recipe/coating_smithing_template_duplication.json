@@ -1,0 +1,30 @@
+{
+  "category": "misc",
+  "key": {
+    "d": {
+      "tag": "c:gems/diamond"
+    },
+    "n": {
+      "item": "minecraft:cobbled_deepslate"
+    },
+    "t": {
+      "item": "silentgear:coating_smithing_template"
+    }
+  },
+  "neoforge:conditions": [
+    {
+      "modid": "silentgear",
+      "type": "neoforge:mod_loaded"
+    }
+  ],
+  "pattern": [
+    "dtd",
+    "dnd",
+    "ddd"
+  ],
+  "result": {
+    "count": 2,
+    "id": "silentgear:coating_smithing_template"
+  },
+  "type": "minecraft:crafting_shaped"
+}

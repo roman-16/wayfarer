@@ -9,7 +9,7 @@ title = "The Oath"
 [[chapters.quests]]
 description = [
   "You sat at my fire when nobody else would, so the ember is yours now. I could not carry it one more day.",
-  "Read my journal at the lectern, then take what I leave you: my tent, my mallet and my bedroll.",
+  "Read my letter at the lectern, then take what I leave you: my tent, my mallet and my bedroll.",
 ]
 icon = "minecraft:writable_book"
 id = "last_fire"
@@ -59,10 +59,11 @@ description = [
   "The ember is bound to fire: wherever you light one, it brings you back when you fall. The gaze's creatures cannot bear its light, so on an ordinary night none is born within twelve blocks of it, none steps closer, and none goes for you while you stand there.",
   "Make a campfire, light it where you rest, and stand still beside it for half a minute. The ember warms, and until tomorrow's dusk it burns the fire instead of your food.",
 ]
+icon = "minecraft:campfire"
 id = "campfire"
 rewards = [{ count = 4, item = "minecraft:cooked_beef" }]
 subtitle = "Where the ember brings you back"
-tasks = [{ item = "minecraft:campfire" }]
+tasks = [{ advancement = "wayfarer:warm" }]
 title = "Keep a Fire"
 x = 0.75
 y = 1.5
@@ -85,7 +86,7 @@ y = 1.5
 [[chapters.quests]]
 after = ["last_fire"]
 description = [
-  "When you share a fire, the ember splits. Everyone on a team carries every shard any of you takes, and hears the fire together.",
+  "When you share a fire, the ember splits. Everyone on a team carries every shard any of you takes, hears the fire together and shows on each other's compass.",
   "Travel with friends by joining one team with the team button at the top left of the inventory screen, or walk alone.",
 ]
 icon = "minecraft:soul_campfire"
@@ -98,23 +99,9 @@ x = 0.75
 y = 3.0
 
 [[chapters.quests]]
-after = ["backpack"]
+after = ["backpack", "campfire", "tent"]
 description = [
-  "Roads are the only thing a Wayfarer leaves behind.",
-  "Make an atlas and let it remember where you have been.",
-]
-id = "atlas"
-rewards = [{ count = 16, item = "minecraft:paper" }]
-subtitle = "The only thing we leave behind"
-tasks = [{ item = "map_atlases:atlas" }]
-title = "Map the Road"
-x = -0.75
-y = 3.0
-
-[[chapters.quests]]
-after = ["atlas", "campfire", "tent"]
-description = [
-  "You have lived a Wayfarer's first day, and the ember answers. Look to the top of your sight: a compass that turns with you. Far from a shard, the ember only flares when you walk towards it and gutters when you walk away.",
+  "You have lived a Wayfarer's first day, and the ember answers. The compass at the top of your sight feels the shards now: far from one, the ember only flares when you walk towards it and gutters when you walk away.",
   "Within five hundred blocks the shard itself appears on the compass, at the stair down to its shrine. The Twelve Peoples hid every stair under a cover that looks like nothing to anyone without an ember. Walk until it answers.",
 ]
 icon = "minecraft:blaze_powder"
@@ -127,7 +114,7 @@ x = 0.0
 y = 4.5
 
 [[chapters]]
-icon = "simplyswords:iron_longsword"
+icon = "silentgear:blueprint_paper"
 id = "road"
 subtitle = ["Everything here fits on a Wayfarer's back."]
 title = "The Road Provides"
@@ -135,44 +122,506 @@ title = "The Road Provides"
 [[chapters.quests]]
 after = ["last_fire"]
 description = [
-  "The road is long, and not everything on it is friendly. A longer blade keeps it at arm's length.",
-  "Forge an iron longsword.",
+  "Nobody sells a Wayfarer tools. We make them from parts, and every material lends the part its own temper.",
+  "Draw a knife's blueprint, cut the blade from flint or stone, and join it to a rod.",
 ]
-id = "blade"
+id = "knife"
 rewards = [{ xp_levels = 3 }]
-subtitle = "Arm's length"
-tasks = [{ item = "simplyswords:iron_longsword" }]
-title = "A Better Blade"
-x = -1.5
+subtitle = "Parts, not a recipe"
+tasks = [{ item = "silentgear:knife" }]
+title = "A Knife for the Road"
+x = -4.5
+y = 0.0
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "The road runs through stone as often as grass, and a pickaxe you made yourself is the first thing worth carrying.",
+  "Make a pickaxe from its parts.",
+]
+id = "pickaxe"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Every material its own temper"
+tasks = [{ item = "silentgear:pickaxe" }]
+title = "A Pickaxe of Your Own"
+x = -3.0
 y = 0.0
 
 [[chapters.quests]]
 after = ["last_fire"]
 description = [
   "Every fourth night nothing shelters you but what you carry. Carry a shield.",
-  "Make an iron heater shield.",
+  "Make a shield of your own.",
 ]
 id = "shield"
 rewards = [{ xp_levels = 3 }]
 subtitle = "For the nights no tent opens"
-tasks = [{ item = "magistuarmory:iron_heatershield" }]
+tasks = [{ item = "silentgear:shield" }]
 title = "A Shield on Your Arm"
+x = -1.5
+y = 0.0
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "A slingshot throws what the road gives you. It is a poor bow and a good start.",
+  "Make a slingshot.",
+]
+id = "slingshot"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Reach before they do"
+tasks = [{ item = "silentgear:slingshot" }]
+title = "Stones at a Distance"
 x = 0.0
 y = 0.0
 
 [[chapters.quests]]
 after = ["last_fire"]
 description = [
-  "The hordes find you on the nights the gaze turns. Meet them in iron.",
-  "Make an iron chestplate.",
+  "Cliffs and ravines cost a Wayfarer days. A hook costs seconds.",
+  "Make a copper grappling hook.",
 ]
-id = "armor"
+id = "hook_copper"
 rewards = [{ xp_levels = 3 }]
-subtitle = "Meet them in iron"
-tasks = [{ item = "minecraft:iron_chestplate" }]
-title = "Iron on Your Back"
-x = 1.5
+subtitle = "A hook costs seconds"
+tasks = [{ item = "yo_hooks:copper_grappling_hook" }]
+title = "Up Without Climbing"
+x = 3.0
 y = 0.0
+
+[[chapters.quests]]
+after = ["backpack"]
+description = [
+  "A Wayfarer owns only what they can carry, so carry more. Copper bands hold a bigger load.",
+  "Upgrade your backpack to copper.",
+]
+id = "pack_copper"
+rewards = [{ xp_levels = 3 }]
+subtitle = "More on your back"
+tasks = [{ item = "sophisticatedbackpacks:copper_backpack" }]
+title = "A Bigger Load"
+x = 4.5
+y = 0.0
+
+[[chapters.quests]]
+after = ["knife"]
+description = [
+  "The road is long, and not everything on it is friendly. Iron keeps it at arm's length.",
+  "Make a sword with a blade of iron or better.",
+]
+id = "sword"
+rewards = [{ xp_levels = 5 }]
+subtitle = "Arm's length"
+tasks = [{ item = "silentgear:sword" }]
+title = "A Blade of Your Own"
+x = -4.5
+y = 1.5
+
+[[chapters.quests]]
+after = ["pickaxe"]
+description = [
+  "A mattock digs earth and fells wood alike, so you carry one tool instead of two.",
+  "Make a mattock.",
+]
+id = "mattock"
+rewards = [{ xp_levels = 5 }]
+subtitle = "One tool for two"
+tasks = [{ item = "silentgear:mattock" }]
+title = "Earth and Wood Alike"
+x = -3.0
+y = 1.5
+
+[[chapters.quests]]
+after = ["shield"]
+description = [
+  "The hordes find you on the nights the gaze turns. Meet them in iron.",
+  "Make a helmet, a chestplate, leggings and boots of your own.",
+]
+id = "armour"
+rewards = [{ xp_levels = 5 }]
+subtitle = "Meet them in iron"
+tasks = [{ item = "silentgear:helmet" }, { item = "silentgear:chestplate" }, { item = "silentgear:leggings" }, { item = "silentgear:boots" }]
+title = "Iron on Your Back"
+x = -1.5
+y = 1.5
+
+[[chapters.quests]]
+after = ["slingshot"]
+description = [
+  "A bow keeps the night at the edge of your fire, where it belongs.",
+  "Make a bow.",
+]
+id = "bow"
+rewards = [{ xp_levels = 5 }]
+subtitle = "Keep them at the edge"
+tasks = [{ item = "silentgear:bow" }]
+title = "A Bow"
+x = 0.0
+y = 1.5
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "A ring carries a material's gift without its weight, and nobody takes it off a Wayfarer.",
+  "Make a ring of your own and wear it.",
+]
+id = "ring"
+rewards = [{ xp_levels = 5 }]
+subtitle = "A gift without weight"
+tasks = [{ item = "silentgear:ring" }]
+title = "A Ring"
+x = 1.5
+y = 1.5
+
+[[chapters.quests]]
+after = ["hook_copper"]
+description = [
+  "An iron hook reaches further and holds a heavier climber.",
+  "Make an iron grappling hook.",
+]
+id = "hook_iron"
+rewards = [{ xp_levels = 5 }]
+subtitle = "Further and harder"
+tasks = [{ item = "yo_hooks:iron_grappling_hook" }]
+title = "A Stronger Hook"
+x = 3.0
+y = 1.5
+
+[[chapters.quests]]
+after = ["pack_copper"]
+description = [
+  "Iron bands hold more than copper, and a long road needs more.",
+  "Upgrade your backpack to iron.",
+]
+id = "pack_iron"
+rewards = [{ xp_levels = 5 }]
+subtitle = "Heavier still"
+tasks = [{ item = "sophisticatedbackpacks:iron_backpack" }]
+title = "Iron Bands"
+x = 4.5
+y = 1.5
+
+[[chapters.quests]]
+after = ["sword"]
+description = [
+  "Deep in the stone lies bort, a gem as hard as diamond and far more common. A katana edged with it cuts before the night can close.",
+  "Find bort and make a katana.",
+]
+id = "katana"
+rewards = [{ xp_levels = 8 }]
+subtitle = "Faster than the night"
+tasks = [{ item = "silentgear:bort" }, { item = "silentgear:katana" }]
+title = "An Edge of the Deep"
+x = -4.5
+y = 3.0
+
+[[chapters.quests]]
+after = ["mattock"]
+description = [
+  "A hammer breaks stone nine blocks at a time, and a day of digging becomes an hour.",
+  "Make a hammer.",
+]
+id = "hammer"
+rewards = [{ xp_levels = 8 }]
+subtitle = "Big jobs, short days"
+tasks = [{ item = "silentgear:hammer" }]
+title = "Three by Three"
+x = -3.0
+y = 3.0
+
+[[chapters.quests]]
+after = ["armour"]
+description = [
+  "Diamond and bort turn a blow that iron only slows.",
+  "Make a chestplate with plates of diamond or bort.",
+]
+id = "plates"
+rewards = [{ xp_levels = 8 }]
+subtitle = "Harder than iron"
+tasks = [{ item = "silentgear:bort" }, { item = "silentgear:chestplate" }]
+title = "Plates of the Deep"
+x = -1.5
+y = 3.0
+
+[[chapters.quests]]
+after = ["bow"]
+description = [
+  "A crossbow is slow to load and hard to argue with.",
+  "Make a crossbow.",
+]
+id = "crossbow"
+rewards = [{ xp_levels = 8 }]
+subtitle = "One shot that counts"
+tasks = [{ item = "silentgear:crossbow" }]
+title = "A Crossbow"
+x = 0.0
+y = 3.0
+
+[[chapters.quests]]
+after = ["ring"]
+description = [
+  "A bracelet holds a second gift on the other wrist.",
+  "Make a bracelet of your own and wear it.",
+]
+id = "bracelet"
+rewards = [{ xp_levels = 8 }]
+subtitle = "A second gift"
+tasks = [{ item = "silentgear:bracelet" }]
+title = "A Bracelet"
+x = 1.5
+y = 3.0
+
+[[chapters.quests]]
+after = ["hook_iron"]
+description = [
+  "A diamond hook bites into stone that would throw an iron one back.",
+  "Make a diamond grappling hook.",
+]
+id = "hook_diamond"
+rewards = [{ xp_levels = 8 }]
+subtitle = "Up the tallest cliff"
+tasks = [{ item = "yo_hooks:diamond_grappling_hook" }]
+title = "A Diamond Hook"
+x = 3.0
+y = 3.0
+
+[[chapters.quests]]
+after = ["pack_iron"]
+description = [
+  "Gold bands, then diamond: half a camp fits on your back now.",
+  "Upgrade your backpack through gold to diamond.",
+]
+id = "pack_diamond"
+rewards = [{ xp_levels = 8 }]
+subtitle = "Gold, then diamond"
+tasks = [{ item = "sophisticatedbackpacks:diamond_backpack" }]
+title = "Diamond Bands"
+x = 4.5
+y = 3.0
+
+[[chapters.quests]]
+after = ["katana"]
+description = [
+  "The Ancient Cities drew their power from the world below, and its crimson iron still lies in the deep stone around them. Steel made from it holds an edge like nothing else.",
+  "Make crimson steel and a spear.",
+]
+id = "spear"
+rewards = [{ xp_levels = 10 }]
+subtitle = "The iron the cities drew up"
+tasks = [{ item = "silentgear:crimson_steel_ingot" }, { item = "silentgear:spear" }]
+title = "Crimson Steel"
+x = -4.5
+y = 4.5
+
+[[chapters.quests]]
+after = ["hammer"]
+description = [
+  "A saw fells a whole tree at once, and firewood is never far.",
+  "Make a saw.",
+]
+id = "saw"
+rewards = [{ xp_levels = 10 }]
+subtitle = "Firewood is never far"
+tasks = [{ item = "silentgear:saw" }]
+title = "A Tree at a Time"
+x = -3.0
+y = 4.5
+
+[[chapters.quests]]
+after = ["plates"]
+description = [
+  "Crimson steel turns what iron and diamond only soften.",
+  "Make a chestplate of crimson steel.",
+]
+id = "crimson_armour"
+rewards = [{ xp_levels = 10 }]
+subtitle = "Steel the deep remembers"
+tasks = [{ item = "silentgear:crimson_steel_ingot" }, { item = "silentgear:chestplate" }]
+title = "Armour of the Deep"
+x = -1.5
+y = 4.5
+
+[[chapters.quests]]
+after = ["crossbow"]
+description = [
+  "A trident comes back to the hand that threw it, and it fishes as well as it fights.",
+  "Make a trident.",
+]
+id = "trident"
+rewards = [{ xp_levels = 10 }]
+subtitle = "Thrown, and back"
+tasks = [{ item = "silentgear:trident" }]
+title = "A Trident"
+x = 0.0
+y = 4.5
+
+[[chapters.quests]]
+after = ["bracelet"]
+description = [
+  "A necklace sits closest to the ember, and its gift burns brightest.",
+  "Make a necklace of your own and wear it.",
+]
+id = "necklace"
+rewards = [{ xp_levels = 10 }]
+subtitle = "Closest to the ember"
+tasks = [{ item = "silentgear:necklace" }]
+title = "A Necklace"
+x = 1.5
+y = 4.5
+
+[[chapters.quests]]
+after = ["hook_diamond"]
+description = [
+  "Netherite holds where every other hook gives way.",
+  "Make a netherite grappling hook.",
+]
+id = "hook_netherite"
+rewards = [{ xp_levels = 10 }]
+subtitle = "Nothing holds it back"
+tasks = [{ item = "yo_hooks:netherite_grappling_hook" }]
+title = "A Netherite Hook"
+x = 3.0
+y = 4.5
+
+[[chapters.quests]]
+after = ["pack_diamond"]
+description = [
+  "Netherite bands carry everything a Wayfarer could own, and nothing burns them.",
+  "Upgrade your backpack to netherite.",
+]
+id = "pack_netherite"
+rewards = [{ xp_levels = 10 }]
+subtitle = "Everything you own"
+tasks = [{ item = "sophisticatedbackpacks:netherite_backpack" }]
+title = "Netherite Bands"
+x = 4.5
+y = 4.5
+
+[[chapters.quests]]
+after = ["spear", "dragon"]
+description = [
+  "With the dragon dead, the End's silver is yours to take. Tyrian steel is the hardest thing a smith can make from it.",
+  "Make tyrian steel and a mace.",
+]
+id = "tyrian"
+rewards = [{ xp_levels = 15 }]
+subtitle = "What the free carry"
+tasks = [{ item = "silentgear:tyrian_steel_ingot" }, { item = "silentgear:mace" }]
+title = "Tyrian Steel"
+x = -4.5
+y = 6.0
+
+[[chapters.quests]]
+after = ["saw", "dragon"]
+description = [
+  "Super alloy takes the best of every metal. A paxel of it digs, chops and shovels like three tools in one.",
+  "Make super alloy and a paxel.",
+]
+id = "super_alloy"
+rewards = [{ xp_levels = 15 }]
+subtitle = "One tool for everything"
+tasks = [{ item = "silentgear:super_alloy" }, { item = "silentgear:paxel" }]
+title = "Super Alloy"
+x = -3.0
+y = 6.0
+
+[[chapters.quests]]
+after = ["crimson_armour", "dragon"]
+description = [
+  "Azure electrum armour is light enough to forget you wear it, and hard enough to remember why.",
+  "Make a chestplate of azure electrum.",
+]
+id = "azure"
+rewards = [{ xp_levels = 15 }]
+subtitle = "Light as the sky"
+tasks = [{ item = "silentgear:azure_electrum_ingot" }, { item = "silentgear:chestplate" }]
+title = "Azure Electrum"
+x = -1.5
+y = 6.0
+
+[[chapters.quests]]
+after = ["backpack"]
+description = [
+  "A Wayfarer cannot carry a crafting table everywhere, but a backpack can.",
+  "Make a crafting upgrade and fit it to your backpack.",
+]
+id = "crafting"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Craft anywhere"
+tasks = [{ item = "sophisticatedbackpacks:crafting_upgrade" }]
+title = "A Bench on Your Back"
+x = -4.5
+y = 8.0
+
+[[chapters.quests]]
+after = ["crafting"]
+description = [
+  "The ember is always hungry, and a feeding upgrade feeds it before you notice.",
+  "Make a feeding upgrade and fit it to your backpack.",
+]
+id = "feeding"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Eat while you walk"
+tasks = [{ item = "sophisticatedbackpacks:feeding_upgrade" }]
+title = "The Pack Feeds You"
+x = -3.0
+y = 8.0
+
+[[chapters.quests]]
+after = ["pickaxe"]
+description = [
+  "A worn-out tool is still its parts, and the salvager gives them back.",
+  "Make a salvager.",
+]
+id = "salvager"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Parts from broken gear"
+tasks = [{ item = "silentgear:salvager" }]
+title = "Nothing Wasted"
+x = -1.5
+y = 8.0
+
+[[chapters.quests]]
+after = ["mattock"]
+description = [
+  "Not every ingot is equal. A grader finds the best of a batch, and better stock makes better parts.",
+  "Make a material grader.",
+]
+id = "grader"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Better stock, better parts"
+tasks = [{ item = "silentgear:material_grader" }]
+title = "Grade the Metal"
+x = 0.0
+y = 8.0
+
+[[chapters.quests]]
+after = ["spear"]
+description = [
+  "Some metals no mine gives you. You make them in a forge.",
+  "Make an alloy forge.",
+]
+id = "alloy_forge"
+rewards = [{ xp_levels = 5 }]
+subtitle = "Metals no mine gives"
+tasks = [{ item = "silentgear:alloy_forge" }]
+title = "The Alloy Forge"
+x = 1.5
+y = 8.0
+
+[[chapters.quests]]
+after = ["last_fire"]
+description = [
+  "Roads are the only thing a Wayfarer leaves behind, and an atlas remembers every one.",
+  "Make an empty map, open it once, then bind it into a book: that is an atlas.",
+]
+id = "atlas"
+rewards = [{ count = 16, item = "minecraft:paper" }]
+subtitle = "The only thing we leave behind"
+tasks = [{ item = "map_atlases:atlas" }]
+title = "Map the Road"
+x = 3.0
+y = 8.0
 
 [[chapters.quests]]
 after = ["last_fire"]
@@ -185,22 +634,8 @@ rewards = [{ xp_levels = 3 }]
 subtitle = "Where each people lived"
 tasks = [{ item = "naturescompass:naturescompass" }]
 title = "The Land's Own Compass"
-x = -1.5
-y = 1.5
-
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "Cliffs and ravines cost a Wayfarer days. A hook costs seconds.",
-  "Make an iron grappling hook.",
-]
-id = "hook"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Up without climbing"
-tasks = [{ item = "yo_hooks:iron_grappling_hook" }]
-title = "Up Without Climbing"
-x = 0.0
-y = 1.5
+x = 4.5
+y = 8.0
 
 [[chapters.quests]]
 after = ["last_fire"]
@@ -210,11 +645,25 @@ description = [
 ]
 id = "glider"
 rewards = [{ xp_levels = 3 }]
-subtitle = "Down without falling"
+subtitle = "Over before they look up"
 tasks = [{ item = "hangglider:hang_glider" }]
 title = "Down Without Falling"
-x = 1.5
-y = 1.5
+x = -3.75
+y = 9.5
+
+[[chapters.quests]]
+after = ["glider"]
+description = [
+  "A reinforced glider holds in wind that would fold a plain one.",
+  "Reinforce your hang glider.",
+]
+id = "reinforced_glider"
+rewards = [{ xp_levels = 3 }]
+subtitle = "Wind that would fold it"
+tasks = [{ item = "hangglider:reinforced_hang_glider" }]
+title = "A Stronger Wing"
+x = -2.25
+y = 9.5
 
 [[chapters.quests]]
 after = ["last_fire"]
@@ -227,8 +676,8 @@ rewards = [{ xp_levels = 3 }]
 subtitle = "Further than raw meat"
 tasks = [{ item = "farmersdelight:cooking_pot" }]
 title = "A Pot Over the Fire"
-x = -1.5
-y = 3.0
+x = -0.75
+y = 9.5
 
 [[chapters.quests]]
 after = ["last_fire"]
@@ -238,11 +687,11 @@ description = [
 ]
 id = "bounty"
 rewards = [{ xp_levels = 3 }]
-subtitle = "Work for strangers"
+subtitle = "Pay for the road"
 tasks = [{ item = "bountiful:bountyboard" }]
 title = "Work for Strangers"
-x = 0.0
-y = 3.0
+x = 0.75
+y = 9.5
 
 [[chapters.quests]]
 after = ["last_fire"]
@@ -252,11 +701,11 @@ description = [
 ]
 id = "camera"
 rewards = [{ xp_levels = 3 }]
-subtitle = "Keep what you saw"
+subtitle = "You will not pass this way again"
 tasks = [{ item = "exposure:camera" }]
 title = "Keep What You Saw"
-x = 1.5
-y = 3.0
+x = 2.25
+y = 9.5
 
 [[chapters]]
 eyes = 1
@@ -345,6 +794,20 @@ subtitle = "A hold in the sky"
 tasks = [{ item = "immersive_aircraft:airship" }]
 title = "A Hold in the Sky"
 x = 1.5
+y = 3.0
+
+[[chapters.quests]]
+after = ["sky_opens"]
+description = [
+  "In the air the ember flickers and the phantoms see it. With six shards it burns steady enough for wings too, for a while.",
+  "Make wings of your own and glide.",
+]
+id = "wings"
+rewards = [{ xp_levels = 5 }]
+subtitle = "Six shards"
+tasks = [{ item = "silentgear:elytra" }]
+title = "Wings of Your Own"
+x = 3.0
 y = 3.0
 
 [[chapters.quests]]

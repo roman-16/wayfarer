@@ -78,32 +78,37 @@ public final class Compass {
         Balance.Compass balance = Balance.INSTANCE.compass();
         Bearing bearing = BEARINGS.computeIfAbsent(player.getUUID(), key -> new Bearing());
         BlockPos pos = player.blockPosition();
-        boolean shown = player.level().dimension() == Level.OVERWORLD && Journey.awake(player);
-        if (shown && (bearing.searchedFrom == null || horizontal(bearing.searchedFrom, pos) > balance.researchAfterBlocks())) {
+        boolean shown = player.level().dimension() == Level.OVERWORLD;
+        boolean awake = Journey.awake(player);
+        if (shown && awake && (bearing.searchedFrom == null || horizontal(bearing.searchedFrom, pos) > balance.researchAfterBlocks())) {
             bearing.searchedFrom = pos;
             bearing.aim(search(player.serverLevel(), pos, claimed));
         }
-        CompassEvent event = NeoForge.EVENT_BUS.post(new CompassEvent(player, shown, bearing.aim, markers(player)));
+        CompassEvent event = NeoForge.EVENT_BUS.post(new CompassEvent(player, shown, awake, bearing.aim, markers(player)));
         if (!event.shown()) {
             return CompassPayload.hidden(claimed);
         }
         bearing.aim(event.aim());
         List<CompassPayload.Marker> markers = List.copyOf(event.markers());
+        CompassPayload.Shelter shelter = shelter(player);
         boolean sight = claimed.size() >= Balance.INSTANCE.sight().shards() && !Journey.slain(player);
+        if (!event.awake()) {
+            return still(CompassPayload.Mode.ASLEEP, claimed, markers, shelter, sight);
+        }
         if (Gaze.airborne(player)) {
-            return new CompassPayload(CompassPayload.Mode.AIR, CompassPayload.NOTHING, 0, 0, 0, 0, claimed, markers, sight);
+            return still(CompassPayload.Mode.AIR, claimed, markers, shelter, sight);
         }
         if (Stillness.found(player)) {
-            return new CompassPayload(CompassPayload.Mode.DIM, CompassPayload.NOTHING, 0, 0, 0, 0, claimed, markers, sight);
+            return still(CompassPayload.Mode.DIM, claimed, markers, shelter, sight);
         }
         Aim aim = bearing.aim;
         if (aim.pos() == null) {
-            return new CompassPayload(CompassPayload.Mode.LOST, CompassPayload.NOTHING, 0, 0, 0, 0, claimed, markers, sight);
+            return still(CompassPayload.Mode.LOST, claimed, markers, shelter, sight);
         }
         int distance = (int) horizontal(pos, aim.pos());
         if (distance <= balance.exactBlocks()) {
             return new CompassPayload(
-                    CompassPayload.Mode.NEAR, aim.target(), 0, distance, aim.pos().getX(), aim.pos().getZ(), claimed, markers, sight);
+                    CompassPayload.Mode.NEAR, aim.target(), 0, distance, aim.pos().getX(), aim.pos().getZ(), claimed, markers, shelter, sight);
         }
         if (bearing.trailStart == null) {
             bearing.trailStart = pos;
@@ -113,9 +118,25 @@ public final class Compass {
             bearing.heat = heat(horizontal(bearing.trailStart, aim.pos()) - distance, moved);
             bearing.trailStart = pos;
         }
-        int rounding = balance.farRoundingBlocks();
-        int rounded = Math.max(rounding, Math.round((float) distance / rounding) * rounding);
-        return new CompassPayload(CompassPayload.Mode.FAR, aim.target(), bearing.heat, rounded, 0, 0, claimed, markers, sight);
+        return new CompassPayload(
+                CompassPayload.Mode.FAR, aim.target(), bearing.heat, round(distance), 0, 0, claimed, markers, shelter, sight);
+    }
+
+    public static int round(int distance) {
+        int rounding = Balance.INSTANCE.compass().farRoundingBlocks();
+        return Math.max(rounding, Math.round((float) distance / rounding) * rounding);
+    }
+
+    private static CompassPayload still(
+            CompassPayload.Mode mode, List<ResourceLocation> claimed, List<CompassPayload.Marker> markers, CompassPayload.Shelter shelter, boolean sight) {
+        return new CompassPayload(mode, CompassPayload.NOTHING, 0, 0, 0, 0, claimed, markers, shelter, sight);
+    }
+
+    private static CompassPayload.Shelter shelter(ServerPlayer player) {
+        if (Shrines.inside(player)) {
+            return CompassPayload.Shelter.SHRINE;
+        }
+        return Fire.sheltered(player) ? CompassPayload.Shelter.FIRE : CompassPayload.Shelter.NONE;
     }
 
     private static List<CompassPayload.Marker> markers(ServerPlayer player) {

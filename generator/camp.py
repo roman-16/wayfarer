@@ -138,7 +138,7 @@ def grave(t):
     t.set((5, 2, 12), "minecraft:lantern", hanging=False, waterlogged=False)
 
 
-def journal_stand(t, journal):
+def letter_stand(t, letter):
     x, z = 11, 10
     for dx in (-1, 1):
         for y in (1, 2):
@@ -154,7 +154,7 @@ def journal_stand(t, journal):
             powered=False,
             waterlogged=False,
         )
-    lectern(t, (x, 1, z), "north", journal["id"], journal["title"], journal["author"], journal["pages"])
+    lectern(t, (x, 1, z), "north", letter["id"], letter["title"], letter["author"], letter["pages"])
 
 
 def supplies(t):
@@ -167,13 +167,13 @@ def supplies(t):
     t.set((12, 2, 12), "minecraft:potted_fern")
 
 
-def camp(journal):
+def camp(letter):
     t = Template()
     ground(t)
     fire(t)
     tent(t)
     grave(t)
-    journal_stand(t, journal)
+    letter_stand(t, letter)
     supplies(t)
     return t
 

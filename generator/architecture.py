@@ -167,7 +167,7 @@ def collapse(room, x, z, radius, floor, rubble, soil="minecraft:coarse_dirt", se
                     room.set(pos, soil if noise(seed, *pos) < 0.35 else rubble)
             top = room.top(x + dx, z + dz, floor + height)
             if d < radius * 0.6 and room.inside((x + dx, top, z + dz)):
-                room.set((x + dx, top, z + dz), soil)
+                room.set((x + dx, top, z + dz), "minecraft:rooted_dirt")
                 below = (x + dx, top - 1, z + dz)
                 if room.get(below) == AIR and noise(seed + "/root", *below) < 0.6:
                     room.set(below, "minecraft:hanging_roots", waterlogged=False)

@@ -1,0 +1,30 @@
+{
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:ingots/crimson_iron"
+    },
+    "/": {
+      "item": "minecraft:breeze_rod"
+    },
+    "C": {
+      "item": "minecraft:magma_cream"
+    }
+  },
+  "neoforge:conditions": [
+    {
+      "modid": "silentgear",
+      "type": "neoforge:mod_loaded"
+    }
+  ],
+  "pattern": [
+    "/ /",
+    "#C#",
+    "# #"
+  ],
+  "result": {
+    "count": 1,
+    "id": "silentgear:crimson_steel_ingot"
+  },
+  "type": "minecraft:crafting_shaped"
+}

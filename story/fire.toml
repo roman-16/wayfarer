@@ -14,7 +14,11 @@ names = [
 id = "first_words"
 lines = [
   "Two shards. I felt them touch. Don't be afraid, it's only me.",
-  "Sit a while. I talk best when you're still.",
+  "You buried me by the road, I know. The ember remembers who carried it.",
+  "I can only reach you like this, while you sit still by a fire. So sit a while. I talk best when you're still.",
+  "Every shard you take makes me a little clearer. I'll be with you more as they come together.",
+  "I'll tell you what I can, one fire at a time. Some nights I'll have nothing to say.",
+  "Keep walking. The shards won't come to you.",
 ]
 shards = 2
 speaker = "voice"
@@ -26,6 +30,7 @@ id = "first_camp"
 lead = "first_camp"
 lines = [
   "I was young once, and I walked like you. My first camp lies {lead}.",
+  "I was happy there. I didn't know yet how long a road can be.",
   "I left something under the hearthstones. Go and see who I was, if you like.",
 ]
 shards = 2
@@ -35,7 +40,11 @@ title = "His First Camp"
 [[steps]]
 after = ["first_words"]
 id = "hooded"
-lines = ["You carry his smoke. I'd know it anywhere.", "Eat. He never ate enough either."]
+lines = [
+  "You carry his smoke. I'd know it anywhere.",
+  "Leave your blade where it is. Nothing fights at a fire shared freely.",
+  "Eat. He never ate enough either.",
+]
 shards = 3
 speaker = "maren"
 title = "A Hooded Traveller"
@@ -47,6 +56,7 @@ id = "dont_follow"
 lines = [
   "She's gone? Good. Eat the bread, but don't follow her.",
   "Her people feed Wayfarers. That's how they catch them.",
+  "They can't find a shrine without an ember. They can only follow one.",
 ]
 shards = 3
 speaker = "voice"
@@ -58,6 +68,7 @@ id = "not_cruel"
 lines = [
   "You feel it on the hard nights, don't you? The gaze turning towards you.",
   "It can't stop looking. It isn't cruel. It's only an eye that was never allowed to close.",
+  "Sleep in your tent when you can. It can't see what isn't anywhere.",
 ]
 shards = 3
 speaker = "voice"
@@ -69,6 +80,7 @@ id = "deep_city"
 lead = "deep_city"
 lines = [
   "Go and see where it all started. The deep city lies {lead}, far below the stone.",
+  "They were the brightest people the world ever had, and the first to be seen.",
   "Walk softly there. The silence remembers every sound, and its guard does not fear your fire.",
 ]
 shards = 3
@@ -80,6 +92,7 @@ after = ["first_words"]
 id = "sea"
 lines = [
   "Four shards. Your light is dim enough for the sea now.",
+  "Out on the water a lone ember shines like a beacon. Four together hide it well enough.",
   "I sailed once. I was sick the whole way. Don't tell anyone.",
 ]
 shards = 4
@@ -90,7 +103,11 @@ title = "The Sea Opens"
 after = ["hooded"]
 id = "outpost"
 lead = "outpost"
-lines = ["Her people keep an outpost {lead}. Stay clear of it.", "Nothing there is meant for you."]
+lines = [
+  "Her people keep an outpost {lead}. Stay clear of it.",
+  "They'd sooner feed you than fight you, and that's worse.",
+  "Nothing there is meant for you.",
+]
 shards = 4
 speaker = "voice"
 title = "Stay Clear"
@@ -100,7 +117,8 @@ after = ["first_words"]
 id = "stronger"
 lines = [
   "They hit harder every day you carry me, and harder with every shard. Have you noticed?",
-  "The gaze sees you more clearly the longer you burn. So be quick.",
+  "The gaze sees you more clearly the longer you burn.",
+  "Make better gear while you can. And be quick.",
 ]
 shards = 4
 speaker = "voice"
@@ -111,6 +129,7 @@ after = ["first_words"]
 id = "home"
 lines = [
   "Where are you from? No, don't tell me. A home is a thing you lose.",
+  "The longer a place is lived in, the brighter it shines to the gaze. Towns shine. Cities blaze.",
   "I had one once. Don't.",
 ]
 shards = 5
@@ -123,6 +142,7 @@ id = "last_camp"
 lead = "last_camp"
 lines = [
   "There's a place {lead} where I stopped walking. My last camp.",
+  "I was tired. That's all it takes, in the end. You get tired, and you sit down.",
   "Go if you want. I never went back.",
 ]
 shards = 5
@@ -135,6 +155,7 @@ id = "sky"
 lines = [
   "Six. You could fly now, for a while, if you're careful.",
   "The phantoms are its eyes up there. Land before they look.",
+  "And never fly at night. Up there in the dark it sees you at once.",
 ]
 shards = 6
 speaker = "voice"
@@ -148,6 +169,7 @@ lines = [
   "My name is Maren. The man who gave you his ember was Wend, captain of the Gazebound, the Grass King's heirs.",
   "He raised me. He taught me the road, so I could follow smoke like his.",
   "You don't believe me. His room in the grass halls is still as he left it, {lead}.",
+  "I'm not asking you to trust me. Just go and look.",
 ]
 shards = 6
 speaker = "maren"
@@ -159,6 +181,7 @@ after = ["maren_names"]
 id = "confession"
 lines = [
   "She told you. Yes. Twenty winters at their table.",
+  "I was tired of the road, and they fed me, and I stayed.",
   "I lied about what I was, not about what you must do.",
 ]
 shards = 6
@@ -171,6 +194,7 @@ id = "sight"
 lines = [
   "Stand still in the dark tonight and look around you. You'll see them through the stone.",
   "That's the shards, showing you what the gaze sees. The Grass King saw like that, for one summer.",
+  "His own people tore it from his crown. See, but don't stare.",
 ]
 shards = 7
 speaker = "voice"
@@ -181,6 +205,7 @@ after = ["sight"]
 id = "ridge"
 lines = [
   "Three of them came over the ridge behind you today. Grass cloaks.",
+  "They walk where your smoke goes. They always will.",
   "Don't ask how I know. Keep walking.",
 ]
 shards = 7
@@ -194,6 +219,7 @@ id = "ledger"
 lines = [
   "You've been in my room. I can smell the grass on you.",
   "The ledger's wrong. My ember never went dark. Who else would be talking to you?",
+  "Clerks write what they're told to. Burn it if you like.",
 ]
 shards = 8
 speaker = "voice"
@@ -202,7 +228,11 @@ title = "The Ledger"
 [[steps]]
 after = ["first_words"]
 id = "carry_me_home"
-lines = ["Nine. I can almost see the gate from here.", "Don't stop now. Carry me home."]
+lines = [
+  "Nine. I can almost see the gate from here.",
+  "Three more, and the ember will remember where the Eye was torn out.",
+  "Don't stop now. Carry me home.",
+]
 shards = 9
 speaker = "voice"
 title = "Carry Me Home"
@@ -212,6 +242,7 @@ after = ["maren_names"]
 id = "captains"
 lines = [
   "The captains are behind me now. They know you're close.",
+  "They'll wait for you at the gate, all of them. They can't find it without you.",
   "At the gate we take what you carry. I'm sorry. I'd rather it were anyone else.",
 ]
 shards = 9
@@ -225,6 +256,7 @@ id = "stay"
 lines = [
   "You're tired. So was I. Stay by the fire a little longer tonight.",
   "The road will wait. It always waited for me.",
+  "Sit. I like it when you're still.",
 ]
 shards = 10
 speaker = "voice"
@@ -236,6 +268,7 @@ id = "watching"
 lines = [
   "Do you remember my fire? You were the only one who sat down.",
   "I watched you from across it. I've been watching you ever since.",
+  "You have kind eyes. I noticed that first.",
 ]
 shards = 10
 speaker = "voice"
@@ -248,6 +281,7 @@ lines = [
   "You've read it now. Yes.",
   "He sat still for twenty years, and I watched him. I learned his voice the way you learn a song.",
   "You've been seeing with my eye for weeks.",
+  "I'm not angry. I only wanted to see again.",
 ]
 shards = 11
 speaker = "voice"
@@ -259,6 +293,7 @@ id = "bargain"
 lines = [
   "Bring me my eye, and I will look away from you.",
   "Build your house anywhere. Nothing will come in the night. I promise.",
+  "Think of it. A door you can close, and nobody watching.",
 ]
 shards = 11
 speaker = "voice"
@@ -267,7 +302,11 @@ title = "A Bargain"
 [[steps]]
 after = ["bargain"]
 id = "please"
-lines = ["Twelve. I can see the gate through you.", "Set it. Please."]
+lines = [
+  "Twelve. I can see the gate through you.",
+  "It's so close now. I can almost see.",
+  "Set it. Please.",
+]
 shards = 12
 speaker = "voice"
 title = "Set It"
@@ -275,7 +314,11 @@ title = "Set It"
 [[steps]]
 after = ["hooded"]
 id = "just_a_fire"
-lines = ["May I sit?", "No voice in the fire tonight. Just a fire."]
+lines = [
+  "May I sit?",
+  "No voice in the fire tonight. Just a fire.",
+  "He'd have liked this. Sitting still, with nothing watching.",
+]
 slain = true
 speaker = "maren"
 title = "Just a Fire"

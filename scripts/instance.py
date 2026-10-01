@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PACK = ROOT / "pack"
 CACHE = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "wayfarer"
 CLIENT_CONFIGS = {"dynamic_fps.json": {"enabled": False}}
-CLIENT_OPTIONS = {"pauseOnLostFocus": "false", "tutorialStep": "none"}
+CLIENT_OPTIONS = {"pauseOnLostFocus": "false"}
 SIDES = {"client": {"both", "client"}, "server": {"both", "server"}}
 SERVER_PROPERTIES = {
     "allow-flight": "true",

@@ -19,11 +19,11 @@
 				count: 1
 				id: "minecraft:written_book"
 			}
-			id: "4C5B5C48382F6064"
+			id: "6D896824F3835EDC"
 			invisible: true
 			tasks: [
 				{
-					id: "6900E8E7CD0BF68D"
+					id: "5A4A5C7E968F96B2"
 					type: "checkmark"
 				}
 			]

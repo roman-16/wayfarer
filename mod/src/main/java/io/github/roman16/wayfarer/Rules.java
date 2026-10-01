@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 public final class Rules {
     public static final TagKey<EntityType<?>> SAILING_SHIPS = TagKey.create(Registries.ENTITY_TYPE, Wayfarer.id("sailing_ships"));
@@ -48,6 +49,15 @@ public final class Rules {
         event.setCanceled(true);
         String key = vehicle.getType().is(Gaze.AIRCRAFT) ? "wayfarer.unlock.aircraft" : "wayfarer.unlock.sailing_ships";
         player.displayClientMessage(Component.translatable(key, needed).withStyle(ChatFormatting.GRAY), true);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        int needed = Balance.INSTANCE.unlocks().aircraftEyes();
+        if (event.getEntity() instanceof ServerPlayer player && player.isFallFlying() && claimed(player) < needed) {
+            player.stopFallFlying();
+            player.displayClientMessage(Component.translatable("wayfarer.unlock.aircraft", needed).withStyle(ChatFormatting.GRAY), true);
+        }
     }
 
     private static int claimed(Player player) {

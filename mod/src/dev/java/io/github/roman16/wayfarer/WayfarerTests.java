@@ -10,15 +10,19 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.core.Vec3i;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Vindicator;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -48,6 +52,61 @@ public final class WayfarerTests {
             helper.assertBlockNotPresent(Blocks.NETHER_PORTAL, new BlockPos(3, 4, 2));
             helper.succeed();
         });
+    }
+
+    @GameTest(template = "empty")
+    public static void farReadingsStepByFiveHundred(GameTestHelper helper) {
+        check(helper, Compass.round(600) == 500, "just past the shard's answer reads five hundred");
+        check(helper, Compass.round(1240) == 1000, "distances round down to the nearer step");
+        check(helper, Compass.round(1260) == 1500, "and up to the nearer step");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void leadsWaitToBeMarked(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        ServerPlayer player = new ServerPlayer(level.getServer(), level, new GameProfile(UUID.randomUUID(), "wayfarer"), ClientInformation.createDefault());
+        Journey.Tale tale = Journey.tale(player);
+        tale.give("first_camp", BlockPos.ZERO);
+        boolean unmarked = Leads.markers(player).isEmpty();
+        tale.mark("first_camp", true);
+        boolean marked = Leads.markers(player).size() == 1;
+        tale.mark("first_camp", false);
+        check(helper, unmarked, "a new lead stays off the compass");
+        check(helper, marked, "a marked lead shows on the compass");
+        check(helper, Leads.markers(player).isEmpty(), "an unmarked lead leaves it again");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void dawnSparesPeopleAndNames(GameTestHelper helper) {
+        Zombie named = helper.spawn(EntityType.ZOMBIE, new BlockPos(1, 2, 1));
+        named.setCustomName(Component.literal("Gerald"));
+        Vindicator raider = helper.spawn(EntityType.VINDICATOR, new BlockPos(3, 2, 3));
+        boolean spared = !Daylight.exposed(named) && !Daylight.exposed(raider);
+        named.discard();
+        raider.discard();
+        double left = Math.pow(1 - Daylight.crumbleChance(1, 60), 60);
+        check(helper, spared, "a named monster and an Illager outlast the dawn");
+        check(helper, left > 0.049 && left < 0.051, "a minute of daylight leaves one monster in twenty");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void decorationsFollowTheSpread(GameTestHelper helper) {
+        RandomSource random = RandomSource.create(1);
+        int tries = 100_000;
+        int kept = 0;
+        for (int index = 0; index < tries; index++) {
+            if (Spread.keeps(ResourceLocation.fromNamespaceAndPath("yungsextras", "desert/obelisk"), random)) {
+                kept++;
+            }
+        }
+        double factor = Balance.INSTANCE.structures().spreadFactor();
+        double expected = tries / (factor * factor);
+        check(helper, Math.abs(kept - expected) < expected * 0.15, "a decoration is as much rarer as a spread structure");
+        check(helper, Spread.keeps(ResourceLocation.withDefaultNamespace("ore_iron"), random), "an ore is left alone");
+        helper.succeed();
     }
 
     @GameTest(template = "empty")

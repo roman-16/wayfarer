@@ -1,0 +1,7 @@
+{
+  "criteria": {
+    "rested": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

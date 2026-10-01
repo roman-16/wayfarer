@@ -1,0 +1,30 @@
+{
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:polished_deepslate"
+    },
+    "/": {
+      "tag": "c:ingots/crimson_steel"
+    },
+    "i": {
+      "tag": "c:storage_blocks/iron"
+    }
+  },
+  "neoforge:conditions": [
+    {
+      "modid": "silentgear",
+      "type": "neoforge:mod_loaded"
+    }
+  ],
+  "pattern": [
+    "/#/",
+    "/ /",
+    "#i#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "silentgear:alloy_forge"
+  },
+  "type": "minecraft:crafting_shaped"
+}

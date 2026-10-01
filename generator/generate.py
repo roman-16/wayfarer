@@ -26,12 +26,11 @@ PAGEBREAK = "{@pagebreak}"
 LANG = ROOT / "mod/src/main/resources/assets/wayfarer/lang/en_us.json"
 SPARSE_STRUCTURES = ROOT / "pack/config/sparsestructures.json5"
 CAMPFIRE_SPAWNS = ROOT / "pack/config/nohostilesaroundcampfire.json5"
-LEAD_JOURNAL = "where your compass marks it"
+LEAD_JOURNAL = "where your compass can mark it"
 CHUNK = 16
 TICKS_PER_DAY = 24000
 IMPROVED_MOBS_STEP_TICKS = 2400
 IMPROVED_MOBS_CAP = 250.0
-CAMPSITES = ["armorer", "butcher", "cartographer", "cleric", "farmer", "fisher"]
 TIER_NAMES = {1: "tier_one", 2: "tier_two"}
 
 COVER = 3
@@ -232,7 +231,7 @@ def tour(eyes, layouts):
         "south-west": ((-2, 6, CAMP + 2), (fire, 1, fire)),
         "tent": ((11.5, 1, 8.5), (11.5, 1.5, 3.5)),
         "grave": ((6.5, 1, 14.5), (HEADSTONE[0] + 0.5, 1.5, HEADSTONE[1] + 0.5)),
-        "journal": ((11.5, 1, 6.5), (11.5, 1.2, 10.5)),
+        "letter": ((11.5, 1, 6.5), (11.5, 1.2, 10.5)),
         "above": ((fire, 22, fire + 8), (fire, 0, fire)),
     }
     write_json(
@@ -427,7 +426,7 @@ def fire_quests(fire, leads):
     row = (len(steps) + PAGES_PER_ROW - 1) // PAGES_PER_ROW + 1
     for index, (identifier, lead) in enumerate(leads.items()):
         yield {
-            "description": paragraphs([journal_line(lead["journal"])]),
+            "description": paragraphs([journal_line(lead["journal"]), mark_links(identifier)]),
             "icon": "minecraft:compass",
             "id": f"lead/{identifier}",
             "invisible": True,
@@ -436,6 +435,18 @@ def fire_quests(fire, leads):
             "tasks": [{"checkmark": True}, {"checkmark": True}],
             "title": lead["title"],
         } | grid(index, row)
+
+
+def mark_links(lead):
+    def link(action):
+        return {
+            "clickEvent": {"action": "run_command", "value": f"/wayfarer lead {action} {lead}"},
+            "color": "gold",
+            "hoverEvent": {"action": "show_text", "contents": {"translate": f"wayfarer.lead.{action}.hover"}},
+            "translate": f"wayfarer.lead.{action}.link",
+        }
+
+    return json.dumps(["", link("mark"), "  ", link("unmark")], sort_keys=True)
 
 
 def quests(book, eyes, library, notes, fire, leads):
@@ -501,7 +512,7 @@ def quests(book, eyes, library, notes, fire, leads):
 
 
 def library(spec, eyes):
-    entries = {spec["journal"]["id"]: spec["journal"]}
+    entries = {spec["letter"]["id"]: spec["letter"]}
     for memory in spec["memories"]:
         entries[memory["id"]] = memory | {"author": "The Eye"}
     for entry in spec["found"]:
@@ -817,32 +828,6 @@ def spread(balance):
     )
 
 
-def campsites(balance):
-    rarity = balance["structures"]["campsite_rarity_chunks"]
-    for kind in CAMPSITES:
-        write_json(
-            MAIN / f"data/campsite_structures/worldgen/placed_feature/{kind}_campsite_feature.json",
-            {
-                "feature": f"campsite_structures:{kind}_campsite_feature",
-                "neoforge:conditions": [{"modid": "campsite_structures", "type": "neoforge:mod_loaded"}],
-                "placement": [
-                    {"chance": rarity, "type": "minecraft:rarity_filter"},
-                    {"type": "minecraft:in_square"},
-                    {"heightmap": "OCEAN_FLOOR_WG", "type": "minecraft:heightmap"},
-                    {
-                        "predicate": {
-                            "blocks": "minecraft:grass_block",
-                            "offset": [0, -1, 0],
-                            "type": "minecraft:matching_blocks",
-                        },
-                        "type": "minecraft:block_predicate_filter",
-                    },
-                    {"type": "minecraft:biome"},
-                ],
-            },
-        )
-
-
 def difficulty(balance):
     per_step = balance["difficulty"]["per_day"] * IMPROVED_MOBS_STEP_TICKS / TICKS_PER_DAY
     IMPROVED_MOBS.write_text(
@@ -904,11 +889,10 @@ def main():
     worldgen(eyes, layouts, source["tiers"], balance)
     tour(eyes, layouts)
     spread(balance)
-    campsites(balance)
     difficulty(balance)
     campfire_spawns(balance)
     removals(tomllib.loads((ROOT / "generator/removals.toml").read_text()))
-    camp(written["journal"]).save(MAIN / "data/wayfarer/structure/last_camp.nbt")
+    camp(written["letter"]).save(MAIN / "data/wayfarer/structure/last_camp.nbt")
     empty()
     showroom(eyes)
     textures(tomllib.loads((ROOT / "generator/textures.toml").read_text()))

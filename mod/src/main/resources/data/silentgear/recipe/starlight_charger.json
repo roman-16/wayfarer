@@ -1,0 +1,33 @@
+{
+  "category": "misc",
+  "key": {
+    "#": {
+      "item": "minecraft:polished_deepslate"
+    },
+    "/": {
+      "tag": "c:storage_blocks/blaze_gold"
+    },
+    "g": {
+      "tag": "c:glass_blocks/colorless"
+    },
+    "q": {
+      "item": "minecraft:quartz_block"
+    }
+  },
+  "neoforge:conditions": [
+    {
+      "modid": "silentgear",
+      "type": "neoforge:mod_loaded"
+    }
+  ],
+  "pattern": [
+    "qgq",
+    "#g#",
+    "#/#"
+  ],
+  "result": {
+    "count": 1,
+    "id": "silentgear:starlight_charger"
+  },
+  "type": "minecraft:crafting_shaped"
+}

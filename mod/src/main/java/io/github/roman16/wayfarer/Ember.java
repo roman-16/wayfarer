@@ -16,8 +16,8 @@ public final class Ember {
     @SubscribeEvent
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal(Wayfarer.MODID)
-                .requires(source -> source.hasPermission(GAMEMASTER))
                 .then(Commands.literal("ember")
+                        .requires(source -> source.hasPermission(GAMEMASTER))
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes(context -> {
                                     wake(EntityArgument.getPlayer(context, "player"));

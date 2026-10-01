@@ -230,7 +230,32 @@ class Room:
                 near = (pos[0] + dx, pos[1] + dy, pos[2] + dz)
                 if self.inside(near) and near not in self.t.blocks:
                     self.set(near, self.shell_at(near))
+        self.support()
+        sliding = sorted(self.sliding())
+        if sliding:
+            raise ValueError(f"{path.parent.name}/{path.name}: falling blocks over open space: {sliding[:6]}")
         self.t.save(path, self.size)
+
+    def support(self):
+        loose = [pos for pos, (name, _, _) in self.t.blocks.items() if falls(name)]
+        while loose:
+            x, y, z = loose.pop()
+            below = (x, y - 1, z)
+            if y > 0 and below not in self.t.blocks:
+                self.set(below, self.shell_at(below))
+                if falls(self.t.blocks[below][0]):
+                    loose.append(below)
+
+    def sliding(self):
+        for (x, y, z), (name, _, _) in self.t.blocks.items():
+            below = self.t.blocks.get((x, y - 1, z))
+            if falls(name) and y > 0 and (below is None or not bears(below[0], dict(below[1]))):
+                yield (name, (x, y, z))
+
+
+def falls(name):
+    short = name.split(":", 1)[1]
+    return short != "soul_sand" and (short == "sand" or short.endswith(("_sand", "gravel", "concrete_powder", "anvil")))
 
 
 def hangs(name, properties):

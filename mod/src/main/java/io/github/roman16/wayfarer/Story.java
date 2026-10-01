@@ -70,9 +70,14 @@ public final class Story {
         Notes.trigger(player, "step:" + step.id());
         List<ServerPlayer> listeners = Fire.around(player, fire);
         Component unknown = Component.translatable("wayfarer.lead.unknown");
-        List<Component> lines = step.lines().stream().map(line -> fill(line, direction.orElse(unknown))).toList();
+        List<Component> lines = step.lines().stream()
+                .<Component>map(line -> line.contains(LEAD) && direction.isPresent()
+                        ? fill(line, direction.get()).append(" ").append(Leads.markLink(step.lead()))
+                        : fill(line, direction.orElse(unknown)))
+                .toList();
         Runnable then = step.visit().map(items -> Maren.visit(player, fire, items)).orElse(() -> {});
-        speak(listeners, step.speaker(), tale.heard(), lines, then);
+        Component silence = Component.translatable("wayfarer.fire.silence", name(step.speaker(), tale.heard()));
+        speak(listeners, step.speaker(), tale.heard(), lines, Optional.of(silence), then);
     }
 
     public static boolean scene(ServerPlayer player, String id, Collection<ServerPlayer> listeners, Runnable then) {
@@ -84,11 +89,11 @@ public final class Story {
         if (!scene.book().isEmpty()) {
             Journal.read(player, scene.book());
         }
-        speak(listeners, scene.speaker(), Journey.tale(player).heard(), scene.lines().stream().<Component>map(Component::literal).toList(), then);
+        speak(listeners, scene.speaker(), Journey.tale(player).heard(), scene.lines().stream().<Component>map(Component::literal).toList(), Optional.empty(), then);
         return true;
     }
 
-    public static Component fill(String line, Component direction) {
+    public static MutableComponent fill(String line, Component direction) {
         int at = line.indexOf(LEAD);
         if (at < 0) {
             return Component.literal(line);
@@ -106,7 +111,8 @@ public final class Story {
         return name;
     }
 
-    private static void speak(Collection<ServerPlayer> listeners, String speaker, Set<String> heard, List<Component> lines, Runnable then) {
+    private static void speak(
+            Collection<ServerPlayer> listeners, String speaker, Set<String> heard, List<Component> lines, Optional<Component> silence, Runnable then) {
         if (listeners.isEmpty()) {
             then.run();
             return;
@@ -121,6 +127,8 @@ public final class Story {
             MutableComponent text = Component.literal("<").append(Component.literal(name).withStyle(color)).append("> ").append(lines.get(index));
             QUEUE.add(new Line(tick + index * gap, ids, text, null));
         }
+        silence.ifPresent(text -> QUEUE.add(
+                new Line(tick + lines.size() * gap, ids, text.copy().withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), null)));
         QUEUE.add(new Line(tick + lines.size() * gap, ids, null, then));
     }
 

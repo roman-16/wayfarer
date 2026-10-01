@@ -8,11 +8,13 @@ public final class CompassEvent extends Event {
     private final ServerPlayer player;
     private final List<CompassPayload.Marker> markers;
     private boolean shown;
+    private boolean awake;
     private Compass.Aim aim;
 
-    CompassEvent(ServerPlayer player, boolean shown, Compass.Aim aim, List<CompassPayload.Marker> markers) {
+    CompassEvent(ServerPlayer player, boolean shown, boolean awake, Compass.Aim aim, List<CompassPayload.Marker> markers) {
         this.player = player;
         this.shown = shown;
+        this.awake = awake;
         this.aim = aim;
         this.markers = markers;
     }
@@ -27,6 +29,14 @@ public final class CompassEvent extends Event {
 
     public void show() {
         shown = true;
+    }
+
+    public boolean awake() {
+        return awake;
+    }
+
+    public void wake() {
+        awake = true;
     }
 
     public Compass.Aim aim() {

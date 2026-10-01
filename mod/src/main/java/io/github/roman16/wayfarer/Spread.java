@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 
@@ -19,5 +20,13 @@ public final class Spread {
                 .filter(set -> set.value().structures().stream().anyMatch(entry -> structures.contains(entry.structure())))
                 .noneMatch(set -> set.is(UNSPREAD));
         return spread ? (int) Math.ceil(rings / Balance.INSTANCE.structures().spreadFactor()) : rings;
+    }
+
+    public static boolean keeps(ResourceLocation feature, RandomSource random) {
+        if (feature == null || !Balance.INSTANCE.structures().spreadFeatures().contains(feature.getNamespace())) {
+            return true;
+        }
+        double factor = Balance.INSTANCE.structures().spreadFactor();
+        return random.nextDouble() * factor * factor < 1;
     }
 }

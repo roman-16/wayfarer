@@ -94,6 +94,7 @@ sourceSets.dev.resources {
 
 dependencies {
     compileOnly "maven.modrinth:endrem:${endrem_version}"
+    compileOnly "maven.modrinth:lootr:${lootr_version}"
     compileOnly "maven.modrinth:the-hordes:${hordes_version}"
     implementation "dev.architectury:architectury-neoforge:${architectury_version}"
     implementation "dev.ftb.mods:ftb-library-neoforge:${ftb_library_version}"

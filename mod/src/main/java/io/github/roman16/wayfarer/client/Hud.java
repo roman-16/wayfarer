@@ -36,6 +36,9 @@ public final class Hud {
     private static final int GRAVE_COLOR = 0xE0E0E0;
     private static final int LEAD_COLOR = 0xFFAA55;
     private static final String LEAD_MARK = "✦";
+    private static final String FIRE_MARK = "♨";
+    private static final String SHRINE_MARK = "⌂";
+    private static final int FIRE_COLOR = 0xFFAA00;
     private static final int GAP = "    ".length();
     private static final int HALF_WIDTH = 90;
     private static final float HALF_VIEW_DEGREES = 90;
@@ -62,6 +65,11 @@ public final class Hud {
             y += RIBBON_HEIGHT + POINTER;
             line(graphics, font, caption(reading).append(night(HudState.night)), y);
             y += LINE;
+            Component shelter = shelter(reading.shelter());
+            if (shelter != null) {
+                line(graphics, font, shelter, y);
+                y += LINE;
+            }
             for (Component lead : leads(reading, player)) {
                 line(graphics, font, lead, y);
                 y += LINE;
@@ -153,6 +161,7 @@ public final class Hud {
     private static MutableComponent caption(CompassPayload reading) {
         return switch (reading.mode()) {
             case AIR -> Component.translatable("wayfarer.compass.air").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
+            case ASLEEP -> Component.translatable("wayfarer.compass.asleep").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
             case DIM -> Component.translatable("wayfarer.compass.dim").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
             case LOST, HIDDEN -> Component.translatable("wayfarer.compass.lost").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
             case FAR -> target(reading)
@@ -163,6 +172,16 @@ public final class Hud {
             case NEAR -> target(reading)
                     .append(separator())
                     .append(Component.translatable("wayfarer.compass.exact", blocks(reading.distance())));
+        };
+    }
+
+    private static Component shelter(CompassPayload.Shelter shelter) {
+        return switch (shelter) {
+            case FIRE -> Component.literal(FIRE_MARK + " ").withStyle(style -> style.withColor(FIRE_COLOR))
+                    .append(Component.translatable("wayfarer.compass.shelter.fire").withStyle(ChatFormatting.GRAY));
+            case NONE -> null;
+            case SHRINE -> Component.literal(SHRINE_MARK + " ").withStyle(style -> style.withColor(EYE_COLOR))
+                    .append(Component.translatable("wayfarer.compass.shelter.shrine").withStyle(ChatFormatting.GRAY));
         };
     }
 

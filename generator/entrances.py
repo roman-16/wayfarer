@@ -1,8 +1,7 @@
 import math
 
-from blocks import AIR, Material, Template, coherent, noise
+from blocks import AIR, Material, Template, bears, coherent, falls, noise
 
-FALLING = {"minecraft:gravel", "minecraft:red_sand", "minecraft:sand"}
 FUNGUS = {"minecraft:brown_mushroom", "minecraft:red_mushroom"}
 SAND = {"minecraft:red_sand", "minecraft:sand", "minecraft:terracotta"}
 SOIL = {
@@ -91,10 +90,21 @@ class Cover:
                     frontier.append(near)
         return sorted((self.get(pos), pos) for pos in solid - grounded)
 
+    def sliding(self):
+        for (x, y, z), (name, _, _) in self.t.blocks.items():
+            if not falls(name) or y == 0 or y == 1 and self.shaft(x, z):
+                continue
+            below = self.t.blocks.get((x, y - 1, z))
+            if below is None or not bears(below[0], dict(below[1])):
+                yield (name, (x, y, z))
+
     def save(self, path):
         loose = self.floating()
         if loose:
             raise ValueError(f"{path.parent.name}/{path.name}: floating blocks: {loose[:6]}")
+        sliding = sorted(self.sliding())
+        if sliding:
+            raise ValueError(f"{path.parent.name}/{path.name}: falling blocks over open space: {sliding[:6]}")
         height = max(pos[1] for pos in self.t.blocks) + 1
         self.t.save(path, [self.width, height, self.width])
 
@@ -203,7 +213,7 @@ def knoll(cover, turf, soil, crag=None, support=None, peak=4.5, slope=0.8, rough
             else:
                 block = soil
             name = resolve(cover, block, pos)
-            if name in FALLING and (x, y - 1, z) in cover.clear:
+            if falls(name) and (x, y - 1, z) in cover.clear:
                 name = resolve(cover, support, pos)
             cover.set(pos, name)
     for z in range(cover.high + 1, w):
@@ -229,7 +239,7 @@ def ground(cover, natural, accent, spread=1.0, support=None):
         near = 1 - math.hypot(x - cover.middle, z - cover.middle) / (cover.width / 2 * spread)
         block = accent if cover.noise("accent", (x, 0, z)) + near * 0.6 > 0.75 else natural
         name = resolve(cover, block, (x, 0, z))
-        if name in FALLING and cover.interior(x, z):
+        if falls(name) and cover.interior(x, z):
             name = resolve(cover, support, (x, 0, z))
         cover.set((x, 0, z), name)
 

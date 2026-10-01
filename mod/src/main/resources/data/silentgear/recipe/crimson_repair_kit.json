@@ -1,0 +1,30 @@
+{
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "c:ingots/crimson_steel"
+    },
+    "/": {
+      "item": "minecraft:breeze_rod"
+    },
+    "o": {
+      "tag": "c:ingots/blaze_gold"
+    }
+  },
+  "neoforge:conditions": [
+    {
+      "modid": "silentgear",
+      "type": "neoforge:mod_loaded"
+    }
+  ],
+  "pattern": [
+    " / ",
+    "#o#",
+    "###"
+  ],
+  "result": {
+    "count": 1,
+    "id": "silentgear:crimson_repair_kit"
+  },
+  "type": "minecraft:crafting_shaped"
+}

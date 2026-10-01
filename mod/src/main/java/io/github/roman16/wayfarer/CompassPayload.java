@@ -15,11 +15,13 @@ public record CompassPayload(
         int targetZ,
         List<ResourceLocation> claimed,
         List<Marker> markers,
+        Shelter shelter,
         boolean sight)
         implements CustomPacketPayload {
 
     public enum Mode {
         AIR,
+        ASLEEP,
         DIM,
         FAR,
         HIDDEN,
@@ -33,6 +35,12 @@ public record CompassPayload(
         TEAMMATE
     }
 
+    public enum Shelter {
+        FIRE,
+        NONE,
+        SHRINE
+    }
+
     public record Marker(Kind kind, String name, int x, int z) {}
 
     public static final Type<CompassPayload> TYPE = new Type<>(Wayfarer.id("compass"));
@@ -40,7 +48,7 @@ public record CompassPayload(
     public static final ResourceLocation NOTHING = Wayfarer.id("nothing");
 
     public static CompassPayload hidden(List<ResourceLocation> claimed) {
-        return new CompassPayload(Mode.HIDDEN, NOTHING, 0, 0, 0, 0, claimed, List.of(), false);
+        return new CompassPayload(Mode.HIDDEN, NOTHING, 0, 0, 0, 0, claimed, List.of(), Shelter.NONE, false);
     }
 
     private CompassPayload(FriendlyByteBuf buf) {
@@ -53,6 +61,7 @@ public record CompassPayload(
                 buf.readVarInt(),
                 buf.readList(FriendlyByteBuf::readResourceLocation),
                 buf.readList(marker -> new Marker(marker.readEnum(Kind.class), marker.readUtf(), marker.readVarInt(), marker.readVarInt())),
+                buf.readEnum(Shelter.class),
                 buf.readBoolean());
     }
 
@@ -70,6 +79,7 @@ public record CompassPayload(
             out.writeVarInt(marker.x());
             out.writeVarInt(marker.z());
         });
+        buf.writeEnum(shelter);
         buf.writeBoolean(sight);
     }
 

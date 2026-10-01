@@ -56,22 +56,6 @@
       "quest": "10F1C180EF1D5E5F",
       "title": "The Halls of the Shadow Circle"
     },
-    "journal": {
-      "author": "The Last Wayfarer",
-      "pages": [
-        "I do not know your name, stranger, and you will not learn mine. It does not matter. Wayfarers have no names, only roads.",
-        "Long ago the dragon at the end of the world gave up an eye to watch every land its portal touched. The first Wayfarers tore that Eye out, broke it into twelve shards and hid them at the far ends of the world.",
-        "The ember I gave you is the last light of that Eye. It pulls towards the shards. Far away it is only a feeling: it flares when you walk towards one and gutters when you walk away. Close by, it knows the way to the door.",
-        "The ember wakes once you have lived one day as we do. Carry everything you own. Light a fire where you rest, for the ember brings you back to fire when you fall. Pitch your tent before dark and sleep in it.",
-        "The Eye sees what stays still. Linger in one place and the ember dims, and the gaze sends its horde to find you. Every day you carry the ember and every shard you take, it sees you more clearly, and what walks at night grows stronger.",
-        "Its creatures cannot bear a fire's light: none is born near one or steps close. Rest at your fire and the ember burns it instead of your food. A tent is folded space; the gaze cannot see what is not anywhere, and nothing follows you in.",
-        "Some nights are worse. Every fourth night the gaze turns fully towards the world: nobody sleeps, no tent opens, and its horde walks through fire. Every fifth, the moon turns red and fire frightens nothing. The ember warns you each morning.",
-        "Do not take to the sea or the sky too early. A lone ember shines like a beacon on open water, and the phantoms see it flicker in the air. Every shard you gather dims it.",
-        "The Gazebound hunt the shards too. Gather all twelve before they do, find the true gate, and finish what we could not. Watch the smoke, stranger. I always did."
-      ],
-      "quest": "4C5B5C48382F6064",
-      "title": "The Last Wayfarer's Journal"
-    },
     "keepers/distance": {
       "author": "The Keepers",
       "pages": [
@@ -101,6 +85,18 @@
       ],
       "quest": "38633E8CA0C64C69",
       "title": "The Last Keeper"
+    },
+    "letter": {
+      "author": "The Last Wayfarer",
+      "pages": [
+        "I do not know your name, stranger, and you will not learn mine. It does not matter. Wayfarers have no names, only roads.",
+        "The ember I gave you is a sliver of something broken long ago, and it pulls towards the other pieces. Far away it is only a feeling: it flares when you walk towards one and gutters when you walk away.",
+        "It wakes once you have lived one day as we do. Carry everything you own. Light a fire where you rest, for the ember brings you back to fire when you fall. Pitch your tent before dark and sleep in it.",
+        "Monsters cannot bear a fire's light, and a tent is folded space that nothing follows you into. But never stay long in one place. The gaze sees what stays still, and it sends its horde to find it.",
+        "My journal is yours now. It will teach you the rest as you walk. Watch the smoke, stranger. I always did."
+      ],
+      "quest": "6D896824F3835EDC",
+      "title": "To the One Who Sat With Me"
     },
     "maren/unsent": {
       "author": "Maren",
@@ -685,6 +681,10 @@
     "awake": [
       "7DD3601BC85C87CA"
     ],
+    "book:memory/1": [
+      "11FF00D387924191",
+      "66D3F27D0FA028E3"
+    ],
     "book:memory/2": [
       "783D37BF49BFBE4F"
     ],
@@ -774,10 +774,8 @@
     "start": [
       "05E9F82454353B4A",
       "073EB44C91BEC5F1",
-      "11FF00D387924191",
       "5CF1AB9345FD65AD",
       "5FAD900A0CF32342",
-      "66D3F27D0FA028E3",
       "728D4B884E67F23F"
     ],
     "step:bargain": [
@@ -935,7 +933,11 @@
       "lead": "",
       "lines": [
         "Two shards. I felt them touch. Don't be afraid, it's only me.",
-        "Sit a while. I talk best when you're still."
+        "You buried me by the road, I know. The ember remembers who carried it.",
+        "I can only reach you like this, while you sit still by a fire. So sit a while. I talk best when you're still.",
+        "Every shard you take makes me a little clearer. I'll be with you more as they come together.",
+        "I'll tell you what I can, one fire at a time. Some nights I'll have nothing to say.",
+        "Keep walking. The shards won't come to you."
       ],
       "quest": "743AF7569F7B0C3C",
       "shards": 2,
@@ -952,6 +954,7 @@
       "lead": "first_camp",
       "lines": [
         "I was young once, and I walked like you. My first camp lies {lead}.",
+        "I was happy there. I didn't know yet how long a road can be.",
         "I left something under the hearthstones. Go and see who I was, if you like."
       ],
       "quest": "2F0304E8796E55ED",
@@ -969,6 +972,7 @@
       "lead": "",
       "lines": [
         "You carry his smoke. I'd know it anywhere.",
+        "Leave your blade where it is. Nothing fights at a fire shared freely.",
         "Eat. He never ate enough either."
       ],
       "quest": "7E01742D87FA0667",
@@ -997,7 +1001,8 @@
       "lead": "",
       "lines": [
         "She's gone? Good. Eat the bread, but don't follow her.",
-        "Her people feed Wayfarers. That's how they catch them."
+        "Her people feed Wayfarers. That's how they catch them.",
+        "They can't find a shrine without an ember. They can only follow one."
       ],
       "quest": "1D5DA331E524E759",
       "shards": 3,
@@ -1014,7 +1019,8 @@
       "lead": "",
       "lines": [
         "You feel it on the hard nights, don't you? The gaze turning towards you.",
-        "It can't stop looking. It isn't cruel. It's only an eye that was never allowed to close."
+        "It can't stop looking. It isn't cruel. It's only an eye that was never allowed to close.",
+        "Sleep in your tent when you can. It can't see what isn't anywhere."
       ],
       "quest": "72A6CF8828A368B6",
       "shards": 3,
@@ -1031,6 +1037,7 @@
       "lead": "deep_city",
       "lines": [
         "Go and see where it all started. The deep city lies {lead}, far below the stone.",
+        "They were the brightest people the world ever had, and the first to be seen.",
         "Walk softly there. The silence remembers every sound, and its guard does not fear your fire."
       ],
       "quest": "05B0C45EDD6D21EF",
@@ -1048,6 +1055,7 @@
       "lead": "",
       "lines": [
         "Four shards. Your light is dim enough for the sea now.",
+        "Out on the water a lone ember shines like a beacon. Four together hide it well enough.",
         "I sailed once. I was sick the whole way. Don't tell anyone."
       ],
       "quest": "4CBE58EE1F1F7DFB",
@@ -1065,6 +1073,7 @@
       "lead": "outpost",
       "lines": [
         "Her people keep an outpost {lead}. Stay clear of it.",
+        "They'd sooner feed you than fight you, and that's worse.",
         "Nothing there is meant for you."
       ],
       "quest": "38E1538D1656C28B",
@@ -1082,7 +1091,8 @@
       "lead": "",
       "lines": [
         "They hit harder every day you carry me, and harder with every shard. Have you noticed?",
-        "The gaze sees you more clearly the longer you burn. So be quick."
+        "The gaze sees you more clearly the longer you burn.",
+        "Make better gear while you can. And be quick."
       ],
       "quest": "2FA257702DA3A1FC",
       "shards": 4,
@@ -1099,6 +1109,7 @@
       "lead": "",
       "lines": [
         "Where are you from? No, don't tell me. A home is a thing you lose.",
+        "The longer a place is lived in, the brighter it shines to the gaze. Towns shine. Cities blaze.",
         "I had one once. Don't."
       ],
       "quest": "4FE206097212E792",
@@ -1116,6 +1127,7 @@
       "lead": "last_camp",
       "lines": [
         "There's a place {lead} where I stopped walking. My last camp.",
+        "I was tired. That's all it takes, in the end. You get tired, and you sit down.",
         "Go if you want. I never went back."
       ],
       "quest": "05B3E0633F440402",
@@ -1133,7 +1145,8 @@
       "lead": "",
       "lines": [
         "Six. You could fly now, for a while, if you're careful.",
-        "The phantoms are its eyes up there. Land before they look."
+        "The phantoms are its eyes up there. Land before they look.",
+        "And never fly at night. Up there in the dark it sees you at once."
       ],
       "quest": "2850866C92603F14",
       "shards": 6,
@@ -1151,7 +1164,8 @@
       "lines": [
         "My name is Maren. The man who gave you his ember was Wend, captain of the Gazebound, the Grass King's heirs.",
         "He raised me. He taught me the road, so I could follow smoke like his.",
-        "You don't believe me. His room in the grass halls is still as he left it, {lead}."
+        "You don't believe me. His room in the grass halls is still as he left it, {lead}.",
+        "I'm not asking you to trust me. Just go and look."
       ],
       "quest": "12D3751DE826D0D0",
       "shards": 6,
@@ -1174,6 +1188,7 @@
       "lead": "",
       "lines": [
         "She told you. Yes. Twenty winters at their table.",
+        "I was tired of the road, and they fed me, and I stayed.",
         "I lied about what I was, not about what you must do."
       ],
       "quest": "728DFFA4C29E37B7",
@@ -1191,7 +1206,8 @@
       "lead": "",
       "lines": [
         "Stand still in the dark tonight and look around you. You'll see them through the stone.",
-        "That's the shards, showing you what the gaze sees. The Grass King saw like that, for one summer."
+        "That's the shards, showing you what the gaze sees. The Grass King saw like that, for one summer.",
+        "His own people tore it from his crown. See, but don't stare."
       ],
       "quest": "2336C021E54694B2",
       "shards": 7,
@@ -1208,6 +1224,7 @@
       "lead": "",
       "lines": [
         "Three of them came over the ridge behind you today. Grass cloaks.",
+        "They walk where your smoke goes. They always will.",
         "Don't ask how I know. Keep walking."
       ],
       "quest": "1A86CD2853DE8004",
@@ -1227,7 +1244,8 @@
       "lead": "",
       "lines": [
         "You've been in my room. I can smell the grass on you.",
-        "The ledger's wrong. My ember never went dark. Who else would be talking to you?"
+        "The ledger's wrong. My ember never went dark. Who else would be talking to you?",
+        "Clerks write what they're told to. Burn it if you like."
       ],
       "quest": "6AFA4C05D245CCF7",
       "shards": 8,
@@ -1244,6 +1262,7 @@
       "lead": "",
       "lines": [
         "Nine. I can almost see the gate from here.",
+        "Three more, and the ember will remember where the Eye was torn out.",
         "Don't stop now. Carry me home."
       ],
       "quest": "64B53EE176C31149",
@@ -1261,6 +1280,7 @@
       "lead": "",
       "lines": [
         "The captains are behind me now. They know you're close.",
+        "They'll wait for you at the gate, all of them. They can't find it without you.",
         "At the gate we take what you carry. I'm sorry. I'd rather it were anyone else."
       ],
       "quest": "19F76937C8F2D8F8",
@@ -1284,7 +1304,8 @@
       "lead": "",
       "lines": [
         "You're tired. So was I. Stay by the fire a little longer tonight.",
-        "The road will wait. It always waited for me."
+        "The road will wait. It always waited for me.",
+        "Sit. I like it when you're still."
       ],
       "quest": "044B1C5B3DD84068",
       "shards": 10,
@@ -1301,7 +1322,8 @@
       "lead": "",
       "lines": [
         "Do you remember my fire? You were the only one who sat down.",
-        "I watched you from across it. I've been watching you ever since."
+        "I watched you from across it. I've been watching you ever since.",
+        "You have kind eyes. I noticed that first."
       ],
       "quest": "268AB6132D5AC5E4",
       "shards": 10,
@@ -1319,7 +1341,8 @@
       "lines": [
         "You've read it now. Yes.",
         "He sat still for twenty years, and I watched him. I learned his voice the way you learn a song.",
-        "You've been seeing with my eye for weeks."
+        "You've been seeing with my eye for weeks.",
+        "I'm not angry. I only wanted to see again."
       ],
       "quest": "0A85F723023662E8",
       "shards": 11,
@@ -1336,7 +1359,8 @@
       "lead": "",
       "lines": [
         "Bring me my eye, and I will look away from you.",
-        "Build your house anywhere. Nothing will come in the night. I promise."
+        "Build your house anywhere. Nothing will come in the night. I promise.",
+        "Think of it. A door you can close, and nobody watching."
       ],
       "quest": "3B954BE86C8B9071",
       "shards": 11,
@@ -1353,6 +1377,7 @@
       "lead": "",
       "lines": [
         "Twelve. I can see the gate through you.",
+        "It's so close now. I can almost see.",
         "Set it. Please."
       ],
       "quest": "08744B30FA186CD9",
@@ -1370,7 +1395,8 @@
       "lead": "",
       "lines": [
         "May I sit?",
-        "No voice in the fire tonight. Just a fire."
+        "No voice in the fire tonight. Just a fire.",
+        "He'd have liked this. Sitting still, with nothing watching."
       ],
       "quest": "51C1C80F75978CFB",
       "shards": 0,

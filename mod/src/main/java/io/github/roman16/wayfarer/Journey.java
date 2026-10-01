@@ -32,13 +32,14 @@ public class Journey extends SavedData {
     private static final String SAID = "said";
     private static final String BUILT = "built";
     private static final String FOUND = "found";
+    private static final String MARKED = "marked";
 
     private final Set<UUID> awake = new HashSet<>();
     private final Map<UUID, List<ResourceLocation>> claims = new HashMap<>();
     private final Set<UUID> slayers = new HashSet<>();
     private final Map<UUID, Tale> tales = new HashMap<>();
 
-    public record Lead(BlockPos pos, boolean built, boolean found) {}
+    public record Lead(BlockPos pos, boolean built, boolean found, boolean marked) {}
 
     public final class Tale {
         private final List<String> heard = new ArrayList<>();
@@ -79,17 +80,22 @@ public class Journey extends SavedData {
         }
 
         public void give(String id, BlockPos pos) {
-            leads.put(id, new Lead(pos, false, false));
+            leads.put(id, new Lead(pos, false, false, false));
             setDirty();
         }
 
         public void build(String id) {
-            leads.computeIfPresent(id, (key, lead) -> new Lead(lead.pos(), true, lead.found()));
+            leads.computeIfPresent(id, (key, lead) -> new Lead(lead.pos(), true, lead.found(), lead.marked()));
             setDirty();
         }
 
         public void find(String id) {
-            leads.computeIfPresent(id, (key, lead) -> new Lead(lead.pos(), lead.built(), true));
+            leads.computeIfPresent(id, (key, lead) -> new Lead(lead.pos(), lead.built(), true, lead.marked()));
+            setDirty();
+        }
+
+        public void mark(String id, boolean marked) {
+            leads.computeIfPresent(id, (key, lead) -> new Lead(lead.pos(), lead.built(), lead.found(), marked));
             setDirty();
         }
 
@@ -187,7 +193,10 @@ public class Journey extends SavedData {
             for (String id : leads.getAllKeys()) {
                 CompoundTag lead = leads.getCompound(id);
                 tale.leads.put(id, new Lead(
-                        new BlockPos(lead.getInt("x"), lead.getInt("y"), lead.getInt("z")), lead.getBoolean(BUILT), lead.getBoolean(FOUND)));
+                        new BlockPos(lead.getInt("x"), lead.getInt("y"), lead.getInt("z")),
+                        lead.getBoolean(BUILT),
+                        lead.getBoolean(FOUND),
+                        lead.getBoolean(MARKED)));
             }
         }
         return journey;
@@ -218,6 +227,7 @@ public class Journey extends SavedData {
                 entry.putInt("z", lead.pos().getZ());
                 entry.putBoolean(BUILT, lead.built());
                 entry.putBoolean(FOUND, lead.found());
+                entry.putBoolean(MARKED, lead.marked());
                 leads.put(id, entry);
             });
             saved.put(LEADS, leads);

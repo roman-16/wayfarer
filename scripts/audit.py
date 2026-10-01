@@ -88,14 +88,42 @@ def shared_biomes(jars):
             yield f"generator/removals.toml empties {tag}, which {', '.join(sorted(structures))} all use: remove the one structure through its structure set instead"
 
 
+def features(jars):
+    spread = set(tomllib.loads((ROOT / "balance.toml").read_text())["structures"]["spread_features"])
+    natural = set(tomllib.loads((ROOT / "generator/features.toml").read_text())["natural"])
+    kinds = {}
+    for jar in jars:
+        with zipfile.ZipFile(jar) as archive:
+            for name in archive.namelist():
+                parts = name.split("/")
+                if (
+                    len(parts) < 5
+                    or parts[0] != "data"
+                    or parts[2:4] != ["worldgen", "configured_feature"]
+                    or not name.endswith(".json")
+                ):
+                    continue
+                try:
+                    kind = json.loads(archive.read(name).decode("utf-8-sig")).get("type", "")
+                except ValueError:
+                    continue
+                if ":" in kind and not kind.startswith("minecraft:"):
+                    kinds.setdefault(parts[1], set()).add(kind)
+    for namespace, found in sorted(kinds.items()):
+        if namespace not in spread | natural:
+            yield f"{namespace} places features of its own kind ({', '.join(sorted(found))}): spread them in balance.toml [structures] spread_features, or list them as natural in generator/features.toml"
+
+
 def main():
     jars = sorted(Path(sys.argv[1]).glob("*.jar"))
-    findings = [*recipes(jars), *shared_biomes(jars)]
+    findings = [*recipes(jars), *shared_biomes(jars), *features(jars)]
     for finding in findings:
         print(finding)
     if findings:
         sys.exit(f"{len(findings)} audit findings")
-    print("no recipe needs a Nether-only item, and no emptied biome tag removes more than its structure")
+    print(
+        "no recipe needs a Nether-only item, no emptied biome tag removes more than its structure, and every structure-like feature is spread or natural"
+    )
 
 
 main()

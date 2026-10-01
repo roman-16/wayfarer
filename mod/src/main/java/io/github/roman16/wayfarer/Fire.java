@@ -10,8 +10,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -45,6 +47,8 @@ public final class Fire {
     private static final long DUSK = 12000;
     private static final Map<UUID, BlockPos> SHELTERED = new HashMap<>();
     private static final Map<UUID, Rest> RESTS = new HashMap<>();
+    private static final ResourceLocation WARMED = Wayfarer.id("warm");
+    private static final String RESTED = "rested";
 
     private record Rest(Vec3 at, int seconds) {}
 
@@ -57,6 +61,10 @@ public final class Fire {
                 && !(entity instanceof Warden)
                 && !(entity instanceof EnderDragon)
                 && !(entity instanceof WitherBoss);
+    }
+
+    public static boolean sheltered(ServerPlayer player) {
+        return SHELTERED.containsKey(player.getUUID());
     }
 
     public static boolean inside(BlockPos fire, Vec3 at, int radius) {
@@ -179,6 +187,10 @@ public final class Fire {
             if (!warm) {
                 player.displayClientMessage(Component.translatable("wayfarer.fire.warm").withStyle(ChatFormatting.GOLD), false);
                 Notes.first(player, "warm");
+            }
+            AdvancementHolder advancement = player.server.getAdvancements().get(WARMED);
+            if (advancement != null) {
+                player.getAdvancements().award(advancement, RESTED);
             }
         }
         Story.rest(player, fire);

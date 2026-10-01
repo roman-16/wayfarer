@@ -1,5 +1,8 @@
 package io.github.roman16.wayfarer;
 
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,10 +10,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,6 +30,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 public final class Leads {
@@ -29,6 +39,7 @@ public final class Leads {
     private static final int BUILD_BLOCKS = 128;
     private static final int ROUNDING = 100;
     private static final int TRIES = 8;
+    private static final String LEAD = "lead";
 
     private Leads() {}
 
@@ -51,7 +62,66 @@ public final class Leads {
         if (id == null) {
             return Optional.empty();
         }
-        return give(player, id).map(direction -> Story.fill(Library.INSTANCE.leads().get(id).line(), direction));
+        return give(player, id).map(direction -> Story.fill(Library.INSTANCE.leads().get(id).line(), direction).append("\n\n").append(markLink(id)));
+    }
+
+    public static MutableComponent markLink(String id) {
+        return link("mark", id);
+    }
+
+    private static MutableComponent link(String action, String id) {
+        String command = "/" + Wayfarer.MODID + " " + LEAD + " " + action + " " + id;
+        return Component.translatable("wayfarer.lead." + action + ".link").withStyle(style -> style
+                .withColor(ChatFormatting.GOLD)
+                .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("wayfarer.lead." + action + ".hover"))));
+    }
+
+    @SubscribeEvent
+    public static void onRegisterCommands(RegisterCommandsEvent event) {
+        event.getDispatcher().register(Commands.literal(Wayfarer.MODID)
+                .then(Commands.literal(LEAD)
+                        .then(Commands.literal("mark").then(leadArgument(true)))
+                        .then(Commands.literal("unmark").then(leadArgument(false)))));
+    }
+
+    private static RequiredArgumentBuilder<CommandSourceStack, String> leadArgument(boolean marked) {
+        return Commands.argument(LEAD, StringArgumentType.greedyString())
+                .suggests((context, builder) -> SharedSuggestionProvider.suggest(open(context), builder))
+                .executes(context -> mark(context, marked));
+    }
+
+    private static List<String> open(CommandContext<CommandSourceStack> context) {
+        ServerPlayer player = context.getSource().getPlayer();
+        if (player == null) {
+            return List.of();
+        }
+        List<String> open = new ArrayList<>();
+        Journey.tale(player).leads().forEach((id, lead) -> {
+            if (!lead.found()) {
+                open.add(id);
+            }
+        });
+        return open.stream().sorted().toList();
+    }
+
+    private static int mark(CommandContext<CommandSourceStack> context, boolean marked) {
+        ServerPlayer player = context.getSource().getPlayer();
+        String id = StringArgumentType.getString(context, LEAD);
+        Library.Lead spec = Library.INSTANCE.leads().get(id);
+        Journey.Tale tale = player == null ? null : Journey.tale(player);
+        if (spec == null || tale == null || tale.lead(id).filter(lead -> !lead.found()).isEmpty()) {
+            context.getSource().sendFailure(Component.translatable("wayfarer.lead.untold"));
+            return 0;
+        }
+        tale.mark(id, marked);
+        Component name = Component.literal(spec.mark()).withStyle(ChatFormatting.WHITE);
+        Component message = Component.translatable("wayfarer.lead." + (marked ? "marked" : "unmarked"), name)
+                .withStyle(ChatFormatting.GRAY)
+                .append(" ")
+                .append(link(marked ? "unmark" : "mark", id));
+        Teams.onlineMembers(player).forEach(member -> member.sendSystemMessage(message));
+        return 1;
     }
 
     public static int round(double blocks) {
@@ -99,7 +169,7 @@ public final class Leads {
         List<CompassPayload.Marker> markers = new ArrayList<>();
         Journey.tale(player).leads().forEach((id, lead) -> {
             Library.Lead spec = Library.INSTANCE.leads().get(id);
-            if (!lead.found() && spec != null) {
+            if (lead.marked() && !lead.found() && spec != null) {
                 markers.add(new CompassPayload.Marker(CompassPayload.Kind.LEAD, spec.mark(), lead.pos().getX(), lead.pos().getZ()));
             }
         });

@@ -6,7 +6,7 @@ when = "start"
 
 [[summary]]
 id = "ember_wakes"
-text = "You lived a Wayfarer's first day, and the ember answered. It pulls towards the twelve shards of the dragon's broken Eye."
+text = "You lived a Wayfarer's first day, and the ember answered. It pulls towards twelve shards of something broken long ago."
 title = "The Ember Wakes"
 when = "awake"
 
@@ -158,11 +158,11 @@ when = "first:dimming"
 id = "dragon"
 text = "The guardian of the End, bound there by the builders of the End cities. It can never leave the End, and saw the world only through its Eye."
 title = "The dragon"
-when = "start"
+when = "book:memory/1"
 
 [[words]]
 id = "ember"
-text = "A sliver of the Eye's own light. It passes only at a fire shared freely, pulls towards the shards, and brings you back to the last fire you lit."
+text = "A sliver of an old light. It passes only at a fire shared freely, pulls towards the shards, and brings you back to the last fire you lit."
 title = "The ember"
 when = "start"
 
@@ -170,7 +170,7 @@ when = "start"
 id = "eye"
 text = "The eye the dragon gave up to watch every land its portal touched. The first Wayfarers tore it out and broke it into twelve shards."
 title = "The Eye"
-when = "start"
+when = "book:memory/1"
 
 [[words]]
 id = "circle"
@@ -186,7 +186,7 @@ when = "shards:6"
 
 [[words]]
 id = "gaze"
-text = "The dragon's sight. It sees what stays still, presses hardest at night, and sees you more clearly every day you carry the ember and with every shard you take."
+text = "What watches the world. It sees what stays still, presses hardest at night, and sees you more clearly every day you carry the ember and with every shard you take."
 title = "The gaze"
 when = "start"
 
@@ -234,7 +234,7 @@ when = "book:memory/6"
 
 [[words]]
 id = "leads"
-text = "Places someone told you the way to. The compass marks each one from then on, and At the Fire keeps it until you find it."
+text = "Places someone told you the way to. At the Fire keeps each one until you find it, and the compass marks the ones you choose to follow."
 title = "Leads"
 when = "step:first_camp"
 

@@ -119,6 +119,10 @@
 			dependencies: [
 				"1F1980B9A1FF2B71"
 			]
+			icon: {
+				count: 1
+				id: "minecraft:campfire"
+			}
 			id: "431098B789E8D6C0"
 			rewards: [
 				{
@@ -132,12 +136,10 @@
 			]
 			tasks: [
 				{
+					advancement: "wayfarer:warm"
+					criterion: ""
 					id: "1A2E6512FFF0D6B3"
-					item: {
-						count: 1
-						id: "minecraft:campfire"
-					}
-					type: "item"
+					type: "advancement"
 				}
 			]
 			x: 0.75d
@@ -207,34 +209,6 @@
 		{
 			dependencies: [
 				"070C745D06E746A9"
-			]
-			id: "12A733126EEC4BAF"
-			rewards: [
-				{
-					id: "065EA41A27E18E27"
-					item: {
-						count: 16
-						id: "minecraft:paper"
-					}
-					type: "item"
-				}
-			]
-			tasks: [
-				{
-					id: "03D3AA1989F5DAEE"
-					item: {
-						count: 1
-						id: "map_atlases:atlas"
-					}
-					type: "item"
-				}
-			]
-			x: -0.75d
-			y: 3.0d
-		}
-		{
-			dependencies: [
-				"12A733126EEC4BAF"
 				"431098B789E8D6C0"
 				"4C497D37D2175788"
 			]

@@ -1,18 +1,14 @@
-[journal]
+[letter]
 author = "The Last Wayfarer"
-id = "journal"
+id = "letter"
 pages = [
   "I do not know your name, stranger, and you will not learn mine. It does not matter. Wayfarers have no names, only roads.",
-  "Long ago the dragon at the end of the world gave up an eye to watch every land its portal touched. The first Wayfarers tore that Eye out, broke it into twelve shards and hid them at the far ends of the world.",
-  "The ember I gave you is the last light of that Eye. It pulls towards the shards. Far away it is only a feeling: it flares when you walk towards one and gutters when you walk away. Close by, it knows the way to the door.",
-  "The ember wakes once you have lived one day as we do. Carry everything you own. Light a fire where you rest, for the ember brings you back to fire when you fall. Pitch your tent before dark and sleep in it.",
-  "The Eye sees what stays still. Linger in one place and the ember dims, and the gaze sends its horde to find you. Every day you carry the ember and every shard you take, it sees you more clearly, and what walks at night grows stronger.",
-  "Its creatures cannot bear a fire's light: none is born near one or steps close. Rest at your fire and the ember burns it instead of your food. A tent is folded space; the gaze cannot see what is not anywhere, and nothing follows you in.",
-  "Some nights are worse. Every fourth night the gaze turns fully towards the world: nobody sleeps, no tent opens, and its horde walks through fire. Every fifth, the moon turns red and fire frightens nothing. The ember warns you each morning.",
-  "Do not take to the sea or the sky too early. A lone ember shines like a beacon on open water, and the phantoms see it flicker in the air. Every shard you gather dims it.",
-  "The Gazebound hunt the shards too. Gather all twelve before they do, find the true gate, and finish what we could not. Watch the smoke, stranger. I always did.",
+  "The ember I gave you is a sliver of something broken long ago, and it pulls towards the other pieces. Far away it is only a feeling: it flares when you walk towards one and gutters when you walk away.",
+  "It wakes once you have lived one day as we do. Carry everything you own. Light a fire where you rest, for the ember brings you back to fire when you fall. Pitch your tent before dark and sleep in it.",
+  "Monsters cannot bear a fire's light, and a tent is folded space that nothing follows you into. But never stay long in one place. The gaze sees what stays still, and it sends its horde to find it.",
+  "My journal is yours now. It will teach you the rest as you walk. Watch the smoke, stranger. I always did.",
 ]
-title = "The Last Wayfarer's Journal"
+title = "To the One Who Sat With Me"
 
 [[memories]]
 id = "memory/1"

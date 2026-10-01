@@ -33,6 +33,7 @@ public final class Journal {
         }
         BuiltInRegistries.ITEM.getOptional(BOOK).ifPresent(book -> {
             ItemStack journal = new ItemStack(book);
+            journal.set(DataComponents.CUSTOM_NAME, Component.translatable("wayfarer.journal").withStyle(style -> style.withItalic(false)));
             if (!player.getInventory().add(journal)) {
                 player.drop(journal, false);
             }

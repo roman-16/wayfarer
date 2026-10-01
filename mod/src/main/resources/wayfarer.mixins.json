@@ -1,7 +1,9 @@
 {
   "client": [
+    "GameRendererMixin",
     "MinecraftMixin",
-    "SubtleEffectsEndRemasteredCompatMixin"
+    "SubtleEffectsEndRemasteredCompatMixin",
+    "ToastComponentMixin"
   ],
   "compatibilityLevel": "JAVA_21",
   "injectors": {
@@ -11,6 +13,7 @@
   "mixins": [
     "ChunkGeneratorMixin",
     "ChunkGeneratorStructureStateMixin",
+    "PlacedFeatureMixin",
     "PlayerMixin"
   ],
   "package": "io.github.roman16.wayfarer.mixin",

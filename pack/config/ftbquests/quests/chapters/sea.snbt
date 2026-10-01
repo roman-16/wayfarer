@@ -153,6 +153,31 @@
 			dependencies: [
 				"4DA8B70BAC72D780"
 			]
+			id: "691CBE2BDEEF518B"
+			rewards: [
+				{
+					id: "57FCD5216BDE9F40"
+					type: "xp_levels"
+					xp_levels: 5
+				}
+			]
+			tasks: [
+				{
+					id: "454C458C5E0EF317"
+					item: {
+						count: 1
+						id: "silentgear:elytra"
+					}
+					type: "item"
+				}
+			]
+			x: 3.0d
+			y: 3.0d
+		}
+		{
+			dependencies: [
+				"4DA8B70BAC72D780"
+			]
 			id: "45299B9DA91E63B5"
 			rewards: [
 				{

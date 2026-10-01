@@ -34,6 +34,7 @@ public final class Demo {
             return;
         }
         event.show();
+        event.wake();
         event.aim(TARGET);
         JsonArray centre = COMPANION.getAsJsonArray("centre");
         double radius = COMPANION.get("radius").getAsDouble();

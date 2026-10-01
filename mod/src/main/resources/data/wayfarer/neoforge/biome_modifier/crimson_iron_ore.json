@@ -1,0 +1,12 @@
+{
+  "biomes": "minecraft:deep_dark",
+  "features": "wayfarer:crimson_iron_ore",
+  "neoforge:conditions": [
+    {
+      "modid": "silentgear",
+      "type": "neoforge:mod_loaded"
+    }
+  ],
+  "step": "underground_ores",
+  "type": "neoforge:add_features"
+}

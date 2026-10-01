@@ -1,9 +1,12 @@
 [compass]
 exact_blocks = 500
-far_rounding_blocks = 1000
+far_rounding_blocks = 500
 refresh_ticks = 20
 research_after_blocks = 256
 trail_blocks = 20
+
+[daylight]
+crumble_seconds = 60
 
 [difficulty]
 per_day = 0.333
@@ -27,6 +30,7 @@ hunt_phantoms = 2
 
 [hunger]
 exhaustion_factor = 2.0
+rowing_exhaustion_per_block = 0.01
 warm_exhaustion_factor = 1.0
 
 [leads]
@@ -39,8 +43,8 @@ blood_moon_every = 5
 horde_every = 4
 
 [shrines]
-tier_one_leg_blocks = 3750
-tier_two_leg_blocks = 6000
+tier_one_leg_blocks = 5000
+tier_two_leg_blocks = 8000
 
 [sight]
 reach_blocks = 32
@@ -60,8 +64,8 @@ jitter_blocks = 1000
 radius_blocks = 35000
 
 [structures]
-campsite_rarity_chunks = 4000
-spread_factor = 4.25
+spread_factor = 8.5
+spread_features = ["campsite_structures", "yungsextras"]
 unspread = [
   "betterstrongholds:stronghold",
   "minecraft:ancient_cities",

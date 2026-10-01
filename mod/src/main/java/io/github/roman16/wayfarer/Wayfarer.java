@@ -105,6 +105,7 @@ public final class Wayfarer {
         modBus.addListener(Wayfarer::registerPayloads);
         modBus.addListener(Shards::setup);
         NeoForge.EVENT_BUS.register(Compass.class);
+        NeoForge.EVENT_BUS.register(Daylight.class);
         NeoForge.EVENT_BUS.register(Difficulty.class);
         NeoForge.EVENT_BUS.register(Ember.class);
         NeoForge.EVENT_BUS.register(Fire.class);
@@ -116,6 +117,7 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Maren.class);
         NeoForge.EVENT_BUS.register(Nights.class);
         NeoForge.EVENT_BUS.register(Notes.class);
+        NeoForge.EVENT_BUS.register(Rowing.class);
         NeoForge.EVENT_BUS.register(Rules.class);
         NeoForge.EVENT_BUS.register(Shards.class);
         NeoForge.EVENT_BUS.register(Shrines.class);
@@ -125,6 +127,9 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(WorldSetup.class);
         if (ModList.get().isLoaded("hordes")) {
             NeoForge.EVENT_BUS.register(HordeRefuge.class);
+        }
+        if (ModList.get().isLoaded("lootr")) {
+            NeoForge.EVENT_BUS.register(Loot.class);
         }
     }
 

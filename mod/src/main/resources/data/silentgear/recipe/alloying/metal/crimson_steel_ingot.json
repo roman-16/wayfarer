@@ -1,0 +1,27 @@
+{
+  "ingredients": [
+    {
+      "tag": "c:storage_blocks/crimson_iron"
+    },
+    {
+      "item": "minecraft:breeze_rod"
+    },
+    {
+      "item": "minecraft:breeze_rod"
+    },
+    {
+      "item": "minecraft:magma_cream"
+    }
+  ],
+  "neoforge:conditions": [
+    {
+      "modid": "silentgear",
+      "type": "neoforge:mod_loaded"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "item": "silentgear:crimson_steel_ingot"
+  },
+  "type": "silentgear:alloy_making/metal"
+}

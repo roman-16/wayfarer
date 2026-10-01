@@ -26,5 +26,5 @@
     }
   ],
   "idBasedSalt": true,
-  "spreadFactor": 4.25
+  "spreadFactor": 8.5
 }

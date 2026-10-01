@@ -95,7 +95,7 @@ def quests():
 
 def story_books():
     story = tomllib.loads((ROOT / "story/books.toml").read_text())
-    return [story["journal"], *story["memories"], *story["found"]] + [
+    return [story["letter"], *story["memories"], *story["found"]] + [
         book for collection in story["collections"] for book in collection["books"]
     ]
 
