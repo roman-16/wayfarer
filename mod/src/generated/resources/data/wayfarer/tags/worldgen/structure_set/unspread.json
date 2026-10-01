@@ -1,0 +1,28 @@
+{
+  "values": [
+    {
+      "id": "betterstrongholds:stronghold",
+      "required": false
+    },
+    {
+      "id": "minecraft:ancient_cities",
+      "required": false
+    },
+    {
+      "id": "minecraft:buried_treasures",
+      "required": false
+    },
+    {
+      "id": "minecraft:mineshafts",
+      "required": false
+    },
+    {
+      "id": "wayfarer:shrines/tier_one",
+      "required": false
+    },
+    {
+      "id": "wayfarer:shrines/tier_two",
+      "required": false
+    }
+  ]
+}

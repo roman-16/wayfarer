@@ -811,6 +811,10 @@ def spread(balance):
             "spreadFactor": structures["spread_factor"],
         },
     )
+    write_json(
+        MAIN / "data/wayfarer/tags/worldgen/structure_set/unspread.json",
+        {"values": [{"id": name, "required": False} for name in unspread]},
+    )
 
 
 def campsites(balance):

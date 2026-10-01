@@ -20,6 +20,7 @@ public record Balance(
         Sight sight,
         Sleep sleep,
         Stillness stillness,
+        Structures structures,
         Unlocks unlocks) {
 
     public record Compass(int exactBlocks, int farRoundingBlocks, int refreshTicks, int researchAfterBlocks, int trailBlocks) {}
@@ -34,7 +35,7 @@ public record Balance(
 
     public record Hunger(float exhaustionFactor, float warmExhaustionFactor) {}
 
-    public record Leads(int campBlocks, int campReachBlocks, int searchChunks) {}
+    public record Leads(int campBlocks, int campReachBlocks, int searchRings) {}
 
     public record Nights(int bloodMoonEvery, int hordeEvery) {}
 
@@ -43,6 +44,8 @@ public record Balance(
     public record Sleep(int playersPercentage) {}
 
     public record Stillness(int dimmingDays, int hordeDays, int radiusBlocks) {}
+
+    public record Structures(double spreadFactor) {}
 
     public record Unlocks(int aircraftEyes, int sailingShipEyes) {}
 
@@ -76,11 +79,12 @@ public record Balance(
                     new Hunger(
                             toml.<Number>get("hunger.exhaustion_factor").floatValue(),
                             toml.<Number>get("hunger.warm_exhaustion_factor").floatValue()),
-                    new Leads(toml.getInt("leads.camp_blocks"), toml.getInt("leads.camp_reach_blocks"), toml.getInt("leads.search_chunks")),
+                    new Leads(toml.getInt("leads.camp_blocks"), toml.getInt("leads.camp_reach_blocks"), toml.getInt("leads.search_rings")),
                     new Nights(toml.getInt("nights.blood_moon_every"), toml.getInt("nights.horde_every")),
                     new Sight(toml.getInt("sight.reach_blocks"), toml.getInt("sight.shards")),
                     new Sleep(toml.getInt("sleep.players_percentage")),
                     new Stillness(toml.getInt("stillness.dimming_days"), toml.getInt("stillness.horde_days"), toml.getInt("stillness.radius_blocks")),
+                    new Structures(toml.<Number>get("structures.spread_factor").doubleValue()),
                     new Unlocks(toml.getInt("unlocks.aircraft_eyes"), toml.getInt("unlocks.sailing_ship_eyes")));
         } catch (IOException e) {
             throw new UncheckedIOException(e);

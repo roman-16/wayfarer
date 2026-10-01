@@ -4,6 +4,7 @@
 .venv/
 /build/
 /dist/
+/exaroton/
 __pycache__/
 mod/.gradle/
 mod/build/

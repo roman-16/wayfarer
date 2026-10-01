@@ -77,7 +77,7 @@ public final class Leads {
             return Optional.of(campSite(level, from));
         }
         TagKey<Structure> tag = TagKey.create(Registries.STRUCTURE, ResourceLocation.parse(lead.structures()));
-        return Optional.ofNullable(level.findNearestMapStructure(tag, from, Balance.INSTANCE.leads().searchChunks(), false));
+        return Optional.ofNullable(level.findNearestMapStructure(tag, from, Balance.INSTANCE.leads().searchRings(), false));
     }
 
     private static BlockPos campSite(ServerLevel level, BlockPos from) {

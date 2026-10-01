@@ -32,7 +32,7 @@ warm_exhaustion_factor = 1.0
 [leads]
 camp_blocks = 1200
 camp_reach_blocks = 8
-search_chunks = 256
+search_rings = 256
 
 [nights]
 blood_moon_every = 5

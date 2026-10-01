@@ -57,6 +57,10 @@ file = "config/EndRemastered-NeoForge/endrem.json"
 hash = "c33f117ee215030b666b6a2d6b31df6297b81b978322319d1f5b3cc7e7349f5a"
 
 [[files]]
+file = "config/asynclocator.toml"
+hash = "bd946e5d04c34cb73cddf39a43aa62364a043c83a7d0dfd05171544c0449bd41"
+
+[[files]]
 file = "config/defaultoptions/keybindings.txt"
 hash = "2d2bbdd499dfb8a4d4307c88de74f580ca86b87ed173ea8fd7781c8c9699742d"
 
@@ -157,10 +161,6 @@ file = "config/nomadictents-common.toml"
 hash = "f1aa594eb6bf3016af9076e4b1d04ec487e56c6072b962b49ba84c80c54183ae"
 
 [[files]]
-file = "config/roadarchitect.json"
-hash = "eaf542318a4f69e29e7fff3d803acd04fd9782b66400872c6944afef285e41f4"
-
-[[files]]
 file = "config/solonion-client.json"
 hash = "3491b93fb6219daa6204c5fd251a00158e6e1fe7db40fb4e4e74ac33678a5118"
 
@@ -208,6 +208,11 @@ metafile = true
 [[files]]
 file = "mods/artifacts.pw.toml"
 hash = "416b7f130791397fb2ceb9e89ce3fd0e870f207c8e40b759c069cb58b7544314"
+metafile = true
+
+[[files]]
+file = "mods/async-locator-refined.pw.toml"
+hash = "4652f7122f9fcd06f61f40a5c299d5316fde47cdbb23e8120c339f8b80a5ab27"
 metafile = true
 
 [[files]]
@@ -631,11 +636,6 @@ hash = "c0b066684294c33972d562e0cb08ea17b2d31bcf86cd1d6c63b8e968f0eac7a2"
 metafile = true
 
 [[files]]
-file = "mods/roadarchitect.pw.toml"
-hash = "0219311fb3fc93354cf6c3144d9aef8caa9845c5d77be86e4cded3f34ef8544d"
-metafile = true
-
-[[files]]
 file = "mods/scalablelux.pw.toml"
 hash = "9d9330972174ff5c68779f15ecd7023b357eb2e0a5bdc99b63ca7768e90616f1"
 metafile = true
@@ -693,6 +693,11 @@ metafile = true
 [[files]]
 file = "mods/sound.pw.toml"
 hash = "4063a3c0f2f9a6544a870f0b90679441d7333652875dafbe3db255fc67f72c82"
+metafile = true
+
+[[files]]
+file = "mods/spark.pw.toml"
+hash = "593fa7b30ab016aa45be07bd6bef3a9f160ed0f24689850d60bf84995d69b843"
 metafile = true
 
 [[files]]

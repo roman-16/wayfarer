@@ -24,6 +24,10 @@ demo:
     rm --recursive --force build/client/saves/demo/dimensions/wayfarer/showroom
     cd mod && LD_LIBRARY_PATH="$DEVBOX_PACKAGES_DIR/lib:/run/opengl-driver/lib" ./gradlew runDemo
 
+[doc("Record the exaroton server's console, status, memory, tick time, log and world sizes into exaroton/ until interrupted")]
+exaroton server="":
+    python3 scripts/exaroton.py {{ server }}
+
 [doc("Regenerate the shrines, structure sets, templates, removals, textures and the quest book from their sources and balance.toml")]
 generate:
     python3 generator/generate.py
