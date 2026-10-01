@@ -4,7 +4,8 @@ A personal modpack repository: it reproduces on any machine from `direnv allow` 
 
 ## The rules of the pack
 
-- **The lore decides.** `story/lore.md` is the source of truth. Every mechanic needs a reason there, and every quest, book and item text is written from it with the `lore` skill. A mechanic the lore cannot explain is a mechanic to drop or to give a reason first.
+- **The design decides.** `design/` holds what the pack is becoming, and `design/README.md` says the phase and what comes next. Build only what is Settled there; a gap found while building goes back to Open in its document, never decided in code. Design work runs through the `design` skill.
+- **The lore decides.** `design/lore.md` is the source of truth. Every mechanic needs a reason there, and every quest, book and item text is written from it with the `lore` skill. A mechanic the lore cannot explain is a mechanic to drop or to give a reason first.
 - **There is no Nether.** Nothing may bring it back: no lit portals, no Nether structures, no recipe that needs a Nether-only item without an Overworld source. `just test` audits every recipe in every jar against `generator/nether.toml`; a finding is fixed by an Overworld source or accepted there as unobtainable, never ignored.
 - **Every number lives once.** Balancing numbers are in `balance.toml`, and the mod, the generator and the boot test all read them from there. Eyes, their biomes, lore, places and shrine spacing are in `generator/eyes.toml`.
 - **Shrine spacing is measured, not guessed.** Biome layout decides how far the next shrine really is, so each tier's `spacing` is tuned by `just survey apply`, which walks journeys to the nearest shrine not yet taken and compares the legs with the targets in `balance.toml`. One survey is noisy (about ±30%): apply, `just generate`, survey again, and stop once the medians sit near the targets.

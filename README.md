@@ -73,8 +73,9 @@ Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftE
 | Path | Holds |
 |---|---|
 | `balance.toml` | Every balancing number: compass, daylight, difficulty, fire, gate, gaze, hunger, leads, nights, sight, stillness, unlocks, shrine legs and stronghold distances, structure spread |
+| `design/` | What the pack is becoming, decided before it is built (`README.md` names the phase and what comes next), the lore everything else is written from (`lore.md`) and the narration cast (`narration.md`) |
 | `generator/` | The structure generator (the twelve halls, their surface covers, the Last Camp and the stranger's old camps), the twelve eyes, their peoples' places and each tier's shrine spacing (`eyes.toml`), the recipe and structure removals, the Nether audit list and the features accepted as natural |
 | `mod/` | The Wayfarer mod (NeoForge, Java 21); `src/dev` holds the game tests and the dev client's driver, which never ship |
 | `pack/` | The packwiz pack: one file per mod, and the pack's configs |
 | `scripts/` | The server pack builder, the boot test, the Nether, structure removal and feature audit, the rule checks, the dev client driver with its screenshot tour and the exaroton recorder |
-| `story/` | The lore everything else is written from, the books (`books.toml`), the voice at the fire, Maren and the leads (`fire.toml`), the journal's summary and word list (`notes.toml`), the quest book (`quests.toml`) and the narration cast (`narration.md`) |
+| `story/` | The books (`books.toml`), the voice at the fire, Maren and the leads (`fire.toml`), the journal's summary and word list (`notes.toml`) and the quest book (`quests.toml`) |

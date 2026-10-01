@@ -1,13 +1,13 @@
 ---
 name: lore
-description: Write Wayfarer's player-facing text - quest titles and descriptions, lectern and loot books, item names and tooltips, chat and HUD messages - in the pack's voice and consistent with story/lore.md. Use whenever text a player reads is added or changed.
+description: Write Wayfarer's player-facing text - quest titles and descriptions, lectern and loot books, item names and tooltips, chat and HUD messages - in the pack's voice and consistent with design/lore.md. Use whenever text a player reads is added or changed.
 ---
 
 # Lore
 
 ## Before writing
 
-Read `story/lore.md`. It is the only source of what is true in this world. When the text needs a fact the lore does not have, stop and propose the fact to the user first; never invent it inside a quest.
+Read `design/lore.md`. It is the only source of what is true in this world. When the text needs a fact the lore does not have, stop and propose the fact to the user first; never invent it inside a quest.
 
 ## Voice
 

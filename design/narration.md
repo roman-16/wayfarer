@@ -1,6 +1,6 @@
 # Narration
 
-Every book a player opens in Wayfarer is to be read aloud: the voice plays when the book opens - at a lectern, from the inventory or from the journal's Pages chapter - and stops when it closes, in the Voice/Speech sound category. The voice at the fire and Maren are read aloud as their lines appear in chat, and again when their entry opens in At the Fire. The audio comes from ElevenLabs, generated from the same text the books show. Building it is in `TODO.md`; this file holds the decisions.
+Every book a player opens in Wayfarer is to be read aloud: the voice plays when the book opens - at a lectern, from the inventory or from the journal's Pages chapter - and stops when it closes, in the Voice/Speech sound category. The voice at the fire and Maren are read aloud as their lines appear in chat, and again when their entry opens in At the Fire. The audio comes from ElevenLabs, generated from the same text the books show. It is built in phase 6, once the story is final; this file holds the decisions.
 
 ## The cast
 
