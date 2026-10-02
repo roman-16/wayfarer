@@ -17,6 +17,8 @@ description: Run a Wayfarer design session - take the next open question in desi
 
 - **Research before proposing.** How the games the user holds up (The Witcher 3, Cyberpunk 2077, GTA V, Death Stranding) and others answer it, with the `exa` skill; what Minecraft 1.21.1, NeoForge and the pack's mods can do, from the code, the jars or the mod pages, never from memory. Mark what was not verified.
 - **Show it as play.** Each option is what the player sees and does: a moment of play as a transcript, chat lines, a screen. Mechanism comes after, if at all.
+- **Use plain words.** Roman is a software developer, not a game developer: explain every game-design term the first time it comes up, and keep technical terms but leave code detail out.
+- **Numbers are powers of two.** A number that tunes something (a distance, a radius, a count, a rate) is a power of two, 4, 8, 16, 32, 64 and so on, or a sum of two, such as 128 + 64 = 192. A number that means something stays as it is: time people read (half a minute, five minutes, 22:00), shares that read as shares (two thirds of the team), counts the story sets (twelve shards, four doors), and facts about vanilla or a mod.
 - **Check it against the ground.** An option that breaks a ground truth or a Settled decision says which, and why it is worth it anyway.
 - **Recommend one.** Lead with it and its reason, then ask with the `questionnaire` tool.
 
@@ -24,8 +26,8 @@ description: Run a Wayfarer design session - take the next open question in desi
 
 - The answer goes under Settled in its document: the decision as the player meets it, then **Why** in one or two sentences. It leaves Open.
 - Questions the answer raises go under Open with the next free number, or under the decision with the phase that settles them.
-- A Settled decision changes only when the user reopens it; it then goes back to Open with what reopened it.
-- `design/lore.md` stays true to the pack as it ships until phase 2 rewrites it from `story.md`.
+- A Settled decision changes only when the user reopens it; it then goes back to Open with what reopened it. A new direction the user gives reopens whatever it contradicts: carry it back through every older decision, quest and document it touches, rewrite them to fit, and say which.
+- `design/lore.md` is written from `story.md` and changes with it.
 - Update Next in `design/README.md`. When a phase's done-when holds, propose the next phase; the user moves it.
 
 ## Bounds
