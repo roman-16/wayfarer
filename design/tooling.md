@@ -52,7 +52,7 @@ How the pack is seen, tried and built. Coding agents build most of it, so the to
 
 **Why:** Coding agents build most of the pack, so every loop from a change to seeing it has to be as short as the change allows and never wait on a guess. The server is where the new systems live, a team is a ground truth, and logic tested without a world is tested in seconds.
 
-It raises, for the first spike: that the JetBrains runtime swaps code into the dev runs, and that fake players can vote and join.
+It raises, for the first spike: that pretend players can vote, once votes exist.
 
 ### T3 Making creatures, items and their pictures
 
@@ -83,7 +83,8 @@ What an agent has to build and look with, beyond T1 and T2:
 - **Searches skip what is generated.** An ignore file keeps `build/`, `mod/build`, `mod/run`, `.devbox` and `dist` out of every search by default, so an agent's context is not spent on built files; `build/sources` is searched on purpose.
 - **Every failure says how to fix it,** as `scripts/audit.py` already does.
 - **Project skills.** Each system gets a skill of its own when it is built: how the Wayfarer mod is laid out and tested, how the generator builds structures, how the workshop loop runs.
-- **A virtual screen.** The dev client runs on a virtual screen by default, as HeadlessMC does, so an agent never takes over the user's display and can run beside them, even two at once; `--visible` puts it on the user's screen. Whether rendering there is fast enough without the GPU is not tried.
+- **A virtual screen.** The dev client runs on a virtual screen by default, as HeadlessMC does, so an agent never takes over the user's display and can run beside them, even two at once; `--visible` puts it on the user's screen. It draws in software, and with the test settings below it runs about as fast as the graphics card does with the pack's full look.
+- **Test settings.** Every local dev client, the showroom, a fresh world and every tour, runs without shaders, without Distant Horizons and at 8 chunks, laid over the pack's configs only in the dev client's folder; the shipped pack keeps its shaders, its far view and 12 chunks, and they are judged in the exported pack.
 
 The gates stay local: `just lint` and `just test` run on the machine, not on GitHub.
 

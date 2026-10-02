@@ -2,8 +2,9 @@
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.17.5/.schema/devbox.schema.json",
   "packages": {
     "alsa-lib": "latest",
+    "github:NixOS/nixpkgs/01fbdeef22b76df85ea168fbfe1bfd9e63681b30#mesa": "",
     "imagemagick": "latest",
-    "jdk": "21",
+    "jetbrains.jdk-no-jcef": "21.0.9-b1163.86",
     "just": "latest",
     "libGL": "latest",
     "libpulseaudio": "latest",
@@ -17,7 +18,8 @@
     "xorg.libXext": "latest",
     "xorg.libXi": "latest",
     "xorg.libXrandr": "latest",
-    "xorg.libXxf86vm": "latest"
+    "xorg.libXxf86vm": "latest",
+    "xvfb": "latest"
   },
   "shell": {
     "init_hook": [

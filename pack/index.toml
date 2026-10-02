@@ -114,7 +114,7 @@ hash = "24465ad2580782224a8df3cf17fb2ea69ddad4e3bc8c8be2ccb395972faaabe8"
 
 [[files]]
 file = "config/ftbquests/quests/chapters/road.snbt"
-hash = "4e9cc5658505e8ce759fe4edc21ab3f58056b8de39fc7f0c7eab127ba15e2dfd"
+hash = "6532274531ed1b5890b05cb6dff1b04ac0adf57b51760b745f0ba2f51edd828b"
 
 [[files]]
 file = "config/ftbquests/quests/chapters/sea.snbt"
@@ -134,7 +134,7 @@ hash = "f5d82f6dc6effa6595748e5bf306c1d482cec1ab7ac8303406d9b66d6c4a8894"
 
 [[files]]
 file = "config/ftbquests/quests/lang/en_us.snbt"
-hash = "b3d688a7b3351d70e0b90aaacd03aecad33a8f0fbda853a34aeb46b36a9a666c"
+hash = "c5cd8b52749d5c256c5e43b99246637d06aedba3d52842088f81c406c95d944b"
 
 [[files]]
 file = "config/gravestone-server.toml"

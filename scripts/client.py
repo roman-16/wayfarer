@@ -1,4 +1,5 @@
 import argparse
+import contextlib
 import json
 import math
 import os
@@ -9,19 +10,35 @@ import sys
 import time
 from pathlib import Path
 
+import hotswap
+from drive import Failure, crashes, running
+
 ROOT = Path(__file__).resolve().parent.parent
 CLIENT = ROOT / "build/client"
 DRIVER = CLIENT / "driver"
 LAUNCHER = DRIVER / "launcher.pid"
 GAME = DRIVER / "game.pid"
+SCREEN = DRIVER / "screen.pid"
+SNAPSHOT = DRIVER / "classes.json"
+SCREEN_SIZE = "1280x720x24"
 LAUNCH_LOG = CLIENT / "launch.log"
 CRASHES = CLIENT / "crash-reports"
+DISPLAY_FAILED = "Failed to initialize the mod loading system and display"
 ABORT_SECONDS = 30
 START_SECONDS = 900
 STOP_SECONDS = 120
 CHECK_SECONDS = 0.1
 TOUR = ROOT / "mod/src/generated/dev/wayfarer/tour.json"
 SHEETS = CLIENT / "tour"
+WORKSHOP_SHEETS = CLIENT / "workshop"
+WORKSHOP = "wayfarer:workshop"
+BOUNDS = re.compile(r"workshop bounds: (-?\d+) (-?\d+) (-?\d+) (-?\d+) (-?\d+) (-?\d+)")
+FIELD_OF_VIEW = 70
+ASPECT = 1280 / 720
+FRAMING = 1.1
+NOTE = re.compile(r"([a-z]+): (.*)")
+STATE = "state: "
+SIDES = {"front": (0, 0, 1), "side": (1, 0, 0), "above": (0, 1, 0.001), "three-quarters": (0.6, 1.0, 0.6)}
 SCREENSHOTS = CLIENT / "screenshots"
 FOUND = re.compile(r"found \d+ \S+ within \d+: (-?\d+) (-?\d+) (-?\d+)")
 EYE_HEIGHT = 1.62
@@ -30,31 +47,8 @@ SOUTH, WEST, NORTH, EAST = (0, 1), (-1, 0), (0, -1), (1, 0)
 SETTLE = ["settle", "wait 10"]
 
 
-def running(pid_file):
-    if not pid_file.exists():
-        return False
-    try:
-        pid = int(pid_file.read_text())
-    except ValueError:
-        return False
-    try:
-        if os.waitpid(pid, os.WNOHANG)[0] == pid:
-            return False
-    except ChildProcessError:
-        pass
-    try:
-        os.kill(pid, 0)
-    except ProcessLookupError:
-        return False
-    return True
-
-
 def alive():
     return running(LAUNCHER) or running(GAME)
-
-
-def crashes():
-    return set(CRASHES.glob("*.txt")) if CRASHES.exists() else set()
 
 
 def wait_done(timeout, before):
@@ -65,12 +59,14 @@ def wait_done(timeout, before):
             text = done.read_text()
             done.unlink()
             return text
-        new = sorted(crashes() - before)
+        new = sorted(crashes(CRASHES) - before)
         if new:
             sys.exit(f"the client crashed; report in {new[0]}\n{new[0].read_text()[:4000]}")
+        launched = LAUNCH_LOG.read_text(errors="replace") if LAUNCH_LOG.exists() else ""
+        if DISPLAY_FAILED in launched:
+            sys.exit(f"the client could not open its window; launch log {LAUNCH_LOG}\n{launched[-4000:]}")
         if not alive():
-            tail = LAUNCH_LOG.read_text()[-4000:] if LAUNCH_LOG.exists() else ""
-            sys.exit(f"the client is not running; launch log {LAUNCH_LOG}\n{tail}")
+            sys.exit(f"the client is not running; launch log {LAUNCH_LOG}\n{launched[-4000:]}")
         time.sleep(CHECK_SECONDS)
     (DRIVER / "abort").touch()
     report = done.read_text() if done.exists() else ""
@@ -81,19 +77,91 @@ def wait_done(timeout, before):
     sys.exit(f"the driver did not finish within {timeout} s and was aborted; its log:\n{report}")
 
 
-def launch(fresh, timeout):
+def screen(visible):
+    environment = dict(os.environ)
+    if visible:
+        return environment
+    ready, announce = os.pipe()
+    process = subprocess.Popen(
+        ["Xvfb", "-displayfd", str(announce), "-screen", "0", SCREEN_SIZE, "-nolisten", "tcp"],
+        pass_fds=(announce,),
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+    os.close(announce)
+    with os.fdopen(ready) as stream:
+        display = stream.readline().strip()
+    if not display:
+        sys.exit("the hidden screen (Xvfb) did not start; run with --visible to use the real one")
+    SCREEN.write_text(str(process.pid))
+    environment.pop("WAYLAND_DISPLAY", None)
+    return environment | {
+        "ALSOFT_DRIVERS": "null",
+        "DISPLAY": f":{display}",
+        "XDG_SESSION_TYPE": "x11",
+        "__GLX_VENDOR_LIBRARY_NAME": "mesa",
+    }
+
+
+def games():
+    for process in Path("/proc").iterdir():
+        if process.name.isdigit():
+            try:
+                if (process / "cwd").resolve() == CLIENT:
+                    yield int(process.name)
+            except OSError:
+                continue
+
+
+def release_screen():
+    if running(SCREEN):
+        pid = int(SCREEN.read_text())
+        os.kill(pid, signal.SIGTERM)
+        deadline = time.monotonic() + STOP_SECONDS
+        while running(SCREEN) and time.monotonic() < deadline:
+            time.sleep(CHECK_SECONDS)
+        if running(SCREEN):
+            os.kill(pid, signal.SIGKILL)
+    SCREEN.unlink(missing_ok=True)
+
+
+def launch(fresh, timeout, visible, lean=False):
     DRIVER.mkdir(parents=True, exist_ok=True)
     for stale in ("abort", "commands.txt", "done.txt", "game.pid", "quit"):
         (DRIVER / stale).unlink(missing_ok=True)
-    before = crashes()
-    command = ["just", "play" if fresh else "showroom"]
+    release_screen()
+    before = crashes(CRASHES)
+    command = ["just", "play" if fresh else "showroom", "lean" if lean else "full"]
+    environment = screen(visible)
     with LAUNCH_LOG.open("w") as log:
-        process = subprocess.Popen(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
+        process = subprocess.Popen(
+            command,
+            cwd=ROOT,
+            env=environment,
+            stdin=subprocess.DEVNULL,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+        )
     LAUNCHER.write_text(str(process.pid))
-    report = wait_done(timeout, before)
+    try:
+        report = wait_done(timeout, before)
+    except SystemExit:
+        with contextlib.suppress(ProcessLookupError):
+            os.killpg(process.pid, signal.SIGKILL)
+        for pid in games():
+            with contextlib.suppress(ProcessLookupError):
+                os.kill(pid, signal.SIGKILL)
+        release_screen()
+        raise
+    hotswap.remember(SNAPSHOT)
     errors = [line for line in report.splitlines() if line.startswith("error:")]
     world = "a fresh natural world" if fresh else "the showroom"
-    print(f"the client is running in {world} ({len(report.splitlines())} log lines, {len(errors)} errors)")
+    where = ("on the user's screen" if visible else "on a hidden screen") + (
+        ", with only the Wayfarer mod" if lean else ""
+    )
+    print(f"the client is running in {world} {where} ({len(report.splitlines())} log lines, {len(errors)} errors)")
     print("\n".join(errors))
 
 
@@ -101,13 +169,13 @@ def start(arguments):
     if alive():
         print("the client is already running")
         return
-    launch(arguments.fresh, arguments.timeout)
+    launch(arguments.fresh, arguments.timeout, arguments.visible, arguments.lean)
 
 
 def batch(steps, timeout):
     if not alive():
         sys.exit("the client is not running; start it with: python3 scripts/client.py start")
-    before = crashes()
+    before = crashes(CRASHES)
     partial = DRIVER / "commands.tmp"
     partial.write_text("\n".join(steps) + "\n")
     partial.replace(DRIVER / "commands.txt")
@@ -116,15 +184,117 @@ def batch(steps, timeout):
 
 def run(arguments):
     steps = arguments.steps or [line for line in sys.stdin.read().splitlines() if line.strip()]
-    print(batch(steps, arguments.timeout), end="")
+    local = {"compare": compare, "views": views}
+    pending = []
+
+    def flush():
+        if pending:
+            for entry in parse(batch(pending, arguments.timeout)):
+                print(json.dumps(entry), flush=True)
+            pending.clear()
+
+    for step in steps:
+        verb = step.split(" ", 1)[0]
+        if verb in local:
+            flush()
+            print(json.dumps(local[verb](step, arguments.timeout)), flush=True)
+        else:
+            pending.append(step)
+    flush()
 
 
-def view(name, at, look):
+def parse(report):
+    entries = []
+    for line in report.splitlines():
+        if line.startswith("> "):
+            entries.append({"step": line.removeprefix("> ")})
+            continue
+        if not entries:
+            entries.append({"step": None})
+        found = NOTE.fullmatch(line)
+        key, value = found.groups() if found else ("note", line)
+        if key == "chat" and value.startswith(STATE):
+            entries[-1]["state"] = json.loads(value.removeprefix(STATE))
+            continue
+        entries[-1].setdefault(key, []).append(json.loads(value) if key == "inspect" else value)
+    return entries
+
+
+def compare(step, timeout):
+    names = step.split()[1:]
+    if len(names) != 2:
+        return {"step": step, "error": ["compare takes the names of two screenshots"]}
+    first, second = (SCREENSHOTS / f"{name}.png" for name in names)
+    difference = SCREENSHOTS / f"compare-{names[0]}-{names[1]}.png"
+    result = subprocess.run(
+        ["magick", "compare", "-metric", "AE", "-fuzz", "2%", str(first), str(second), str(difference)],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode > 1:
+        return {"step": step, "error": [result.stderr.strip()]}
+    width, height = subprocess.run(
+        ["magick", "identify", "-format", "%w %h", str(first)], capture_output=True, check=True, text=True
+    ).stdout.split()
+    pixels = int(float(result.stderr.split()[0]))
+    share = 100 * pixels / (int(width) * int(height))
+    return {"step": step, "differing": f"{share:.2f}%", "pixels": pixels, "difference": str(difference)}
+
+
+def views(step, timeout):
+    name = step.removeprefix("views ").strip()
+    report = batch(["/wayfarer workshop bounds"], timeout)
+    found = BOUNDS.search(report)
+    if not found:
+        return {"step": step, "error": ["views needs something in the workshop"], "driver": parse(report)}
+    low, high = [int(value) for value in found.groups()[:3]], [int(value) + 1 for value in found.groups()[3:]]
+    centre = [(low[axis] + high[axis]) / 2 for axis in range(3)]
+    corners = [[(low, high)[(index >> axis) & 1][axis] - centre[axis] for axis in range(3)] for index in range(8)]
+    steps = ["gui off", "/gamemode spectator"]
+    for label, direction in SIDES.items():
+        distance = framed(direction, corners)
+        length = math.hypot(*direction)
+        eye = [centre[axis] + direction[axis] / length * distance for axis in range(3)]
+        steps += view(f"workshop-{name}-{label}", (eye[0], eye[1] - EYE_HEIGHT, eye[2]), centre, WORKSHOP)
+    entries = parse(batch([*steps, "/gamemode creative", "gui on"], timeout))
+    target = sheet(WORKSHOP_SHEETS / f"{name}.jpg", [(label, f"workshop-{name}-{label}") for label in SIDES], "2x")
+    errors = [error for entry in entries for error in entry.get("error", [])]
+    return {"step": step, "sheet": str(target)} | ({"error": errors} if errors else {})
+
+
+def framed(direction, corners):
+    length = math.hypot(*direction)
+    back = [component / length for component in direction]
+    right = [back[2], 0.0, -back[0]]
+    if math.hypot(*right) < 1e-3:
+        right = [1.0, 0.0, 0.0]
+    right = [component / math.hypot(*right) for component in right]
+    up = [
+        back[1] * right[2] - back[2] * right[1],
+        back[2] * right[0] - back[0] * right[2],
+        back[0] * right[1] - back[1] * right[0],
+    ]
+    tall = math.tan(math.radians(FIELD_OF_VIEW / 2))
+    wide = tall * ASPECT
+    needed = 1.0
+    for corner in corners:
+        sideways = abs(sum(corner[axis] * right[axis] for axis in range(3)))
+        upwards = abs(sum(corner[axis] * up[axis] for axis in range(3)))
+        nearer = sum(corner[axis] * back[axis] for axis in range(3))
+        needed = max(needed, nearer + max(sideways / wide, upwards / tall) * FRAMING)
+    return needed
+
+
+def view(shot, at, look, world):
     eye = (at[0], at[1] + EYE_HEIGHT, at[2])
     dx, dy, dz = look[0] - eye[0], look[1] - eye[1], look[2] - eye[2]
     yaw = math.degrees(math.atan2(-dx, dz))
     pitch = -math.degrees(math.atan2(dy, math.hypot(dx, dz)))
-    return [f"/tp @s {at[0]:.2f} {at[1]:.2f} {at[2]:.2f} {yaw:.1f} {pitch:.1f}", *SETTLE, f"shot tour-{name}"]
+    return [
+        f"/execute in {world} run tp @s {at[0]:.2f} {at[1]:.2f} {at[2]:.2f} {yaw:.1f} {pitch:.1f}",
+        *SETTLE,
+        f"shot {shot}",
+    ]
 
 
 def offset(origin, local):
@@ -153,7 +323,7 @@ def descent(style, exit):
     return ((2.5, 2.5), (2.5, 3.5))
 
 
-def shrine_views(shrine, pedestal, surface):
+def shrine_cameras(shrine, pedestal, surface):
     origin = [pedestal[axis] - shrine["pedestal"][axis] for axis in range(3)]
     door_x, door_y, door_z = shrine["door"]
     floor = origin[1] + door_y
@@ -164,7 +334,7 @@ def shrine_views(shrine, pedestal, surface):
     middle = size / 2
     centre = [shaft[0] + middle, surface + 2, shaft[2] + middle]
     side = (-ez, ex)
-    views = {
+    cameras = {
         "outside": ([centre[0] + ex * 13 + side[0] * 5, surface + 2, centre[2] + ez * 13 + side[1] * 5], centre),
         "above": ([centre[0] - 12, surface + 16, centre[2] + 12], [centre[0], surface, centre[2]]),
         "entrance": ([centre[0] + ex * 6, surface, centre[2] + ez * 6], [centre[0], surface, centre[2]]),
@@ -179,19 +349,18 @@ def shrine_views(shrine, pedestal, surface):
         "stair-door": ([shaft[0] + middle, floor, shaft[2] + 2.5], [shaft[0] + middle, floor + 1.5, shaft[2] - 6]),
     }
     for camera in shrine["cameras"]:
-        views[camera["name"]] = (offset(origin, camera["at"]), offset(origin, camera["look"]))
-    return views
+        cameras[camera["name"]] = (offset(origin, camera["at"]), offset(origin, camera["look"]))
+    return cameras
 
 
-def sheet(subject, names):
-    SHEETS.mkdir(parents=True, exist_ok=True)
+def sheet(target, shots, tile):
+    target.parent.mkdir(parents=True, exist_ok=True)
     font = subprocess.run(
         ["fc-match", "--format", "%{file}", "sans"], capture_output=True, check=True, text=True
     ).stdout
     arguments = ["-font", font, "-pointsize", "22", "-background", "#202020", "-fill", "white"]
-    for name in names:
-        arguments += ["-label", name, str(SCREENSHOTS / f"tour-{subject}-{name}.png")]
-    target = SHEETS / f"{subject}.jpg"
+    for label, shot in shots:
+        arguments += ["-label", label, str(SCREENSHOTS / f"{shot}.png")]
     subprocess.run(
         [
             "magick",
@@ -200,7 +369,7 @@ def sheet(subject, names):
             "-geometry",
             "640x360+4+4",
             "-tile",
-            "3x",
+            tile,
             "-quality",
             "82",
             str(target),
@@ -213,7 +382,7 @@ def sheet(subject, names):
 def tour(arguments):
     if alive():
         shut(STOP_SECONDS)
-    launch(False, START_SECONDS)
+    launch(False, START_SECONDS, arguments.visible)
     try:
         photograph(arguments)
     finally:
@@ -239,7 +408,7 @@ def photograph(arguments):
         sys.exit(f"found {len(found)} pedestals for {len(shrines)} shrines; the showroom does not match the generator")
     subjects = {}
     for shrine, pedestal in zip(shrines, found, strict=True):
-        subjects[shrine["eye"]] = shrine_views(shrine, pedestal, surface)
+        subjects[shrine["eye"]] = shrine_cameras(shrine, pedestal, surface)
     if not arguments.subjects or "camp" in arguments.subjects:
         origin = plan["camp"]["origin"]
         subjects["camp"] = {
@@ -247,12 +416,21 @@ def photograph(arguments):
             for camera in plan["camp"]["cameras"]
         }
     steps = []
-    for subject, views in subjects.items():
-        for name, (at, look) in views.items():
-            steps += view(f"{subject}-{name}", at, look)
+    for subject, cameras in subjects.items():
+        for name, (at, look) in cameras.items():
+            steps += view(f"tour-{subject}-{name}", at, look, "wayfarer:showroom")
     batch(steps + ["/gamemode creative", "gui on"], arguments.timeout)
-    for subject, views in subjects.items():
-        print(sheet(subject, list(views)))
+    for subject, cameras in subjects.items():
+        print(sheet(SHEETS / f"{subject}.jpg", [(name, f"tour-{subject}-{name}") for name in cameras], "3x"))
+
+
+def swap(arguments):
+    if not alive():
+        sys.exit("the client is not running; start it with: python3 scripts/client.py start")
+    try:
+        print(json.dumps(hotswap.swap(hotswap.port("client_swap_port"), SNAPSHOT)))
+    except Failure as failure:
+        sys.exit(str(failure))
 
 
 def stop(arguments):
@@ -273,6 +451,7 @@ def shut(timeout):
     for pid_file in (GAME, LAUNCHER):
         pid_file.unlink(missing_ok=True)
     (DRIVER / "quit").unlink(missing_ok=True)
+    release_screen()
     print("the client has exited")
 
 
@@ -286,11 +465,21 @@ def main():
     )
     start_parser.add_argument("--fresh", action="store_true", help="open a fresh natural world instead of the showroom")
     start_parser.add_argument("--timeout", type=int, default=START_SECONDS)
+    start_parser.add_argument(
+        "--visible", action="store_true", help="show the game on the user's screen instead of a hidden one"
+    )
+    start_parser.add_argument(
+        "--lean", action="store_true", help="load only the Wayfarer mod and what it needs, in worlds of its own"
+    )
     run_parser = commands.add_parser(
         "run", help="run driver steps (arguments, or one per line on stdin) and print their log"
     )
     run_parser.add_argument("steps", nargs="*")
     run_parser.add_argument("--timeout", type=int, default=600)
+    commands.add_parser(
+        "swap",
+        help="compile the Wayfarer mod and swap every changed class into the running client; prints one line of JSON",
+    )
     stop_parser = commands.add_parser("stop", help="quit the client; returns once it has exited")
     stop_parser.add_argument("--timeout", type=int, default=STOP_SECONDS)
     tour_parser = commands.add_parser(
@@ -300,8 +489,11 @@ def main():
     )
     tour_parser.add_argument("subjects", nargs="*", help="eyes (and camp) to photograph; all when none are named")
     tour_parser.add_argument("--timeout", type=int, default=1800)
+    tour_parser.add_argument(
+        "--visible", action="store_true", help="show the game on the user's screen instead of a hidden one"
+    )
     arguments = parser.parse_args()
-    {"run": run, "start": start, "stop": stop, "tour": tour}[arguments.command](arguments)
+    {"run": run, "start": start, "stop": stop, "swap": swap, "tour": tour}[arguments.command](arguments)
 
 
 main()

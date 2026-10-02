@@ -52,11 +52,11 @@ pack: build
     python3 scripts/instance.py server build/server {{ jar }}
     python3 -c 'import shutil, sys; shutil.make_archive(sys.argv[1], "zip", sys.argv[2])' "dist/Wayfarer-{{ packVersion }}-server" build/server
 
-[doc("Open the pack in a dev client on a fresh natural world, played in survival the way a player meets it")]
-play:
-    python3 scripts/instance.py client build/client
-    rm --recursive --force build/client/saves/play
-    cd mod && LD_LIBRARY_PATH="$DEVBOX_PACKAGES_DIR/lib:/run/opengl-driver/lib" ./gradlew runPlay
+[doc("Open the pack in a dev client on a fresh natural world, played in survival the way a player meets it; `just play lean` loads only the Wayfarer mod and what it needs, in a world of its own")]
+play mode="full":
+    python3 scripts/instance.py client build/client --mode {{ mode }}
+    rm --recursive --force build/client/saves/play{{ if mode == "lean" { "-lean" } else { "" } }}
+    cd mod && WAYFARER_LEAN={{ if mode == "lean" { "true" } else { "false" } }} LD_LIBRARY_PATH="$DEVBOX_PACKAGES_DIR/lib:/run/opengl-driver/lib" ./gradlew runPlay
 
 [doc("Run the pack's dedicated server locally")]
 server: build
@@ -68,11 +68,17 @@ survey apply="": build
     python3 scripts/instance.py server build/server {{ jar }}
     python3 scripts/boot.py build/server --survey 4 {{ if apply == "apply" { "--apply" } else { "" } }}
 
-[doc("Open the pack in a dev client in the showroom: a flat dimension rebuilt each launch with every shrine and item and a compass demo, beside a kept natural world")]
-showroom:
-    python3 scripts/instance.py client build/client
-    rm --recursive --force build/client/saves/showroom/dimensions/wayfarer/showroom
-    cd mod && LD_LIBRARY_PATH="$DEVBOX_PACKAGES_DIR/lib:/run/opengl-driver/lib" ./gradlew runShowroom
+[doc("Open the pack in a dev client in the showroom: a flat dimension rebuilt each launch with every shrine and item and a compass demo, beside an empty workshop and a kept natural world; `just showroom lean` loads only the Wayfarer mod and what it needs, in a save of its own")]
+showroom mode="full":
+    python3 scripts/instance.py client build/client --mode {{ mode }}
+    rm --recursive --force build/client/saves/showroom{{ if mode == "lean" { "-lean" } else { "" } }}/dimensions/wayfarer/{showroom,workshop}
+    cd mod && WAYFARER_LEAN={{ if mode == "lean" { "true" } else { "false" } }} LD_LIBRARY_PATH="$DEVBOX_PACKAGES_DIR/lib:/run/opengl-driver/lib" ./gradlew runShowroom
+
+[doc("Write everything the pack contains, from every mod, into build/reports/: every registry with its entries, the content of every data-driven one, every tag and every recipe; starts the dev server and stops it after")]
+registries:
+    python3 scripts/server.py start
+    python3 scripts/server.py run "wayfarer registries {{ justfile_directory() }}/build/reports"
+    python3 scripts/server.py stop
 
 [doc("Unpack Minecraft's and NeoForge's code with Parchment names and every mod decompiled with Vineflower into build/sources/, for searching with rg; only what changed is redone")]
 sources:

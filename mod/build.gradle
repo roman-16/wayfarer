@@ -51,6 +51,10 @@ repositories {
     }
 }
 
+static List<String> swappable(String port) {
+    ['-XX:+AllowEnhancedClassRedefinition', "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=127.0.0.1:${port}".toString()]
+}
+
 neoForge {
     version = neo_version
     addModdingDependenciesTo sourceSets.dev
@@ -69,13 +73,29 @@ neoForge {
                 client()
                 gameDirectory = file('../build/client')
                 jvmArgument '-Xmx8G'
+                jvmArguments.addAll swappable(client_swap_port)
                 programArguments.addAll '--height', '720', '--username', 'Wayfarer', '--width', '1280'
                 sourceSet = sourceSets.dev
                 systemProperty "${mod_id}.showroom", showroom.toString()
+                systemProperty "${mod_id}.lean", providers.environmentVariable('WAYFARER_LEAN').orElse('false').get()
+                ['ALSOFT_DRIVERS', 'DISPLAY', 'XDG_SESSION_TYPE', '__GLX_VENDOR_LIBRARY_NAME'].each { variable ->
+                    String value = providers.environmentVariable(variable).orNull
+                    if (value != null) {
+                        environment.put(variable, value)
+                    }
+                }
             }
         }
         gameTestServer {
             type = 'gameTestServer'
+            sourceSet = sourceSets.dev
+        }
+        server {
+            server()
+            gameDirectory = file('../build/devserver')
+            jvmArgument '-Xmx8G'
+            jvmArguments.addAll swappable(server_swap_port)
+            programArguments.add '--nogui'
             sourceSet = sourceSets.dev
         }
     }
@@ -105,6 +125,10 @@ dependencies {
     implementation "dev.ftb.mods:ftb-teams-neoforge:${ftb_teams_version}"
     implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
     vineflower "org.vineflower:vineflower:${vineflower_version}"
+}
+
+tasks.matching { it.name == 'runServer' }.configureEach {
+    standardInput = System.in
 }
 
 tasks.register('vineflower', Sync) {
@@ -140,5 +164,5 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-    options.compilerArgs << '-Xlint:all' << '-Werror'
+    options.compilerArgs << '-Xlint:all' << '-Xlint:-classfile' << '-Werror'
 }

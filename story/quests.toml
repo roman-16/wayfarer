@@ -179,12 +179,12 @@ y = 0.0
 after = ["last_fire"]
 description = [
   "Cliffs and ravines cost a Wayfarer days. A hook costs seconds.",
-  "Make a copper grappling hook.",
+  "Make an iron grappling hook.",
 ]
-id = "hook_copper"
-rewards = [{ xp_levels = 3 }]
+id = "hook_iron"
+rewards = [{ xp_levels = 5 }]
 subtitle = "A hook costs seconds"
-tasks = [{ item = "yo_hooks:copper_grappling_hook" }]
+tasks = [{ item = "yo_hooks:iron_grappling_hook" }]
 title = "Up Without Climbing"
 x = 3.0
 y = 0.0
@@ -271,20 +271,6 @@ subtitle = "A gift without weight"
 tasks = [{ item = "silentgear:ring" }]
 title = "A Ring"
 x = 1.5
-y = 1.5
-
-[[chapters.quests]]
-after = ["hook_copper"]
-description = [
-  "An iron hook reaches further and holds a heavier climber.",
-  "Make an iron grappling hook.",
-]
-id = "hook_iron"
-rewards = [{ xp_levels = 5 }]
-subtitle = "Further and harder"
-tasks = [{ item = "yo_hooks:iron_grappling_hook" }]
-title = "A Stronger Hook"
-x = 3.0
 y = 1.5
 
 [[chapters.quests]]

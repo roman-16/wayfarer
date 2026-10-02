@@ -1108,13 +1108,6 @@
 	]
 	"quest.59A94CF76A50E7E5.quest_subtitle": "Flaring, guttering"
 	"quest.59A94CF76A50E7E5.title": "The Ember Wakes"
-	"quest.5BB8A509B4ABAD77.quest_desc": [
-		"Cliffs and ravines cost a Wayfarer days. A hook costs seconds."
-		""
-		"Make a copper grappling hook."
-	]
-	"quest.5BB8A509B4ABAD77.quest_subtitle": "A hook costs seconds"
-	"quest.5BB8A509B4ABAD77.title": "Up Without Climbing"
 	"quest.5C6CBC7F375F0DCB.quest_desc": [
 		"You set the Eye and killed the half-blind dragon. The ember went out, and nothing is watching any more."
 	]
@@ -1351,12 +1344,12 @@
 	"quest.72A6CF8828A368B6.quest_subtitle": "The stranger"
 	"quest.72A6CF8828A368B6.title": "It Isn't Cruel"
 	"quest.7365C5A34444A8D2.quest_desc": [
-		"An iron hook reaches further and holds a heavier climber."
+		"Cliffs and ravines cost a Wayfarer days. A hook costs seconds."
 		""
 		"Make an iron grappling hook."
 	]
-	"quest.7365C5A34444A8D2.quest_subtitle": "Further and harder"
-	"quest.7365C5A34444A8D2.title": "A Stronger Hook"
+	"quest.7365C5A34444A8D2.quest_subtitle": "A hook costs seconds"
+	"quest.7365C5A34444A8D2.title": "Up Without Climbing"
 	"quest.737D95C88679C657.quest_desc": [
 		"The ember is always hungry, and a feeding upgrade feeds it before you notice."
 		""

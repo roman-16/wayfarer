@@ -43,13 +43,15 @@ To play the pack the way a player meets it, on a fresh world in survival:
 $ just play
 ```
 
+Both dev clients run without shaders, without Distant Horizons and at 8 chunks, so they start and run fast; the exported pack keeps all three. `just showroom lean` and `just play lean` load only the Wayfarer mod and the few mods it needs, in worlds of their own, for work on the mod itself.
+
 To play on this machine's own dedicated server:
 
 ```console
 $ just server
 ```
 
-Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftEULA): `just server` and `just test` write `eula=true` for you.
+Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftEULA): `just server`, `just test` and `scripts/server.py` write `eula=true` for you.
 
 ## Tasks
 
@@ -63,9 +65,10 @@ Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftE
 | `just generate` | Regenerates the shrines, structure sets, templates, removals, textures and the quest book |
 | `just lint` | Fixes and formats everything, then checks the pack's rules |
 | `just pack` | Exports the client zip and the server pack |
-| `just play` | Opens the pack in a dev client on a fresh natural world, in survival |
+| `just play` | Opens the pack in a dev client on a fresh natural world, in survival; `just play lean` with only the Wayfarer mod |
+| `just registries` | Writes every registry, tag and recipe of the running pack, from every mod, into `build/reports/` |
 | `just server` | Runs the pack's dedicated server locally |
-| `just showroom` | Opens the pack in a creative dev client, in the showroom, with the compass demo |
+| `just showroom` | Opens the pack in a creative dev client, in the showroom, with the compass demo; `just showroom lean` with only the Wayfarer mod |
 | `just sources` | Unpacks Minecraft's and NeoForge's code and every mod, decompiled, into `build/sources/` for searching |
 | `just survey` | Walks journeys through five fixed worlds at once, always to the nearest shrine not yet taken, and prints each tier's legs in blocks and minutes on foot against the targets in `balance.toml`; `just survey apply` writes tuned spacings |
 | `just test` | Runs `just gametest`, then `just boot` |
@@ -80,5 +83,5 @@ Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftE
 | `generator/` | The structure generator (the twelve halls, their surface covers, the Last Camp and the stranger's old camps), the twelve eyes, their peoples' places and each tier's shrine spacing (`eyes.toml`), the recipe and structure removals, the Nether audit list and the features accepted as natural |
 | `mod/` | The Wayfarer mod (NeoForge, Java 21); `src/dev` holds the game tests and the dev client's driver, which never ship |
 | `pack/` | The packwiz pack: one file per mod, and the pack's configs |
-| `scripts/` | The server pack builder, the boot test, the Nether, portal, load order, structure removal and feature audit, the rule checks, the dev client driver with its screenshot tour, the sources unpacker and the exaroton recorder |
+| `scripts/` | The server pack builder, the boot test, the Nether, portal, load order, structure removal and feature audit, the rule checks, the dev client driver with its screenshot tour, the dev server driver and the library both drivers share, the sources unpacker and the exaroton recorder |
 | `story/` | The books (`books.toml`), the voice at the fire, Maren and the leads (`fire.toml`), the journal's summary and word list (`notes.toml`) and the quest book (`quests.toml`) |

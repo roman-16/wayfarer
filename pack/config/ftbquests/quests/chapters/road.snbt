@@ -117,20 +117,20 @@
 			dependencies: [
 				"1F1980B9A1FF2B71"
 			]
-			id: "5BB8A509B4ABAD77"
+			id: "7365C5A34444A8D2"
 			rewards: [
 				{
-					id: "1301FF9218966621"
+					id: "7C99D70A677870FF"
 					type: "xp_levels"
-					xp_levels: 3
+					xp_levels: 5
 				}
 			]
 			tasks: [
 				{
-					id: "0015243478788BAD"
+					id: "6A564B2B9A48159D"
 					item: {
 						count: 1
-						id: "yo_hooks:copper_grappling_hook"
+						id: "yo_hooks:iron_grappling_hook"
 					}
 					type: "item"
 				}
@@ -310,31 +310,6 @@
 				}
 			]
 			x: 1.5d
-			y: 1.5d
-		}
-		{
-			dependencies: [
-				"5BB8A509B4ABAD77"
-			]
-			id: "7365C5A34444A8D2"
-			rewards: [
-				{
-					id: "7C99D70A677870FF"
-					type: "xp_levels"
-					xp_levels: 5
-				}
-			]
-			tasks: [
-				{
-					id: "6A564B2B9A48159D"
-					item: {
-						count: 1
-						id: "yo_hooks:iron_grappling_hook"
-					}
-					type: "item"
-				}
-			]
-			x: 3.0d
 			y: 1.5d
 		}
 		{

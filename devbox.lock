@@ -37,6 +37,10 @@
         }
       }
     },
+    "github:NixOS/nixpkgs/01fbdeef22b76df85ea168fbfe1bfd9e63681b30#mesa": {
+      "last_modified": "1970-01-01T00:00:00Z",
+      "resolved": "github:NixOS/nixpkgs/01fbdeef22b76df85ea168fbfe1bfd9e63681b30#mesa"
+    },
     "github:NixOS/nixpkgs/nixpkgs-unstable": {
       "last_modified": "2026-09-28T04:45:22Z",
       "resolved": "github:NixOS/nixpkgs/419fe0f449b3fbe3bdd53d9840288db4509ec32e?lastModified=1790570722&narHash=sha256-Avcz96Q%2B8OkfUIUXipBBVsQn19L622BtKP7mk6M%2Buls%3D"
@@ -103,39 +107,39 @@
         }
       }
     },
-    "jdk@21": {
-      "last_modified": "2025-10-22T20:59:19Z",
-      "resolved": "github:NixOS/nixpkgs/01b6809f7f9d1183a2b3e081f0a1e6f8f415cb09#jdk",
+    "jetbrains.jdk-no-jcef@21.0.9-b1163.86": {
+      "last_modified": "2026-04-23T13:07:47Z",
+      "resolved": "github:NixOS/nixpkgs/01fbdeef22b76df85ea168fbfe1bfd9e63681b30#jetbrains.jdk-no-jcef",
       "source": "devbox-search",
-      "version": "21.0.9+8",
+      "version": "21.0.9-b1163.86",
       "systems": {
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/gxjm3qjq9kyvi5hv7r4s8ngbkg1d94df-openjdk-21.0.9+8",
+              "path": "/nix/store/dzr9y08y82d2zwcj4vb2xfxb02gv8ybf-jetbrains-jdk-21.0.9-b1163.86",
               "default": true
             },
             {
               "name": "debug",
-              "path": "/nix/store/sz9izpfkgi9nw3s9fz8vik9qn01vkx4d-openjdk-21.0.9+8-debug"
+              "path": "/nix/store/mjfd3k34fb8xyimlrq6lz0fl3bgjdms3-jetbrains-jdk-21.0.9-b1163.86-debug"
             }
           ],
-          "store_path": "/nix/store/gxjm3qjq9kyvi5hv7r4s8ngbkg1d94df-openjdk-21.0.9+8"
+          "store_path": "/nix/store/dzr9y08y82d2zwcj4vb2xfxb02gv8ybf-jetbrains-jdk-21.0.9-b1163.86"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/l5z1hqq6l223379w6f25fibniz16g2s9-openjdk-21.0.9+8",
+              "path": "/nix/store/2bl5ky96q6g5zj3ashhmv9f5448wr4h7-jetbrains-jdk-21.0.9-b1163.86",
               "default": true
             },
             {
               "name": "debug",
-              "path": "/nix/store/pgkj2381fcdrbx9w85h162cigdgyn7j2-openjdk-21.0.9+8-debug"
+              "path": "/nix/store/7s7k32p04msc2wc10kz5xwjxm3fqqma6-jetbrains-jdk-21.0.9-b1163.86-debug"
             }
           ],
-          "store_path": "/nix/store/l5z1hqq6l223379w6f25fibniz16g2s9-openjdk-21.0.9+8"
+          "store_path": "/nix/store/2bl5ky96q6g5zj3ashhmv9f5448wr4h7-jetbrains-jdk-21.0.9-b1163.86"
         }
       }
     },
@@ -1006,6 +1010,44 @@
             }
           ],
           "store_path": "/nix/store/z85j6hmcldbmyrhskp46a6nag247csn9-libXxf86vm-1.1.6"
+        }
+      }
+    },
+    "xvfb@latest": {
+      "last_modified": "2026-09-29T03:29:29Z",
+      "resolved": "github:NixOS/nixpkgs/b6c8664de9b6cc07fe5666a29f91884ba81197c4#xvfb",
+      "source": "devbox-search",
+      "version": "21.1.24",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/arqammfph44cg2vdi3i9pa1afcgb6qgm-xvfb-21.1.24",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/arqammfph44cg2vdi3i9pa1afcgb6qgm-xvfb-21.1.24"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/wx88hmgix8qj58kldvks7mcqgi1p8702-xvfb-21.1.24",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/wx88hmgix8qj58kldvks7mcqgi1p8702-xvfb-21.1.24"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/iw8dx6lhrkdc5wzszjzqzl677y68y88r-xvfb-21.1.24",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/iw8dx6lhrkdc5wzszjzqzl677y68y88r-xvfb-21.1.24"
         }
       }
     }

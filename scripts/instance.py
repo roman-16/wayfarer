@@ -13,9 +13,17 @@ import tomllib
 ROOT = Path(__file__).resolve().parent.parent
 PACK = ROOT / "pack"
 CACHE = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "wayfarer"
-CLIENT_CONFIGS = {"dynamic_fps.json": {"enabled": False}}
-CLIENT_OPTIONS = {"pauseOnLostFocus": "false"}
+CLIENT_CONFIGS = {
+    "DistantHorizons.toml": {
+        "client": {"advanced": {"debugging": {"rendererMode": "DISABLED"}}},
+        "common": {"worldGenerator": {"generatorPlan": "DISABLED"}},
+    },
+    "dynamic_fps.json": {"enabled": False},
+    "iris.properties": {"enableShaders": "false"},
+}
+CLIENT_OPTIONS = {"pauseOnLostFocus": "false", "renderDistance": "8", "simulationDistance": "8"}
 SIDES = {"client": {"both", "client"}, "server": {"both", "server"}}
+DEV_SERVER_PORTS = {"server": 25566, "voice": 24455}
 SERVER_PROPERTIES = {
     "allow-flight": "true",
     "difficulty": "hard",
@@ -87,14 +95,58 @@ def options(target):
     path.write_text("\n".join(kept + forced) + "\n")
 
 
-def client(target):
+def merged(base, overrides):
+    result = dict(base)
+    for key, value in overrides.items():
+        result[key] = merged(result.get(key, {}), value) if isinstance(value, dict) else value
+    return result
+
+
+def toml_value(value):
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, int | float):
+        return repr(value)
+    return json.dumps(value)
+
+
+def toml_text(table, prefix=()):
+    scalars = {key: value for key, value in table.items() if not isinstance(value, dict)}
+    lines = []
+    if scalars:
+        lines += [f"[{'.'.join(prefix)}]"] if prefix else []
+        lines += [f"{key} = {toml_value(value)}" for key, value in sorted(scalars.items())]
+        lines.append("")
+    for key, value in sorted(table.items()):
+        if isinstance(value, dict):
+            lines += toml_text(value, (*prefix, key))
+    return lines
+
+
+def configure(path, overrides):
+    text = path.read_text() if path.exists() else ""
+    if path.suffix == ".json":
+        path.write_text(json.dumps(merged(json.loads(text or "{}"), overrides), indent=2) + "\n")
+    elif path.suffix == ".toml":
+        path.write_text("\n".join(toml_text(merged(tomllib.loads(text), overrides))))
+    else:
+        pairs = dict(line.split("=", 1) for line in text.splitlines() if "=" in line and not line.startswith("#"))
+        path.write_text("".join(f"{key}={value}\n" for key, value in sorted((pairs | overrides).items())))
+
+
+def client(target, lean):
     shutil.rmtree(target / "mods", ignore_errors=True)
     (target / "mods").mkdir(parents=True)
-    files(target, "client", {"mods", "resourcepacks", "shaderpacks"})
+    files(target, "client", {"resourcepacks", "shaderpacks"} if lean else {"mods", "resourcepacks", "shaderpacks"})
     shutil.copytree(PACK / "config", target / "config", dirs_exist_ok=True)
-    for name, config in CLIENT_CONFIGS.items():
-        (target / "config" / name).write_text(json.dumps(config, indent=2) + "\n")
+    for name, overrides in CLIENT_CONFIGS.items():
+        configure(target / "config" / name, overrides)
     options(target)
+
+
+def properties(target, overrides):
+    lines = [f"{key}={value}" for key, value in sorted((SERVER_PROPERTIES | overrides).items())]
+    (target / "server.properties").write_text("\n".join(lines) + "\n")
 
 
 def server(target, jar):
@@ -104,23 +156,50 @@ def server(target, jar):
     files(target, "server", {"mods"})
     shutil.copyfile(jar, target / "mods" / jar.name)
     shutil.copytree(PACK / "config", target / "config")
-    lines = [f"{key}={value}" for key, value in sorted(SERVER_PROPERTIES.items())]
-    (target / "server.properties").write_text("\n".join(lines) + "\n")
+    properties(target, {})
     (target / "user_jvm_args.txt").write_text("-Xms4G\n-Xmx8G\n")
+
+
+def dev_server(target, lean):
+    shutil.rmtree(target / "mods", ignore_errors=True)
+    (target / "mods").mkdir(parents=True)
+    if not lean:
+        files(target, "server", {"mods"})
+    shutil.copytree(PACK / "config", target / "config", dirs_exist_ok=True)
+    voice = target / "config/voicechat/voicechat-server.properties"
+    voice.parent.mkdir(parents=True, exist_ok=True)
+    voice.write_text(f"port={DEV_SERVER_PORTS['voice']}\n")
+    world = {"level-name": "world-lean"} if lean else {}
+    properties(target, {"online-mode": "false", "server-port": DEV_SERVER_PORTS["server"]} | world)
+    (target / "eula.txt").write_text("eula=true\n")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Assemble the pack as a dev client instance or a dedicated server")
     sides = parser.add_subparsers(dest="side", required=True)
-    sides.add_parser("client", help="mods, packs and configs for the dev client; keeps saves and options").add_argument(
-        "target", type=Path
-    )
+    for side, text in (
+        ("client", "mods, packs and configs for the dev client; keeps saves and options"),
+        (
+            "devserver",
+            "mods, configs and properties for the dev server, which brings the Wayfarer mod itself; keeps the world",
+        ),
+    ):
+        side_parser = sides.add_parser(side, help=text)
+        side_parser.add_argument("target", type=Path)
+        side_parser.add_argument(
+            "--mode",
+            choices=["full", "lean"],
+            default="full",
+            help="lean leaves the mods folder empty: only the Wayfarer mod and what it needs, from the dev classpath",
+        )
     server_parser = sides.add_parser("server", help="a complete dedicated server, rebuilt from nothing")
     server_parser.add_argument("target", type=Path)
     server_parser.add_argument("jar", type=Path)
     arguments = parser.parse_args()
     if arguments.side == "client":
-        client(arguments.target.resolve())
+        client(arguments.target.resolve(), arguments.mode == "lean")
+    elif arguments.side == "devserver":
+        dev_server(arguments.target.resolve(), arguments.mode == "lean")
     else:
         server(arguments.target.resolve(), arguments.jar.resolve())
 

@@ -41,6 +41,7 @@ SHOWROOM_LAYERS = [
     ("minecraft:grass_block", 1),
 ]
 WORLD_BOTTOM = -64
+WORKSHOP_LAYERS = [("minecraft:bedrock", 1), ("minecraft:stone", 63), ("minecraft:smooth_stone", 1)]
 SHOWROOM_ROW_Z = 64
 SHOWROOM_SPACING = 40
 EYE_HEIGHT = 1.62
@@ -201,23 +202,28 @@ def showroom(eyes):
         "target": {"at": [target[0], y, target[1]], "shrine": f"wayfarer:shrine/{sorted(eyes)[0]}"},
     }
     write_json(DEV / "wayfarer/showroom.json", {"demo": demo, "steps": lines})
-    write_json(DEV / "assets/showroom/lang/en_us.json", {"travelerstitles.wayfarer.showroom": "Showroom"})
     write_json(
-        DEV / "data/wayfarer/dimension/showroom.json",
-        {
-            "generator": {
-                "settings": {
-                    "biome": "minecraft:plains",
-                    "features": False,
-                    "lakes": False,
-                    "layers": [{"block": block, "height": height} for block, height in SHOWROOM_LAYERS],
-                    "structure_overrides": [],
-                },
-                "type": "minecraft:flat",
-            },
-            "type": "minecraft:overworld",
-        },
+        DEV / "assets/showroom/lang/en_us.json",
+        {"travelerstitles.wayfarer.showroom": "Showroom", "travelerstitles.wayfarer.workshop": "Workshop"},
     )
+    for world, layers in (("showroom", SHOWROOM_LAYERS), ("workshop", WORKSHOP_LAYERS)):
+        write_json(DEV / f"data/wayfarer/dimension/{world}.json", flat_world(layers))
+
+
+def flat_world(layers):
+    return {
+        "generator": {
+            "settings": {
+                "biome": "minecraft:plains",
+                "features": False,
+                "lakes": False,
+                "layers": [{"block": block, "height": height} for block, height in layers],
+                "structure_overrides": [],
+            },
+            "type": "minecraft:flat",
+        },
+        "type": "minecraft:overworld",
+    }
 
 
 def tour(eyes, layouts):

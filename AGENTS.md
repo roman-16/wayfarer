@@ -27,6 +27,13 @@ $ just sources
 $ rg "enter_when_safe" build/sources/mods
 ```
 
+`just registries` writes what the running pack contains into `build/reports/`, from every mod: `registries/<namespace>/<path>.json` for every registry, a list of its entries for those made in code (blocks, items, creatures) and every entry's content for those made from data (structures, structure sets, biomes, loot tables and the rest); `tags/<namespace>/<path>.json` with every tag's members; and `recipes.json`. An entry the game cannot write back holds its error instead. It starts the dev server and stops it after, so run it while the dev server is stopped.
+
+```console
+$ just registries
+$ rg --count '"trek:' build/reports/registries/minecraft/worldgen/structure.json
+```
+
 ## Seeing the game
 
 Never wait by sleeping. Gates and builds run in the foreground with a generous timeout and return when they finish; the dev client is driven through `scripts/client.py`, whose commands each return the moment the game has finished them:
@@ -38,33 +45,76 @@ $ python3 scripts/client.py stop             # returns once the game has exited
 $ python3 scripts/client.py tour [eye|camp ...]   # launch, photograph every shrine and the Last Camp, quit
 ```
 
-The game runs on the user's display from `start` until `stop`, so close every session you open: `stop` as soon as the looking is done, and never hand back to the user with the client still running.
+The game runs on a hidden screen from `start` until `stop`: Xvfb from devbox, drawn in software by Mesa, so it never takes over the user's display; `start --visible` and `tour --visible` put it on the user's display, drawn by the graphics card. Close every session you open: `stop` as soon as the looking is done, and never hand back to the user with the client still running.
 
-`run` prints the batch log: each step, every chat line the game received (command replies included), errors, and the absolute path of each screenshot, which is written before `run` returns. Steps can also come one per line on stdin. `start --fresh` opens a fresh natural world in survival (`just play`) instead of the showroom (`just showroom`). A batch that does not finish within `--timeout` is aborted and its log shows where it stuck.
+`start --lean` on either driver, and `just showroom lean` or `just play lean`, load only the Wayfarer mod and what it needs (Curios, FTB Teams, FTB Library, Architectury, all from the dev classpath) with an empty mods folder, for work that does not need the rest of the pack: the client starts in about 23 s instead of 34, the dev server in about 11 s instead of 16. They play in worlds of their own (`showroom-lean`, `play-lean`, `world-lean`), since opening a world without the mods it was made with damages it.
 
-The client opens on the user's display in the showroom dimension `wayfarer:showroom`: the Last Camp at spawn, the stranger's first and last camps just south of it at z = 24 (x = -16 and 8), each with its name sign on the north side, an item frame wall at z = -10, and the shrines in alphabetical order along x at 40-block steps (hall centres at x = 48, 88, ...; z = 72; the surface at y = 1, each hall as deep as its way down needs), each with its name sign on the north side. The compass works there as a demo: it points at a waymark 750 blocks west of the camp, shows a companion circling the camp and marks the camp's grave. `/locate` finds nothing there; the natural overworld next to it (`/execute in minecraft:overworld run ...`) is kept between launches.
+Every dev client (`just showroom`, `just play` and the driver) runs with test settings that `scripts/instance.py` lays over `pack/config` in `build/client`: no shaders, no Distant Horizons, 8 chunks. The shipped pack keeps its shaders, its far view and 12 chunks, so those are judged in the exported pack (`just pack`, imported into Prism Launcher).
+
+devbox pins Mesa to the Nix snapshot the Java runtime (`jetbrains.jdk-no-jcef`) comes from (`github:NixOS/nixpkgs/<commit>#mesa`): the hidden screen loads Mesa into the game's Java, and a driver built against a newer C library than Java's does not load. When the Java runtime moves to a newer snapshot, move Mesa's commit with it.
+
+`run` prints one line of JSON per step, as soon as the step is done: the step, and lists of what it produced, such as every chat line the game received while it ran (command replies included) under `chat`, errors under `error`, the absolute path of each screenshot, written before `run` returns, under `screenshot`, and the step's own result under its name (`inspect`, `log`, `perf`, `pos`, `state`, `sheet`). A command step waits until the server has run it, so its replies always sit under it. Steps can also come one per line on stdin. `start --fresh` opens a fresh natural world in survival (`just play`) instead of the showroom (`just showroom`). A batch that does not finish within `--timeout` is aborted and its log shows where it stuck.
+
+The client opens in the showroom dimension `wayfarer:showroom`: the Last Camp at spawn, the stranger's first and last camps just south of it at z = 24 (x = -16 and 8), each with its name sign on the north side, an item frame wall at z = -10, and the shrines in alphabetical order along x at 40-block steps (hall centres at x = 48, 88, ...; z = 72; the surface at y = 1, each hall as deep as its way down needs), each with its name sign on the north side. The compass works there as a demo: it points at a waymark 750 blocks west of the camp, shows a companion circling the camp and marks the camp's grave. `/locate` finds nothing there; the natural overworld next to it (`/execute in minecraft:overworld run ...`) is kept between launches.
+
+The workshop (`wayfarer:workshop`) sits beside the showroom in the same save: empty, flat, a smooth stone floor, noon and clear sky, wiped at every launch. Designs line up along x from the origin, 4 blocks apart, each with its name sign 2 blocks south of it, so the vanilla relative put in with `beside` stands next to the design it is judged against:
+
+```console
+$ python3 scripts/client.py run workshop 'place wayfarer:last_camp' 'spawn minecraft:villager' 'views camp' clear
+```
 
 `tour` shoots each shrine from its surface cover down the shaft into the hall, and the Last Camp from every side, into one labelled contact sheet per subject in `build/client/tour/<subject>.jpg`; the hall cameras come from the generator (`mod/src/generated/dev/wayfarer/tour.json`), so every hall is framed from open air with a clear line to what it looks at. It starts the client itself and quits it when done; a whole tour takes about three minutes.
 
 | Step | Does |
 |---|---|
 | `/<command>` | Runs a command as the player |
+| `assets` | Reloads every texture, model and sound, as F3+T does, and returns when the reload is done |
+| `beside <thing>` | Puts a creature, structure, template, block or item, usually its vanilla relative, at the workshop's next free spot |
+| `clear` | Empties the workshop and puts its floor back |
 | `click <x> <y>` | Clicks the open screen at GUI coordinates |
 | `close` | Closes the open screen |
+| `compare <a> <b>` | Counts the pixels that differ between two screenshots and writes a picture of the difference |
 | `find <block> [radius]` | Lists the nearest positions of a block within the horizontal radius (default 32), at any height |
 | `fly on\|off` | Toggles creative flight |
 | `gui on\|off` | Shows or hides the HUD |
+| `inspect block <x> <y> <z>\|creature <type>\|item\|inventory` | Returns as JSON a block with its block entity, the nearest creature of a type with its data, the held item, or every filled inventory slot |
 | `key <mapping>` | Presses a key mapping (`key.inventory`); `key escape` closes the open screen |
+| `log` | Returns the warnings and errors the game logged since the last `log`, the newest 64 kept |
+| `perf` | Logs the frame rate, the server's tick time and which renderer draws |
+| `place <thing>` | Puts a structure, template, block or item at the workshop's next free spot, with its name sign |
 | `pos` | Logs the player's position, facing and dimension |
 | `press <label>` | Clicks the widget with that label on the open screen |
 | `quit` | Closes the client |
 | `screen` | Logs the open screen and its widgets with labels, positions and sizes |
 | `settle` | Waits until earlier commands have run on the server, the chunks around the player are loaded and the terrain is drawn |
 | `shot <name>` | Saves a screenshot |
+| `spawn <creature> [walking]` | Puts a creature at the workshop's next free spot, standing still, or walking with `walking` |
+| `state` | Returns the world's story state: every save file of the Wayfarer mod as JSON |
 | `type <text>` | Types into the focused field |
+| `views <name>` | Photographs everything in the workshop from the front, the side, above and three-quarters, each camera fitted to it, into `build/client/workshop/<name>.jpg` |
 | `wait <ticks>` | Waits a fixed time; only for things with no completion signal, such as an animation |
+| `workshop` | Takes the player into the workshop, south of what stands there |
 
 The driver (`mod/src/dev/java/.../Driver.java`) confirms commands with a sentinel (`execute if entity @s`, whose reply it hides), so `sendCommandFeedback` must stay on. After `just generate`, `cd mod && ./gradlew processResources processDevResources` and the step `/reload` load the new data into the running client; new chunks and `/place structure` then use it.
+
+Changed Java code goes into a running game without a restart: `python3 scripts/client.py swap` or `python3 scripts/server.py swap` compiles the Wayfarer mod and swaps every changed class that is already loaded into the client or the dev server, over a debug port (`client_swap_port` and `server_swap_port` in `mod/gradle.properties`). The JetBrains runtime from devbox takes changed method bodies and added or removed methods and fields. It prints one line of JSON: what was swapped, what loads fresh when first used, what is new, and what needs a restart. Mixins always need one, and so does anything the game reads only at startup, such as a new `@SubscribeEvent` method; changed command code takes effect after `/reload`, which registers the commands again.
+
+The dev server is driven the same way through `scripts/server.py`: the whole pack with the Wayfarer mod's dev code, in `build/devserver` on port 25566, so it can run beside `just test` and a dev client can join it at `localhost:25566`. It runs headless and keeps its world between launches (`start --fresh` deletes it). Each step of `run` is a console command, returns the moment the server has run it, and prints one line of JSON with its replies; `await <text>` waits for a later reply containing the text, such as an asynchronous `/locate`'s, and `state` returns the world's story state as on the client. Stop it when done, as with the client.
+
+```console
+$ python3 scripts/server.py start            # launch unless running; returns once the server is ready
+$ python3 scripts/server.py run 'locate structure wayfarer:shrine/old' 'await The nearest wayfarer:shrine/old'
+{"step": "locate structure wayfarer:shrine/old", "replies": ["The nearest wayfarer:shrine/old is at [4608, ~, 384] (4400 blocks away)"], "seconds": 0.7}
+$ python3 scripts/server.py stop             # returns once the server has exited
+```
+
+Pretend players stand in for a team on the dev server: `wayfarer pretend join <name>` brings one online through the game's own login, so every mod reacts as to a person; `wayfarer pretend leave <name>` logs it out and `wayfarer pretend respawn <name>` presses Respawn after a death. They do what vanilla commands tell them (`tp`, `spreadplayers`, `execute as <name> run ...`), every message one receives comes back as a reply (`Mo hears: ...`), and a returning name comes back where it left. They never move on their own, not even to fall, so put them on the ground with `spreadplayers`.
+
+```console
+$ python3 scripts/server.py run 'wayfarer pretend join Mo' 'spreadplayers 0 0 0 4 false Mo' 'execute as Mo run say hello'
+```
+
+`scripts/drive.py` is the library both drivers and the boot test share: launching and stopping a game, crash reports, and a server's console, whose commands and replies go through `driver/console` and `driver/server.log` in the server's folder.
 
 ## Gates
 

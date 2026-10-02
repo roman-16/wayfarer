@@ -1,6 +1,7 @@
 package io.github.roman16.wayfarer;
 
 import com.google.gson.JsonParser;
+import com.mojang.blaze3d.platform.GlUtil;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.logging.LogUtils;
 import java.io.IOException;
@@ -17,6 +18,11 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -24,15 +30,19 @@ import net.minecraft.client.Screenshot;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
 import net.minecraft.world.level.block.Block;
@@ -50,13 +60,16 @@ import org.slf4j.Logger;
 @EventBusSubscriber(modid = Wayfarer.MODID, value = Dist.CLIENT)
 public final class Driver {
     private static final boolean SHOWROOM = Boolean.getBoolean(Wayfarer.MODID + ".showroom");
-    private static final String PLAY_WORLD = "play";
-    private static final String SHOWROOM_WORLD = "showroom";
+    private static final String WORLD_SUFFIX = Boolean.getBoolean(Wayfarer.MODID + ".lean") ? "-lean" : "";
+    private static final String PLAY_WORLD = "play" + WORLD_SUFFIX;
+    private static final String SHOWROOM_WORLD = "showroom" + WORLD_SUFFIX;
     private static final long SEED = 20260929L;
     private static final int FIND_LIMIT = 20;
     private static final int FIND_RADIUS = 32;
     private static final int SETTLE_CHUNKS = 3;
     private static final int SETTLE_FRAMES = 2;
+    private static final double NANOS_PER_MILLI = 1_000_000.0;
+    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "inspect", "key", "place", "spawn", "state", "workshop");
     private static final String SENTINEL = "execute if entity @s";
     private static final String SENTINEL_REPLY = "commands.execute.conditional.pass_count";
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -67,8 +80,13 @@ public final class Driver {
     private static boolean synced = true;
     private static boolean sentinelSent;
     private static int waiting;
+    private static CompletableFuture<String> pending;
     private static long frames;
     private static long settledFrom = -1;
+
+    static {
+        Problems.install();
+    }
 
     private Driver() {
     }
@@ -89,6 +107,7 @@ public final class Driver {
         if (running && take(folder.resolve("abort"))) {
             steps.clear();
             waiting = 0;
+            pending = null;
             sentinelSent = false;
             synced = true;
             note("aborted");
@@ -103,7 +122,16 @@ public final class Driver {
             waiting--;
             return;
         }
+        if (pending != null) {
+            if (!pending.isDone()) {
+                return;
+            }
+            settlePending();
+        }
         while (!steps.isEmpty()) {
+            if (minecraft.player != null && !sync(minecraft)) {
+                return;
+            }
             String step = steps.peek();
             if (!ready(minecraft, step)) {
                 return;
@@ -111,7 +139,7 @@ public final class Driver {
             steps.poll();
             note("> " + step);
             run(minecraft, step);
-            if (waiting > 0) {
+            if (waiting > 0 || pending != null) {
                 return;
             }
         }
@@ -244,7 +272,7 @@ public final class Driver {
             }
             return frames > settledFrom + SETTLE_FRAMES && rendered(minecraft);
         }
-        return minecraft.player != null || !(step.startsWith("/") || verb.equals("fly") || verb.equals("key"));
+        return minecraft.player != null || !(step.startsWith("/") || PLAYER_STEPS.contains(verb));
     }
 
     private static boolean loaded(Minecraft minecraft) {
@@ -274,6 +302,8 @@ public final class Driver {
         String[] words = step.split(" ", 2);
         String argument = words.length > 1 ? words[1] : "";
         switch (words[0]) {
+            case "assets" -> pending = minecraft.reloadResourcePacks().thenApply(ignored -> "assets: reloaded");
+            case "beside", "clear", "place", "spawn" -> command(minecraft, "wayfarer workshop " + step);
             case "click" -> {
                 String[] at = argument.split(" ");
                 click(minecraft, Double.parseDouble(at[0]), Double.parseDouble(at[1]));
@@ -285,7 +315,16 @@ public final class Driver {
                 minecraft.player.onUpdateAbilities();
             }
             case "gui" -> minecraft.options.hideGui = argument.equals("off");
+            case "inspect" -> inspect(minecraft, argument);
             case "key" -> key(minecraft, argument);
+            case "log" -> {
+                List<String> problems = Problems.drain();
+                if (problems.isEmpty()) {
+                    note("log: nothing new");
+                }
+                problems.forEach(problem -> note("log: " + problem));
+            }
+            case "perf" -> perf(minecraft);
             case "pos" -> note("pos: %.1f %.1f %.1f facing %.0f %.0f in %s".formatted(minecraft.player.getX(), minecraft.player.getY(),
                     minecraft.player.getZ(), minecraft.player.getYRot(), minecraft.player.getXRot(), minecraft.level.dimension().location()));
             case "press" -> press(minecraft, argument);
@@ -293,21 +332,65 @@ public final class Driver {
             case "screen" -> describe(minecraft);
             case "settle" -> settledFrom = -1;
             case "shot" -> shot(minecraft, argument);
+            case "state" -> command(minecraft, "wayfarer state");
             case "type" -> argument.chars().forEach(character -> {
                 if (minecraft.screen != null) {
                     minecraft.screen.charTyped((char) character, 0);
                 }
             });
             case "wait" -> waiting = Integer.parseInt(argument);
+            case "workshop" -> command(minecraft, "wayfarer workshop enter");
             default -> {
                 if (step.startsWith("/")) {
-                    synced = false;
-                    minecraft.player.connection.sendCommand(step.substring(1));
+                    command(minecraft, step.substring(1));
                 } else {
                     note("error: unknown step " + step);
                 }
             }
         }
+    }
+
+    private static void settlePending() {
+        try {
+            note(pending.join());
+        } catch (CompletionException | CancellationException exception) {
+            Throwable cause = exception.getCause() == null ? exception : exception.getCause();
+            note("error: " + cause.getMessage());
+        }
+        pending = null;
+    }
+
+    private static void inspect(Minecraft minecraft, String argument) {
+        IntegratedServer server = minecraft.getSingleplayerServer();
+        if (server == null) {
+            note("error: inspect needs the built-in server of a world opened by the client");
+            return;
+        }
+        String[] words = argument.split(" ");
+        UUID id = minecraft.player.getUUID();
+        ResourceKey<Level> dimension = minecraft.level.dimension();
+        pending = server.submit(() -> {
+            ServerPlayer player = server.getPlayerList().getPlayer(id);
+            return "inspect: " + switch (words[0]) {
+                case "block" -> Inspect.block(server.getLevel(dimension),
+                        new BlockPos(Integer.parseInt(words[1]), Integer.parseInt(words[2]), Integer.parseInt(words[3])));
+                case "creature" -> Inspect.creature(player, ResourceLocation.parse(words[1]));
+                case "inventory" -> Inspect.inventory(player);
+                case "item" -> Inspect.item(player);
+                default -> throw new IllegalArgumentException("inspect takes block <x> <y> <z>, creature <type>, inventory or item");
+            };
+        });
+    }
+
+    private static void command(Minecraft minecraft, String command) {
+        synced = false;
+        minecraft.player.connection.sendCommand(command);
+    }
+
+    private static void perf(Minecraft minecraft) {
+        IntegratedServer server = minecraft.getSingleplayerServer();
+        String tick = server == null ? "no server" : "%.1f ms a server tick".formatted(server.getAverageTickTimeNanos() / NANOS_PER_MILLI);
+        note("perf: %d fps, %s, drawn by %s".formatted(minecraft.getFps(), tick, GlUtil.getRenderer()));
     }
 
     private static void shot(Minecraft minecraft, String name) {

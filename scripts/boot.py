@@ -4,23 +4,21 @@ import random
 import re
 import shutil
 import statistics
-import subprocess
 import sys
-import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import tomllib
+from drive import Failure, Server
 
 TIMEOUT_SECONDS = 900
 LOCATE_SECONDS = 300
-READY = "Done ("
+STOP_SECONDS = 300
 ROOT = Path(__file__).resolve().parent.parent
 FOUND = re.compile(r"The nearest (\S+) is at \[(-?\d+), [^,]+, (-?\d+)\] \((\d+) blocks away\)")
 MISSING = re.compile(r"Could not find a structure of type \"?(\S+?)\"? nearby")
 BIOME_SHIFT_BLOCKS = 128
-CHECK_SECONDS = 0.2
 MAX_STEP = 2.0
 SURVEY_RADIUS_BLOCKS = 10000
 SURVEY_SEEDS = (1, 2, 3, 4, 5)
@@ -31,55 +29,25 @@ WALK_BLOCKS_PER_SECOND = 4.317
 REJECTED = re.compile(r"Tried to load invalid item|\[FTB Quests/\]: failed to|Couldn't parse element .*\]:wayfarer:")
 
 
-class Console:
-    def __init__(self, process):
-        self.process = process
-        self.lines = []
-        self.changed = threading.Condition()
-
-    def append(self, line):
-        with self.changed:
-            self.lines.append(line)
-            self.changed.notify_all()
-
-    def ask(self, command, answer):
-        with self.changed:
-            seen = len(self.lines)
-        self.process.stdin.write(command + "\n")
-        self.process.stdin.flush()
-        deadline = time.monotonic() + LOCATE_SECONDS
-        with self.changed:
-            while True:
-                for line in self.lines[seen:]:
-                    reply = answer(line)
-                    if reply is not None:
-                        return reply
-                seen = len(self.lines)
-                remaining = deadline - time.monotonic()
-                if remaining <= 0:
-                    return None
-                self.changed.wait(remaining)
-
-
-def locate(console, structure, at=None):
+def locate(server, structure, at=None):
     prefix = f"execute positioned {at[0]} 0 {at[1]} run " if at else ""
 
-    def answer(line):
-        found = FOUND.search(line)
+    def answer(said):
+        found = FOUND.search(said)
         if found and found.group(1) == structure:
             return int(found.group(4)), int(found.group(2)), int(found.group(3))
-        if MISSING.search(line) and structure in line:
+        if MISSING.search(said) and structure in said:
             return ()
         return None
 
-    return console.ask(f"{prefix}locate structure {structure}", answer) or None
+    return server.ask(f"{prefix}locate structure {structure}", answer, LOCATE_SECONDS) or None
 
 
-def check(console):
+def check(server):
     balance = tomllib.loads((ROOT / "balance.toml").read_text())["strongholds"]
     eyes = sorted(tomllib.loads((ROOT / "generator/eyes.toml").read_text())["eyes"])
-    failures = [f"the game rejects our data: {line.strip()[:300]}" for line in console.lines if REJECTED.search(line)]
-    found = locate(console, "betterstrongholds:stronghold")
+    failures = []
+    found = locate(server, "betterstrongholds:stronghold")
     ring = found[0] if found else None
     low = balance["radius_blocks"] - balance["jitter_blocks"] - BIOME_SHIFT_BLOCKS * 4
     high = balance["radius_blocks"] + balance["jitter_blocks"] + BIOME_SHIFT_BLOCKS * 4
@@ -87,16 +55,17 @@ def check(console):
     if ring is None or not low <= ring <= high:
         failures.append(f"the nearest stronghold is {ring} blocks from spawn, not {low}-{high}")
     for eye in eyes:
-        found = locate(console, f"wayfarer:shrine/{eye}")
+        found = locate(server, f"wayfarer:shrine/{eye}")
         print(f"nearest {eye} shrine: {found[0] if found else None} blocks")
         if found is None:
             failures.append(f"no {eye} shrine was found")
     for structure in tomllib.loads((ROOT / "generator/removals.toml").read_text())["structures"]:
-        found = locate(console, structure)
+        found = locate(server, structure)
         if found is not None:
             failures.append(
                 f"{structure} is cut in generator/removals.toml but still generates {found[0]} blocks from spawn"
             )
+    failures += [f"the game rejects our data: {line.strip()[:300]}" for line in server.lines() if REJECTED.search(line)]
     return failures
 
 
@@ -128,12 +97,12 @@ def world(server, seed):
     return target
 
 
-def journey(console, eyes, start, legs):
+def journey(server, eyes, start, legs):
     pos = start
     for tier in legs:
         remaining = [eye for eye in sorted(eyes) if eyes[eye]["tier"] == tier]
         while remaining:
-            found = [(hit, eye) for eye in remaining if (hit := locate(console, f"wayfarer:shrine/{eye}", pos))]
+            found = [(hit, eye) for eye in remaining if (hit := locate(server, f"wayfarer:shrine/{eye}", pos))]
             if not found:
                 break
             (distance, x, z), eye = min(found)
@@ -156,9 +125,9 @@ def survey(server, count, apply):
     def walk(seed):
         legs = {tier: [] for tier in targets}
 
-        def measure(console):
+        def measure(server):
             for start in starts:
-                journey(console, shrines["eyes"], start, legs)
+                journey(server, shrines["eyes"], start, legs)
             return []
 
         boot(world(server, seed), measure)
@@ -192,55 +161,18 @@ def survey(server, count, apply):
         )
 
 
-def boot(server, action):
-    (server / "eula.txt").write_text("eula=true\n")
-    log = server / "boot.log"
-    process = subprocess.Popen(
-        ["bash", "run.sh", "--nogui"],
-        cwd=server,
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-    )
-    console = Console(process)
-    crashes = server / "crash-reports"
-    before = set(crashes.glob("*")) if crashes.exists() else set()
-    ready = threading.Event()
-
-    def read():
-        with log.open("w") as out:
-            for line in process.stdout:
-                out.write(line)
-                console.append(line)
-                if READY in line:
-                    ready.set()
-
-    reader = threading.Thread(target=read, daemon=True)
-    reader.start()
+def boot(directory, action):
+    (directory / "eula.txt").write_text("eula=true\n")
+    server = Server(directory, ["bash", "run.sh", "--nogui"])
     started = time.monotonic()
-    crashed = []
-    while not ready.wait(CHECK_SECONDS) and process.poll() is None and time.monotonic() - started < TIMEOUT_SECONDS:
-        crashed = sorted(set(crashes.glob("*")) - before) if crashes.exists() else []
-        if crashed:
-            break
-    failures = action(console) if ready.is_set() else []
-    if ready.is_set():
-        process.stdin.write("stop\n")
-        process.stdin.flush()
-    else:
-        process.kill()
-    process.wait(timeout=300)
-    reader.join(timeout=10)
-    if crashed:
-        print(crashed[0].read_text()[:6000], file=sys.stderr)
-        sys.exit(f"the server crashed while starting; report in {crashed[0]}")
-    if not ready.is_set():
-        print("".join(console.lines[-80:]), file=sys.stderr)
-        sys.exit(f"the server did not finish starting; full log in {log}")
+    server.start(TIMEOUT_SECONDS)
+    try:
+        failures = action(server)
+    finally:
+        server.stop(STOP_SECONDS)
     if failures:
-        sys.exit("\n".join(failures))
-    return time.monotonic() - started, log
+        raise Failure("\n".join(failures))
+    return time.monotonic() - started, server.log
 
 
 def main():
@@ -257,10 +189,13 @@ def main():
     parser.add_argument("--apply", action="store_true", help="write the survey's tuned spacings to generator/eyes.toml")
     arguments = parser.parse_args()
     server = arguments.server.resolve()
-    if arguments.survey:
-        survey(server, arguments.survey, arguments.apply)
-        return
-    seconds, log = boot(server, check)
+    try:
+        if arguments.survey:
+            survey(server, arguments.survey, arguments.apply)
+            return
+        seconds, log = boot(server, check)
+    except Failure as failure:
+        sys.exit(str(failure))
     print(f"the whole pack booted in {seconds:.0f} s; log in {log}")
 
 
