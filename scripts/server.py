@@ -11,7 +11,7 @@ from drive import Failure, Server, reply
 
 ROOT = Path(__file__).resolve().parent.parent
 DEV_SERVER = ROOT / "build/devserver"
-SNAPSHOT = DEV_SERVER / "driver/classes.json"
+SNAPSHOT = DEV_SERVER / "driver/classes"
 START_SECONDS = 900
 STEP_SECONDS = 60
 STOP_SECONDS = 120

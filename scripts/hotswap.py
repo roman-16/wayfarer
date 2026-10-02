@@ -1,6 +1,5 @@
-import hashlib
-import json
 import re
+import shutil
 import socket
 import struct
 import subprocess
@@ -20,6 +19,25 @@ CLASSES_BY_SIGNATURE = 2
 DISPOSE = 6
 ID_SIZES = 7
 REDEFINE_CLASSES = 18
+STATIC = 0x0008
+CONSTANT_SIZES = {
+    3: 4,
+    4: 4,
+    5: 8,
+    6: 8,
+    7: 2,
+    8: 2,
+    9: 4,
+    10: 4,
+    11: 4,
+    12: 4,
+    15: 3,
+    16: 2,
+    17: 4,
+    18: 4,
+    19: 2,
+    20: 2,
+}
 ERRORS = {
     60: "the class file is not valid",
     61: "the classes would inherit from each other",
@@ -41,7 +59,7 @@ def port(name):
 
 def classes():
     return {
-        str(path.relative_to(root)): hashlib.sha256(path.read_bytes()).hexdigest()
+        str(path.relative_to(root)): path.read_bytes()
         for root in CLASSES
         if root.exists()
         for path in root.rglob("*.class")
@@ -49,11 +67,50 @@ def classes():
 
 
 def remember(snapshot):
-    snapshot.write_text(json.dumps(classes()))
+    shutil.rmtree(snapshot, ignore_errors=True)
+    for path, code in classes().items():
+        keep(snapshot, path, code)
 
 
-def bytecode(relative):
-    return next(root / relative for root in CLASSES if (root / relative).exists()).read_bytes()
+def keep(snapshot, path, code):
+    target = snapshot / path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(code)
+
+
+def static_fields(code):
+    count = struct.unpack_from(">H", code, 8)[0]
+    offset, index, utf8 = 10, 1, {}
+    while index < count:
+        tag = code[offset]
+        if tag == 1:
+            length = struct.unpack_from(">H", code, offset + 1)[0]
+            utf8[index] = code[offset + 3 : offset + 3 + length].decode("utf-8", "replace")
+            offset += 3 + length
+        else:
+            offset += 1 + CONSTANT_SIZES[tag]
+        index += 2 if tag in (5, 6) else 1
+    interfaces = struct.unpack_from(">H", code, offset + 6)[0]
+    offset += 8 + 2 * interfaces
+    fields = struct.unpack_from(">H", code, offset)[0]
+    offset += 2
+    found = {}
+    for _ in range(fields):
+        access, name, descriptor, attributes = struct.unpack_from(">HHHH", code, offset)
+        offset += 8
+        constant = False
+        for _ in range(attributes):
+            attribute, length = struct.unpack_from(">HI", code, offset)
+            constant |= utf8.get(attribute) == "ConstantValue"
+            offset += 6 + length
+        if access & STATIC:
+            found[utf8[name] + " " + utf8[descriptor]] = constant
+    return found
+
+
+def needs_initialiser(old, new):
+    before = static_fields(old)
+    return any(not constant for field, constant in static_fields(new).items() if field not in before)
 
 
 class Debugger:
@@ -115,25 +172,25 @@ def swap(port, snapshot):
     compiled = subprocess.run(["just", "compile"], cwd=ROOT, capture_output=True, text=True)
     if compiled.returncode != 0:
         raise Failure(f"the code does not compile:\n{(compiled.stdout + compiled.stderr)[-4000:]}")
-    before = json.loads(snapshot.read_text())
+    before = {str(path.relative_to(snapshot)): path.read_bytes() for path in snapshot.rglob("*.class")}
     now = classes()
-    changed = sorted(path for path, digest in now.items() if before.get(path, digest) != digest)
-    restart = [path for path in changed if "/mixin/" in path]
+    changed = sorted(path for path, code in now.items() if path in before and before[path] != code)
+    restart = [path for path in changed if "/mixin/" in path or needs_initialiser(before[path], now[path])]
     debugger = Debugger(port)
     definitions, unloaded = [], []
     try:
         for path in (path for path in changed if path not in restart):
             references = debugger.loaded(path.removesuffix(".class"))
-            definitions += [(reference, bytecode(path)) for reference in references]
+            definitions += [(reference, now[path]) for reference in references]
             if not references:
                 unloaded.append(path)
         if definitions:
             debugger.redefine(definitions)
     finally:
         debugger.close()
-    snapshot.write_text(
-        json.dumps({path: before.get(path, digest) if path in restart else digest for path, digest in now.items()})
-    )
+    for path, code in now.items():
+        if path not in restart:
+            keep(snapshot, path, code)
     swapped = sorted({dotted(path) for path in changed if path not in restart and path not in unloaded})
     return {
         "swapped": swapped,

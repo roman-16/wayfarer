@@ -151,7 +151,15 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 **Why:** Placing and taking away only out of sight is the caravan's rule (D14), so nothing ever appears or vanishes in front of anyone and the world is not littered with old scenes. Scenes that fit and remember are what make Red Dead Redemption 2's encounters feel alive, and a voice that speaks when something fits stays company instead of noise.
 
-It raises, for the spike: a scene placed out of sight ahead of a moving player and taken away behind them, against D2's five-minute rhythm; vanilla's patrol spawner already places patrols 24 to 47 blocks from a player every 10 to 11 minutes, 1 in 5.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/SceneSpike.java`, dev code that never ships): from the way a player walked, a herder's halt (an Easy NPC body, hay, barrels, a cold fire) goes down 64 to 128 blocks ahead where no player has a line of sight to it, is marked seen when one does, and once every player is 64 blocks past it and out of sight it is taken away with all 36 blocks it replaced put back; the next is due five minutes later, give or take one, which the spike only set and did not wait out. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| A line of sight traced against blocks' solid shapes is cheap enough every second, and a single birch trunk hides a scene 22 blocks away | Out of sight is a traced line from each player's eyes to the scene's corners, whichever way the player faces |
+| Walking into a lake or along a river leaves no dry spot on any of the five ways ahead | The ways ahead fan out wider or the scene waits for land; a sea scene (Act 2) is its own kind |
+| The way a player goes is read from where they walked; a teleport says nothing about it | A jump of more than 8 blocks in a tick resets the heading |
+| A scene kept only in memory leaves its blocks standing after a restart | Scenes and the blocks they replaced live in the world's save data, so a restart takes them away too |
+| A scene the players turn away from before seeing it is taken away as soon as they are out of sight and past | A scene never seen counts as passed, and a variant of it can come again |
 
 ### M5 The caravan: a village that walks
 
