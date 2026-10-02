@@ -50,8 +50,8 @@ import org.slf4j.Logger;
 @EventBusSubscriber(modid = Wayfarer.MODID, value = Dist.CLIENT)
 public final class Driver {
     private static final boolean SHOWROOM = Boolean.getBoolean(Wayfarer.MODID + ".showroom");
-    private static final String DEMO_WORLD = "demo";
     private static final String PLAY_WORLD = "play";
+    private static final String SHOWROOM_WORLD = "showroom";
     private static final long SEED = 20260929L;
     private static final int FIND_LIMIT = 20;
     private static final int FIND_RADIUS = 32;
@@ -161,7 +161,7 @@ public final class Driver {
             begin(JsonParser.parseString(resource("/wayfarer/showroom.json")).getAsJsonObject().getAsJsonArray("steps").asList().stream()
                     .map(step -> step.getAsString())
                     .toList());
-            enter(minecraft, DEMO_WORLD, GameType.CREATIVE, SEED);
+            enter(minecraft, SHOWROOM_WORLD, GameType.CREATIVE, SEED);
         } else {
             begin(List.of("settle"));
             enter(minecraft, PLAY_WORLD, GameType.SURVIVAL, WorldOptions.randomSeed());

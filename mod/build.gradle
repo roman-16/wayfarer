@@ -64,7 +64,7 @@ neoForge {
         configureEach {
             systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
-        [client: false, demo: true].each { name, showroom ->
+        [play: false, showroom: true].each { name, showroom ->
             create(name) {
                 client()
                 gameDirectory = file('../build/client')

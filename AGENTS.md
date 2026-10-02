@@ -16,7 +16,7 @@ A personal modpack repository: it reproduces on any machine from `direnv allow` 
 
 - `mod/src/generated/`, `pack/config/EndRemastered-NeoForge/Eyes/`, `pack/config/ftbquests/quests/`, `pack/config/improvedmobs/common.toml`, `pack/config/iris.properties`, `pack/config/nohostilesaroundcampfire.json5` and `pack/config/sparsestructures.json5` are written by `just generate`. Change the generator or its sources (`story/quests.toml` for the quest book, `story/books.toml` for the books, `story/fire.toml` for the voice, Maren and the leads, `story/notes.toml` for The Road So Far and Words of the Road), never the output.
 - `pack/` is managed by packwiz. Add a mod with `packwiz modrinth add <slug>` from `pack/`; use CurseForge only for a mod that is not on Modrinth. Every mod is `client` or `both`: singleplayer runs the server inside the client, so a `server` mod would be missing there.
-- A new config for a mod starts from the default the mod writes on its first boot (`build/server/config` after `just test`, `build/client/config` after `just demo`). Ship only the keys the pack changes when the mod fills in the rest itself, so machine-specific defaults (thread counts and the like) stay per machine.
+- A new config for a mod starts from the default the mod writes on its first boot (`build/server/config` after `just test`, `build/client/config` after `just showroom`). Ship only the keys the pack changes when the mod fills in the rest itself, so machine-specific defaults (thread counts and the like) stay per machine.
 
 ## Reading the game and the mods
 
@@ -40,7 +40,7 @@ $ python3 scripts/client.py tour [eye|camp ...]   # launch, photograph every shr
 
 The game runs on the user's display from `start` until `stop`, so close every session you open: `stop` as soon as the looking is done, and never hand back to the user with the client still running.
 
-`run` prints the batch log: each step, every chat line the game received (command replies included), errors, and the absolute path of each screenshot, which is written before `run` returns. Steps can also come one per line on stdin. `start --fresh` opens a fresh natural world in survival (`just client`) instead of the showroom (`just demo`). A batch that does not finish within `--timeout` is aborted and its log shows where it stuck.
+`run` prints the batch log: each step, every chat line the game received (command replies included), errors, and the absolute path of each screenshot, which is written before `run` returns. Steps can also come one per line on stdin. `start --fresh` opens a fresh natural world in survival (`just play`) instead of the showroom (`just showroom`). A batch that does not finish within `--timeout` is aborted and its log shows where it stuck.
 
 The client opens on the user's display in the showroom dimension `wayfarer:showroom`: the Last Camp at spawn, the stranger's first and last camps just south of it at z = 24 (x = -16 and 8), each with its name sign on the north side, an item frame wall at z = -10, and the shrines in alphabetical order along x at 40-block steps (hall centres at x = 48, 88, ...; z = 72; the surface at y = 1, each hall as deep as its way down needs), each with its name sign on the north side. The compass works there as a demo: it points at a waymark 750 blocks west of the camp, shows a companion circling the camp and marks the camp's grave. `/locate` finds nothing there; the natural overworld next to it (`/execute in minecraft:overworld run ...`) is kept between launches.
 

@@ -86,7 +86,7 @@ def launch(fresh, timeout):
     for stale in ("abort", "commands.txt", "done.txt", "game.pid", "quit"):
         (DRIVER / stale).unlink(missing_ok=True)
     before = crashes()
-    command = ["just", "client" if fresh else "demo"]
+    command = ["just", "play" if fresh else "showroom"]
     with LAUNCH_LOG.open("w") as log:
         process = subprocess.Popen(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
     LAUNCHER.write_text(str(process.pid))
