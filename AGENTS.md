@@ -36,7 +36,9 @@ $ rg --count '"trek:' build/reports/registries/minecraft/worldgen/structure.json
 
 ## Seeing the game
 
-Never wait by guessing. No `sleep`, and no `wait` in a driver batch to give something time to finish: a guessed wait is either too short and flaky or too long and slow. Every step returns the moment its effect is done, by waiting on the event itself (the server's reply, a freshly drawn frame, the next compass reading) or by checking about every second until it holds, and a wait that does not finish in time fails and says where it stuck: a driver step that makes no progress for 60 s fails the batch, naming the step and the state of the game. When a step returns before its effect shows, fix the step so it waits for that effect, never the batch; `wait` is only for watching something that has no end, such as an animation. Gates and builds run in the foreground with a generous timeout and return when they finish; the dev client is driven through `scripts/client.py`:
+Never wait by guessing. No `sleep`, and no `wait` in a driver batch to give something time to finish: a guessed wait is either too short and flaky or too long and slow. Every step returns the moment its effect is done, by waiting on the event itself (the server's reply, a freshly drawn frame, the next compass reading) or by checking about every second until it holds, and a wait that does not finish in time fails and says where it stuck: a driver step that makes no progress for 60 s fails the batch, naming the step and the state of the game. When a step returns before its effect shows, fix the step so it waits for that effect, never the batch; `wait` is only for watching something that has no end, such as an animation.
+
+Never wait for a failure that is already known. Code that knows something failed says so the moment it knows, in one line `<what> failed: <why>` (`camp failed: no spot ahead is out of sight, ...`), and both drivers end the batch on that line at once, with it as the error, and exit non-zero; a refusal or a note on the way (`camp: the spot at ... falls short`) is worded otherwise and lets the batch go on. Gates and builds run in the foreground with a generous timeout and return when they finish; the dev client is driven through `scripts/client.py`:
 
 ```console
 $ python3 scripts/client.py start            # launch unless running; returns once the showroom is built
@@ -69,7 +71,7 @@ $ python3 scripts/client.py run workshop 'place wayfarer:last_camp' 'spawn minec
 |---|---|
 | `/<command>` | Runs a command as the player |
 | `assets` | Reloads every texture, model and sound, as F3+T does, and returns when the reload is done |
-| `await <text>` | Waits for a chat line containing the text, such as a quest's reply that comes on the server's own rhythm |
+| `await <text>` | Waits for a chat line containing the text, such as a quest's reply that comes on the server's own rhythm; each line answers one `await`, so a second `await` of the same text waits for the next such line |
 | `beside <thing>` | Puts a creature, structure, template, block or item, usually its vanilla relative, at the workshop's next free spot |
 | `clear` | Empties the workshop and puts its floor back |
 | `click <x> <y>` | Clicks the open screen at GUI coordinates |
@@ -102,7 +104,7 @@ The driver (`mod/src/dev/java/.../Driver.java`) confirms commands with a sentine
 
 Changed Java code goes into a running game without a restart: `python3 scripts/client.py swap` or `python3 scripts/server.py swap` compiles the Wayfarer mod and swaps every changed class that is already loaded into the client or the dev server, over a debug port (`client_swap_port` and `server_swap_port` in `mod/gradle.properties`). The JetBrains runtime from devbox takes changed method bodies and added or removed methods and fields. It prints one line of JSON: what was swapped, what loads fresh when first used, what is new, and what needs a restart. Mixins always need one, and so does a class that gains a static field with a starting value, since its initialiser does not run again (the swap names it under `needs a restart` instead of swapping it), and anything the game reads only at startup, such as a new `@SubscribeEvent` method; changed command code takes effect after `/reload`, which registers the commands again.
 
-The dev server is driven the same way through `scripts/server.py`: the whole pack with the Wayfarer mod's dev code, in `build/devserver` on port 25566, so it can run beside `just test` and a dev client can join it at `localhost:25566`. It runs headless and keeps its world between launches (`start --fresh` deletes it). Each step of `run` is a console command, returns the moment the server has run it, and prints one line of JSON with its replies; `await <text>` waits for a later reply containing the text, such as an asynchronous `/locate`'s, and `state` returns the world's story state as on the client. Stop it when done, as with the client.
+The dev server is driven the same way through `scripts/server.py`: the whole pack with the Wayfarer mod's dev code, in `build/devserver` on port 25566, so it can run beside `just test` and a dev client can join it at `localhost:25566`. It runs headless and keeps its world between launches (`start --fresh` deletes it). Each step of `run` is a console command, returns the moment the server has run it, and prints one line of JSON with its replies; `await <text>` waits for a later reply containing the text, such as an asynchronous `/locate`'s, each reply answering one `await`, and `state` returns the world's story state as on the client. Stop it when done, as with the client.
 
 ```console
 $ python3 scripts/server.py start            # launch unless running; returns once the server is ready

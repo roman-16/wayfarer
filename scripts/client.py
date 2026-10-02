@@ -193,15 +193,21 @@ def run(arguments):
 
     def flush():
         if pending:
-            for entry in parse(batch(pending, arguments.timeout)):
-                print(json.dumps(entry), flush=True)
+            entries = parse(batch(pending, arguments.timeout))
             pending.clear()
+            report(entries)
+
+    def report(entries):
+        for entry in entries:
+            print(json.dumps(entry), flush=True)
+        if any("error" in entry for entry in entries):
+            sys.exit(1)
 
     for step in steps:
         verb = step.split(" ", 1)[0]
         if verb in local:
             flush()
-            print(json.dumps(local[verb](step, arguments.timeout)), flush=True)
+            report([local[verb](step, arguments.timeout)])
         else:
             pending.append(step)
     flush()

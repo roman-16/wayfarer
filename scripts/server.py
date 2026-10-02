@@ -36,12 +36,15 @@ def start(arguments):
     print(f"the dev server is running{lean} after {time.monotonic() - started:.0f} s; log in {server.log}")
 
 
-def awaited(server, text, offset, timeout):
+def awaited(server, text, offset, timeout, taken):
     pattern = re.compile(re.escape(text))
 
     def match(line):
         said = reply(line)
-        return said if said is not None and pattern.search(said) else None
+        if said is None or server.position in taken or not pattern.search(said):
+            return None
+        taken.add(server.position)
+        return said
 
     return server.wait(match, timeout, offset, f"a reply containing {text!r}")
 
@@ -51,11 +54,12 @@ def run(arguments):
     server.attach()
     steps = arguments.steps or [line for line in sys.stdin.read().splitlines() if line.strip()]
     offset = server.size()
+    taken = set()
     for step in steps:
         started = time.monotonic()
         try:
             if step.startswith("await "):
-                result = {"replies": [awaited(server, step.removeprefix("await "), offset, arguments.timeout)]}
+                result = {"replies": [awaited(server, step.removeprefix("await "), offset, arguments.timeout, taken)]}
             elif step == "state":
                 result = state(server.run("wayfarer state", arguments.timeout))
             else:

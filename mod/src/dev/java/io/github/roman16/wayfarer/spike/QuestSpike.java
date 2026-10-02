@@ -108,7 +108,7 @@ public final class QuestSpike {
         BlockPos goal = level.findNearestMapStructure(kind, ahead, SEARCH_CHUNKS, false);
         long millis = (System.nanoTime() - searching) / 1_000_000;
         if (goal == null) {
-            source.sendFailure(Component.literal("there is no " + kind.location() + " within " + SEARCH_CHUNKS + " chunks ahead"));
+            source.sendFailure(Component.literal("quest failed: there is no " + kind.location() + " within " + SEARCH_CHUNKS + " chunks ahead"));
             return 0;
         }
         Progress progress = Progress.of(server);
@@ -133,7 +133,7 @@ public final class QuestSpike {
             }
         }
         if (progress.step != CHOOSE || picked == null) {
-            source.sendFailure(Component.literal("there is no choice " + choice + " to make now"));
+            source.sendFailure(Component.literal("quest failed: there is no choice " + choice + " to make now"));
             return 0;
         }
         progress.choices.put(choice, day(server));
@@ -151,7 +151,7 @@ public final class QuestSpike {
         MinecraftServer server = source.getServer();
         Progress progress = Progress.of(server);
         if (progress.step != HOLD || !progress.failed) {
-            source.sendFailure(Component.literal("there is no failed step to try again"));
+            source.sendFailure(Component.literal("quest failed: there is no failed step to try again"));
             return 0;
         }
         progress.failed = false;

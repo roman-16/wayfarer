@@ -94,7 +94,7 @@ public final class Workshop {
         ServerLevel level = level(source);
         ServerPlayer player = source.getPlayer();
         if (level == null || player == null) {
-            source.sendFailure(Component.literal("the workshop needs a player and the wayfarer:workshop world"));
+            source.sendFailure(Component.literal("workshop failed: the workshop needs a player and the wayfarer:workshop world"));
             return 0;
         }
         BoundingBox all = union();
@@ -108,7 +108,7 @@ public final class Workshop {
     private static int add(CommandSourceStack source, ResourceLocation id, Kind kind, boolean walking) {
         ServerLevel level = level(source);
         if (level == null) {
-            source.sendFailure(Component.literal("there is no wayfarer:workshop world"));
+            source.sendFailure(Component.literal("workshop failed: there is no wayfarer:workshop world"));
             return 0;
         }
         Optional<EntityType<?>> creature = kind == Kind.PLACE ? Optional.empty() : BuiltInRegistries.ENTITY_TYPE.getOptional(id);
@@ -136,11 +136,11 @@ public final class Workshop {
                 case SPAWN -> "creature";
                 case BESIDE -> "creature, structure, template, block or item";
             };
-            source.sendFailure(Component.literal("there is no " + wanted + " called " + id));
+            source.sendFailure(Component.literal("workshop failed: there is no " + wanted + " called " + id));
             return 0;
         }
         if (box == null) {
-            source.sendFailure(Component.literal(id + " could not be built in the workshop"));
+            source.sendFailure(Component.literal("workshop failed: " + id + " could not be built in the workshop"));
             return 0;
         }
         record(level, box, id);
@@ -225,7 +225,7 @@ public final class Workshop {
     private static int bounds(CommandSourceStack source) {
         BoundingBox all = union();
         if (all == null) {
-            source.sendFailure(Component.literal("the workshop is empty"));
+            source.sendFailure(Component.literal("workshop failed: the workshop is empty"));
             return 0;
         }
         source.sendSuccess(() -> Component.literal("workshop bounds: %d %d %d %d %d %d".formatted(all.minX(), all.minY(), all.minZ(),
@@ -236,7 +236,7 @@ public final class Workshop {
     private static int clear(CommandSourceStack source) {
         ServerLevel level = level(source);
         if (level == null) {
-            source.sendFailure(Component.literal("there is no wayfarer:workshop world"));
+            source.sendFailure(Component.literal("workshop failed: there is no wayfarer:workshop world"));
             return 0;
         }
         List<BlockState> layers = ((FlatLevelSource) level.getChunkSource().getGenerator()).settings().getLayers();

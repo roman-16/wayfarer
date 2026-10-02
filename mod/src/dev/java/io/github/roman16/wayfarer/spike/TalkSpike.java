@@ -64,13 +64,13 @@ public final class TalkSpike {
 
     private static int spawn(CommandSourceStack source, String person) {
         if (!PEOPLE.has(person)) {
-            source.sendFailure(Component.literal("there is no person " + person));
+            source.sendFailure(Component.literal("talk failed: there is no person " + person));
             return 0;
         }
         ServerLevel level = source.getLevel();
         Entity body = EntityType.byString(BODY).map(type -> type.create(level)).orElse(null);
         if (body == null) {
-            source.sendFailure(Component.literal("Easy NPC's " + BODY + " is not in this game"));
+            source.sendFailure(Component.literal("talk failed: Easy NPC's " + BODY + " is not in this game"));
             return 0;
         }
         body.moveTo(source.getPosition().x, source.getPosition().y, source.getPosition().z, source.getRotation().y + 180, 0);

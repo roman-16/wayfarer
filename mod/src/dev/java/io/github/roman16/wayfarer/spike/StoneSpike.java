@@ -33,16 +33,31 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
-@EventBusSubscriber(modid = Wayfarer.MODID)
 public final class StoneSpike {
-    private static final String DATA = Wayfarer.MODID + "_stone_spike";
     private static final int CHECK_TICKS = 20;
+    private static final String DATA = Wayfarer.MODID + "_stone_spike";
+    private static final String GRAVESTONE = "gravestone";
 
     private StoneSpike() {}
+
+    @EventBusSubscriber(modid = Wayfarer.MODID)
+    public static final class WithGravestone {
+        private WithGravestone() {}
+
+        @SubscribeEvent
+        public static void onSetup(FMLCommonSetupEvent event) {
+            if (ModList.get().isLoaded(GRAVESTONE)) {
+                NeoForge.EVENT_BUS.register(StoneSpike.class);
+            }
+        }
+    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onGrave(PlayerDeathEvent event) {
@@ -103,7 +118,7 @@ public final class StoneSpike {
         UUID key = UUID.fromString(id);
         Stone stone = stones.all.get(key);
         if (player == null || stone == null || !stone.player().equals(player.getUUID())) {
-            source.sendFailure(Component.literal("you have no stone " + id));
+            source.sendFailure(Component.literal("stone failed: you have no stone " + id));
             return 0;
         }
         stones.all.put(key, stone.lettingGo());

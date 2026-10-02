@@ -59,7 +59,7 @@ public final class Reports {
                     .formatted(counts.registries, counts.contents, counts.tags, counts.recipes, folder, counts.failures)), false);
             return 1;
         } catch (IOException | UncheckedIOException exception) {
-            source.sendFailure(Component.literal("could not write the registries to " + folder + ": " + exception.getMessage()));
+            source.sendFailure(Component.literal("registries failed: could not write the registries to " + folder + ": " + exception.getMessage()));
             return 0;
         }
     }

@@ -163,7 +163,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 ### M5 The caravan: a village that walks
 
-- Out of sight means beyond the server's view distance, 192 blocks (`scripts/instance.py` sets 12 chunks), and outside every player's view. Distant Horizons draws far terrain up to 1,024 chunks, so a far camp may show there as a speck of tents.
+- Out of sight means beyond the view distance, 192 blocks on a server at 12 chunks (`scripts/instance.py`) and the player's own render distance in singleplayer, and also behind the land or behind every player's back. Distant Horizons draws the far terrain up to 1,024 chunks and takes in a chunk whenever the server saves it, so a camp going up in the open would pop up in the far view.
 - Where the camp goes:
 
   | Case | The camp |
@@ -172,14 +172,27 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Evening comes at sea | On the nearest land ahead; a night on the water only when a quest wants it, as in The Crossing (2.2) |
   | Someone is underground | On the surface near where they went down |
   | A quest keeps everyone away for days | No camp; the quest says "camp alone tonight" and sets the clock (D2) |
-  | The ground | Dry, fairly flat, near water, away from Gazebound outposts and other structures |
+  | The ground | Where a real camp would stand: level, neither a hollow nor an exposed top, near water but not in it, with grass and wood near, and at least 32 blocks from any structure. These are wishes: within 128 blocks past the nearest spot out of sight the camp takes the best spot it finds and settles for it, and never walks on to find a better land |
+  | Danger | Never within 16 blocks of lava, fire or another danger, nor on top of a structure |
 
 - The camp is built like a village: the fire in the middle, and around it each household as its own small piece, a tent, a wagon or a lean-to, set at the height of the ground under it, with paths between them that follow the ground. There is no flattened square. A bigger household gets a bigger piece, a person who joins brings a new piece, and after the breaking the pieces of the dead are missing. When the camp is taken down, the blocks it replaced go back.
+- The camp cannot burn: while it stands, no fire takes hold in it and no lightning strikes it.
 - Each person's record lives in the world's save data, alive or not, their trust and what they remember; their Easy NPC body is made from it in the evening and taken away in the morning.
 
-**Why:** A camp of small pieces that sit on the land the way a village's houses do looks lived in where one big flattened layout looks dropped from the sky, and a camp whose size follows its people shows the caravan's story at a glance. Vanilla builds villages this way, with fixed pieces for houses and paths that bend to the ground.
+**Why:** A camp of small pieces that sit on the land the way a village's houses do looks lived in where one big flattened layout looks dropped from the sky, and a camp whose size follows its people shows the caravan's story at a glance. Vanilla builds villages this way, with fixed pieces for houses and paths that bend to the ground. Real camps keep the same rules, level ground but not a low place, away from ravines, ledges and peaks, with grass, water and wood near ([National Park Service](https://www.nps.gov/subjects/camping/finding-and-setting-up-a-campsite.htm); Jesse Applegate, *A Day with the Cow Column in 1843*), so a hollow is the one place the caravan would never choose on its own. Wishes that give way keep the evening's walk as long as the day planned, in any land.
 
-It raises, for the spike: a camp set up out of sight from a few pieces on uneven ground and taken down with the land put back, and that it never visibly pops up on Distant Horizons' far view.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/CampSpike.java`, dev code that never ships, with its pieces built by `generator/caravan.py` and its households in `mod/src/dev/resources/wayfarer/spike/caravan.json`): ahead on the way and beyond the view distance, behind the land or behind the player's back, a fire and eight households' pieces go up, a large tent, the healers' tent, a tent of books, a small tent apart, a forge wagon, the bell's cart, a lean-to and a hide shelter, each at the height of its own ground with paths trodden to the fire, and ten people sitting at the fire or strolling round their tents. It replaces about 3,300 blocks in 50 to 100 ms on the server thread and puts them all back when it is taken down out of sight in the morning: a picture before and after differs in 0.4% of its pixels, the water's ripple and the biome's name. A fire set on a tent is put out within a second, and a lightning bolt over the camp does not strike. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| Distant Horizons 3.3.3 takes in a chunk whenever the server loads or saves it and sends the change to every player within 256 chunks at once (`enableRealTimeUpdates`, on by default); read in its code, not seen, since dev runs draw without it | A camp goes up and comes down only behind the land or behind every player's back, whatever the distance |
+| The generator gives a column's height without making its chunk, but at 2 to 10 ms a column on this pack | The search reads heights off the server thread on an 8-block grid, kept for the evening; one search takes 0.3 to 6 s |
+| Trees, bushes, lava pools and structures are not in the generator's heights | A spot is surveyed once its chunks are loaded, which takes 50 ms to 2 s; after four spots that fall short the camp settles for the best of them |
+| Bushes stand everywhere in this pack's lands | A piece lifts out growth up to 4 blocks tall, puts it back in the morning, and never stands under a tree |
+| A piece on a slope sits at the middle height of its ground | Higher ground under it is cut to a step and lower ground filled with dirt, up to 4 blocks, and both go back |
+| Brush 30 blocks from one camp caught fire from a lava pool | No danger within 16 blocks of the camp, its fires put out each second and lightning near it stopped |
+| Easy NPC's bodies sit (`easy_npc:pose/humanoid/sitting`), stroll round a home (`RANDOM_STROLL_AROUND_HOME`) and wear Minecraft's nine player skins, all set through its API | Easy NPC carries the camp's people; HollowEngine is weighed again at the memories (M8), whose scenes are keyframed |
+| A camp kept only in memory stays standing after a restart, its people with it | As for road scenes (M4), camps and the blocks they replaced live in the world's save data |
 
 ### M6 The day and the night: a scripted clock
 
@@ -503,6 +516,10 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 It raises, for the spike: a new Silent Gear material from data, a forge that finishes at dawn, and the Gear page filling in.
 
 ## Open
+
+### M19 A camp in plain sight
+
+On open land, such as wide plains, nothing hides a spot ahead, and the players walking towards the camp face it all the way, so a camp that goes up only behind the land or behind their backs may never go up. The spike gives up then. Ways out: set the camp up the moment the evening begins, wherever the players look, and let a speck of tents appear far off in Distant Horizons' view; wait to set it up until every player has looked away, while the compass already points to the spot; or prefer spots that trees or a dip hide even on open land.
 
 ### M17 Distant Horizons SeedGen
 

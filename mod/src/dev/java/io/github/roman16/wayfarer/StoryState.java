@@ -67,7 +67,7 @@ public final class StoryState {
                 }
             }
         } catch (IOException exception) {
-            source.sendFailure(Component.literal("could not read the world's saved data: " + exception.getMessage()));
+            source.sendFailure(Component.literal("state failed: could not read the world's saved data: " + exception.getMessage()));
             return 0;
         }
         source.sendSuccess(() -> Component.literal("state: " + state), false);

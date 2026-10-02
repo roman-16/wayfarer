@@ -7,6 +7,7 @@ import time
 import uuid
 
 CHECK_SECONDS = 0.1
+FAILED = re.compile(r"^[^:<]+ failed: ")
 READY = "]: Done ("
 ANSI = re.compile(r"\x1b\[[0-9;]*m")
 HEADER = re.compile(r"^\[\d")
@@ -54,6 +55,7 @@ class Server:
         self.console = self.driver / "console"
         self.pid = self.driver / "server.pid"
         self.log = self.driver / "server.log"
+        self.position = 0
         self.reports = directory / "crash-reports"
 
     def alive(self):
@@ -109,9 +111,16 @@ class Server:
                 log.seek(offset)
                 pending += log.read()
                 offset = log.tell()
+            start = offset - len(pending)
             *complete, pending = pending.split(b"\n")
             for line in complete:
-                found = match(line.decode("utf-8", "replace"))
+                self.position = start
+                start += len(line) + 1
+                text = line.decode("utf-8", "replace")
+                said = reply(text)
+                if said is not None and FAILED.search(said):
+                    raise Failure(f"failed at once while waiting for {what}: {said}")
+                found = match(text)
                 if found is not None:
                     return found
             new = sorted(crashes(self.reports) - self.before)

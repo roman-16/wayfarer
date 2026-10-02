@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -28,6 +29,7 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.function.BooleanSupplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -77,6 +79,7 @@ public final class Driver {
     private static final String PLAY_WORLD = "play" + WORLD_SUFFIX;
     private static final String SHOWROOM_WORLD = "showroom" + WORLD_SUFFIX;
     private static final long SEED = 20260929L;
+    private static final Pattern FAILED = Pattern.compile("^[^:<]+ failed: ");
     private static final int FIND_LIMIT = 20;
     private static final int FIND_RADIUS = 32;
     private static final int SETTLE_CHUNKS = 3;
@@ -94,6 +97,7 @@ public final class Driver {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Deque<String> steps = new ArrayDeque<>();
     private static final List<String> log = new ArrayList<>();
+    private static final Set<Integer> awaited = new HashSet<>();
     private static boolean opened;
     private static boolean running;
     private static boolean synced = true;
@@ -107,6 +111,7 @@ public final class Driver {
     private static CompassPayload compassFrom;
     private static String current = "";
     private static long progressed;
+    private static String failure;
 
     static {
         Problems.install();
@@ -137,6 +142,12 @@ public final class Driver {
         }
         if (!running) {
             load(folder.resolve("commands.txt"));
+            return;
+        }
+        if (failure != null) {
+            String failed = failure;
+            failure = null;
+            stopBatch(folder, "error: `%s` failed at once: %s".formatted(current, failed));
             return;
         }
         if (waiting > 0) {
@@ -207,6 +218,9 @@ public final class Driver {
         }
         if (running) {
             log.add("chat: " + message.getString());
+            if (failure == null && FAILED.matcher(message.getString()).find()) {
+                failure = message.getString();
+            }
         }
     }
 
@@ -278,6 +292,8 @@ public final class Driver {
     private static void begin(List<String> lines) {
         lines.stream().map(String::strip).filter(line -> !line.isEmpty()).forEach(steps::add);
         log.clear();
+        awaited.clear();
+        failure = null;
         running = true;
         progressed = System.nanoTime();
     }
@@ -337,8 +353,14 @@ public final class Driver {
         return minecraft.player != null || !(step.startsWith("/") || PLAYER_STEPS.contains(verb));
     }
 
-    private static String heard(String text) {
-        return log.stream().filter(line -> line.startsWith("chat: ") && line.contains(text)).findFirst().orElse(null);
+    private static Integer heard(String text) {
+        for (int index = 0; index < log.size(); index++) {
+            String line = log.get(index);
+            if (!awaited.contains(index) && line.startsWith("chat: ") && line.contains(text)) {
+                return index;
+            }
+        }
+        return null;
     }
 
     private static boolean freshFrame() {
@@ -420,7 +442,11 @@ public final class Driver {
         String[] words = step.split(" ", 2);
         String argument = words.length > 1 ? words[1] : "";
         switch (words[0]) {
-            case "await" -> note("await: " + heard(argument).substring("chat: ".length()));
+            case "await" -> {
+                int index = heard(argument);
+                awaited.add(index);
+                note("await: " + log.get(index).substring("chat: ".length()));
+            }
             case "assets" -> pending = minecraft.reloadResourcePacks().thenApply(ignored -> "assets: reloaded");
             case "beside", "clear", "place", "spawn" -> command(minecraft, "wayfarer workshop " + step);
             case "click" -> {

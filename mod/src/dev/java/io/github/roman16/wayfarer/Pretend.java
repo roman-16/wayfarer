@@ -68,11 +68,11 @@ public final class Pretend {
     private static int join(CommandSourceStack source, String name) {
         MinecraftServer server = source.getServer();
         if (!StringUtil.isValidPlayerName(name)) {
-            source.sendFailure(Component.literal(name + " is not a valid player name: up to 16 letters, digits and underscores"));
+            source.sendFailure(Component.literal("pretend failed: " + name + " is not a valid player name: up to 16 letters, digits and underscores"));
             return 0;
         }
         if (server.getPlayerList().getPlayerByName(name) != null) {
-            source.sendFailure(Component.literal(name + " is already online"));
+            source.sendFailure(Component.literal("pretend failed: " + name + " is already online"));
             return 0;
         }
         GameProfile profile = new GameProfile(UUIDUtil.createOfflinePlayerUUID(name), name);
@@ -104,7 +104,7 @@ public final class Pretend {
             return 0;
         }
         if (player.isAlive()) {
-            source.sendFailure(Component.literal(name + " is alive"));
+            source.sendFailure(Component.literal("pretend failed: " + name + " is alive"));
             return 0;
         }
         player.connection.handleClientCommand(new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.PERFORM_RESPAWN));
@@ -118,7 +118,7 @@ public final class Pretend {
     private static ServerPlayer pretender(CommandSourceStack source, String name) {
         ServerPlayer player = source.getServer().getPlayerList().getPlayerByName(name);
         if (player == null || !(player.connection.getConnection() instanceof Silent)) {
-            source.sendFailure(Component.literal(name + " is not a pretend player online"));
+            source.sendFailure(Component.literal("pretend failed: " + name + " is not a pretend player online"));
             return null;
         }
         return player;

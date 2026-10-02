@@ -1,0 +1,12 @@
+{
+  "households": [
+    {"people": [{"at": "fire", "name": "Old Tamsin", "skin": "MAKENA"}, {"at": "home", "name": "Elsa", "skin": "ALEX"}], "piece": "large_tent"},
+    {"people": [], "piece": "bell_cart"},
+    {"people": [{"at": "home", "name": "Hob", "skin": "STEVE"}, {"at": "fire", "name": "Marit", "skin": "SUNNY"}], "piece": "forge_wagon"},
+    {"people": [{"at": "fire", "name": "Mother Agna", "skin": "NOOR"}, {"at": "home", "name": "Pip", "skin": "KAI"}], "piece": "healer_tent"},
+    {"people": [{"at": "home", "name": "Bram", "skin": "EFE"}], "piece": "lean_to"},
+    {"people": [{"at": "home", "name": "Nell", "skin": "ZURI"}], "piece": "hide_shelter"},
+    {"people": [{"at": "fire", "name": "Ilse", "skin": "ARI"}], "piece": "book_tent"},
+    {"apart": true, "people": [{"at": "home", "name": "Corin", "skin": "STEVE"}], "piece": "tent"}
+  ]
+}
