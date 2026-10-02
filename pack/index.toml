@@ -362,6 +362,21 @@ hash = "ae6fd52d8bdcbeca5bbe6db840f22f92c1928fe0fda22017b19612b9b00a245a"
 metafile = true
 
 [[files]]
+file = "mods/easy-npc-config-ui.pw.toml"
+hash = "1ac11211d40268e42c2ef2d35cac36ab1ff68dd1fee32cbaf6c2363dbf63d965"
+metafile = true
+
+[[files]]
+file = "mods/easy-npc-core.pw.toml"
+hash = "46d469588690082e0aa51318a20e754ed5db1075e7890a2f6bf6750d84f2213f"
+metafile = true
+
+[[files]]
+file = "mods/easy-npc.pw.toml"
+hash = "2066b98f5eb24b0751ab59fceab6c1cc1935d5f104f549d582261883bf3da283"
+metafile = true
+
+[[files]]
 file = "mods/edf-remastered.pw.toml"
 hash = "aa893b812f2075ff2bf084ddb869f9355313b9d763fb679aca86ceff835d5d58"
 metafile = true

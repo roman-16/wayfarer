@@ -80,6 +80,7 @@ $ python3 scripts/client.py run workshop 'place wayfarer:last_camp' 'spawn minec
 | `gui on\|off` | Shows or hides the HUD |
 | `inspect block <x> <y> <z>\|creature <type>\|item\|inventory` | Returns as JSON a block with its block entity, the nearest creature of a type with its data, the held item, or every filled inventory slot |
 | `hud` | Waits for the compass reading the server sends after the commands before it and returns it as JSON: its mode and markers |
+| `interact <creature>` | Right-clicks the nearest creature of that type within 8 blocks, as a player does |
 | `key <mapping>` | Presses a key mapping (`key.inventory`) and returns once the game has taken the press; `key escape` closes the open screen |
 | `log` | Returns the warnings and errors the game logged since the last `log`, the newest 64 kept |
 | `perf` | Measures the frame rate over one second, and logs the server's tick time and which renderer draws |
@@ -110,7 +111,7 @@ $ python3 scripts/server.py run 'locate structure wayfarer:shrine/old' 'await Th
 $ python3 scripts/server.py stop             # returns once the server has exited
 ```
 
-Pretend players stand in for a team on the dev server: `wayfarer pretend join <name>` brings one online through the game's own login, so every mod reacts as to a person; `wayfarer pretend leave <name>` logs it out and `wayfarer pretend respawn <name>` presses Respawn after a death. They do what vanilla commands tell them (`tp`, `spreadplayers`, `execute as <name> run ...`), every message one receives comes back as a reply (`Mo hears: ...`), and a returning name comes back where it left. They never move on their own, not even to fall, so put them on the ground with `spreadplayers`.
+Pretend players stand in for a team on the dev server: `wayfarer pretend join <name>` brings one online through the game's own login, so every mod reacts as to a person; `wayfarer pretend leave <name>` logs it out and `wayfarer pretend respawn <name>` presses Respawn after a death. They do what vanilla commands tell them (`tp`, `spreadplayers`, `execute as <name> run ...`), every message one receives comes back as a reply (`Mo hears: ...`), and a returning name comes back where it left. They never move on their own, not even to fall, so put them on the ground with `spreadplayers`. They join the dev client's own world the same way, beside the real player and its chat.
 
 ```console
 $ python3 scripts/server.py run 'wayfarer pretend join Mo' 'spreadplayers 0 0 0 4 false Mo' 'execute as Mo run say hello'

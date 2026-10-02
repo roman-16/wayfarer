@@ -50,6 +50,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
@@ -85,7 +87,8 @@ public final class Driver {
     private static final Field CLICK_COUNT = clickCount();
     private static final String EXPERIMENTAL_WARNING = "selectWorld.backupQuestion.experimental";
     private static final String LOAD_WITHOUT_BACKUP = "selectWorld.backupJoinSkipButton";
-    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "hud", "inspect", "key", "place", "spawn", "state", "workshop");
+    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "hud", "inspect", "interact", "key", "place", "spawn", "state", "workshop");
+    private static final double INTERACT_REACH = 8;
     private static final String SENTINEL = "execute if entity @s";
     private static final String SENTINEL_REPLY = "commands.execute.conditional.pass_count";
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -436,6 +439,7 @@ public final class Driver {
                 note("hud: " + compass(HudState.compass));
                 compassFrom = null;
             }
+            case "interact" -> interact(minecraft, argument);
             case "key" -> key(minecraft, argument);
             case "log" -> {
                 List<String> problems = Problems.drain();
@@ -603,6 +607,20 @@ public final class Driver {
         Screen screen = minecraft.screen;
         screen.mouseClicked(x, y, GLFW.GLFW_MOUSE_BUTTON_LEFT);
         screen.mouseReleased(x, y, GLFW.GLFW_MOUSE_BUTTON_LEFT);
+    }
+
+    private static void interact(Minecraft minecraft, String type) {
+        ResourceLocation id = ResourceLocation.parse(type);
+        Entity nearest = minecraft.level.getEntities(minecraft.player, minecraft.player.getBoundingBox().inflate(INTERACT_REACH),
+                        entity -> BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).equals(id)).stream()
+                .min(Comparator.comparingDouble(minecraft.player::distanceToSqr))
+                .orElse(null);
+        if (nearest == null) {
+            note("error: no " + id + " within " + (int) INTERACT_REACH + " blocks");
+            return;
+        }
+        minecraft.gameMode.interact(minecraft.player, nearest, InteractionHand.MAIN_HAND);
+        synced = false;
     }
 
     private static void press(Minecraft minecraft, String label) {

@@ -126,7 +126,14 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 **Why:** The story stays one for the whole world, while nobody far away answers for the player standing in front of the person, and the decisions that belong to everyone reach everyone. One scene at a time keeps the chat readable and matches the narration's one voice at a time, and a decision that waits never lets someone's absence choose a shard.
 
-It raises, for the spike: a conversation with an Easy NPC body driven by the Wayfarer mod, clickable answers, a vote across two players, and a second person who waits.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/TalkSpike.java`, dev code that never ships), with Easy NPC 7.13.0 in the pack: a right-click on a person's Easy NPC body starts their lines in chat for everyone; an ordinary answer is a link in chat that counts only from a player within 32 blocks, and the first decides; a hard decision shows its tally and who is still missing after every vote, needs two thirds of the players online when it opened, keeps the vote of a player who leaves and takes the vote of one who joins later; and a second person spoken to says they are busy. Walking away and coming back is not in it yet. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| Easy NPC's body is the creature `easy_npc:humanoid`, and NeoForge raises a click on it before Easy NPC's own handler | The mod takes every click on the pack's people and Easy NPC never opens its own dialog or editor for them, so a person is shaped from the mod's data, not Easy NPC's editor |
+| A link in chat runs a command for whoever clicks it | Answers are commands the server checks: who clicked, how far from the person, and whether the vote is still open |
+| No Easy NPC jar has a recipe | Its items for making people cannot be made in survival |
+| Pretend players can join the dev client's own world, not only the dev server | A rule for a team is tried with the real client and its chat beside pretend players |
 
 ### M4 Road scenes: placed ahead, taken away behind
 
