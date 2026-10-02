@@ -91,6 +91,12 @@ def check(console):
         print(f"nearest {eye} shrine: {found[0] if found else None} blocks")
         if found is None:
             failures.append(f"no {eye} shrine was found")
+    for structure in tomllib.loads((ROOT / "generator/removals.toml").read_text())["structures"]:
+        found = locate(console, structure)
+        if found is not None:
+            failures.append(
+                f"{structure} is cut in generator/removals.toml but still generates {found[0]} blocks from spawn"
+            )
     return failures
 
 

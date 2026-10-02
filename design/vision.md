@@ -279,10 +279,6 @@ Turn back, or the cold takes you.
 
 The Last Sea, enchanting, ore, the stack upgrade, the animals added twice, the structures and the Nether blocks are settled in `systems.md` (M13).
 
-It raises:
-
-- **Now:** Trek's two structures with lit portals break the pack's rule as it ships today; the mod only stops portals being lit, so the ready-built ones would likely work. Found in the structure files, not seen in a world.
-
 ### D8 Scope: a 25-30 hour road
 
 | Part | Size |

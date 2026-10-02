@@ -874,6 +874,17 @@ def removals(spec):
                 "structures": [],
             },
         )
+    for structure in spec["structures"]:
+        namespace, path = structure.split(":")
+        write_json(
+            MAIN / f"data/{namespace}/worldgen/structure/{path}.json",
+            {
+                "type": "minecraft:buried_treasure",
+                "biomes": [],
+                "spawn_overrides": {},
+                "step": "underground_structures",
+            },
+        )
 
 
 def main():

@@ -124,3 +124,7 @@ structure_biomes = [
   "dungeons_arise:has_structure/small_blimp_biomes",
 ]
 structure_sets = ["minecraft:ruined_portals", "minecraft:trial_chambers"]
+structures = [
+  "trek:overworld/rare/pillager_mansion",
+  "trek:overworld/rare/portal_sword",
+]

@@ -63,6 +63,13 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
+modId = "endrem"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
 modId = "enhancedcelestials2core"
 type = "optional"
 versionRange = "*"
@@ -91,6 +98,34 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
+modId = "map_atlases"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "mr_trek"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "silentgear"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "simplyswords"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
 modId = "solonion"
 type = "optional"
 versionRange = "*"
@@ -98,7 +133,21 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
+modId = "supplementaries"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
 modId = "terralith"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "waystones"
 type = "optional"
 versionRange = "*"
 ordering = "AFTER"
