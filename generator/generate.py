@@ -193,7 +193,6 @@ def showroom(eyes):
         f"/fill {target[0] - 1} {y} {target[1] - 1} {target[0] + 1} {y} {target[1] + 1} minecraft:mossy_cobblestone",
         f"/setblock {target[0]} {y + 1} {target[1]} minecraft:cobblestone_wall",
         f"/setblock {target[0]} {y + 2} {target[1]} minecraft:lantern",
-        "wait 20",
         f"/tp @s 0.5 {y} 8.5 180 0",
     ]
     demo = {

@@ -1,0 +1,46 @@
+{
+  "echo": {
+    "map": "<Corin> That map you took. Half the outposts on it are ash now.",
+    "spared": "<Corin> The captain you spared rode north last night. He'll remember you."
+  },
+  "reward": {
+    "count": 1,
+    "id": "the_outpost",
+    "item": "minecraft:map"
+  },
+  "steps": [
+    {
+      "codex": "The Gazebound keep an outpost on the road ahead.",
+      "goal": "wayfarer:lead/outpost",
+      "journal": "A Gazebound outpost, somewhere ahead. Find it.",
+      "kind": "reach",
+      "within": 64
+    },
+    {
+      "codex": "Three guards held the outpost.",
+      "count": 3,
+      "failed": "I fell, and the guards still stand.",
+      "journal": "Its guards stand between me and the captain.",
+      "kind": "hold",
+      "people": "minecraft:vindicator"
+    },
+    {
+      "choices": [
+        {
+          "codex": "I spared the captain.",
+          "id": "spared",
+          "text": "Spare him"
+        },
+        {
+          "codex": "I took the captain's map.",
+          "id": "map",
+          "text": "Take his map"
+        }
+      ],
+      "journal": "The captain kneels in the mud.",
+      "kind": "choose",
+      "prompt": "<Captain> Spare me, and you'll have my map."
+    }
+  ],
+  "title": "The Outpost"
+}

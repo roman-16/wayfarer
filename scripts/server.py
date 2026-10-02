@@ -2,7 +2,6 @@ import argparse
 import json
 import re
 import shutil
-import subprocess
 import sys
 import time
 from pathlib import Path
@@ -19,19 +18,15 @@ STOP_SECONDS = 120
 STATE = "state: "
 
 
-def dev_server():
-    return Server(DEV_SERVER, ["./gradlew", "--console=plain", "runServer"], cwd=ROOT / "mod")
+def dev_server(mode="full"):
+    return Server(DEV_SERVER, ["just", "devserver", mode], cwd=ROOT)
 
 
 def start(arguments):
-    server = dev_server()
+    server = dev_server("lean" if arguments.lean else "full")
     if server.alive():
         print("the dev server is already running")
         return
-    mode = "lean" if arguments.lean else "full"
-    subprocess.run(
-        [sys.executable, str(ROOT / "scripts/instance.py"), "devserver", str(DEV_SERVER), "--mode", mode], check=True
-    )
     if arguments.fresh:
         shutil.rmtree(DEV_SERVER / ("world-lean" if arguments.lean else "world"), ignore_errors=True)
     started = time.monotonic()

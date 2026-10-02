@@ -21,6 +21,7 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.IOUtilities;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 @EventBusSubscriber(modid = Wayfarer.MODID)
@@ -43,8 +44,9 @@ public final class StoryState {
         MinecraftServer server = source.getServer();
         JsonObject state = new JsonObject();
         try {
+            server.getAllLevels().forEach(level -> level.getDataStorage().save());
+            IOUtilities.waitUntilIOWorkerComplete();
             for (ServerLevel level : server.getAllLevels()) {
-                level.getDataStorage().save();
                 Path folder = DimensionType.getStorageFolder(level.dimension(), server.getWorldPath(LevelResource.ROOT)).resolve("data");
                 if (!Files.isDirectory(folder)) {
                     continue;

@@ -1,5 +1,7 @@
 package io.github.roman16.wayfarer;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.GlUtil;
 import com.mojang.blaze3d.platform.NativeImage;
@@ -7,6 +9,7 @@ import com.mojang.logging.LogUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -18,16 +21,24 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.function.BooleanSupplier;
 import java.util.stream.Collectors;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.AlertScreen;
+import net.minecraft.client.gui.screens.BackupConfirmScreen;
+import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.DisconnectedScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.server.IntegratedServer;
@@ -69,7 +80,11 @@ public final class Driver {
     private static final int SETTLE_CHUNKS = 3;
     private static final int SETTLE_FRAMES = 2;
     private static final double NANOS_PER_MILLI = 1_000_000.0;
-    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "inspect", "key", "place", "spawn", "state", "workshop");
+    private static final long PERF_NANOS = 1_000_000_000L;
+    private static final Field CLICK_COUNT = clickCount();
+    private static final String EXPERIMENTAL_WARNING = "selectWorld.backupQuestion.experimental";
+    private static final String LOAD_WITHOUT_BACKUP = "selectWorld.backupJoinSkipButton";
+    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "hud", "inspect", "key", "place", "spawn", "state", "workshop");
     private static final String SENTINEL = "execute if entity @s";
     private static final String SENTINEL_REPLY = "commands.execute.conditional.pass_count";
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -82,7 +97,10 @@ public final class Driver {
     private static int waiting;
     private static CompletableFuture<String> pending;
     private static long frames;
-    private static long settledFrom = -1;
+    private static long framesFrom = -1;
+    private static BooleanSupplier until;
+    private static Runnable then;
+    private static CompassPayload compassFrom;
 
     static {
         Problems.install();
@@ -105,13 +123,10 @@ public final class Driver {
             return;
         }
         if (running && take(folder.resolve("abort"))) {
-            steps.clear();
-            waiting = 0;
-            pending = null;
-            sentinelSent = false;
-            synced = true;
-            note("aborted");
-            finish(folder);
+            stopBatch(folder, "aborted");
+            return;
+        }
+        if (running && minecraft.player == null && dialog(minecraft, folder)) {
             return;
         }
         if (!running) {
@@ -128,6 +143,17 @@ public final class Driver {
             }
             settlePending();
         }
+        if (until != null) {
+            if (!until.getAsBoolean()) {
+                return;
+            }
+            until = null;
+            Runnable finished = then;
+            then = null;
+            if (finished != null) {
+                finished.run();
+            }
+        }
         while (!steps.isEmpty()) {
             if (minecraft.player != null && !sync(minecraft)) {
                 return;
@@ -139,7 +165,7 @@ public final class Driver {
             steps.poll();
             note("> " + step);
             run(minecraft, step);
-            if (waiting > 0 || pending != null) {
+            if (waiting > 0 || pending != null || until != null) {
                 return;
             }
         }
@@ -264,15 +290,73 @@ public final class Driver {
     private static boolean ready(Minecraft minecraft, String step) {
         String verb = step.split(" ", 2)[0];
         if (verb.equals("settle")) {
-            if (minecraft.player == null || !sync(minecraft) || !loaded(minecraft)) {
+            return minecraft.player != null && sync(minecraft) && loaded(minecraft) && freshFrame() && rendered(minecraft);
+        }
+        if (verb.equals("shot")) {
+            return freshFrame();
+        }
+        if (verb.equals("hud")) {
+            if (minecraft.player == null) {
                 return false;
             }
-            if (settledFrom < 0) {
-                settledFrom = frames;
+            if (compassFrom == null) {
+                compassFrom = HudState.compass;
             }
-            return frames > settledFrom + SETTLE_FRAMES && rendered(minecraft);
+            return HudState.compass != compassFrom;
         }
         return minecraft.player != null || !(step.startsWith("/") || PLAYER_STEPS.contains(verb));
+    }
+
+    private static boolean freshFrame() {
+        if (framesFrom < 0) {
+            framesFrom = frames;
+        }
+        return frames > framesFrom + SETTLE_FRAMES;
+    }
+
+    private static boolean dialog(Minecraft minecraft, Path folder) {
+        if (minecraft.screen instanceof BackupConfirmScreen backup && translationKey(backup.getTitle()).equals(EXPERIMENTAL_WARNING)) {
+            for (GuiEventListener child : backup.children()) {
+                if (child instanceof Button button && translationKey(button.getMessage()).equals(LOAD_WITHOUT_BACKUP)) {
+                    note("note: confirmed the experimental settings warning of this dev world; it does not come again");
+                    button.onPress();
+                    return true;
+                }
+            }
+        }
+        if (minecraft.screen instanceof BackupConfirmScreen || minecraft.screen instanceof ConfirmScreen
+                || minecraft.screen instanceof AlertScreen || minecraft.screen instanceof DisconnectedScreen) {
+            stopBatch(folder, "blocked: the game is asking on its " + minecraft.screen.getClass().getSimpleName() + ": "
+                    + minecraft.screen.getNarrationMessage().getString().replace('\n', ' '));
+            return true;
+        }
+        return false;
+    }
+
+    private static Field clickCount() {
+        try {
+            Field field = KeyMapping.class.getDeclaredField("clickCount");
+            field.setAccessible(true);
+            return field;
+        } catch (NoSuchFieldException exception) {
+            throw new IllegalStateException(exception);
+        }
+    }
+
+    private static String translationKey(Component component) {
+        return component.getContents() instanceof TranslatableContents contents ? contents.getKey() : "";
+    }
+
+    private static void stopBatch(Path folder, String reason) {
+        steps.clear();
+        waiting = 0;
+        pending = null;
+        until = null;
+        then = null;
+        sentinelSent = false;
+        synced = true;
+        note(reason);
+        finish(folder);
     }
 
     private static boolean loaded(Minecraft minecraft) {
@@ -316,6 +400,10 @@ public final class Driver {
             }
             case "gui" -> minecraft.options.hideGui = argument.equals("off");
             case "inspect" -> inspect(minecraft, argument);
+            case "hud" -> {
+                note("hud: " + compass(HudState.compass));
+                compassFrom = null;
+            }
             case "key" -> key(minecraft, argument);
             case "log" -> {
                 List<String> problems = Problems.drain();
@@ -330,8 +418,11 @@ public final class Driver {
             case "press" -> press(minecraft, argument);
             case "quit" -> minecraft.stop();
             case "screen" -> describe(minecraft);
-            case "settle" -> settledFrom = -1;
-            case "shot" -> shot(minecraft, argument);
+            case "settle" -> framesFrom = -1;
+            case "shot" -> {
+                framesFrom = -1;
+                shot(minecraft, argument);
+            }
             case "state" -> command(minecraft, "wayfarer state");
             case "type" -> argument.chars().forEach(character -> {
                 if (minecraft.screen != null) {
@@ -388,9 +479,31 @@ public final class Driver {
     }
 
     private static void perf(Minecraft minecraft) {
-        IntegratedServer server = minecraft.getSingleplayerServer();
-        String tick = server == null ? "no server" : "%.1f ms a server tick".formatted(server.getAverageTickTimeNanos() / NANOS_PER_MILLI);
-        note("perf: %d fps, %s, drawn by %s".formatted(minecraft.getFps(), tick, GlUtil.getRenderer()));
+        long fromFrames = frames;
+        long fromNanos = System.nanoTime();
+        until = () -> System.nanoTime() - fromNanos >= PERF_NANOS;
+        then = () -> {
+            double fps = (frames - fromFrames) * (double) PERF_NANOS / (System.nanoTime() - fromNanos);
+            IntegratedServer server = minecraft.getSingleplayerServer();
+            String tick = server == null ? "no server" : "%.1f ms a server tick".formatted(server.getAverageTickTimeNanos() / NANOS_PER_MILLI);
+            note("perf: %.0f fps over one second, %s, drawn by %s".formatted(fps, tick, GlUtil.getRenderer()));
+        };
+    }
+
+    private static String compass(CompassPayload reading) {
+        JsonObject json = new JsonObject();
+        json.addProperty("mode", reading.mode().name().toLowerCase(Locale.ROOT));
+        JsonArray markers = new JsonArray();
+        for (CompassPayload.Marker marker : reading.markers()) {
+            JsonObject entry = new JsonObject();
+            entry.addProperty("kind", marker.kind().name().toLowerCase(Locale.ROOT));
+            entry.addProperty("name", marker.name());
+            entry.addProperty("x", marker.x());
+            entry.addProperty("z", marker.z());
+            markers.add(entry);
+        }
+        json.add("markers", markers);
+        return json.toString();
     }
 
     private static void shot(Minecraft minecraft, String name) {
@@ -436,7 +549,18 @@ public final class Driver {
         Arrays.stream(minecraft.options.keyMappings)
                 .filter(mapping -> mapping.getName().equals(name))
                 .findFirst()
-                .ifPresentOrElse(mapping -> KeyMapping.click(mapping.getKey()), () -> note("error: no key mapping " + name));
+                .ifPresentOrElse(mapping -> {
+                    KeyMapping.click(mapping.getKey());
+                    until = () -> clicks(mapping) == 0;
+                }, () -> note("error: no key mapping " + name));
+    }
+
+    private static int clicks(KeyMapping mapping) {
+        try {
+            return CLICK_COUNT.getInt(mapping);
+        } catch (IllegalAccessException exception) {
+            throw new IllegalStateException(exception);
+        }
     }
 
     private static void click(Minecraft minecraft, double x, double y) {

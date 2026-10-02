@@ -21,7 +21,12 @@ CLIENT_CONFIGS = {
     "dynamic_fps.json": {"enabled": False},
     "iris.properties": {"enableShaders": "false"},
 }
-CLIENT_OPTIONS = {"pauseOnLostFocus": "false", "renderDistance": "8", "simulationDistance": "8"}
+CLIENT_OPTIONS = {
+    "pauseOnLostFocus": "false",
+    "renderDistance": "8",
+    "simulationDistance": "8",
+    "soundCategory_master": "0.0" if os.environ.get("WAYFARER_SILENT") == "true" else "0.5",
+}
 SIDES = {"client": {"both", "client"}, "server": {"both", "server"}}
 DEV_SERVER_PORTS = {"server": 25566, "voice": 24455}
 SERVER_PROPERTIES = {

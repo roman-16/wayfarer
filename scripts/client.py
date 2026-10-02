@@ -44,7 +44,6 @@ FOUND = re.compile(r"found \d+ \S+ within \d+: (-?\d+) (-?\d+) (-?\d+)")
 EYE_HEIGHT = 1.62
 SHAFTS = {"ladder": 5, "spiral": 11, "switchback": 11}
 SOUTH, WEST, NORTH, EAST = (0, 1), (-1, 0), (0, -1), (1, 0)
-SETTLE = ["settle", "wait 10"]
 
 
 def alive():
@@ -97,8 +96,8 @@ def screen(visible):
     SCREEN.write_text(str(process.pid))
     environment.pop("WAYLAND_DISPLAY", None)
     return environment | {
-        "ALSOFT_DRIVERS": "null",
         "DISPLAY": f":{display}",
+        "WAYFARER_SILENT": "true",
         "XDG_SESSION_TYPE": "x11",
         "__GLX_VENDOR_LIBRARY_NAME": "mesa",
     }
@@ -155,6 +154,10 @@ def launch(fresh, timeout, visible, lean=False):
                 os.kill(pid, signal.SIGKILL)
         release_screen()
         raise
+    blocked = [line for line in report.splitlines() if line.startswith("blocked:")]
+    if blocked:
+        shut(STOP_SECONDS)
+        sys.exit(f"the client could not open its world: {blocked[0].removeprefix('blocked: ')}")
     hotswap.remember(SNAPSHOT)
     errors = [line for line in report.splitlines() if line.startswith("error:")]
     world = "a fresh natural world" if fresh else "the showroom"
@@ -216,7 +219,7 @@ def parse(report):
         if key == "chat" and value.startswith(STATE):
             entries[-1]["state"] = json.loads(value.removeprefix(STATE))
             continue
-        entries[-1].setdefault(key, []).append(json.loads(value) if key == "inspect" else value)
+        entries[-1].setdefault(key, []).append(json.loads(value) if key in ("hud", "inspect") else value)
     return entries
 
 
@@ -292,7 +295,7 @@ def view(shot, at, look, world):
     pitch = -math.degrees(math.atan2(dy, math.hypot(dx, dz)))
     return [
         f"/execute in {world} run tp @s {at[0]:.2f} {at[1]:.2f} {at[2]:.2f} {yaw:.1f} {pitch:.1f}",
-        *SETTLE,
+        "settle",
         f"shot {shot}",
     ]
 

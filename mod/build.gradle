@@ -78,7 +78,7 @@ neoForge {
                 sourceSet = sourceSets.dev
                 systemProperty "${mod_id}.showroom", showroom.toString()
                 systemProperty "${mod_id}.lean", providers.environmentVariable('WAYFARER_LEAN').orElse('false').get()
-                ['ALSOFT_DRIVERS', 'DISPLAY', 'XDG_SESSION_TYPE', '__GLX_VENDOR_LIBRARY_NAME'].each { variable ->
+                ['DISPLAY', 'XDG_SESSION_TYPE', '__GLX_VENDOR_LIBRARY_NAME'].each { variable ->
                     String value = providers.environmentVariable(variable).orNull
                     if (value != null) {
                         environment.put(variable, value)

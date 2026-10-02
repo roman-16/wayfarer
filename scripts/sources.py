@@ -78,7 +78,7 @@ def mods():
         sys.exit(f"no mods in {MODS.relative_to(ROOT)}: run `python3 scripts/instance.py client build/client` first")
     vineflower = next((ROOT / "mod/build/vineflower").glob("vineflower-*.jar"), None)
     if vineflower is None:
-        sys.exit("no Vineflower jar: run `cd mod && ./gradlew vineflower` first")
+        sys.exit("no Vineflower jar: run `just sources`, which fetches it")
     (SOURCES / "mods").mkdir(parents=True, exist_ok=True)
     prune(SOURCES / "mods", {jar.stem for jar in jars} | {jar.stem + ".log" for jar in jars})
     failures, done = [], []

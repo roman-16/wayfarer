@@ -4,6 +4,8 @@ modVersion := `sed --quiet 's/^mod_version=//p' mod/gradle.properties`
 packVersion := `sed --quiet 's/^version = "\(.*\)"$/\1/p' pack/pack.toml`
 jar := "mod/build/libs/wayfarer-" + modVersion + ".jar"
 
+export JAVA_HOME := env("DEVBOX_PACKAGES_DIR") / "lib/openjdk"
+
 [doc("Build the Wayfarer mod jar")]
 build:
     cd mod && ./gradlew build
@@ -30,15 +32,23 @@ gametest:
 generate:
     python3 generator/generate.py
 
+[doc("Compile the Wayfarer mod and its dev code")]
+compile:
+    cd mod && ./gradlew --console=plain --quiet compileJava compileDevJava
+
+[doc("Run the dev server in the foreground: the whole pack with the Wayfarer mod's dev code, in build/devserver; `just devserver lean` loads only the Wayfarer mod and what it needs, in a world of its own")]
+devserver mode="full":
+    python3 scripts/instance.py devserver build/devserver --mode {{ mode }}
+    cd mod && ./gradlew --console=plain runServer
+
 [doc("Fix and format everything fixable, then lint with no findings allowed")]
-lint: generate
+lint: generate compile
     ruff format generator scripts
     ruff check --fix generator scripts
     taplo format balance.toml generator/*.toml
     just --fmt --unstable
     cd pack && packwiz refresh
     python3 scripts/rules.py
-    cd mod && ./gradlew compileJava compileDevJava
 
 [doc("Export the CurseForge-format client zip and the server pack into dist/")]
 pack: build

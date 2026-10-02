@@ -112,12 +112,7 @@ class Debugger:
 def swap(port, snapshot):
     if not snapshot.exists():
         raise Failure("there is no snapshot of the classes the game started with; start it with this driver")
-    compiled = subprocess.run(
-        ["./gradlew", "--console=plain", "--quiet", "compileJava", "compileDevJava"],
-        cwd=MOD,
-        capture_output=True,
-        text=True,
-    )
+    compiled = subprocess.run(["just", "compile"], cwd=ROOT, capture_output=True, text=True)
     if compiled.returncode != 0:
         raise Failure(f"the code does not compile:\n{(compiled.stdout + compiled.stderr)[-4000:]}")
     before = json.loads(snapshot.read_text())

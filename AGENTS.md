@@ -36,7 +36,7 @@ $ rg --count '"trek:' build/reports/registries/minecraft/worldgen/structure.json
 
 ## Seeing the game
 
-Never wait by sleeping. Gates and builds run in the foreground with a generous timeout and return when they finish; the dev client is driven through `scripts/client.py`, whose commands each return the moment the game has finished them:
+Never wait by guessing. No `sleep`, and no `wait` in a driver batch to give something time to finish: a guessed wait is either too short and flaky or too long and slow. Every step returns the moment its effect is done, by waiting on the event itself (the server's reply, a freshly drawn frame, the next compass reading) or by checking about every second until it holds, and a wait that does not finish in time fails and says where it stuck. When a step returns before its effect shows, fix the step so it waits for that effect, never the batch; `wait` is only for watching something that has no end, such as an animation. Gates and builds run in the foreground with a generous timeout and return when they finish; the dev client is driven through `scripts/client.py`:
 
 ```console
 $ python3 scripts/client.py start            # launch unless running; returns once the showroom is built
@@ -45,13 +45,13 @@ $ python3 scripts/client.py stop             # returns once the game has exited
 $ python3 scripts/client.py tour [eye|camp ...]   # launch, photograph every shrine and the Last Camp, quit
 ```
 
-The game runs on a hidden screen from `start` until `stop`: Xvfb from devbox, drawn in software by Mesa, so it never takes over the user's display; `start --visible` and `tour --visible` put it on the user's display, drawn by the graphics card. Close every session you open: `stop` as soon as the looking is done, and never hand back to the user with the client still running.
+The game runs on a hidden screen from `start` until `stop`: Xvfb from devbox, drawn in software by Mesa, so it never takes over the user's display; `start --visible` and `tour --visible` put it on the user's display, drawn by the graphics card. A hidden game is silent (master volume 0, which Reactive Music's own player follows too); a visible one plays at half volume. A launch that meets a dialog on the way into its world fails at once and names it, since nobody can click it on the hidden screen; the one-time warning that a world uses experimental settings, which every showroom save shows because of its extra worlds, is confirmed by the driver and never comes again. Close every session you open: `stop` as soon as the looking is done, and never hand back to the user with the client still running.
 
 `start --lean` on either driver, and `just showroom lean` or `just play lean`, load only the Wayfarer mod and what it needs (Curios, FTB Teams, FTB Library, Architectury, all from the dev classpath) with an empty mods folder, for work that does not need the rest of the pack: the client starts in about 23 s instead of 34, the dev server in about 11 s instead of 16. They play in worlds of their own (`showroom-lean`, `play-lean`, `world-lean`), since opening a world without the mods it was made with damages it.
 
 Every dev client (`just showroom`, `just play` and the driver) runs with test settings that `scripts/instance.py` lays over `pack/config` in `build/client`: no shaders, no Distant Horizons, 8 chunks. The shipped pack keeps its shaders, its far view and 12 chunks, so those are judged in the exported pack (`just pack`, imported into Prism Launcher).
 
-devbox pins Mesa to the Nix snapshot the Java runtime (`jetbrains.jdk-no-jcef`) comes from (`github:NixOS/nixpkgs/<commit>#mesa`): the hidden screen loads Mesa into the game's Java, and a driver built against a newer C library than Java's does not load. When the Java runtime moves to a newer snapshot, move Mesa's commit with it.
+devbox pins Mesa to the Nix snapshot the Java runtime (`jetbrains.jdk-no-jcef`) comes from (`github:NixOS/nixpkgs/<commit>#mesa`): the hidden screen loads Mesa into the game's Java, and a driver built against a newer C library than Java's does not load. When the Java runtime moves to a newer snapshot, move Mesa's commit with it. The justfile sets `JAVA_HOME` to devbox's Java for every task, and both drivers launch the game and compile through just recipes (`just showroom`, `just play`, `just devserver`, `just compile`), so a shell's own `JAVA_HOME` never matters.
 
 `run` prints one line of JSON per step, as soon as the step is done: the step, and lists of what it produced, such as every chat line the game received while it ran (command replies included) under `chat`, errors under `error`, the absolute path of each screenshot, written before `run` returns, under `screenshot`, and the step's own result under its name (`inspect`, `log`, `perf`, `pos`, `state`, `sheet`). A command step waits until the server has run it, so its replies always sit under it. Steps can also come one per line on stdin. `start --fresh` opens a fresh natural world in survival (`just play`) instead of the showroom (`just showroom`). A batch that does not finish within `--timeout` is aborted and its log shows where it stuck.
 
@@ -78,21 +78,22 @@ $ python3 scripts/client.py run workshop 'place wayfarer:last_camp' 'spawn minec
 | `fly on\|off` | Toggles creative flight |
 | `gui on\|off` | Shows or hides the HUD |
 | `inspect block <x> <y> <z>\|creature <type>\|item\|inventory` | Returns as JSON a block with its block entity, the nearest creature of a type with its data, the held item, or every filled inventory slot |
-| `key <mapping>` | Presses a key mapping (`key.inventory`); `key escape` closes the open screen |
+| `hud` | Waits for the compass reading the server sends after the commands before it and returns it as JSON: its mode and markers |
+| `key <mapping>` | Presses a key mapping (`key.inventory`) and returns once the game has taken the press; `key escape` closes the open screen |
 | `log` | Returns the warnings and errors the game logged since the last `log`, the newest 64 kept |
-| `perf` | Logs the frame rate, the server's tick time and which renderer draws |
+| `perf` | Measures the frame rate over one second, and logs the server's tick time and which renderer draws |
 | `place <thing>` | Puts a structure, template, block or item at the workshop's next free spot, with its name sign |
 | `pos` | Logs the player's position, facing and dimension |
 | `press <label>` | Clicks the widget with that label on the open screen |
 | `quit` | Closes the client |
 | `screen` | Logs the open screen and its widgets with labels, positions and sizes |
 | `settle` | Waits until earlier commands have run on the server, the chunks around the player are loaded and the terrain is drawn |
-| `shot <name>` | Saves a screenshot |
+| `shot <name>` | Saves a screenshot of a frame drawn after every step before it |
 | `spawn <creature> [walking]` | Puts a creature at the workshop's next free spot, standing still, or walking with `walking` |
 | `state` | Returns the world's story state: every save file of the Wayfarer mod as JSON |
 | `type <text>` | Types into the focused field |
 | `views <name>` | Photographs everything in the workshop from the front, the side, above and three-quarters, each camera fitted to it, into `build/client/workshop/<name>.jpg` |
-| `wait <ticks>` | Waits a fixed time; only for things with no completion signal, such as an animation |
+| `wait <ticks>` | Waits a fixed time; only for watching something with no end, such as an animation, never to let a step finish |
 | `workshop` | Takes the player into the workshop, south of what stands there |
 
 The driver (`mod/src/dev/java/.../Driver.java`) confirms commands with a sentinel (`execute if entity @s`, whose reply it hides), so `sendCommandFeedback` must stay on. After `just generate`, `cd mod && ./gradlew processResources processDevResources` and the step `/reload` load the new data into the running client; new chunks and `/place structure` then use it.
