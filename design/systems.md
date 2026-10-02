@@ -95,7 +95,17 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 **Why:** A journal that holds every reward and every word must never be lost, so it is a key, not an item, and the map lives beside it so the screen stays clear: the compass is the only thing on the road that points. JourneyMap's server settings switch cave mapping and the radar off for everyone, which keeps the halls hidden and the rule on the server, not in a client setting. The stone a player wants back is the one with their things in it, not the first or the last, and letting one go lets them start afresh.
 
-It raises, for the spike: that JourneyMap's server settings hold in singleplayer and on a server, that the Wayfarer mod can switch its minimap off, add the places found and open the map from the journal, and how the Gravestone mod's stones are counted and let go; YIGD, a grave mod under the MIT licence, is the one to try if Gravestone cannot.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/`, dev code that never ships), with JourneyMap 6.0.9 in the pack in place of Map Atlases: the pack's server settings switch off the minimap, cave mapping, the radar, waypoints, death points and beacons for everyone, in singleplayer as on a server; the outpost a quest found shows on the world map; M and the journal's Map button open it; every fall with things in it leaves a stone the compass shows with what it holds, the journal lists each player's own stones, and letting one go takes it off the compass while the stone stays. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| JourneyMap keeps its server settings in `journeymap/server/6.0/journeymap.server.global.config` beside `config/`, read from the game folder in singleplayer and the server folder on a server, and fills in every key the file leaves out | The pack ships only the keys it changes, in `pack/journeymap/`, and the instances copy that folder with `config/` |
+| JourneyMap opens its map only when no other screen is open, and shows its About screen the first time each version opens it | The journal closes itself before opening the map, and the mod marks the running version's About screen as seen |
+| JourneyMap's map key defaults to J, which M2 gives the journal | The mod's own M opens the map, and JourneyMap's J is moved off when the journal takes J |
+| The places found reach the map as marks drawn by the mod through JourneyMap's API, not as waypoints, so the server's ban on waypoints does not hide them | Every place found is a mark of the mod's, kept in step with the world's state |
+| Gravestone announces each death with an event of its own and builds the stone inside it; its archive of deaths outlives the stone | The mod records each stone right after Gravestone builds it, drops it once its block is gone, and counts its things from the stone itself |
+| Gravestone builds a stone even for a fall with nothing in it, and has no setting against it | A stone with nothing in it is not recorded |
+| The compass already takes marks from other code, so the single grave of the last death gives way to every stone through the same hook | Stones reach the compass the way quest goals do; the HUD still needs to draw the fullest one strongest |
 
 ### M3 Conversations: one scene at a time, for everyone
 

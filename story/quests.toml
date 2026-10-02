@@ -598,20 +598,6 @@ y = 8.0
 [[chapters.quests]]
 after = ["last_fire"]
 description = [
-  "Roads are the only thing a Wayfarer leaves behind, and an atlas remembers every one.",
-  "Make an empty map, open it once, then bind it into a book: that is an atlas.",
-]
-id = "atlas"
-rewards = [{ count = 16, item = "minecraft:paper" }]
-subtitle = "The only thing we leave behind"
-tasks = [{ item = "map_atlases:atlas" }]
-title = "Map the Road"
-x = 3.0
-y = 8.0
-
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
   "The ember finds shards, not lands. Each people hid its shard in its own land, and this compass finds lands.",
   "Make a Nature's Compass.",
 ]

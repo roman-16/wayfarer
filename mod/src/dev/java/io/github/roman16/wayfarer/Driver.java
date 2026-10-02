@@ -81,6 +81,7 @@ public final class Driver {
     private static final int SETTLE_FRAMES = 2;
     private static final double NANOS_PER_MILLI = 1_000_000.0;
     private static final long PERF_NANOS = 1_000_000_000L;
+    private static final long STEP_LIMIT_NANOS = 60_000_000_000L;
     private static final Field CLICK_COUNT = clickCount();
     private static final String EXPERIMENTAL_WARNING = "selectWorld.backupQuestion.experimental";
     private static final String LOAD_WITHOUT_BACKUP = "selectWorld.backupJoinSkipButton";
@@ -101,6 +102,8 @@ public final class Driver {
     private static BooleanSupplier until;
     private static Runnable then;
     private static CompassPayload compassFrom;
+    private static String current = "";
+    private static long progressed;
 
     static {
         Problems.install();
@@ -135,6 +138,12 @@ public final class Driver {
         }
         if (waiting > 0) {
             waiting--;
+            progressed = System.nanoTime();
+            return;
+        }
+        if (System.nanoTime() - progressed > STEP_LIMIT_NANOS) {
+            String stuck = until != null || pending != null ? current : steps.isEmpty() ? "the end of the batch" : steps.peek();
+            stopBatch(folder, "error: `%s` did not finish within %d s; %s".formatted(stuck, STEP_LIMIT_NANOS / PERF_NANOS, why(minecraft)));
             return;
         }
         if (pending != null) {
@@ -142,12 +151,14 @@ public final class Driver {
                 return;
             }
             settlePending();
+            progressed = System.nanoTime();
         }
         if (until != null) {
             if (!until.getAsBoolean()) {
                 return;
             }
             until = null;
+            progressed = System.nanoTime();
             Runnable finished = then;
             then = null;
             if (finished != null) {
@@ -163,6 +174,8 @@ public final class Driver {
                 return;
             }
             steps.poll();
+            current = step;
+            progressed = System.nanoTime();
             note("> " + step);
             run(minecraft, step);
             if (waiting > 0 || pending != null || until != null) {
@@ -253,10 +266,17 @@ public final class Driver {
         }
     }
 
+    private static String why(Minecraft minecraft) {
+        String screen = minecraft.screen == null ? "no screen open" : "the open screen is " + minecraft.screen.getClass().getSimpleName();
+        String player = minecraft.player == null ? "no player" : minecraft.player.isAlive() ? "the player is alive" : "the player is dead";
+        return screen + ", " + player + (synced ? "" : ", the server has not answered the last command");
+    }
+
     private static void begin(List<String> lines) {
         lines.stream().map(String::strip).filter(line -> !line.isEmpty()).forEach(steps::add);
         log.clear();
         running = true;
+        progressed = System.nanoTime();
     }
 
     private static void finish(Path folder) {
@@ -295,6 +315,13 @@ public final class Driver {
         if (verb.equals("shot")) {
             return freshFrame();
         }
+        if (verb.equals("press")) {
+            AbstractWidget widget = labelled(minecraft, step.substring(verb.length()).strip());
+            return widget == null || widget.active;
+        }
+        if (verb.equals("await")) {
+            return heard(step.substring(verb.length()).strip()) != null;
+        }
         if (verb.equals("hud")) {
             if (minecraft.player == null) {
                 return false;
@@ -305,6 +332,10 @@ public final class Driver {
             return HudState.compass != compassFrom;
         }
         return minecraft.player != null || !(step.startsWith("/") || PLAYER_STEPS.contains(verb));
+    }
+
+    private static String heard(String text) {
+        return log.stream().filter(line -> line.startsWith("chat: ") && line.contains(text)).findFirst().orElse(null);
     }
 
     private static boolean freshFrame() {
@@ -386,6 +417,7 @@ public final class Driver {
         String[] words = step.split(" ", 2);
         String argument = words.length > 1 ? words[1] : "";
         switch (words[0]) {
+            case "await" -> note("await: " + heard(argument).substring("chat: ".length()));
             case "assets" -> pending = minecraft.reloadResourcePacks().thenApply(ignored -> "assets: reloaded");
             case "beside", "clear", "place", "spawn" -> command(minecraft, "wayfarer workshop " + step);
             case "click" -> {
@@ -574,12 +606,16 @@ public final class Driver {
     }
 
     private static void press(Minecraft minecraft, String label) {
-        widgets(minecraft).stream()
-                .filter(widget -> widget.getMessage().getString().equals(label))
-                .findFirst()
-                .ifPresentOrElse(
-                        widget -> click(minecraft, widget.getX() + widget.getWidth() / 2.0, widget.getY() + widget.getHeight() / 2.0),
-                        () -> note("error: no widget labelled " + label));
+        AbstractWidget widget = labelled(minecraft, label);
+        if (widget == null) {
+            note("error: no widget labelled " + label);
+            return;
+        }
+        click(minecraft, widget.getX() + widget.getWidth() / 2.0, widget.getY() + widget.getHeight() / 2.0);
+    }
+
+    private static AbstractWidget labelled(Minecraft minecraft, String label) {
+        return widgets(minecraft).stream().filter(widget -> widget.getMessage().getString().equals(label)).findFirst().orElse(null);
     }
 
     private static void describe(Minecraft minecraft) {

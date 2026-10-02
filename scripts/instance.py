@@ -27,6 +27,7 @@ CLIENT_OPTIONS = {
     "simulationDistance": "8",
     "soundCategory_master": "0.0" if os.environ.get("WAYFARER_SILENT") == "true" else "0.5",
 }
+SETTINGS = ("config", "journeymap")
 SIDES = {"client": {"both", "client"}, "server": {"both", "server"}}
 DEV_SERVER_PORTS = {"server": 25566, "voice": 24455}
 SERVER_PROPERTIES = {
@@ -143,10 +144,15 @@ def client(target, lean):
     shutil.rmtree(target / "mods", ignore_errors=True)
     (target / "mods").mkdir(parents=True)
     files(target, "client", {"resourcepacks", "shaderpacks"} if lean else {"mods", "resourcepacks", "shaderpacks"})
-    shutil.copytree(PACK / "config", target / "config", dirs_exist_ok=True)
+    settings(target)
     for name, overrides in CLIENT_CONFIGS.items():
         configure(target / "config" / name, overrides)
     options(target)
+
+
+def settings(target):
+    for folder in SETTINGS:
+        shutil.copytree(PACK / folder, target / folder, dirs_exist_ok=True)
 
 
 def properties(target, overrides):
@@ -160,7 +166,7 @@ def server(target, jar):
     neoforge(target)
     files(target, "server", {"mods"})
     shutil.copyfile(jar, target / "mods" / jar.name)
-    shutil.copytree(PACK / "config", target / "config")
+    settings(target)
     properties(target, {})
     (target / "user_jvm_args.txt").write_text("-Xms4G\n-Xmx8G\n")
 
@@ -170,7 +176,7 @@ def dev_server(target, lean):
     (target / "mods").mkdir(parents=True)
     if not lean:
         files(target, "server", {"mods"})
-    shutil.copytree(PACK / "config", target / "config", dirs_exist_ok=True)
+    settings(target)
     voice = target / "config/voicechat/voicechat-server.properties"
     voice.parent.mkdir(parents=True, exist_ok=True)
     voice.write_text(f"port={DEV_SERVER_PORTS['voice']}\n")

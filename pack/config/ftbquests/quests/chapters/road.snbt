@@ -950,34 +950,6 @@
 			dependencies: [
 				"1F1980B9A1FF2B71"
 			]
-			id: "12A733126EEC4BAF"
-			rewards: [
-				{
-					id: "065EA41A27E18E27"
-					item: {
-						count: 16
-						id: "minecraft:paper"
-					}
-					type: "item"
-				}
-			]
-			tasks: [
-				{
-					id: "03D3AA1989F5DAEE"
-					item: {
-						count: 1
-						id: "map_atlases:atlas"
-					}
-					type: "item"
-				}
-			]
-			x: 3.0d
-			y: 8.0d
-		}
-		{
-			dependencies: [
-				"1F1980B9A1FF2B71"
-			]
 			id: "6B5CE6724696EF8D"
 			rewards: [
 				{

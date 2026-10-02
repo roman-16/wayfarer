@@ -322,7 +322,7 @@ public final class QuestSpike {
         server.getPlayerList().broadcastSystemMessage(message, false);
     }
 
-    private static void sync(MinecraftServer server) {
+    static void sync(MinecraftServer server) {
         Progress progress = Progress.of(server);
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             PacketDistributor.sendToPlayer(player, new JournalView(view(progress, player)));
@@ -351,6 +351,16 @@ public final class QuestSpike {
             rewards.add(entry);
         }
         view.add("rewards", rewards);
+        JsonArray places = new JsonArray();
+        if (progress.goal != null && progress.step > REACH) {
+            JsonObject place = new JsonObject();
+            place.addProperty("name", "Gazebound outpost");
+            place.addProperty("x", progress.goal.getX());
+            place.addProperty("z", progress.goal.getZ());
+            places.add(place);
+        }
+        view.add("places", places);
+        view.add("stones", StoneSpike.view(player));
         return view.toString();
     }
 

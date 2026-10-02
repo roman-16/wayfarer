@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer.spike;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Wayfarer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -14,14 +15,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
+import org.slf4j.Logger;
 
 public final class JournalScreen extends Screen {
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final KeyMapping OPEN = new KeyMapping("key.wayfarer.spike_journal", GLFW.GLFW_KEY_F7, "key.categories.misc");
+    private static final KeyMapping MAP = new KeyMapping("key.wayfarer.spike_map", GLFW.GLFW_KEY_M, "key.categories.misc");
+    private static final String JOURNEYMAP = "journeymap";
+    private static String placed = "";
     private static final int MARGIN = 16;
     private static final int LINE = 12;
     private static final int BUTTON_WIDTH = 200;
@@ -40,6 +47,24 @@ public final class JournalScreen extends Screen {
         shown = JournalState.view();
         JsonObject view = JsonParser.parseString(shown).getAsJsonObject();
         int y = height - MARGIN - BUTTON_HEIGHT;
+        if (ModList.get().isLoaded(JOURNEYMAP)) {
+            addRenderableWidget(Button.builder(Component.literal("Map"), button -> MapLink.open())
+                    .bounds(width - MARGIN - BUTTON_WIDTH, y, BUTTON_WIDTH, BUTTON_HEIGHT)
+                    .build());
+        }
+        if (view.has("stones")) {
+            for (JsonElement element : view.getAsJsonArray("stones")) {
+                JsonObject stone = element.getAsJsonObject();
+                if (!stone.get("let_go").getAsBoolean()) {
+                    String id = stone.get("id").getAsString();
+                    addRenderableWidget(Button.builder(Component.literal("Let go: " + stone.get("things").getAsInt() + " things"),
+                                    button -> minecraft.player.connection.sendCommand("wayfarer stone letgo " + id))
+                            .bounds(MARGIN, y, BUTTON_WIDTH, BUTTON_HEIGHT)
+                            .build());
+                    y -= BUTTON_HEIGHT + MARGIN / 4;
+                }
+            }
+        }
         if (view.has("rewards")) {
             for (JsonElement element : view.getAsJsonArray("rewards")) {
                 JsonObject reward = element.getAsJsonObject();
@@ -89,6 +114,7 @@ public final class JournalScreen extends Screen {
             }
         }
         y += LINE;
+        y = stones(graphics, view, y) + LINE;
         graphics.drawString(font, "Rewards", MARGIN, y, TITLE);
         y += LINE;
         if (view.has("rewards")) {
@@ -99,6 +125,21 @@ public final class JournalScreen extends Screen {
                 y += LINE;
             }
         }
+    }
+
+    private int stones(GuiGraphics graphics, JsonObject view, int y) {
+        graphics.drawString(font, "Stones", MARGIN, y, TITLE);
+        y += LINE;
+        if (view.has("stones")) {
+            for (JsonElement element : view.getAsJsonArray("stones")) {
+                JsonObject stone = element.getAsJsonObject();
+                String state = stone.get("let_go").getAsBoolean() ? " (let go)" : "";
+                graphics.drawString(font, "%d things at %d, %d%s".formatted(stone.get("things").getAsInt(), stone.get("x").getAsInt(),
+                        stone.get("z").getAsInt(), state), MARGIN * 2, y, TEXT);
+                y += LINE;
+            }
+        }
+        return y;
     }
 
     @Override
@@ -117,12 +158,25 @@ public final class JournalScreen extends Screen {
         @SubscribeEvent
         public static void onRegister(RegisterKeyMappingsEvent event) {
             event.register(OPEN);
+            event.register(MAP);
         }
 
         @SubscribeEvent
         public static void onTick(ClientTickEvent.Post event) {
             while (OPEN.consumeClick()) {
                 Minecraft.getInstance().setScreen(new JournalScreen());
+            }
+            boolean journeymap = ModList.get().isLoaded(JOURNEYMAP);
+            while (MAP.consumeClick()) {
+                if (journeymap) {
+                    MapLink.open();
+                }
+            }
+            String view = JournalState.view();
+            if (journeymap && MapLink.ready() && !view.equals(placed)) {
+                placed = view;
+                int shown = MapLink.show(JsonParser.parseString(view).getAsJsonObject());
+                LOGGER.info("spike: {} places on the map", shown);
             }
         }
     }

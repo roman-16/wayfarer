@@ -25,6 +25,7 @@ LAUNCH_LOG = CLIENT / "launch.log"
 CRASHES = CLIENT / "crash-reports"
 DISPLAY_FAILED = "Failed to initialize the mod loading system and display"
 ABORT_SECONDS = 30
+RUN_SECONDS = 300
 START_SECONDS = 900
 STOP_SECONDS = 120
 CHECK_SECONDS = 0.1
@@ -478,7 +479,7 @@ def main():
         "run", help="run driver steps (arguments, or one per line on stdin) and print their log"
     )
     run_parser.add_argument("steps", nargs="*")
-    run_parser.add_argument("--timeout", type=int, default=600)
+    run_parser.add_argument("--timeout", type=int, default=RUN_SECONDS)
     commands.add_parser(
         "swap",
         help="compile the Wayfarer mod and swap every changed class into the running client; prints one line of JSON",

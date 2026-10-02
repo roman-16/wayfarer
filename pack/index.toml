@@ -114,7 +114,7 @@ hash = "24465ad2580782224a8df3cf17fb2ea69ddad4e3bc8c8be2ccb395972faaabe8"
 
 [[files]]
 file = "config/ftbquests/quests/chapters/road.snbt"
-hash = "6532274531ed1b5890b05cb6dff1b04ac0adf57b51760b745f0ba2f51edd828b"
+hash = "19c56702d7b7201998066228036d7774809abe02dcc5d235bf76d10964cf6062"
 
 [[files]]
 file = "config/ftbquests/quests/chapters/sea.snbt"
@@ -134,7 +134,7 @@ hash = "f5d82f6dc6effa6595748e5bf306c1d482cec1ab7ac8303406d9b66d6c4a8894"
 
 [[files]]
 file = "config/ftbquests/quests/lang/en_us.snbt"
-hash = "c5cd8b52749d5c256c5e43b99246637d06aedba3d52842088f81c406c95d944b"
+hash = "4b471955f76650c28ef908c8623c904b29be7733cdde737743ad3cccb265dce4"
 
 [[files]]
 file = "config/gravestone-server.toml"
@@ -191,6 +191,10 @@ hash = "1c89369d8fe65c38223a02f489899038e88744d9c31ba17b823a90c9667b3c4d"
 [[files]]
 file = "config/travelerstitles-neoforge-1_21.toml"
 hash = "bf0fd0906e4830b89732fef78f8314ccaf694e38db1f1cd46a2a606d5424aad6"
+
+[[files]]
+file = "journeymap/server/6.0/journeymap.server.global.config"
+hash = "4513ec689fb10a698f75302927591c0ea5f3e77ecfd1b36c590ce04fc71d8540"
 
 [[files]]
 file = "mods/ambientsounds.pw.toml"
@@ -503,6 +507,11 @@ hash = "c911d03476ac0e535c3c601ad98a725ce685e063032474abbf2a2fb9bf23f786"
 metafile = true
 
 [[files]]
+file = "mods/journeymap.pw.toml"
+hash = "783ed30ab6f6f60c604b9bdc2f26ec5b23c7a523179aa17119dbc541f7149022"
+metafile = true
+
+[[files]]
 file = "mods/just-enough-resources-jer.pw.toml"
 hash = "7905c08f37d8ebde50a5330a7dd10029de6259b0cb8adbde1170d93ea20218a7"
 metafile = true
@@ -550,11 +559,6 @@ metafile = true
 [[files]]
 file = "mods/lukis-grand-capitals.pw.toml"
 hash = "2fe01d8046db2246c6df01eedd1fbc7837c08cc6d3b2a9017107ade989e86a28"
-metafile = true
-
-[[files]]
-file = "mods/map-atlases-forge.pw.toml"
-hash = "b54addad8fd6bdd9ee141d740de8c346b1744258cb8c8ab663a61054e48e308e"
 metafile = true
 
 [[files]]

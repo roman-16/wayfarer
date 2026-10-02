@@ -36,7 +36,7 @@ $ rg --count '"trek:' build/reports/registries/minecraft/worldgen/structure.json
 
 ## Seeing the game
 
-Never wait by guessing. No `sleep`, and no `wait` in a driver batch to give something time to finish: a guessed wait is either too short and flaky or too long and slow. Every step returns the moment its effect is done, by waiting on the event itself (the server's reply, a freshly drawn frame, the next compass reading) or by checking about every second until it holds, and a wait that does not finish in time fails and says where it stuck. When a step returns before its effect shows, fix the step so it waits for that effect, never the batch; `wait` is only for watching something that has no end, such as an animation. Gates and builds run in the foreground with a generous timeout and return when they finish; the dev client is driven through `scripts/client.py`:
+Never wait by guessing. No `sleep`, and no `wait` in a driver batch to give something time to finish: a guessed wait is either too short and flaky or too long and slow. Every step returns the moment its effect is done, by waiting on the event itself (the server's reply, a freshly drawn frame, the next compass reading) or by checking about every second until it holds, and a wait that does not finish in time fails and says where it stuck: a driver step that makes no progress for 60 s fails the batch, naming the step and the state of the game. When a step returns before its effect shows, fix the step so it waits for that effect, never the batch; `wait` is only for watching something that has no end, such as an animation. Gates and builds run in the foreground with a generous timeout and return when they finish; the dev client is driven through `scripts/client.py`:
 
 ```console
 $ python3 scripts/client.py start            # launch unless running; returns once the showroom is built
@@ -69,6 +69,7 @@ $ python3 scripts/client.py run workshop 'place wayfarer:last_camp' 'spawn minec
 |---|---|
 | `/<command>` | Runs a command as the player |
 | `assets` | Reloads every texture, model and sound, as F3+T does, and returns when the reload is done |
+| `await <text>` | Waits for a chat line containing the text, such as a quest's reply that comes on the server's own rhythm |
 | `beside <thing>` | Puts a creature, structure, template, block or item, usually its vanilla relative, at the workshop's next free spot |
 | `clear` | Empties the workshop and puts its floor back |
 | `click <x> <y>` | Clicks the open screen at GUI coordinates |
@@ -84,7 +85,7 @@ $ python3 scripts/client.py run workshop 'place wayfarer:last_camp' 'spawn minec
 | `perf` | Measures the frame rate over one second, and logs the server's tick time and which renderer draws |
 | `place <thing>` | Puts a structure, template, block or item at the workshop's next free spot, with its name sign |
 | `pos` | Logs the player's position, facing and dimension |
-| `press <label>` | Clicks the widget with that label on the open screen |
+| `press <label>` | Clicks the widget with that label on the open screen, once it is enabled; a label that is not there is an error at once |
 | `quit` | Closes the client |
 | `screen` | Logs the open screen and its widgets with labels, positions and sizes |
 | `settle` | Waits until earlier commands have run on the server, the chunks around the player are loaded and the terrain is drawn |
