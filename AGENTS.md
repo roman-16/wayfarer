@@ -18,6 +18,15 @@ A personal modpack repository: it reproduces on any machine from `direnv allow` 
 - `pack/` is managed by packwiz. Add a mod with `packwiz modrinth add <slug>` from `pack/`; use CurseForge only for a mod that is not on Modrinth. Every mod is `client` or `both`: singleplayer runs the server inside the client, so a `server` mod would be missing there.
 - A new config for a mod starts from the default the mod writes on its first boot (`build/server/config` after `just test`, `build/client/config` after `just demo`). Ship only the keys the pack changes when the mod fills in the rest itself, so machine-specific defaults (thread counts and the like) stay per machine.
 
+## Reading the game and the mods
+
+`just sources` writes Minecraft's and NeoForge's code with Parchment names and every mod decompiled with Vineflower, each with its assets and data, into `build/sources/` (`neoforge-<version>/` and `mods/<jar>/`); a mod is decompiled again only when its version changes. Search it with `rg`, naming the path: `rg` skips `build/` and every other generated folder through `.gitignore`.
+
+```console
+$ just sources
+$ rg "enter_when_safe" build/sources/mods
+```
+
 ## Seeing the game
 
 Never wait by sleeping. Gates and builds run in the foreground with a generous timeout and return when they finish; the dev client is driven through `scripts/client.py`, whose commands each return the moment the game has finished them:

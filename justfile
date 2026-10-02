@@ -64,6 +64,12 @@ survey apply="": build
     python3 scripts/instance.py server build/server {{ jar }}
     python3 scripts/boot.py build/server --survey 4 {{ if apply == "apply" { "--apply" } else { "" } }}
 
+[doc("Unpack Minecraft's and NeoForge's code with Parchment names and every mod decompiled with Vineflower into build/sources/, for searching with rg; only what changed is redone")]
+sources:
+    cd mod && ./gradlew createMinecraftArtifacts vineflower
+    python3 scripts/instance.py client build/client
+    python3 scripts/sources.py
+
 [doc("Run the mod's game tests headless, then boot the whole pack on a headless dedicated server")]
 test: build
     cd mod && ./gradlew runGameTestServer

@@ -22,6 +22,7 @@ sourceSets {
 configurations {
     devCompileOnly.extendsFrom compileOnly
     devImplementation.extendsFrom implementation
+    vineflower
 }
 
 repositories {
@@ -44,6 +45,9 @@ repositories {
         name = 'Modrinth'
         url = 'https://api.modrinth.com/maven'
         content { includeGroup 'maven.modrinth' }
+    }
+    mavenCentral {
+        content { includeGroup 'org.vineflower' }
     }
 }
 
@@ -100,6 +104,12 @@ dependencies {
     implementation "dev.ftb.mods:ftb-library-neoforge:${ftb_library_version}"
     implementation "dev.ftb.mods:ftb-teams-neoforge:${ftb_teams_version}"
     implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+    vineflower "org.vineflower:vineflower:${vineflower_version}"
+}
+
+tasks.register('vineflower', Sync) {
+    from configurations.vineflower
+    into layout.buildDirectory.dir('vineflower')
 }
 
 var generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
