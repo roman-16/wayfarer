@@ -163,7 +163,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 ### M5 The caravan: a village that walks
 
-- Out of sight means beyond the view distance, 192 blocks on a server at 12 chunks (`scripts/instance.py`) and the player's own render distance in singleplayer, and also behind the land or behind every player's back. Distant Horizons draws the far terrain up to 1,024 chunks and takes in a chunk whenever the server saves it, so a camp going up in the open would pop up in the far view.
+- Out of sight means beyond the view distance, 192 blocks on a server at 12 chunks (`scripts/instance.py`) and the player's own render distance in singleplayer, and also behind the land or behind every player's back. Distant Horizons draws the far terrain up to 1,024 chunks and takes in a chunk whenever the server saves it, so a camp going up in the open would pop up in the far view; on open land the camp waits for that as M19 says.
 - Where the camp goes:
 
   | Case | The camp |
@@ -515,11 +515,20 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 It raises, for the spike: a new Silent Gear material from data, a forge that finishes at dawn, and the Gear page filling in.
 
-## Open
-
 ### M19 A camp in plain sight
 
-On open land, such as wide plains, nothing hides a spot ahead, and the players walking towards the camp face it all the way, so a camp that goes up only behind the land or behind their backs may never go up. The spike gives up then. Ways out: set the camp up the moment the evening begins, wherever the players look, and let a speck of tents appear far off in Distant Horizons' view; wait to set it up until every player has looked away, while the compass already points to the spot; or prefer spots that trees or a dip hide even on open land.
+- When evening begins the compass points at the camp's spot at once, and the camp goes up the first moment no player can see the spot: the land or a wood stands between, or every player has turned away from it.
+- If the team walks straight at it across open land and never looks away, it goes up anyway just before the spot comes within the view distance, and a few tents may appear once in the far view.
+
+  ```text
+  Evening  [Main] Make for the caravan.   Compass ◆ 420 blocks
+           You turn to watch a horse on the ridge. Behind you, far off, the caravan makes camp.
+           You turn back: smoke, and a few tents on the plain.
+  ```
+
+**Why:** Distant Horizons shows the camp as soon as the server saves its chunks, on a server as in singleplayer, so a camp that waits for a turned back goes up unseen almost every evening, and one that never waits past the edge never leaves the team walking towards nothing. A few tents appearing far off once is what the lore already promises: in the evening their smoke shows me where.
+
+## Open
 
 ### M17 Distant Horizons SeedGen
 
