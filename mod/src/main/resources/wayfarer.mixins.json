@@ -11,11 +11,15 @@
   },
   "minVersion": "0.8",
   "mixins": [
+    "CarvedPumpkinBlockMixin",
     "ChunkGeneratorMixin",
     "ChunkGeneratorStructureStateMixin",
     "ImprovedMobsPathContextMixin",
+    "OreFeatureMixin",
     "PlacedFeatureMixin",
-    "PlayerMixin"
+    "PlayerMixin",
+    "SinglePoolElementMixin",
+    "TemplateStructurePieceMixin"
   ],
   "package": "io.github.roman16.wayfarer.mixin",
   "required": true

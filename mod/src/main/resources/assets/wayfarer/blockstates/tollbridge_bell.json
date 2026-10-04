@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=east,fallen=false": {
+      "model": "wayfarer:block/tollbridge_bell",
+      "y": 90
+    },
+    "facing=east,fallen=true": {
+      "model": "wayfarer:block/tollbridge_bell_fallen",
+      "y": 90
+    },
+    "facing=north,fallen=false": {
+      "model": "wayfarer:block/tollbridge_bell"
+    },
+    "facing=north,fallen=true": {
+      "model": "wayfarer:block/tollbridge_bell_fallen"
+    },
+    "facing=south,fallen=false": {
+      "model": "wayfarer:block/tollbridge_bell",
+      "y": 180
+    },
+    "facing=south,fallen=true": {
+      "model": "wayfarer:block/tollbridge_bell_fallen",
+      "y": 180
+    },
+    "facing=west,fallen=false": {
+      "model": "wayfarer:block/tollbridge_bell",
+      "y": 270
+    },
+    "facing=west,fallen=true": {
+      "model": "wayfarer:block/tollbridge_bell_fallen",
+      "y": 270
+    }
+  }
+}

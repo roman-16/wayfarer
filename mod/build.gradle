@@ -27,11 +27,6 @@ configurations {
 
 repositories {
     maven {
-        name = 'Architectury'
-        url = 'https://maven.architectury.dev'
-        content { includeGroup 'dev.architectury' }
-    }
-    maven {
         name = 'CurseMaven'
         url = 'https://cursemaven.com'
         content { includeGroup 'curse.maven' }
@@ -40,11 +35,6 @@ repositories {
         name = 'Curios'
         url = 'https://maven.theillusivec4.top'
         content { includeGroup 'top.theillusivec4.curios' }
-    }
-    maven {
-        name = 'FTB'
-        url = 'https://maven.ftb.dev/releases'
-        content { includeGroup 'dev.ftb.mods' }
     }
     maven {
         name = 'JourneyMap'
@@ -130,9 +120,6 @@ dependencies {
     compileOnly "maven.modrinth:endrem:${endrem_version}"
     compileOnly "maven.modrinth:lootr:${lootr_version}"
     compileOnly "maven.modrinth:the-hordes:${hordes_version}"
-    implementation "dev.architectury:architectury-neoforge:${architectury_version}"
-    implementation "dev.ftb.mods:ftb-library-neoforge:${ftb_library_version}"
-    implementation "dev.ftb.mods:ftb-teams-neoforge:${ftb_teams_version}"
     implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
     devCompileOnly "curse.maven:infiniverse-568341:${infiniverse_version}"
     devCompileOnly "curse.maven:nomadic-tents-238794:${nomadic_tents_version}"
@@ -162,7 +149,6 @@ tasks.register('vineflower', Sync) {
 var generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
     var replaceProperties = [
             curios_version_range      : curios_version_range,
-            ftb_teams_version_range   : ftb_teams_version_range,
             loader_version_range      : loader_version_range,
             minecraft_version_range   : minecraft_version_range,
             mod_id                    : mod_id,

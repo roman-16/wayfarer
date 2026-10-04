@@ -1,0 +1,393 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "artifacts:eternal_steak",
+      "required": false
+    },
+    {
+      "id": "artifacts:everlasting_beef",
+      "required": false
+    },
+    {
+      "id": "artifacts:golden_hook",
+      "required": false
+    },
+    {
+      "id": "artifacts:helium_flamingo",
+      "required": false
+    },
+    {
+      "id": "artifacts:novelty_drinking_hat",
+      "required": false
+    },
+    {
+      "id": "artifacts:plastic_drinking_hat",
+      "required": false
+    },
+    {
+      "id": "artifacts:villager_hat",
+      "required": false
+    },
+    {
+      "id": "artifacts:warp_drive",
+      "required": false
+    },
+    {
+      "id": "artifacts:whoopee_cushion",
+      "required": false
+    },
+    {
+      "id": "immersive_aircraft:biplane",
+      "required": false
+    },
+    {
+      "id": "immersive_aircraft:quadrocopter",
+      "required": false
+    },
+    {
+      "id": "minecraft:anvil",
+      "required": false
+    },
+    {
+      "id": "minecraft:chipped_anvil",
+      "required": false
+    },
+    {
+      "id": "minecraft:damaged_anvil",
+      "required": false
+    },
+    {
+      "id": "minecraft:enchanting_table",
+      "required": false
+    },
+    {
+      "id": "minecraft:ender_chest",
+      "required": false
+    },
+    {
+      "id": "minecraft:experience_bottle",
+      "required": false
+    },
+    {
+      "id": "minecraft:grindstone",
+      "required": false
+    },
+    {
+      "id": "minecraft:lodestone",
+      "required": false
+    },
+    {
+      "id": "minecraft:recovery_compass",
+      "required": false
+    },
+    {
+      "id": "minecraft:sniffer_egg",
+      "required": false
+    },
+    {
+      "id": "silentgear:elytra",
+      "required": false
+    },
+    {
+      "id": "silentgear:elytra_blueprint",
+      "required": false
+    },
+    {
+      "id": "silentgear:elytra_template",
+      "required": false
+    },
+    {
+      "id": "silentgear:elytra_wings",
+      "required": false
+    },
+    {
+      "id": "silentgear:netherwood_sapling",
+      "required": false
+    },
+    {
+      "id": "silentgear:stone_anvil",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:advanced_pump_upgrade",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:anvil_upgrade",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:battery_upgrade",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:inception_upgrade",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:infinity_upgrade",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:pump_upgrade",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:stack_upgrade_omega_tier",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:stack_upgrade_starter_tier_to_tier_4_conversion",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:stack_upgrade_tier_1_to_tier_4_conversion",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:stack_upgrade_tier_2_to_tier_4_conversion",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:stack_upgrade_tier_3_to_tier_4_conversion",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:stack_upgrade_tier_4",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:survival_infinity_upgrade",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:tank_upgrade",
+      "required": false
+    },
+    {
+      "id": "sophisticatedbackpacks:xp_pump_upgrade",
+      "required": false
+    },
+    {
+      "id": "sophisticatedcore:ender_linker",
+      "required": false
+    },
+    {
+      "id": "sophisticatedcore:xp_bucket",
+      "required": false
+    },
+    {
+      "id": "spelunkery:diamond_grindstone",
+      "required": false
+    },
+    {
+      "id": "spelunkery:magnetic_compass",
+      "required": false
+    },
+    {
+      "id": "waystones:attuned_shard",
+      "required": false
+    },
+    {
+      "id": "waystones:black_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:black_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:blank_scroll",
+      "required": false
+    },
+    {
+      "id": "waystones:blue_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:blue_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:bound_scroll",
+      "required": false
+    },
+    {
+      "id": "waystones:brown_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:brown_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:crumbling_attuned_shard",
+      "required": false
+    },
+    {
+      "id": "waystones:cyan_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:cyan_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:deepslate_shard",
+      "required": false
+    },
+    {
+      "id": "waystones:dormant_shard",
+      "required": false
+    },
+    {
+      "id": "waystones:gray_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:gray_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:green_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:green_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:light_blue_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:light_blue_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:light_gray_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:light_gray_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:lime_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:lime_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:magenta_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:magenta_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:orange_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:orange_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:pink_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:pink_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:portal_scroll",
+      "required": false
+    },
+    {
+      "id": "waystones:purple_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:purple_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:red_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:red_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:return_scroll",
+      "required": false
+    },
+    {
+      "id": "waystones:twinbound_feather",
+      "required": false
+    },
+    {
+      "id": "waystones:warp_dust",
+      "required": false
+    },
+    {
+      "id": "waystones:warp_plate",
+      "required": false
+    },
+    {
+      "id": "waystones:warp_scroll",
+      "required": false
+    },
+    {
+      "id": "waystones:warp_stone",
+      "required": false
+    },
+    {
+      "id": "waystones:white_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:white_sharestone",
+      "required": false
+    },
+    {
+      "id": "waystones:yellow_portstone",
+      "required": false
+    },
+    {
+      "id": "waystones:yellow_sharestone",
+      "required": false
+    },
+    {
+      "id": "wildernature:bounty_board",
+      "required": false
+    },
+    {
+      "id": "wildernature:burst_of_experience",
+      "required": false
+    },
+    {
+      "id": "wildernature:elite_bounty",
+      "required": false
+    },
+    {
+      "id": "wildernature:guild_commission",
+      "required": false
+    },
+    {
+      "id": "wildernature:pathfinders_call",
+      "required": false
+    },
+    {
+      "id": "wildernature:provision_request",
+      "required": false
+    }
+  ]
+}

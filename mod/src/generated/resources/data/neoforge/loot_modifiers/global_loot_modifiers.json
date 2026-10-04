@@ -8,7 +8,8 @@
     "wayfarer:mineshaft",
     "wayfarer:phantom",
     "wayfarer:witch",
-    "wayfarer:witch_hut"
+    "wayfarer:witch_hut",
+    "wayfarer:cut"
   ],
   "replace": false
 }

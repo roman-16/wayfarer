@@ -92,7 +92,7 @@ public final class Driver {
     private static final Field CLICK_COUNT = clickCount();
     private static final String EXPERIMENTAL_WARNING = "selectWorld.backupQuestion.experimental";
     private static final String LOAD_WITHOUT_BACKUP = "selectWorld.backupJoinSkipButton";
-    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "hud", "inspect", "interact", "key", "place", "sky", "spawn", "state", "workshop");
+    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "hud", "inspect", "interact", "key", "person", "place", "sky", "spawn", "state", "workshop");
     private static final double INTERACT_REACH = 8;
     private static final String SENTINEL = "execute if entity @s";
     private static final String SENTINEL_REPLY = "commands.execute.conditional.pass_count";
@@ -452,8 +452,12 @@ public final class Driver {
                 awaited.add(index);
                 note("await: " + log.get(index).substring("chat: ".length()));
             }
-            case "assets" -> pending = minecraft.reloadResourcePacks().thenApply(ignored -> "assets: reloaded");
-            case "beside", "clear", "place", "spawn" -> command(minecraft, "wayfarer workshop " + step);
+            case "assets" -> {
+                pending = minecraft.reloadResourcePacks().thenApply(ignored -> "assets: reloaded");
+                until = () -> minecraft.getOverlay() == null;
+                waitingOn = "the loading screen to fade";
+            }
+            case "beside", "clear", "person", "place", "spawn" -> command(minecraft, "wayfarer workshop " + step);
             case "click" -> {
                 String[] at = argument.split(" ");
                 click(minecraft, Double.parseDouble(at[0]), Double.parseDouble(at[1]));

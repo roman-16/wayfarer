@@ -1,0 +1,92 @@
+{
+  "values": [
+    {
+      "id": "dungeons_arise:merchant_campsite",
+      "required": false
+    },
+    {
+      "id": "explorify:campsite",
+      "required": false
+    },
+    {
+      "id": "explorify:supply_cache/birch",
+      "required": false
+    },
+    {
+      "id": "explorify:supply_cache/dark",
+      "required": false
+    },
+    {
+      "id": "explorify:supply_cache/desert",
+      "required": false
+    },
+    {
+      "id": "explorify:supply_cache/forest",
+      "required": false
+    },
+    {
+      "id": "explorify:supply_cache/jungle",
+      "required": false
+    },
+    {
+      "id": "explorify:supply_cache/mangrove",
+      "required": false
+    },
+    {
+      "id": "explorify:supply_cache/taiga",
+      "required": false
+    },
+    {
+      "id": "mvs:campsite",
+      "required": false
+    },
+    {
+      "id": "mvs:fire_camp",
+      "required": false
+    },
+    {
+      "id": "mvs:horse_campsite",
+      "required": false
+    },
+    {
+      "id": "mvs:mine_with_campsite",
+      "required": false
+    },
+    {
+      "id": "snowy_tents:snowy_tent",
+      "required": false
+    },
+    {
+      "id": "structory:abandoned_camp",
+      "required": false
+    },
+    {
+      "id": "towns_and_towers:exclusives/village_wandering_trader_camp",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/common/cooking_pork",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/camp_1",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/camp_2",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/camp_3",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/camp_4",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/spruce_camp",
+      "required": false
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+[general]
+	[general.enabledEffects]
+		cascades = false
+		chestBubbles = false
+		fireflies = false

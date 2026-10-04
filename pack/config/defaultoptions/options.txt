@@ -1,0 +1,1 @@
+resourcePacks:["vanilla","mod_resources","file/FreshAnimations_v1.10.4.zip","file/DetailedAnimationsReworked - V1.15.zip","file/Bushy pink petals, wildflowers  leaf litter.zip"]

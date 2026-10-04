@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,15 +21,19 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Shrines {
     public static final TagKey<Structure> ALL = TagKey.create(Registries.STRUCTURE, Wayfarer.id("shrines"));
@@ -99,16 +104,16 @@ public final class Shrines {
             return;
         }
         ResourceLocation shrine = found.get();
-        if (!Journey.of(player.server).claim(Teams.id(player), shrine)) {
+        if (!Journey.of(player.server).claim(shrine)) {
             player.displayClientMessage(Component.translatable("wayfarer.shrine.spent", eyeName(shrine)).withStyle(ChatFormatting.GRAY), true);
             return;
         }
         player.serverLevel().playSound(null, pedestal, SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.BLOCKS, 1, 1);
-        int taken = Journey.claimed(player).size();
+        int taken = Journey.claimed(player.server).size();
         String memory = Library.INSTANCE.memory(taken - 1);
         Component message = Component.translatable("wayfarer.shrine.claimed", player.getDisplayName(), eyeName(shrine), taken)
                 .withStyle(ChatFormatting.GOLD);
-        for (ServerPlayer member : Teams.onlineMembers(player)) {
+        for (ServerPlayer member : player.server.getPlayerList().getPlayers()) {
             member.sendSystemMessage(message);
             Library.INSTANCE.book(memory).ifPresent(book -> member.sendSystemMessage(
                     Component.translatable("wayfarer.shrine.memory", book.title()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)));
@@ -122,8 +127,28 @@ public final class Shrines {
             Compass.forget(member);
             Difficulty.catchUp(member);
         }
-        Journal.read(player, memory);
-        Notes.trigger(player, "shards:" + taken);
+    }
+
+    @SubscribeEvent
+    public static void onReadLectern(PlayerInteractEvent.RightClickBlock event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)
+                || !(player.level().getBlockEntity(event.getPos()) instanceof LecternBlockEntity)) {
+            return;
+        }
+        inside(player.serverLevel(), event.getPos()).ifPresent(shrine -> {
+            event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            openBook(player, shrine);
+        });
+    }
+
+    public static void openBook(ServerPlayer player, ResourceLocation shrine) {
+        List<ResourceLocation> claimed = Journey.claimed(player.server);
+        int index = claimed.contains(shrine) ? claimed.indexOf(shrine) : claimed.size();
+        List<Component> pages = new ArrayList<>();
+        Library.INSTANCE.book(Library.INSTANCE.memory(index)).ifPresent(book -> book.pages().forEach(page -> pages.add(Component.literal(page))));
+        Library.INSTANCE.people(shrine).ifPresent(people -> people.pages().forEach(page -> pages.add(Component.literal(page))));
+        PacketDistributor.sendToPlayer(player, new BookPayload(pages));
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -142,7 +167,7 @@ public final class Shrines {
         }
         ResourceLocation shrine = inside(player.serverLevel(), player.blockPosition()).orElse(null);
         ResourceLocation before = shrine == null ? INSIDE.remove(player.getUUID()) : INSIDE.put(player.getUUID(), shrine);
-        if (shrine != null && !shrine.equals(before) && Notes.first(player, "shrine")) {
+        if (shrine != null && !shrine.equals(before) && Firsts.first(player, "shrine")) {
             player.sendSystemMessage(Component.translatable("wayfarer.first.shrine").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }
         if (shrine != null && !shrine.equals(before)) {

@@ -156,7 +156,7 @@ def forge_wagon():
 def bell_cart():
     t = Template()
     cart(t, 0, 4, cover=False)
-    t.set((2, 2, 2), "minecraft:bell", attachment="floor", facing="east", powered=False)
+    t.set((2, 2, 2), "wayfarer:tollbridge_bell", facing="east", fallen=False)
     t.set((1, 2, 3), "minecraft:white_carpet")
     t.set((3, 2, 3), "minecraft:white_carpet")
     return t

@@ -1,15 +1,3 @@
-[letter]
-author = "The Last Wayfarer"
-id = "letter"
-pages = [
-  "I do not know your name, stranger, and you will not learn mine. It does not matter. Wayfarers have no names, only roads.",
-  "The ember I gave you is a sliver of something broken long ago, and it pulls towards the other pieces. Far away it is only a feeling: it flares when you walk towards one and gutters when you walk away.",
-  "It wakes once you have lived one day as we do. Carry everything you own. Light a fire where you rest, for the ember brings you back to fire when you fall. Pitch your tent before dark and sleep in it.",
-  "Monsters cannot bear a fire's light, and a tent is folded space that nothing follows you into. But never stay long in one place. The gaze sees what stays still, and it sends its horde to find it.",
-  "My journal is yours now. It will teach you the rest as you walk. Watch the smoke, stranger. I always did.",
-]
-title = "To the One Who Sat With Me"
-
 [[memories]]
 id = "memory/1"
 pages = [

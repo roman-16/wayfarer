@@ -69,7 +69,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 |---|---|
 | Who am I? | No one, as far as I know: I woke by a dying stranger's fire with no name, and he gave me his ember |
 | What am I really? | The thirteenth splinter. When the Eye was broken, a splinter fell unnoticed. It grew over the centuries, the way a shard grew the Sand Singers' worm, and the gaze shaped it into a person, because only a heart that keeps walking can carry the ember home |
-| Why did the ember wake in me? | The light found its body |
+| Why did the ember wake in me? | It had been dark for twenty years, since he stopped walking. One day's walking with me gave it new land to see, and it woke, as it would have in nobody else: the light found its body |
 | What is happening to me? | With every shard I take, more of the Eye comes together in me. Endermen stop flinching from my gaze, I hear the calling stones, my heart slows; later I see through stone, my eyes glow in the dark and the peoples' guardians bow; at last I dream the dragon's dreams |
 | What does it cost? | I shine. The more of the Eye is in me, the more my heart shines like a shard, and the more the gaze's creatures come for me and the harder they search. Only taking fewer shards slows it; Agna's remedy dims me for a night |
 | Why do I go after the shards? | The stranger died asking me not to let "it" have them, the shards he took; the burnt town showed me what he meant. At the first hall his voice finished the sentence: bring them to a frame and put the dragon's eye out for good, so no town burns again |
@@ -113,11 +113,11 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 
 | Question | Answer |
 |---|---|
-| Who are they? | The survivors of a town that grew too big and shone too brightly until the gaze found it, joined on the road by strays |
+| Who are they? | The survivors of Tollbridge, a town at a river crossing that grew too big and shone too brightly until the gaze found it, joined on the road by strays |
 | Why do they follow me? | I carry an ember and can feel the way. I am their scout, and they follow the marks I leave on the road |
 | What are they looking for? | A place the gaze cannot see. The voice says it knows one, past the sea |
 | Why do I never see them travel? | They break camp after I set out and make camp before I come back; in the evening their smoke shows me where |
-| Who are its people? | Old Tamsin, the elder, who carries the town's bell; Corin, a Gazebound deserter who served under Wend; Nell, last of the Frost Walkers; Bram, a herder; Ilse, a Keeper's apprentice; Mother Agna, the healer; Hob, the smith; Pip, a child who wants to be a Wayfarer |
+| Who are its people? | Old Tamsin, the elder, who carries the town's bell; Corin, a Gazebound deserter who served under Wend; Nell, last of the Frost Walkers; Bram, a herder; Ilse, a Keeper's apprentice; Mother Agna, the healer; Hob, the smith; Pip, a child who wants to be a Wayfarer, whose mother died the night Tollbridge burned and whom Agna took in at dawn |
 | Why does their camp never burn? | A fire shared freely does not turn on the ones who share it: no spark of it catches their tents, and the sky's fire passes them by |
 
 ## The people
@@ -137,6 +137,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Who are the Twelve Peoples now? | Four still live in their land: the swamp's witches, heirs of the Marsh Mothers; the Tide Folk; the Sand Singers; and the Grass Kingdom. The rest are scattered or dead, and only their places remain |
 | What are the peoples' places? | What each people left near its hall: a winter house, a ship, a temple, a grave. What they could not carry is still there, and some of it, such as the Frost Walkers' snowshoes, opens the land |
 | Who are the settled? | The villages, towns and capitals: the people who forgot the oath. The gaze burns them, one by one |
+| What do the settled remember? | Wayfarers only as a story told to children: walkers who carried fire and never stayed. They have no name for what burns their towns; they say "they", or "the night" |
 | Who are the Gazebound? | An Illager cult under the Grass King's heir that serves the gaze to use it: they believe its sight will run through them once the Eye is set. Their outposts, camps, forts and mansions stand across the world |
 | Where do the Illagers come from? | They are the Grass Kingdom's outcasts and their children |
 | Why do monsters leave the Gazebound alone? | At their oath, every Gazebound lets the gaze's creatures open their chest just far enough to look. Not all survive it; those who do carry the scar over the heart, and the gaze never searches a heart twice. They call it a blessing |

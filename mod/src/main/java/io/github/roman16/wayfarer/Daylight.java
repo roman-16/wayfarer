@@ -50,7 +50,7 @@ public final class Daylight {
         level.sendParticles(ParticleTypes.POOF, mob.getX(), mob.getY(0.5), mob.getZ(), 8, mob.getBbWidth() / 3, mob.getBbHeight() / 3, mob.getBbWidth() / 3, 0.02);
         level.playSound(null, mob.blockPosition(), SoundEvents.SAND_BREAK, SoundSource.HOSTILE, 1, 0.6F);
         for (ServerPlayer player : level.players()) {
-            if (player.distanceToSqr(mob) < WITNESS_BLOCKS * WITNESS_BLOCKS && Notes.first(player, "dawn")) {
+            if (player.distanceToSqr(mob) < WITNESS_BLOCKS * WITNESS_BLOCKS && Firsts.first(player, "dawn")) {
                 player.sendSystemMessage(Component.translatable("wayfarer.first.dawn").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
             }
         }

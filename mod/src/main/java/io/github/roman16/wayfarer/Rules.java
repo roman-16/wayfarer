@@ -28,7 +28,7 @@ public final class Rules {
             for (ServerPlayer player : level.players()) {
                 if (player.blockPosition().closerThan(event.getPos(), PORTAL_WITNESS_BLOCKS)) {
                     player.displayClientMessage(Component.translatable("wayfarer.first.portal").withStyle(ChatFormatting.GRAY), true);
-                    Notes.first(player, "portal");
+                    Firsts.first(player, "portal");
                 }
             }
         }
@@ -61,6 +61,6 @@ public final class Rules {
     }
 
     private static int claimed(Player player) {
-        return player instanceof ServerPlayer serverPlayer ? Journey.claimed(serverPlayer).size() : HudState.compass.claimed().size();
+        return player instanceof ServerPlayer serverPlayer ? Journey.claimed(serverPlayer.server).size() : HudState.compass.claimed().size();
     }
 }

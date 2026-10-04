@@ -14,12 +14,8 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.end.EndDragonFight;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -32,7 +28,6 @@ public final class Gaze {
     private static final int PHANTOM_HEIGHT = 20;
     private static final int PHANTOM_SPREAD = 16;
     private static final int SLAYER_REACH = 256;
-    private static final int CRYSTAL_CHECK_TICKS = 20;
 
     private Gaze() {}
 
@@ -78,44 +73,14 @@ public final class Gaze {
         if (!(event.getEntity() instanceof EnderDragon dragon) || !(dragon.level() instanceof ServerLevel level)) {
             return;
         }
-        Journey journey = Journey.of(level.getServer());
-        for (ServerPlayer player : level.getPlayers(player -> player.distanceToSqr(dragon) < SLAYER_REACH * SLAYER_REACH)) {
-            if (journey.slay(Teams.id(player))) {
-                for (ServerPlayer member : Teams.onlineMembers(player)) {
-                    member.sendSystemMessage(Component.translatable("wayfarer.gaze.lifted").withStyle(ChatFormatting.GOLD));
-                    Difficulty.hold(member);
-                    Nights.sync(member);
-                }
-                Notes.trigger(player, "slain");
+        boolean witnessed = !level.getPlayers(player -> player.distanceToSqr(dragon) < SLAYER_REACH * SLAYER_REACH).isEmpty();
+        if (witnessed && Journey.of(level.getServer()).slay()) {
+            for (ServerPlayer member : level.getServer().getPlayerList().getPlayers()) {
+                member.sendSystemMessage(Component.translatable("wayfarer.gaze.lifted").withStyle(ChatFormatting.GOLD));
+                Difficulty.hold(member);
+                Nights.sync(member);
             }
         }
-    }
-
-    @SubscribeEvent
-    public static void onChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (event.getTo() == Level.END && event.getEntity() instanceof ServerPlayer player && !Journey.slain(player)) {
-            Story.scene(player, "end_arrival", watchers(player), () -> {});
-        }
-    }
-
-    @SubscribeEvent
-    public static void onLevelTick(LevelTickEvent.Post event) {
-        if (!(event.getLevel() instanceof ServerLevel level) || level.dimension() != Level.END || level.getGameTime() % CRYSTAL_CHECK_TICKS != 0) {
-            return;
-        }
-        EndDragonFight fight = level.getDragonFight();
-        if (fight == null || fight.getCrystalsAlive() > 0 || level.getDragons().isEmpty()) {
-            return;
-        }
-        for (ServerPlayer player : level.players()) {
-            if (!Journey.slain(player)) {
-                Story.scene(player, "last_crystal", watchers(player), () -> {});
-            }
-        }
-    }
-
-    private static List<ServerPlayer> watchers(ServerPlayer player) {
-        return Teams.onlineMembers(player).stream().filter(member -> member.level() == player.level()).toList();
     }
 
     @SubscribeEvent
@@ -123,7 +88,7 @@ public final class Gaze {
         if (!(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }
-        if (Journey.slain(player)) {
+        if (Journey.slain(player.server)) {
             if (player.getData(Wayfarer.GAZE) != 0) {
                 player.setData(Wayfarer.GAZE, 0);
                 PacketDistributor.sendToPlayer(player, GazePayload.CLOSED);

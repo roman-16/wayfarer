@@ -69,11 +69,19 @@ public final class Nights {
     }
 
     public static boolean sleepless(ServerPlayer player) {
-        return !Journey.slain(player) && (horde(tonight(player.server.overworld())) || Stillness.found(player));
+        return sleepless(Journey.slain(player.server), tonight(player.server.overworld()), Stillness.found(player));
+    }
+
+    public static boolean sleepless(boolean slain, long night, boolean found) {
+        return !slain && (horde(night) || found);
     }
 
     public static boolean redMoon(MinecraftServer server) {
-        return bloodMoon(tonight(server.overworld())) && !Journey.dragonDead(server);
+        return redMoon(Journey.slain(server), tonight(server.overworld()));
+    }
+
+    public static boolean redMoon(boolean slain, long night) {
+        return !slain && bloodMoon(night);
     }
 
     public static boolean night(Level overworld) {
@@ -125,13 +133,13 @@ public final class Nights {
             state.setDirty();
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 if (sleepless(player)) {
-                    Notes.first(player, "horde");
+                    Firsts.first(player, "horde");
                     if (Tents.isTent(player.level().dimension())) {
                         Tents.eject(player);
                     }
                 }
                 if (redMoon(server)) {
-                    Notes.first(player, "blood_moon");
+                    Firsts.first(player, "blood_moon");
                 }
             }
         }

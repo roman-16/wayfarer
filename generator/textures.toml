@@ -70,3 +70,36 @@ w = "#fff3c4"
 y = "#ffc233"
 
 [warm.variants.warm]
+
+[tollbridge_bell]
+folder = "block"
+rows = [
+  "tssstttttsstttdd",
+  "sstssstsssttttdd",
+  "ssmssssstsssdddd",
+  "llllllststssdddd",
+  "bbbmbbssssttdddd",
+  "bbmbbbtsssttdddd",
+  "mbbbbmlllllllldd",
+  "ddddddmmmmmmmmdd",
+  "mbbbbbbmrrrrrrrr",
+  "bbbbbbbbrkkkkkkr",
+  "bbssssbbrkkkkkkr",
+  "bbssssbbrkkkkkkr",
+  "bbssssbbrkkkkkkr",
+  "bbssssbbrkkkkkkr",
+  "bbbbbbbbrkkkkkkr",
+  "mbbbbbbmrrrrrrrr",
+]
+
+[tollbridge_bell.colors]
+b = "#7a5a2e"
+d = "#2a221c"
+k = "#1a1410"
+l = "#a07a3e"
+m = "#5a4222"
+r = "#5a4222"
+s = "#3a2e24"
+t = "#2a221c"
+
+[tollbridge_bell.variants.tollbridge_bell]

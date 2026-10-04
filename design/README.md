@@ -4,7 +4,7 @@ What Wayfarer is becoming, decided here before anything is built. Each document 
 
 ## Now
 
-**Phase 4, Vertical slice.** Act 1 playable end to end, every new system at its minimum, built from `story.md` and `systems.md`. The slice is planned quest by quest in `slice.md`. Next: **step 1, the world**: the picked mods in, the cuts made, places by owner, ore by place, one world as one team.
+**Phase 4, Vertical slice.** Act 1 playable end to end, every new system at its minimum, built from `story.md` and `systems.md`. The slice is planned quest by quest in `slice.md`. Step 1, the world, is built and waits for Roman's walk through it; M26 (how often the other owners' places stand) is open in `systems.md`. Step 2, the prologue, is designed (`story.md`, S23), its texts written and its looks made. Next: **building step 2**, once Roman's verdict on step 1 is in.
 
 ## Phases
 

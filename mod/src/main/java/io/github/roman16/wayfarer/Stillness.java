@@ -18,6 +18,7 @@ public final class Stillness {
     private static final String DAY = "day";
     private static final String STAGE = "stage";
     private static final int CHECK_TICKS = 20;
+    private static final long TICKS_PER_DAY = 24000;
 
     private Stillness() {}
 
@@ -27,7 +28,7 @@ public final class Stillness {
     }
 
     public static boolean found(ServerPlayer player) {
-        return !Journey.slain(player) && player.getData(Wayfarer.STILLNESS).getInt(STAGE) == FOUND;
+        return !Journey.slain(player.server) && player.getData(Wayfarer.STILLNESS).getInt(STAGE) == FOUND;
     }
 
     @SubscribeEvent
@@ -39,9 +40,9 @@ public final class Stillness {
             return;
         }
         CompoundTag anchor = player.getData(Wayfarer.STILLNESS);
-        long today = Story.day(player.server);
+        long today = player.server.overworld().getDayTime() / TICKS_PER_DAY;
         int before = anchor.getInt(STAGE);
-        if (Journey.slain(player)) {
+        if (Journey.slain(player.server)) {
             if (before != MOVING) {
                 player.setData(Wayfarer.STILLNESS, new CompoundTag());
             }
@@ -70,10 +71,7 @@ public final class Stillness {
         player.setData(Wayfarer.STILLNESS, next);
         if (before < DIMMING) {
             player.displayClientMessage(Component.translatable("wayfarer.stillness.dimming").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), false);
-            Notes.first(player, "dimming");
-            if (Story.voiceStarted(player)) {
-                Story.scene(player, "dimming", Teams.onlineMembers(player), () -> {});
-            }
+            Firsts.first(player, "dimming");
         }
         if (stage == FOUND) {
             player.displayClientMessage(Component.translatable("wayfarer.stillness.found").withStyle(ChatFormatting.RED), false);

@@ -16,7 +16,7 @@ TIMEOUT_SECONDS = 900
 LOCATE_SECONDS = 300
 STOP_SECONDS = 300
 ROOT = Path(__file__).resolve().parent.parent
-FOUND = re.compile(r"The nearest (\S+) is at \[(-?\d+), [^,]+, (-?\d+)\] \((\d+) blocks away\)")
+FOUND = re.compile(r"The nearest (\S+)(?: \([^)]*\))? is at \[(-?\d+), [^,]+, (-?\d+)\] \((\d+) blocks away\)")
 MISSING = re.compile(r"Could not find a structure of type \"?(\S+?)\"? nearby")
 BIOME_SHIFT_BLOCKS = 128
 MAX_STEP = 2.0
@@ -26,7 +26,7 @@ SURVEY_PORT = 25600
 VOICE_PORT = 24600
 SHARED = ("libraries", "mods")
 WALK_BLOCKS_PER_SECOND = 4.317
-REJECTED = re.compile(r"Tried to load invalid item|\[FTB Quests/\]: failed to|Couldn't parse element .*\]:wayfarer:")
+REJECTED = re.compile(r"Tried to load invalid item|Couldn't parse element .*\]:wayfarer:")
 
 
 def locate(server, structure, at=None):
@@ -59,11 +59,16 @@ def check(server):
         print(f"nearest {eye} shrine: {found[0] if found else None} blocks")
         if found is None:
             failures.append(f"no {eye} shrine was found")
-    for structure in tomllib.loads((ROOT / "generator/removals.toml").read_text())["structures"]:
+    for kind in tomllib.loads((ROOT / "balance.toml").read_text())["structures"]["every_blocks"]:
+        found = locate(server, f"#wayfarer:owners/{kind}")
+        print(f"nearest {kind}: {found[0] if found else None} blocks")
+        if found is None:
+            failures.append(f"no {kind} was found")
+    for structure in tomllib.loads((ROOT / "generator/owners.toml").read_text())["cut"]:
         found = locate(server, structure)
         if found is not None:
             failures.append(
-                f"{structure} is cut in generator/removals.toml but still generates {found[0]} blocks from spawn"
+                f"{structure} is cut in generator/owners.toml but still generates {found[0]} blocks from spawn"
             )
     failures += [f"the game rejects our data: {line.strip()[:300]}" for line in server.lines() if REJECTED.search(line)]
     return failures

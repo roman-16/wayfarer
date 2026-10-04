@@ -1,12 +1,15 @@
 package io.github.roman16.wayfarer;
 
 import com.electronwill.nightconfig.core.Config;
+import com.electronwill.nightconfig.core.UnmodifiableConfig;
 import com.electronwill.nightconfig.toml.TomlParser;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public record Balance(
         Clock clock,
@@ -19,8 +22,8 @@ public record Balance(
         Gate gate,
         Gaze gaze,
         Hunger hunger,
-        Leads leads,
         Nights nights,
+        Ore ore,
         Sea sea,
         Shine shine,
         Sight sight,
@@ -46,13 +49,11 @@ public record Balance(
 
     public record Flare(int charges, int reachBlocks) {}
 
-    public record Gate(int bandSize, int reachBlocks) {}
+    public record Gate(int reachBlocks) {}
 
     public record Gaze(List<Integer> capacitySeconds, int drainFactor, int huntIntervalSeconds, int huntPhantoms) {}
 
     public record Hunger(float exhaustionFactor, float rowingExhaustionPerBlock, float warmExhaustionFactor) {}
-
-    public record Leads(int campBlocks, int campReachBlocks, int searchRings) {}
 
     public record Nights(int bloodMoonEvery, int hordeEvery) {}
 
@@ -61,6 +62,8 @@ public record Balance(
     public record Shine(List<Integer> act, double noticeBlocksPerShine, int perShard, int remedy, int spawnEverySeconds, int spawnLimit, int spawnShine) {}
 
     public record Sight(int reachBlocks, int shards) {}
+
+    public record Ore(Map<String, Double> shares) {}
 
     public record Sleep(int playersPercentage) {}
 
@@ -112,7 +115,7 @@ public record Balance(
                             toml.getInt("fire.rest_blocks"),
                             toml.getInt("fire.rest_seconds")),
                     new Flare(toml.getInt("flare.charges"), toml.getInt("flare.reach_blocks")),
-                    new Gate(toml.getInt("gate.band_size"), toml.getInt("gate.reach_blocks")),
+                    new Gate(toml.getInt("gate.reach_blocks")),
                     new Gaze(
                             toml.<List<Number>>get("gaze.capacity_seconds").stream().map(Number::intValue).toList(),
                             toml.getInt("gaze.drain_factor"),
@@ -122,8 +125,9 @@ public record Balance(
                             toml.<Number>get("hunger.exhaustion_factor").floatValue(),
                             toml.<Number>get("hunger.rowing_exhaustion_per_block").floatValue(),
                             toml.<Number>get("hunger.warm_exhaustion_factor").floatValue()),
-                    new Leads(toml.getInt("leads.camp_blocks"), toml.getInt("leads.camp_reach_blocks"), toml.getInt("leads.search_rings")),
                     new Nights(toml.getInt("nights.blood_moon_every"), toml.getInt("nights.horde_every")),
+                    new Ore(toml.<Config>get("ore").entrySet().stream()
+                            .collect(Collectors.toUnmodifiableMap(UnmodifiableConfig.Entry::getKey, entry -> entry.<Number>getValue().doubleValue()))),
                     new Sea(
                             toml.getInt("sea.beast_one_in"),
                             toml.getInt("sea.beast_one_in_least"),

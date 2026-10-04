@@ -35,13 +35,6 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "ftbteams"
-type = "required"
-versionRange = "${ftb_teams_version_range}"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
 modId = "betterstrongholds"
 type = "optional"
 versionRange = "*"
@@ -78,13 +71,6 @@ side = "BOTH"
 
 [[dependencies.${mod_id}]]
 modId = "enhancedcelestials2defaultlunarevents"
-type = "optional"
-versionRange = "*"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
-modId = "ftbquests"
 type = "optional"
 versionRange = "*"
 ordering = "AFTER"

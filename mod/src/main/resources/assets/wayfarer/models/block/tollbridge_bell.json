@@ -1,0 +1,195 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "bell": "wayfarer:block/tollbridge_bell",
+    "particle": "wayfarer:block/tollbridge_bell"
+  },
+  "elements": [
+    {
+      "from": [
+        4,
+        0,
+        4
+      ],
+      "to": [
+        12,
+        2,
+        12
+      ],
+      "faces": {
+        "north": {
+          "texture": "#bell",
+          "uv": [
+            6,
+            6,
+            14,
+            8
+          ]
+        },
+        "south": {
+          "texture": "#bell",
+          "uv": [
+            6,
+            6,
+            14,
+            8
+          ]
+        },
+        "east": {
+          "texture": "#bell",
+          "uv": [
+            6,
+            6,
+            14,
+            8
+          ]
+        },
+        "west": {
+          "texture": "#bell",
+          "uv": [
+            6,
+            6,
+            14,
+            8
+          ]
+        },
+        "up": {
+          "texture": "#bell",
+          "uv": [
+            0,
+            8,
+            8,
+            16
+          ]
+        },
+        "down": {
+          "texture": "#bell",
+          "uv": [
+            8,
+            8,
+            16,
+            16
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        2,
+        5
+      ],
+      "to": [
+        11,
+        9,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#bell",
+          "uv": [
+            0,
+            0,
+            6,
+            7
+          ]
+        },
+        "south": {
+          "texture": "#bell",
+          "uv": [
+            0,
+            0,
+            6,
+            7
+          ]
+        },
+        "east": {
+          "texture": "#bell",
+          "uv": [
+            0,
+            0,
+            6,
+            7
+          ]
+        },
+        "west": {
+          "texture": "#bell",
+          "uv": [
+            0,
+            0,
+            6,
+            7
+          ]
+        },
+        "up": {
+          "texture": "#bell",
+          "uv": [
+            6,
+            0,
+            12,
+            6
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        9,
+        7
+      ],
+      "to": [
+        9,
+        10,
+        9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#bell",
+          "uv": [
+            12,
+            0,
+            14,
+            1
+          ]
+        },
+        "south": {
+          "texture": "#bell",
+          "uv": [
+            12,
+            0,
+            14,
+            1
+          ]
+        },
+        "east": {
+          "texture": "#bell",
+          "uv": [
+            12,
+            0,
+            14,
+            1
+          ]
+        },
+        "west": {
+          "texture": "#bell",
+          "uv": [
+            12,
+            0,
+            14,
+            1
+          ]
+        },
+        "up": {
+          "texture": "#bell",
+          "uv": [
+            12,
+            0,
+            14,
+            2
+          ]
+        }
+      }
+    }
+  ]
+}

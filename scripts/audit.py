@@ -67,31 +67,6 @@ def recipes(jars):
         yield f"{recipe} ({jar}) needs {', '.join(needs)}: give it an Overworld source or list it in generator/nether.toml"
 
 
-def shared_biomes(jars):
-    emptied = {"#" + tag for tag in tomllib.loads((ROOT / "generator/removals.toml").read_text())["structure_biomes"]}
-    users = {tag: set() for tag in emptied}
-    for jar in jars:
-        with zipfile.ZipFile(jar) as archive:
-            for name in archive.namelist():
-                parts = name.split("/")
-                if (
-                    len(parts) < 5
-                    or parts[0] != "data"
-                    or parts[2:4] != ["worldgen", "structure"]
-                    or not name.endswith(".json")
-                ):
-                    continue
-                try:
-                    biomes = json.loads(archive.read(name).decode("utf-8-sig")).get("biomes")
-                except ValueError:
-                    continue
-                if isinstance(biomes, str) and biomes in users:
-                    users[biomes].add(f"{parts[1]}:{'/'.join(parts[4:])[:-5]}")
-    for tag, structures in sorted(users.items()):
-        if len(structures) > 1:
-            yield f"generator/removals.toml empties {tag}, which {', '.join(sorted(structures))} all use: remove the one structure through its structure set instead"
-
-
 def features(jars):
     spread = set(tomllib.loads((ROOT / "balance.toml").read_text())["structures"]["spread_features"])
     natural = set(tomllib.loads((ROOT / "generator/features.toml").read_text())["natural"])
@@ -205,7 +180,7 @@ def pool_templates(pool):
 
 def portals(jars):
     found, templates = worldgen_data(jars)
-    emptied = {"#" + tag for tag in tomllib.loads((ROOT / "generator/removals.toml").read_text())["structure_biomes"]}
+    cut = set(tomllib.loads((ROOT / "generator/owners.toml").read_text())["cut"])
     placed = {
         entry["structure"]
         for structure_set in found["structure_set"].values()
@@ -215,12 +190,7 @@ def portals(jars):
     contents, archives = {}, {}
     for structure, data in sorted(found["structure"].items()):
         biomes = data.get("biomes")
-        if (
-            structure not in placed
-            or biomes == []
-            or (isinstance(biomes, str) and biomes in emptied)
-            or not isinstance(data.get("start_pool"), str)
-        ):
+        if structure not in placed or structure in cut or biomes == [] or not isinstance(data.get("start_pool"), str):
             continue
         pools, seen, lit = [data["start_pool"]], set(), []
         while pools:
@@ -242,20 +212,20 @@ def portals(jars):
                     lit.append(template)
                 pools.extend(linked)
         if lit:
-            yield f"{structure} still generates a lit Nether portal in {', '.join(sorted(set(lit)))}: cut it in generator/removals.toml structures"
+            yield f"{structure} still generates a lit Nether portal in {', '.join(sorted(set(lit)))}: cut it in generator/owners.toml"
     for archive in archives.values():
         archive.close()
 
 
 def main():
     jars = sorted(Path(sys.argv[1]).glob("*.jar"))
-    findings = [*recipes(jars), *shared_biomes(jars), *features(jars), *portals(jars), *load_order(jars)]
+    findings = [*recipes(jars), *features(jars), *portals(jars), *load_order(jars)]
     for finding in findings:
         print(finding)
     if findings:
         sys.exit(f"{len(findings)} audit findings")
     print(
-        "no recipe needs a Nether-only item, no structure generates a lit Nether portal, every replaced file loads after its mod, no emptied biome tag removes more than its structure, and every structure-like feature is spread or natural"
+        "no recipe needs a Nether-only item, no structure generates a lit Nether portal, every replaced file loads after its mod, and every structure-like feature is spread or natural"
     )
 
 

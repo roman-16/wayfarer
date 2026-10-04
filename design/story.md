@@ -173,7 +173,7 @@ It raises:
 
 ### S9 The caravan: a burnt town looking for a place the gaze cannot see
 
-- Most of the caravan are the survivors of a town that grew too big and shone too brightly until the gaze found it, joined on the road by strays: a herder, a Keeper's apprentice and others. One or two come from elsewhere, such as a Gazebound deserter who served under Wend, or one of the last of a people whose shard Wend took.
+- Most of the caravan are the survivors of Tollbridge, a town at a river crossing that grew too big and shone too brightly until the gaze found it, joined on the road by strays: a herder, a Keeper's apprentice and others. One or two come from elsewhere, such as a Gazebound deserter who served under Wend, or one of the last of a people whose shard Wend took.
 - They are looking for a place the gaze cannot see, and the voice promises them one. It leads them towards it, and into the gaze at the end of Act 2. At the frame, the door Give it its sight offers the survivors that dream, at the world's cost.
 - They cross the sea by ship with the player: finding ships for everyone is the quest that opens Act 2, and the camp is set up again on the far shore.
 - Who survives the breaking is decided person by person: everyone in the caravan has a side quest of their own, and doing it, failing it and what the player did for them decide their fate.
@@ -198,7 +198,7 @@ The caravan's named people (every name a placeholder):
 | Ilse, the Keeper's apprentice | To see the world the Keepers only guard | A seal no one else can read | Her records point at a thirteenth shard |
 | Mother Agna, the healer | To keep them alive | The fever, cured before the third dawn | First to see the clock inside the player |
 | Hob, the smith | The old way of making things | The lost ore of a people's mine | Restores the player's gear (D13) |
-| Pip, a child of the town | To be a Wayfarer | The road, taught | The heaviest loss the breaking can bring |
+| Pip, a child of the town, whose mother died the night it burned | To be a Wayfarer | The road, taught | The heaviest loss the breaking can bring |
 
 Around them live their households and a few townsfolk families: about 15 to 20 people who only make small talk, but live and die with the caravan, and whose tents and wagons make up the camp (`systems.md`, M5):
 
@@ -257,7 +257,7 @@ I want a world where nobody needs a tent."
 
   | Act | What happens | How it is explained away |
   |---|---|---|
-  | Act 1 | Endermen do not flinch from the player's gaze. They hear the calling stones before the ember feels them. Agna finds their heart slower than anyone's | "Wayfarers are strange." The voice laughs it off |
+  | Act 1 | Endermen do not flinch from the player's gaze. They hear the calling stones before the ember feels them. Agna finds their heart slower than anyone's, at the caravan's first fire (S23) | "Wayfarers are strange." The voice laughs it off |
   | Act 2 | At the Jungle Folk's hall they first see through stone. Their eyes glow faintly in the dark, which their friends see. The peoples' guardians bow to them | Nobody can, and Agna stops laughing |
   | Act 3 | They dream the dragon's dreams: the End, the void, an eye that cannot close. The Keepers know them at the door and bar the way, which is the second reveal | Nothing explains it away any more |
 
@@ -350,8 +350,8 @@ Prologue, The Oath:
 
 | # | Quest | Place | Activity | Gate | Turn |
 |---|---|---|---|---|---|
-| P1 | The Last Fire | The Last Camp | Talk | | A dying stranger knows the player's face, gives them his ember and dies with a charge cut off halfway: "Don't let it... the shards. I took them. Don't let it have..." (S22); they bury him by the road |
-| P2 | The First Day | Around the Last Camp | Build: the tent, the fire, everything carried | | Dusk falls once the first day's work is done; the ember wakes, and on the horizon a town is burning |
+| P1 | The Last Fire | The Last Camp | Talk | | A dying stranger knows the player's face, gives them his ember and dies with a charge cut off halfway: "Don't let it... the shards. I took them. Don't let it have..." (S22); they bury him by his fire and write his stone |
+| P2 | The First Day | Wherever the player makes camp, at least 512 blocks from the Last Camp | Build: the tent, the fire, everything carried | | Dusk falls once the first day's work is done; the ember wakes, and on the horizon a town is burning |
 | P3 | Ash | The burnt town, a place the quest puts down | Investigate, then Hold through the night | Strength | Every body has its chest opened and nothing taken. The survivors, Tamsin, Pip, Agna and Hob, beg the one with an ember to lead them, and Tamsin will not leave without the town's bell |
 
 Act 1, on foot, the near ring:
@@ -520,7 +520,7 @@ It raises, for phase 2: where the hints fall, and how much the dragon lets slip.
 
   ```text
   <Stranger> Don't let it... the shards. I took them. Don't let it have...
-  He doesn't finish. The fire pops. The ember is warm in your hand.
+  He doesn't finish. The fire pops. The ember lies cold in your hand.
   ```
 
 - The ember's pull leads to the first hall, and there the voice, in his voice, finishes his sentence. From then on the goal is said out loud: bring the shards to a frame and put the dragon's eye out for good, so no town burns again. It is the goal behind Blind it (S8).
@@ -534,6 +534,83 @@ It raises, for phase 2: where the hints fall, and how much the dragon lets slip.
 - What Wend really meant, "don't let it look at them", surfaces only at the frame, as his real last whisper (S4, F1). Until then the player follows a real deathbed wish that the voice has finished its own way.
 
 **Why:** A story needs its goal said in the first hour, as The Witcher 3 says "find Ciri"; a dying man's unfinished charge gives it there, and the burnt town makes it personal before the voice ever speaks. The voice's lie then grows out of a real wish, which makes it easy to believe and makes the truth at the frame a turn rather than a contradiction.
+
+### S23 The prologue in detail
+
+The prologue step by step, as the slice builds it (`slice.md`, step 2). Every line is a placeholder for the `lore` skill, and the voice stays silent throughout (S4).
+
+**P1 The Last Fire** (the Last Camp; Talk, then Build):
+
+1. The world's first player wakes at dawn on the ground by the Last Camp's lit fire. The stranger lies beside it, old and spent, with a scar over his heart: the Gazebound's mark (S18), which Corin explains in 1.3.
+2. He speaks first, in chat, with answers to click (M3). He knows the player's face and will not say why. He presses a cold ember into their hand, gives three rules in his own words, walk, never stay, sleep only in a tent by a fire, and dies with his charge cut off (S22).
+3. The player buries him: a right-click on him and "Bury him", the screen dims, and a grave stands by the camp with a blank stone. Whoever buried him writes it, since nobody knows his name, and the journal keeps the words.
+4. His pack is the first reward, waiting in the journal for each player to claim: a backpack, a tent and a little food.
+
+The Last Camp is his fire, burning, his tent and his things, with no grave until the player buries him and no letter, since he says it himself. It stays as it is for good: the last memory is played there (S13).
+
+```text
+<Stranger> There you are. Thought I'd go before you woke.
+<Stranger> Hold out your hand. It's cold, it's been cold for years. Walk with it and it wakes. It lives on what you see.
+<Stranger> Never stay. Never sleep in the open: a tent, and a fire by it.
+<Stranger> Don't let it... the shards. I took them. Don't let it have...
+He doesn't finish. You bury him by his fire. On the stone you write: "He gave me fire."
+Journal: I buried him by his fire. On the stone I wrote: "He gave me fire."
+```
+
+**P2 The First Day** (wherever the player makes camp; Build):
+
+1. "Not here": the player walks at least 512 blocks from the Last Camp, any way they like.
+2. They make their first camp: the tent pitched, a campfire crafted from logs, sticks and coal or charcoal and lit within 4 blocks of it, and half a minute's rest at the fire. In a team, two thirds of the team have done so.
+3. Once the camp is made, the afternoon passes at the fire in half a minute (M20) and dusk falls.
+4. The ember wakes: it has seen new land (S19). The compass appears, and the ember sense with it.
+5. Smoke and a red glow rise over the land ahead, and P3 opens. The player sees the town, so the compass shows its exact mark.
+
+The sun eases as on every day out (M6), and the road's rules teach themselves when tried, through the first-time hints: a sapling that withers, a chest that will not stand.
+
+```text
+[Main] The First Day - not here. Make camp before dark: a tent, a fire.
+You sit by your fire. The shadows stretch. The ember in your hand grows warm, then glows.
+Over the ridge ahead, smoke. Under it, the sky is red.
+[Main] Ash - the smoke over the ridge   Compass ◆ 320 blocks
+```
+
+**P3 Ash** (the burnt town; Investigate, then Hold; the gate is Strength):
+
+1. The quest puts the town down at dusk past the player's camp, on the way they walked, out of sight behind the land and close enough that its smoke shows over it, already burning, with fires that do not spread. It is a town that grew too big: about 104 by 104 blocks and about thirty buildings round the bell tower's square, from the inn, the smithy and the market to houses of every size. Its site prefers land beside a river, and where it finds one the town stands on both banks with the toll bridge across; elsewhere it stands without. About thirty-two dead lie in its streets, doorways and square, each with a face of their own. It stays afterwards as a ruin of the settled world: Tamsin's town.
+2. The player investigates by night with the ember sense (M10): bodies with their shirts torn open over the heart, purses still on their belts, emeralds in an open strongbox, each a line in the journal.
+3. The survivors, Tamsin, Pip, Agna and Hob, hide in the cellar of the stone bell tower. Resting at their fire makes it where the player wakes if they fall that night, and Hob hands them a blade from his forge.
+4. The gaze's creatures come back, drawn by the ember that has just woken: the player shines (S12) before anyone knows what that means.
+5. The hold: four waves at the cellar door, with the survivors as their target. If one falls, the step is tried again from the cellar, with the failed try's waves gone (D6). The night eases towards midnight while the hold lasts; after the last wave it passes to dawn in half a minute, and what is left crumbles in the sun.
+6. In the morning the survivors beg the one with the ember to lead them. Tamsin sits by the fallen bell and asks what to do with it; she takes it whatever the player says, and remembers what they said, which comes back in The Bell (1.10).
+7. Make for the caravan: the survivors' first camp goes up out of sight ahead, at its smallest, the fire, Tamsin's tent and the bell's cart, the healers' tent and Hob's wagon (M5). The player walks in by daylight, the afternoon passes at the fire, everyone has a word, Agna binds a cut on the player's arm and finds their heart slow, and Tamsin makes them the caravan's scout. They sleep in their tent by its fire, and the next morning Act 1 opens with the ember's first pull (1.1).
+
+```text
+<Agna> Look. They never take anything. They only open the chest.
+<Tamsin> They never come back. What did you bring?
+  [Hold] The cellar door - wave 1 of 4
+<Tamsin> The bell stays with us.  [Leave it, it'll slow us]  [We'll take it]
+Evening, at the caravan's first fire:
+<Tamsin> You walk ahead. We'll follow your marks.
+```
+
+**A team, and joining later.** Everyone at the Last Camp's fire when he gives the ember has one lit from it (S19), and anyone who joins later has it at once (D11). Every reward waits for each player. His lines reach every player online, and the first click answers (M3); the stone is written by whoever buried him. A player who joins during the prologue appears beside the teammate online longest and joins the step as it stands (D11).
+
+What the prologue asks of the systems, at their minimum:
+
+| System | For the prologue |
+|---|---|
+| The quest engine (M1) | Steps whose goals are a person, a distance from a place, a camp made, a place the quest puts down, clues, a hold and a talk; one ordinary choice remembered; rewards in the journal |
+| The journal (M2) | The quests, the rewards to claim, the story so far, the people met and the words learnt, as "I" |
+| The compass (M2) | Hidden until the ember wakes, then a goal the player sees, exactly |
+| Conversations (M3) | The stranger, the survivors, Tamsin and the bell |
+| The camp and sleep (M12) | The one-step tent, and sleep in it with a lit campfire within 4 blocks |
+| The clock (M6, M20) | The day easing, the afternoon passing at a fire, the night held through the hold and passed to dawn |
+| The ember sense and clues, holds (M10) | The bodies as clues, the cellar door's four waves |
+| The caravan's camp (M5) | Its first camp: four pieces round the fire, and the four survivors |
+| Joining later (M7) | As above |
+| The generator | The Last Camp with the stranger and no grave, and the burnt town |
+
+**Why:** Red Dead Redemption 2 and The Witcher 3 teach each rule inside the story at the moment it is needed, so the stranger gives the first rules in his own words and the first day plays them, and an ember that wakes on new sights gives "never stay" its reason in play. A stone the player writes and a bell choice that comes back make the first hour theirs and teach that the world remembers, while finding the bodies by night with the ember sense brings the horror and the new power together, and a horde that comes back for the ember plants the shine before anyone names it.
 
 ## Open
 

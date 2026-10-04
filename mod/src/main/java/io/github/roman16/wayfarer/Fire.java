@@ -103,7 +103,7 @@ public final class Fire {
     public static List<ServerPlayer> around(ServerPlayer player, BlockPos fire) {
         int radius = Balance.INSTANCE.fire().circleBlocks();
         List<ServerPlayer> listeners = new ArrayList<>();
-        for (ServerPlayer member : Teams.onlineMembers(player)) {
+        for (ServerPlayer member : player.server.getPlayerList().getPlayers()) {
             if (member == player || member.level() == player.level() && inside(fire, member.position(), radius)) {
                 listeners.add(member);
             }
@@ -182,18 +182,17 @@ public final class Fire {
 
     private static void rest(ServerPlayer player, BlockPos fire) {
         boolean warm = player.hasEffect(Wayfarer.WARM);
-        if (!Journey.slain(player)) {
+        if (!Journey.slain(player.server)) {
             player.addEffect(new MobEffectInstance(Wayfarer.WARM, untilTomorrowsDusk(player.server.overworld().getDayTime()), 0, true, false, true));
             if (!warm) {
                 player.displayClientMessage(Component.translatable("wayfarer.fire.warm").withStyle(ChatFormatting.GOLD), false);
-                Notes.first(player, "warm");
+                Firsts.first(player, "warm");
             }
             AdvancementHolder advancement = player.server.getAdvancements().get(WARMED);
             if (advancement != null) {
                 player.getAdvancements().award(advancement, RESTED);
             }
         }
-        Story.rest(player, fire);
     }
 
     @SubscribeEvent

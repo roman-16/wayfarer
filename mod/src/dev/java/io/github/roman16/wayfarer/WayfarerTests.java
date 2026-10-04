@@ -1,10 +1,7 @@
 package io.github.roman16.wayfarer;
 
-import com.mojang.authlib.GameProfile;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Vec3i;
@@ -12,9 +9,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Vindicator;
@@ -59,22 +54,6 @@ public final class WayfarerTests {
         check(helper, Compass.round(600) == 500, "just past the shard's answer reads five hundred");
         check(helper, Compass.round(1240) == 1000, "distances round down to the nearer step");
         check(helper, Compass.round(1260) == 1500, "and up to the nearer step");
-        helper.succeed();
-    }
-
-    @GameTest(template = "empty")
-    public static void leadsWaitToBeMarked(GameTestHelper helper) {
-        ServerLevel level = helper.getLevel();
-        ServerPlayer player = new ServerPlayer(level.getServer(), level, new GameProfile(UUID.randomUUID(), "wayfarer"), ClientInformation.createDefault());
-        Journey.Tale tale = Journey.tale(player);
-        tale.give("first_camp", BlockPos.ZERO);
-        boolean unmarked = Leads.markers(player).isEmpty();
-        tale.mark("first_camp", true);
-        boolean marked = Leads.markers(player).size() == 1;
-        tale.mark("first_camp", false);
-        check(helper, unmarked, "a new lead stays off the compass");
-        check(helper, marked, "a marked lead shows on the compass");
-        check(helper, Leads.markers(player).isEmpty(), "an unmarked lead leaves it again");
         helper.succeed();
     }
 
@@ -154,15 +133,13 @@ public final class WayfarerTests {
     }
 
     @GameTest(template = "empty")
-    public static void eachEyeOncePerTeam(GameTestHelper helper) {
-        Journey progress = Journey.of(helper.getLevel().getServer());
-        UUID team = UUID.randomUUID();
-        check(helper, progress.claim(team, Wayfarer.id("shrine/test")), "the first claim takes the eye");
-        check(helper, !progress.claim(team, Wayfarer.id("shrine/test")), "the second claim finds the shrine spent");
-        check(helper, progress.claim(UUID.randomUUID(), Wayfarer.id("shrine/test")), "another team still finds its eye");
-        check(helper, progress.claim(team, Wayfarer.id("shrine/second")), "a second shrine adds a second shard");
-        check(helper, progress.slay(team) && !progress.slay(team), "a team slays the dragon once");
-        check(helper, progress.wake(team) && !progress.wake(team), "a team's ember wakes once");
+    public static void eachEyeOnce(GameTestHelper helper) {
+        Journey progress = new Journey();
+        check(helper, progress.claim(Wayfarer.id("shrine/test")), "the first claim takes the eye");
+        check(helper, !progress.claim(Wayfarer.id("shrine/test")), "the second claim finds the shrine spent");
+        check(helper, progress.claim(Wayfarer.id("shrine/second")), "a second shrine adds a second shard");
+        check(helper, progress.slay() && !progress.slay(), "the world slays the dragon once");
+        check(helper, progress.wake() && !progress.wake(), "the world's ember wakes once");
         helper.succeed();
     }
 
@@ -172,29 +149,6 @@ public final class WayfarerTests {
         check(helper, Nights.horde(4) && !Nights.bloodMoon(4), "the fourth night brings a horde");
         check(helper, Nights.bloodMoon(5) && !Nights.horde(5), "the fifth night brings a blood moon");
         check(helper, Nights.horde(20) && Nights.bloodMoon(20), "the twentieth night brings both");
-        helper.succeed();
-    }
-
-    private static Library.Step step(String id, int shards, List<String> after, List<String> found, boolean slain) {
-        return new Library.Step(after, found, id, "", List.of(), "", shards, slain, Story.VOICE, Optional.empty());
-    }
-
-    @GameTest(template = "empty")
-    public static void storyTakesItsTurn(GameTestHelper helper) {
-        List<Library.Step> steps = List.of(
-                step("first", 2, List.of(), List.of(), false),
-                step("lead", 2, List.of("first"), List.of("camp"), false),
-                step("second", 3, List.of("first"), List.of(), false),
-                step("after", 0, List.of(), List.of(), true));
-        check(helper, Story.due(steps, Set.of(), Set.of(), 1, false).isEmpty(), "nothing speaks before its shards");
-        check(helper, Story.due(steps, Set.of(), Set.of(), 3, false).orElseThrow().id().equals("first"), "the first step comes first");
-        check(helper, Story.due(steps, Set.of("first"), Set.of(), 3, false).orElseThrow().id().equals("second"), "a step that waits for a lead does not block the story");
-        check(helper, Story.due(steps, Set.of("first"), Set.of("camp"), 3, false).orElseThrow().id().equals("lead"), "a found lead lets its step speak");
-        check(helper, Story.due(steps, Set.of(), Set.of(), 12, true).orElseThrow().id().equals("after"), "after the dragon only its steps speak");
-        check(helper, Story.speaksToday(-1, 0) && Story.speaksToday(4, 5) && !Story.speaksToday(5, 5), "the fire speaks once a day");
-        check(helper, Story.name(Story.VOICE, Set.of()).equals("The stranger"), "the voice starts as the stranger");
-        check(helper, Story.name(Story.VOICE, Set.of("maren_names")).equals("Wend"), "Maren names him Wend");
-        check(helper, Story.name(Story.VOICE, Set.of("maren_names", "unmasked")).equals("The gaze"), "the mask drops");
         helper.succeed();
     }
 
@@ -221,38 +175,21 @@ public final class WayfarerTests {
     }
 
     @GameTest(template = "empty")
-    public static void leadsGiveAWay(GameTestHelper helper) {
-        check(helper, Leads.heading(0, -100).equals("north") && Leads.heading(100, 0).equals("east"), "north is -z and east is +x");
-        check(helper, Leads.heading(100, 100).equals("south_east") && Leads.heading(-100, -100).equals("north_west"), "the diagonals");
-        check(helper, Leads.round(1234) == 1200 && Leads.round(20) == 100, "distances round to a hundred");
-        helper.succeed();
-    }
-
-    @GameTest(template = "empty")
-    public static void wardHoldsWhileTheBandStands(GameTestHelper helper) {
+    public static void frameRefusesWhileGazeboundStand(GameTestHelper helper) {
         BlockPos frame = helper.absolutePos(new BlockPos(2, 1, 2));
-        check(helper, !Maren.bandNear(helper.getLevel(), frame), "an empty hall lets the Eye in");
+        check(helper, !Gate.guarded(helper.getLevel(), frame), "an empty hall lets the Eye in");
         Vindicator raider = helper.spawn(EntityType.VINDICATOR, new BlockPos(3, 1, 3));
-        raider.addTag(Maren.BAND);
-        check(helper, Maren.bandNear(helper.getLevel(), frame), "the ward holds while the band stands");
+        check(helper, Gate.guarded(helper.getLevel(), frame), "the ward holds while the Gazebound stand");
         raider.discard();
-        check(helper, !Maren.bandNear(helper.getLevel(), frame), "a fallen band lifts the ward");
+        check(helper, !Gate.guarded(helper.getLevel(), frame), "a fallen band lifts the ward");
         helper.succeed();
     }
 
     @GameTest(template = "empty")
     public static void theRoadEndsWithTheDragon(GameTestHelper helper) {
-        ServerLevel level = helper.getLevel();
-        ServerPlayer player = new ServerPlayer(level.getServer(), level, new GameProfile(UUID.randomUUID(), "wayfarer"), ClientInformation.createDefault());
-        long before = level.getServer().overworld().getDayTime();
-        level.getServer().overworld().setDayTime(3 * 24000L + 13000);
-        boolean sleepless = Nights.sleepless(player) && Nights.fearless(player);
-        Journey.of(level.getServer()).slay(Teams.id(player));
-        boolean free = !Nights.sleepless(player) && !Nights.tentsShut(player) && !Stillness.found(player);
-        level.getServer().overworld().setDayTime(before);
-        check(helper, sleepless, "the fourth night is sleepless and the fire fails");
-        check(helper, free, "once the dragon is dead the night is quiet");
-        check(helper, !Nights.redMoon(level.getServer()), "and the moon stays white");
+        check(helper, Nights.sleepless(false, 4, false) && Nights.redMoon(false, 5), "the fourth night is sleepless and the fifth is red");
+        check(helper, Nights.sleepless(false, 1, true), "the gaze finds those who stay");
+        check(helper, !Nights.sleepless(true, 4, true) && !Nights.redMoon(true, 5), "once the dragon is dead the night is quiet and the moon white");
         helper.succeed();
     }
 }

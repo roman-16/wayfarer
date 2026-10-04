@@ -46,7 +46,7 @@ public final class Tents {
             if (advancement != null) {
                 player.getAdvancements().award(advancement, SLEPT);
             }
-            Notes.first(player, "tent");
+            Firsts.first(player, "tent");
         }
     }
 

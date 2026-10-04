@@ -12,6 +12,7 @@ import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
 PACK = ROOT / "pack"
+DEFAULT_OPTIONS = PACK / "config/defaultoptions/options.txt"
 CACHE = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "wayfarer"
 CLIENT_CONFIGS = {
     "dynamic_fps.json": {"enabled": False},
@@ -99,8 +100,10 @@ def neoforge(target):
 def options(target):
     path = target / "options.txt"
     lines = path.read_text().splitlines() if path.exists() else []
-    kept = [line for line in lines if line.split(":", 1)[0] not in CLIENT_OPTIONS]
-    forced = [f"{key}:{value}" for key, value in sorted(CLIENT_OPTIONS.items())]
+    shipped = dict(line.split(":", 1) for line in DEFAULT_OPTIONS.read_text().splitlines() if ":" in line)
+    overrides = shipped | CLIENT_OPTIONS
+    kept = [line for line in lines if line.split(":", 1)[0] not in overrides]
+    forced = [f"{key}:{value}" for key, value in sorted(overrides.items())]
     path.write_text("\n".join(kept + forced) + "\n")
 
 

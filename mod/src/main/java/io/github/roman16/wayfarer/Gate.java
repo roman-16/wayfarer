@@ -16,12 +16,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -30,7 +32,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 public final class Gate {
     private static final ResourceLocation FRAME = ResourceLocation.fromNamespaceAndPath("endrem", "ancient_portal_frame");
     private static final int PORTAL_REACH = 4;
-    private static final String BAND_ARRIVES = "gate_arrival";
 
     private Gate() {}
 
@@ -42,7 +43,7 @@ public final class Gate {
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.SUCCESS);
         ServerLevel level = player.serverLevel();
-        List<ResourceLocation> claimed = Journey.claimed(player);
+        List<ResourceLocation> claimed = Journey.claimed(player.server);
         int needed = Shrines.count(level);
         if (claimed.size() < needed) {
             player.displayClientMessage(
@@ -50,12 +51,7 @@ public final class Gate {
             return;
         }
         BlockPos center = event.getPos();
-        if (!Journey.tale(player).said(BAND_ARRIVES)) {
-            Maren.gather(player, center);
-            ward(player);
-            return;
-        }
-        if (Maren.bandNear(level, center)) {
+        if (guarded(level, center)) {
             ward(player);
             return;
         }
@@ -82,6 +78,10 @@ public final class Gate {
             eye.useOn(new UseOnContext(level, player, InteractionHand.MAIN_HAND, new ItemStack(eye), hit));
             set.add(eye);
         }
+    }
+
+    public static boolean guarded(ServerLevel level, BlockPos frame) {
+        return !level.getEntitiesOfClass(Raider.class, new AABB(frame).inflate(Balance.INSTANCE.gate().reachBlocks()), Raider::isAlive).isEmpty();
     }
 
     private static void ward(ServerPlayer player) {

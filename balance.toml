@@ -37,7 +37,6 @@ charges = 1
 reach_blocks = 16
 
 [gate]
-band_size = 8
 reach_blocks = 48
 
 [gaze]
@@ -51,11 +50,6 @@ exhaustion_factor = 2.0
 rowing_exhaustion_per_block = 0.01
 warm_exhaustion_factor = 1.0
 
-[leads]
-camp_blocks = 1200
-camp_reach_blocks = 8
-search_rings = 256
-
 [nights]
 blood_moon_every = 5
 horde_every = 4
@@ -63,6 +57,16 @@ horde_every = 4
 [shrines]
 tier_one_leg_blocks = 5000
 tier_two_leg_blocks = 8000
+
+[ore]
+coal = 0.5
+copper = 0.25
+diamond = 0.0
+emerald = 0.0
+gold = 0.125
+iron = 0.25
+lapis = 0.125
+redstone = 0.125
 
 [sea]
 beast_one_in = 32
@@ -108,6 +112,15 @@ unspread = [
   "minecraft:buried_treasures",
   "minecraft:mineshafts",
 ]
+
+[structures.every_blocks]
+campsite = 512
+capital = 16384
+fort = 8192
+outpost = 2048
+ruin = 512
+town = 4096
+village = 1024
 
 [tent]
 fire_blocks = 4

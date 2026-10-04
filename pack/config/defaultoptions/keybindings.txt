@@ -1,4 +1,3 @@
 key_iris.keybind.reload:key.keyboard.unknown
-key_justzoom.keybinds.keybind.zoom:key.keyboard.c
 key_key.nemos_inventory_sorting.sort_alphabetically_inventory:key.keyboard.c
 key_key.saveToolbarActivator:key.keyboard.unknown

@@ -1,0 +1,13 @@
+name = "CMDCam"
+filename = "CMDCam_NEOFORGE_v2.2.9_mc1.21.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/hZw3uqi3/versions/ZibX3UR8/CMDCam_NEOFORGE_v2.2.9_mc1.21.1.jar"
+hash-format = "sha512"
+hash = "5a3bc84321d5d795e20f68e5b439e8f3daa5a00de0cea379d8d2579f727b5a01336aaa6dc0da24ca5b8e41e1b0eff449f1af47ee0473a9fccc9d97b68aa7638f"
+
+[update]
+[update.modrinth]
+mod-id = "hZw3uqi3"
+version = "ZibX3UR8"

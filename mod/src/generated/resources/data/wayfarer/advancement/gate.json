@@ -1,7 +1,0 @@
-{
-  "criteria": {
-    "cleared": {
-      "trigger": "minecraft:impossible"
-    }
-  }
-}

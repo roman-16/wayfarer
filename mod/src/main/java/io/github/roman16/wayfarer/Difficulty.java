@@ -15,7 +15,7 @@ public final class Difficulty {
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             catchUp(player);
-            if (Journey.slain(player)) {
+            if (Journey.slain(player.server)) {
                 hold(player);
             }
         }
@@ -28,7 +28,7 @@ public final class Difficulty {
     }
 
     public static void catchUp(ServerPlayer player) {
-        int eyes = Journey.claimed(player).size();
+        int eyes = Journey.claimed(player.server).size();
         int applied = player.getData(Wayfarer.EYE_STEPS);
         if (eyes <= applied) {
             return;

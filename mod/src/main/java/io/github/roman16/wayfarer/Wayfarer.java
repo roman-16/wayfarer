@@ -1,6 +1,7 @@
 package io.github.roman16.wayfarer;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import io.github.roman16.wayfarer.client.Books;
 import java.util.List;
 import java.util.function.Supplier;
@@ -17,12 +18,14 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -40,8 +43,11 @@ public final class Wayfarer {
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
     private static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT, MODID);
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+    private static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIERS =
+            DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MODID);
     private static final DeferredRegister<StructurePieceType> PIECES = DeferredRegister.create(Registries.STRUCTURE_PIECE, MODID);
     private static final DeferredRegister<StructurePlacementType<?>> PLACEMENTS = DeferredRegister.create(Registries.STRUCTURE_PLACEMENT, MODID);
+    private static final DeferredRegister<StructureProcessorType<?>> PROCESSORS = DeferredRegister.create(Registries.STRUCTURE_PROCESSOR, MODID);
     private static final DeferredRegister<StructureType<?>> STRUCTURES = DeferredRegister.create(Registries.STRUCTURE_TYPE, MODID);
 
     public static final Supplier<AttachmentType<Integer>> EYE_STEPS = ATTACHMENTS.register("eye_steps",
@@ -52,12 +58,14 @@ public final class Wayfarer {
             () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
     public static final Supplier<AttachmentType<CompoundTag>> GRAVE_CURIOS = ATTACHMENTS.register("grave_curios",
             () -> AttachmentType.builder(() -> new CompoundTag()).serialize(CompoundTag.CODEC).copyOnDeath().build());
-    public static final Supplier<AttachmentType<Boolean>> JOURNAL_GIVEN = ATTACHMENTS.register("journal_given",
-            () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
     public static final Supplier<AttachmentType<CompoundTag>> STILLNESS = ATTACHMENTS.register("stillness",
             () -> AttachmentType.builder(() -> new CompoundTag()).serialize(CompoundTag.CODEC).copyOnDeath().build());
 
     public static final DeferredHolder<MobEffect, MobEffect> WARM = EFFECTS.register("warm", Warm::new);
+    public static final DeferredHolder<StructureProcessorType<?>, StructureProcessorType<NetherSwap>> NETHER_SWAP =
+            PROCESSORS.register("nether_swap", () -> () -> NetherSwap.CODEC);
+    public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<Cuts.Loot>> CUT_LOOT =
+            LOOT_MODIFIERS.register("cut", () -> Cuts.Loot.CODEC);
 
     public static final DeferredHolder<StructurePlacementType<?>, StructurePlacementType<ExactRingPlacement>> EXACT_RING =
             PLACEMENTS.register("exact_ring", () -> () -> ExactRingPlacement.CODEC);
@@ -82,6 +90,12 @@ public final class Wayfarer {
                     .sound(SoundType.AMETHYST)
                     .noOcclusion());
 
+    public static final DeferredBlock<TollbridgeBell> TOLLBRIDGE_BELL = BLOCKS.registerBlock("tollbridge_bell", TollbridgeBell::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.GOLD)
+                    .strength(-1, 3_600_000)
+                    .sound(SoundType.ANVIL)
+                    .noOcclusion());
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ShrinePedestalBlockEntity>> SHRINE_PEDESTAL_ENTITY =
             BLOCK_ENTITIES.register("shrine_pedestal", () -> BlockEntityType.Builder.of(ShrinePedestalBlockEntity::new, SHRINE_PEDESTAL.get()).build(null));
 
@@ -99,30 +113,29 @@ public final class Wayfarer {
         BLOCKS.register(modBus);
         EFFECTS.register(modBus);
         ITEMS.register(modBus);
+        LOOT_MODIFIERS.register(modBus);
         PIECES.register(modBus);
         PLACEMENTS.register(modBus);
+        PROCESSORS.register(modBus);
         STRUCTURES.register(modBus);
         modBus.addListener(Wayfarer::registerPayloads);
         modBus.addListener(Shards::setup);
         NeoForge.EVENT_BUS.register(Compass.class);
+        NeoForge.EVENT_BUS.register(Cuts.class);
         NeoForge.EVENT_BUS.register(Daylight.class);
         NeoForge.EVENT_BUS.register(Difficulty.class);
         NeoForge.EVENT_BUS.register(Ember.class);
         NeoForge.EVENT_BUS.register(Fire.class);
+        NeoForge.EVENT_BUS.register(Firsts.class);
         NeoForge.EVENT_BUS.register(Gate.class);
         NeoForge.EVENT_BUS.register(Gaze.class);
         NeoForge.EVENT_BUS.register(Graves.class);
-        NeoForge.EVENT_BUS.register(Journal.class);
-        NeoForge.EVENT_BUS.register(Leads.class);
-        NeoForge.EVENT_BUS.register(Maren.class);
         NeoForge.EVENT_BUS.register(Nights.class);
-        NeoForge.EVENT_BUS.register(Notes.class);
         NeoForge.EVENT_BUS.register(Rowing.class);
         NeoForge.EVENT_BUS.register(Rules.class);
         NeoForge.EVENT_BUS.register(Shards.class);
         NeoForge.EVENT_BUS.register(Shrines.class);
         NeoForge.EVENT_BUS.register(Stillness.class);
-        NeoForge.EVENT_BUS.register(Story.class);
         NeoForge.EVENT_BUS.register(Tents.class);
         NeoForge.EVENT_BUS.register(WorldSetup.class);
         if (ModList.get().isLoaded("hordes")) {

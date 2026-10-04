@@ -59,7 +59,7 @@ public final class Shards {
     }
 
     public static void sync(ServerPlayer player) {
-        List<ResourceLocation> claimed = Journey.claimed(player);
+        List<ResourceLocation> claimed = Journey.claimed(player.server);
         CuriosApi.getCuriosInventory(player).flatMap(curios -> curios.getStacksHandler(SLOT)).ifPresent(handler -> {
             var stacks = handler.getStacks();
             for (int slot = 0; slot < stacks.getSlots(); slot++) {

@@ -52,7 +52,7 @@ Verdicts: **Use** as it is, **Use changed** (configured or edited), **Take a fea
 | Not Enough Animations | Third-person eating, map reading and item holding | 1.12.6 | Use | As above in Worth adding |
 | 3D Skin Layers | The outer layer of a skin drawn in 3D | 1.11.3 | Use | Players are seen up close all evening at the fire; whether it also draws Easy NPC's people's skins is not checked |
 | Fresh Animations | Animated vanilla creatures through Entity Model Features | Already in the pack | Use | Kept |
-| More Mob Variants | New looks for old creatures: zombies, skeletons, spiders, cows and more | Only up to 1.20 on Fabric and Forge | Use More Mob Variants: Renewed | The NeoForge 1.21.1 port (CC0, V1.0.0, 4,000 downloads) is data-driven; whether its textures fit Fresh Animations' models is checked when it goes in |
+| More Mob Variants | New looks for old creatures: zombies, skeletons, spiders, cows and more | Only up to 1.20 on Fabric and Forge | Leave out | Its NeoForge 1.21.1 port, More Mob Variants: Renewed (V1.0.0), crashes a dedicated server at startup, loading a client renderer class |
 | Spawn Animations | Monsters dig out of the ground or appear in a puff when they spawn; server-side | 1.11.6 | Use | The gaze's creatures crumble at dawn (M15); rising out of the earth at dusk is the other half, and it shows a team where the night begins; its licence is the author's own and not read |
 | Flow | Eased inventory transitions | Fabric only | Leave out | Not on NeoForge, and a flourish vanilla's interface does not have |
 | Eating Animation | First-person eating and drinking sprites | Fabric only | Leave out | No NeoForge port; Not Enough Animations covers what friends see |
@@ -95,7 +95,7 @@ Found in the pack's mods, each breaking a Settled rule:
 | Serene Seasons | Seasons that change colours and temperatures, from the makers of Tough As Nails (All Rights Reserved) | 10.1.0.9 | Use (M25) | The story sets the season by act, with the cycle stopped while it runs (M25) |
 | Noisium | Faster world generation | 2.3.0, from August 2024 | Use | The camp's search reads the generator's heights at 2 to 10 ms a column (M5); whether it works beside C2ME, already in the pack, is not checked |
 | Carry On | Pick up and carry creatures and blocks with what is in them (LGPL-3.0) | Yes | Use changed | Act 3's Carry (someone on your back, no running) is this mod's core; limited to the people a quest names, since carrying full chests around sidesteps "storage only in a tent" |
-| ParCool | Climbing ledges, vaulting, wall runs and rolls (LGPL-3.0) | Yes | Use changed | Reach (a goal at a hard place) gets a body that climbs; only climbing and vaulting, since Combat Roll already rolls and wall runs are not vanilla's feel |
+| ParCool | Climbing ledges, vaulting, wall runs and rolls (LGPL-3.0) | 3.4.3.3; 4.0.1.0 crashes a dedicated server at startup | Use changed | Reach (a goal at a hard place) gets a body that climbs; only climbing and vaulting, since Combat Roll already rolls and wall runs are not vanilla's feel |
 
 Checked and not for 1.21.1 on NeoForge: Presence Footsteps, Falling Leaves, Visuality and FabricSit. Left out on purpose: LambDynamicLights, since the shader already lights a held torch, and Emotecraft, which is far bigger than the one pose the fire needs.
 

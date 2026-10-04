@@ -1,954 +1,338 @@
-title = "The Last Wayfarer's Journal"
-
-[[chapters]]
-icon = "minecraft:campfire"
-id = "oath"
-subtitle = ["Never settle. Never stay. Carry the ember."]
-title = "The Oath"
-
-[[chapters.quests]]
-description = [
-  "You sat at my fire when nobody else would, so the ember is yours now. I could not carry it one more day.",
-  "Read my letter at the lectern, then take what I leave you: my tent, my mallet and my bedroll.",
-]
-icon = "minecraft:writable_book"
-id = "last_fire"
-rewards = [
-  { item = "nomadictents:tiny_yurt" },
-  { components = { "minecraft:custom_name" = "\"Wayfarer's Mallet\"", "minecraft:unbreakable" = {} }, item = "nomadictents:golden_mallet" },
-  { item = "comforts:sleeping_bag_brown" },
-]
-subtitle = "A stranger's fire, a stranger's ember"
-tasks = [{ checkmark = true }]
+[[quests]]
+act = "prologue"
+id = "the_last_fire"
+kind = "main"
+summary = "I woke by a stranger's fire with no name and no memory of the road. He is dying, and he wants to talk."
 title = "The Last Fire"
-x = 0.0
-y = 0.0
 
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "A Wayfarer tent is folded space, and the gaze cannot see what is not anywhere. One blow of the mallet raises it.",
-  "Pitch your tent before dark and sleep inside it.",
+[quests.reward]
+claimed = "You take up his pack: a tent, a little food, and room for everything else."
+text = "His pack: a backpack, a tent and a little food."
+title = "His Pack"
+
+[[quests.steps]]
+id = "the_stranger"
+kind = "talk"
+lines = [
+  { text = "You wake on cold ground. A fire burns beside you, and an old man lies on its other side, watching you." },
+  { by = "stranger", text = "There you are. Thought I'd go before you woke." },
 ]
-icon = "nomadictents:tiny_yurt"
-id = "tent"
-rewards = [{ count = 6, item = "minecraft:bread" }]
-subtitle = "Safe, because it is nowhere"
-tasks = [{ advancement = "wayfarer:nowhere" }]
-title = "A Roof That Is Nowhere"
-x = -2.25
-y = 1.5
+objective = "Sit with the stranger."
+people.stranger = "An old man who found me by the road and brought me to his fire. He was dying."
+story = ["I woke by a stranger's fire. I don't know my name, or how I came to be there."]
 
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "A Wayfarer owns only what they can carry, and leaves the rest for the next traveller.",
-  "Make a backpack and wear it on your back.",
+[[quests.steps.choices]]
+id = "who"
+reply = "Nobody, now. A man who walked too little and stopped too long."
+text = "Who are you?"
+
+[[quests.steps.choices]]
+id = "where"
+reply = "On the road. Where I found you, near enough."
+text = "Where am I?"
+
+[[quests.steps.choices]]
+id = "what"
+reply = "I was going to ask you that."
+text = "What happened to me?"
+
+[[quests.steps]]
+id = "the_face"
+kind = "talk"
+lines = [
+  { text = "His shirt is open at the collar. An old white scar runs across his chest, over the heart." },
+  { by = "stranger", text = "Let me look at you. Yes. It's you, then." },
 ]
-id = "backpack"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Everything you own, on your back"
-tasks = [{ item = "sophisticatedbackpacks:backpack" }]
-title = "Carry What You Own"
-x = -0.75
-y = 1.5
+objective = "Sit with the stranger."
+people.stranger = "He knew my face, and wouldn't say how. He had an old white scar over his heart."
 
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "The ember is bound to fire: wherever you light one, it brings you back when you fall. The gaze's creatures cannot bear its light, so on an ordinary night none is born within twelve blocks of it, none steps closer, and none goes for you while you stand there.",
-  "Make a campfire, light it where you rest, and stand still beside it for half a minute. The ember warms, and until tomorrow's dusk it burns the fire instead of your food.",
+[[quests.steps.choices]]
+id = "known"
+reply = "Better than you'd like. Don't ask me how. There isn't time."
+text = "Do you know me?"
+
+[[quests.steps.choices]]
+id = "nameless"
+reply = "Good. Names are for people who stay."
+text = "I don't know my own name."
+
+[[quests.steps]]
+id = "the_ember"
+kind = "talk"
+lines = [
+  { by = "stranger", text = "Hold out your hand." },
+  { text = "He presses something into your palm: a coal no bigger than a thumb, grey and cold." },
+  { by = "stranger", text = "It's cold. It's been cold for years. Walk with it and it wakes. It lives on what you see." },
+  { by = "stranger", text = "Three things, then. Walk every day. Never stay long in one place. And never sleep in the open: a tent, with a fire by it." },
 ]
-icon = "minecraft:campfire"
-id = "campfire"
-rewards = [{ count = 4, item = "minecraft:cooked_beef" }]
-subtitle = "Where the ember brings you back"
-tasks = [{ advancement = "wayfarer:warm" }]
-title = "Keep a Fire"
-x = 0.75
-y = 1.5
+objective = "Sit with the stranger."
+story = ["He gave me his ember, cold as a stone, and told me to walk with it."]
+words.ember = "What the stranger gave me: a coal no bigger than a thumb, cold as a stone. He said it wakes if I walk with it, and that it lives on what I see."
 
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "The ember burns what you eat, twice what a settled stomach would. The more kinds of food you eat, the stronger it keeps you.",
-  "Eat something you have not eaten on this road yet; its tooltip tells you when a food is new to you.",
+[[quests.steps.choices]]
+id = "promised"
+reply = "That's all I need."
+story = "I told him I'd carry it."
+text = "I'll carry it."
+
+[[quests.steps.choices]]
+id = "doubted"
+reply = "Nobody does, at first. Carry it anyway."
+story = "I told him I didn't even know who I was. He said to carry it anyway."
+text = "I don't even know who I am."
+
+[[quests.steps]]
+id = "the_charge"
+kind = "talk"
+lines = [
+  { by = "stranger", text = "Don't let it... the shards. I took them. Don't let it have..." },
+  { text = "He doesn't finish. The fire pops. The ember lies cold in your hand." },
 ]
-icon = "minecraft:baked_potato"
-id = "food"
-rewards = [{ count = 4, item = "minecraft:apple" }, { count = 4, item = "minecraft:baked_potato" }]
-subtitle = "Eat the road"
-tasks = [{ checkmark = true }]
-title = "Eat What the Road Gives"
-x = 2.25
-y = 1.5
-
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "When you share a fire, the ember splits. Everyone on a team carries every shard any of you takes, hears the fire together and shows on each other's compass.",
-  "Travel with friends by joining one team with the team button at the top left of the inventory screen, or walk alone.",
+objective = "Sit with the stranger."
+people.stranger = "He died before I learned his name."
+story = [
+  "He died before he could finish: \"Don't let it... the shards. I took them. Don't let it have...\" I don't know what he meant.",
 ]
-icon = "minecraft:soul_campfire"
-id = "share"
-rewards = [{ xp_levels = 1 }]
-subtitle = "The ember splits"
-tasks = [{ checkmark = true }]
-title = "Share a Fire"
-x = 0.75
-y = 3.0
+words.shards = "He said he took them, and not to let \"it\" have them. I don't know what they are, or what \"it\" is."
 
-[[chapters.quests]]
-after = ["backpack", "campfire", "tent"]
-description = [
-  "You have lived a Wayfarer's first day, and the ember answers. The compass at the top of your sight feels the shards now: far from one, the ember only flares when you walk towards it and gutters when you walk away.",
-  "Within five hundred blocks the shard itself appears on the compass, at the stair down to its shrine. The Twelve Peoples hid every stair under a cover that looks like nothing to anyone without an ember. Walk until it answers.",
+[[quests.steps]]
+done = [
+  { text = "You lay him by his fire and raise the earth over him. The stone waits for words." },
 ]
-icon = "minecraft:blaze_powder"
-id = "ember"
-rewards = [{ auto = "invisible", command = "/wayfarer ember {p}" }]
-subtitle = "Flaring, guttering"
-tasks = [{ stat = "minecraft:play_time", value = 1 }]
-title = "The Ember Wakes"
-x = 0.0
-y = 4.5
+id = "the_grave"
+kind = "bury"
+objective = "Bury him."
+story = ["I buried him by his fire. On the stone I wrote: \"{stone}\""]
+unwritten = "I buried him by his fire, and left the stone blank. I didn't know what to write."
 
-[[chapters]]
-icon = "silentgear:blueprint_paper"
-id = "road"
-subtitle = ["Everything here fits on a Wayfarer's back."]
-title = "The Road Provides"
+[[quests]]
+act = "prologue"
+after = ["the_last_fire"]
+id = "the_first_day"
+kind = "main"
+summary = "He said never to stay. Walk away from his fire, and make a camp of my own before dark."
+title = "The First Day"
 
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "Nobody sells a Wayfarer tools. We make them from parts, and every material lends the part its own temper.",
-  "Draw a knife's blueprint, cut the blade from flint or stone, and join it to a rod.",
+[[quests.steps]]
+done = [
+  { text = "His camp is far behind you now. Make yours before dark." },
 ]
-id = "knife"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Parts, not a recipe"
-tasks = [{ item = "silentgear:knife" }]
-title = "A Knife for the Road"
-x = -4.5
-y = 0.0
+id = "away"
+kind = "walk"
+objective = "Walk until his camp is far behind."
+story = ["I walked away from his fire, as he told me."]
 
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "The road runs through stone as often as grass, and a pickaxe you made yourself is the first thing worth carrying.",
-  "Make a pickaxe from its parts.",
+[[quests.steps]]
+id = "camp"
+kind = "camp"
+objective = "Pitch your tent, light a campfire beside it, and rest by the fire."
+story = ["I made my first camp: my tent, and a fire beside it."]
+
+[[quests.steps]]
+id = "dusk"
+kind = "dusk"
+lines = [
+  { text = "You sit by your fire. The shadows stretch, and the sky goes gold, then red." },
+  { text = "The ember in your hand grows warm. Then, for the first time, it glows." },
+  { text = "Over the ridge ahead, smoke. Under it, the sky is red." },
 ]
-id = "pickaxe"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Every material its own temper"
-tasks = [{ item = "silentgear:pickaxe" }]
-title = "A Pickaxe of Your Own"
-x = -3.0
-y = 0.0
-
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "Every fourth night nothing shelters you but what you carry. Carry a shield.",
-  "Make a shield of your own.",
+objective = "Rest by your fire."
+story = [
+  "At dusk the ember woke in my hand. It had seen new land, the way he said it would.",
+  "Then I saw the smoke over the ridge.",
 ]
-id = "shield"
-rewards = [{ xp_levels = 3 }]
-subtitle = "For the nights no tent opens"
-tasks = [{ item = "silentgear:shield" }]
-title = "A Shield on Your Arm"
-x = -1.5
-y = 0.0
+words.ember = "It woke on my first evening on the road. It's warm now, and it glows."
 
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "A slingshot throws what the road gives you. It is a poor bow and a good start.",
-  "Make a slingshot.",
+[[quests]]
+act = "prologue"
+after = ["the_first_day"]
+id = "ash"
+kind = "main"
+summary = "Something is burning over the ridge, a whole town of it. Go and see."
+title = "Ash"
+
+[[quests.steps]]
+done = [
+  { text = "The town burns. Roofs have fallen in, and nothing moves but the fire." },
 ]
-id = "slingshot"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Reach before they do"
-tasks = [{ item = "silentgear:slingshot" }]
-title = "Stones at a Distance"
-x = 0.0
-y = 0.0
+id = "the_town"
+kind = "reach"
+objective = "Go to the burning town."
 
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "Cliffs and ravines cost a Wayfarer days. A hook costs seconds.",
-  "Make an iron grappling hook.",
+[[quests.steps]]
+hint = "Hold up the ember ({key}): for a moment it shows what has passed by."
+id = "the_dead"
+kind = "clues"
+needed = 4
+objective = "Hold up the ember and find out what happened here. ({found}/{needed})"
+story = [
+  "Whatever came to the town wasn't after plunder. It opened people over the heart, and left their purses.",
 ]
-id = "hook_iron"
-rewards = [{ xp_levels = 5 }]
-subtitle = "A hook costs seconds"
-tasks = [{ item = "yo_hooks:iron_grappling_hook" }]
-title = "Up Without Climbing"
-x = 3.0
-y = 0.0
+words.ember = "Held up, it shows me for a moment what has passed by."
 
-[[chapters.quests]]
-after = ["backpack"]
-description = [
-  "A Wayfarer owns only what they can carry, so carry more. Copper bands hold a bigger load.",
-  "Upgrade your backpack to copper.",
+[[quests.steps.clues]]
+id = "well"
+text = "A man by the well. His shirt is torn open over the heart. His purse is still on his belt."
+
+[[quests.steps.clues]]
+id = "doorway"
+text = "A woman in a doorway, opened the same way. Her rings are still on her hands."
+
+[[quests.steps.clues]]
+id = "strongbox"
+text = "A strongbox stands open in the inn, full of emeralds. Nobody took a single one."
+
+[[quests.steps.clues]]
+id = "tracks"
+text = "Tracks of many feet, out of the dark and back into it. None of them carried anything away."
+
+[[quests.steps.clues]]
+id = "cellar"
+text = "The bell tower stands, black but whole. Under it, behind a cellar door, someone is crying."
+
+[[quests.steps]]
+id = "the_cellar"
+kind = "talk"
+lines = [
+  { by = "agna", text = "Look. They never take anything. They only open the chest." },
+  { text = "Behind the cellar door, four faces in the light of a small fire." },
+  { by = "hob", text = "Stay back! ...It's a person. It's only a person." },
+  { by = "tamsin", text = "Tollbridge stood three hundred years. One night." },
+  { by = "pip", text = "You've got fire in your hand. Like in the stories. Are you a Wayfarer?" },
 ]
-id = "pack_copper"
-rewards = [{ xp_levels = 3 }]
-subtitle = "More on your back"
-tasks = [{ item = "sophisticatedbackpacks:copper_backpack" }]
-title = "A Bigger Load"
-x = 4.5
-y = 0.0
-
-[[chapters.quests]]
-after = ["knife"]
-description = [
-  "The road is long, and not everything on it is friendly. Iron keeps it at arm's length.",
-  "Make a sword with a blade of iron or better.",
+objective = "Go down into the cellar."
+people.agna = "The healer of Tollbridge. She showed me the dead: they never take anything, she said, they only open the chest."
+people.hob = "The smith of Tollbridge, big and frightened, and the first to see I was only a person."
+people.pip = "A child of Tollbridge. Pip's mother died the night it burned. Pip thinks I'm a Wayfarer out of the old stories."
+people.tamsin = "The elder of Tollbridge. Her town stood three hundred years, she says, and fell in one night."
+story = [
+  "Four of them were alive, in the cellar under the bell tower: Tamsin, their elder; Agna, the healer; Hob, the smith; and a child, Pip.",
 ]
-id = "sword"
-rewards = [{ xp_levels = 5 }]
-subtitle = "Arm's length"
-tasks = [{ item = "silentgear:sword" }]
-title = "A Blade of Your Own"
-x = -4.5
-y = 1.5
+words.tollbridge = "Tamsin's town, at a river crossing. It stood three hundred years and burned in one night."
+words.wayfarer = "Pip's word for me. In the stories Tollbridge told its children, Wayfarers carried fire and never stayed anywhere."
 
-[[chapters.quests]]
-after = ["pickaxe"]
-description = [
-  "A mattock digs earth and fells wood alike, so you carry one tool instead of two.",
-  "Make a mattock.",
+[[quests.steps.choices]]
+id = "unsure"
+reply = "Mam said Wayfarers aren't real."
+story = "I told Pip I don't know what I am."
+text = "I don't know what I am."
+
+[[quests.steps.choices]]
+id = "wayfarer"
+reply = "Mam said Wayfarers aren't real."
+story = "I told Pip I suppose I am one."
+text = "I suppose I am."
+
+[[quests.steps]]
+id = "their_fire"
+kind = "rest"
+lines = [
+  { by = "agna", text = "Pip. Come here. ...Sit down, you. You're shaking." },
+  { by = "hob", text = "Here. I made it for a man who won't be fetching it now." },
 ]
-id = "mattock"
-rewards = [{ xp_levels = 5 }]
-subtitle = "One tool for two"
-tasks = [{ item = "silentgear:mattock" }]
-title = "Earth and Wood Alike"
-x = -3.0
-y = 1.5
+objective = "Rest by their fire."
+people.hob = "He gave me a blade he made for a man who didn't live to fetch it."
 
-[[chapters.quests]]
-after = ["shield"]
-description = [
-  "The hordes find you on the nights the gaze turns. Meet them in iron.",
-  "Make a helmet, a chestplate, leggings and boots of your own.",
+[quests.steps.reward]
+claimed = "Hob's blade is plain and heavy, and sharper than it looks."
+text = "Hob's blade, made for a man who didn't live to fetch it."
+title = "Hob's Blade"
+
+[[quests.steps]]
+failed = "The door gives way, and everything goes dark."
+id = "the_door"
+kind = "hold"
+lines = [
+  { text = "Outside, something scrapes at the stones. Then more of them." },
+  { by = "tamsin", text = "They never come back. What did you bring?" },
+  { by = "hob", text = "Hold the door!" },
 ]
-id = "armour"
-rewards = [{ xp_levels = 5 }]
-subtitle = "Meet them in iron"
-tasks = [{ item = "silentgear:helmet" }, { item = "silentgear:chestplate" }, { item = "silentgear:leggings" }, { item = "silentgear:boots" }]
-title = "Iron on Your Back"
-x = -1.5
-y = 1.5
-
-[[chapters.quests]]
-after = ["slingshot"]
-description = [
-  "A bow keeps the night at the edge of your fire, where it belongs.",
-  "Make a bow.",
+objective = "Hold the cellar door until morning."
+people.tamsin = "She asked what I brought with me when they came back. I think she meant the ember."
+retry = "Try the night again from the cellar"
+story = [
+  "They came back in the night, for the cellar. Tamsin thinks they came for me. We held the door until morning.",
 ]
-id = "bow"
-rewards = [{ xp_levels = 5 }]
-subtitle = "Keep them at the edge"
-tasks = [{ item = "silentgear:bow" }]
-title = "A Bow"
-x = 0.0
-y = 1.5
+wave = "The cellar door: wave {wave} of {waves}"
 
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "A ring carries a material's gift without its weight, and nobody takes it off a Wayfarer.",
-  "Make a ring of your own and wear it.",
+[[quests.steps]]
+id = "morning"
+kind = "dawn"
+lines = [
+  { text = "The last of them falls back into the dark. The sky greys, and then it is morning." },
+  { text = "What is left of them crumbles in the sun." },
 ]
-id = "ring"
-rewards = [{ xp_levels = 5 }]
-subtitle = "A gift without weight"
-tasks = [{ item = "silentgear:ring" }]
-title = "A Ring"
-x = 1.5
-y = 1.5
+objective = "Hold the cellar door until morning."
 
-[[chapters.quests]]
-after = ["pack_copper"]
-description = [
-  "Iron bands hold more than copper, and a long road needs more.",
-  "Upgrade your backpack to iron.",
+[[quests.steps]]
+id = "the_bell"
+kind = "talk"
+lines = [
+  { by = "agna", text = "You carry fire. In the stories, a Wayfarer can feel the way. Lead us somewhere they can't find us." },
+  { by = "hob", text = "We'll follow you. Whatever you are." },
+  { text = "Tamsin sits by the town's bell, fallen from its tower and black with smoke." },
+  { by = "tamsin", text = "The bell comes with us." },
 ]
-id = "pack_iron"
-rewards = [{ xp_levels = 5 }]
-subtitle = "Heavier still"
-tasks = [{ item = "sophisticatedbackpacks:iron_backpack" }]
-title = "Iron Bands"
-x = 4.5
-y = 1.5
-
-[[chapters.quests]]
-after = ["sword"]
-description = [
-  "Deep in the stone lies bort, a gem as hard as diamond and far more common. A katana edged with it cuts before the night can close.",
-  "Find bort and make a katana.",
+objective = "Talk to Tamsin."
+people.agna = "She took Pip in, the morning after."
+story = [
+  "At dawn they asked me to lead them. I don't know where to. Tamsin won't go anywhere without her town's bell.",
 ]
-id = "katana"
-rewards = [{ xp_levels = 8 }]
-subtitle = "Faster than the night"
-tasks = [{ item = "silentgear:bort" }, { item = "silentgear:katana" }]
-title = "An Edge of the Deep"
-x = -4.5
-y = 3.0
 
-[[chapters.quests]]
-after = ["mattock"]
-description = [
-  "A hammer breaks stone nine blocks at a time, and a day of digging becomes an hour.",
-  "Make a hammer.",
+[[quests.steps.choices]]
+id = "leave_it"
+reply = "It rang for every child born in Tollbridge. It comes. Hob, the cart."
+story = "I told her to leave the bell. She's bringing it anyway."
+text = "Leave it. It'll slow us."
+
+[[quests.steps.choices]]
+id = "take_it"
+reply = "Thank you. Hob, the cart."
+story = "I told her we'd take the bell."
+text = "We'll take it."
+
+[[quests.steps]]
+id = "the_first_fire"
+kind = "caravan"
+lines = [
+  { by = "tamsin", text = "Go on ahead. We'll be by water before dark. Look for our smoke." },
 ]
-id = "hammer"
-rewards = [{ xp_levels = 8 }]
-subtitle = "Big jobs, short days"
-tasks = [{ item = "silentgear:hammer" }]
-title = "Three by Three"
-x = -3.0
-y = 3.0
+objective = "Make for their smoke."
 
-[[chapters.quests]]
-after = ["armour"]
-description = [
-  "Diamond and bort turn a blow that iron only slows.",
-  "Make a chestplate with plates of diamond or bort.",
+[[quests.steps]]
+id = "evening"
+kind = "talk"
+lines = [
+  { by = "tamsin", text = "You walk ahead. We'll follow your marks." },
+  { by = "agna", text = "Give me that arm. You've been bleeding since the door." },
+  { text = "She binds the cut, and keeps two fingers on your wrist a moment too long." },
+  { by = "agna", text = "Slow. Like something asleep. Well. You've had a night." },
+  { by = "hob", text = "That blade's yours now. When it's dull you bring it to me. Don't you dare throw it away." },
+  { by = "pip", text = "Will you teach me? To be a Wayfarer?" },
 ]
-id = "plates"
-rewards = [{ xp_levels = 8 }]
-subtitle = "Harder than iron"
-tasks = [{ item = "silentgear:bort" }, { item = "silentgear:chestplate" }]
-title = "Plates of the Deep"
-x = -1.5
-y = 3.0
-
-[[chapters.quests]]
-after = ["bow"]
-description = [
-  "A crossbow is slow to load and hard to argue with.",
-  "Make a crossbow.",
+objective = "Sit at the caravan's fire."
+people.agna = "At the fire she held my wrist too long, and said my heart was slow, like something asleep."
+people.tamsin = "She made me their scout: I walk ahead, and they follow my marks."
+story = [
+  "They made camp by water, and I found their smoke. Tamsin says I'm their scout now: I walk ahead, and they follow my marks.",
 ]
-id = "crossbow"
-rewards = [{ xp_levels = 8 }]
-subtitle = "One shot that counts"
-tasks = [{ item = "silentgear:crossbow" }]
-title = "A Crossbow"
-x = 0.0
-y = 3.0
 
-[[chapters.quests]]
-after = ["ring"]
-description = [
-  "A bracelet holds a second gift on the other wrist.",
-  "Make a bracelet of your own and wear it.",
+[[quests.steps.choices]]
+id = "one_day"
+reply = "One day. I'll hold you to it."
+story = "Pip asked me to teach the way of a Wayfarer. I said one day."
+text = "One day."
+
+[[quests.steps.choices]]
+id = "not_a_story"
+reply = "I know. I was there."
+story = "Pip asked me to teach the way of a Wayfarer. I said it isn't like the stories."
+text = "It isn't like the stories."
+
+[[quests.steps]]
+done = [
+  { text = "The fire burns low. Around it, the last of Tollbridge sleeps." },
 ]
-id = "bracelet"
-rewards = [{ xp_levels = 8 }]
-subtitle = "A second gift"
-tasks = [{ item = "silentgear:bracelet" }]
-title = "A Bracelet"
-x = 1.5
-y = 3.0
-
-[[chapters.quests]]
-after = ["hook_iron"]
-description = [
-  "A diamond hook bites into stone that would throw an iron one back.",
-  "Make a diamond grappling hook.",
-]
-id = "hook_diamond"
-rewards = [{ xp_levels = 8 }]
-subtitle = "Up the tallest cliff"
-tasks = [{ item = "yo_hooks:diamond_grappling_hook" }]
-title = "A Diamond Hook"
-x = 3.0
-y = 3.0
-
-[[chapters.quests]]
-after = ["pack_iron"]
-description = [
-  "Gold bands, then diamond: half a camp fits on your back now.",
-  "Upgrade your backpack through gold to diamond.",
-]
-id = "pack_diamond"
-rewards = [{ xp_levels = 8 }]
-subtitle = "Gold, then diamond"
-tasks = [{ item = "sophisticatedbackpacks:diamond_backpack" }]
-title = "Diamond Bands"
-x = 4.5
-y = 3.0
-
-[[chapters.quests]]
-after = ["katana"]
-description = [
-  "The Ancient Cities drew their power from the world below, and its crimson iron still lies in the deep stone around them. Steel made from it holds an edge like nothing else.",
-  "Make crimson steel and a spear.",
-]
-id = "spear"
-rewards = [{ xp_levels = 10 }]
-subtitle = "The iron the cities drew up"
-tasks = [{ item = "silentgear:crimson_steel_ingot" }, { item = "silentgear:spear" }]
-title = "Crimson Steel"
-x = -4.5
-y = 4.5
-
-[[chapters.quests]]
-after = ["hammer"]
-description = [
-  "A saw fells a whole tree at once, and firewood is never far.",
-  "Make a saw.",
-]
-id = "saw"
-rewards = [{ xp_levels = 10 }]
-subtitle = "Firewood is never far"
-tasks = [{ item = "silentgear:saw" }]
-title = "A Tree at a Time"
-x = -3.0
-y = 4.5
-
-[[chapters.quests]]
-after = ["plates"]
-description = [
-  "Crimson steel turns what iron and diamond only soften.",
-  "Make a chestplate of crimson steel.",
-]
-id = "crimson_armour"
-rewards = [{ xp_levels = 10 }]
-subtitle = "Steel the deep remembers"
-tasks = [{ item = "silentgear:crimson_steel_ingot" }, { item = "silentgear:chestplate" }]
-title = "Armour of the Deep"
-x = -1.5
-y = 4.5
-
-[[chapters.quests]]
-after = ["crossbow"]
-description = [
-  "A trident comes back to the hand that threw it, and it fishes as well as it fights.",
-  "Make a trident.",
-]
-id = "trident"
-rewards = [{ xp_levels = 10 }]
-subtitle = "Thrown, and back"
-tasks = [{ item = "silentgear:trident" }]
-title = "A Trident"
-x = 0.0
-y = 4.5
-
-[[chapters.quests]]
-after = ["bracelet"]
-description = [
-  "A necklace sits closest to the ember, and its gift burns brightest.",
-  "Make a necklace of your own and wear it.",
-]
-id = "necklace"
-rewards = [{ xp_levels = 10 }]
-subtitle = "Closest to the ember"
-tasks = [{ item = "silentgear:necklace" }]
-title = "A Necklace"
-x = 1.5
-y = 4.5
-
-[[chapters.quests]]
-after = ["hook_diamond"]
-description = [
-  "Netherite holds where every other hook gives way.",
-  "Make a netherite grappling hook.",
-]
-id = "hook_netherite"
-rewards = [{ xp_levels = 10 }]
-subtitle = "Nothing holds it back"
-tasks = [{ item = "yo_hooks:netherite_grappling_hook" }]
-title = "A Netherite Hook"
-x = 3.0
-y = 4.5
-
-[[chapters.quests]]
-after = ["pack_diamond"]
-description = [
-  "Netherite bands carry everything a Wayfarer could own, and nothing burns them.",
-  "Upgrade your backpack to netherite.",
-]
-id = "pack_netherite"
-rewards = [{ xp_levels = 10 }]
-subtitle = "Everything you own"
-tasks = [{ item = "sophisticatedbackpacks:netherite_backpack" }]
-title = "Netherite Bands"
-x = 4.5
-y = 4.5
-
-[[chapters.quests]]
-after = ["spear", "dragon"]
-description = [
-  "With the dragon dead, the End's silver is yours to take. Tyrian steel is the hardest thing a smith can make from it.",
-  "Make tyrian steel and a mace.",
-]
-id = "tyrian"
-rewards = [{ xp_levels = 15 }]
-subtitle = "What the free carry"
-tasks = [{ item = "silentgear:tyrian_steel_ingot" }, { item = "silentgear:mace" }]
-title = "Tyrian Steel"
-x = -4.5
-y = 6.0
-
-[[chapters.quests]]
-after = ["saw", "dragon"]
-description = [
-  "Super alloy takes the best of every metal. A paxel of it digs, chops and shovels like three tools in one.",
-  "Make super alloy and a paxel.",
-]
-id = "super_alloy"
-rewards = [{ xp_levels = 15 }]
-subtitle = "One tool for everything"
-tasks = [{ item = "silentgear:super_alloy" }, { item = "silentgear:paxel" }]
-title = "Super Alloy"
-x = -3.0
-y = 6.0
-
-[[chapters.quests]]
-after = ["crimson_armour", "dragon"]
-description = [
-  "Azure electrum armour is light enough to forget you wear it, and hard enough to remember why.",
-  "Make a chestplate of azure electrum.",
-]
-id = "azure"
-rewards = [{ xp_levels = 15 }]
-subtitle = "Light as the sky"
-tasks = [{ item = "silentgear:azure_electrum_ingot" }, { item = "silentgear:chestplate" }]
-title = "Azure Electrum"
-x = -1.5
-y = 6.0
-
-[[chapters.quests]]
-after = ["backpack"]
-description = [
-  "A Wayfarer cannot carry a crafting table everywhere, but a backpack can.",
-  "Make a crafting upgrade and fit it to your backpack.",
-]
-id = "crafting"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Craft anywhere"
-tasks = [{ item = "sophisticatedbackpacks:crafting_upgrade" }]
-title = "A Bench on Your Back"
-x = -4.5
-y = 8.0
-
-[[chapters.quests]]
-after = ["crafting"]
-description = [
-  "The ember is always hungry, and a feeding upgrade feeds it before you notice.",
-  "Make a feeding upgrade and fit it to your backpack.",
-]
-id = "feeding"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Eat while you walk"
-tasks = [{ item = "sophisticatedbackpacks:feeding_upgrade" }]
-title = "The Pack Feeds You"
-x = -3.0
-y = 8.0
-
-[[chapters.quests]]
-after = ["pickaxe"]
-description = [
-  "A worn-out tool is still its parts, and the salvager gives them back.",
-  "Make a salvager.",
-]
-id = "salvager"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Parts from broken gear"
-tasks = [{ item = "silentgear:salvager" }]
-title = "Nothing Wasted"
-x = -1.5
-y = 8.0
-
-[[chapters.quests]]
-after = ["mattock"]
-description = [
-  "Not every ingot is equal. A grader finds the best of a batch, and better stock makes better parts.",
-  "Make a material grader.",
-]
-id = "grader"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Better stock, better parts"
-tasks = [{ item = "silentgear:material_grader" }]
-title = "Grade the Metal"
-x = 0.0
-y = 8.0
-
-[[chapters.quests]]
-after = ["spear"]
-description = [
-  "Some metals no mine gives you. You make them in a forge.",
-  "Make an alloy forge.",
-]
-id = "alloy_forge"
-rewards = [{ xp_levels = 5 }]
-subtitle = "Metals no mine gives"
-tasks = [{ item = "silentgear:alloy_forge" }]
-title = "The Alloy Forge"
-x = 1.5
-y = 8.0
-
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "The ember finds shards, not lands. Each people hid its shard in its own land, and this compass finds lands.",
-  "Make a Nature's Compass.",
-]
-id = "biomes"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Where each people lived"
-tasks = [{ item = "naturescompass:naturescompass" }]
-title = "The Land's Own Compass"
-x = 4.5
-y = 8.0
-
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "A glide from a cliff is over before the phantoms look up.",
-  "Make a hang glider.",
-]
-id = "glider"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Over before they look up"
-tasks = [{ item = "hangglider:hang_glider" }]
-title = "Down Without Falling"
-x = -3.75
-y = 9.5
-
-[[chapters.quests]]
-after = ["glider"]
-description = [
-  "A reinforced glider holds in wind that would fold a plain one.",
-  "Reinforce your hang glider.",
-]
-id = "reinforced_glider"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Wind that would fold it"
-tasks = [{ item = "hangglider:reinforced_hang_glider" }]
-title = "A Stronger Wing"
-x = -2.25
-y = 9.5
-
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "Stew goes further than raw meat, and the ember is always hungry.",
-  "Make a cooking pot.",
-]
-id = "pot"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Further than raw meat"
-tasks = [{ item = "farmersdelight:cooking_pot" }]
-title = "A Pot Over the Fire"
-x = -0.75
-y = 9.5
-
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "Villages pay a traveller for what they cannot fetch themselves. Take what they give and move on before dark.",
-  "Find or make a bounty board.",
-]
-id = "bounty"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Pay for the road"
-tasks = [{ item = "bountiful:bountyboard" }]
-title = "Work for Strangers"
-x = 0.75
-y = 9.5
-
-[[chapters.quests]]
-after = ["last_fire"]
-description = [
-  "You will never pass this way again. A picture remembers it for you.",
-  "Make a camera.",
-]
-id = "camera"
-rewards = [{ xp_levels = 3 }]
-subtitle = "You will not pass this way again"
-tasks = [{ item = "exposure:camera" }]
-title = "Keep What You Saw"
-x = 2.25
-y = 9.5
-
-[[chapters]]
-eyes = 1
-icon = "endrem:old_eye"
-id = "first_eyes"
-subtitle = ["Six shards lie near the four winds. The ember finds the nearest first."]
-title = "The First Eyes"
-
-[chapters.eye_quests]
-after = ["ember"]
-rewards = [{ xp_levels = 5 }]
-y = 0.0
-
-[[chapters]]
-icon = "smallships:oak_cog"
-id = "sea"
-subtitle = ["Four shards, and the sea carries you. Six, and the sky does for a while."]
-title = "The Sea"
-
-[[chapters.quests]]
-after_eyes = 1
-description = [
-  "On open water a lone ember shines like a beacon, and the gaze finds every ship that carries one. Four shards together are enough to dim it.",
-  "Build a ship and sail.",
-]
-id = "sea_opens"
-min_after = 4
-rewards = [{ xp_levels = 5 }]
-subtitle = "Four shards"
-tasks = [{ item = "smallships:oak_cog" }]
-title = "The Sea Opens"
-x = 0.0
-y = 0.0
-
-[[chapters.quests]]
-after_eyes = 1
-description = [
-  "In the air the ember flickers and the phantoms see it. With six shards it burns steady enough to fly, for a while.",
-  "Build an aircraft, and land before the gaze fills.",
-]
-id = "sky_opens"
-rewards = [{ xp_levels = 5 }]
-subtitle = "Six shards"
-tasks = [{ item = "immersive_aircraft:biplane" }]
-title = "The Sky, For a While"
-x = 0.0
-y = 1.5
-
-[[chapters.quests]]
-after = ["sky_opens"]
-description = [
-  "A gyrodyne needs no fuel but your legs. It is slow, and it is quiet.",
-  "Build a gyrodyne.",
-]
-id = "gyrodyne"
-rewards = [{ xp_levels = 3 }]
-subtitle = "A wing you pedal"
-tasks = [{ item = "immersive_aircraft:gyrodyne" }]
-title = "A Wing You Pedal"
-x = -1.5
-y = 3.0
-
-[[chapters.quests]]
-after = ["sky_opens"]
-description = [
-  "A quadrocopter hovers where a biplane cannot: over a shrine's door, or a cliff's edge.",
-  "Build a quadrocopter.",
-]
-id = "quadrocopter"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Four small wings"
-tasks = [{ item = "immersive_aircraft:quadrocopter" }]
-title = "Four Small Wings"
-x = 0.0
-y = 3.0
-
-[[chapters.quests]]
-after = ["sky_opens"]
-description = [
-  "An airship carries more than you can and drifts where the wind lets it. The gaze fills just the same.",
-  "Build an airship.",
-]
-id = "airship"
-rewards = [{ xp_levels = 3 }]
-subtitle = "A hold in the sky"
-tasks = [{ item = "immersive_aircraft:airship" }]
-title = "A Hold in the Sky"
-x = 1.5
-y = 3.0
-
-[[chapters.quests]]
-after = ["sky_opens"]
-description = [
-  "In the air the ember flickers and the phantoms see it. With six shards it burns steady enough for wings too, for a while.",
-  "Make wings of your own and glide.",
-]
-id = "wings"
-rewards = [{ xp_levels = 5 }]
-subtitle = "Six shards"
-tasks = [{ item = "silentgear:elytra" }]
-title = "Wings of Your Own"
-x = 3.0
-y = 3.0
-
-[[chapters.quests]]
-after = ["sky_opens"]
-description = [
-  "Phantom membrane woven around the ember hides its light from the phantoms that shed it.",
-  "Make an Ember Veil and wear it as a charm.",
-]
-id = "veil_1"
-rewards = [{ xp_levels = 3 }]
-subtitle = "Longer flight"
-tasks = [{ item = "wayfarer:ember_veil_1" }]
-title = "A Veil Against the Gaze"
-x = -1.5
-y = 4.5
-
-[[chapters.quests]]
-after = ["veil_1"]
-description = [
-  "Phantoms weep what they have seen, and their tears remember how not to be seen.",
-  "Weave gaze tears into your veil.",
-]
-id = "veil_2"
-rewards = [{ xp_levels = 5 }]
-subtitle = "Longer still"
-tasks = [{ item = "wayfarer:ember_veil_2" }]
-title = "A Thicker Veil"
-x = 0.0
-y = 4.5
-
-[[chapters.quests]]
-after = ["veil_2"]
-description = [
-  "The deep dark swallowed the Ancient Cities, and its echoes swallow light too.",
-  "Weave echo shards into your veil.",
-]
-id = "veil_3"
-rewards = [{ xp_levels = 8 }]
-subtitle = "As long as the sky allows"
-tasks = [{ item = "wayfarer:ember_veil_3" }]
-title = "The Last Veil"
-x = 1.5
-y = 4.5
-
-[[chapters]]
-eyes = 2
-icon = "endrem:cryptic_eye"
-id = "far_eyes"
-subtitle = ["Six shards at the edges of the world. The gaze is watching you now."]
-title = "The Far Eyes"
-
-[chapters.eye_quests]
-after = ["sky_opens"]
-rewards = [{ xp_levels = 8 }]
-y = 0.0
-
-[[chapters]]
-icon = "minecraft:end_portal_frame"
-id = "last_road"
-subtitle = ["Twelve shards remember where the Eye was torn out."]
-title = "The Last Road"
-
-[[chapters.quests]]
-after_eyes = 2
-description = [
-  "With all twelve shards, the ember remembers where the Eye was torn out. The portal broke into twelve frames, and the Keepers carried them out to a ring far past every map; any frame takes the whole Eye, and the ember leads you to the nearest.",
-  "Follow the ember to the Keepers' stronghold.",
-]
-id = "true_gate"
-rewards = [{ xp_levels = 10 }]
-subtitle = "Farther than anyone walks"
-tasks = [{ structure = "betterstrongholds:stronghold" }]
-title = "The True Gate"
-x = 0.0
-y = 0.0
-
-[[chapters.quests]]
-after = ["true_gate"]
-description = [
-  "The Gazebound followed your smoke all the way, and the Keepers' ward keeps the frame shut while any of them stands in the hall.",
-  "Touch the frame, and drive the Gazebound from the hall.",
-]
-icon = "minecraft:crossbow"
-id = "gate_band"
-rewards = [{ xp_levels = 10 }]
-subtitle = "The Keepers' ward"
-tasks = [{ advancement = "wayfarer:gate" }]
-title = "The Gazebound at the Gate"
-x = 0.0
-y = 1.5
-
-[[chapters.quests]]
-after = ["gate_band"]
-description = [
-  "Twelve shards, twelve sockets, one Eye. Touch any frame with all twelve in your ember, and they set themselves.",
-  "Set the Eye and step through.",
-]
-id = "set_the_eye"
-rewards = [{ xp_levels = 10 }]
-subtitle = "One Eye again"
-tasks = [{ dimension = "minecraft:the_end" }]
-title = "Set the Eye"
-x = 0.0
-y = 3.0
-
-[[chapters]]
-icon = "minecraft:dragon_head"
-id = "dragon"
-subtitle = ["It will never be weaker than now."]
-title = "The Dragon"
-
-[[chapters.quests]]
-after = ["set_the_eye"]
-description = [
-  "It is still half-blind, and it will never be weaker than it is today. When it dies, the ember goes out for everyone who fought it.",
-  "Kill the dragon.",
-]
-id = "dragon"
-rewards = [{ xp_levels = 30 }]
-subtitle = "Finish what we could not"
-tasks = [{ kill = "minecraft:ender_dragon" }]
-title = "The Half-Blind Dragon"
-x = 0.0
-y = 0.0
-
-[[chapters]]
-icon = "minecraft:red_bed"
-id = "home"
-subtitle = ["The oath is kept. You may stay."]
-title = "Build a Home"
-
-[[chapters.quests]]
-after = ["dragon"]
-description = [
-  "The ember is out and nothing is watching any more. You eat like a settled person, no night is sleepless, the moon stays white, and the sky is yours. Fire still remembers you, and brings you back when you fall.",
-  "Stay somewhere at last, and build a home.",
-]
-id = "home"
-rewards = [{ item = "minecraft:red_bed" }]
-subtitle = "The last page"
-tasks = [{ checkmark = true }]
-title = "Build a Home"
-x = 0.0
-y = 0.0
-
-[[chapters]]
-icon = "minecraft:filled_map"
-id = "summary"
-notes = "summary"
-subtitle = ["What happened on the road, as I learned it."]
-title = "The Road So Far"
-
-[[chapters]]
-icon = "minecraft:name_tag"
-id = "words"
-notes = "words"
-subtitle = ["Every word the road taught me."]
-title = "Words of the Road"
-
-[[chapters]]
-fire = true
-icon = "minecraft:campfire"
-id = "fire"
-subtitle = ["Everything said at my fire, and every place I was told the way to."]
-title = "At the Fire"
-
-[[chapters]]
-icon = "minecraft:writable_book"
-id = "pages"
-pages = true
-subtitle = ["Every page I found, copied so the road remembers."]
-title = "Pages"
+id = "night"
+kind = "sleep"
+objective = "Sleep in your tent by their fire."

@@ -55,7 +55,7 @@ public final class Graves {
 
     @SubscribeEvent
     public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        if (!event.isEndConquered() && event.getEntity() instanceof ServerPlayer player && Notes.first(player, "death")) {
+        if (!event.isEndConquered() && event.getEntity() instanceof ServerPlayer player && Firsts.first(player, "death")) {
             player.sendSystemMessage(Component.translatable("wayfarer.first.death").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }
     }

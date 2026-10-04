@@ -1,6 +1,20 @@
 package io.github.roman16.wayfarer;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import de.markusbordihn.easynpc.api.pose.ModelPoseAPI;
+import de.markusbordihn.easynpc.data.model.ModelPartType;
+import de.markusbordihn.easynpc.data.scale.CustomScale;
+import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import de.markusbordihn.easynpc.entity.easynpc.data.ModelScaleDataCapable;
+import de.markusbordihn.easynpc.handler.SkinHandler;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,6 +70,8 @@ public final class Workshop {
     private static final int STANDING_DISTANCE = 8;
     private static final double ROUNDING = 1e-4;
     private static final int QUIET = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE;
+    private static final String STANDING = "standing";
+    private static final JsonObject SKINS = skins();
     private static final List<BoundingBox> designs = new ArrayList<>();
     private static final List<BoundingBox> touched = new ArrayList<>();
     private static int cursor;
@@ -80,6 +96,10 @@ public final class Workshop {
                                 .then(Commands.argument("id", ResourceLocationArgument.id())
                                         .then(Commands.literal("walking").executes(context -> add(context.getSource(),
                                                 ResourceLocationArgument.getId(context, "id"), Kind.SPAWN, true)))))
+                        .then(Commands.literal("person").then(Commands.argument("skin", StringArgumentType.word())
+                                .executes(context -> person(context.getSource(), StringArgumentType.getString(context, "skin"), STANDING))
+                                .then(Commands.argument("pose", StringArgumentType.word()).executes(context -> person(context.getSource(),
+                                        StringArgumentType.getString(context, "skin"), StringArgumentType.getString(context, "pose"))))))
                         .then(adding("beside", Kind.BESIDE))
                         .then(Commands.literal("bounds").executes(context -> bounds(context.getSource())))
                         .then(Commands.literal("clear").executes(context -> clear(context.getSource())))));
@@ -146,6 +166,44 @@ public final class Workshop {
         record(level, box, id);
         source.sendSuccess(() -> Component.literal("workshop: %s at %d %d %d, %d by %d by %d blocks".formatted(id, box.minX(), box.minY(),
                 box.minZ(), box.getXSpan(), box.getYSpan(), box.getZSpan())), false);
+        return 1;
+    }
+
+    private static int person(CommandSourceStack source, String skin, String pose) {
+        ServerLevel level = level(source);
+        if (level == null) {
+            source.sendFailure(Component.literal("workshop failed: there is no wayfarer:workshop world"));
+            return 0;
+        }
+        JsonObject look = SKINS.getAsJsonObject(skin);
+        if (look == null) {
+            source.sendFailure(Component.literal("workshop failed: generator/skins.toml has no " + skin + "; it has " + SKINS.keySet()));
+            return 0;
+        }
+        Entity body = EntityType.byString(look.get("model").getAsString()).map(type -> type.create(level)).orElse(null);
+        if (!(body instanceof EasyNPC<?> npc) || !(body instanceof ModelScaleDataCapable<?> scaled)) {
+            source.sendFailure(Component.literal("workshop failed: " + look.get("model").getAsString() + " is not an Easy NPC body"));
+            return 0;
+        }
+        body.moveTo(cursor + 1, standing(level), 1, 0, 0);
+        body.setYHeadRot(0);
+        body.setInvulnerable(true);
+        if (body instanceof Mob mob) {
+            mob.setNoAi(true);
+            mob.setPersistenceRequired();
+        }
+        level.addFreshEntity(body);
+        SkinHandler.setSkin(npc, SkinDataEntry.createResourceLocationSkin(Wayfarer.id("textures/entity/people/" + skin + ".png")));
+        scaled.setModelPartScale(ModelPartType.ROOT, new CustomScale(look.get("scale").getAsFloat()));
+        if (!pose.equals(STANDING) && !ModelPoseAPI.setPose(npc, ResourceLocation.fromNamespaceAndPath("easy_npc", "pose/humanoid/" + pose))) {
+            body.discard();
+            source.sendFailure(Component.literal("workshop failed: Easy NPC has no pose " + pose));
+            return 0;
+        }
+        BlockPos at = body.blockPosition();
+        BoundingBox box = new BoundingBox(at.getX() - 1, at.getY(), at.getZ() - 1, at.getX() + 1, at.getY() + 1, at.getZ() + 1);
+        record(level, box, Wayfarer.id("people/" + skin));
+        source.sendSuccess(() -> Component.literal("workshop: %s %s at %d %d %d".formatted(skin, pose, at.getX(), at.getY(), at.getZ())), false);
         return 1;
     }
 
@@ -282,6 +340,17 @@ public final class Workshop {
 
     private static int standing(ServerLevel level) {
         return level.getMinBuildHeight() + ((FlatLevelSource) level.getChunkSource().getGenerator()).settings().getLayers().size();
+    }
+
+    private static JsonObject skins() {
+        try (var stream = Workshop.class.getResourceAsStream("/wayfarer/skins.json")) {
+            if (stream == null) {
+                throw new IllegalStateException("skins.json is missing; run just generate");
+            }
+            return JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     private enum Kind {

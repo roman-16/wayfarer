@@ -1,0 +1,764 @@
+[agna]
+model = "humanoid_slim"
+scale = 1.0
+arm = [
+  "ddd",
+  "ddd",
+  "ddd",
+  "ddd",
+  "ddd",
+  "ddd",
+  "DDD",
+  "sss",
+  "sss",
+  "sss",
+  "sss",
+  "sss",
+]
+arm_side = [
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "DDDD",
+  "ssss",
+  "ssss",
+  "ssss",
+  "ssss",
+  "ssss",
+]
+body_back = [
+  "dddddddd",
+  "dddddddd",
+  "dddddddd",
+  "dddddddd",
+  "dddddddd",
+  "dddddddd",
+  "dddddddd",
+  "dddAAddd",
+  "dddddddd",
+  "dddddddd",
+  "dddddddd",
+  "dddddddd",
+]
+body_front = [
+  "dddssddd",
+  "ddAddAdd",
+  "ddaaaadd",
+  "daaaaaad",
+  "daaaaaad",
+  "daaaaaad",
+  "daaaaaad",
+  "AAAAAAAA",
+  "dpaaaapd",
+  "dpaaaapd",
+  "daaAaaad",
+  "daaaaaad",
+]
+body_side = [
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "AAAA",
+  "ddpd",
+  "ddpd",
+  "dddd",
+  "dddd",
+]
+head_back = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhHHhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+]
+head_front = [
+  "hhhhhhhh",
+  "hhhGhhhh",
+  "hssssssh",
+  "hHHssHHh",
+  "swessews",
+  "ssssssss",
+  "sssmmsss",
+  "ssssssss",
+]
+head_side = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhss",
+  "hhhhhsss",
+  "hhhSSsss",
+  "hhhSssss",
+  "hhhsssss",
+  "hhssssss",
+]
+head_top = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhGhhhh",
+  "hhhGhhhh",
+  "hhhGhhhh",
+  "hhhGhhhh",
+]
+leg = [
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "BBBB",
+  "BBBB",
+]
+leg_front = [
+  "aaaa",
+  "aaaa",
+  "aaaa",
+  "aaaa",
+  "aaaa",
+  "aaaa",
+  "aaaa",
+  "dddd",
+  "dddd",
+  "dddd",
+  "BBBB",
+  "BBBB",
+]
+
+[agna.palette]
+A = "#a69c86"
+B = ["#2a221c", "#33291f", "#3c3026"]
+D = "#30402a"
+G = "#9a948a"
+H = "#3a2e24"
+S = "#9c6c50"
+a = ["#bcb29c", "#d4ccb8", "#e2dbc8"]
+d = ["#3a4e30", "#4a643c", "#587448"]
+e = "#5a4030"
+h = ["#4a3a2e", "#5e4a3a", "#6e5848"]
+m = "#7a4a3a"
+p = ["#56391f", "#6a482a", "#7a5634"]
+s = ["#b07a5c", "#c48c6c", "#d09a7a"]
+w = "#dcd6cc"
+
+[hob]
+model = "humanoid"
+scale = 1.0
+arm = [
+  "oooo",
+  "oooo",
+  "oooo",
+  "oooo",
+  "oooo",
+  "OOOO",
+  "ssss",
+  "szss",
+  "ssss",
+  "sssz",
+  "ssss",
+  "ssss",
+]
+body_back = [
+  "oooooooo",
+  "kooooook",
+  "okooooko",
+  "ookookoo",
+  "oookkooo",
+  "oooooooo",
+  "oooooooo",
+  "kkkkkkkk",
+  "tttttttt",
+  "tttttttt",
+  "tttttttt",
+  "tttttttt",
+]
+body_front = [
+  "ooossooo",
+  "ookaakoo",
+  "ooaaaaoo",
+  "ooaazaoo",
+  "oaaaaaao",
+  "oaaaaaao",
+  "oaaaaaao",
+  "kaaaaaak",
+  "taaaaaat",
+  "taazaaat",
+  "taaAaaat",
+  "taaaaaat",
+]
+body_side = [
+  "oooo",
+  "oooo",
+  "oooo",
+  "oooo",
+  "oooo",
+  "oooo",
+  "oooo",
+  "kkkk",
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+]
+head_back = [
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+  "shhhhhhs",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+]
+head_bottom = [
+  "gggggggg",
+  "gggggggg",
+  "gggggggg",
+  "gggggggg",
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+]
+head_front = [
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+  "sHHssHHs",
+  "swessews",
+  "gssSSssg",
+  "gggmmggg",
+  "gggggggg",
+]
+head_side = [
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+  "hhhhssss",
+  "hhhSSsss",
+  "hhhSsggg",
+  "sshggggg",
+  "ssgggggg",
+]
+head_top = [
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+]
+leg = [
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "bbbb",
+  "BBBB",
+  "BBBB",
+]
+leg_front = [
+  "aaaa",
+  "aaaa",
+  "aaaa",
+  "aaaa",
+  "aaaa",
+  "aaaa",
+  "tttt",
+  "tttt",
+  "tttt",
+  "bbbb",
+  "BBBB",
+  "BBBB",
+]
+
+[hob.palette]
+A = "#3e2a1a"
+B = ["#211a14", "#2a2119", "#34291f"]
+H = "#241e1a"
+O = "#2e2e2e"
+S = "#8e5640"
+a = ["#4e3420", "#62442a", "#725032"]
+b = "#4a3a2c"
+e = "#3a2a1e"
+g = ["#221c18", "#2c2420", "#382e28"]
+h = ["#2e2620", "#3a302a", "#463a32"]
+k = "#2e2016"
+m = "#6a3a2a"
+o = ["#383838", "#444444", "#505050"]
+s = ["#a0654a", "#b47658", "#c28466"]
+t = ["#2e2a26", "#3a3530", "#46403a"]
+w = "#d6d0c6"
+z = "#4e423c"
+
+[pip]
+model = "humanoid"
+scale = 0.75
+arm = [
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "UUUU",
+  "ssss",
+]
+body_back = [
+  "uuuuuuuu",
+  "uuuuuuuu",
+  "uuuuuuuu",
+  "uuuuuuuu",
+  "uuuuuuuu",
+  "uuuuuuuu",
+  "uuuuuuuu",
+  "qqqqqqqq",
+  "uuuuuuuu",
+  "uuuuuuuu",
+  "uuuuuuuu",
+  "UuuuuuuU",
+]
+body_front = [
+  "uuussuuu",
+  "uuuuuuuu",
+  "uuuUuuuu",
+  "uuuUuuuu",
+  "uuuuuuuu",
+  "uuuuzuuu",
+  "uuuuuuuu",
+  "qqqqqqqq",
+  "uuuuuuuu",
+  "uuUuuuUu",
+  "uuuuuuuu",
+  "UuuuuuuU",
+]
+body_side = [
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "qqqq",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "uuuu",
+]
+head_back = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+]
+head_front = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hssshssh",
+  "sHHssHHs",
+  "swessews",
+  "sfsszsfs",
+  "sssmmsss",
+  "ssssssss",
+]
+head_side = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhs",
+  "hhhhhsss",
+  "hhhSSsss",
+  "hhhSssss",
+  "hhhsssss",
+  "hhhsssss",
+]
+head_top = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+]
+leg = [
+  "uuuu",
+  "uuuu",
+  "uuuu",
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "ssss",
+  "ssss",
+  "BBBB",
+  "BBBB",
+  "BBBB",
+]
+
+[pip.palette]
+B = ["#3a2c22", "#463428", "#523e30"]
+H = "#7a3a1a"
+S = "#c08e72"
+U = "#5e5036"
+e = "#4a7a9a"
+f = "#b07a5c"
+h = ["#8a4420", "#ac5e2a", "#c0743a"]
+m = "#a06050"
+q = "#a89060"
+s = ["#d0a084", "#e0b294", "#eac0a2"]
+t = ["#4a3e30", "#584a3a", "#665644"]
+u = ["#6e5e40", "#80704e", "#90805e"]
+w = "#e4e0d8"
+z = "#6a5a52"
+
+[stranger]
+model = "humanoid"
+scale = 1.0
+arm = [
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+  "CCCC",
+  "ssss",
+]
+body_back = [
+  "cccccccc",
+  "cccccccc",
+  "cccccccc",
+  "cccccccc",
+  "cccccccc",
+  "cccccccc",
+  "cccccccc",
+  "kkkkkkkk",
+  "cccccccc",
+  "cccccccc",
+  "cccCCccc",
+  "cccCCccc",
+]
+body_front = [
+  "clsssslc",
+  "clssxslc",
+  "cclssxlc",
+  "ccclslcc",
+  "cccClCcc",
+  "cccClCcc",
+  "ccccCccc",
+  "kkkkykkk",
+  "ccccCccc",
+  "ccccCccc",
+  "ccCttCcc",
+  "ccCttCcc",
+]
+body_side = [
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+  "kkkk",
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+]
+head_back = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+]
+head_bottom = [
+  "gggggggg",
+  "gggggggg",
+  "gggggggg",
+  "gggggggg",
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+  "ssssssss",
+]
+head_front = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hssssssh",
+  "hHHssHHh",
+  "hwessewh",
+  "gssSSssg",
+  "gggmmggg",
+  "gggggggg",
+]
+head_side = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhss",
+  "hhhhhsss",
+  "hhhSSsss",
+  "hhhssggg",
+  "hhhsgggg",
+  "hhgggggg",
+]
+head_top = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+]
+leg = [
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "tttt",
+  "bbbb",
+  "BBBB",
+  "BBBB",
+]
+pants = [
+  "cccc",
+  "cccc",
+  "cccc",
+  "cccc",
+  "....",
+  "....",
+  "....",
+  "....",
+  "....",
+  "....",
+  "....",
+  "....",
+]
+
+[stranger.palette]
+B = ["#211a14", "#2a2119", "#34291f"]
+C = "#2a3027"
+H = "#5e5e5a"
+S = "#8a5f46"
+b = "#4a3a2c"
+c = ["#363d33", "#454e41", "#55604f"]
+e = "#3e4e5e"
+g = ["#8a8a86", "#a8a8a2", "#c0c0b8"]
+h = ["#7a7a76", "#94948e", "#acaca6"]
+k = "#3a2a1c"
+l = "#c4b89c"
+m = "#5a3a2e"
+s = ["#9c6e52", "#b5845f", "#c4946e"]
+t = ["#30271e", "#3c3126", "#483b2e"]
+w = "#d8d4c8"
+x = "#ead6cc"
+y = "#8c8a80"
+
+[tamsin]
+model = "humanoid_slim"
+scale = 1.0
+arm = [
+  "rrr",
+  "rrr",
+  "rrr",
+  "rrr",
+  "rrr",
+  "RRR",
+  "ddd",
+  "ddd",
+  "ddd",
+  "ddd",
+  "ddd",
+  "sss",
+]
+arm_side = [
+  "rrrr",
+  "rrrr",
+  "rrrr",
+  "rrrr",
+  "rrrr",
+  "RRRR",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "ssss",
+]
+body_back = [
+  "rrrrrrrr",
+  "rrrrrrrr",
+  "rrrrrrrr",
+  "rrrrrrrr",
+  "rrrrrrrr",
+  "RrrrrrrR",
+  "dRrrrrRd",
+  "dddddddd",
+  "dddDdddd",
+  "dddDdddd",
+  "dddDdddd",
+  "dddddddd",
+]
+body_front = [
+  "rrrssrrr",
+  "rrrrrrrr",
+  "rrrryrrr",
+  "RrrrrrrR",
+  "dRrrrrRd",
+  "ddRrrRdd",
+  "dddRRddd",
+  "dddddddd",
+  "dddDdddd",
+  "dddDdddd",
+  "ddDdddDd",
+  "dddddddd",
+]
+body_side = [
+  "rrrr",
+  "rrrr",
+  "rrrr",
+  "rrrr",
+  "rrrr",
+  "dRRd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+]
+hat_back = [
+  "........",
+  "...hh...",
+  "..hhhh..",
+  "..hHhh..",
+  "...hh...",
+  "........",
+  "........",
+  "........",
+]
+hat_top = [
+  "...hh...",
+  "..hhhh..",
+  "........",
+  "........",
+  "........",
+  "........",
+  "........",
+  "........",
+]
+head_back = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hHhhhhHh",
+  "hhhhhhhh",
+]
+head_front = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hssssssh",
+  "sHHssHHs",
+  "swessews",
+  "sSssssSs",
+  "sssmmsss",
+  "ssssssss",
+]
+head_side = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhss",
+  "hhhhhsss",
+  "hhhSSsss",
+  "hhhSssss",
+  "hhhsssss",
+  "hhssssss",
+]
+head_top = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+]
+leg = [
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dDdd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "BBBB",
+]
+
+[tamsin.palette]
+B = ["#2a221c", "#33291f", "#3c3026"]
+D = "#30363f"
+H = "#948f88"
+R = "#47241d"
+S = "#b08a76"
+d = ["#3a414c", "#47505c", "#545e6c"]
+e = "#4e5e4e"
+h = ["#b0aca4", "#c8c4bc", "#dcd8d0"]
+m = "#8a5a4e"
+r = ["#562c24", "#66372c", "#764436"]
+s = ["#c4a08a", "#d4b29c", "#e0c0aa"]
+w = "#dcd8d0"
+y = "#b8a868"

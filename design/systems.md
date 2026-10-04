@@ -509,7 +509,7 @@ What it showed:
   | Wayfarers and travellers | Campsites | 512 blocks |
   | The first civilisation | Ancient Cities | As rare as vanilla's, deep |
 
-  Every one of the pack's roughly 600 structure kinds gets its owner or is cut, in a table like `generator/removals.toml`, by an agent in phase 3.
+  Every one of the pack's structure kinds gets its owner or is cut in `generator/owners.toml`, and the kinds this table spaces share one placement each.
 - **Nether blocks.** A swap table in the generator maps each Nether block to its nearest Overworld look, such as nether bricks to deepslate bricks, blackstone to deepslate, crimson wood to mangrove, warped wood to dark oak, glowstone to sea lantern and soul sand to mud, and applies it to every structure but the Ancient Cities. Trek's two structures with lit portals, its pillager mansion and its portal sword, are cut outright.
 
 **Why:** A sea that freezes needs no wall, and a stone on the shore lets a player who fell out there get their things back. Books that only a smith can use keep loot worth finding and give the smiths their part. Ore thin in the open and rich in places sends the player down the road for it (ground truth 3), and frequencies set by owner keep the world's places telling one story.
@@ -785,4 +785,6 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 ## Open
 
-Nothing is open.
+### M26 How often the other owners' places stand
+
+M13 spaces the Gazebound's, the settled world's towns and villages, the ruins and the campsites. The rest of the pack's places have an owner in `generator/owners.toml` but no spacing of their own, and stand as their mods spread them, 8.5 times wider than the mods made them: the settled world's small places (farms, wells, taverns, watchtowers, stalls, about 140 kinds), the land's own (trees, boulders, log piles, ponds, about 40), the sea's (wrecks, sunken ruins, islands, about 20), what lies under the ground (dungeons, mines, about 40), and the Twelve Peoples' temples, monuments and crypts (about 80) until the generator sets them near their halls. To decide: how often each of these stands, and whether the taverns (W11's dice) and the old mines (M13's rich ore) need a spacing of their own.

@@ -7,7 +7,6 @@ import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.roman16.wayfarer.CompassEvent;
 import io.github.roman16.wayfarer.CompassPayload;
-import io.github.roman16.wayfarer.Leads;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.io.IOException;
 import java.io.InputStream;
@@ -118,7 +117,7 @@ public final class QuestSpike {
         BlockPos from = BlockPos.containing(at);
         int distance = (int) Math.sqrt(horizontal(from, goal));
         broadcast(server, Component.literal("[Quest] %s: %s %s, %d blocks".formatted(QUEST.get("title").getAsString(),
-                step(REACH).get("journal").getAsString(), Leads.heading(goal.getX() - from.getX(), goal.getZ() - from.getZ()), distance)));
+                step(REACH).get("journal").getAsString(), heading(goal.getX() - from.getX(), goal.getZ() - from.getZ()), distance)));
         sync(server);
         source.sendSuccess(() -> Component.literal("quest: the goal is at %d %d, found in %d ms".formatted(goal.getX(), goal.getZ(), millis)), false);
         return 1;
@@ -485,5 +484,10 @@ public final class QuestSpike {
             values.forEach(value -> list.add(StringTag.valueOf(value)));
             return list;
         }
+    }
+
+    private static String heading(int dx, int dz) {
+        String[] directions = {"north", "north east", "east", "south east", "south", "south west", "west", "north west"};
+        return directions[Math.floorMod((int) Math.round(Math.toDegrees(Math.atan2(dx, -dz)) / 45), directions.length)];
     }
 }

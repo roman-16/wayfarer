@@ -1,0 +1,19 @@
+[agna]
+color = "green"
+name = "Agna"
+
+[hob]
+color = "red"
+name = "Hob"
+
+[pip]
+color = "yellow"
+name = "Pip"
+
+[stranger]
+color = "gold"
+name = "The stranger"
+
+[tamsin]
+color = "aqua"
+name = "Tamsin"

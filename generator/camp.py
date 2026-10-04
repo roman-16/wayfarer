@@ -1,12 +1,13 @@
 import math
 
-from blocks import AIR, Material, Template, candle, coherent, lectern, noise, text
+from blocks import AIR, Material, Template, candle, coherent, noise, text
 from nbt import Byte
 
 SIZE = 15
 CENTRE = SIZE // 2
 FIRE = (CENTRE, CENTRE)
-HEADSTONE = (3, 10)
+GRAVE = (2, 9)
+HEADSTONE = (1, 1)
 GROUND = Material(
     "camp/ground",
     [
@@ -22,7 +23,7 @@ GROUND = Material(
 )
 CANVAS = Material(
     "camp/canvas",
-    [("minecraft:white_wool", 62), ("minecraft:light_gray_wool", 30), ("minecraft:white_terracotta", 8)],
+    [("minecraft:white_wool", 60), ("minecraft:light_gray_wool", 25), ("minecraft:mushroom_stem", 15)],
     ground=4,
 )
 STONES = Material(
@@ -37,7 +38,6 @@ GROWTH = [
 ]
 SLABS = ["minecraft:andesite_slab", "minecraft:cobblestone_slab", "minecraft:mossy_cobblestone_slab"]
 FLOWERS = ["minecraft:lily_of_the_valley", "minecraft:oxeye_daisy", "minecraft:cornflower"]
-GRAVE_LINES = ["Here rests", "the last", "Wayfarer.", "Carry the ember."]
 
 
 def ground(t):
@@ -61,7 +61,7 @@ def ground(t):
 def fire(t):
     x, z = FIRE
     t.set((x, 0, z), "minecraft:coarse_dirt")
-    t.set((x, 1, z), "minecraft:campfire", facing="south", lit=False, signal_fire=False, waterlogged=False)
+    t.set((x, 1, z), "minecraft:campfire", facing="south", lit=True, signal_fire=False, waterlogged=False)
     for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1)):
         t.set((x + dx, 0, z + dz), STONES)
         if dx and dz:
@@ -97,8 +97,8 @@ def tent(t):
     for x in (front - 1, back + 1):
         for y in range(1, 5):
             t.set((x, y, 3), "minecraft:spruce_fence")
-    t.set((11, 1, 3), "comforts:sleeping_bag_brown", facing="east", occupied=False, part="foot")
-    t.set((12, 1, 3), "comforts:sleeping_bag_brown", facing="east", occupied=False, part="head")
+    t.set((11, 1, 3), "minecraft:brown_carpet")
+    t.set((12, 1, 3), "minecraft:brown_carpet")
     t.set((back, 1, 2), "minecraft:barrel", facing="up", open=False)
     for x, z in ((front - 1, 0), (front - 1, 6), (back + 1, 0), (back + 1, 6)):
         t.set((x, 1, z), "minecraft:spruce_fence")
@@ -106,12 +106,13 @@ def tent(t):
     t.set((front - 1, 2, 6), "minecraft:lantern", hanging=False, waterlogged=False)
 
 
-def grave(t):
-    for x in range(2, 5):
-        for z in range(10, 13):
+def grave():
+    t = Template()
+    for x in range(3):
+        for z in range(1, 4):
             t.set((x, 0, z), "minecraft:podzol", snowy=False)
-    for x, z in ((3, 11), (3, 12)):
-        t.set((x, 1, z), "minecraft:coarse_dirt" if noise("mound", x, z) < 0.5 else "minecraft:rooted_dirt")
+    for x, z in ((1, 2), (1, 3)):
+        t.set((x, 1, z), "minecraft:coarse_dirt" if noise("mound", x + 2, z + 9) < 0.5 else "minecraft:rooted_dirt")
     x, z = HEADSTONE
     for y in (1, 2):
         t.set(
@@ -124,37 +125,15 @@ def grave(t):
             west="none",
             waterlogged=False,
         )
-    sign = {
-        "back_text": {"color": "black", "has_glowing_text": Byte(0), "messages": [text("")] * 4},
-        "front_text": {"color": "black", "has_glowing_text": Byte(0), "messages": [text(line) for line in GRAVE_LINES]},
-        "id": "minecraft:sign",
-        "is_waxed": Byte(1),
-    }
+    blank = {"color": "black", "has_glowing_text": Byte(0), "messages": [text("")] * 4}
+    sign = {"back_text": blank, "front_text": blank, "id": "minecraft:sign", "is_waxed": Byte(0)}
     t.set((x, 1, z - 1), "minecraft:spruce_sign", entity=sign, rotation=8, waterlogged=False)
-    for x, z in ((2, 11), (4, 12), (2, 12), (4, 10)):
-        t.set((x, 1, z), FLOWERS[int(noise("flower", x, z) * len(FLOWERS))])
-    candle(t, (3, 2, 11), "minecraft:candle", 1)
-    t.set((5, 1, 12), "minecraft:spruce_fence")
-    t.set((5, 2, 12), "minecraft:lantern", hanging=False, waterlogged=False)
-
-
-def letter_stand(t, letter):
-    x, z = 11, 10
-    for dx in (-1, 1):
-        for y in (1, 2):
-            t.set((x + dx, y, z + 1), "minecraft:spruce_fence")
-    for dx in (-1, 0, 1):
-        t.set((x + dx, 3, z + 1), "minecraft:spruce_slab", type="bottom", waterlogged=False)
-        t.set(
-            (x + dx, 3, z),
-            "minecraft:spruce_trapdoor",
-            facing="north",
-            half="top",
-            open=False,
-            powered=False,
-            waterlogged=False,
-        )
-    lectern(t, (x, 1, z), "north", letter["id"], letter["title"], letter["author"], letter["pages"])
+    for x, z in ((0, 2), (2, 3), (0, 3), (2, 1)):
+        t.set((x, 1, z), FLOWERS[int(noise("flower", x + 2, z + 9) * len(FLOWERS))])
+    candle(t, (1, 2, 2), "minecraft:candle", 1)
+    t.set((3, 1, 3), "minecraft:spruce_fence")
+    t.set((3, 2, 3), "minecraft:lantern", hanging=False, waterlogged=False)
+    return t
 
 
 def supplies(t):
@@ -167,13 +146,11 @@ def supplies(t):
     t.set((12, 2, 12), "minecraft:potted_fern")
 
 
-def camp(letter):
+def camp():
     t = Template()
     ground(t)
     fire(t)
     tent(t)
-    grave(t)
-    letter_stand(t, letter)
     supplies(t)
     return t
 

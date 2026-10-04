@@ -11,6 +11,7 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 
 public final class WorldSetup {
     private static final String NAME = "wayfarer_world";
+    private static final String SEASON_CYCLE = "doSeasonCycle";
 
     private WorldSetup() {}
 
@@ -39,9 +40,21 @@ public final class WorldSetup {
         }
         server.getGameRules().getRule(GameRules.RULE_PLAYERS_SLEEPING_PERCENTAGE).set(Balance.INSTANCE.sleep().playersPercentage(), server);
         server.setDifficulty(net.minecraft.world.Difficulty.HARD, true);
+        stopSeasons(server);
         placeLastCamp(server.overworld());
         state.done = true;
         state.setDirty();
+    }
+
+    private static void stopSeasons(MinecraftServer server) {
+        GameRules.visitGameRuleTypes(new GameRules.GameRuleTypeVisitor() {
+            @Override
+            public void visitBoolean(GameRules.Key<GameRules.BooleanValue> key, GameRules.Type<GameRules.BooleanValue> type) {
+                if (key.getId().equals(SEASON_CYCLE)) {
+                    server.getGameRules().getRule(key).set(false, server);
+                }
+            }
+        });
     }
 
     private static void placeLastCamp(ServerLevel level) {

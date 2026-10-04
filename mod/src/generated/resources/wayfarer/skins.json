@@ -1,0 +1,150 @@
+{
+  "agna": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "hob": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "pip": {
+    "model": "easy_npc:humanoid",
+    "scale": 0.75
+  },
+  "stranger": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "tamsin": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_01": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_02": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_03": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_04": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_05": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_06": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_07": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_08": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_09": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_10": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_11": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_12": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_13": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_14": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_15": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_16": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_17": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_18": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_19": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_20": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_21": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_22": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_23": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_24": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "townsfolk_25": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_26": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_27": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_28": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "townsfolk_29": {
+    "model": "easy_npc:humanoid",
+    "scale": 0.75
+  },
+  "townsfolk_30": {
+    "model": "easy_npc:humanoid",
+    "scale": 0.75
+  },
+  "townsfolk_31": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 0.75
+  },
+  "townsfolk_32": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 0.75
+  }
+}

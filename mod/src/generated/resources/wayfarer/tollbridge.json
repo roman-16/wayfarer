@@ -1,0 +1,461 @@
+{
+  "bell": {
+    "facing": "east",
+    "x": 64,
+    "z": 43
+  },
+  "bridge": {
+    "piece": "bridge",
+    "x": 50,
+    "z": 89
+  },
+  "dead": [
+    {
+      "skin": "townsfolk_01",
+      "x": 55,
+      "yaw": 315,
+      "z": 12
+    },
+    {
+      "skin": "townsfolk_02",
+      "x": 27,
+      "yaw": 147,
+      "z": 6
+    },
+    {
+      "skin": "townsfolk_03",
+      "x": 27,
+      "yaw": 281,
+      "z": 69
+    },
+    {
+      "skin": "townsfolk_04",
+      "x": 27,
+      "yaw": 223,
+      "z": 88
+    },
+    {
+      "skin": "townsfolk_05",
+      "x": 77,
+      "yaw": 335,
+      "z": 4
+    },
+    {
+      "skin": "townsfolk_06",
+      "x": 77,
+      "yaw": 77,
+      "z": 14
+    },
+    {
+      "skin": "townsfolk_07",
+      "x": 77,
+      "yaw": 235,
+      "z": 45
+    },
+    {
+      "skin": "townsfolk_08",
+      "x": 81,
+      "yaw": 183,
+      "z": 19
+    },
+    {
+      "skin": "townsfolk_09",
+      "x": 91,
+      "yaw": 24,
+      "z": 77
+    },
+    {
+      "skin": "townsfolk_10",
+      "x": 7,
+      "yaw": 35,
+      "z": 81
+    },
+    {
+      "skin": "townsfolk_11",
+      "x": 41,
+      "yaw": 238,
+      "z": 81
+    },
+    {
+      "skin": "townsfolk_12",
+      "x": 51,
+      "yaw": 62,
+      "z": 86
+    },
+    {
+      "skin": "townsfolk_13",
+      "x": 97,
+      "yaw": 3,
+      "z": 50
+    },
+    {
+      "skin": "townsfolk_14",
+      "x": 42,
+      "yaw": 43,
+      "z": 25
+    },
+    {
+      "skin": "townsfolk_15",
+      "x": 98,
+      "yaw": 232,
+      "z": 80
+    },
+    {
+      "skin": "townsfolk_16",
+      "x": 80,
+      "yaw": 288,
+      "z": 75
+    },
+    {
+      "skin": "townsfolk_17",
+      "x": 95,
+      "yaw": 300,
+      "z": 24
+    },
+    {
+      "skin": "townsfolk_18",
+      "x": 65,
+      "yaw": 324,
+      "z": 52
+    },
+    {
+      "skin": "townsfolk_19",
+      "x": 37,
+      "yaw": 107,
+      "z": 78
+    },
+    {
+      "skin": "townsfolk_20",
+      "x": 53,
+      "yaw": 16,
+      "z": 64
+    },
+    {
+      "skin": "townsfolk_21",
+      "x": 78,
+      "yaw": 317,
+      "z": 27
+    },
+    {
+      "skin": "townsfolk_22",
+      "x": 82,
+      "yaw": 273,
+      "z": 80
+    },
+    {
+      "skin": "townsfolk_23",
+      "x": 54,
+      "yaw": 140,
+      "z": 28
+    },
+    {
+      "skin": "townsfolk_24",
+      "x": 76,
+      "yaw": 124,
+      "z": 51
+    },
+    {
+      "skin": "townsfolk_25",
+      "x": 24,
+      "yaw": 92,
+      "z": 77
+    },
+    {
+      "skin": "townsfolk_26",
+      "x": 51,
+      "yaw": 52,
+      "z": 6
+    },
+    {
+      "skin": "townsfolk_27",
+      "x": 55,
+      "yaw": 128,
+      "z": 79
+    },
+    {
+      "skin": "townsfolk_28",
+      "x": 80,
+      "yaw": 311,
+      "z": 8
+    },
+    {
+      "skin": "townsfolk_29",
+      "x": 50,
+      "yaw": 232,
+      "z": 16
+    },
+    {
+      "skin": "townsfolk_30",
+      "x": 1,
+      "yaw": 202,
+      "z": 80
+    },
+    {
+      "skin": "townsfolk_31",
+      "x": 1,
+      "yaw": 166,
+      "z": 51
+    },
+    {
+      "skin": "townsfolk_32",
+      "x": 88,
+      "yaw": 299,
+      "z": 51
+    }
+  ],
+  "pieces": [
+    {
+      "ground": 4,
+      "piece": "bell_tower",
+      "turns": 0,
+      "x": 55,
+      "z": 31
+    },
+    {
+      "ground": 0,
+      "piece": "well",
+      "turns": 0,
+      "x": 50,
+      "z": 48
+    },
+    {
+      "ground": 0,
+      "piece": "inn",
+      "turns": 3,
+      "x": 35,
+      "z": 14
+    },
+    {
+      "ground": 0,
+      "piece": "smithy",
+      "turns": 1,
+      "x": 56,
+      "z": 17
+    },
+    {
+      "ground": 0,
+      "piece": "stall",
+      "turns": 0,
+      "x": 42,
+      "z": 56
+    },
+    {
+      "ground": 0,
+      "piece": "stall",
+      "turns": 0,
+      "x": 46,
+      "z": 58
+    },
+    {
+      "ground": 0,
+      "piece": "stall",
+      "turns": 0,
+      "x": 57,
+      "z": 58
+    },
+    {
+      "ground": 0,
+      "piece": "stall",
+      "turns": 0,
+      "x": 61,
+      "z": 56
+    },
+    {
+      "ground": 0,
+      "piece": "toll_house",
+      "turns": 0,
+      "x": 55,
+      "z": 86
+    },
+    {
+      "ground": 0,
+      "piece": "townhouse_1",
+      "turns": 3,
+      "x": 37,
+      "z": 28
+    },
+    {
+      "ground": 0,
+      "piece": "house_1",
+      "turns": 3,
+      "x": 37,
+      "z": 64
+    },
+    {
+      "ground": 0,
+      "piece": "townhouse_1",
+      "turns": 1,
+      "x": 55,
+      "z": 7
+    },
+    {
+      "ground": 0,
+      "piece": "house_small_3",
+      "turns": 1,
+      "x": 55,
+      "z": 64
+    },
+    {
+      "ground": 0,
+      "piece": "barn_3",
+      "turns": 3,
+      "x": 7,
+      "z": 7
+    },
+    {
+      "ground": 0,
+      "piece": "barn_3",
+      "turns": 3,
+      "x": 7,
+      "z": 28
+    },
+    {
+      "ground": 0,
+      "piece": "house_small_1",
+      "turns": 3,
+      "x": 13,
+      "z": 42
+    },
+    {
+      "ground": 0,
+      "piece": "house_small_2",
+      "turns": 3,
+      "x": 13,
+      "z": 54
+    },
+    {
+      "ground": 0,
+      "piece": "house_3",
+      "turns": 3,
+      "x": 11,
+      "z": 64
+    },
+    {
+      "ground": 0,
+      "piece": "barn_2",
+      "turns": 1,
+      "x": 27,
+      "z": 0
+    },
+    {
+      "ground": 0,
+      "piece": "house_small_3",
+      "turns": 1,
+      "x": 27,
+      "z": 31
+    },
+    {
+      "ground": 0,
+      "piece": "house_1",
+      "turns": 1,
+      "x": 27,
+      "z": 64
+    },
+    {
+      "ground": 0,
+      "piece": "house_small_1",
+      "turns": 1,
+      "x": 27,
+      "z": 84
+    },
+    {
+      "ground": 0,
+      "piece": "house_small_2",
+      "turns": 3,
+      "x": 67,
+      "z": 0
+    },
+    {
+      "ground": 0,
+      "piece": "house_wide_1",
+      "turns": 3,
+      "x": 67,
+      "z": 8
+    },
+    {
+      "ground": 0,
+      "piece": "house_small_1",
+      "turns": 3,
+      "x": 67,
+      "z": 41
+    },
+    {
+      "ground": 0,
+      "piece": "barn_1",
+      "turns": 1,
+      "x": 81,
+      "z": 0
+    },
+    {
+      "ground": 0,
+      "piece": "house_3",
+      "turns": 1,
+      "x": 81,
+      "z": 14
+    },
+    {
+      "ground": 0,
+      "piece": "house_1",
+      "turns": 1,
+      "x": 81,
+      "z": 27
+    },
+    {
+      "ground": 0,
+      "piece": "house_long_3",
+      "turns": 1,
+      "x": 81,
+      "z": 39
+    },
+    {
+      "ground": 0,
+      "piece": "townhouse_2",
+      "turns": 0,
+      "x": 93,
+      "z": 37
+    },
+    {
+      "ground": 0,
+      "piece": "townhouse_3",
+      "turns": 2,
+      "x": 0,
+      "z": 55
+    },
+    {
+      "ground": 0,
+      "piece": "house_wide_2",
+      "turns": 2,
+      "x": 26,
+      "z": 55
+    },
+    {
+      "ground": 0,
+      "piece": "house_small_2",
+      "turns": 0,
+      "x": 0,
+      "z": 13
+    },
+    {
+      "ground": 0,
+      "piece": "barn_2",
+      "turns": 0,
+      "x": 85,
+      "z": 61
+    },
+    {
+      "ground": 0,
+      "piece": "house_wide_3",
+      "turns": 2,
+      "x": 1,
+      "z": 81
+    },
+    {
+      "ground": 0,
+      "piece": "house_small_1",
+      "turns": 2,
+      "x": 37,
+      "z": 81
+    }
+  ],
+  "size": 104
+}

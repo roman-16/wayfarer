@@ -74,12 +74,12 @@ public final class Compass {
     }
 
     private static CompassPayload reading(ServerPlayer player) {
-        List<ResourceLocation> claimed = Journey.claimed(player);
+        List<ResourceLocation> claimed = Journey.claimed(player.server);
         Balance.Compass balance = Balance.INSTANCE.compass();
         Bearing bearing = BEARINGS.computeIfAbsent(player.getUUID(), key -> new Bearing());
         BlockPos pos = player.blockPosition();
         boolean shown = player.level().dimension() == Level.OVERWORLD;
-        boolean awake = Journey.awake(player);
+        boolean awake = Journey.awake(player.server);
         if (shown && awake && (bearing.searchedFrom == null || horizontal(bearing.searchedFrom, pos) > balance.researchAfterBlocks())) {
             bearing.searchedFrom = pos;
             bearing.aim(search(player.serverLevel(), pos, claimed));
@@ -91,7 +91,7 @@ public final class Compass {
         bearing.aim(event.aim());
         List<CompassPayload.Marker> markers = List.copyOf(event.markers());
         CompassPayload.Shelter shelter = shelter(player);
-        boolean sight = claimed.size() >= Balance.INSTANCE.sight().shards() && !Journey.slain(player);
+        boolean sight = claimed.size() >= Balance.INSTANCE.sight().shards() && !Journey.slain(player.server);
         if (!event.awake()) {
             return still(CompassPayload.Mode.ASLEEP, claimed, markers, shelter, sight);
         }
@@ -141,16 +141,13 @@ public final class Compass {
 
     private static List<CompassPayload.Marker> markers(ServerPlayer player) {
         List<CompassPayload.Marker> markers = new ArrayList<>();
-        for (ServerPlayer member : Teams.onlineMembers(player)) {
+        for (ServerPlayer member : player.server.getPlayerList().getPlayers()) {
             if (member != player && member.level() == player.level()) {
                 markers.add(new CompassPayload.Marker(
                         CompassPayload.Kind.TEAMMATE, member.getGameProfile().getName(), member.getBlockX(), member.getBlockZ()));
             }
         }
         grave(player).ifPresent(grave -> markers.add(new CompassPayload.Marker(CompassPayload.Kind.GRAVE, "", grave.getX(), grave.getZ())));
-        if (player.level().dimension() == Level.OVERWORLD) {
-            markers.addAll(Leads.markers(player));
-        }
         return markers;
     }
 

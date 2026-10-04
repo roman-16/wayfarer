@@ -7,28 +7,26 @@ from pathlib import Path
 import png
 import tomllib
 from blocks import Template, box, cuboid, text
-from camp import FIRE, HEADSTONE, OLD_SIZE, camp, old_camp
+from camp import FIRE, GRAVE, HEADSTONE, OLD_SIZE, camp, grave, old_camp
 from camp import SIZE as CAMP
 from caravan import caravan
 from creatures import creatures
 from entrances import ENTRANCES, Cover
 from halls import HALLS
+from skins import skin
+from tollbridge import PIECES, plan, tower, town
+from townsfolk import townsfolk
 
 ROOT = Path(__file__).resolve().parent.parent
 MAIN = ROOT / "mod/src/generated/resources"
 DEV = ROOT / "mod/src/generated/dev"
 ENDREM_EYES = ROOT / "pack/config/EndRemastered-NeoForge/Eyes"
-QUESTS = ROOT / "pack/config/ftbquests/quests"
 IRIS = ROOT / "pack/config/iris.properties"
-QUEST_FILE_VERSION = 13
-QUEST_SPACING = 1.5
-PAGES_PER_ROW = 6
-PAGEBREAK = "{@pagebreak}"
 LANG = ROOT / "mod/src/main/resources/assets/wayfarer/lang/en_us.json"
 SPARSE_STRUCTURES = ROOT / "pack/config/sparsestructures.json5"
 CAMPFIRE_SPAWNS = ROOT / "pack/config/nohostilesaroundcampfire.json5"
-LEAD_JOURNAL = "where your compass can mark it"
 CHUNK = 16
+CUT_LOOT = "cut"
 TIER_NAMES = {1: "tier_one", 2: "tier_two"}
 
 COVER = 3
@@ -158,6 +156,7 @@ def showroom(eyes):
         "/time set noon",
         "/weather clear",
         f"/place template wayfarer:last_camp {-(CAMP // 2)} {y - 1} {-(CAMP // 2)}",
+        f"/place template wayfarer:last_camp/grave {GRAVE[0] - CAMP // 2} {y - 1} {GRAVE[1] - CAMP // 2}",
         f"/fill {-half} {y} {SHOWROOM_WALL_Z} {half} {y + 3} {SHOWROOM_WALL_Z} minecraft:polished_andesite",
     ]
     for index, item in enumerate(items):
@@ -169,7 +168,7 @@ def showroom(eyes):
     for kind, (title, x) in SHOWROOM_OLD_CAMPS.items():
         name = json.dumps(json.dumps(title))
         lines += [
-            f"/place template wayfarer:lead/{kind} {x} {y - 1} {SHOWROOM_OLD_CAMP_Z}",
+            f"/place template wayfarer:old_camp/{kind} {x} {y - 1} {SHOWROOM_OLD_CAMP_Z}",
             f"/setblock {x + OLD_SIZE // 2} {y} {SHOWROOM_OLD_CAMP_Z - 2} minecraft:oak_sign[rotation=8]"
             + f"{{front_text:{{messages:[{blank},{name},{blank},{blank}]}}}}",
         ]
@@ -195,7 +194,7 @@ def showroom(eyes):
     ]
     demo = {
         "companion": DEMO_COMPANION | {"centre": [FIRE[0] - CAMP // 2, FIRE[1] - CAMP // 2]},
-        "grave": [HEADSTONE[0] - CAMP // 2, HEADSTONE[1] - CAMP // 2],
+        "grave": [GRAVE[0] + HEADSTONE[0] - CAMP // 2, GRAVE[1] + HEADSTONE[1] - CAMP // 2],
         "target": {"at": [target[0], y, target[1]], "shrine": f"wayfarer:shrine/{sorted(eyes)[0]}"},
     }
     write_json(DEV / "wayfarer/showroom.json", {"demo": demo, "steps": lines})
@@ -233,8 +232,7 @@ def tour(eyes, layouts):
         "south-east": ((CAMP + 2, 6, CAMP + 2), (fire, 1, fire)),
         "south-west": ((-2, 6, CAMP + 2), (fire, 1, fire)),
         "tent": ((11.5, 1, 8.5), (11.5, 1.5, 3.5)),
-        "grave": ((6.5, 1, 14.5), (HEADSTONE[0] + 0.5, 1.5, HEADSTONE[1] + 0.5)),
-        "letter": ((11.5, 1, 6.5), (11.5, 1.2, 10.5)),
+        "grave": ((6.5, 1, 14.5), (GRAVE[0] + HEADSTONE[0] + 0.5, 1.5, GRAVE[1] + HEADSTONE[1] + 0.5)),
         "above": ((fire, 22, fire + 8), (fire, 0, fire)),
     }
     write_json(
@@ -275,247 +273,17 @@ def textures(spec):
             png.write(MAIN / f"assets/wayfarer/textures/{texture.get('folder', 'item')}/{variant}.png", pixels)
 
 
-def snbt(value, indent=0):
-    pad = "\t" * (indent + 1)
-    if isinstance(value, bool):
-        return "true" if value else "false"
-    if isinstance(value, int):
-        return str(value)
-    if isinstance(value, float):
-        return f"{value}d"
-    if isinstance(value, str):
-        return json.dumps(value)
-    if isinstance(value, list):
-        if not value:
-            return "[ ]"
-        items = [snbt(item, indent + 1) for item in value]
-        return "[\n" + "".join(f"{pad}{item}\n" for item in items) + "\t" * indent + "]"
-    keys = sorted(value)
-    lines = []
-    for key in keys:
-        name = key if key.replace("_", "").isalnum() else json.dumps(key)
-        lines.append(f"{pad}{name}: {snbt(value[key], indent + 1)}\n")
-    return "{\n" + "".join(lines) + "\t" * indent + "}"
-
-
-def quest_id(kind, name):
-    number = int.from_bytes(hashlib.sha256(f"wayfarer/{kind}/{name}".encode()).digest()[:8], "big") & 0x7FFFFFFFFFFFFFFF
-    return f"{max(number, 2):016X}"
-
-
-def task(spec, owner, index):
-    entry = {"id": quest_id("task", f"{owner}/{index}")}
-    if "checkmark" in spec:
-        return entry | {"type": "checkmark"}
-    if "item" in spec:
-        return entry | {"item": {"count": 1, "id": spec["item"]}, "type": "item"}
-    if "advancement" in spec:
-        return entry | {"advancement": spec["advancement"], "criterion": "", "type": "advancement"}
-    if "stat" in spec:
-        return entry | {"stat": spec["stat"], "type": "stat", "value": spec["value"]}
-    if "structure" in spec:
-        return entry | {"structure": spec["structure"], "type": "structure"}
-    if "dimension" in spec:
-        return entry | {"dimension": spec["dimension"], "type": "dimension"}
-    if "kill" in spec:
-        return entry | {"entity": spec["kill"], "type": "kill", "value": 1}
-    raise ValueError(f"unknown task {spec}")
-
-
-def reward(spec, owner, index):
-    entry = {"id": quest_id("reward", f"{owner}/{index}")}
-    if "auto" in spec:
-        entry["auto"] = spec["auto"]
-    if "item" in spec:
-        item = {"count": spec.get("count", 1), "id": spec["item"]}
-        if "components" in spec:
-            item["components"] = spec["components"]
-        return entry | {"item": item, "type": "item"}
-    if "xp_levels" in spec:
-        return entry | {"type": "xp_levels", "xp_levels": spec["xp_levels"]}
-    if "command" in spec:
-        return entry | {"command": spec["command"], "permission_level": 2, "silent": True, "type": "command"}
-    raise ValueError(f"unknown reward {spec}")
-
-
-def paragraphs(description):
-    lines = []
-    for paragraph in description:
-        if lines:
-            lines.append("")
-        lines.append(paragraph)
-    return lines
-
-
-def eye_quests(eyes, tier, spec):
-    names = [eye for eye in sorted(eyes) if eyes[eye]["tier"] == tier]
-    for index, eye in enumerate(names):
-        yield {
-            "after": spec["after"],
-            "description": [eyes[eye]["hint"]],
-            "icon": f"endrem:{eye}_eye",
-            "id": f"eye_{eye}",
-            "rewards": spec.get("rewards", []),
-            "subtitle": f"The {eye.title()} Eye",
-            "tasks": [{"structure": f"wayfarer:shrine/{eye}"}, {"advancement": f"wayfarer:shards/{eye}"}],
-            "title": eyes[eye]["people"],
-            "x": (index - (len(names) - 1) / 2) * QUEST_SPACING,
-            "y": spec["y"],
-        }
-
-
-def grid(index, row=0):
-    return {"x": (index % PAGES_PER_ROW) * QUEST_SPACING, "y": (index // PAGES_PER_ROW + row) * QUEST_SPACING}
-
-
-def page_quests(library):
-    for index, (identifier, entry) in enumerate(library.items()):
-        pages = []
-        for page in entry["pages"]:
-            if pages:
-                pages.append(PAGEBREAK)
-            pages.append(page)
-        yield {
-            "description": pages,
-            "icon": "minecraft:written_book",
-            "id": f"page/{identifier}",
-            "invisible": True,
-            "subtitle": entry["author"],
-            "tasks": [{"checkmark": True}],
-            "title": entry["title"],
-        } | grid(index)
-
-
-def speaker_name(fire, speaker, heard):
-    names = [entry["name"] for entry in fire["speakers"][speaker]["names"] if entry.get("after") in heard | {None}]
-    return names[-1]
-
-
-def journal_line(line):
-    return line.replace("{lead}", LEAD_JOURNAL)
-
-
-def note_quests(notes, kind):
-    entries = notes[kind]
-    if kind == "words":
-        entries = sorted(entries, key=lambda entry: entry["title"].lower().removeprefix("the ").removeprefix("a "))
-    for index, entry in enumerate(entries):
-        yield {
-            "description": [entry["text"]],
-            "icon": "minecraft:paper" if kind == "summary" else "minecraft:name_tag",
-            "id": f"note/{kind}/{entry['id']}",
-            "invisible": True,
-            "subtitle": "The Road So Far" if kind == "summary" else "Words of the Road",
-            "tasks": [{"checkmark": True}],
-            "title": entry["title"],
-        } | grid(index)
-
-
-def fire_quests(fire, leads):
-    heard = set()
-    steps = fire["steps"]
-    for index, step in enumerate(steps):
-        heard.add(step["id"])
-        name = speaker_name(fire, step["speaker"], heard)
-        yield {
-            "description": paragraphs([f"{name}: {journal_line(line)}" for line in step["lines"]]),
-            "icon": "minecraft:campfire" if step["speaker"] == "voice" else "minecraft:dark_oak_sapling",
-            "id": f"step/{step['id']}",
-            "invisible": True,
-            "subtitle": name,
-            "tasks": [{"checkmark": True}],
-            "title": step["title"],
-        } | grid(index)
-    row = (len(steps) + PAGES_PER_ROW - 1) // PAGES_PER_ROW + 1
-    for index, (identifier, lead) in enumerate(leads.items()):
-        yield {
-            "description": paragraphs([journal_line(lead["journal"]), mark_links(identifier)]),
-            "icon": "minecraft:compass",
-            "id": f"lead/{identifier}",
-            "invisible": True,
-            "invisible_until_tasks": 1,
-            "subtitle": "A place you were told the way to",
-            "tasks": [{"checkmark": True}, {"checkmark": True}],
-            "title": lead["title"],
-        } | grid(index, row)
-
-
-def mark_links(lead):
-    def link(action):
-        return {
-            "clickEvent": {"action": "run_command", "value": f"/wayfarer lead {action} {lead}"},
-            "color": "gold",
-            "hoverEvent": {"action": "show_text", "contents": {"translate": f"wayfarer.lead.{action}.hover"}},
-            "translate": f"wayfarer.lead.{action}.link",
-        }
-
-    return json.dumps(["", link("mark"), "  ", link("unmark")], sort_keys=True)
-
-
-def quests(book, eyes, library, notes, fire, leads):
-    lang = {f"file.{1:016X}.title": book["title"]}
-    tiers = {tier: [f"eye_{eye}" for eye in sorted(eyes) if eyes[eye]["tier"] == tier] for tier in TIER_NAMES}
-    for order, chapter in enumerate(book["chapters"]):
-        chapter_id = quest_id("chapter", chapter["id"])
-        lang[f"chapter.{chapter_id}.title"] = chapter["title"]
-        lang[f"chapter.{chapter_id}.chapter_subtitle"] = chapter["subtitle"]
-        entries = chapter.get("quests", []) + list(eye_quests(eyes, chapter.get("eyes"), chapter.get("eye_quests", {})))
-        if chapter.get("pages"):
-            entries += list(page_quests(library))
-        if chapter.get("notes"):
-            entries += list(note_quests(notes, chapter["notes"]))
-        if chapter.get("fire"):
-            entries += list(fire_quests(fire, leads))
-        written = []
-        for spec in entries:
-            identifier = quest_id("quest", spec["id"])
-            after = spec.get("after", []) + tiers.get(spec.get("after_eyes"), [])
-            entry = {
-                "dependencies": [quest_id("quest", name) for name in after],
-                "id": identifier,
-                "tasks": [task(item, spec["id"], index) for index, item in enumerate(spec["tasks"])],
-                "x": float(spec["x"]),
-                "y": float(spec["y"]),
-            }
-            if "icon" in spec:
-                entry["icon"] = {"count": 1, "id": spec["icon"]}
-            if "min_after" in spec:
-                entry["min_required_dependencies"] = spec["min_after"]
-            if spec.get("invisible"):
-                entry["invisible"] = True
-            if spec.get("invisible_until_tasks"):
-                entry["invisible_until_tasks"] = spec["invisible_until_tasks"]
-            if spec.get("rewards"):
-                entry["rewards"] = [reward(item, spec["id"], index) for index, item in enumerate(spec["rewards"])]
-            written.append(entry)
-            lang[f"quest.{identifier}.title"] = spec["title"]
-            lang[f"quest.{identifier}.quest_subtitle"] = spec["subtitle"]
-            description = spec["description"] if spec.get("invisible") else paragraphs(spec["description"])
-            lang[f"quest.{identifier}.quest_desc"] = description
-        data = {
-            "default_hide_dependency_lines": False,
-            "default_quest_shape": "",
-            "filename": chapter["id"],
-            "group": "",
-            "hide_quest_until_deps_complete": True,
-            "icon": {"count": 1, "id": chapter["icon"]},
-            "id": chapter_id,
-            "images": [],
-            "order_index": order,
-            "quest_links": [],
-            "quests": written,
-        }
-        path = QUESTS / f"chapters/{chapter['id']}.snbt"
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(snbt(data) + "\n")
-    (QUESTS / "lang").mkdir(parents=True, exist_ok=True)
-    (QUESTS / "lang/en_us.snbt").write_text(snbt(lang) + "\n")
-    (QUESTS / "chapter_groups.snbt").write_text(snbt({"chapter_groups": []}) + "\n")
-    (QUESTS / "data.snbt").write_text(snbt({"fallback_locale": "en_us", "version": QUEST_FILE_VERSION}) + "\n")
+def people(spec):
+    for name, look in spec.items():
+        png.write(MAIN / f"assets/wayfarer/textures/entity/people/{name}.png", skin(name, look))
+    write_json(
+        MAIN / "wayfarer/skins.json",
+        {name: {"model": f"easy_npc:{look['model']}", "scale": look["scale"]} for name, look in sorted(spec.items())},
+    )
 
 
 def library(spec, eyes):
-    entries = {spec["letter"]["id"]: spec["letter"]}
+    entries = {}
     for memory in spec["memories"]:
         entries[memory["id"]] = memory | {"author": "The Eye"}
     for entry in spec["found"]:
@@ -532,99 +300,16 @@ def library(spec, eyes):
     return entries
 
 
-def leads(fire, eyes):
-    found = {}
-    for step in fire["steps"]:
-        if "lead" in step:
-            line = next(line for line in step["lines"] if "{lead}" in line)
-            found[step["lead"]] = line
-    result = {}
-    for lead in fire["leads"]:
-        result[lead["id"]] = lead | {"journal": found[lead["id"]]}
-    for eye, spec in sorted(eyes.items()):
-        place = spec["place"]
-        result[f"people/{eye}"] = {
-            "find": [place["find"]],
-            "items": [{"count": 1, "item": place["gift"]["item"], "name": place["gift"]["name"]}],
-            "journal": place["line"],
-            "line": place["line"],
-            "mark": place["mark"],
-            "structures": place["structures"],
-            "title": place["title"],
-        }
-    return result
+def old_camps():
+    for kind in SHOWROOM_OLD_CAMPS:
+        old_camp(kind).save(MAIN / f"data/wayfarer/structure/old_camp/{kind}.nbt")
 
 
-def lead_data(identifier, lead):
-    data = {
-        "find": lead["find"],
-        "found_task": quest_id("task", f"lead/{identifier}/1"),
-        "given_task": quest_id("task", f"lead/{identifier}/0"),
-        "items": [
-            item | {"count": item.get("count", 1), "name": item.get("name", "")} for item in lead.get("items", [])
-        ],
-        "line": lead.get("line", ""),
-        "mark": lead["mark"],
-        "page": lead.get("page", ""),
-    }
-    if "camp" in lead:
-        return data | {"camp": lead["camp"]}
-    write_json(
-        MAIN / f"data/wayfarer/tags/worldgen/structure/lead/{identifier}.json",
-        {"values": [{"id": structure, "required": False} for structure in lead["structures"]]},
-    )
-    return data | {"structures": f"wayfarer:lead/{identifier}"}
-
-
-def story(fire, notes, leads, eyes):
-    triggers = {}
-    for kind in ("summary", "words"):
-        for entry in notes[kind]:
-            triggers.setdefault(entry["when"], []).append(quest_id("quest", f"note/{kind}/{entry['id']}"))
-    for kind in ("first_camp", "last_camp"):
-        old_camp(kind).save(MAIN / f"data/wayfarer/structure/lead/{kind}.nbt")
-    write_json(
-        MAIN / "data/wayfarer/advancement/gate.json", {"criteria": {"cleared": {"trigger": "minecraft:impossible"}}}
-    )
-    return {
-        "leads": {identifier: lead_data(identifier, lead) for identifier, lead in leads.items()},
-        "notes": {trigger: sorted(quests) for trigger, quests in sorted(triggers.items())},
-        "places": {f"wayfarer:shrine/{eye}": f"people/{eye}" for eye in sorted(eyes)},
-        "scenes": {
-            scene["id"]: {"book": scene.get("book", ""), "lines": scene["lines"], "speaker": scene["speaker"]}
-            for scene in fire["scenes"]
-        },
-        "speakers": {
-            speaker: {
-                "color": spec["color"],
-                "names": [entry | {"after": entry.get("after", "")} for entry in spec["names"]],
-            }
-            for speaker, spec in sorted(fire["speakers"].items())
-        },
-        "steps": [
-            {
-                "after": step.get("after", []),
-                "found": step.get("found", []),
-                "id": step["id"],
-                "lead": step.get("lead", ""),
-                "lines": step["lines"],
-                "quest": quest_id("quest", f"step/{step['id']}"),
-                "shards": step.get("shards", 0),
-                "slain": step.get("slain", False),
-                "speaker": step["speaker"],
-                "visit": [item | {"count": item.get("count", 1), "name": ""} for item in step["visit"]]
-                if "visit" in step
-                else None,
-            }
-            for step in fire["steps"]
-        ],
-    }
-
-
-def books(spec, eyes, entries, told):
+def books(spec, eyes, entries):
     modifiers = sorted(
         f"wayfarer:{path.stem}"
         for path in (ROOT / "mod/src/main/resources/data/wayfarer/loot_modifiers").glob("*.json")
+        if path.stem != CUT_LOOT
     )
     for collection in spec["collections"]:
         pool = [
@@ -679,19 +364,13 @@ def books(spec, eyes, entries, told):
         modifiers.append(f"wayfarer:books/{collection['id']}")
     write_json(
         MAIN / "data/neoforge/loot_modifiers/global_loot_modifiers.json",
-        {"entries": sorted(modifiers), "replace": False},
+        {"entries": [*sorted(modifiers), f"wayfarer:{CUT_LOOT}"], "replace": False},
     )
     write_json(
         MAIN / "wayfarer/library.json",
-        told
-        | {
+        {
             "books": {
-                identifier: {
-                    "author": entry["author"],
-                    "pages": entry["pages"],
-                    "quest": quest_id("quest", f"page/{identifier}"),
-                    "title": entry["title"],
-                }
+                identifier: {"author": entry["author"], "pages": entry["pages"], "title": entry["title"]}
                 for identifier, entry in entries.items()
             },
             "memories": [memory["id"] for memory in spec["memories"]],
@@ -847,38 +526,44 @@ def campfire_spawns(balance):
     )
 
 
+def owners(spec, balance):
+    every = balance["structures"]["every_blocks"]
+    kinds = {}
+    for kind, blocks in sorted(every.items()):
+        spacing = blocks // CHUNK
+        kinds[kind] = {
+            "salt": salt(f"wayfarer:owners/{kind}"),
+            "separation": spacing // 2,
+            "spacing": spacing,
+            "structures": spec[kind],
+        }
+    write_json(MAIN / "wayfarer/owners.json", {"cut": spec["cut"], "kinds": kinds})
+    for kind in every:
+        write_json(
+            MAIN / f"data/wayfarer/tags/worldgen/structure/owners/{kind}.json",
+            {"values": [{"id": structure, "required": False} for structure in spec[kind]]},
+        )
+
+
 def removals(spec):
+    write_json(
+        MAIN / "wayfarer/cuts.json",
+        {"creatures": spec["creatures"], "enchantments": spec["enchantments"], "items": spec["items"]},
+    )
+    write_json(
+        MAIN / "data/c/tags/item/hidden_from_recipe_viewers.json",
+        {"replace": False, "values": [{"id": item, "required": False} for item in spec["items"]]},
+    )
+    for name in ("rootless", "storage"):
+        write_json(
+            MAIN / f"data/wayfarer/tags/block/{name}.json",
+            {"values": [{"id": block, "required": False} for block in spec[name]]},
+        )
     for recipe in spec["recipes"]:
         namespace, path = recipe.split(":")
         write_json(
             MAIN / f"data/{namespace}/recipe/{path}.json",
             {"neoforge:conditions": [{"type": "neoforge:false"}]},
-        )
-    for tag in spec["structure_biomes"]:
-        namespace, path = tag.split(":")
-        write_json(
-            MAIN / f"data/{namespace}/tags/worldgen/biome/{path}.json",
-            {"replace": True, "values": []},
-        )
-    for structure_set in spec["structure_sets"]:
-        namespace, path = structure_set.split(":")
-        write_json(
-            MAIN / f"data/{namespace}/worldgen/structure_set/{path}.json",
-            {
-                "placement": {"salt": 0, "spacing": 1, "separation": 0, "type": "minecraft:random_spread"},
-                "structures": [],
-            },
-        )
-    for structure in spec["structures"]:
-        namespace, path = structure.split(":")
-        write_json(
-            MAIN / f"data/{namespace}/worldgen/structure/{path}.json",
-            {
-                "type": "minecraft:buried_treasure",
-                "biomes": [],
-                "spawn_overrides": {},
-                "step": "underground_structures",
-            },
         )
 
 
@@ -887,9 +572,7 @@ def main():
     eyes = source["eyes"]
     balance = tomllib.loads((ROOT / "balance.toml").read_text())
     written = tomllib.loads((ROOT / "story/books.toml").read_text())
-    fire = tomllib.loads((ROOT / "story/fire.toml").read_text())
-    notes = tomllib.loads((ROOT / "story/notes.toml").read_text())
-    for directory in (DEV, ENDREM_EYES, MAIN, QUESTS):
+    for directory in (DEV, ENDREM_EYES, MAIN):
         shutil.rmtree(directory, ignore_errors=True)
     layouts = dict(shrines(eyes))
     worldgen(eyes, layouts, source["tiers"], balance)
@@ -897,16 +580,23 @@ def main():
     spread(balance)
     campfire_spawns(balance)
     removals(tomllib.loads((ROOT / "generator/removals.toml").read_text()))
-    camp(written["letter"]).save(MAIN / "data/wayfarer/structure/last_camp.nbt")
+    owners(tomllib.loads((ROOT / "generator/owners.toml").read_text()), balance)
+    write_json(MAIN / "wayfarer/swaps.json", tomllib.loads((ROOT / "generator/nether.toml").read_text())["swaps"])
+    camp().save(MAIN / "data/wayfarer/structure/last_camp.nbt")
+    grave().save(MAIN / "data/wayfarer/structure/last_camp/grave.nbt")
+    tower().save(MAIN / "data/wayfarer/structure/tollbridge/bell_tower.nbt")
+    for name, piece in PIECES.items():
+        piece().save(MAIN / f"data/wayfarer/structure/tollbridge/{name}.nbt")
+    town().save(DEV / "data/wayfarer/structure/tollbridge/town.nbt")
+    write_json(MAIN / "wayfarer/tollbridge.json", plan())
     empty()
     caravan(DEV)
     creatures(DEV)
     showroom(eyes)
     textures(tomllib.loads((ROOT / "generator/textures.toml").read_text()))
-    entries = library(written, eyes)
-    told = leads(fire, eyes)
-    quests(tomllib.loads((ROOT / "story/quests.toml").read_text()), eyes, entries, notes, fire, told)
-    books(written, eyes, entries, story(fire, notes, told, eyes))
+    people(tomllib.loads((ROOT / "generator/skins.toml").read_text()) | townsfolk())
+    old_camps()
+    books(written, eyes, library(written, eyes))
     shaders()
 
 
