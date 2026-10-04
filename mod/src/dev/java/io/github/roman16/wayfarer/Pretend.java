@@ -58,6 +58,14 @@ public final class Pretend {
                 connections.remove(connection);
             }
         }
+        for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
+            if (player.connection.getConnection() instanceof Silent) {
+                player.serverLevel().getChunkSource().move(player);
+                if (player.isChangingDimension()) {
+                    player.hasChangedDimension();
+                }
+            }
+        }
     }
 
     private static com.mojang.brigadier.builder.RequiredArgumentBuilder<CommandSourceStack, String> name(Action action) {

@@ -19,13 +19,14 @@ public record Balance(
         Hunger hunger,
         Leads leads,
         Nights nights,
+        Shine shine,
         Sight sight,
         Sleep sleep,
         Stillness stillness,
         Structures structures,
         Unlocks unlocks) {
 
-    public record Clock(int caravanBlocks, int duskRunSeconds, String evening, String road) {}
+    public record Clock(int afternoonSeconds, int caravanBlocks, int duskRunSeconds, String evening, String road, String runFrom) {}
 
     public record Compass(int exactBlocks, int farRoundingBlocks, int refreshTicks, int researchAfterBlocks, int trailBlocks) {}
 
@@ -44,6 +45,8 @@ public record Balance(
     public record Leads(int campBlocks, int campReachBlocks, int searchRings) {}
 
     public record Nights(int bloodMoonEvery, int hordeEvery) {}
+
+    public record Shine(List<Integer> act, double noticeBlocksPerShine, int perShard, int remedy, int spawnEverySeconds, int spawnLimit, int spawnShine) {}
 
     public record Sight(int reachBlocks, int shards) {}
 
@@ -65,10 +68,12 @@ public record Balance(
             Config toml = new TomlParser().parse(new InputStreamReader(stream, StandardCharsets.UTF_8));
             return new Balance(
                     new Clock(
+                            toml.getInt("clock.afternoon_seconds"),
                             toml.getInt("clock.caravan_blocks"),
                             toml.getInt("clock.dusk_run_seconds"),
                             toml.get("clock.evening"),
-                            toml.get("clock.road")),
+                            toml.get("clock.road"),
+                            toml.get("clock.run_from")),
                     new Compass(
                             toml.getInt("compass.exact_blocks"),
                             toml.getInt("compass.far_rounding_blocks"),
@@ -94,6 +99,14 @@ public record Balance(
                             toml.<Number>get("hunger.warm_exhaustion_factor").floatValue()),
                     new Leads(toml.getInt("leads.camp_blocks"), toml.getInt("leads.camp_reach_blocks"), toml.getInt("leads.search_rings")),
                     new Nights(toml.getInt("nights.blood_moon_every"), toml.getInt("nights.horde_every")),
+                    new Shine(
+                            toml.<List<Number>>get("shine.act").stream().map(Number::intValue).toList(),
+                            toml.<Number>get("shine.notice_blocks_per_shine").doubleValue(),
+                            toml.getInt("shine.per_shard"),
+                            toml.getInt("shine.remedy"),
+                            toml.getInt("shine.spawn_every_seconds"),
+                            toml.getInt("shine.spawn_limit"),
+                            toml.getInt("shine.spawn_shine")),
                     new Sight(toml.getInt("sight.reach_blocks"), toml.getInt("sight.shards")),
                     new Sleep(toml.getInt("sleep.players_percentage")),
                     new Stillness(toml.getInt("stillness.dimming_days"), toml.getInt("stillness.horde_days"), toml.getInt("stillness.radius_blocks")),

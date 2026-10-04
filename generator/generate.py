@@ -10,6 +10,7 @@ from blocks import Template, box, cuboid, text
 from camp import FIRE, HEADSTONE, OLD_SIZE, camp, old_camp
 from camp import SIZE as CAMP
 from caravan import caravan
+from creatures import creatures
 from entrances import ENTRANCES, Cover
 from halls import HALLS
 
@@ -899,6 +900,7 @@ def main():
     camp(written["letter"]).save(MAIN / "data/wayfarer/structure/last_camp.nbt")
     empty()
     caravan(DEV)
+    creatures(DEV)
     showroom(eyes)
     textures(tomllib.loads((ROOT / "generator/textures.toml").read_text()))
     entries = library(written, eyes)

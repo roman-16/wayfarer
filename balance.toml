@@ -1,8 +1,10 @@
 [clock]
+afternoon_seconds = 30
 caravan_blocks = 256
 dusk_run_seconds = 75
 evening = "22:00"
 road = "17:30"
+run_from = "17:00"
 
 [compass]
 exact_blocks = 500
@@ -50,6 +52,15 @@ horde_every = 4
 [shrines]
 tier_one_leg_blocks = 5000
 tier_two_leg_blocks = 8000
+
+[shine]
+act = [0, 16, 32]
+notice_blocks_per_shine = 0.5
+per_shard = 4
+remedy = 8
+spawn_every_seconds = 8
+spawn_limit = 16
+spawn_shine = 16
 
 [sight]
 reach_blocks = 32

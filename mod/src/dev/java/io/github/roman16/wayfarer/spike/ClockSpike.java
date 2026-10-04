@@ -2,8 +2,11 @@ package io.github.roman16.wayfarer.spike;
 
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Wayfarer;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -15,6 +18,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -29,8 +33,10 @@ public final class ClockSpike {
     private static final float HOLD = 1f / 1024;
     private static final int MORNING_HOUR = 6;
     private static final int OPEN_SKY = 15;
+    private static final double STILL_BLOCKS = 1;
     private static final int TICKS_PER_SECOND = 20;
     private static final float VANILLA = -1;
+    private static final Map<UUID, Rest> rests = new HashMap<>();
     private static Mode mode = Mode.OFF;
     private static long from;
     private static long target;
@@ -71,6 +77,7 @@ public final class ClockSpike {
         pace = 1;
         caravan = null;
         monsters = Long.MAX_VALUE;
+        rests.clear();
         speed(level);
     }
 
@@ -80,8 +87,9 @@ public final class ClockSpike {
             return 0;
         }
         caravan = camp;
-        say(source.getServer(), "clock: make for the caravan at %d %d; the evening begins once %d%% of the team is within %d blocks"
-                .formatted(camp.getX(), camp.getZ(), Balance.INSTANCE.sleep().playersPercentage(), Balance.INSTANCE.clock().caravanBlocks()));
+        Balance.Clock clock = Balance.INSTANCE.clock();
+        say(source.getServer(), "clock: make for the caravan at %d %d; from %s the evening begins once %d%% of the team is within %d blocks, before it once they have rested at its fire"
+                .formatted(camp.getX(), camp.getZ(), clock.runFrom(), Balance.INSTANCE.sleep().playersPercentage(), clock.caravanBlocks()));
         return 1;
     }
 
@@ -147,24 +155,55 @@ public final class ClockSpike {
     }
 
     private static void evening(MinecraftServer server, ServerLevel level, long now) {
+        Balance.Clock clock = Balance.INSTANCE.clock();
         List<ServerPlayer> players = server.getPlayerList().getPlayers();
-        int reach = Balance.INSTANCE.clock().caravanBlocks();
-        long near = players.stream().filter(player -> player.level() == level
-                && player.distanceToSqr(caravan.getX() + 0.5, player.getY(), caravan.getZ() + 0.5) <= (double) reach * reach).count();
-        if (players.isEmpty() || near * 100 < (long) players.size() * Balance.INSTANCE.sleep().playersPercentage()) {
+        if (players.isEmpty()) {
             return;
         }
+        int share = Balance.INSTANCE.sleep().playersPercentage();
+        if (Math.floorMod(now, DAY) >= ticks(clock.runFrom())) {
+            int reach = clock.caravanBlocks();
+            long near = players.stream().filter(player -> near(player, level, reach)).count();
+            if (near * 100 >= (long) players.size() * share) {
+                begin(server, level, now, clock.duskRunSeconds(), "the evening, %d of %d within %d blocks of the caravan".formatted(near, players.size(), reach));
+            }
+            return;
+        }
+        Balance.Fire fire = Balance.INSTANCE.fire();
+        long rested = players.stream().filter(player -> rested(player, level, fire)).count();
+        if (rested * 100 >= (long) players.size() * share) {
+            begin(server, level, now, clock.afternoonSeconds(), "the afternoon passes at the fire, %d of %d rested there".formatted(rested, players.size()));
+        }
+    }
+
+    private static boolean near(ServerPlayer player, ServerLevel level, int blocks) {
+        return player.level() == level && player.distanceToSqr(caravan.getX() + 0.5, player.getY(), caravan.getZ() + 0.5) <= (double) blocks * blocks;
+    }
+
+    private static boolean rested(ServerPlayer player, ServerLevel level, Balance.Fire fire) {
+        if (!near(player, level, fire.restBlocks())) {
+            rests.remove(player.getUUID());
+            return false;
+        }
+        Rest before = rests.get(player.getUUID());
+        boolean still = before != null && before.at.distanceTo(player.position()) < STILL_BLOCKS;
+        int seconds = still ? before.seconds + CHECK_TICKS / TICKS_PER_SECOND : 0;
+        rests.put(player.getUUID(), new Rest(still ? before.at : player.position(), seconds));
+        return seconds >= fire.restSeconds();
+    }
+
+    private static void begin(MinecraftServer server, ServerLevel level, long now, int seconds, String why) {
         mode = Mode.EVENING;
         from = now;
         target = Math.floorDiv(now, DAY) * DAY + ticks(Balance.INSTANCE.clock().evening());
         long out = monsterHour(level, now, target);
         long gap = target - from;
-        int run = Balance.INSTANCE.clock().duskRunSeconds();
-        pace = out <= now ? 1 : gap / (double) (TICKS_PER_SECOND * run) * Math.log(gap / (double) (target - out));
+        pace = out <= now ? 1 : gap / (double) (TICKS_PER_SECOND * seconds) * Math.log(gap / (double) (target - out));
         monsters = out;
         eveningTicks = 0;
-        say(server, "clock: the evening, %d of %d within %d blocks of the caravan; easing from %s to %s at %.2f times normal speed, so monsters can come out at %s in %d s"
-                .formatted(near, players.size(), reach, clock(from), clock(target), pace, clock(out), out <= now ? 0 : run));
+        rests.clear();
+        say(server, "clock: %s; easing from %s to %s at %.2f times normal speed, so monsters can come out at %s in %d s"
+                .formatted(why, clock(from), clock(target), pace, clock(out), out <= now ? 0 : seconds));
     }
 
     private static long monsterHour(ServerLevel level, long now, long until) {
@@ -218,6 +257,8 @@ public final class ClockSpike {
     private static void say(MinecraftServer server, String text) {
         server.getPlayerList().broadcastSystemMessage(Component.literal(text), false);
     }
+
+    private record Rest(Vec3 at, int seconds) {}
 
     private enum Mode {
         EVENING,

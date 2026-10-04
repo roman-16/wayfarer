@@ -20,5 +20,10 @@ public final class SpikePayloads {
                 QuestSpike.claim(player, payload.reward());
             }
         });
+        registrar.playToServer(EmberSpike.Sense.TYPE, EmberSpike.Sense.STREAM_CODEC, (payload, context) -> {
+            if (context.player() instanceof ServerPlayer player) {
+                EmberSpike.sense(player);
+            }
+        });
     }
 }

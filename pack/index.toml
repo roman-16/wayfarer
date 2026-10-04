@@ -177,6 +177,10 @@ file = "config/solonion-client.json"
 hash = "3491b93fb6219daa6204c5fd251a00158e6e1fe7db40fb4e4e74ac33678a5118"
 
 [[files]]
+file = "config/soundattract/raid.toml"
+hash = "b2ce9644c74ba7c36ce239b281ac1193e1db015f1546e5faaf17cf54b47d0d4c"
+
+[[files]]
 file = "config/sparsestructures.json5"
 hash = "dfeb573850eaf9db546c71876999deaf353d660d30f6506c4af4500c599e40e9"
 
@@ -187,6 +191,10 @@ hash = "acdd4a35a9bb8a89e667245a10481f73f2fb1b0f137ecb9c77ef6605dc4f15d4"
 [[files]]
 file = "config/tectonic.json"
 hash = "1c89369d8fe65c38223a02f489899038e88744d9c31ba17b823a90c9667b3c4d"
+
+[[files]]
+file = "config/toughasnails/thirst.toml"
+hash = "45c7e32ed5789e958f102422f029beab1007b5f02d0359c3c9fbbd1e02f820c2"
 
 [[files]]
 file = "config/travelerstitles-neoforge-1_21.toml"
@@ -229,6 +237,11 @@ metafile = true
 [[files]]
 file = "mods/atlas-lib.pw.toml"
 hash = "57d314558add15212267a2a73439def174a8d8179e3cbd6abf8926f23fbca2e5"
+metafile = true
+
+[[files]]
+file = "mods/attract-to-sound.pw.toml"
+hash = "66072270b6fc6d6caefc88ae9ae099ec80d32d1ceda02961b42a637daf1a55f5"
 metafile = true
 
 [[files]]
@@ -467,8 +480,18 @@ hash = "932c65fb598293dba5dc60a76fc64c2579db427018b10dd4757dd421d9abcaf0"
 metafile = true
 
 [[files]]
+file = "mods/geckolib.pw.toml"
+hash = "35779b39ddc06059ec483b33de2ecfdc3adb95c0a49e69b6701fb0024827e2f5"
+metafile = true
+
+[[files]]
 file = "mods/geophilic.pw.toml"
 hash = "a25c9bea00a19293f8b2c5958dea71e60fbe6db7800693862c3e8f624750f4b6"
+metafile = true
+
+[[files]]
+file = "mods/glitchcore.pw.toml"
+hash = "e53646f88aeb6bd54c38db50da972abdac91e83c145a8f974107b0ca103b15bc"
 metafile = true
 
 [[files]]
@@ -819,6 +842,11 @@ metafile = true
 [[files]]
 file = "mods/the-hordes.pw.toml"
 hash = "9e035295e6ec2f37ff3bfe1c2e224c000b9322e8753ef0d8b67e0e45f844a375"
+metafile = true
+
+[[files]]
+file = "mods/tough-as-nails.pw.toml"
+hash = "f615375185613c362892ab32d5359e9da1552345e92993feecb48853fa876711"
 metafile = true
 
 [[files]]

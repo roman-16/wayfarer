@@ -65,7 +65,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | The world's save data is written on a background worker | Anything reading the story state waits for that worker first, as the `state` step does |
   | The compass already takes extra marks from other code (`CompassEvent`) | Quest goals reach the compass through that hook, with no second compass path |
   | One payload of the journal's view per player keeps every screen current | The journal shows the world's state with each player's own claims, sent whenever it changes |
-- **The frameworks beside it:** ArcQuest keeps one live quest state for each online player and its licence (All Rights Reserved) forbids changing that, so it cannot hold one state for the whole world and stays out. HollowEngine (CC-BY-NC-SA 4.0) loads with the pack's NeoForge and brings people animated from Blockbench or glTF models and keyframed cutscenes made in its in-game editor, at 33 MB; it is weighed again at the camp (M5) and memory (M8) spikes against Easy NPC's poses and walking.
+- **The frameworks beside it:** ArcQuest keeps one live quest state for each online player and its licence (All Rights Reserved) forbids changing that, so it cannot hold one state for the whole world and stays out. HollowEngine (CC-BY-NC-SA 4.0) loads with the pack's NeoForge and brings people animated from Blockbench or glTF models and keyframed cutscenes made in its in-game editor, at 33 MB; weighed at the camp (M5) and memory (M8) spikes, it stays out: Easy NPC carries the people, and the engine runs their scenes as data.
 
 **Why:** FTB Quests 2101.1.36 has none of the hard parts, no failing, no clocks, no positions, no world-wide state, and keeping it would put every quest in two systems that must agree. The mod already holds the world's state and speaks the story's lines from data, so the engine grows from what is there; the journal screen is the price.
 
@@ -177,6 +177,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 - The camp is built like a village: the fire in the middle, and around it each household as its own small piece, a tent, a wagon or a lean-to, set at the height of the ground under it, with paths between them that follow the ground. There is no flattened square. A bigger household gets a bigger piece, a person who joins brings a new piece, and after the breaking the pieces of the dead are missing. When the camp is taken down, the blocks it replaced go back.
 - The camp cannot burn: while it stands, no fire takes hold in it and no lightning strikes it.
+- When the camp is taken down it leaves traces, so a team passing the same place days later finds an old campsite: the fire pit with its campfire out and its ring of stones, the paths worn to it, trodden patches where the tents stood, and now and then something left behind, such as a split log or a broken crate. They look like the pack's other old camps, only fresh. Which traces exactly, and whether they fade, is M21.
 - Each person's record lives in the world's save data, alive or not, their trust and what they remember; their Easy NPC body is made from it in the evening and taken away in the morning.
 
 **Why:** A camp of small pieces that sit on the land the way a village's houses do looks lived in where one big flattened layout looks dropped from the sky, and a camp whose size follows its people shows the caravan's story at a glance. Vanilla builds villages this way, with fixed pieces for houses and paths that bend to the ground. Real camps keep the same rules, level ground but not a low place, away from ravines, ledges and peaks, with grass, water and wood near ([National Park Service](https://www.nps.gov/subjects/camping/finding-and-setting-up-a-campsite.htm); Jesse Applegate, *A Day with the Cow Column in 1843*), so a hollow is the one place the caravan would never choose on its own. Wishes that give way keep the evening's walk as long as the day planned, in any land.
@@ -193,6 +194,8 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 | Brush 30 blocks from one camp caught fire from a lava pool | No danger within 16 blocks of the camp, its fires put out each second and lightning near it stopped |
 | Easy NPC's bodies sit (`easy_npc:pose/humanoid/sitting`), stroll round a home (`RANDOM_STROLL_AROUND_HOME`) and wear Minecraft's nine player skins, all set through its API | Easy NPC carries the camp's people; HollowEngine is weighed again at the memories (M8), whose scenes are keyframed |
 | A camp kept only in memory stays standing after a restart, its people with it | As for road scenes (M4), camps and the blocks they replaced live in the world's save data |
+
+It raises, for the spike: the camp taken down with its traces left behind.
 
 ### M6 The day and the night: a scripted clock
 
@@ -239,11 +242,20 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 **Why:** A count fixed when the vote starts means nobody can change a decision by logging off, while a friend who arrives late still has their say.
 
-It raises, for the spike: a second player joining a world in progress appears next to the host with the team's shards and an unclaimed reward, and their tent from 384 blocks away comes back with a full chest inside; a returning player logging in far from the team appears next to them. Nomadic Tents keeps a tent's inside under its ID, which makes the recall possible; found in its classes, not tried.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/JoinSpike.java` and `TentRecall.java`, dev code that never ships), on the dev server with pretend players: a new player appears beside the teammate online longest, and beside that teammate's tent door while they are inside it; a player returning 1,900 blocks from the team appears beside them, and one returning within 256 blocks stays where they left; a new player while nobody is online appears where the last player left. The returning player's tent, 1,943 blocks away, is packed up into their inventory, and pitched again 2,000 blocks from where it stood it opens onto the same inside, its chest still holding 64 diamonds. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| Nomadic Tents keeps a tent's inside in a world of its own, named by an ID the tent item carries; packing up is what its mallet does, taking the tent's blocks away and handing back the item, and loading the far tent's chunk took 139 ms | Recalling a tent is its own pack-up, run for the player as they appear |
+| Only the tent's door knows its owner, and a door is found only where chunks are loaded | The engine notes each player's tents as they are pitched; the spike looked around every player once a second |
+| The joining rule runs in the login event and finds standable ground within 4 blocks of the teammate, whose chunks are loaded | Joining needs no chunk loading but the recalled tent's |
+| The team's shards and an unclaimed reward come from the world's one state (M1); the mod as it ships still keys shards by FTB team | Shards move into the world's state with the engine (M15), so a joiner has them at once |
+| Pretend players kept the chunks where they joined loaded, since a client moves its chunks by answering a teleport | Pretend players move their chunks every tick, so a rule tried with them meets the chunks a person would load |
 
 ### M8 The memories: a dream world of their own
 
-- A memory happens in a small dream world of its own, as the tents' insides do. The generator builds each memory's place as it was then, the shard lit on its pedestal, the Frost Walkers on the stair, the grass halls young, and the player is taken in and brought back to the same spot. While they dream they are gone from the real world, so nothing can hurt them.
+- A memory happens in a small dream world of its own, as the tents' insides do, and the player is taken in and brought back to the same spot. While they dream they are gone from the real world, so nothing can hurt them.
+- The dream rebuilds the place from the world's own seed, exactly as the world first made it: the same hills, rivers and hall, and nothing the players built or broke since, since that is the past. The memory then changes only what it needs, the hall whole and newer, the shard lit on its pedestal, the Frost Walkers on the stair, the grass halls young, and places again what the pack sets down by code, such as the Last Camp; whatever the memory needs no change to stays as the world made it.
 - Everyone within about 32 blocks of the stone dreams it together, every one of them as Wend. A player who was not there can dream it again later from the journal, at a fire.
 
   ```text
@@ -253,9 +265,20 @@ It raises, for the spike: a second player joining a world in progress appears ne
 
 - Falling in a memory wakes the player into it again, from its beginning or its last step, and costs nothing in the real world; Wend lived through it.
 
-**Why:** Every place a memory needs is the pack's own, so the generator can build it as it was, and a world apart leaves the real one untouched for friends who stay in it (D11). Dreaming together keeps nobody watching, and replaying from the journal means nobody misses Wend's life for being away.
+**Why:** Rebuilt from the seed, the dream is recognisably the place the players stand in, down to the last hill, without copying the present and without tracking which blocks players changed; a world apart leaves the real one untouched for friends who stay in it (D11). Dreaming together keeps nobody watching, and replaying from the journal means nobody misses Wend's life for being away.
 
-It raises, for the spike: a dream world entered from a calling stone by two players together, a scene built by the generator, a fall that restarts it, and the return to the same spot.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/DreamSpike.java`, dev code that never ships): touching a hall's pedestal makes a dream world with the overworld's own generator and seed and takes everyone within 32 blocks into it, at the same spot; the hall comes back as the world made it, its pillar of planks and torch, which a player had put there, gone, and the memory makes it newer, 805 mossy, cracked and cobwebbed blocks made clean, and walks a Frost Walker to the stair, where she kneels. A pretend player killed in the dream wakes at its beginning with full health and nothing lost, and at the end everyone wakes where they stood and the dream world is let go and deleted. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| Infiniverse (MIT), which Nomadic Tents carries inside its jar, makes a world while the game runs and lets it go again; its 1.21.1 build is on CurseForge only | The Wayfarer mod carries Infiniverse itself, so the memories do not hang on the tents |
+| Around the stone, 98.5% and then 97.4% of 117,649 blocks matched the real place, and every difference listed was a rock blob, granite for stone; the count changed between two dreams of the same place | Not settled: either this pack's generation does not repeat exactly, or the real chunks changed in between. The next memory compares two dreams with each other, and the snapshot taken when a place is first made takes over if they differ where the memory plays |
+| Making the dream world took 1.8 to 2.3 s on the server thread and generating its 49 chunks with the whole pack 5.5 to 9.6 s | The dream is made and generated while the ember flares, before anyone is taken in |
+| Each dream world left 1.4 to 13.6 MB on disk until deleted | A dream world is deleted as soon as it is let go, so every memory starts fresh |
+| A fall is a death the mod cancels: full health, back to the beginning | Falling in a memory costs nothing, as settled |
+| Easy NPC walks a person to a spot and calls back on arrival (`EasyNPCActionHandler.moveTo`), so a scene's beats follow one another; HollowEngine would add Kotlin story scripts, a cutscene camera and animated models | Easy NPC carries the memories' people, and the engine runs each scene's beats as data; camera moves for the big moments come from CMDCam or the mod's own code |
+| The dream is lit darker than the real hall | Not looked into |
+| A player who changes worlds cannot be hurt until their client confirms the move, so pretend players were untouchable in the dream | Pretend players confirm it themselves |
 
 ### M9 The clock inside: how brightly the player shines
 
@@ -273,7 +296,17 @@ It raises, for the spike: a dream world entered from a calling stone by two play
 
 **Why:** A step for every shard makes each one a cost the player can feel and leaving one a relief they can feel too, and four effects together make the shine being hunted rather than only fighting tougher monsters. A number would turn the clock into a stat to manage; felt, it stays the slow horror of S12.
 
-It raises, for the spike: the shine driving Improved Mobs' difficulty, which the Wayfarer mod already raises per shard today (`balance.toml` `per_eye`), the spawns around the player and how far creatures notice them; and its steps in `balance.toml`.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/ShineSpike.java`, dev code that never ships, with its steps in `balance.toml` `[shine]`): the shine is the act's base, 0, 16 or 32, plus 4 for every shard, and Agna's remedy takes 8 off for a night; at act 3 with all twelve shards it is 80. Improved Mobs' difficulty is set to the shine for every player (it reads 80.0 there); a monster born while the team shines 80 notices them from 40 blocks farther, so a zombie 64 blocks away comes for a player that one 48 blocks away leaves alone at shine 0; and at night more monsters are born in the dark around them, four more in half a minute at shine 80. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| Vanilla fixes how far a monster notices players when the monster is made; a range raised afterwards only makes it follow longer | The engine widens a new monster's targeting with its notice range, a small mixin where the spike reached into the goal |
+| Vanilla alone puts 15 to 18 monsters within 64 blocks of a player in half a minute of a hard night, so extra births only show if the count allowed near the player grows with the shine | The cap near a player is `spawn_limit` plus one for every 4 of shine |
+| About four in five tries fail vanilla's own darkness and placement checks | The shine's numbers count monsters born, not tries |
+| Improved Mobs keeps a difficulty for each player and averages the players within 256 blocks; its command sets it outright | The shine sets it for everyone at once, and the mod's per-shard step (`per_eye`) goes when the engine takes over |
+| A pretend player left standing through a fast-forwarded night dies, and a dead player is never hunted | Tests give pretend players Resistance and stand them in the open, since leaves hide them from monsters |
+
+The fourth effect, the chance each night that the gaze finds the caravan, is the night events' to roll (M6) and was not built here.
 
 ### M10 The activities, Act 1
 
@@ -297,7 +330,16 @@ It raises, for the spike: the shine driving Improved Mobs' difficulty, which the
 
 **Why:** The ember is the Eye's light, and light is sight (S19), so a sense that shows what is hidden is what The Witcher 3's witcher senses are, with a reason in the lore, and one key serves both finding and following. Holding something alive turns a night of waves into protecting someone, and a loss into a challenge failed.
 
-It raises, for the spike: the ember sense showing a clue and a trail laid ahead, and a hold against The Hordes' waves with a fold to keep standing.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/EmberSpike.java` and `HoldSpike.java`, dev code that never ships): a trail of 16 prints is laid 16 to 44 blocks ahead, bending with the land, and taken away once the player reaches its end; holding up the ember (F8 in the spike) makes the prints and clues within 24 blocks glow amber for 3 seconds for that player alone; clicking a clue adds its line to the journal and counts it towards the step; and in a hold The Hordes' waves come for the herder's fold, which stood 60 seconds with one of its four sheep while 30 monsters came for it, fell in a longer hold, which ended the step at once, and stood 120 seconds under a blood moon after a retry with its sheep made tough. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| Display entities glow in a colour of their own, and the glow can be sent to one player only, without touching what the others see | The ember sense lights clues and tracks for the player who holds it up |
+| Prints lying on the ground vanish in tall grass and show only as small outlines from 16 blocks | Without the sense the tracks are hidden, which Trail-sight changes; how a print looks goes through the art skill |
+| G is already taken three times in the pack (Curios, Simply Tooltips, Simple Voice Chat's groups), and a press reaches every mapping on its key | The sense gets a key chosen with every mod's bindings in view |
+| A clue is an item lying in the world with an invisible box a right-click reaches | A clue is any small thing the story puts down |
+| The Hordes spawns its waves around a player and lets other mods see every monster it spawns; a target added as a monster arrives sends it at the fold before any player | A hold is The Hordes' waves around the player holding it, with the thing to keep alive as the monsters' first target |
+| A retry rebuilt the fold, but the failed try's monsters were still there and killed the new sheep in 10 seconds | A retry also takes away the waves of the failed try |
 
 ### M10 The activities, Acts 2 and 3
 
@@ -330,7 +372,15 @@ Act 3:
 
 **Why:** Thirst would be a second bar to refill all day beside the ember's hunger, which is upkeep and not play, so the land's danger is heat and cold. Hunts need creatures no mod has, and GeckoLib is how mods animate them. Attract to Sound already makes stealth real, and its licence (GPL-3.0) lets it be changed. Heist roles are GTA V's heists for a team of up to four, with the caravan making them work alone.
 
-It raises, for the spike: Tough As Nails with thirst off and the gifts as its warmth; one GeckoLib creature; Attract to Sound against the Gazebound, with its own raids set aside so they do not fight The Hordes and the hard nights (M6), and its voice-chat hearing tried with Simple Voice Chat; Easy NPC walking to follow and to flee.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/WarmthSpike.java`, `ActsSpike.java` and `WormSpike.java`, dev code that never ships, with Tough As Nails, GeckoLib and Attract to Sound in the pack): thirst is off (`pack/config/toughasnails/thirst.toml`), and on icy land at night a player who was cold and heading for icy stays neutral with the Warmth gift; a pillager walks to the clang of an anvil 8 blocks away, with Attract to Sound's own raids off (`pack/config/soundattract/raid.toml`); an Easy NPC person follows a player 21 blocks; and a worm whose model, animation and texture the generator writes (`generator/creatures.py`) crawls in the workshop, its five segments swaying on sine curves. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| Tough As Nails takes a modifier on every player's temperature, so a gift is a few lines | The gifts that warm, Warmth and the peoples' gear, are temperature modifiers |
+| Attract to Sound hears through each player's client, which reports the sounds on its list as it hears them: a noise no player hears draws nothing, and an anvil's clang 24 blocks away went unheard where one 8 blocks away drew the pillager to the spot | The Gazebound hear what a player near them hears; a quest's own noises need a player in earshot |
+| Attract to Sound registers with Simple Voice Chat; hearing a player's voice was not tried, since the dev client speaks into no microphone | Voice hearing goes on the playtest list |
+| Easy NPC's flee objective never moved its person, likely because vanilla's avoid behaviour picks whom to flee the way it picks whom to fight, and a peaceful Easy NPC person fights nobody (read in the code) | The Chase's rider flees with a goal of the mod's own; following works as Easy NPC ships it |
+| A creature written as generator data, its boxes, its sine curves and its texture, loads in GeckoLib and renders without Blockbench | Creatures are made the T3 way; their look goes through the art skill |
 
 ### M11 Gates and gifts
 
@@ -550,9 +600,19 @@ It raises, for the spike: a new Silent Gear material from data, a forge that fin
 
 **Why:** From noon the run would make the sun sweep the sky at eight times its speed, while from 17:00 it needs no more than one and a half; an afternoon let go at the fire is what The Witcher 3's meditation until dusk and Red Dead Redemption 2's rest until evening give the player, and the fire's circle keeps it safe. The run keeps its tension where the day really ends.
 
-It raises, for the spike: the afternoon passing at the fire once most of the team has rested there, with its speed and the hour of 17:00 in `balance.toml`.
+**The spike works** (`ClockSpike`, with `run_from` and `afternoon_seconds` in `balance.toml` `[clock]`): at noon, with all three players within 256 blocks of the caravan, the clock stays on the road until two of them have rested at its fire, then eases from 12:35 to 22:00 at 19 times normal speed, and monsters can come out 29.4 seconds later, with the team inside the fire's circle; every player's sky follows at 8 to 19 ticks a tick and never steps back. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| The afternoon is the evening's own ease, only timed to `afternoon_seconds` instead of `dusk_run_seconds` | One curve drives every stretch of the clock, set by how long it must take |
+| Resting is the pack's own: still, within 4 blocks of a lit fire, for 30 seconds (`[fire]`), so turning in early costs half a minute at the fire before the sky turns | Sitting on the fire's logs (`mods.md`) can be that rest |
+| Fast-forwarding the server (`/tick sprint`) leaves a client's clock to catch up by hundreds of ticks at once | A sprint measures the server's clock; the sky is judged in real time |
 
 ## Open
+
+### M21 Old campsites
+
+Which traces the camp leaves (M5), and whether they fade: a team that camps every evening leaves about a hundred campsites over a playthrough. They could stay for good, like the pack's other old camps; fade after some days, grass growing back over the paths and the pit; or stay only where the story keeps them.
 
 ### M17 Distant Horizons SeedGen
 

@@ -1,0 +1,3 @@
+[raid]
+	[raid.sound_trigger]
+		enableSoundRaid = false
