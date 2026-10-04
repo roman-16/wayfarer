@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public record Balance(
+        Clock clock,
         Compass compass,
         Daylight daylight,
         Difficulty difficulty,
@@ -23,6 +24,8 @@ public record Balance(
         Stillness stillness,
         Structures structures,
         Unlocks unlocks) {
+
+    public record Clock(int caravanBlocks, int duskRunSeconds, String evening, String road) {}
 
     public record Compass(int exactBlocks, int farRoundingBlocks, int refreshTicks, int researchAfterBlocks, int trailBlocks) {}
 
@@ -61,6 +64,11 @@ public record Balance(
             }
             Config toml = new TomlParser().parse(new InputStreamReader(stream, StandardCharsets.UTF_8));
             return new Balance(
+                    new Clock(
+                            toml.getInt("clock.caravan_blocks"),
+                            toml.getInt("clock.dusk_run_seconds"),
+                            toml.get("clock.evening"),
+                            toml.get("clock.road")),
                     new Compass(
                             toml.getInt("compass.exact_blocks"),
                             toml.getInt("compass.far_rounding_blocks"),

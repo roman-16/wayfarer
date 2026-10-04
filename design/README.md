@@ -4,7 +4,7 @@ What Wayfarer is becoming, decided here before anything is built. Each document 
 
 ## Now
 
-**Phase 3, Systems.** Every question in `systems.md` and `tooling.md` is settled on paper, except M17, which waits for a test world. The tooling (`tooling.md`) is built, and the M1 to M5 spikes work. Next: **the M6 spike**, the scripted clock; phase 3 is done when every mechanic has a reason in `lore.md` and a spike that works.
+**Phase 3, Systems.** Every question in `systems.md` and `tooling.md` is settled on paper, except M17, which waits for a test world, and M20, heading in early, which the M6 spike opened. The tooling (`tooling.md`) is built, and the M1 to M6 spikes work. Next: **M20**, then **the M7 spike**, joining later; phase 3 is done when every mechanic has a reason in `lore.md` and a spike that works.
 
 ## Phases
 

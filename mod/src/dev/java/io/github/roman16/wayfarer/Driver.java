@@ -90,7 +90,7 @@ public final class Driver {
     private static final Field CLICK_COUNT = clickCount();
     private static final String EXPERIMENTAL_WARNING = "selectWorld.backupQuestion.experimental";
     private static final String LOAD_WITHOUT_BACKUP = "selectWorld.backupJoinSkipButton";
-    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "hud", "inspect", "interact", "key", "place", "spawn", "state", "workshop");
+    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "hud", "inspect", "interact", "key", "place", "sky", "spawn", "state", "workshop");
     private static final double INTERACT_REACH = 8;
     private static final String SENTINEL = "execute if entity @s";
     private static final String SENTINEL_REPLY = "commands.execute.conditional.pass_count";
@@ -491,6 +491,7 @@ public final class Driver {
                     minecraft.screen.charTyped((char) character, 0);
                 }
             });
+            case "sky" -> sky(minecraft, Integer.parseInt(argument));
             case "wait" -> waiting = Integer.parseInt(argument);
             case "workshop" -> command(minecraft, "wayfarer workshop enter");
             default -> {
@@ -549,6 +550,27 @@ public final class Driver {
             IntegratedServer server = minecraft.getSingleplayerServer();
             String tick = server == null ? "no server" : "%.1f ms a server tick".formatted(server.getAverageTickTimeNanos() / NANOS_PER_MILLI);
             note("perf: %.0f fps over one second, %s, drawn by %s".formatted(fps, tick, GlUtil.getRenderer()));
+        };
+    }
+
+    private static void sky(Minecraft minecraft, int ticks) {
+        List<Long> times = new ArrayList<>();
+        until = () -> {
+            times.add(minecraft.level.getDayTime());
+            progressed = System.nanoTime();
+            return times.size() > ticks;
+        };
+        then = () -> {
+            long least = Long.MAX_VALUE;
+            long most = Long.MIN_VALUE;
+            for (int index = 1; index < times.size(); index++) {
+                long step = times.get(index) - times.get(index - 1);
+                least = Math.min(least, step);
+                most = Math.max(most, step);
+            }
+            note("sky: over %d ticks the client's clock moved %d, %d to %d a tick, at %.3f a tick as the server set it%s".formatted(ticks,
+                    times.getLast() - times.getFirst(), least, most, minecraft.level.getDayTimePerTick(),
+                    least < 0 ? "; it stepped backwards" : ""));
         };
     }
 

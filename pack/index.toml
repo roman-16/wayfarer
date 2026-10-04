@@ -150,7 +150,7 @@ hash = "4ff0c1634c0549f0a91dfcc1f53ca780cadb6655302e195fb6ec2278d57b3948"
 
 [[files]]
 file = "config/improvedmobs/common.toml"
-hash = "bb5171f83211dbe2c07b6cd3420f94cd486b7921bb6163fd612f5c95f4b45870"
+hash = "054c496cf8ac08e4be1e2c140fefbbe8b76f011de59190402d7b4fbd52e292ff"
 
 [[files]]
 file = "config/iris.properties"

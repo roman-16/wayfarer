@@ -19,7 +19,6 @@ DEV = ROOT / "mod/src/generated/dev"
 ENDREM_EYES = ROOT / "pack/config/EndRemastered-NeoForge/Eyes"
 QUESTS = ROOT / "pack/config/ftbquests/quests"
 IRIS = ROOT / "pack/config/iris.properties"
-IMPROVED_MOBS = ROOT / "pack/config/improvedmobs/common.toml"
 QUEST_FILE_VERSION = 13
 QUEST_SPACING = 1.5
 PAGES_PER_ROW = 6
@@ -29,9 +28,6 @@ SPARSE_STRUCTURES = ROOT / "pack/config/sparsestructures.json5"
 CAMPFIRE_SPAWNS = ROOT / "pack/config/nohostilesaroundcampfire.json5"
 LEAD_JOURNAL = "where your compass can mark it"
 CHUNK = 16
-TICKS_PER_DAY = 24000
-IMPROVED_MOBS_STEP_TICKS = 2400
-IMPROVED_MOBS_CAP = 250.0
 TIER_NAMES = {1: "tier_one", 2: "tier_two"}
 
 COVER = 3
@@ -834,14 +830,6 @@ def spread(balance):
     )
 
 
-def difficulty(balance):
-    per_step = balance["difficulty"]["per_day"] * IMPROVED_MOBS_STEP_TICKS / TICKS_PER_DAY
-    IMPROVED_MOBS.write_text(
-        "[general]\n"
-        + f'\t"Difficulty Increase" = ["0.0;difficulty + {per_step:.5f}", "{IMPROVED_MOBS_CAP};difficulty"]\n'
-    )
-
-
 def campfire_spawns(balance):
     write_json(
         CAMPFIRE_SPAWNS,
@@ -906,7 +894,6 @@ def main():
     worldgen(eyes, layouts, source["tiers"], balance)
     tour(eyes, layouts)
     spread(balance)
-    difficulty(balance)
     campfire_spawns(balance)
     removals(tomllib.loads((ROOT / "generator/removals.toml").read_text()))
     camp(written["letter"]).save(MAIN / "data/wayfarer/structure/last_camp.nbt")

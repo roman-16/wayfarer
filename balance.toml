@@ -1,3 +1,9 @@
+[clock]
+caravan_blocks = 256
+dusk_run_seconds = 75
+evening = "22:00"
+road = "17:30"
+
 [compass]
 exact_blocks = 500
 far_rounding_blocks = 500
@@ -9,7 +15,6 @@ trail_blocks = 20
 crumble_seconds = 60
 
 [difficulty]
-per_day = 0.333
 per_eye = 3.33
 
 [fire]

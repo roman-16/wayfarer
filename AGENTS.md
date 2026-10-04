@@ -14,7 +14,7 @@ A personal modpack repository: it reproduces on any machine from `direnv allow` 
 
 ## Where things go
 
-- `mod/src/generated/`, `pack/config/EndRemastered-NeoForge/Eyes/`, `pack/config/ftbquests/quests/`, `pack/config/improvedmobs/common.toml`, `pack/config/iris.properties`, `pack/config/nohostilesaroundcampfire.json5` and `pack/config/sparsestructures.json5` are written by `just generate`. Change the generator or its sources (`story/quests.toml` for the quest book, `story/books.toml` for the books, `story/fire.toml` for the voice, Maren and the leads, `story/notes.toml` for The Road So Far and Words of the Road), never the output.
+- `mod/src/generated/`, `pack/config/EndRemastered-NeoForge/Eyes/`, `pack/config/ftbquests/quests/`, `pack/config/iris.properties`, `pack/config/nohostilesaroundcampfire.json5` and `pack/config/sparsestructures.json5` are written by `just generate`. Change the generator or its sources (`story/quests.toml` for the quest book, `story/books.toml` for the books, `story/fire.toml` for the voice, Maren and the leads, `story/notes.toml` for The Road So Far and Words of the Road), never the output.
 - `pack/` is managed by packwiz. Add a mod with `packwiz modrinth add <slug>` from `pack/`; use CurseForge only for a mod that is not on Modrinth. Every mod is `client` or `both`: singleplayer runs the server inside the client, so a `server` mod would be missing there.
 - A new config for a mod starts from the default the mod writes on its first boot (`build/server/config` after `just test`, `build/client/config` after `just showroom`). Ship only the keys the pack changes when the mod fills in the rest itself, so machine-specific defaults (thread counts and the like) stay per machine.
 
@@ -93,6 +93,7 @@ $ python3 scripts/client.py run workshop 'place wayfarer:last_camp' 'spawn minec
 | `screen` | Logs the open screen and its widgets with labels, positions and sizes |
 | `settle` | Waits until earlier commands have run on the server, the chunks around the player are loaded and the terrain is drawn |
 | `shot <name>` | Saves a screenshot of a frame drawn after every step before it |
+| `sky <ticks>` | Watches the client's clock for that many ticks and returns how far it moved, the least and most in one tick, and the speed the server set |
 | `spawn <creature> [walking]` | Puts a creature at the workshop's next free spot, standing still, or walking with `walking` |
 | `state` | Returns the world's story state: every save file of the Wayfarer mod as JSON |
 | `type <text>` | Types into the focused field |

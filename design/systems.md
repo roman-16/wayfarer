@@ -215,7 +215,16 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 **Why:** A clock the story drives lets every night land where the people are and every hard night land as a set piece, and easing out keeps the sky moving so time never visibly stops. Counting days in nights slept cannot be cheated, and daylight that is safe only in the open keeps the forest, the storm and the Gazebound dangerous on a long day's road.
 
-It raises, for the spike: the clock easing out on a server with several players; its targets and speeds in `balance.toml`, tuned so the dusk run meets its 1:15, since easing from normal speed alone would take about 1:47 to the hour monsters come out, which is about 13,200 from memory and not checked; and the pack's per-day difficulty taken out.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/ClockSpike.java`, dev code that never ships, with its targets in `balance.toml` `[clock]`): the road eases from 6:00 towards 17:30 and stands at 11:59 after 7 minutes, 14:33 after 13, 16:05 after 20, 17:08 after 33 and 17:24 after 46, as the table above says; with three players online the evening waits while only one is within 256 blocks of the caravan and begins the moment a second walks in, and monsters can come out 74.8 seconds later; a hard night runs on at normal speed to 6:00, where the next day begins on the road by itself. The pack's per-day difficulty is gone (`pack/config/improvedmobs/common.toml`), so until the shine (M9) monsters grow only with the shards. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| NeoForge sets a world's clock speed (`setDayTimePerTick`) and sends it with the clock's fraction to every NeoForge client, which then moves its own sky at that speed: the client's clock moved 0 to 2 ticks a tick and never backwards | The engine sets a speed about once a second and never sets the time itself |
+| Monsters can come out on open ground at 13,188 (19:11) in clear weather, at 12,969 in rain and at any hour in a thunderstorm, from Minecraft's sky darkening and the overworld's spawn light of 0 to 7 | The evening reads the weather when it begins and times the run to that hour |
+| From 17:24, easing from normal speed reaches 19:11 after 1:53; meeting 1:15 takes 1.5 times normal speed at the start | The evening starts at whatever speed meets `dusk_run_seconds` from where the clock stands |
+| Heading in at noon starts the evening at 8.3 times normal speed, so the sun races to dusk | Open: M20 |
+| NeoForge's speed does nothing while the daylight cycle is stopped, as the showroom stops it for its noon | The engine turns the daylight cycle on whenever it takes the clock |
+| A slept night jumps to the next 6:00 (`ServerLevel`, read in its code, not tried), the same hour a hard night runs to | Dawn, slept through or sat through, starts the road |
 
 ### M7 Joining later
 
@@ -529,6 +538,10 @@ It raises, for the spike: a new Silent Gear material from data, a forge that fin
 **Why:** Distant Horizons shows the camp as soon as the server saves its chunks, on a server as in singleplayer, so a camp that waits for a turned back goes up unseen almost every evening, and one that never waits past the edge never leaves the team walking towards nothing. A few tents appearing far off once is what the lore already promises: in the evening their smoke shows me where.
 
 ## Open
+
+### M20 Heading in early
+
+"Make for the caravan" can be tracked at any hour, and the evening always meets monsters 1:15 after it begins, so a team that heads in at noon sees the sun race to dusk at eight times its speed. Ways out: the evening begins only once the road's clock has come close to its evening hour, and until then the walk in is daylight; the run grows with the hours left, so an early evening is a longer, gentler dusk; or the race stays, as the price of turning in early.
 
 ### M17 Distant Horizons SeedGen
 
