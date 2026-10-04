@@ -55,7 +55,7 @@ A typical day starts and ends at the caravan (D14), but it is the typical day, n
 | Stretch | The clock |
 |---|---|
 | Out on the road | Eases out from the morning: it starts at normal speed and runs slower and slower towards an evening with the sun low but still bright, which it never quite reaches |
-| Making for the caravan | Once "make for the caravan" is tracked and most of the team is within 256 blocks of the camp, it eases out the same way, from normal speed towards about 22:00: dark, with monsters out beyond the fire's circle. Monsters come out about 1:15 later, so the team is in by dusk if it heads straight in, and meets them on the way if it dawdles |
+| Making for the caravan | From 17:00, once "make for the caravan" is tracked and most of the team is within 256 blocks of the camp, it eases out the same way towards about 22:00: dark, with monsters out beyond the fire's circle. Monsters come out about 1:15 later, so the team is in by dusk if it heads straight in, and meets them on the way if it dawdles. Earlier, the team walks in by daylight, and the afternoon passes at the caravan's fire (`systems.md`, M20) |
 | Asleep | The next morning |
 
 The evening at the caravan is talk, the people's stories, whatever the camp needs, and then sleep. The team shares one sky, so "most of the team" is the same two thirds that sleep needs, and a quest that keeps the player out for a night sets the clock itself. Quests change the shape whenever they need to. One keeps the player at a place for a while, never long, because a Wayfarer still has to walk on; another keeps them out for a night in the wild.

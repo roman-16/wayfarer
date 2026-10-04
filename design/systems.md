@@ -197,7 +197,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 ### M6 The day and the night: a scripted clock
 
 - While the story runs, the quest engine drives the clock (D2); once it has ended, the day and the night run as in vanilla. Minecraft's clock runs from 0 at 6:00 to 24,000, with noon at 6,000.
-- The clock eases out: its speed is always normal speed times the gap left to its target over the gap it started with, so it starts at normal speed, slows the whole way and never arrives. On the road it eases from the morning towards a low-sun evening at 11,500, about 17:30, and holds there. Once "make for the caravan" is tracked and most of the team is within 256 blocks of the camp, it eases towards 22:00, timed so monsters come out about 1:15 later: sprinting (about 5.6 blocks a second) the team is in 30 seconds before them, walking (about 4.3) 16 seconds before, and a minute wasted on the way meets them. A quest that keeps the player out sets the clock itself, and a hard night does not ease out at 22:00 but runs on to dawn.
+- The clock eases out: its speed is always normal speed times the gap left to its target over the gap it started with, so it starts at normal speed, slows the whole way and never arrives. On the road it eases from the morning towards a low-sun evening at 11,500, about 17:30, and holds there. From 17:00, once "make for the caravan" is tracked and most of the team is within 256 blocks of the camp, it eases towards 22:00, timed so monsters come out about 1:15 later: sprinting (about 5.6 blocks a second) the team is in 30 seconds before them, walking (about 4.3) 16 seconds before, and a minute wasted on the way meets them. A quest that keeps the player out sets the clock itself, and a hard night does not ease out at 22:00 but runs on to dawn.
 
   | Real minutes on the road | Clock |
   |---|---|
@@ -222,7 +222,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 | NeoForge sets a world's clock speed (`setDayTimePerTick`) and sends it with the clock's fraction to every NeoForge client, which then moves its own sky at that speed: the client's clock moved 0 to 2 ticks a tick and never backwards | The engine sets a speed about once a second and never sets the time itself |
 | Monsters can come out on open ground at 13,188 (19:11) in clear weather, at 12,969 in rain and at any hour in a thunderstorm, from Minecraft's sky darkening and the overworld's spawn light of 0 to 7 | The evening reads the weather when it begins and times the run to that hour |
 | From 17:24, easing from normal speed reaches 19:11 after 1:53; meeting 1:15 takes 1.5 times normal speed at the start | The evening starts at whatever speed meets `dusk_run_seconds` from where the clock stands |
-| Heading in at noon starts the evening at 8.3 times normal speed, so the sun races to dusk | Open: M20 |
+| Heading in at noon starts the evening at 8.3 times normal speed, so the sun races to dusk | The run starts only from 17:00, and an earlier evening passes at the fire (M20) |
 | NeoForge's speed does nothing while the daylight cycle is stopped, as the showroom stops it for its noon | The engine turns the daylight cycle on whenever it takes the clock |
 | A slept night jumps to the next 6:00 (`ServerLevel`, read in its code, not tried), the same hour a hard night runs to | Dawn, slept through or sat through, starts the road |
 
@@ -537,11 +537,22 @@ It raises, for the spike: a new Silent Gear material from data, a forge that fin
 
 **Why:** Distant Horizons shows the camp as soon as the server saves its chunks, on a server as in singleplayer, so a camp that waits for a turned back goes up unseen almost every evening, and one that never waits past the edge never leaves the team walking towards nothing. A few tents appearing far off once is what the lore already promises: in the evening their smoke shows me where.
 
-## Open
-
 ### M20 Heading in early
 
-"Make for the caravan" can be tracked at any hour, and the evening always meets monsters 1:15 after it begins, so a team that heads in at noon sees the sun race to dusk at eight times its speed. Ways out: the evening begins only once the road's clock has come close to its evening hour, and until then the walk in is daylight; the run grows with the hours left, so an early evening is a longer, gentler dusk; or the race stays, as the price of turning in early.
+- From 17:00, heading in starts the run home: the clock eases to 22:00 and monsters can come out 1:15 later (M6).
+- Before 17:00, heading in leaves the clock alone, and the team walks in by daylight. Once most of the team has rested at the caravan's fire, the afternoon passes as a time-lapse, the shadows stretching and the sky going gold, then red, in about half a minute from noon, and the evening begins at the fire, inside its circle.
+
+  ```text
+  Noon   [Main] Make for the caravan.   Compass ◆ 600 blocks
+         The sun stays where it is. You sit down at the fire with Bram.
+         The shadows stretch, the sky goes gold, then red. Evening.
+  ```
+
+**Why:** From noon the run would make the sun sweep the sky at eight times its speed, while from 17:00 it needs no more than one and a half; an afternoon let go at the fire is what The Witcher 3's meditation until dusk and Red Dead Redemption 2's rest until evening give the player, and the fire's circle keeps it safe. The run keeps its tension where the day really ends.
+
+It raises, for the spike: the afternoon passing at the fire once most of the team has rested there, with its speed and the hour of 17:00 in `balance.toml`.
+
+## Open
 
 ### M17 Distant Horizons SeedGen
 
