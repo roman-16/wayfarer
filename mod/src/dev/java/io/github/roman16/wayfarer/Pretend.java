@@ -91,8 +91,9 @@ public final class Pretend {
         connections.add(connection);
         CommonListenerCookie cookie = new CommonListenerCookie(profile, 0, ClientInformation.createDefault(), false, ConnectionType.NEOFORGE);
         server.getPlayerList().placeNewPlayer(connection, player, cookie);
-        source.sendSuccess(() -> Component.literal("%s is online at %.1f %.1f %.1f in %s"
-                .formatted(name, player.getX(), player.getY(), player.getZ(), player.level().dimension().location())), false);
+        String dead = player.isDeadOrDying() ? ", dead since they left; `wayfarer pretend respawn %s` brings them back".formatted(name) : "";
+        source.sendSuccess(() -> Component.literal("%s is online at %.1f %.1f %.1f in %s%s"
+                .formatted(name, player.getX(), player.getY(), player.getZ(), player.level().dimension().location(), dead)), false);
         return 1;
     }
 

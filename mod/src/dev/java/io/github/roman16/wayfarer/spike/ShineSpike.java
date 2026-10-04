@@ -83,6 +83,10 @@ public final class ShineSpike {
         return 1;
     }
 
+    static int shine() {
+        return shine;
+    }
+
     private static int notice() {
         return (int) (shine * Balance.INSTANCE.shine().noticeBlocksPerShine());
     }

@@ -10,7 +10,10 @@
   },
   "steps": [
     {
-      "codex": "The Gazebound keep an outpost on the road ahead.",
+      "codex": {
+        "me": "The Gazebound keep an outpost on the road ahead.",
+        "pip": "Kai always said the Gazebound kept an outpost on this road. I walk to it alone now."
+      },
       "goal": "wayfarer:lead/outpost",
       "journal": "A Gazebound outpost, somewhere ahead. Find it.",
       "kind": "reach",

@@ -65,6 +65,7 @@ import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -79,6 +80,7 @@ public final class Driver {
     private static final String PLAY_WORLD = "play" + WORLD_SUFFIX;
     private static final String SHOWROOM_WORLD = "showroom" + WORLD_SUFFIX;
     private static final long SEED = 20260929L;
+    private static final String DISTANT_HORIZONS = "distanthorizons";
     private static final Pattern FAILED = Pattern.compile("^[^:<]+ failed: ");
     private static final int FIND_LIMIT = 20;
     private static final int FIND_RADIUS = 32;
@@ -112,6 +114,7 @@ public final class Driver {
     private static String current = "";
     private static long progressed;
     private static String failure;
+    private static String waitingOn;
 
     static {
         Problems.install();
@@ -172,6 +175,7 @@ public final class Driver {
                 return;
             }
             until = null;
+            waitingOn = null;
             progressed = System.nanoTime();
             Runnable finished = then;
             then = null;
@@ -286,7 +290,7 @@ public final class Driver {
     private static String why(Minecraft minecraft) {
         String screen = minecraft.screen == null ? "no screen open" : "the open screen is " + minecraft.screen.getClass().getSimpleName();
         String player = minecraft.player == null ? "no player" : minecraft.player.isAlive() ? "the player is alive" : "the player is dead";
-        return screen + ", " + player + (synced ? "" : ", the server has not answered the last command");
+        return screen + ", " + player + (synced ? "" : ", the server has not answered the last command") + (waitingOn == null ? "" : ", " + waitingOn);
     }
 
     private static void begin(List<String> lines) {
@@ -408,6 +412,7 @@ public final class Driver {
         waiting = 0;
         pending = null;
         until = null;
+        waitingOn = null;
         then = null;
         sentinelSent = false;
         synced = true;
@@ -454,6 +459,7 @@ public final class Driver {
                 click(minecraft, Double.parseDouble(at[0]), Double.parseDouble(at[1]));
             }
             case "close" -> minecraft.setScreen(null);
+            case "far" -> far();
             case "find" -> find(minecraft, argument);
             case "fly" -> {
                 minecraft.player.getAbilities().flying = argument.equals("on");
@@ -551,6 +557,36 @@ public final class Driver {
             String tick = server == null ? "no server" : "%.1f ms a server tick".formatted(server.getAverageTickTimeNanos() / NANOS_PER_MILLI);
             note("perf: %.0f fps over one second, %s, drawn by %s".formatted(fps, tick, GlUtil.getRenderer()));
         };
+    }
+
+    private static void far() {
+        if (!ModList.get().isLoaded(DISTANT_HORIZONS)) {
+            note("error: far needs Distant Horizons; launch the client with start --far");
+            return;
+        }
+        long from = System.nanoTime();
+        FarView.Work[] last = {FarView.read()};
+        if (!last[0].generating()) {
+            note("error: Distant Horizons draws no far view in this client; launch it with start --far");
+            return;
+        }
+        long[] checked = {from};
+        until = () -> {
+            if (System.nanoTime() - checked[0] < PERF_NANOS) {
+                return false;
+            }
+            checked[0] = System.nanoTime();
+            FarView.Work work = FarView.read();
+            boolean still = work.generated() == last[0].generated();
+            if (!still || work.drawn() != last[0].drawn()) {
+                progressed = System.nanoTime();
+            }
+            last[0] = work;
+            waitingOn = "Distant Horizons " + work;
+            return work.left() == 0 && still;
+        };
+        then = () -> note("far: Distant Horizons has generated and drawn the far view, after %.0f s".formatted(
+                (System.nanoTime() - from) / (double) PERF_NANOS));
     }
 
     private static void sky(Minecraft minecraft, int ticks) {

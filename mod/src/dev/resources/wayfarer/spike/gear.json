@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Iron",
+    "needs": "iron ingots",
+    "where": "ore in plain stone, and the old mines",
+    "who": "my own bench"
+  },
+  {
+    "learn": {
+      "needs": "found_frost_iron",
+      "where": "found_frost_iron",
+      "who": "smith_frost_iron"
+    },
+    "name": "Frost iron",
+    "needs": "frost iron",
+    "where": "the Frost Walkers' old mine",
+    "who": "a smith, overnight"
+  }
+]

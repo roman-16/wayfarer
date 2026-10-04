@@ -44,6 +44,7 @@ import net.minecraft.server.level.TicketType;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -52,6 +53,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -114,6 +116,8 @@ public final class CampSpike {
     private static final int STEEP = 4;
     private static final int SURVEY = 16;
     private static final int TALLEST = 8;
+    private static final Set<Block> TRODDEN = Set.of(Blocks.ANDESITE, Blocks.COARSE_DIRT, Blocks.COBBLESTONE, Blocks.DIRT_PATH, Blocks.GRAVEL,
+            Blocks.MOSSY_COBBLESTONE, Blocks.PODZOL, Blocks.ROOTED_DIRT);
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_camp", Comparator.comparingLong(ChunkPos::toLong));
     private static final int TRIES = 4;
     @Nullable
@@ -347,8 +351,8 @@ public final class CampSpike {
                     long loading = (System.nanoTime() - camp.started) / 1_000_000;
                     int gone = takeDown(level, camp);
                     level.getChunkSource().removeRegionTicket(TICKET, camp.ticket, CHUNKS, camp.ticket);
-                    say(server, "camp: taken down at %s, %d blocks put back, %d of %d people gone; chunks loaded in %d ms"
-                            .formatted(where(camp.centre), camp.originals.size(), gone, camp.people.size(), loading));
+                    say(server, "camp: taken down at %s, %d blocks put back and %d left as traces, %d of %d people gone; chunks loaded in %d ms"
+                            .formatted(where(camp.centre), camp.originals.size() - camp.traces, camp.traces, gone, camp.people.size(), loading));
                     CampSpike.camp = null;
                 }
             }
@@ -369,11 +373,39 @@ public final class CampSpike {
                 gone++;
             }
         }
+        Map<BlockPos, BlockState> traces = traces(level, camp);
         List<Map.Entry<BlockPos, BlockState>> originals = new ArrayList<>(camp.originals.entrySet());
         for (int index = originals.size() - 1; index >= 0; index--) {
-            level.setBlock(originals.get(index).getKey(), originals.get(index).getValue(), FLAGS);
+            if (!traces.containsKey(originals.get(index).getKey())) {
+                level.setBlock(originals.get(index).getKey(), originals.get(index).getValue(), FLAGS);
+            }
         }
+        traces.forEach((pos, state) -> level.setBlock(pos, state, FLAGS));
+        camp.traces = traces.size();
         return gone;
+    }
+
+    private static Map<BlockPos, BlockState> traces(ServerLevel level, Camp camp) {
+        Map<BlockPos, BlockState> traces = new HashMap<>();
+        camp.originals.forEach((pos, was) -> {
+            BlockState now = level.getBlockState(pos);
+            if (TRODDEN.contains(now.getBlock()) && !was.canBeReplaced()) {
+                traces.put(pos, now);
+            }
+        });
+        boolean leftBehind = RandomSource.create(camp.centre.asLong()).nextBoolean();
+        camp.originals.keySet().forEach(pos -> {
+            BlockState now = level.getBlockState(pos);
+            if (!traces.containsKey(pos.below())) {
+                return;
+            }
+            if (now.is(Blocks.CAMPFIRE)) {
+                traces.put(pos, now.setValue(CampfireBlock.LIT, false));
+            } else if (now.is(BlockTags.SLABS) || leftBehind && now.is(Blocks.SPRUCE_LOG)) {
+                traces.put(pos, now);
+            }
+        });
+        return traces;
     }
 
     private static void settle(Camp camp) {
@@ -905,6 +937,7 @@ public final class CampSpike {
         @Nullable
         private Heights heights;
         private int paths;
+        private int traces;
         @Nullable
         private CompletableFuture<?> pending;
         private String reason = "";

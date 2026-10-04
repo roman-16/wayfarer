@@ -1,0 +1,59 @@
+{
+  "type": "silentgear:simple",
+  "parent": "silentgear:empty",
+  "crafting": {
+    "can_salvage": true,
+    "categories": [
+      "metal",
+      "intermediate"
+    ],
+    "gear_type_blacklist": [],
+    "ingredient": {
+      "item": "wayfarer:frost_iron"
+    },
+    "part_substitutes": {}
+  },
+  "display": {
+    "color": "#FFB8DCF0",
+    "main_texture_type": "HIGH_CONTRAST",
+    "name": {
+      "text": "Frost Iron"
+    },
+    "name_prefix": ""
+  },
+  "properties": {
+    "silentgear:main": {
+      "armor": 16.0,
+      "armor/boots": 2.0,
+      "armor/chestplate": 6.0,
+      "armor/helmet": 2.0,
+      "armor/leggings": 6.0,
+      "armor_durability": 16.0,
+      "attack_damage": 2.5,
+      "attack_speed": 0.0,
+      "charging_value": 0.7,
+      "draw_speed": 0.1,
+      "durability": 384.0,
+      "enchantment_value": 12.0,
+      "harvest_speed": 7.0,
+      "harvest_tier": {
+        "incorrect_blocks_for_tool": "silentgear:incorrect_for_iron_tools",
+        "level_hint": "2",
+        "name": "iron"
+      },
+      "magic_armor": 6.0,
+      "magic_damage": 1.0,
+      "projectile_accuracy": 1.1,
+      "projectile_speed": 1.0,
+      "ranged_damage": 1.0,
+      "rarity": 32.0,
+      "traits": [
+        {
+          "conditions": [],
+          "level": 2,
+          "trait": "silentgear:chilled"
+        }
+      ]
+    }
+  }
+}

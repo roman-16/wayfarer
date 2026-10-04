@@ -125,6 +125,25 @@ public final class JournalScreen extends Screen {
                 y += LINE;
             }
         }
+        gear(graphics, view);
+    }
+
+    private void gear(GuiGraphics graphics, JsonObject view) {
+        int x = width / 2;
+        int y = MARGIN;
+        graphics.drawString(font, "Gear", x, y, TITLE);
+        y += LINE;
+        if (view.has("gear")) {
+            for (JsonElement element : view.getAsJsonArray("gear")) {
+                JsonObject tier = element.getAsJsonObject();
+                graphics.drawString(font, tier.get("name").getAsString(), x, y, TEXT);
+                y += LINE;
+                graphics.drawString(font, "needs " + tier.get("needs").getAsString() + ", from " + tier.get("where").getAsString(), x + MARGIN, y, QUIET);
+                y += LINE;
+                graphics.drawString(font, "made by " + tier.get("who").getAsString(), x + MARGIN, y, QUIET);
+                y += LINE;
+            }
+        }
     }
 
     private int stones(GuiGraphics graphics, JsonObject view, int y) {

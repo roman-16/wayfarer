@@ -4,7 +4,7 @@ What Wayfarer is becoming, decided here before anything is built. Each document 
 
 ## Now
 
-**Phase 3, Systems.** Every question in `systems.md` and `tooling.md` is settled on paper, except M17, which waits for a test world, and M21, old campsites. The tooling (`tooling.md`) is built, and the M1 to M10 and M20 spikes work. Next: **the M11 spike**, gates and gifts; phase 3 is done when every mechanic has a reason in `lore.md` and a spike that works.
+**Phase 4, Vertical slice.** Act 1 playable end to end, every new system at its minimum, built from `story.md` and `systems.md`. The slice is planned quest by quest in `slice.md`. Next: **step 1, the world**: the picked mods in, the cuts made, places by owner, ore by place, one world as one team.
 
 ## Phases
 
@@ -22,10 +22,11 @@ What Wayfarer is becoming, decided here before anything is built. Each document 
 | Document | Holds | State |
 |---|---|---|
 | `lore.md` | What is true in the world, written from `story.md`; the pack's texts are written from it | Canon |
-| `mods.md` | Mods, resource packs and data packs weighed for the pack, each with a verdict, and what the pack could build itself | Research, waits for Roman's pick |
+| `mods.md` | Mods, resource packs and data packs weighed for the pack, each with a verdict, and what the pack could build itself | Picked: every Use goes in with phase 4 |
 | `narration.md` | Who reads which book and speaks which line aloud, with which voice, and why | Waits for phase 6 |
+| `slice.md` | How phase 4 builds Act 1, quest by quest, and each step's state | In progress |
 | `sound.md` | The music and sound effects: what plays where, and where it comes from | Waits for phase 6 |
 | `story.md` | The story, act by act | Settled |
-| `systems.md` | Every mechanic, why the world has it, and the spike that proves it | In progress |
+| `systems.md` | Every mechanic, why the world has it, and the spike that proves it | Settled |
 | `tooling.md` | How the pack is seen, tried and built, by coding agents: the worlds, the commands, the tools | Settled |
 | `vision.md` | The pillars, the loops, the twist, the ending, the scope | Settled |

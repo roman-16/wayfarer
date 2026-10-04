@@ -64,6 +64,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public final class QuestSpike {
     private static final String DATA = Wayfarer.MODID + "_quest_spike";
     private static final String PEOPLE = Wayfarer.MODID + "_spike_people";
+    private static final String PLAYER_VOICE = "me";
     private static final int GAMEMASTER = 2;
     private static final int CHECK_TICKS = 20;
     private static final int AHEAD_BLOCKS = 1024;
@@ -137,7 +138,7 @@ public final class QuestSpike {
             return 0;
         }
         progress.choices.put(choice, day(server));
-        progress.codex.add(picked.get("codex").getAsString());
+        progress.codex.add(voiced(picked.get("codex"), progress.voice));
         progress.step = DONE;
         progress.rewards.add(QUEST.getAsJsonObject("reward").get("id").getAsString());
         progress.setDirty();
@@ -308,7 +309,7 @@ public final class QuestSpike {
     private static void line(Progress progress, int step) {
         JsonElement codex = step(step).get("codex");
         if (codex != null) {
-            progress.codex.add(codex.getAsString());
+            progress.codex.add(voiced(codex, progress.voice));
         }
         progress.setDirty();
     }
@@ -320,6 +321,22 @@ public final class QuestSpike {
 
     private static void broadcast(MinecraftServer server, Component message) {
         server.getPlayerList().broadcastSystemMessage(message, false);
+    }
+
+    private static String voiced(JsonElement codex, String voice) {
+        if (!codex.isJsonObject()) {
+            return codex.getAsString();
+        }
+        JsonElement own = codex.getAsJsonObject().get(voice);
+        return (own == null ? codex.getAsJsonObject().get(PLAYER_VOICE) : own).getAsString();
+    }
+
+    static void speakAs(MinecraftServer server, String voice, String entry) {
+        Progress progress = Progress.of(server);
+        progress.voice = voice;
+        progress.codex.add(entry);
+        progress.setDirty();
+        sync(server);
     }
 
     static void sync(MinecraftServer server) {
@@ -361,6 +378,7 @@ public final class QuestSpike {
         }
         view.add("places", places);
         view.add("stones", StoneSpike.view(player));
+        view.add("gear", GearSpike.view(player.server));
         return view.toString();
     }
 
@@ -395,6 +413,7 @@ public final class QuestSpike {
         private final Map<String, Long> choices = new TreeMap<>();
         private final Set<String> echoed = new TreeSet<>();
         private final List<String> codex = new ArrayList<>();
+        private String voice = PLAYER_VOICE;
         private final Map<String, Set<UUID>> claims = new TreeMap<>();
         private final List<String> rewards = new ArrayList<>();
 
@@ -432,6 +451,7 @@ public final class QuestSpike {
                 progress.claims.put(key, players);
             });
             tag.getList("rewards", Tag.TAG_STRING).forEach(entry -> progress.rewards.add(entry.getAsString()));
+            progress.voice = tag.contains("voice") ? tag.getString("voice") : PLAYER_VOICE;
             return progress;
         }
 
@@ -456,6 +476,7 @@ public final class QuestSpike {
             });
             tag.put("claims", claimed);
             tag.put("rewards", strings(rewards));
+            tag.putString("voice", voice);
             return tag;
         }
 

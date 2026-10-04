@@ -325,6 +325,16 @@ A cut gets a reason in the lore only where the player notices it by trying: a se
 | Ore is thin in plain stone | The Ancient Cities and the peoples mined the land bare long ago; what is left lies in their old mines and in the deep stone around the Cities | Hob: "You won't find iron worth the name by digging where you stand" |
 | The volcanic and basalt lands | Where the Nether once pressed up, before the Keepers sealed it | An old book, and the land's name |
 | The Last Sea | The edge of the world past the far ring, where the land gives out; its cold hints at the silence (S21) | The Keepers, and the voice: "Don't go out there. Nothing I sent ever came back" |
+| Gear never breaks, and at its last use it is no better than a hand | Everything carried: a Wayfarer throws nothing away, so a worn-out tool is still carried, no better than a hand, until a fire or a smith mends it | Hob: "You don't throw it away. You bring it to me." |
+| Gate stone that a lesser pick barely breaks, and the pick spent on it | The peoples built their gates from deep stone the Cities' Nether-fire hardened: only metal from the same deep places cuts it, and a softer pick blunts itself to nothing | Hob, or a people's book |
+| Held up, the ember makes tracks and clues glow | The ember is the Eye's light, and light is sight: held up, it shows for a moment what has passed by | The voice, the first time: "Hold it up. Look." |
+| The gaze's creatures come to noise | The gaze only sees, but its creatures hear: what they hear, they come to look at, and then they see what shines | Corin: "Quiet. They can't see you yet. They can hear you." |
+| The caravan's camp never burns, and lightning passes it by | A fire shared freely does not turn on the ones who share it: no spark of it catches their tents, and the sky's fire passes them by | Tamsin |
+| The gaze's creatures walk in rain and storms, and the sea's beast comes by day | Under cloud and rain the sky is dark enough for the gaze's creatures to dare the day, as in shade | A Tide Folk fisher |
+| The Flare fills again at a fire | The Flare spends the ember's light at once, and a fire, the ember's kin, fills it again | The Scribes' books |
+| Only a smith can put an enchanted book on | The old enchantments are written in the smiths' script, and only a smith who knows it can set one into steel | Hob: "Pretty book. Useless in your hands." |
+| Kill a Gazebound captain, and they raid the next village | His band takes his death out on the next village the killer walks into, to show the settled what sheltering a Wayfarer costs | Corin |
+| A waystone of one's own | The first Wayfarers each carried a small stone cut from their waystones: set down and touched, it holds the place, and the road folds back to it; like everything, it is carried | Ilse, or an old Wayfarer's journal |
 
 The endings that put the ember out, Blind it and Close the Eye, bring planting, breeding, beds and chests back (S8); in Give it its sight they come back only in the promised home, the one place the gaze looks away from.
 
@@ -340,7 +350,7 @@ Prologue, The Oath:
 
 | # | Quest | Place | Activity | Gate | Turn |
 |---|---|---|---|---|---|
-| P1 | The Last Fire | The Last Camp | Talk | | A dying stranger knows the player's face, gives them his ember and dies; they bury him by the road |
+| P1 | The Last Fire | The Last Camp | Talk | | A dying stranger knows the player's face, gives them his ember and dies with a charge cut off halfway: "Don't let it... the shards. I took them. Don't let it have..." (S22); they bury him by the road |
 | P2 | The First Day | Around the Last Camp | Build: the tent, the fire, everything carried | | Dusk falls once the first day's work is done; the ember wakes, and on the horizon a town is burning |
 | P3 | Ash | The burnt town, a place the quest puts down | Investigate, then Hold through the night | Strength | Every body has its chest opened and nothing taken. The survivors, Tamsin, Pip, Agna and Hob, beg the one with an ember to lead them, and Tamsin will not leave without the town's bell |
 
@@ -348,7 +358,7 @@ Act 1, on foot, the near ring:
 
 | # | Quest | Place | Activity | Gate | Turn |
 |---|---|---|---|---|---|
-| 1.1 | The Pull | The Diggers' tunnels, an old mineshaft | Reach | | The first shard sinks into the ember, and the dead stranger speaks: the voice's first words (S4). Trail-sight |
+| 1.1 | The Pull | The Diggers' tunnels, an old mineshaft | Reach | | The first shard sinks into the ember, and the dead stranger speaks: the voice's first words (S4) finish his dying charge, "Bring them to a frame, and we put its eye out for good" (S22). Trail-sight |
 | 1.2 | His First Camp | Wend's first camp, a lead from the voice | Investigate, then a memory | | The player plays him young and happy, but a Gazebound mark is cut into the hearthstone, much later |
 | 1.3 | The Deserter | A ford near a Gazebound outpost | Hold | Strength | The player saves a man the Gazebound are hunting: Corin, who looks at the ember and says "That's Wend's light. I'd know it", and names the Grass King's heir for the first time |
 | 1.4 | The Marsh Mothers | The swamp's witch hut | Talk, then Reach where nothing is reflected | Trust | The witches curse the stranger's name, and one flinches from the player: "Something looks out of you." True-sight |
@@ -503,6 +513,27 @@ The last line, after any door:
 **Why:** A guard with a cruel way of guarding is what makes the dragon sad rather than evil, and knowing it keeps every later decision consistent, but told in full in this pack it would pull the story away from the dragon and the gaze. Hints along the way and one line at the end leave the door open for a part two.
 
 It raises, for phase 2: where the hints fall, and how much the dragon lets slip.
+
+### S22 The goal: a dying wish, finished by the voice
+
+- The stranger dies in P1 with a charge cut off halfway, so the player leaves the Last Camp with a task they do not fully understand. The burnt town in P3 makes it their own: whatever opened those chests is what he meant.
+
+  ```text
+  <Stranger> Don't let it... the shards. I took them. Don't let it have...
+  He doesn't finish. The fire pops. The ember is warm in your hand.
+  ```
+
+- The ember's pull leads to the first hall, and there the voice, in his voice, finishes his sentence. From then on the goal is said out loud: bring the shards to a frame and put the dragon's eye out for good, so no town burns again. It is the goal behind Blind it (S8).
+
+  ```text
+  First hall  The shard sinks into the ember. A warmth, then a voice you last heard dying:
+              <Wend> Well. That's one. Don't look so surprised, I did say I'd come along.
+              <Wend> You heard me at the fire. Bring them to a frame, and we put its eye out for good. No more burning towns.
+  ```
+
+- What Wend really meant, "don't let it look at them", surfaces only at the frame, as his real last whisper (S4, F1). Until then the player follows a real deathbed wish that the voice has finished its own way.
+
+**Why:** A story needs its goal said in the first hour, as The Witcher 3 says "find Ciri"; a dying man's unfinished charge gives it there, and the burnt town makes it personal before the voice ever speaks. The voice's lie then grows out of a real wish, which makes it easy to believe and makes the truth at the frame a turn rather than a contradiction.
 
 ## Open
 

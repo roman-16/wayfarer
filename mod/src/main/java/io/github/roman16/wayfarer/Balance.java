@@ -13,18 +13,24 @@ public record Balance(
         Compass compass,
         Daylight daylight,
         Difficulty difficulty,
+        Dragon dragon,
         Fire fire,
+        Flare flare,
         Gate gate,
         Gaze gaze,
         Hunger hunger,
         Leads leads,
         Nights nights,
+        Sea sea,
         Shine shine,
         Sight sight,
         Sleep sleep,
         Stillness stillness,
         Structures structures,
-        Unlocks unlocks) {
+        Tent tent,
+        ToolGate toolGate,
+        Unlocks unlocks,
+        Waystones waystones) {
 
     public record Clock(int afternoonSeconds, int caravanBlocks, int duskRunSeconds, String evening, String road, String runFrom) {}
 
@@ -34,7 +40,11 @@ public record Balance(
 
     public record Difficulty(float perEye) {}
 
+    public record Dragon(int blindAimBlocks, int healthBase, int healthPerPlayer, int healthPerShard, int sightShards) {}
+
     public record Fire(int circleBlocks, int lineSeconds, int restBlocks, int restSeconds) {}
+
+    public record Flare(int charges, int reachBlocks) {}
 
     public record Gate(int bandSize, int reachBlocks) {}
 
@@ -46,6 +56,8 @@ public record Balance(
 
     public record Nights(int bloodMoonEvery, int hordeEvery) {}
 
+    public record Sea(int beastOneIn, int beastOneInLeast, int checkSeconds, int openWaterBlocks, int ramDamage, int ramSeconds, int shinePerStep) {}
+
     public record Shine(List<Integer> act, double noticeBlocksPerShine, int perShard, int remedy, int spawnEverySeconds, int spawnLimit, int spawnShine) {}
 
     public record Sight(int reachBlocks, int shards) {}
@@ -56,7 +68,13 @@ public record Balance(
 
     public record Structures(double spreadFactor, List<String> spreadFeatures) {}
 
+    public record Tent(int fireBlocks) {}
+
+    public record ToolGate(int slowdown) {}
+
     public record Unlocks(int aircraftEyes, int sailingShipEyes) {}
+
+    public record Waystones(int blocksPerFood) {}
 
     public static final Balance INSTANCE = load();
 
@@ -82,11 +100,18 @@ public record Balance(
                             toml.getInt("compass.trail_blocks")),
                     new Daylight(toml.getInt("daylight.crumble_seconds")),
                     new Difficulty(toml.<Number>get("difficulty.per_eye").floatValue()),
+                    new Dragon(
+                            toml.getInt("dragon.blind_aim_blocks"),
+                            toml.getInt("dragon.health_base"),
+                            toml.getInt("dragon.health_per_player"),
+                            toml.getInt("dragon.health_per_shard"),
+                            toml.getInt("dragon.sight_shards")),
                     new Fire(
                             toml.getInt("fire.circle_blocks"),
                             toml.getInt("fire.line_seconds"),
                             toml.getInt("fire.rest_blocks"),
                             toml.getInt("fire.rest_seconds")),
+                    new Flare(toml.getInt("flare.charges"), toml.getInt("flare.reach_blocks")),
                     new Gate(toml.getInt("gate.band_size"), toml.getInt("gate.reach_blocks")),
                     new Gaze(
                             toml.<List<Number>>get("gaze.capacity_seconds").stream().map(Number::intValue).toList(),
@@ -99,6 +124,14 @@ public record Balance(
                             toml.<Number>get("hunger.warm_exhaustion_factor").floatValue()),
                     new Leads(toml.getInt("leads.camp_blocks"), toml.getInt("leads.camp_reach_blocks"), toml.getInt("leads.search_rings")),
                     new Nights(toml.getInt("nights.blood_moon_every"), toml.getInt("nights.horde_every")),
+                    new Sea(
+                            toml.getInt("sea.beast_one_in"),
+                            toml.getInt("sea.beast_one_in_least"),
+                            toml.getInt("sea.check_seconds"),
+                            toml.getInt("sea.open_water_blocks"),
+                            toml.getInt("sea.ram_damage"),
+                            toml.getInt("sea.ram_seconds"),
+                            toml.getInt("sea.shine_per_step")),
                     new Shine(
                             toml.<List<Number>>get("shine.act").stream().map(Number::intValue).toList(),
                             toml.<Number>get("shine.notice_blocks_per_shine").doubleValue(),
@@ -111,7 +144,10 @@ public record Balance(
                     new Sleep(toml.getInt("sleep.players_percentage")),
                     new Stillness(toml.getInt("stillness.dimming_days"), toml.getInt("stillness.horde_days"), toml.getInt("stillness.radius_blocks")),
                     new Structures(toml.<Number>get("structures.spread_factor").doubleValue(), toml.<List<String>>get("structures.spread_features")),
-                    new Unlocks(toml.getInt("unlocks.aircraft_eyes"), toml.getInt("unlocks.sailing_ship_eyes")));
+                    new Tent(toml.getInt("tent.fire_blocks")),
+                    new ToolGate(toml.getInt("tool_gate.slowdown")),
+                    new Unlocks(toml.getInt("unlocks.aircraft_eyes"), toml.getInt("unlocks.sailing_ship_eyes")),
+                    new Waystones(toml.getInt("waystones.blocks_per_food")));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

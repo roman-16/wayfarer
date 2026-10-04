@@ -9,7 +9,7 @@ description: The in-game checklist for what Wayfarer's tests cannot see - shader
 
 ## Hand the user a checklist
 
-Pick the items the change touched, and give each as one line: where to go, what to do, what should happen. `just showroom` opens the showroom, where every shrine stands in a row and the compass points at a waymark 750 blocks west of the camp; `/locate structure wayfarer:shrine/<eye>` and `/tp` find the shrines in the natural world next to it. `just play` opens a fresh world in survival, for everything that has to be met the way a player meets it. Both run without shaders, without Distant Horizons and at 8 chunks, so shaders, the far view and anything judged by its look in the world are checked in the exported pack: `just pack`, imported into Prism Launcher.
+Pick the items the change touched, and give each as one line: where to go, what to do, what should happen. `just showroom` opens the showroom, where every shrine stands in a row and the compass points at a waymark 750 blocks west of the camp; `/locate structure wayfarer:shrine/<eye>` and `/tp` find the shrines in the natural world next to it. `just play` opens a fresh world in survival, for everything that has to be met the way a player meets it. Both run without shaders, without Distant Horizons (unless started with `far`, which keeps a far view of 1,024 blocks) and at 8 chunks, so shaders, the far view and anything judged by its look in the world are checked in the exported pack: `just pack`, imported into Prism Launcher.
 
 | Area | Check |
 |---|---|
@@ -36,7 +36,7 @@ Pick the items the change touched, and give each as one line: where to go, what 
 | The Road Provides | Silent Gear's blueprints, parts and machines work; each column unlocks top to bottom; crimson iron ore turns up in the deep dark; crimson steel takes breeze rods; the alloy forge takes polished deepslate |
 | Loot | Every structure chest opens as a Lootr chest at once, never with Lootr's emergency conversion message |
 | Last Camp | Sits whole at spawn on the first world, not buried or floating |
-| Looks and sound | In the exported pack: shaders, Distant Horizons at 1024 chunks, ambience and music; biomes feel wide and Geophilic's touches sit well beside Terralith; structures and desert or swamp decorations are rare, not a skyline; caves open to the surface often enough; Jade stays in the corner and ignores plants; note anything that clashes |
+| Looks and sound | In the exported pack: shaders, Distant Horizons at 1024 chunks, ambience and music; the far view fills in fast around a new place, its land matches what you find on arrival, it shows no buildings until you come near, and it keeps up on a ship and in the air; biomes feel wide and Geophilic's touches sit well beside Terralith; structures and desert or swamp decorations are rare, not a skyline; caves open to the surface often enough; Jade stays in the corner and ignores plants; note anything that clashes |
 | Balance | How long each leg to the next eye felt, whether nights felt hard but fair, whether gear was worth making, and whether hunger drove foraging without nagging |
 
 ## Bring the results back

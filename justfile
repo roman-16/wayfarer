@@ -62,7 +62,7 @@ pack: build
     python3 scripts/instance.py server build/server {{ jar }}
     python3 -c 'import shutil, sys; shutil.make_archive(sys.argv[1], "zip", sys.argv[2])' "dist/Wayfarer-{{ packVersion }}-server" build/server
 
-[doc("Open the pack in a dev client on a fresh natural world, played in survival the way a player meets it; `just play lean` loads only the Wayfarer mod and what it needs, in a world of its own")]
+[doc("Open the pack in a dev client on a fresh natural world, played in survival the way a player meets it; `just play lean` loads only the Wayfarer mod and what it needs, in a world of its own; `just play far` keeps Distant Horizons' far view on")]
 play mode="full":
     python3 scripts/instance.py client build/client --mode {{ mode }}
     rm --recursive --force build/client/saves/play{{ if mode == "lean" { "-lean" } else { "" } }}
@@ -78,7 +78,7 @@ survey apply="": build
     python3 scripts/instance.py server build/server {{ jar }}
     python3 scripts/boot.py build/server --survey 4 {{ if apply == "apply" { "--apply" } else { "" } }}
 
-[doc("Open the pack in a dev client in the showroom: a flat dimension rebuilt each launch with every shrine and item and a compass demo, beside an empty workshop and a kept natural world; `just showroom lean` loads only the Wayfarer mod and what it needs, in a save of its own")]
+[doc("Open the pack in a dev client in the showroom: a flat dimension rebuilt each launch with every shrine and item and a compass demo, beside an empty workshop and a kept natural world; `just showroom lean` loads only the Wayfarer mod and what it needs, in a save of its own; `just showroom far` keeps Distant Horizons' far view on")]
 showroom mode="full":
     python3 scripts/instance.py client build/client --mode {{ mode }}
     rm --recursive --force build/client/saves/showroom{{ if mode == "lean" { "-lean" } else { "" } }}/dimensions/wayfarer/{showroom,workshop}

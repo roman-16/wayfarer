@@ -51,7 +51,7 @@ The game runs on a hidden screen from `start` until `stop`: Xvfb from devbox, dr
 
 `start --lean` on either driver, and `just showroom lean` or `just play lean`, load only the Wayfarer mod and what it needs (Curios, FTB Teams, FTB Library, Architectury, all from the dev classpath) with an empty mods folder, for work that does not need the rest of the pack: the client starts in about 23 s instead of 34, the dev server in about 11 s instead of 16. They play in worlds of their own (`showroom-lean`, `play-lean`, `world-lean`), since opening a world without the mods it was made with damages it.
 
-Every dev client (`just showroom`, `just play` and the driver) runs with test settings that `scripts/instance.py` lays over `pack/config` in `build/client`: no shaders, no Distant Horizons, 8 chunks. The shipped pack keeps its shaders, its far view and 12 chunks, so those are judged in the exported pack (`just pack`, imported into Prism Launcher).
+Every dev client (`just showroom`, `just play` and the driver) runs with test settings that `scripts/instance.py` lays over `pack/config` in `build/client`: no shaders, no Distant Horizons, 8 chunks. `start --far` on the client driver, and `just showroom far` or `just play far`, keep Distant Horizons on, its far view cut to 1,024 blocks; the `far` step waits until it is drawn, which around a new spot takes one and a half to two minutes on the visible screen and much longer on the hidden one. The shipped pack keeps its shaders, its far view and 12 chunks, so those are judged in the exported pack (`just pack`, imported into Prism Launcher).
 
 devbox pins Mesa to the Nix snapshot the Java runtime (`jetbrains.jdk-no-jcef`) comes from (`github:NixOS/nixpkgs/<commit>#mesa`): the hidden screen loads Mesa into the game's Java, and a driver built against a newer C library than Java's does not load. When the Java runtime moves to a newer snapshot, move Mesa's commit with it. The justfile sets `JAVA_HOME` to devbox's Java for every task, and both drivers launch the game and compile through just recipes (`just showroom`, `just play`, `just devserver`, `just compile`), so a shell's own `JAVA_HOME` never matters.
 
@@ -77,6 +77,7 @@ $ python3 scripts/client.py run workshop 'place wayfarer:last_camp' 'spawn minec
 | `click <x> <y>` | Clicks the open screen at GUI coordinates |
 | `close` | Closes the open screen |
 | `compare <a> <b>` | Counts the pixels that differ between two screenshots and writes a picture of the difference |
+| `far` | Waits until Distant Horizons has generated and drawn the far view around the player (only with `start --far`) |
 | `find <block> [radius]` | Lists the nearest positions of a block within the horizontal radius (default 32), at any height |
 | `fly on\|off` | Toggles creative flight |
 | `gui on\|off` | Shows or hides the HUD |
@@ -114,7 +115,7 @@ $ python3 scripts/server.py run 'locate structure wayfarer:shrine/old' 'await Th
 $ python3 scripts/server.py stop             # returns once the server has exited
 ```
 
-Pretend players stand in for a team on the dev server: `wayfarer pretend join <name>` brings one online through the game's own login, so every mod reacts as to a person; `wayfarer pretend leave <name>` logs it out and `wayfarer pretend respawn <name>` presses Respawn after a death. They do what vanilla commands tell them (`tp`, `spreadplayers`, `execute as <name> run ...`), every message one receives comes back as a reply (`Mo hears: ...`), and a returning name comes back where it left. They never move on their own, not even to fall, so put them on the ground with `spreadplayers`; the chunks around them load wherever a command puts them, and a change of world completes for them, as a person's would. They join the dev client's own world the same way, beside the real player and its chat.
+Pretend players stand in for a team on the dev server: `wayfarer pretend join <name>` brings one online through the game's own login, so every mod reacts as to a person; `wayfarer pretend leave <name>` logs it out and `wayfarer pretend respawn <name>` presses Respawn after a death. They do what vanilla commands tell them (`tp`, `spreadplayers`, `execute as <name> run ...`), every message one receives comes back as a reply (`Mo hears: ...`), and a returning name comes back where and as it left, so one that left dead joins dead until `wayfarer pretend respawn` brings it back. They never move on their own, not even to fall, so put them on the ground with `spreadplayers`; the chunks around them load wherever a command puts them, and a change of world completes for them, as a person's would. They join the dev client's own world the same way, beside the real player and its chat.
 
 ```console
 $ python3 scripts/server.py run 'wayfarer pretend join Mo' 'spreadplayers 0 0 0 4 false Mo' 'execute as Mo run say hello'

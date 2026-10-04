@@ -170,7 +170,11 @@ hash = "f65a32c4ca9612269ccbb5e51a2438c6787763f169010aa2ddf3b39dec008dbf"
 
 [[files]]
 file = "config/nomadictents-common.toml"
-hash = "f1aa594eb6bf3016af9076e4b1d04ec487e56c6072b962b49ba84c80c54183ae"
+hash = "16a47b024834ba1dc862f99268fcfa61be1de3c14d2394ff73015a48a2854a28"
+
+[[files]]
+file = "config/seedgen.json"
+hash = "660d6385a99cbf07d1049a12e6d52df9d25b76d94cfc37baec376d3d9a750489"
 
 [[files]]
 file = "config/solonion-client.json"
@@ -199,6 +203,10 @@ hash = "45c7e32ed5789e958f102422f029beab1007b5f02d0359c3c9fbbd1e02f820c2"
 [[files]]
 file = "config/travelerstitles-neoforge-1_21.toml"
 hash = "bf0fd0906e4830b89732fef78f8314ccaf694e38db1f1cd46a2a606d5424aad6"
+
+[[files]]
+file = "config/waystones-common.toml"
+hash = "95c55f5a51e25dca37f887896486ba413b6ce5d1c1ce59c753be61a4ca894637"
 
 [[files]]
 file = "journeymap/server/6.0/journeymap.server.global.config"
@@ -342,6 +350,11 @@ metafile = true
 [[files]]
 file = "mods/default-options.pw.toml"
 hash = "a6967d761dde867ccc1af53dc9f4e530eb9917a9cb21d0fc15708e8cd2c0f2ba"
+metafile = true
+
+[[files]]
+file = "mods/distant-horizons-seedgen.pw.toml"
+hash = "0e0b7ccb57af29abb45b367b0e60910d65b1712ca52b48922bc2a1243f5f5c17"
 metafile = true
 
 [[files]]

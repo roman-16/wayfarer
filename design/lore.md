@@ -23,6 +23,7 @@ The source of truth for every quest, book, item and chat text, and the reason be
 | Why does a frame refuse while Gazebound stand in its hall? | The Keepers warded every frame against the Gazebound |
 | Why will a sealed hall not break? | The peoples warded their halls with the Keepers' craft: inside a ward nothing can be broken or built, until its seal opens |
 | Why do monsters crumble at dawn? | The gaze presses hardest at night and looks away by day; whatever it sent that still stands under the open sky has nothing holding it together. In caves and shadow its creatures wait for night |
+| Why do they walk in rain and storms? | Under cloud and rain the sky is dark enough for them to dare the day, as in shade; on the sea, that is when what lives below comes up by day |
 
 ## The silence
 
@@ -34,6 +35,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Where is it? | Beyond the End, the last shore before it; the void under the End's islands is the silence. It also seeps into any world where life stands still too long, because a place that stays still grows thin |
 | What is the deep dark? | The Ancient Cities, where their gate let the silence in. The blind Warden, hunting by sound, is their last guard, which is why it does not fear fire |
 | Why is there netherite and crimson iron in the deep dark? | The Cities drew their power from the Nether, and what they drew up still lies in the deep stone around them |
+| Why does some stone wear out any lesser pick? | The peoples built their gates from deep stone the Cities' Nether-fire hardened. Only metal from the same deep places cuts it; a softer pick blunts itself to nothing |
 | Why is there no Nether? | When the Cities' gate failed, the Keepers sealed the Nether forever, so nobody could repeat it. Obsidian no longer takes a spark |
 | Why do the volcanic and basalt lands look as they do? | That is where the Nether once pressed up, before the Keepers sealed it |
 
@@ -49,6 +51,8 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | What is the oath? | Never settle, never shine, and everything carried. The ember answers only those who keep it |
 | Why can the Gazebound not take an ember? | It passes only at a fire shared freely, and it goes out in anyone who carries it unwillingly or settles. Every ember they took by force went out |
 | Why does the ember pull? | Light seeks its body. It does not feel shards from afar; it hears calling stones |
+| What does the ember show when I hold it up? | It is the Eye's light, and light is sight: held up, it shows for a moment what has passed by, tracks and traces and what was dropped |
+| Why does a fire fill the Flare again? | The Flare spends the ember's light all at once, and a fire, the ember's kin, fills it again |
 | What is a calling stone? | The pedestal of every hall. The first Wayfarers set it there, kin to their waystones, so Wayfarers could find the halls and look after them. Only an ember hears it: from afar it only flares when I walk towards the stone and gutters when I walk away; within about 256 blocks it knows its place |
 | Why does an empty hall still call? | The stone stays when the shard is gone, and it shows what happened there, because it saw |
 | What does a shard do in its hall? | It hallows the land around it, so the gaze cannot see there. The living peoples live on such land |
@@ -57,6 +61,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Where do the shards go when taken? | Into the ember, and they never leave it, not even by dying |
 | Must every shard be taken? | No. A frame takes the Eye with however many shards it holds, and the Keepers' records say so. Every shard taken is a gift for the carrier and more sight for the dragon at the end |
 | What are the waystones? | Stones the first Wayfarers set along their roads. A stone folds the road back to any other stone touched, the way a tent folds space, so it carries a Wayfarer only along roads already walked |
+| What is a Wayfarer's own stone? | The first Wayfarers each carried a small stone cut from their waystones. Set down and touched, it holds the place, and the road folds back to it; like everything, it is carried |
 
 ## The player
 
@@ -67,6 +72,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Why did the ember wake in me? | The light found its body |
 | What is happening to me? | With every shard I take, more of the Eye comes together in me. Endermen stop flinching from my gaze, I hear the calling stones, my heart slows; later I see through stone, my eyes glow in the dark and the peoples' guardians bow; at last I dream the dragon's dreams |
 | What does it cost? | I shine. The more of the Eye is in me, the more my heart shines like a shard, and the more the gaze's creatures come for me and the harder they search. Only taking fewer shards slows it; Agna's remedy dims me for a night |
+| Why do I go after the shards? | The stranger died asking me not to let "it" have them, the shards he took; the burnt town showed me what he meant. At the first hall his voice finished the sentence: bring them to a frame and put the dragon's eye out for good, so no town burns again |
 | Why did the stranger give me the ember? | His ember had been dark for twenty years and he was dying. A dying ember's light flies home to the Eye, and only the Eye's own body could light it again, so he gave it to the one thing the gaze grew to carry its Eye home, and bet I would choose otherwise |
 | What is the voice? | The dragon, speaking through the Eye in me. It speaks from the first hall on: short words on the road, long talks when I sit apart at a fire. Nobody else hears it, and it is silent in a tent |
 | Why does it sound like the stranger? | The ember remembers everything he saw, heard and said, and the voice wears what it found there: his voice, his stories, his camps |
@@ -94,6 +100,9 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | What happens to my things when I fall? | The road keeps them under a stone where I fell, until I come back; the compass marks the stone |
 | Why is ore thin in plain stone? | The Ancient Cities and the peoples mined the land bare long ago. What is left lies in their old mines and in the deep stone around the Cities |
 | Why do villagers trade so little? | Towns that grow burn, so they keep their stores, fear strangers and have few children |
+| Why does my gear never break? | A Wayfarer throws nothing away. Worn out, a tool is still carried, no better than a hand, until a fire or a smith mends it |
+| Why can only a smith set an enchantment? | The old enchantments are written in the smiths' script; only a smith who knows it can set one into steel |
+| Why do the gaze's creatures come to noise? | The gaze only sees, but its creatures hear: what they hear, they come to look at, and then they see what shines |
 | How does the compass know the way? | To a hall, the ember feels its calling stone, warmer and colder. To anything else, someone told me: a person, a page, a sign or the voice. If they knew the place, I know it too; if it was only a rumour, I know the way roughly, until the place shows itself |
 | What does the journal hold? | Everything I know so far, as I would tell a friend: the story, the people, the words of the world, every book and talk. A word I have never heard is not in it |
 | Why is the sea dangerous? | On open water a lone ember shines like a beacon, and what lives below comes up to look |
@@ -109,6 +118,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | What are they looking for? | A place the gaze cannot see. The voice says it knows one, past the sea |
 | Why do I never see them travel? | They break camp after I set out and make camp before I come back; in the evening their smoke shows me where |
 | Who are its people? | Old Tamsin, the elder, who carries the town's bell; Corin, a Gazebound deserter who served under Wend; Nell, last of the Frost Walkers; Bram, a herder; Ilse, a Keeper's apprentice; Mother Agna, the healer; Hob, the smith; Pip, a child who wants to be a Wayfarer |
+| Why does their camp never burn? | A fire shared freely does not turn on the ones who share it: no spark of it catches their tents, and the sky's fire passes them by |
 
 ## The people
 
@@ -131,6 +141,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Where do the Illagers come from? | They are the Grass Kingdom's outcasts and their children |
 | Why do monsters leave the Gazebound alone? | At their oath, every Gazebound lets the gaze's creatures open their chest just far enough to look. Not all survive it; those who do carry the scar over the heart, and the gaze never searches a heart twice. They call it a blessing |
 | Why do the Gazebound feed Wayfarers? | Only an ember can lift a shard, and an ember cannot be taken. So they feed Wayfarers, follow their smoke, and wait |
+| Why do they raid a village after I kill a captain? | His band takes his death out on the next village the killer walks into, to show the settled what sheltering a Wayfarer costs |
 | Who are the Keepers? | Wayfarers who would not walk, few and old, guarding the frames at the far ring. They know what a thirteenth shard is, and they bar the way |
 
 ## The twelve halls

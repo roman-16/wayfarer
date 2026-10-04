@@ -126,13 +126,13 @@ def release_screen():
     SCREEN.unlink(missing_ok=True)
 
 
-def launch(fresh, timeout, visible, lean=False):
+def launch(fresh, timeout, visible, mode="full"):
     DRIVER.mkdir(parents=True, exist_ok=True)
     for stale in ("abort", "commands.txt", "done.txt", "game.pid", "quit"):
         (DRIVER / stale).unlink(missing_ok=True)
     release_screen()
     before = crashes(CRASHES)
-    command = ["just", "play" if fresh else "showroom", "lean" if lean else "full"]
+    command = ["just", "play" if fresh else "showroom", mode]
     environment = screen(visible)
     with LAUNCH_LOG.open("w") as log:
         process = subprocess.Popen(
@@ -162,9 +162,11 @@ def launch(fresh, timeout, visible, lean=False):
     hotswap.remember(SNAPSHOT)
     errors = [line for line in report.splitlines() if line.startswith("error:")]
     world = "a fresh natural world" if fresh else "the showroom"
-    where = ("on the user's screen" if visible else "on a hidden screen") + (
-        ", with only the Wayfarer mod" if lean else ""
-    )
+    where = ("on the user's screen" if visible else "on a hidden screen") + {
+        "far": ", with Distant Horizons' far view",
+        "full": "",
+        "lean": ", with only the Wayfarer mod",
+    }[mode]
     print(f"the client is running in {world} {where} ({len(report.splitlines())} log lines, {len(errors)} errors)")
     print("\n".join(errors))
 
@@ -173,7 +175,7 @@ def start(arguments):
     if alive():
         print("the client is already running")
         return
-    launch(arguments.fresh, arguments.timeout, arguments.visible, arguments.lean)
+    launch(arguments.fresh, arguments.timeout, arguments.visible, arguments.mode)
 
 
 def batch(steps, timeout):
@@ -478,9 +480,22 @@ def main():
     start_parser.add_argument(
         "--visible", action="store_true", help="show the game on the user's screen instead of a hidden one"
     )
-    start_parser.add_argument(
-        "--lean", action="store_true", help="load only the Wayfarer mod and what it needs, in worlds of its own"
+    modes = start_parser.add_mutually_exclusive_group()
+    modes.add_argument(
+        "--far",
+        action="store_const",
+        const="far",
+        dest="mode",
+        help="keep Distant Horizons' far view on, out to 1,024 blocks",
     )
+    modes.add_argument(
+        "--lean",
+        action="store_const",
+        const="lean",
+        dest="mode",
+        help="load only the Wayfarer mod and what it needs, in worlds of its own",
+    )
+    start_parser.set_defaults(mode="full")
     run_parser = commands.add_parser(
         "run", help="run driver steps (arguments, or one per line on stdin) and print their log"
     )

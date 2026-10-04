@@ -14,12 +14,15 @@ ROOT = Path(__file__).resolve().parent.parent
 PACK = ROOT / "pack"
 CACHE = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "wayfarer"
 CLIENT_CONFIGS = {
-    "DistantHorizons.toml": {
+    "dynamic_fps.json": {"enabled": False},
+    "iris.properties": {"enableShaders": "false"},
+}
+DISTANT_HORIZONS = {
+    "far": {"client": {"advanced": {"graphics": {"quality": {"lodChunkRenderDistanceRadius": 64}}}}},
+    "near": {
         "client": {"advanced": {"debugging": {"rendererMode": "DISABLED"}}},
         "common": {"worldGenerator": {"generatorPlan": "DISABLED"}},
     },
-    "dynamic_fps.json": {"enabled": False},
-    "iris.properties": {"enableShaders": "false"},
 }
 CLIENT_OPTIONS = {
     "pauseOnLostFocus": "false",
@@ -140,13 +143,18 @@ def configure(path, overrides):
         path.write_text("".join(f"{key}={value}\n" for key, value in sorted((pairs | overrides).items())))
 
 
-def client(target, lean):
+def client(target, mode):
     shutil.rmtree(target / "mods", ignore_errors=True)
     (target / "mods").mkdir(parents=True)
-    files(target, "client", {"resourcepacks", "shaderpacks"} if lean else {"mods", "resourcepacks", "shaderpacks"})
+    files(
+        target,
+        "client",
+        {"resourcepacks", "shaderpacks"} if mode == "lean" else {"mods", "resourcepacks", "shaderpacks"},
+    )
     settings(target)
     for name, overrides in CLIENT_CONFIGS.items():
         configure(target / "config" / name, overrides)
+    configure(target / "config/DistantHorizons.toml", DISTANT_HORIZONS["far" if mode == "far" else "near"])
     options(target)
 
 
@@ -188,27 +196,29 @@ def dev_server(target, lean):
 def main():
     parser = argparse.ArgumentParser(description="Assemble the pack as a dev client instance or a dedicated server")
     sides = parser.add_subparsers(dest="side", required=True)
-    for side, text in (
-        ("client", "mods, packs and configs for the dev client; keeps saves and options"),
+    for side, text, modes in (
+        ("client", "mods, packs and configs for the dev client; keeps saves and options", ["far", "full", "lean"]),
         (
             "devserver",
             "mods, configs and properties for the dev server, which brings the Wayfarer mod itself; keeps the world",
+            ["full", "lean"],
         ),
     ):
         side_parser = sides.add_parser(side, help=text)
         side_parser.add_argument("target", type=Path)
         side_parser.add_argument(
             "--mode",
-            choices=["full", "lean"],
+            choices=modes,
             default="full",
-            help="lean leaves the mods folder empty: only the Wayfarer mod and what it needs, from the dev classpath",
+            help="lean leaves the mods folder empty: only the Wayfarer mod and what it needs, from the dev classpath; "
+            "far keeps Distant Horizons' far view on, out to 1,024 blocks",
         )
     server_parser = sides.add_parser("server", help="a complete dedicated server, rebuilt from nothing")
     server_parser.add_argument("target", type=Path)
     server_parser.add_argument("jar", type=Path)
     arguments = parser.parse_args()
     if arguments.side == "client":
-        client(arguments.target.resolve(), arguments.mode == "lean")
+        client(arguments.target.resolve(), arguments.mode)
     elif arguments.side == "devserver":
         dev_server(arguments.target.resolve(), arguments.mode == "lean")
     else:

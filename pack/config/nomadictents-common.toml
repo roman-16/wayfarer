@@ -1,2 +1,4 @@
 [permissions]
+	enter_when_safe = true
 	nonplayers_enter_on_collide = false
+	pickup_when_safe = true

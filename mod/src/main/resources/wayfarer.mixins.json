@@ -13,6 +13,7 @@
   "mixins": [
     "ChunkGeneratorMixin",
     "ChunkGeneratorStructureStateMixin",
+    "ImprovedMobsPathContextMixin",
     "PlacedFeatureMixin",
     "PlayerMixin"
   ],

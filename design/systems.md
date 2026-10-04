@@ -177,7 +177,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 - The camp is built like a village: the fire in the middle, and around it each household as its own small piece, a tent, a wagon or a lean-to, set at the height of the ground under it, with paths between them that follow the ground. There is no flattened square. A bigger household gets a bigger piece, a person who joins brings a new piece, and after the breaking the pieces of the dead are missing. When the camp is taken down, the blocks it replaced go back.
 - The camp cannot burn: while it stands, no fire takes hold in it and no lightning strikes it.
-- When the camp is taken down it leaves traces, so a team passing the same place days later finds an old campsite: the fire pit with its campfire out and its ring of stones, the paths worn to it, trodden patches where the tents stood, and now and then something left behind, such as a split log or a broken crate. They look like the pack's other old camps, only fresh. Which traces exactly, and whether they fade, is M21.
+- When the camp is taken down it leaves traces, so a team passing the same place days later finds an old campsite: the fire pit with its campfire out and its ring of stones, the paths worn to it, trodden patches where the tents stood, and now and then something left behind, such as a split log or a broken crate. They look like the pack's other old camps, only fresh, and they stay for good (M21).
 - Each person's record lives in the world's save data, alive or not, their trust and what they remember; their Easy NPC body is made from it in the evening and taken away in the morning.
 
 **Why:** A camp of small pieces that sit on the land the way a village's houses do looks lived in where one big flattened layout looks dropped from the sky, and a camp whose size follows its people shows the caravan's story at a glance. Vanilla builds villages this way, with fixed pieces for houses and paths that bend to the ground. Real camps keep the same rules, level ground but not a low place, away from ravines, ledges and peaks, with grass, water and wood near ([National Park Service](https://www.nps.gov/subjects/camping/finding-and-setting-up-a-campsite.htm); Jesse Applegate, *A Day with the Cow Column in 1843*), so a hollow is the one place the caravan would never choose on its own. Wishes that give way keep the evening's walk as long as the day planned, in any land.
@@ -195,7 +195,13 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 | Easy NPC's bodies sit (`easy_npc:pose/humanoid/sitting`), stroll round a home (`RANDOM_STROLL_AROUND_HOME`) and wear Minecraft's nine player skins, all set through its API | Easy NPC carries the camp's people; HollowEngine is weighed again at the memories (M8), whose scenes are keyframed |
 | A camp kept only in memory stays standing after a restart, its people with it | As for road scenes (M4), camps and the blocks they replaced live in the world's save data |
 
-It raises, for the spike: the camp taken down with its traces left behind.
+**The traces work too** (`CampSpike`'s take-down): taken down out of sight, a camp of eight pieces put 3,224 blocks back and left 125 as its old campsite: the ring of stones round the pit with the campfire out, the paths to the fire, and the trodden earth where each piece stood, and at half the camps, chosen by the spot, the firewood log beside the pit. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| The camp's own ground, the trodden earth, the paths and the stone ring, makes the old campsite once everything above it goes back | A piece's ground layer is its trace, and only the campfire changes, put out |
+| A piece on a slope stands partly on earth the camp filled in, which goes back | A trace stays only where the land under it was solid, so nothing floats |
+| The traces are ordinary blocks | They need no save data and last through restarts, as M21 asks |
 
 ### M6 The day and the night: a scripted clock
 
@@ -395,12 +401,12 @@ Act 3:
   | Land: darkness | No light, and the gaze's creatures live in the dark | Torches, Dark-sight |
   | Strength | A harder fight, and maybe a fall | Better gear (M18) |
   | Trust | Forcing a way in makes the people hostile and loses their trust, a choice that comes back (D1) | Their trust (Earn) |
-  | Tool | A lesser pick breaks it ten times slower and wears down to its last use | A pick of the right material |
-  | Travel: sea | A vanilla boat can cross, but on open water the ember shines like a beacon, and the sea's creatures and storms come | Ships, in Act 2 |
+  | Tool | A lesser pick breaks it 8 times slower, and drops to its last use as the block breaks: one pick, one block | A pick of the right material |
+  | Travel: sea | A vanilla boat can cross, but on open water the ember shines like a beacon, and the sea's creatures and storms come (M22) | Ships, in Act 2 |
   | Travel: sky | The hang glider flies, but in the air the phantoms see the player | Flight in Act 3, and Sky-veil |
   | Knowledge | No way through: these are the real walls | The word, the map, the story |
 
-- The gifts are passive, except the Flare, which is on a key with a cooldown. In a team everyone has the gifts of the shards the team took (D11):
+- The gifts are passive, except the Flare, which is on a key and holds one charge: resting at a fire fills it again. In a team everyone has the gifts of the shards the team took (D11):
 
   | Gift | What it does | What it opens |
   |---|---|---|
@@ -413,19 +419,45 @@ Act 3:
   | Far-sight | Zoom far, and mark a place on the map from far off | Finding places sooner |
   | Sky-veil | Phantoms do not see the player | Safe flight |
   | Night-walk | At night, creatures do not notice the player unless they run | The road by night |
-  | The Flare | A burst of the ember's light that crumbles the gaze's creatures around the player | Breaking a horde |
+  | The Flare | A burst of the ember's light that crumbles the gaze's creatures within 16 blocks, once until the player rests at a fire | Breaking a horde |
   | Hush | While the player crouches, their heart's light sinks like a dead man's, and the gaze's creatures lose them | Hiding |
 
-**Why:** A ward closes every way around a seal, which unbreakable blocks alone would not, and it has its reason in the lore already. A price for every soft gate lets a bold player go early without making the key pointless. Passive gifts are felt without being managed, and the one gift worth aiming and timing gets a key.
+**Why:** A ward closes every way around a seal, which unbreakable blocks alone would not, and it has its reason in the lore already. A price for every soft gate lets a bold player go early without making the key pointless. Passive gifts are felt without being managed, and the one gift worth aiming and timing gets a key; a single charge that only a fire fills lets the Flare break a horde, not every wave, and makes when to spend it the choice. A lesser pick that is spent on one block makes every breach cost a mend.
 
-It raises, for the spike: a ward that holds against breaking, placing and explosions; one gift of each kind, passive and keyed; and each price's numbers in `balance.toml`.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/WardSpike.java`, `GateSpike.java` and `GiftSpike.java`, dev code that never ships, with its numbers in `balance.toml` `[flare]` and `[tool_gate]`): a ward over a hall of 11 by 7 by 11 blocks held against a player breaking and placing, a bucket emptied from inside and from outside, TNT and a creeper at its walls (25 and 8 of its blocks kept while the ground outside cratered), a piston pushing into it, water, lava and fire coming in through its windows, an Enderman beside a grass wall (one outside took a block) and zombies at its door (without the ward they broke it within a minute), and let a fallen player's grave stand; lifted, the same player broke its wall. A lesser pick takes 8 times as long on gate stone as it would if it were the right one, 75 s for diamond and 100 s for iron where netherite takes 8.3 s, drops nothing, and is at its last use once the block breaks; a bare hand takes vanilla's 250 s. Crouching with Hush, four husks hunting a player lost them within a second and stayed lost, crouching without it changed nothing, a husk the player struck still came for them, and standing up brought all four back. The Flare, on a key, crumbled the three husks within 16 blocks and left one 28 blocks off and a pillager standing, refused a second time, and was full again once the player had rested at a fire. Tough As Nails as the pack ships it, measured on a player standing still:
+
+| | Cold, snowy plains at night | Heat, desert at noon |
+|---|---|---|
+| Cold or warm | 25 s | 16 s |
+| Icy or hot | 50 s | 41 s |
+| The price begins | 75 s: freezing, and half speed 3.5 s later | 66 s: overheating, and up to 15% faster, not weaker |
+| First hurt | 80 s | 75 s |
+| Dead | 124 s | 123 s |
+
+What it showed:
+
+| Finding | For the engine |
+|---|---|
+| NeoForge's events stop a player breaking, placing and emptying a bucket, explosions, pistons and mobs that grief before anything changes; nothing stops water, lava or fire coming in, nor a mod that breaks blocks itself, such as Improved Mobs | The spike's ward also remembers its blocks and puts back whatever changes, found through the game's neighbour updates; the engine stops fluids, fire and breaking before the change instead, with mixins, since putting a block back after it broke can leave a copy of it on the ground |
+| Water held at a window was put back 266 times in a minute, lava 39, as each flowed in again | Fluids are stopped at the ward's edge, never undone inside it |
+| Grass under a block turns to dirt, and the ward kept turning it back | A ward freezes its hall's natural changes too, so halls are built from blocks that do not change by themselves |
+| Denying mob griefing stopped the Enderman and the zombies at the door; for a creeper it would also have kept the ground outside whole | Mobs near a ward cannot grief, except creepers, whose explosions are cut to the ward by their own event |
+| Improved Mobs' door breaking never started in two minutes, with the ward or without it | Its breaking is not seen yet; the engine's hook before a block is destroyed covers it |
+| Gravestone places its graves itself, and the ward let the grave stand | A ward lets the pack's own placements through: graves, and the story's own changes |
+| The runes, the enchanting table's letters, did not show in the dev client while other particles did; Subtle Effects changes how those letters are drawn | The runes' look is chosen with the art skill and seen in the exported pack |
+| The game asks how fast a tool digs and whether it is the right one on the server and the client alike, from tags both know | Gate stone is a block tag, the right material is vanilla's own tool-tier tag, and the crack on screen slows with the rule |
+| A pick set to its last use breaks on its next use in vanilla | One pick, one block holds only with M12's last use, where the pick is a bare hand |
+| A monster's target is set through one event, which Hush refuses, but a monster already hunting keeps its target until told; a monster the player strikes in the last 4 seconds may hunt them | Hush refuses new targets and clears the old ones each second, and striking from hiding gives the player away |
+| Resting at a fire is the Warm effect the fire gives, which other code can see arrive | The Flare fills again when the ember warms |
+| Tough As Nails' heat makes the player slightly faster instead of weaker | The Wayfarer mod adds the weakness while the player is overheated |
+| The Flare and the spike journal both took F7 | Keys are chosen with every mod's bindings in view (M10) |
 
 ### M12 The camp and the gear
 
 - Nomadic Tents is changed so that placing a tent builds the whole tent at once, without a frame or a mallet; packing it up is one click. Its own `enter_when_safe` and `pickup_when_safe` are switched on, so nobody enters or packs up a tent while monsters are near (D13). It stays the pack's tent because it is the one whose inside is a folded space: Let's Do Camping and Simply Tents pitch an ordinary tent in the world, and both are All Rights Reserved.
 - A bed inside a tent sleeps only when a lit campfire burns within 4 blocks of the tent outside (D13).
 - The fire's stories stay. If a night has one, the voice's long talk, a person's scene or Maren's visit, it plays once most of the team sits at the caravan's fire, and sleep waits until it is over; a night without one goes straight to sleep. Resting half a minute at a fire still warms the ember, so the player eats like a settled person until the next dusk.
-- Every tool, weapon and armour, Silent Gear's, Simply Swords', vanilla's and every other mod's, stops at its last use instead of breaking (D13); Silent Gear already keeps broken gear (`breaks_permanently = false`), and the Wayfarer mod brings the rest to the same rule.
+- Every tool, weapon and armour, Silent Gear's, Simply Swords', vanilla's and every other mod's, stops at its last use instead of breaking (D13), and at its last use a tool is a bare hand, in speed and in what drops: a diamond pick at its last use takes nothing from obsidian. Silent Gear already keeps broken gear (`breaks_permanently = false`), and the Wayfarer mod brings the rest to the same rule.
 - At a fire, a repair kit and the tool's own material mend it back to half its durability at most, never beyond. A smith restores it fully: the peoples' smiths ask for goods, and Hob does it for nothing once his side quest has found the old ore (C7).
 
   ```text
@@ -435,7 +467,17 @@ It raises, for the spike: a ward that holds against breaking, placing and explos
 
 **Why:** The tent the pack needs is the folded space it already has, and its safety rules are already written into it, so only the mallet goes. The evening is where the story is told, and the sleep rule keeps anyone from sleeping through it. Mending to half keeps the road going while a full repair stays something to reach a smith for.
 
-It raises, for the spike: one-step placing in Nomadic Tents, the campfire within 4 blocks for sleep, and the last-use rule on a vanilla tool and a Simply Swords weapon.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/TentSpike.java` and `LastUseSpike.java`, dev code that never ships, with `[tent]` in `balance.toml` and `enter_when_safe` and `pickup_when_safe` on in `pack/config/nomadictents-common.toml`): a right-click with a small yurt puts up the whole tent at once, in 2 to 3 ms or 110 ms for the first, a right-click on its door takes the player inside, and a crouching right-click on its door with an empty hand packs it into the inventory; with a husk beside the door, entering and packing up are both refused ("there are monsters nearby"). Inside the tent a bed refuses sleep until a lit campfire burns within 4 blocks of the door outside, a fire 7 blocks off is not enough, and a bed outside any tent is furniture. A diamond pick worn to its last use breaks stone at a bare hand's 7.5 s with nothing dropped, and two more blocks leave it at its last use; a Simply Swords cutlass drops from 6 attack damage to a bare hand's 1 and stays; a shovel at its last use makes no path; a diamond chestplate hit for more than it had left stops at its last use and gives 0 armour. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| Nomadic Tents builds its whole tent from one template call, the call it uses for a tent's inside, and its door keeps the tent, the way it faces and its owner | Placing is that call on the right-click, so the frame and the mallet go, and the mallet's recipe with them |
+| `Tent.from` reads a tent item's name, `nomadictents:small_yurt`, as type before size and namespace included, finds no size and makes every tent tiny | The engine reads the size from the item itself |
+| Its monster check still refused right after the husk was killed, likely counting it through the second it takes to die | A tent may open a second after the last monster nearby falls |
+| The door inside the tent remembers where the player stood outside, so a bed inside finds the fire beside the tent | Sleep looks for a lit campfire within `[tent]` `fire_blocks` of that spot |
+| Vanilla sets the respawn point at a bed before it refuses the sleep, outside a tent too | The engine keeps the respawn at the fire (`Fire`), whatever bed is clicked |
+| Nothing stops a vanilla item breaking: no event comes before its last point of durability goes. The spike marks an item unbreakable the tick it reaches its last use, puts back one that broke in a single blow, such as an axe hit for 2, and caps armour's wear | The engine stops the break where durability is taken, with a mixin, so no item ever shows the breaking animation |
+| An item's attack damage, attack speed and armour come from one event per item, and mining speed and drops from two more | At its last use an item loses its attribute modifiers and digs and drops as a bare hand; its enchantments still count, which the engine takes away too |
 
 ### M13 What goes
 
@@ -492,7 +534,17 @@ It raises, for the spike: one-step placing in Nomadic Tents, the campfire within
 
 **Why:** A dragon that fights with the sight it was given makes every shard left behind count in the last fight. Gone has to mean gone, or Pip's death would cost nothing, and watching the world as a spectator is the one thing the closed Eye no longer does. The same journal in a new voice carries the merciful door into what comes after.
 
-It raises, for the spike: a dragon whose health, crystals and aim follow a number, an ended world that only shows its ending, and a player's skin and journal voice changed.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/EndingSpike.java` and `EndingClient.java`, dev code that never ships, with its numbers in `balance.toml` `[dragon]`): set to 12 shards with two players online, the dragon rose with 768 health and every crystal stood; set to 3, it had 480, three crystals stood, its fireballs flew about 6 blocks wide of the player where at 12 most flew 0.1 wide, its charges went 5 to 12 blocks wide, and it lost the player when a pillar stood between them. A world marked gone shows every player a black screen with the ending's lines and "Start a new road", which Escape does not close; the button leaves for the title screen, and opening the world again shows the ending again and nothing else, the save untouched on disk. Playing on as Pip changed the player's skin, seen from behind, added "I carry his ember now" to the journal after the earlier entries, and from then on wrote a quest's journal entry in Pip's words. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| Ender Dragon Fight Remastered sets the dragon's health from its own score, `DragonHealth`, the first tick the dragon lives | The engine writes the health the shards give into that score before the fight, and the mod raises the dragon with it |
+| The dragon's breath is a projectile that can be turned as it appears, and its charge flies to a point that can be moved | Blindness turns the breath by an angle that misses by up to `blind_aim_blocks` at the player's distance and moves the charge's point as far |
+| Even aimed true, the dragon's fireballs mostly landed 10 to 30 blocks from the player, stopped by the terrain and the pillars first | Blindness is felt in the near misses, so `blind_aim_blocks` is judged in play |
+| The client replaces any screen opened while it joins a world with the world itself | The ending opens once the player stands in the world, and comes back whenever another screen replaces it |
+| The ending is only a screen on the client, and nothing on the server stops a player behind it | The server keeps a gone world's players from acting, so a changed client cannot play on |
+| A player's skin comes from their profile, which is signed, so the server cannot send a new one; the client's player list holds the skin and takes one from code | Grown Pip's skin is a texture the pack ships, set in each client's player list; its look goes through the art skill |
+| Journal entries are kept as written, so a voice set later changes only the entries that follow | Every journal text the story writes after Close the Eye has a Pip version beside the player's own |
 
 ### M15 The verdicts
 
@@ -572,7 +624,15 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 **Why:** Silent Gear is already the deepest gear system for 1.21.1, and Tinkers' Construct has not reached it; its materials as data let the peoples' metals join it. Tiers tied to places send the player down the road for better gear, an overnight forge makes the smiths matter without a waiting bar, and a page instead of "have item X" quests keeps "No quest is a chore". The top within the story lets a player who works for it face the end at their best.
 
-It raises, for the spike: a new Silent Gear material from data, a forge that finishes at dawn, and the Gear page filling in.
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/GearSpike.java` and `SilentGearSword.java`, dev code that never ships, with frost iron as data in `mod/src/dev/resources/data/wayfarer/silentgear_materials/frost_iron.json` and the Gear page in `mod/src/dev/resources/wayfarer/spike/gear.json`): frost iron is a Silent Gear material written only as data, pale blue, harder-wearing than iron and with the Chilled trait, made from a stand-in ingot that looks like iron. A player who leaves two frost iron at an anvil hears "Leave it with me tonight"; half a minute later nothing is there, and at the next dawn a Silent Gear sword with a frost iron blade and an oak handle lies on the anvil. The journal's Gear page lists iron as known from the start and frost iron as "needs ?, from ?, made by ?", fills in "frost iron, from the Frost Walkers' old mine" once a player carries some, and "a smith, overnight" once one has left it with a smith. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| Silent Gear reads materials from any data pack's `silentgear_materials` folder and builds parts and gear from them through its own API | The peoples' metals are data files, each with an ingredient item the Wayfarer mod adds; the forge builds the finished gear through Silent Gear's API |
+| A material file missing one key, `part_substitutes`, stopped the world's data packs from loading, and the world did not open | `just lint` checks every material file against Silent Gear's format before any launch |
+| A dawn is a day boundary of the overworld's clock, whether the night passes, is slept or is skipped | An order finishes when the overworld's day count moves past the day it was left on |
+| What the player learns comes from things they do, carrying a metal or leaving it with a smith | Each tier on the Gear page names the events that fill in its fields, as the journal's other entries do |
+| An item lying on the anvil can be picked up by anyone | Not settled: whether only the player who left the work can take the finished piece |
 
 ### M19 A camp in plain sight
 
@@ -608,12 +668,121 @@ It raises, for the spike: a new Silent Gear material from data, a forge that fin
 | Resting is the pack's own: still, within 4 blocks of a lit fire, for 30 seconds (`[fire]`), so turning in early costs half a minute at the fire before the sky turns | Sitting on the fire's logs (`mods.md`) can be that rest |
 | Fast-forwarding the server (`/tick sprint`) leaves a client's clock to catch up by hundreds of ticks at once | A sprint measures the server's clock; the sky is judged in real time |
 
-## Open
+### M21 Old campsites: the caravan's camps stay
 
-### M21 Old campsites
+- When the caravan's camp is taken down, its traces stay for good, as the camp left them: the fire pit with its campfire out and its ring of stones, the paths worn to it, trodden patches where the tents stood, and now and then something left behind, such as a split log or a broken crate. A team that comes back the same way, days or an act later, finds the camp where it stood.
 
-Which traces the camp leaves (M5), and whether they fade: a team that camps every evening leaves about a hundred campsites over a playthrough. They could stay for good, like the pack's other old camps; fade after some days, grass growing back over the paths and the pit; or stay only where the story keeps them.
+  ```text
+  A ring of stones round a cold pit, paths worn through the grass, a split log by the path. The caravan camped here.
+  ```
+
+- This is the caravan's camp only. A camp the player makes on their own out on the road is theirs, and stays or goes as they leave it.
+
+**Why:** The road the team walked stays in the world, as the Van der Linde gang's old camps do in Red Dead Redemption 2, and traces that never change need nothing to keep them.
+
+### M22 The sea's price: what lives below
+
+- Open water is water more than 64 blocks from any land. Along a coast the sea is quiet; past the last headland, the ember shines like a beacon.
+- On open water at night, or at any hour while it rains, a beast of the gaze's own comes up to look: one at a time, rarely, and more often the brighter the team shines (M9). It circles under the boat and rams it: a vanilla boat breaks, a ship holds. At dawn it dives, as the gaze's other creatures crumble, unless the rain still holds it.
+
+  ```text
+  Something knocks against the hull. A long shape circles under the boat,
+  and an eye the size of a shield looks up at your ember.
+  ```
+
+- The weather stays the world's own, and the pack calls no storm. Rain makes the sea worse: the beast comes at any hour, and ships roll harder.
+
+**Why:** One beast that comes only on the open sea, at night or in rain, makes the crossing the gate without making every swim a fight, as Valheim's serpent does, and a boat that breaks where a ship holds keeps ships the key (M11). Minecraft has one weather for the whole world, so a storm called for the sailors would rain on everyone ashore.
+
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/SeaSpike.java`, dev code that never ships, with its numbers in `balance.toml` `[sea]`): a player in a boat 64 blocks from the nearest land is on open water and one by the coast is not; there the beast, for now a guardian four times its size, comes one check in 32 (every 8 s) at night or in rain, one check in 12 at the shine of act 3 with every shard, and only while none is near. It rose on its own under a player's boat in daytime rain, broke a vanilla boat with its first ram, rammed a Small Ships cog every 2 s from 8 to 344 damage until it sank after about 75 s with nobody fighting back, and dived when dawn came. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| Open water is read from the heights of the loaded chunks around the player, every 8 blocks out to 64, and land in any of them ends it | The rule needs no world data of its own; a coast in an unloaded chunk counts as sea, which the view distance makes rare |
+| Small Ships' ships are boats to the game, with the hull's health in their own config (a cog has 300) | A ship's damage from the beast is tuned against its hull: at 8 every 2 s a cog lasts about 75 s against a beast nobody fights, which is judged in play |
+| Riding a Small Ships ship is refused before 4 shards by the mod as it ships (`Rules`, `[unlocks]`) | The tests stood the player on the deck; ships open with Act 2's quest (D15) |
+| `/weather rain` takes some seconds to fade in, and only then does the game count it as raining | The beast follows the rain the world shows, not the forecast |
+| Improved Mobs 1.16.0.b crashed the server when a drowned swam at night: its pathfinding reads a search's context outside any search (`SwimNodeEvaluator`). It is the newest build | The Wayfarer mod gives that call a context of its own (`ImprovedMobsPathContextMixin`); a hundred drowned round a boat at night then ran without a crash. Reported upstream as [ImprovedMobs#364](https://github.com/Flemmli97/ImprovedMobs/issues/364); the mixin goes once a fixed build is in the pack |
+| The beast's look is a stand-in | It is made with the art skill, as the worm was (T3) |
+
+### M23 A stone of one's own
+
+- Every player carries one waystone of their own. They set it down where they leave the road, a quest left halfway or a camp to come back to, and touch it. From any waystone they have touched since, they can fold back to it, and arriving takes it up into their pack again, so nothing of theirs stays standing. Crouching and taking it up by hand works too, to set it down somewhere else.
+
+  ```text
+  You set your stone down at the edge of the marsh and touch it.
+  Three days later, from a village waystone far to the east, you fold back. The stone is in your pack again.
+  ```
+
+- Every waystone a player has touched, their own stone among them, shows on the world map with its name, and the map can show or hide them.
+- The world's own waystones stay where they are, in villages and along old roads, and only fold roads already walked (D7).
+- Every fold costs hunger: the ember burns the walk it saves, about one food point for every 256 blocks, so a long fold on an empty stomach leaves the player starving at the stone.
+
+  ```text
+  You fold back 2,000 blocks. You arrive at your stone hungry, as if you had walked it.
+  ```
+
+**Why:** A detour for better gear should not cost the same long walk twice, and one carried stone gives exactly that, as Breath of the Wild's Travel Medallion does, without letting the world fill up with a teleport network or a stone that becomes a home. Carrying it is the oath's "everything carried", as the tent is. A fold paid in food keeps the road's price, food gathered on the road, where Waystones' own experience cost would need the experience the pack drops.
+
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/WaystoneSpike.java`, dev code that never ships, with `[waystones]` in `balance.toml` and Waystones' experience cost taken out in `pack/config/waystones-common.toml`): a player's own stone, a Waystones waystone marked as theirs, is set down, named after them and touched; from a waystone set 1,964 blocks away to stand in for a village's, the player folds back to it, arrives 8 food points hungrier (20 to 12), and finds it in their pack again; crouching takes it up by hand; a waystone that is not their own cannot be set down. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| Waystones fires an event before and after every fold, and its menu folds to any waystone the player touched | The own stone is an ordinary Waystones waystone the mod tracks, and the menu needs nothing of the pack's own |
+| Taking the stone up block by block let the game break its lower half and drop a second waystone | The stone's two halves come out together, quietly, before it goes back into the pack |
+| A world's waystone broken with a pick drops a waystone the player could carry off | The world's waystones cannot be broken (M23), and only a stone marked as the player's own can be set down |
+| The pack's server setting that bans JourneyMap waypoints hides Waystones' own map markers: the world map showed no waystone and no toggle for them | Touched waystones are drawn by the Wayfarer mod as its own map markers, as found places are (M2), with a show and hide of its own |
+| The Waystones menu shows its own costs, and a fold's hunger is paid after the fold | Not settled: whether the menu shows the hunger a fold will cost |
 
 ### M17 Distant Horizons SeedGen
 
-Distant Horizons SeedGen draws Distant Horizons' far terrain from the seed instead of generating it, five to ten times faster in its own tests; it is needed on the client and optional on the server, where the server's world-generation mods must be on the client too. It fakes trees and places structures its own way, while the pack changes world generation a lot (the shrine ring, the structure spread, the removals, the Last Sea), so a test world checks that the far view matches what is really there. If it goes in, the pack ships it switched on, since it is thought to be off by default (not checked).
+- The far view is drawn by Distant Horizons SeedGen, on the client and on the server: the far land's hills, coasts, rivers and trees come from the world's seed, so the horizon fills in fast wherever the team goes.
+- SeedGen draws no buildings. A town, a temple or a shrine shows in the far view only once the land around it has really been made, as it does in vanilla, so nothing on the horizon is a place that is not there.
+
+  ```text
+  You crest the ridge. Hills roll out to the edge of sight, a river shining between them.
+  Nothing tells you yet that a village waits behind the third hill.
+  ```
+
+**Why:** The far view is what makes the world feel vast, and SeedGen fills it fast with land that matches the real one. Its own copies of vanilla buildings ignore the pack's spread and would show temples that vanish on approach, which a pack whose places are quest goals cannot afford.
+
+**The test** (SeedGen 0.8.0, a beta under All Rights Reserved, in dev clients started with `--far`, which keeps Distant Horizons on with a far view of 1,024 blocks; the dev step `/wayfarer far phantom` in `mod/src/dev/java/io/github/roman16/wayfarer/spike/FarSpike.java`): SeedGen's own measuring commands against the real generator, then the far view photographed from 150 to 170 blocks away before and after the real land there loaded. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| SeedGen is on as soon as it is installed, and turns its own structures back on unless its settings carry the mark of its newest defaults | `pack/config/seedgen.json` carries that mark beside `structures` off |
+| Terrain heights from the seed match the real world in 90% of 4,096 columns over 4,096 blocks, off by 1.8 blocks on average, 15 blocks for the worst twentieth, 115 at most | The far view's hills, coasts and rivers sit where they really are |
+| Near a shore only 47% of the ground blocks match: SeedGen draws grass, stone or sand where Terralith's brushland and gravel beaches lay gravel, dirt and clay | Far land can look greener than it is, and its colour changes when the player comes near |
+| Photographed before and after the real land loaded, snowy hills and a lake under cliffs looked nearly the same; the trees stood in other places | The far view is close enough not to be noticed on the move |
+| SeedGen draws towns, villages, outposts and the pack's own places from their real definitions, but six vanilla kinds (desert and jungle temples, witch huts, igloos, woodland mansions, ocean monuments) from copies of its own at vanilla spacing (read in its code, not seen in game: the one tried stood in snow) | With the pack's structures spread 8.5 times wider, a far view would show such buildings about seventy times as often as they stand, gone when the player comes near; a pack whose places are quest goals cannot show places that are not there |
+| Around a new spot the far view out to 1,024 blocks filled in 91 to 129 s with the graphics card and much slower on the hidden screen; Distant Horizons' own generator was not measured beside it | Fast enough on foot; whether it keeps up with a ship or an aircraft is for the playtest |
+| Three launches with C2ME in the pack, which SeedGen warns about, ran without a crash | No change needed |
+
+### M24 Roads: worn tracks, no built roads
+
+- The land stays wild: the world has no built roads between its places. The paths are what feet make: tracks wear into grass, dirt and sand where people and animals walk often (The Roads More Travelled), and the caravan's old camps stay (M21). The lore's old roads are such tracks, worn between villages by the settled world.
+
+  ```text
+  No road runs here. A trodden line through the grass shows where others walked before you.
+  ```
+
+- Built roads come back as a question if playing Act 1 shows the land hard to cross or empty.
+
+**Why:** The pack's look is a vast, wild land crossed by a team that finds its own way, and a road between every two villages would draw the walk onto the settled world's lines. RoadWeaver's own page says it does not work with Tectonic 3, which the pack runs, and worn tracks give the old roads the lore needs without either.
+
+### M25 Seasons: set by the story
+
+- Serene Seasons colours the land, sets the cold and the heat through Tough As Nails and brings snow to temperate lands in winter, but while the story runs its cycle stands still and the quest engine turns the season: Act 1 runs from late summer into early autumn, Act 2 through mid and late autumn with its storms at sea, Act 3 through early and mid winter, and the frame stands in late winter. Once the story has ended, the cycle runs on its own, as the day does (M6).
+
+  ```text
+  The leaves turn as you leave the Frost Walkers' land.
+  By the sea, the first autumn storm.
+  ```
+
+- Each act's season is part of its look and its gates: the cold is a tool the story uses, and a quest written for summer never meets a winter it did not expect.
+
+**Why:** The story spans perhaps fifty to eighty days, too few for a calendar to give every act its own weather, and a random winter would break quests written for another season; Red Dead Redemption 2 sets its seasons by chapter in the same way, a snowy prologue and then summer. Serene Seasons stops its cycle with a game rule and sets the season by command, so the engine can turn it.
+
+## Open
+
+Nothing is open.

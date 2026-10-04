@@ -19,11 +19,22 @@ crumble_seconds = 60
 [difficulty]
 per_eye = 3.33
 
+[dragon]
+blind_aim_blocks = 16
+health_base = 256
+health_per_player = 128
+health_per_shard = 32
+sight_shards = 6
+
 [fire]
 circle_blocks = 12
 line_seconds = 3
 rest_blocks = 4
 rest_seconds = 30
+
+[flare]
+charges = 1
+reach_blocks = 16
 
 [gate]
 band_size = 8
@@ -52,6 +63,15 @@ horde_every = 4
 [shrines]
 tier_one_leg_blocks = 5000
 tier_two_leg_blocks = 8000
+
+[sea]
+beast_one_in = 32
+beast_one_in_least = 4
+check_seconds = 8
+open_water_blocks = 64
+ram_damage = 8
+ram_seconds = 2
+shine_per_step = 4
 
 [shine]
 act = [0, 16, 32]
@@ -89,6 +109,15 @@ unspread = [
   "minecraft:mineshafts",
 ]
 
+[tent]
+fire_blocks = 4
+
+[tool_gate]
+slowdown = 8
+
 [unlocks]
 aircraft_eyes = 6
 sailing_ship_eyes = 4
+
+[waystones]
+blocks_per_food = 256
