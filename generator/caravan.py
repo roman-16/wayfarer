@@ -7,7 +7,7 @@ FIRE_SIZE = 7
 FIRE_CENTRE = FIRE_SIZE // 2
 HIDE = Material(
     "caravan/hide",
-    [("minecraft:brown_wool", 55), ("minecraft:brown_terracotta", 25), ("minecraft:light_gray_wool", 20)],
+    [("minecraft:brown_wool", 60), ("minecraft:gray_wool", 20), ("minecraft:light_gray_wool", 20)],
     ground=4,
 )
 

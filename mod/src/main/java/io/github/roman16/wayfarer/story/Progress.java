@@ -1,0 +1,164 @@
+package io.github.roman16.wayfarer.story;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.saveddata.SavedData;
+
+public final class Progress extends SavedData {
+    private static final String NAME = "wayfarer_story";
+
+    final Map<String, Integer> steps = new LinkedHashMap<>();
+    final Map<String, CompoundTag> scratch = new LinkedHashMap<>();
+    final Map<String, String> choices = new LinkedHashMap<>();
+    final List<String> told = new ArrayList<>();
+    final Map<String, List<String>> people = new LinkedHashMap<>();
+    final Map<String, List<String>> words = new LinkedHashMap<>();
+    final List<String> rewards = new ArrayList<>();
+    final Map<String, Set<UUID>> claims = new LinkedHashMap<>();
+    final Map<String, BlockPos> places = new LinkedHashMap<>();
+    final Map<String, Float> yaws = new LinkedHashMap<>();
+    final Map<String, UUID> bodies = new LinkedHashMap<>();
+    String stone = "";
+
+    public static Progress of(MinecraftServer server) {
+        return server.overworld().getDataStorage().computeIfAbsent(new Factory<>(Progress::new, Progress::load, null), NAME);
+    }
+
+    public boolean open(String quest) {
+        return steps.containsKey(quest) && !done(quest);
+    }
+
+    public boolean done(String quest) {
+        return Story.INSTANCE.quest(quest).map(found -> steps.getOrDefault(quest, -1) >= found.steps().size()).orElse(false);
+    }
+
+    public int step(String quest) {
+        return steps.getOrDefault(quest, -1);
+    }
+
+    public CompoundTag scratch(String quest) {
+        return scratch.computeIfAbsent(quest, key -> new CompoundTag());
+    }
+
+    public Optional<String> choice(String quest, String step) {
+        return Optional.ofNullable(choices.get(quest + "/" + step));
+    }
+
+    public Optional<BlockPos> place(String name) {
+        return Optional.ofNullable(places.get(name));
+    }
+
+    public void place(String name, BlockPos pos) {
+        places.put(name, pos.immutable());
+        setDirty();
+    }
+
+    public boolean claimed(String reward, UUID player) {
+        return claims.getOrDefault(reward, Set.of()).contains(player);
+    }
+
+    private static Progress load(CompoundTag tag, HolderLookup.Provider registries) {
+        Progress progress = new Progress();
+        CompoundTag steps = tag.getCompound("steps");
+        steps.getAllKeys().forEach(key -> progress.steps.put(key, steps.getInt(key)));
+        CompoundTag scratch = tag.getCompound("scratch");
+        scratch.getAllKeys().forEach(key -> progress.scratch.put(key, scratch.getCompound(key)));
+        CompoundTag choices = tag.getCompound("choices");
+        choices.getAllKeys().forEach(key -> progress.choices.put(key, choices.getString(key)));
+        progress.told.addAll(strings(tag.getList("told", Tag.TAG_STRING)));
+        lines(tag.getList("people", Tag.TAG_COMPOUND), progress.people);
+        lines(tag.getList("words", Tag.TAG_COMPOUND), progress.words);
+        progress.rewards.addAll(strings(tag.getList("rewards", Tag.TAG_STRING)));
+        CompoundTag claims = tag.getCompound("claims");
+        claims.getAllKeys().forEach(key -> {
+            Set<UUID> players = new LinkedHashSet<>();
+            claims.getList(key, Tag.TAG_INT_ARRAY).forEach(entry -> players.add(NbtUtils.loadUUID(entry)));
+            progress.claims.put(key, players);
+        });
+        CompoundTag places = tag.getCompound("places");
+        places.getAllKeys().forEach(key -> progress.places.put(key, BlockPos.of(places.getLong(key))));
+        CompoundTag yaws = tag.getCompound("yaws");
+        yaws.getAllKeys().forEach(key -> progress.yaws.put(key, yaws.getFloat(key)));
+        CompoundTag bodies = tag.getCompound("bodies");
+        bodies.getAllKeys().forEach(key -> progress.bodies.put(key, bodies.getUUID(key)));
+        progress.stone = tag.getString("stone");
+        return progress;
+    }
+
+    @Override
+    public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+        CompoundTag steps = new CompoundTag();
+        this.steps.forEach(steps::putInt);
+        tag.put("steps", steps);
+        CompoundTag scratch = new CompoundTag();
+        this.scratch.forEach(scratch::put);
+        tag.put("scratch", scratch);
+        CompoundTag choices = new CompoundTag();
+        this.choices.forEach(choices::putString);
+        tag.put("choices", choices);
+        tag.put("told", list(told));
+        tag.put("people", lines(people));
+        tag.put("words", lines(words));
+        tag.put("rewards", list(rewards));
+        CompoundTag claims = new CompoundTag();
+        this.claims.forEach((reward, players) -> {
+            ListTag list = new ListTag();
+            players.forEach(player -> list.add(NbtUtils.createUUID(player)));
+            claims.put(reward, list);
+        });
+        tag.put("claims", claims);
+        CompoundTag places = new CompoundTag();
+        this.places.forEach((name, pos) -> places.putLong(name, pos.asLong()));
+        tag.put("places", places);
+        CompoundTag yaws = new CompoundTag();
+        this.yaws.forEach(yaws::putFloat);
+        tag.put("yaws", yaws);
+        CompoundTag bodies = new CompoundTag();
+        this.bodies.forEach(bodies::putUUID);
+        tag.put("bodies", bodies);
+        tag.putString("stone", stone);
+        return tag;
+    }
+
+    private static List<String> strings(ListTag list) {
+        return list.stream().map(Tag::getAsString).toList();
+    }
+
+    private static ListTag list(List<String> values) {
+        ListTag list = new ListTag();
+        values.forEach(value -> list.add(StringTag.valueOf(value)));
+        return list;
+    }
+
+    private static void lines(ListTag list, Map<String, List<String>> into) {
+        for (Tag entry : list) {
+            CompoundTag lines = (CompoundTag) entry;
+            into.put(lines.getString("key"), new ArrayList<>(strings(lines.getList("lines", Tag.TAG_STRING))));
+        }
+    }
+
+    private static ListTag lines(Map<String, List<String>> from) {
+        ListTag list = new ListTag();
+        from.forEach((key, values) -> {
+            CompoundTag lines = new CompoundTag();
+            lines.putString("key", key);
+            lines.put("lines", list(values));
+            list.add(lines);
+        });
+        return list;
+    }
+}

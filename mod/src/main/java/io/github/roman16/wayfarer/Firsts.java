@@ -17,6 +17,10 @@ public final class Firsts {
 
     private Firsts() {}
 
+    public static boolean seen(ServerPlayer player, String name) {
+        return player.getData(Wayfarer.FIRSTS).contains(name);
+    }
+
     public static boolean first(ServerPlayer player, String name) {
         List<String> firsts = player.getData(Wayfarer.FIRSTS);
         if (firsts.contains(name)) {

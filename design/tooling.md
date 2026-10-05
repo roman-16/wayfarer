@@ -98,6 +98,22 @@ The tasks and tools are named for what they open or do, and only what the reposi
 
 **Why:** What slowed this design's own research was unpacking jars by hand to read Minecraft's code and to list what the mods add, and starting all of the pack for every look, so the sources, the registries and a lean launch go first. Checks that run without the game catch an agent's broken data before anyone waits for a launch, and one way to drive a server keeps the tooling free of seams.
 
+### T5 Named states
+
+- **A state is a point in the story,** named `quest/step` as `ash/the_door` is. Every step of the story is a state without anything written for it, and opening one stands the team at the step's start, in a world whose earlier steps are all played.
+- **It is built from the repository, not saved by hand.** `story/states.toml` holds the one fixed seed every state grows from and the words a state writes on the stranger's stone. Building a state opens a fresh world from that seed and plays each earlier step's outcome without waiting for it: the first answer of every talk chosen, the stone written, the first camp's fire lit, Tollbridge and the caravan's camp built at once and out of anyone's sight, the clock set to the hour the step leaves it at, every reward taken. The step itself then begins as it does in play.
+- **The built world is a cache.** It is kept under `build/states/`, keyed by everything it is made from: the mod's code and data, the story, `balance.toml` and the pack. The next start copies it in seconds, and any change to what it is made from builds it again on its own.
+- **One way to move the story on.** `/wayfarer story to <quest/step>` and `/wayfarer story next` take a running world forward by the same outcomes, and the driver step `story <quest/step>` returns once it stands there.
+
+```console
+$ python3 scripts/client.py start --state ash/the_door
+the client is running in state ash/the_door, built in 112 s, on a hidden screen
+$ python3 scripts/client.py start --state ash/the_door
+the client is running in state ash/the_door, from the cache, on a hidden screen
+```
+
+**Why:** A fresh random world sets every test back to the story's first minutes and lands in the sea as often as not, so most of a test went on reaching the moment to be tested. A recipe never goes stale, where a saved world as the source would be wrong after the next change to the code or data and is large binary nobody can read; the cache keeps a recipe as quick to open as a saved world, where a recipe alone would rebuild Tollbridge on every start. Resuming the last world was turned down: a state is a story point anyone can come back to, which the last world is not.
+
 ## Open
 
 Nothing is open.

@@ -1,0 +1,82 @@
+{
+  "animations": {
+    "standing_looking_up": {
+      "bones": {
+        "Body": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        "Head": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            -28,
+            12,
+            0
+          ]
+        },
+        "LeftArm": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            -4,
+            0,
+            -6
+          ]
+        },
+        "LeftLeg": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        "RightArm": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            4,
+            0,
+            6
+          ]
+        },
+        "RightLeg": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "loop": "hold_on_last_frame"
+    }
+  },
+  "format_version": "1.8.0"
+}

@@ -78,6 +78,8 @@ neoForge {
                 sourceSet = sourceSets.dev
                 systemProperty "${mod_id}.showroom", showroom.toString()
                 systemProperty "${mod_id}.lean", providers.environmentVariable('WAYFARER_LEAN').orElse('false').get()
+                systemProperty "${mod_id}.state", providers.environmentVariable('WAYFARER_STATE').orElse('').get()
+                systemProperty "${mod_id}.state.cache", providers.environmentVariable('WAYFARER_STATE_CACHE').orElse('').get()
                 ['DISPLAY', 'XDG_SESSION_TYPE', '__GLX_VENDOR_LIBRARY_NAME'].each { variable ->
                     String value = providers.environmentVariable(variable).orNull
                     if (value != null) {
@@ -117,22 +119,22 @@ sourceSets.dev.resources {
 }
 
 dependencies {
+    compileOnly "curse.maven:nomadic-tents-238794:${nomadic_tents_version}"
+    compileOnly "info.journeymap:journeymap-api-neoforge:${journeymap_api_version}"
     compileOnly "maven.modrinth:endrem:${endrem_version}"
+    compileOnly "maven.modrinth:journeymap:${journeymap_version}"
     compileOnly "maven.modrinth:lootr:${lootr_version}"
     compileOnly "maven.modrinth:the-hordes:${hordes_version}"
+    compileOnly "maven.modrinth:tough-as-nails:${tough_as_nails_version}"
+    implementation "maven.modrinth:easy-npc-core:${easy_npc_version}"
     implementation "top.theillusivec4.curios:curios-neoforge:${curios_version}"
     devCompileOnly "curse.maven:infiniverse-568341:${infiniverse_version}"
-    devCompileOnly "curse.maven:nomadic-tents-238794:${nomadic_tents_version}"
-    devCompileOnly "info.journeymap:journeymap-api-neoforge:${journeymap_api_version}"
     devCompileOnly "maven.modrinth:balm:${balm_version}"
     devCompileOnly "maven.modrinth:distanthorizons:${distant_horizons_version}"
-    devCompileOnly "maven.modrinth:easy-npc-core:${easy_npc_version}"
     devCompileOnly "maven.modrinth:geckolib:${geckolib_version}"
     devCompileOnly "maven.modrinth:gravestone-mod:${gravestone_version}"
-    devCompileOnly "maven.modrinth:journeymap:${journeymap_version}"
     devCompileOnly "maven.modrinth:silent-gear:${silent_gear_version}"
     devCompileOnly "maven.modrinth:silent-lib:${silent_lib_version}"
-    devCompileOnly "maven.modrinth:tough-as-nails:${tough_as_nails_version}"
     devCompileOnly "maven.modrinth:waystones:${waystones_version}"
     vineflower "org.vineflower:vineflower:${vineflower_version}"
 }

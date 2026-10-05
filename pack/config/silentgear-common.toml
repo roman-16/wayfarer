@@ -1,0 +1,5 @@
+[item.blueprint]
+	spawn_with_starter_blueprints = false
+
+[item.material_book]
+	spawn_with_material_book = false

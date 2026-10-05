@@ -13,6 +13,7 @@ import tomllib
 ROOT = Path(__file__).resolve().parent.parent
 PACK = ROOT / "pack"
 DEFAULT_OPTIONS = PACK / "config/defaultoptions/options.txt"
+DEFAULT_KEYS = PACK / "config/defaultoptions/keybindings.txt"
 CACHE = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "wayfarer"
 CLIENT_CONFIGS = {
     "dynamic_fps.json": {"enabled": False},
@@ -26,6 +27,7 @@ DISTANT_HORIZONS = {
     },
 }
 CLIENT_OPTIONS = {
+    "fullscreen": "false",
     "pauseOnLostFocus": "false",
     "renderDistance": "8",
     "simulationDistance": "8",
@@ -100,7 +102,11 @@ def neoforge(target):
 def options(target):
     path = target / "options.txt"
     lines = path.read_text().splitlines() if path.exists() else []
-    shipped = dict(line.split(":", 1) for line in DEFAULT_OPTIONS.read_text().splitlines() if ":" in line)
+    shipped = {
+        key: value
+        for source in (DEFAULT_OPTIONS, DEFAULT_KEYS)
+        for key, value in (line.split(":", 1) for line in source.read_text().splitlines() if ":" in line)
+    }
     overrides = shipped | CLIENT_OPTIONS
     kept = [line for line in lines if line.split(":", 1)[0] not in overrides]
     forced = [f"{key}:{value}" for key, value in sorted(overrides.items())]
@@ -192,6 +198,12 @@ def dev_server(target, lean):
     voice.parent.mkdir(parents=True, exist_ok=True)
     voice.write_text(f"port={DEV_SERVER_PORTS['voice']}\n")
     world = {"level-name": "world-lean"} if lean else {}
+    if os.environ.get("WAYFARER_SEED"):
+        world["level-seed"] = os.environ["WAYFARER_SEED"]
+    state = os.environ.get("WAYFARER_STATE")
+    if state:
+        seed = tomllib.loads((ROOT / "story/states.toml").read_text())["seed"]
+        world = {"level-name": "state-lean" if lean else "state", "level-seed": seed}
     properties(target, {"online-mode": "false", "server-port": DEV_SERVER_PORTS["server"]} | world)
     (target / "eula.txt").write_text("eula=true\n")
 

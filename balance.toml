@@ -1,8 +1,11 @@
 [clock]
 afternoon_seconds = 30
 caravan_blocks = 256
+dawn_seconds = 30
+dusk = "19:00"
 dusk_run_seconds = 75
 evening = "22:00"
+night = "00:00"
 road = "17:30"
 run_from = "17:00"
 
@@ -30,7 +33,6 @@ sight_shards = 6
 circle_blocks = 12
 line_seconds = 3
 rest_blocks = 4
-rest_seconds = 30
 
 [flare]
 charges = 1
@@ -45,10 +47,20 @@ drain_factor = 4
 hunt_interval_seconds = 10
 hunt_phantoms = 2
 
+[hold]
+first_wave = 8
+keep_health = 32
+wave_growth = 4
+wave_seconds = 64
+waves = 4
+
 [hunger]
 exhaustion_factor = 2.0
 rowing_exhaustion_per_block = 0.01
 warm_exhaustion_factor = 1.0
+
+[join]
+away_blocks = 256
 
 [nights]
 blood_moon_every = 5
@@ -68,6 +80,9 @@ iron = 0.25
 lapis = 0.125
 redstone = 0.125
 
+[prologue]
+away_blocks = 512
+
 [sea]
 beast_one_in = 32
 beast_one_in_least = 4
@@ -76,6 +91,10 @@ open_water_blocks = 64
 ram_damage = 8
 ram_seconds = 2
 shine_per_step = 4
+
+[sense]
+glow_seconds = 4
+reach_blocks = 24
 
 [shine]
 act = [0, 16, 32]
@@ -122,8 +141,25 @@ ruin = 512
 town = 4096
 village = 1024
 
+[story]
+arrive_blocks = 32
+near_blocks = 8
+
+[talk]
+characters_per_second = 16
+least_seconds = 2
+reach_blocks = 32
+start_blocks = 8
+
 [tent]
 fire_blocks = 4
+
+[tollbridge]
+ahead_blocks = 160
+clear_blocks = 64
+least_buildings = 16
+radius_blocks = 64
+wait_seconds = 32
 
 [tool_gate]
 slowdown = 8

@@ -15,7 +15,7 @@ public final class Camps {
 
     private Camps() {}
 
-    public static void place(ServerLevel level, ResourceLocation template, BlockPos centre) {
+    public static BlockPos place(ServerLevel level, ResourceLocation template, BlockPos centre) {
         StructureTemplate camp = level.getStructureManager().getOrCreate(template);
         Vec3i size = camp.getSize();
         int x = centre.getX() - size.getX() / 2;
@@ -35,5 +35,6 @@ public final class Camps {
             }
         }
         camp.placeInWorld(level, origin, origin, new StructurePlaceSettings(), level.random, Block.UPDATE_CLIENTS);
+        return origin;
     }
 }

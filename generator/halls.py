@@ -4,6 +4,7 @@ import architecture as arch
 import detail
 from blocks import (
     AIR,
+    LAMP,
     Material,
     Room,
     candle,
@@ -26,40 +27,40 @@ SHAFTS = {
     "black": (
         "ladder",
         "dark_prismarine_stairs",
-        "sea_lantern",
+        "minecraft:sea_lantern",
         [("polished_deepslate", 60), ("deepslate_bricks", 40)],
     ),
-    "cold": ("switchback", "polished_diorite_stairs", "sea_lantern", [("calcite", 60), ("packed_ice", 40)]),
-    "corrupted": ("switchback", "acacia_stairs", "ochre_froglight", [("stripped_acacia_log", 70), ("acacia_log", 30)]),
-    "cryptic": ("spiral", "stone_stairs", "sea_lantern", [("bookshelf", 70), ("chiseled_bookshelf", 30)]),
-    "evil": ("ladder", "stone_brick_stairs", "ochre_froglight", [("chiseled_stone_bricks", 50), ("stone_bricks", 50)]),
+    "cold": ("switchback", "polished_diorite_stairs", LAMP, [("calcite", 60), ("packed_ice", 40)]),
+    "corrupted": ("switchback", "acacia_stairs", LAMP, [("stripped_acacia_log", 70), ("acacia_log", 30)]),
+    "cryptic": ("spiral", "stone_stairs", LAMP, [("bookshelf", 70), ("chiseled_bookshelf", 30)]),
+    "evil": ("ladder", "stone_brick_stairs", LAMP, [("chiseled_stone_bricks", 50), ("stone_bricks", 50)]),
     "exotic": (
         "switchback",
         "red_sandstone_stairs",
-        "pearlescent_froglight",
+        "minecraft:sea_lantern",
         [("chiseled_red_sandstone", 50), ("cut_red_sandstone", 50)],
     ),
     "lost": (
         "switchback",
         "cobbled_deepslate_stairs",
-        "ochre_froglight",
+        LAMP,
         [("stripped_spruce_log", 70), ("spruce_log", 30)],
     ),
     "magical": (
         "ladder",
         "dark_oak_stairs",
-        "pearlescent_froglight",
+        LAMP,
         [("dark_oak_log", 70), ("stripped_dark_oak_log", 30)],
     ),
-    "old": ("switchback", "sandstone_stairs", "ochre_froglight", [("chiseled_sandstone", 40), ("cut_sandstone", 60)]),
+    "old": ("switchback", "sandstone_stairs", LAMP, [("chiseled_sandstone", 40), ("cut_sandstone", 60)]),
     "rogue": (
         "spiral",
         "mossy_stone_brick_stairs",
-        "verdant_froglight",
+        LAMP,
         [("chiseled_stone_bricks", 50), ("mossy_stone_bricks", 50)],
     ),
-    "undead": ("ladder", "tuff_brick_stairs", "pearlescent_froglight", [("chiseled_tuff", 50), ("polished_tuff", 50)]),
-    "witch": ("ladder", "mud_brick_stairs", "verdant_froglight", [("mangrove_log", 70), ("stripped_mangrove_log", 30)]),
+    "undead": ("ladder", "tuff_brick_stairs", LAMP, [("chiseled_tuff", 50), ("polished_tuff", 50)]),
+    "witch": ("ladder", "mud_brick_stairs", LAMP, [("mangrove_log", 70), ("stripped_mangrove_log", 30)]),
 }
 
 
@@ -77,7 +78,7 @@ def shaft(eye, room):
     style, stairs, light, pillar = SHAFTS[eye]
     return {
         "landing": room.floor.expanded(),
-        "light": f"minecraft:{light}",
+        "light": light,
         "pillar": m(f"{eye}/pillar", pillar).expanded(),
         "stairs": f"minecraft:{stairs}",
         "style": style,
@@ -233,7 +234,7 @@ def cold(eye, spec):
         "polished_diorite_stairs",
         "polished_diorite_slab",
     )
-    ribs = arch.ribs(5, "minecraft:blue_ice", wall, 12, "minecraft:sea_lantern", (8, 0))
+    ribs = arch.ribs(5, "minecraft:blue_ice", wall, 12, LAMP, (8, 0))
     room = Room([27, 22, 35], wall, floor, ribs, decay=-0.2)
     arch.vault(room, 8, 18, 1, 33, FLOOR, 8, 11, pointed=True)
     arch.vault(room, 2, 7, 1, 33, FLOOR, 5, 3)
@@ -248,12 +249,12 @@ def cold(eye, spec):
                 9,
                 "minecraft:packed_ice",
                 "minecraft:calcite",
-                "minecraft:sea_lantern",
+                LAMP,
                 "minecraft:polished_diorite_stairs",
                 wide=True,
             )
         for x in (4, 22):
-            room.set((x, room.top(x, z, 3), z), "minecraft:sea_lantern")
+            room.set((x, room.top(x, z, 3), z), LAMP)
     for z in range(8, 34):
         for x in range(11, 16):
             room.set((x, 1, z), "minecraft:blue_ice" if (x + z) % 5 == 0 else "minecraft:calcite")
@@ -301,7 +302,7 @@ def corrupted(eye, spec):
         "acacia_stairs",
         "acacia_slab",
     )
-    ribs = arch.ribs(6, "minecraft:stripped_acacia_wood", wall, 13, "minecraft:ochre_froglight", (6, 1))
+    ribs = arch.ribs(6, "minecraft:stripped_acacia_wood", wall, 13, LAMP, (6, 1))
     room = Room([23, 18, 37], wall, floor, ribs, decay=0.25)
     arch.vault(room, 6, 16, 1, 35, FLOOR, 8, 7)
     arch.vault(room, 1, 5, 1, 35, FLOOR, 6, 1)
@@ -331,9 +332,7 @@ def corrupted(eye, spec):
             room.set((inward, 6, z), "minecraft:red_wall_banner", facing="east" if x == 5 else "west")
         for x, facing in ((6, "west"), (16, "east")):
             if z + 3 < 35:
-                arch.window(
-                    room, x, z + 3, facing, 11, 13, "minecraft:orange_stained_glass_pane", "minecraft:ochre_froglight"
-                )
+                arch.window(room, x, z + 3, facing, 11, 13, "minecraft:orange_stained_glass_pane", LAMP)
     for z in (10, 16, 22, 28):
         arch.chandelier(room, 11, z, room.top(11, z, 3), 4)
     top = arch.dais(room, 6, 16, 1, 8, FLOOR, 3, "minecraft:acacia_stairs", "minecraft:red_terracotta")
@@ -378,7 +377,7 @@ def cryptic(eye, spec):
         "stone_stairs",
         "stone_slab",
     )
-    ribs = arch.ribs(5, "minecraft:polished_diorite", wall, 20, "minecraft:sea_lantern", (1, 2))
+    ribs = arch.ribs(5, "minecraft:polished_diorite", wall, 20, LAMP, (1, 2))
     room = Room([23, 24, 29], wall, floor, ribs, decay=-0.1)
     arch.vault(room, 1, 21, 1, 27, FLOOR, 18, 3)
     galleries = (8, 15)
@@ -418,8 +417,8 @@ def cryptic(eye, spec):
         room.set((x + (1 if x == 2 else -1), gallery + 1, z), AIR)
     for z in range(4, 26, 5):
         for x in (1, 21):
-            room.set((x, 7, z), "minecraft:sea_lantern")
-            room.set((x, 14, z), "minecraft:sea_lantern")
+            room.set((x, 7, z), LAMP)
+            room.set((x, 14, z), LAMP)
     for z in (18, 22):
         for x in (6, 16):
             room.fill((x - 1, 2, z), (x + 1, 2, z), "minecraft:spruce_slab", type="top", waterlogged=False)
@@ -482,7 +481,7 @@ def evil(eye, spec):
                 arch.stair(room, (x, 2, z), "minecraft:oak_stairs", "south")
     for z in (6, 10, 14):
         for x, facing in ((2, "west"), (10, "east")):
-            arch.window(room, x, z, facing, 4, 6, "minecraft:yellow_stained_glass_pane", "minecraft:ochre_froglight")
+            arch.window(room, x, z, facing, 4, 6, "minecraft:yellow_stained_glass_pane", LAMP)
     top = arch.dais(room, 2, 10, 1, 4, FLOOR, 1, "minecraft:stone_brick_stairs", floor)
     room.fill((5, top, 2), (7, top, 2), "minecraft:chiseled_stone_bricks")
     for x in (5, 7):
@@ -526,7 +525,7 @@ def exotic(eye, spec):
         "minecraft:cut_red_sandstone",
         "minecraft:smooth_red_sandstone",
         11,
-        "minecraft:pearlescent_froglight",
+        "minecraft:sea_lantern",
         wall=wall,
     )
 
@@ -579,17 +578,15 @@ def exotic(eye, spec):
         )
     for z in range(4, 26, 5):
         for x, facing in ((2, "west"), (26, "east")):
-            arch.window(
-                room, x, z, facing, 3, 7, "minecraft:cyan_stained_glass_pane", "minecraft:pearlescent_froglight"
-            )
+            arch.window(room, x, z, facing, 3, 7, "minecraft:cyan_stained_glass_pane", "minecraft:sea_lantern")
     for x in range(4, 26, 5):
-        arch.window(room, x, 2, "north", 3, 7, "minecraft:cyan_stained_glass_pane", "minecraft:pearlescent_froglight")
+        arch.window(room, x, 2, "north", 3, 7, "minecraft:cyan_stained_glass_pane", "minecraft:sea_lantern")
     for x, z in ((3, 3), (25, 3), (3, 25), (25, 25)):
         room.set((x, 2, z), "minecraft:potted_torchflower")
         candle(room, (x + (1 if x < cx else -1), 2, z), "minecraft:orange_candle", 3)
-    room.set((cx, room.top(cx, cz, 3), cz), "minecraft:pearlescent_froglight")
+    room.set((cx, room.top(cx, cz, 3), cz), "minecraft:sea_lantern")
     for x, z in ring_points(cx, cz, 2.8, 4, math.pi / 4):
-        room.set((x, 2, z), "minecraft:pearlescent_froglight")
+        room.set((x, 2, z), "minecraft:sea_lantern")
     room.reserve((cx - 1, cz + 2), (cx + 1, 28))
     shrine(room, eye, spec, (cx, 3, cz), (cx - 2, 3, cz + 1), "south")
     door = doorway(room, cx, 1)
@@ -733,9 +730,9 @@ def magical(eye, spec):
             "minecraft:amethyst_block",
             "minecraft:deepslate_brick_stairs",
         )
-        room.set((x, 10, z), "minecraft:pearlescent_froglight")
+        room.set((x, 10, z), LAMP)
     for x, z in ring_points(cx, cz, 3.0, 4, math.pi / 4):
-        room.set((x, room.top(x, z, 3), z), "minecraft:pearlescent_froglight")
+        room.set((x, room.top(x, z, 3), z), LAMP)
     room.set((cx, room.top(cx, cz, 4), cz), "minecraft:amethyst_block")
     room.set((cx, room.top(cx, cz, 4) - 1, cz), "minecraft:amethyst_cluster", facing="down", waterlogged=False)
     for x, z in ring_points(cx, cz, 5.4, 8, math.pi / 8):
@@ -746,7 +743,7 @@ def magical(eye, spec):
     detail.cornice(room, "minecraft:dark_oak_stairs")
     detail.rubble(room, wall, 0.25)
     detail.webs(room, 0.45)
-    detail.floor_lights(room, "minecraft:pearlescent_froglight", 4, "minecraft:purple_carpet")
+    detail.floor_lights(room, LAMP, 4, "minecraft:purple_carpet")
     return done(eye, room, door)
 
 
@@ -805,12 +802,12 @@ def old(eye, spec):
             if z == 8 and side:
                 room.fill((x, 5, z), (x, 9, z), "minecraft:bone_block", axis="y")
     for x in (7, 13):
-        room.set((x, 8, 8), "minecraft:ochre_froglight")
-        room.set((x, 5, 0), "minecraft:ochre_froglight")
-    room.set((10, 8, 0), "minecraft:ochre_froglight")
+        room.set((x, 8, 8), LAMP)
+        room.set((x, 5, 0), LAMP)
+    room.set((10, 8, 0), LAMP)
     for z in (5, 11, 17, 23, 29, 35):
         for x in (0, 20):
-            room.set((x, 4, z), "minecraft:ochre_froglight")
+            room.set((x, 4, z), LAMP)
     for z in (14, 20, 26, 32):
         hanging(room, 10, z, room.top(10, z, 3) - 1, 3)
     room.air((10, room.top(10, 4, 3), 4))
@@ -907,7 +904,7 @@ def rogue(eye, spec):
     for x in (10, 14):
         hanging(room, x, 3, floor_at(3) + 10, 3)
     for x in (9, 15):
-        room.set((x, 9, 0), "minecraft:verdant_froglight")
+        room.set((x, 9, 0), LAMP)
     for index in range(40):
         x = 1 + int(noise("vine", index, 0) * 23)
         z = 1 + int(noise("vine", index, 1) * 31)
@@ -1044,7 +1041,7 @@ def witch(eye, spec):
     detail.roots(room, 0.15, soil="minecraft:muddy_mangrove_roots")
     detail.rubble(room, wall, 0.35)
     detail.webs(room, 0.4)
-    detail.floor_lights(room, "minecraft:verdant_froglight", 4)
+    detail.floor_lights(room, LAMP, 4)
     return done(eye, room, door)
 
 

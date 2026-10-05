@@ -11,6 +11,7 @@ import time
 from pathlib import Path
 
 import hotswap
+import states
 from drive import Failure, crashes, running
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -126,14 +127,19 @@ def release_screen():
     SCREEN.unlink(missing_ok=True)
 
 
-def launch(fresh, timeout, visible, mode="full"):
+def launch(fresh, timeout, visible, mode="full", state=None):
     DRIVER.mkdir(parents=True, exist_ok=True)
     for stale in ("abort", "commands.txt", "done.txt", "game.pid", "quit"):
         (DRIVER / stale).unlink(missing_ok=True)
     release_screen()
     before = crashes(CRASHES)
-    command = ["just", "play" if fresh else "showroom", mode]
+    command = ["just", "play" if fresh or state else "showroom", mode]
     environment = screen(visible)
+    if state:
+        cache = states.folder("client", mode, state)
+        cached = states.prepare(cache, CLIENT / "saves" / ("state-lean" if mode == "lean" else "state"))
+        environment |= {"WAYFARER_STATE": state, "WAYFARER_STATE_CACHE": str(cache)}
+    started = time.monotonic()
     with LAUNCH_LOG.open("w") as log:
         process = subprocess.Popen(
             command,
@@ -161,7 +167,10 @@ def launch(fresh, timeout, visible, mode="full"):
         sys.exit(f"the client could not open its world: {blocked[0].removeprefix('blocked: ')}")
     hotswap.remember(SNAPSHOT)
     errors = [line for line in report.splitlines() if line.startswith("error:")]
-    world = "a fresh natural world" if fresh else "the showroom"
+    if state:
+        world = f"state {state}, " + ("from the cache," if cached else f"built in {time.monotonic() - started:.0f} s,")
+    else:
+        world = "a fresh natural world" if fresh else "the showroom"
     where = ("on the user's screen" if visible else "on a hidden screen") + {
         "far": ", with Distant Horizons' far view",
         "full": "",
@@ -172,10 +181,14 @@ def launch(fresh, timeout, visible, mode="full"):
 
 
 def start(arguments):
+    if arguments.state:
+        states.check(arguments.state)
     if alive():
+        if arguments.state:
+            sys.exit(f"the client is already running; stop it to open state {arguments.state}")
         print("the client is already running")
         return
-    launch(arguments.fresh, arguments.timeout, arguments.visible, arguments.mode)
+    launch(arguments.fresh, arguments.timeout, arguments.visible, arguments.mode, arguments.state)
 
 
 def batch(steps, timeout):
@@ -475,7 +488,14 @@ def main():
     start_parser = commands.add_parser(
         "start", help="launch the client unless it runs; returns once the showroom is built"
     )
-    start_parser.add_argument("--fresh", action="store_true", help="open a fresh natural world instead of the showroom")
+    worlds = start_parser.add_mutually_exclusive_group()
+    worlds.add_argument("--fresh", action="store_true", help="open a fresh natural world instead of the showroom")
+    worlds.add_argument(
+        "--state",
+        metavar="QUEST/STEP",
+        help="open the world at a step of the story, such as ash/the_door, built from story/states.toml and kept "
+        "in build/states/",
+    )
     start_parser.add_argument("--timeout", type=int, default=START_SECONDS)
     start_parser.add_argument(
         "--visible", action="store_true", help="show the game on the user's screen instead of a hidden one"

@@ -8,6 +8,8 @@ CENTRE = SIZE // 2
 FIRE = (CENTRE, CENTRE)
 GRAVE = (2, 9)
 HEADSTONE = (1, 1)
+STRANGER = (5.4, 1, 7.5, 270)
+WAKE = (9.5, 1, 7.5, 90)
 GROUND = Material(
     "camp/ground",
     [
@@ -23,7 +25,7 @@ GROUND = Material(
 )
 CANVAS = Material(
     "camp/canvas",
-    [("minecraft:white_wool", 60), ("minecraft:light_gray_wool", 25), ("minecraft:mushroom_stem", 15)],
+    [("minecraft:white_wool", 65), ("minecraft:light_gray_wool", 25), ("minecraft:brown_wool", 10)],
     ground=4,
 )
 STONES = Material(

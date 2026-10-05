@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=east": {"model": "wayfarer:block/wayfarer_sign", "y": 90},
+    "facing=north": {"model": "wayfarer:block/wayfarer_sign"},
+    "facing=south": {"model": "wayfarer:block/wayfarer_sign", "y": 180},
+    "facing=west": {"model": "wayfarer:block/wayfarer_sign", "y": 270}
+  }
+}

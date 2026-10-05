@@ -1,0 +1,14 @@
+[[households]]
+piece = "large_tent"
+people = [{ at = "fire", person = "tamsin", pose = "sitting_leaning" }]
+
+[[households]]
+piece = "bell_cart"
+
+[[households]]
+piece = "healer_tent"
+people = [{ at = "fire", person = "agna", pose = "sitting_crossed" }, { at = "fire", person = "pip", pose = "sitting_crossed" }]
+
+[[households]]
+piece = "forge_wagon"
+people = [{ at = "fire", person = "hob", pose = "sitting" }]

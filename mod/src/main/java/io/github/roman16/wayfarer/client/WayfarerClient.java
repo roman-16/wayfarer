@@ -5,22 +5,40 @@ import io.github.roman16.wayfarer.GazePayload;
 import io.github.roman16.wayfarer.HudState;
 import io.github.roman16.wayfarer.NightPayload;
 import io.github.roman16.wayfarer.Wayfarer;
+import io.github.roman16.wayfarer.story.Sense;
+import io.github.roman16.wayfarer.story.Tasks;
 import java.util.List;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
-import net.minecraft.client.Minecraft;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.network.PacketDistributor;
+import org.lwjgl.glfw.GLFW;
 
 @Mod(value = Wayfarer.MODID, dist = Dist.CLIENT)
 public final class WayfarerClient {
+    public static final KeyMapping JOURNAL = new KeyMapping("key.wayfarer.journal", GLFW.GLFW_KEY_J, "key.categories.wayfarer");
+    private static final KeyMapping MAP = new KeyMapping("key.wayfarer.map", GLFW.GLFW_KEY_M, "key.categories.wayfarer");
+    private static final KeyMapping SENSE = new KeyMapping(Sense.KEY, GLFW.GLFW_KEY_Y, "key.categories.wayfarer");
+    private static final String JOURNEYMAP = "journeymap";
+
     public WayfarerClient(IEventBus modBus) {
+        modBus.addListener(RegisterKeyMappingsEvent.class, event -> {
+            event.register(JOURNAL);
+            event.register(MAP);
+            event.register(SENSE);
+        });
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> keys(Minecraft.getInstance()));
         modBus.addListener(RegisterGuiLayersEvent.class, event -> event.registerAboveAll(Wayfarer.id("hud"), Hud::render));
         modBus.addListener(EntityRenderersEvent.RegisterRenderers.class,
                 event -> event.registerBlockEntityRenderer(Wayfarer.SHRINE_PEDESTAL_ENTITY.get(), ShrinePedestalRenderer::new));
@@ -34,6 +52,28 @@ public final class WayfarerClient {
             HudState.compass = CompassPayload.hidden(List.of());
             HudState.gaze = GazePayload.CLOSED;
             HudState.night = NightPayload.CALM;
+            HudState.panel = Tasks.Panel.EMPTY;
         });
+    }
+
+    private static void keys(Minecraft minecraft) {
+        if (minecraft.player == null) {
+            return;
+        }
+        boolean journeymap = ModList.get().isLoaded(JOURNEYMAP);
+        while (JOURNAL.consumeClick()) {
+            JournalScreen.open();
+        }
+        while (MAP.consumeClick()) {
+            if (journeymap) {
+                MapLink.open();
+            }
+        }
+        while (SENSE.consumeClick()) {
+            PacketDistributor.sendToServer(new Sense.Payload());
+        }
+        if (journeymap) {
+            MapLink.show(JournalScreen.places());
+        }
     }
 }

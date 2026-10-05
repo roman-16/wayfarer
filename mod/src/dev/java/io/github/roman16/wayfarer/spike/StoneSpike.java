@@ -1,7 +1,5 @@
 package io.github.roman16.wayfarer.spike;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import de.maxhenkel.gravestone.corelib.death.Death;
 import de.maxhenkel.gravestone.corelib.death.PlayerDeathEvent;
@@ -72,7 +70,6 @@ public final class StoneSpike {
         stones.all.put(death.getId(), new Stone(player.getUUID(), level.dimension(), grave.getBlockPos(), things(death),
                 level.getGameTime(), false));
         stones.setDirty();
-        QuestSpike.sync(player.server);
     }
 
     @SubscribeEvent
@@ -99,7 +96,6 @@ public final class StoneSpike {
         }
         if (changed) {
             stones.setDirty();
-            QuestSpike.sync(server);
         }
     }
 
@@ -124,7 +120,6 @@ public final class StoneSpike {
         stones.all.put(key, stone.lettingGo());
         stones.setDirty();
         source.sendSuccess(() -> Component.literal("You let the stone with %d things go.".formatted(stone.things())), false);
-        QuestSpike.sync(source.getServer());
         return 1;
     }
 
@@ -139,22 +134,6 @@ public final class StoneSpike {
         }
     }
 
-    static JsonArray view(ServerPlayer player) {
-        JsonArray list = new JsonArray();
-        for (Map.Entry<UUID, Stone> entry : Stones.of(player.server).all.entrySet()) {
-            Stone stone = entry.getValue();
-            if (stone.player().equals(player.getUUID())) {
-                JsonObject json = new JsonObject();
-                json.addProperty("id", entry.getKey().toString());
-                json.addProperty("things", stone.things());
-                json.addProperty("x", stone.pos().getX());
-                json.addProperty("z", stone.pos().getZ());
-                json.addProperty("let_go", stone.letGo());
-                list.add(json);
-            }
-        }
-        return list;
-    }
 
     private static List<Stone> mine(ServerPlayer player) {
         List<Stone> stones = new ArrayList<>();

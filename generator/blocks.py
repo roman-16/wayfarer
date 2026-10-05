@@ -7,6 +7,7 @@ import nbt
 from nbt import Byte
 
 AIR = "minecraft:air"
+LAMP = "minecraft:waxed_exposed_copper_bulb"
 DATA_VERSION = 3955
 NEIGHBOURS = [(dx, dy, dz) for dx in (-1, 0, 1) for dy in (-1, 0, 1) for dz in (-1, 0, 1) if (dx, dy, dz) != (0, 0, 0)]
 FACING = {"east": (1, 0), "north": (0, -1), "south": (0, 1), "west": (-1, 0)}
@@ -121,6 +122,8 @@ class Template:
     def set(self, pos, name, entity=None, **properties):
         if isinstance(name, Material):
             name = name.at(tuple(pos))
+        if name == LAMP:
+            properties.setdefault("lit", True)
         self.blocks[tuple(pos)] = (
             name,
             tuple(sorted((key, str(value).lower()) for key, value in properties.items())),

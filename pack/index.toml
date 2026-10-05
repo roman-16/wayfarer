@@ -65,16 +65,20 @@ file = "config/c2me.toml"
 hash = "01064a300391147f410c79abfb7c5955bf049c4d700827832fbb97a6bc374482"
 
 [[files]]
+file = "config/campfirespawnandtweaks.json5"
+hash = "99905b778180ff0bb9982efb59cfeb215e5461326876c9604358d374d88d9530"
+
+[[files]]
 file = "config/carryon-common.toml"
 hash = "00fd7cd1cc4dc55a9cedad03e7942c738011e90ceebc8604ba29888be52d02ee"
 
 [[files]]
 file = "config/defaultoptions/keybindings.txt"
-hash = "b2736cef05c4b2d7034aaec3993243d0d6c18687f488121d1fda04c2866daf10"
+hash = "6514968dd7b1e4991128ed071b678d8986c800fd70ea103681c2566ef219dc76"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
-hash = "31336f3dcdf0e1d74c8f3c1c44c4673e73b3a327c16eb5d150145a6f23956a12"
+hash = "862b7d7efd7417ad8964ff989e7ab9207f0eb236fd77b7aaa19a2ae1b2e96611"
 
 [[files]]
 file = "config/dynamic_fps.json"
@@ -113,6 +117,10 @@ file = "config/jade/jade.json"
 hash = "94c99843a2135cade988f4b39ef92ac0f95dd64b6fa79c969b8d02cf75c2e470"
 
 [[files]]
+file = "config/kiwi-client.yaml"
+hash = "cda675a661efe4de11d0292127b19f664dd08552b8b5cfcd65bef99f66ec9444"
+
+[[files]]
 file = "config/nohostilesaroundcampfire.json5"
 hash = "f65a32c4ca9612269ccbb5e51a2438c6787763f169010aa2ddf3b39dec008dbf"
 
@@ -129,12 +137,20 @@ file = "config/particular-common.toml"
 hash = "dc881dc9411bf619697efc02a5ab90141aef90301dafc36373737e04b38cec94"
 
 [[files]]
+file = "config/raritycore/RarityStyle.json"
+hash = "7b8622a99d6ec38f2baffb150bab82384039afd4c603f908536461b9b2159bd7"
+
+[[files]]
 file = "config/seedgen.json"
 hash = "660d6385a99cbf07d1049a12e6d52df9d25b76d94cfc37baec376d3d9a750489"
 
 [[files]]
 file = "config/sereneseasons/seasons.toml"
 hash = "40e24b452620a8521f8c4151e0b233870489b3e5795b182e615a44d8adc156b3"
+
+[[files]]
+file = "config/silentgear-common.toml"
+hash = "2416be04d3f29cde1e428e3f34deed8c59ee527253d0b25b11a0dcc8de22c760"
 
 [[files]]
 file = "config/solonion-client.json"
@@ -147,6 +163,10 @@ hash = "b2ce9644c74ba7c36ce239b281ac1193e1db015f1546e5faaf17cf54b47d0d4c"
 [[files]]
 file = "config/sparsestructures.json5"
 hash = "dfeb573850eaf9db546c71876999deaf353d660d30f6506c4af4500c599e40e9"
+
+[[files]]
+file = "config/streamsreflowing-common.toml"
+hash = "22df05c63f0730c35ee098e04a9541f1c6907c4a2dc8fe23929b3f5c8c93d3dd"
 
 [[files]]
 file = "config/subtle_effects/general.toml"
@@ -167,6 +187,10 @@ hash = "bf0fd0906e4830b89732fef78f8314ccaf694e38db1f1cd46a2a606d5424aad6"
 [[files]]
 file = "config/waystones-common.toml"
 hash = "95c55f5a51e25dca37f887896486ba413b6ce5d1c1ce59c753be61a4ca894637"
+
+[[files]]
+file = "journeymap/config/6.0/journeymap.core.config"
+hash = "f6709f55e91282ae6ac39c56cde36352ab3d2a208da4b8d1f583c8ce0f9a3449"
 
 [[files]]
 file = "journeymap/server/6.0/journeymap.server.global.config"
@@ -240,11 +264,6 @@ metafile = true
 [[files]]
 file = "mods/c2me-neoforge.pw.toml"
 hash = "b29065f7eb51b2fa53043366d0df737483b600c2f549d31c783fe52c4d72bfb5"
-metafile = true
-
-[[files]]
-file = "mods/cameraoverhaul.pw.toml"
-hash = "51f925e75075df676cc1efff5bb8db9d828842c0f3031310a05dbf368aa67393"
 metafile = true
 
 [[files]]

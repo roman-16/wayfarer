@@ -61,6 +61,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Where do the shards go when taken? | Into the ember, and they never leave it, not even by dying |
 | Must every shard be taken? | No. A frame takes the Eye with however many shards it holds, and the Keepers' records say so. Every shard taken is a gift for the carrier and more sight for the dragon at the end |
 | What are the waystones? | Stones the first Wayfarers set along their roads. A stone folds the road back to any other stone touched, the way a tent folds space, so it carries a Wayfarer only along roads already walked |
+| What does a circle with a line through it mean? | A Wayfarer's sign for a hall looked after: "looked after, walk on". The calling stones were set so Wayfarers could find the halls and look after them, and one who looked in cut the sign on the way down and left the shard where it lay, since a shard in its hall keeps its land dark |
 | What is a Wayfarer's own stone? | The first Wayfarers each carried a small stone cut from their waystones. Set down and touched, it holds the place, and the road folds back to it; like everything, it is carried |
 
 ## The player
@@ -75,6 +76,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Why do I go after the shards? | The stranger died asking me not to let "it" have them, the shards he took; the burnt town showed me what he meant. At the first hall his voice finished the sentence: bring them to a frame and put the dragon's eye out for good, so no town burns again |
 | Why did the stranger give me the ember? | His ember had been dark for twenty years and he was dying. A dying ember's light flies home to the Eye, and only the Eye's own body could light it again, so he gave it to the one thing the gaze grew to carry its Eye home, and bet I would choose otherwise |
 | What is the voice? | The dragon, speaking through the Eye in me. It speaks from the first hall on: short words on the road, long talks when I sit apart at a fire. Nobody else hears it, and it is silent in a tent |
+| What do I call it? | The stranger, as the journal does, since I do not know his name |
 | Why does it sound like the stranger? | The ember remembers everything he saw, heard and said, and the voice wears what it found there: his voice, his stories, his camps |
 | Why not as itself? | It needs me willing, since the ember goes out in an unwilling carrier, and Wend's is the voice I trust. And it has no voice of its own: an eye only ever watched. Unmasked, it keeps his voice and stops pretending to be him |
 | What are the memories? | The ember remembers Wend's life. Where he once did something, touching the calling stone or what he left wakes me in a dream of the place as it was, as him, and I live what he did. I cannot change it |
@@ -124,7 +126,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 
 | Question | Answer |
 |---|---|
-| Who was the stranger? | Wend, a Wayfarer who broke the oath. Young, he walked happily. Then he hid a shard in a young town's bell to keep it from the Gazebound, served them as their finder while his ember still burned, stole the Frost Walkers' shard, and one winter night took their bread and stopped walking. His ember went dark in his ninth winter in their grass halls; he became their captain anyway, raised Maren, and read in the Scribes' books what a thirteenth shard is |
+| Who was the stranger? | Wend, a Wayfarer who broke the oath. Young, he walked happily and looked in on the Diggers' hall every few winters, leaving its shard where it lay. Then he hid a shard in a young town's bell to keep it from the Gazebound, served them as their finder while his ember still burned, stole the Frost Walkers' shard, and one winter night took their bread and stopped walking. His ember went dark in his ninth winter in their grass halls; he became their captain anyway, raised Maren, and read in the Scribes' books what a thirteenth shard is |
 | Who is Maren? | A Gazebound evoker Wend raised from a child; it was her hand that held out the bread the night he gave in. She follows the smoke of my fire, visits it as a guest, names Wend, and at the frame opens his letter and turns on her own band |
 | Why can no one hurt Maren at a fire? | She comes as a guest and leaves in smoke before anything can happen; nothing fights at a fire shared freely |
 | Who is the Grass King's heir? | The leader of the Gazebound, of the Grass King's line. He wants a world that is seen, with no crime and no war, as his ancestor's kingdom had for one summer, at the price of everyone being watched |
@@ -134,6 +136,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 
 | Question | Answer |
 |---|---|
+| Who were the Diggers? | A people of the forests who followed ore down. Their tunnels run under half the world, and many of its old mines are theirs. Over their hall the shard kept their forest dark to the gaze, but they dug on, past the edge of that ground and down into the dark where the gaze's creatures wait out the day, and the dark took them one drift at a time. Their tunnels are full of those creatures still |
 | Who are the Twelve Peoples now? | Four still live in their land: the swamp's witches, heirs of the Marsh Mothers; the Tide Folk; the Sand Singers; and the Grass Kingdom. The rest are scattered or dead, and only their places remain |
 | What are the peoples' places? | What each people left near its hall: a winter house, a ship, a temple, a grave. What they could not carry is still there, and some of it, such as the Frost Walkers' snowshoes, opens the land |
 | Who are the settled? | The villages, towns and capitals: the people who forgot the oath. The gaze burns them, one by one |

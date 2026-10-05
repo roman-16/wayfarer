@@ -1,0 +1,82 @@
+{
+  "animations": {
+    "fallen_back_knee": {
+      "bones": {
+        "Body": {
+          "position": [
+            0,
+            -22,
+            0
+          ],
+          "rotation": [
+            -90,
+            0,
+            0
+          ]
+        },
+        "Head": {
+          "position": [
+            0,
+            -20,
+            0
+          ],
+          "rotation": [
+            -90,
+            0,
+            24
+          ]
+        },
+        "LeftArm": {
+          "position": [
+            0,
+            -20,
+            -2
+          ],
+          "rotation": [
+            -90,
+            -48,
+            0
+          ]
+        },
+        "LeftLeg": {
+          "position": [
+            0,
+            -10,
+            -12
+          ],
+          "rotation": [
+            -90,
+            -8,
+            0
+          ]
+        },
+        "RightArm": {
+          "position": [
+            0,
+            -20,
+            -2
+          ],
+          "rotation": [
+            -90,
+            12,
+            0
+          ]
+        },
+        "RightLeg": {
+          "position": [
+            0,
+            -10,
+            -12
+          ],
+          "rotation": [
+            -56,
+            6,
+            0
+          ]
+        }
+      },
+      "loop": "hold_on_last_frame"
+    }
+  },
+  "format_version": "1.8.0"
+}

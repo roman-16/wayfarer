@@ -1,0 +1,82 @@
+{
+  "animations": {
+    "fallen_face": {
+      "bones": {
+        "Body": {
+          "position": [
+            0,
+            -22,
+            0
+          ],
+          "rotation": [
+            90,
+            0,
+            0
+          ]
+        },
+        "Head": {
+          "position": [
+            0,
+            -20,
+            0
+          ],
+          "rotation": [
+            90,
+            0,
+            60
+          ]
+        },
+        "LeftArm": {
+          "position": [
+            0,
+            -20,
+            2
+          ],
+          "rotation": [
+            -90,
+            -24,
+            0
+          ]
+        },
+        "LeftLeg": {
+          "position": [
+            0,
+            -10,
+            12
+          ],
+          "rotation": [
+            90,
+            -6,
+            0
+          ]
+        },
+        "RightArm": {
+          "position": [
+            0,
+            -20,
+            2
+          ],
+          "rotation": [
+            -90,
+            16,
+            0
+          ]
+        },
+        "RightLeg": {
+          "position": [
+            0,
+            -10,
+            12
+          ],
+          "rotation": [
+            90,
+            10,
+            0
+          ]
+        }
+      },
+      "loop": "hold_on_last_frame"
+    }
+  },
+  "format_version": "1.8.0"
+}

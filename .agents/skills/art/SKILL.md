@@ -17,6 +17,15 @@ Everything a player sees has to look as if it was always in Minecraft: the same 
    $ python3 scripts/client.py run workshop 'spawn wayfarer:worm' 'beside minecraft:zombie' 'views worm'
    ```
 
+## Variety
+
+Variety is the key. Anything a player meets more than once, people, buildings, walls, camps, the things on a shelf, is boring the moment it repeats, and the eye finds a repeat at once.
+
+- **Vary what the eye reads first.** A set of things differs in silhouette, layout, pose, material, colour and wear, never only in a number: three copies of one house a block taller or shorter, or thirty dead in one pose in the same clothes with the same wound, are one thing repeated.
+- **Vary on several axes at once.** People differ in build, age, clothes and their colours, wear (soot, tears, mud, blood) and pose. Buildings differ in footprint, floors, roof, the mix of their walls, openings, porches, chimneys, yards and fences, and in how far they have fallen. A wall has depth, a second and a third block, a trim and a break; a flat run of one block is never a wall.
+- **Variety has to make sense.** It follows what happened in the place, never chance alone: everything lies where its story put it. In a town that burned at night most of the dead lie indoors, where they hid, some at the doors they tried to get out of, fewer in the streets where they fled; a house is burnt where the fire took it; a camp's gear lies where its people used it.
+- **Judge the whole set.** Photograph many of them together, a street or a crowd, and ask whether any two could be swapped without anyone noticing; if they could, they are not different enough.
+
 ## Textures
 
 - **The grid is sacred.** Blocks and items are 16 by 16 pixels; one pixel on the texture is one pixel on the model, never stretched or squashed. Never mix resolutions (mixels): no texture drawn at a higher resolution, and no model element smaller than one pixel.
@@ -27,7 +36,8 @@ Everything a player sees has to look as if it was always in Minecraft: the same 
 - **Items** fit inside 16 by 16 with a clearly darker outline, shaded to the top-left light, and read at a glance in a hotbar slot: the silhouette carries the idea, the inside only the material. Tools and weapons lie on the diagonal, handle at the bottom left, as vanilla's do, and a tool's handle is vanilla's stick unless the lore says otherwise.
 - **Blocks** look right on their own and tiled: check every block texture on a three by three wall early, with only two or three shades, and keep checking while shading; any repeat the eye can find is a tiling fault.
 - **Creature textures** use box UV, unwrapped by the model, with north as the front.
-- **In this repository** item textures are drawn as rows of characters with a palette per variant in `generator/textures.toml`, written by `generator/png.py`; a new texture follows the same form. People's skins are drawn the same way, face by face, in `generator/skins.toml` (`generator/skins.py`): each person names their model (`humanoid` or `humanoid_slim`, whose arms are three pixels wide) and size, a palette whose letters are flat colours or three-shade ramps the generator mixes by coherent noise, and a grid per face of head, body, arms and legs, with the side face drawn once and mirrored; Easy NPC wears them from `wayfarer:textures/entity/people/`, and `person <skin> [pose]` in the workshop shows them. The settled world's ordinary people come from `generator/townsfolk.py`, which combines build, age, skin tone, hair, beard, clothes and their colours into skins no two of which are alike.
+- **Skins use both layers.** The outer layer (hat, jacket, sleeves and trousers), drawn half a pixel off the body, lifts what stands proud of it: hair and beards, collars, coats, shawls, aprons, belts, cuffs, boots and torn flaps, so a person has depth as vanilla's own skins do. It stays empty only where nothing stands out.
+- **In this repository** item textures are drawn as rows of characters with a palette per variant in `generator/textures.toml`, written by `generator/png.py`; a new texture follows the same form. People's skins are drawn the same way, face by face, in `generator/skins.toml` (`generator/skins.py`): each person names their model (`humanoid` or `humanoid_slim`, whose arms are three pixels wide) and size, the letters their outer layer lifts from the body beneath it (`raised`, by part) or an outer grid of its own (`hat_*`, `jacket_*`, `sleeve_*`, `pants_*`), a palette whose letters are flat colours or three-shade ramps the generator mixes by coherent noise, and a grid per face of head, body, arms and legs, with the side face drawn once and mirrored; Easy NPC wears them from `wayfarer:textures/entity/people/`, and `person <skin> [pose]` in the workshop shows them. The settled world's ordinary people come from `generator/townsfolk.py`, which combines build, age, skin tone, hair, beard, clothes and their colours, and the wear of what happened to them (soot, singed hems and cuffs, torn sleeves, rips, mud, blood, a lost boot), into skins no two of which are alike; their poses, `generator/poses.py`, are Easy NPC poses the generator writes as data.
 
 ## Models
 
@@ -44,11 +54,12 @@ Everything a player sees has to look as if it was always in Minecraft: the same 
 - **One hero.** Every structure has one focal point, the gate, the tallest tower, the hall's pedestal, clearly bigger or brighter than the rest, and detail thickens towards it. Leave calm wall between detailed parts so the eye can rest.
 - **Depth makes shadow.** Never put walls and pillars in one plane: pull the frame one block out, set windows and doors one block back, give roofs an overhang. Stairs, slabs, trapdoors, walls, fences and panes add depth of less than a block. A wall over about 8 blocks without a pillar, band or recess looks empty.
 - **Odd widths.** Wall runs of 5, 7 or 9 blocks have a centre for a door, a window or a roof peak; an even width has none.
+- **Every block is what the thing is made of.** A tent's canvas is wool, a charred wall is dark wood, a people's hall is lit by lamps and candles; a block is never chosen for its colour or texture alone when what it is says otherwise (mushroom stems as canvas, dirt in a plank wall, froglights in a desert hall). This holds for every structure the pack builds, and a block from another mod's structure that reads wrong is cut through `generator/owners.toml`.
 - **A palette of three to five, each with a job.** A base for the bulk, a darker block for recesses and shadow, a texture block mixed in at about one in four, a trim block, and one accent kept under a tenth of the faces. Blocks share an undertone; stretch one material through its stairs, slabs, walls and cracked, mossy, chiseled and polished variants before adding another. Depth comes from value contrast, not more colours. In this repository a material is a weighted list of blocks in a `Material`, mixed by coherent noise (`generator/blocks.py`), so neighbouring blocks agree instead of speckling.
 - **Ground it.** A structure sits on its land: foundations reach down into the slope, the palette uses the land's own stone and wood, and paths and pieces follow the ground the way a village's do (M5); nothing floats or sits on a flattened square.
 - **Wear tells time and story.** Weather where weather reaches: moss and cracks on the low, damp, shaded and north-facing parts, sound blocks high and sheltered. Break a ruin where it would break, the roof and the tops of walls first, and drop the fallen blocks below it; let roots, vines and a tree grow through what has stood longest. Keep the shape symmetric but the wear never mirrored. The generator's detail passes (`generator/detail.py`: rubble, moss, webs, roots, vines, skirting, cornices) do this by density and seed.
 - **Every room was used.** A room shows what happened in it: who lived there, what they left, why they left. A hall of the Frost Walkers keeps their furs and their dead; a Gazebound outpost keeps their banners, their bread and their scars. Loot and books sit where their owner would have put them.
-- **No two alike.** A place built from repeated pieces gives every piece kind a few seeded variants and turns them to face their street, as `generator/tollbridge.py` does for Tollbridge's houses, so neighbours never match.
+- **No two alike.** A place built from repeated pieces gives every piece kind variants that differ in what the eye reads first, as Variety asks, and turns them to face their street, so neighbours never match.
 - **Gameplay first.** YUNG builds his structures for the way through them: more than one way in, places to be clever, rewards for the bold. A structure is a place to play before it is a picture.
 
 ## Checklist
@@ -56,11 +67,13 @@ Everything a player sees has to look as if it was always in Minecraft: the same 
 Before calling a look done, in the workshop beside its vanilla relative:
 
 - Would a player believe Mojang made it, or that it came with the pack's other mods?
+- Seen many together, could any two be swapped unnoticed? Does where everything stands or lies make sense for what happened there?
 - Does it read at a glance: an item in its slot, a creature by its outline at night, a structure by its silhouette from far off?
 - Is every colour from a ramp, and every material vanilla's where vanilla has it?
 - Is the grid whole: no mixels, no stretched pixels, no element under a pixel?
 - Is it free of banding, pillow and pancake shading, noise and tiling repeats?
 - Does a structure have its masses, its hero, its depth, its odd widths and its three to five blocks, and does it sit on its land?
+- Is every block what that part is made of?
 - Does every detail have a reason in the lore: who made it, and what happened to it since?
 
 ## Sources

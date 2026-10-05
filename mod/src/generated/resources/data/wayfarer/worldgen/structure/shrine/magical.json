@@ -76,7 +76,10 @@
       }
     ],
     "light": {
-      "Name": "minecraft:pearlescent_froglight"
+      "Name": "minecraft:waxed_exposed_copper_bulb",
+      "Properties": {
+        "lit": "true"
+      }
     },
     "pillar": [
       {

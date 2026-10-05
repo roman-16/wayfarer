@@ -187,18 +187,20 @@ The reveals' places are settled in `story.md` (S2), and the voice's in S4.
 
   | How the player knows the goal | What the compass shows |
   |---|---|
-  | By feeling: a hall, or anything only the ember senses | No direction from afar: the ember flares when the player walks towards it and gutters when they walk away; the exact mark within 256 blocks |
+  | By feeling: a hall, or anything only the ember senses | No direction and no distance from afar: the ember flares when the player walks towards it and gutters when they walk away; the exact mark within 256 blocks |
   | By rumour: "somewhere north-east" | A direction and a rough distance, and the exact mark within 256 blocks, once the place shows itself |
   | By being told: a person, a page or a sign named the place | The exact mark from the start, with its distance |
 
   ```text
   [Main] The Pull - the ember pulls somewhere
-  Compass  the ember flares... gutters... flares
+  Compass  The ember · flaring ... The ember · guttering
   Compass  ◆ 241 blocks
 
   [Side] Bram's Son - the outpost Bram named
   Compass  ◆ north-east, 1,812 blocks
   ```
+
+- The tracked quest, its objective and its tasks, how to do what the step asks and each control the first time it is needed, stand in the task panel at the top right of the screen (`systems.md`, M29).
 
 - What failing means depends on what went wrong:
   - Falling never fails a quest: the player wakes at their fire, and the quest waits where they left it.
@@ -342,7 +344,7 @@ What opens the closed doors, the shards' part and the world after each door are 
 
   ```text
   Ilse, at the fire: "The Keepers wrote it down. A frame takes whatever of the Eye you bring it."
-  <Wend> Don't listen to her. All twelve, or none of this matters.
+  <The stranger> Don't listen to her. All twelve, or none of this matters.
   Journal › The Eye: 6 shards. A frame takes it, however many it holds.
   ```
 

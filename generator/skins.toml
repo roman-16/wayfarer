@@ -1,4 +1,5 @@
 [agna]
+raised = { arm = "D", body = "Aap", head = "GHh", leg = "Ba" }
 model = "humanoid_slim"
 scale = 1.0
 arm = [
@@ -157,6 +158,7 @@ s = ["#b07a5c", "#c48c6c", "#d09a7a"]
 w = "#dcd6cc"
 
 [hob]
+raised = { arm = "O", body = "Aak", head = "Hgh", leg = "Bab" }
 model = "humanoid"
 scale = 1.0
 arm = [
@@ -314,6 +316,7 @@ w = "#d6d0c6"
 z = "#4e423c"
 
 [pip]
+raised = { arm = "U", body = "Uq", head = "Hh", leg = "B" }
 model = "humanoid"
 scale = 0.75
 arm = [
@@ -444,6 +447,7 @@ w = "#e4e0d8"
 z = "#6a5a52"
 
 [stranger]
+raised = { arm = "Cc", body = "Cckly", head = "Hgh" }
 model = "humanoid"
 scale = 1.0
 arm = [
@@ -601,6 +605,7 @@ x = "#ead6cc"
 y = "#8c8a80"
 
 [tamsin]
+raised = { arm = "Rr", body = "Rry", head = "Hh", leg = "B" }
 model = "humanoid_slim"
 scale = 1.0
 arm = [

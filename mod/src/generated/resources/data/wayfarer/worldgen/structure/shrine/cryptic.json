@@ -86,7 +86,10 @@
       }
     ],
     "light": {
-      "Name": "minecraft:sea_lantern"
+      "Name": "minecraft:waxed_exposed_copper_bulb",
+      "Properties": {
+        "lit": "true"
+      }
     },
     "pillar": [
       {

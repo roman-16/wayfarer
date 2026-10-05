@@ -283,8 +283,6 @@ public final class EndingSpike {
         world.skins.put(player.getUUID().toString(), PIP_SKIN);
         world.setDirty();
         PacketDistributor.sendToAllPlayers(new Skin(player.getUUID().toString(), PIP_SKIN));
-        QuestSpike.speakAs(player.server, "pip", "%s is gone. He walked into the frame and the dark closed behind him. I carry his ember now. I'm going to build us a home."
-                .formatted(player.getScoreboardName()));
         say(player.server, "ending: %s plays on as Pip".formatted(player.getScoreboardName()));
         return 1;
     }

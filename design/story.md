@@ -55,10 +55,11 @@ The cold hall, whenever the player reaches it:
 - The ember remembers Wend. It is the Eye's light and light is sight, so in the decades he carried it, it kept everything he saw, heard and said, and all of it came to the player with the ember. The dragon speaks to the player through the Eye in them and wears the voice it found there; that is also where it gets his stories, his camps and his leads.
 - It wears that voice for two reasons. It needs the player willing, since the ember goes out in anyone who carries it unwillingly (S19), and as itself, the thing that burned Tamsin's town, it would never get its Eye home; Wend's is the one voice the player trusts. And it has no voice of its own: an eye only ever watched and never spoke, and the only words it has are his. Even unmasked it keeps his voice (`narration.md`); it only stops pretending to be him.
 - It speaks from the first hall on. The prologue and the walk to the first hall are quiet, so its first words land as a surprise.
+- Until Maren names him (1.11), the voice speaks in chat as "The stranger", in the gold he spoke in while he was dying, since nobody knows his name; from then on it is Wend.
 
   ```text
   First hall  The shard sinks into the ember. A warmth, then a voice you last heard dying:
-              <Wend> Well. That's one. Don't look so surprised, I did say I'd come along.
+              <The stranger> Well. That's one. Don't look so surprised, I did say I'd come along.
   ```
 
 - On the road it makes short remarks: the land, the fight just won, the place the player skipped. The long talks, Wend's road, leads and warnings, come when the player sits apart at a fire. The caravan's people hear none of it, and in a tent it is silent, since nothing of the gaze passes the door.
@@ -101,7 +102,7 @@ Act 1, the near ring, on foot:
 
 | Hall | People now | What is in the hall | Wend's hand | Gift | Decision |
 |---|---|---|---|---|---|
-| The Diggers' (forest) | Gone | The shard, deep at the end of their tunnels: the first hall | His marks on the wall: he was here and left it | Trail-sight: tracks glow | |
+| The Diggers' (forest) | Gone: they dug on past the ground their shard hallowed, into the dark where the gaze's creatures wait out the day | The shard, deep at the end of their tunnels: the first hall | His Wayfarer's sign on the way down: young, he looked in on the hall every few winters and left the shard where it lay | Trail-sight: tracks glow | |
 | The Marsh Mothers' (swamp) | Their heirs, the swamp's witches, who no longer remember why they keep the hut | Sunk where no reflection lives; the witches' trust opens the way | He bargained with the witches, and they still curse his name | True-sight: illusions and disguises show through | |
 | The Frost Walkers' (snow) | Gone; Nell is the last | Empty: Wend took it twenty winters ago, and her people died trying to stop him. It lies in the ice where he hid it | The theft, and the dead | Dark-sight: the dark shows | Nell wants it to bury with her dead. Give it to her and she leaves the caravan in peace, and may come back at the frame; take it and she stays, but hates the player, which counts at the breaking |
 | The First Village's (plains) | Gone: a village that forgot the oath and was seen | Empty: its shard was cast into the bell of the caravan's own town, which is why the town shone and the gaze burned it (S18) | He hid it there to keep it from the Gazebound, not knowing the town would grow | Warmth: the ember warms the player like a fire | Melt Tamsin's bell: the shard and its warmth, and the gaze finds the caravan less often, but the bell is all that is left of the town, and Tamsin and the townsfolk never forgive it; some families leave. Leave it: its toll keeps the gaze's lesser creatures from the camp and the townsfolk trust the player, but the gaze finds the caravan more often |
@@ -342,7 +343,7 @@ The endings that put the ember out, Blind it and Close the Eye, bring planting, 
 
 ### S16 The main quests
 
-One line per quest, act by act (every name a placeholder). The Diggers' hall is always the first: the generator places it nearest the Last Camp, so the first hall is plain and easy, and the act's other halls open in any order (S3). A quest marked "by count" comes after that many of the act's halls, whichever they were.
+One line per quest, act by act (every name a placeholder). The Diggers' hall is always the first: its quest puts it down ahead of the team on the morning after the prologue (S24), so the first hall is plain and easy and always on new land, and the act's other halls open in any order (S3). A quest marked "by count" comes after that many of the act's halls, whichever they were.
 
 Each act brings its own handful of activities (D3): Act 1 Build, Talk, Investigate, Track, Hold and Reach; Act 2 Sail, Earn, Survive, Hunt, Solve and Raid; Act 3 Sneak, Disguise, Heist, Duel, Chase, Escort, Carry and Tame. Side quests may use any activity at any time.
 
@@ -447,7 +448,7 @@ The world's places:
 | W2 | The Scar of the Searched | 2 | A Gazebound outpost during the rite | Sneak, then Investigate | A novice dies in the rite, and Corin knew him |
 | W3 | The Quarrel | 2 | The caravan | Talk | Nell against Corin, Wend's victim against his deserter; one of them leaves unless the player settles it |
 | W4 | The First Gate | 2-3 | An Ancient City | Sneak past the Warden | The Cities' gate, and the one book that hints at the silence (S21) |
-| W5 | The Cache | 1 | An old campsite | Investigate | Another Wayfarer's journal, and their ember gone out: they settled, and its light went home (S19) |
+| W5 | The Cache | 1 | An old campsite | Investigate | Another Wayfarer's journal, and their ember gone out: they settled, and its light went home (S19). Their stone of one's own becomes the player's (M23, S24) |
 | W6 | The Settled Wayfarer | 2 | A town | Talk | An old Wayfarer whose ember is dying: talk him back onto the road, or let it go out, and the dragon sees a little more |
 | W7 | Maren's Gifts | 1-3 | Leads from Maren | Investigate | Supplies she left, each with a note; the last says "He never ate enough either" |
 | W8 | Captains' Pages | 1-3 | Gazebound outposts and mansions | Raid | The cult's plan page by page, the last in Wend's own hand |
@@ -527,8 +528,8 @@ It raises, for phase 2: where the hints fall, and how much the dragon lets slip.
 
   ```text
   First hall  The shard sinks into the ember. A warmth, then a voice you last heard dying:
-              <Wend> Well. That's one. Don't look so surprised, I did say I'd come along.
-              <Wend> You heard me at the fire. Bring them to a frame, and we put its eye out for good. No more burning towns.
+              <The stranger> Well. That's one. Don't look so surprised, I did say I'd come along.
+              <The stranger> You heard me at the fire. Bring them to a frame, and we put its eye out for good. No more burning towns.
   ```
 
 - What Wend really meant, "don't let it look at them", surfaces only at the frame, as his real last whisper (S4, F1). Until then the player follows a real deathbed wish that the voice has finished its own way.
@@ -544,7 +545,7 @@ The prologue step by step, as the slice builds it (`slice.md`, step 2). Every li
 1. The world's first player wakes at dawn on the ground by the Last Camp's lit fire. The stranger lies beside it, old and spent, with a scar over his heart: the Gazebound's mark (S18), which Corin explains in 1.3.
 2. He speaks first, in chat, with answers to click (M3). He knows the player's face and will not say why. He presses a cold ember into their hand, gives three rules in his own words, walk, never stay, sleep only in a tent by a fire, and dies with his charge cut off (S22).
 3. The player buries him: a right-click on him and "Bury him", the screen dims, and a grave stands by the camp with a blank stone. Whoever buried him writes it, since nobody knows his name, and the journal keeps the words.
-4. His pack is the first reward, waiting in the journal for each player to claim: a backpack, a tent and a little food.
+4. His pack is the first reward, waiting in the journal for each player to claim: a backpack, a tent, a little food, and his patterns for tools, the blueprints Silent Gear makes its gear from. Nothing else comes with a new world.
 
 The Last Camp is his fire, burning, his tent and his things, with no grave until the player buries him and no letter, since he says it himself. It stays as it is for good: the last memory is played there (S13).
 
@@ -560,7 +561,7 @@ Journal: I buried him by his fire. On the stone I wrote: "He gave me fire."
 **P2 The First Day** (wherever the player makes camp; Build):
 
 1. "Not here": the player walks at least 512 blocks from the Last Camp, any way they like.
-2. They make their first camp: the tent pitched, a campfire crafted from logs, sticks and coal or charcoal and lit within 4 blocks of it, and half a minute's rest at the fire. In a team, two thirds of the team have done so.
+2. They make their first camp: the tent pitched, a campfire crafted from logs, sticks and coal or charcoal and lit within 4 blocks of it, and a rest by the fire, which counts the moment a player stands near it. In a team, two thirds of the team have done so.
 3. Once the camp is made, the afternoon passes at the fire in half a minute (M20) and dusk falls.
 4. The ember wakes: it has seen new land (S19). The compass appears, and the ember sense with it.
 5. Smoke and a red glow rise over the land ahead, and P3 opens. The player sees the town, so the compass shows its exact mark.
@@ -576,7 +577,7 @@ Over the ridge ahead, smoke. Under it, the sky is red.
 
 **P3 Ash** (the burnt town; Investigate, then Hold; the gate is Strength):
 
-1. The quest puts the town down at dusk past the player's camp, on the way they walked, out of sight behind the land and close enough that its smoke shows over it, already burning, with fires that do not spread. It is a town that grew too big: about 104 by 104 blocks and about thirty buildings round the bell tower's square, from the inn, the smithy and the market to houses of every size. Its site prefers land beside a river, and where it finds one the town stands on both banks with the toll bridge across; elsewhere it stands without. About thirty-two dead lie in its streets, doorways and square, each with a face of their own. It stays afterwards as a ruin of the settled world: Tamsin's town.
+1. The quest puts the town down at dusk past the player's camp, on the way they walked, out of sight behind the land and close enough that its smoke shows over it, already burning, with fires that do not spread. It is a town that grew too big: about a hundred blocks across and about thirty buildings round the bell tower's square, from the inn, the smithy and the market to houses of every size. It grows on its land the way a village does: streets leave the square and bend with the ground, every building stands on its own footing beside its street with its door towards it, and a path joins each door to the street. Its site keeps 64 blocks clear of any other place and prefers land beside a river, and where it finds one the town stands on both banks with the toll bridge across; elsewhere it stands without. About thirty-two dead lie in it, each with a face of their own: most indoors, where they hid, some at the doors they tried to get out of, fewer in the streets where they fled. It stays afterwards as a ruin of the settled world: Tamsin's town.
 2. The player investigates by night with the ember sense (M10): bodies with their shirts torn open over the heart, purses still on their belts, emeralds in an open strongbox, each a line in the journal.
 3. The survivors, Tamsin, Pip, Agna and Hob, hide in the cellar of the stone bell tower. Resting at their fire makes it where the player wakes if they fall that night, and Hob hands them a blade from his forge.
 4. The gaze's creatures come back, drawn by the ember that has just woken: the player shines (S12) before anyone knows what that means.
@@ -611,6 +612,88 @@ What the prologue asks of the systems, at their minimum:
 | The generator | The Last Camp with the stranger and no grave, and the burnt town |
 
 **Why:** Red Dead Redemption 2 and The Witcher 3 teach each rule inside the story at the moment it is needed, so the stranger gives the first rules in his own words and the first day plays them, and an ember that wakes on new sights gives "never stay" its reason in play. A stone the player writes and a bell choice that comes back make the first hour theirs and teach that the world remembers, while finding the bodies by night with the ember sense brings the horror and the new power together, and a horde that comes back for the ember plants the shine before anyone names it.
+
+### S24 1.1 The Pull in detail
+
+The first day of Act 1 step by step, and the caravan's day it runs in, as the slice builds them (`slice.md`, step 3). Every line is a placeholder for the `lore` skill.
+
+**The morning** (the caravan's camp):
+
+1. The team wakes in their tents by the caravan's fire, and the camp is packing. Tamsin: "Go on. We'll follow your marks." The marks are her words only: the caravan follows the way the team walks, and the player does nothing for it. Once no player can see the camp it is gone (D14), and its old campsite stays (M21).
+2. The ember pulls, and [Main] The Pull opens. The compass shows it by feeling (D6), as Breath of the Wild's Sheikah Sensor does: the ember flares while the player walks towards the hall and gutters while they walk away, with no distance at all, and within 256 blocks it knows the exact mark.
+
+   ```text
+   Compass  The ember · flaring         (gold)
+   Compass  The ember · guttering       (blue)
+   Compass  ◆ The Diggers' hall · 241 blocks
+   ```
+3. The day eases as every day out does (M6).
+
+**The road.** A scene waits out of sight ahead about every five minutes (M4). The slice's first eight come in four kinds, two each, every one with variants:
+
+| Kind | Scene |
+|---|---|
+| People | A herder resting his sheep, who shares a little food or a warning; a pedlar, Minecraft's wandering trader, with a few trades |
+| What the gaze left | A traveller by the road with their chest opened and their purse untouched; a cart on its side, a dead mule and tracks into the reeds, followed or left |
+| The Gazebound | A patrol crossing a far ridge; a patrol questioning a traveller, where the player steps in, hides or walks on, and each answer comes back: stepping in is a fight with three Gazebound, and the traveller thanks the team with a rumour of a place nearby; hiding, the patrol takes his purse and moves on, and he curses whoever watched from the trees; walking on, they take him with them, and some days later another scene finds his pack on the road |
+| The land | Wolves shadowing the team along a ridge; a fallen trunk across a gorge |
+
+The gear teaches itself when tried, through the first-time hints, as the prologue's rules do: the player's own bench makes Act 1's tiers, flint, copper and iron (M18); a tool at its last use works like a bare hand, and Hob says what to do with it ("You don't throw it away. You bring it to me."); a repair kit mends it at a fire (M12).
+
+**1.1 The Pull** (the Diggers' tunnels; Reach):
+
+1. At dawn the quest puts the Diggers' tunnels down ahead, as it put Tollbridge down: under the nearest forest about 2,048 blocks on from the caravan's camp, the way the team has been walking, with the entrance set up out of sight (M5). The first hall always lies on new land, at a distance that fits one day. The generator no longer places the Diggers' hall; the other eleven halls stand where the world makes them. The tunnels stay for good, a place of the Twelve Peoples.
+2. The team walks by feeling, about fifteen minutes.
+3. The tunnels are the Diggers' old workings, about ten minutes deep. A timbered entrance in a hillside under the trees leads into a network of old tunnels: rails, side drifts, a rotted ladder, a drift under water, a collapse dug through or passed by an old side tunnel, a chasm crossed on planks. Nothing is lit; the ember's feeling guides at every fork, and the gaze's creatures wait out the day down here, so torches and a blade matter. Beside the way, again and again, the same mark is scratched: someone came this way before. The tunnels can be dug through, but the old ways are quicker; the hall itself is warded (M11), so the way in is its door.
+4. In the hall the calling stone hums with the shard on it, and the mark is cut beside it. The shard sinks into the ember, and the voice speaks for the first time and finishes the stranger's charge (S22). Trail-sight comes with it, for every player (M11), and the team shines its first step (M9).
+5. Make for the caravan: its camp goes up out of sight ahead, on the main quest's way (M5, M19), and the evening runs as every evening does (M6, M20). On the way the voice makes its first short remarks (M4).
+6. At the caravan Tamsin sees a change, and Pip asks for a horse (C8). Once most of the team sits at the fire, the voice gives its first long talk as the night's story, heard only by the players: who it says it is, the ember, and the lead to Wend's first camp, which opens 1.2 with its exact mark. Sleep waits until it is over (M12).
+7. Wend's first camp is put down ahead, as the town was: at the talk the quest picks a spot about 3,072 blocks on along the way the team has been walking, by a lake if there is one, and the voice names its direction from where they sit. The compass marks it at once. The camp itself goes up out of sight when the team comes near it, in 1.2.
+
+```text
+Morning  <Tamsin> Go on. We'll follow your marks.
+         The ember tugs at your hand.
+         [Main] The Pull - the ember pulls somewhere   Compass: the ember flares... gutters... flares
+Tunnels  The ember gutters. Wrong way. You go back to the fork and take the drift with the water.
+         Beside the ladder, the mark again: a circle with a line through it.
+Hall     The shard sinks into the ember. A warmth, then a voice you last heard dying:
+         <The stranger> Well. That's one. Don't look so surprised, I did say I'd come along.
+         <The stranger> You heard me at the fire. Bring them to a frame, and we put its eye out for good. No more burning towns.
+Evening  <Tamsin> You came back different. What's in that hand now?
+         <The stranger> I made my first camp by a lake, under three pines. North-east of here. I'd like to see it again.
+         [Main] His First Camp   Compass ◆ 3,072 blocks
+```
+
+**W5 The Cache** (an old campsite; Investigate). The first old campsite ahead of the team after the first hall holds it. As they pass, the voice: "That camp. Somebody sat there too long. Go and look." The compass marks it. With the ember sense the player finds a cold black ember in a tin, his journal, telling how he built a cabin, how the ember dimmed and how one winter it went out, and, wrapped in cloth, his stone of one's own (M23), which waits in the journal for each player.
+
+```text
+Journal: He stopped walking, and his ember went home. He left his stone. I carry it now.
+```
+
+**C8 The Road, its first stage** (Pip; Tame). On the evening after the first hall Pip asks for a horse, and any horse will do: a wild one tamed on the plains, or the frightened horse that ran from the cart on its side, if the player followed its tracks into the reeds. Brought to the caravan's fire, it gets its name from Pip and grazes by Agna's tent from then on. Tracking, the next stage, comes later.
+
+```text
+<Pip> In the stories every Wayfarer has a horse. Find me one? A brown one.
+[Side] The Road - a horse for Pip
+```
+
+What 1.1 and the caravan's day ask of the systems, at their minimum:
+
+| System | For 1.1 and the day |
+|---|---|
+| The quest engine (M1) | A place the quest puts down underground, a goal by feeling, a lead from the voice, a side quest a person asks for and one the voice points at, a quest for the nearest place of a kind ahead (D16) |
+| The caravan's camp (M5, M19, M20, M21, M28) | Packing up in the morning with its traces left behind, going up out of sight in the evening, the afternoon at its fire, heading in on any day |
+| The clock (M6) | The full day: the road, the evening run, the night |
+| The compass (D6, M2) | By feeling, with no distance until the exact mark |
+| The Diggers' hall (M11, M15) | Its tunnels, its calling stone and its ward |
+| The voice (S4, M4) | Its first words, short remarks on the road, its first long talk at the fire |
+| The shine (M9) | Its first step, in place of `Difficulty` |
+| Road scenes (M4) | The first eight |
+| The gear (M12, M18) | Act 1's bench tiers, the last use, mending at a fire |
+| A stone of one's own (M23) | From the Cache |
+| Gifts (M11) | Trail-sight |
+
+**Why:** The first hall is the pack's first dungeon, so its distance and its side must be dependable, as every Skyrim player is pointed at Bleak Falls Barrow on the way to Riverwood; put down ahead, it also keeps the walk on new land, which is what the ember lives on. Tunnels that fork make the ember's feeling the guide instead of a stair, and a mark someone left before teaches by example, as Bleak Falls Barrow's dead bandits do. The voice's first long talk at the fire gives the night its story and the next quest its lead, and a settled Wayfarer's stone comes to the player at the moment they learn what settling costs.
 
 ## Open
 

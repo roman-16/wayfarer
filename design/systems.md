@@ -85,7 +85,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Map | The world map |
 
 - The map is JourneyMap's world map, opened from its tab in the journal or with M. There is no minimap anywhere on screen, no cave mapping, no radar and no waypoints of the player's own; the places they have found are added by the Wayfarer mod. Map Atlases leaves the pack.
-- The compass shows the tracked quest's goal, the player's friends and their stones. Every fall leaves its own stone where the player fell; the compass shows all of them, the one holding the most the strongest. In the journal a stone can be tracked, so the compass points at it like a quest, or let go, which takes it off the compass, as when a player gives their old things up and starts afresh.
+- The compass shows the tracked quest's goal, the player's friends and their stones. A goal known by feeling shows only the ember's flaring, in gold, and its guttering, in blue, with no distance until the exact mark within 256 blocks (D6). Every fall leaves its own stone where the player fell; the compass shows all of them, the one holding the most the strongest. In the journal a stone can be tracked, so the compass points at it like a quest, or let go, which takes it off the compass, as when a player gives their old things up and starts afresh.
 
   ```text
   Compass ◆ Your stone, 1,240 blocks (bold): 34 things
@@ -373,10 +373,17 @@ Act 3:
 | Carry | Someone on the player's back: no sprinting, and running wakes them | The Wayfarer mod |
 | Tame | Vanilla taming, and the horse that never sleeps with a rule of its own | Vanilla, and the Wayfarer mod |
 
+- Only the land and the weather can make a player dangerously hot or cold. Fires, lanterns, ovens, running, armour and what they hold warm or cool them, but never past warm or cool, and in the cold lands a fire still brings them back to comfortable.
+
+  ```text
+  Noon on the plains, you sit by your campfire: warm, never burning.
+  Night on the ice, you sit by your campfire: the cold lets go of you.
+  ```
+
 - A heist has roles: the lookout marks guards from above, the lock-hand opens doors, the distraction draws the guards off, and the carrier runs out with the prize. Each player picks one, and roles nobody takes go to the caravan's people, such as Corin as the distraction and Ilse at the locks; alone, the player takes one and the caravan the rest.
 - Easy NPC's people can walk (its wiki lists objectives to follow a player, flee, and stroll around a home), so the camp's people also stroll about their own tents.
 
-**Why:** Thirst would be a second bar to refill all day beside the ember's hunger, which is upkeep and not play, so the land's danger is heat and cold. Hunts need creatures no mod has, and GeckoLib is how mods animate them. Attract to Sound already makes stealth real, and its licence (GPL-3.0) lets it be changed. Heist roles are GTA V's heists for a team of up to four, with the caravan making them work alone.
+**Why:** Thirst would be a second bar to refill all day beside the ember's hunger, which is upkeep and not play, so the land's danger is heat and cold, and only the land's: a fire is the cure for cold, so it never burns a player who sits by it, and the first playtest found every lantern and oven overheating players on temperate land. Hunts need creatures no mod has, and GeckoLib is how mods animate them. Attract to Sound already makes stealth real, and its licence (GPL-3.0) lets it be changed. Heist roles are GTA V's heists for a team of up to four, with the caravan making them work alone.
 
 **The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/WarmthSpike.java`, `ActsSpike.java` and `WormSpike.java`, dev code that never ships, with Tough As Nails, GeckoLib and Attract to Sound in the pack): thirst is off (`pack/config/toughasnails/thirst.toml`), and on icy land at night a player who was cold and heading for icy stays neutral with the Warmth gift; a pillager walks to the clang of an anvil 8 blocks away, with Attract to Sound's own raids off (`pack/config/soundattract/raid.toml`); an Easy NPC person follows a player 21 blocks; and a worm whose model, animation and texture the generator writes (`generator/creatures.py`) crawls in the workshop, its five segments swaying on sine curves. What it showed:
 
@@ -456,16 +463,17 @@ What it showed:
 
 - Nomadic Tents is changed so that placing a tent builds the whole tent at once, without a frame or a mallet; packing it up is one click. Its own `enter_when_safe` and `pickup_when_safe` are switched on, so nobody enters or packs up a tent while monsters are near (D13). It stays the pack's tent because it is the one whose inside is a folded space: Let's Do Camping and Simply Tents pitch an ordinary tent in the world, and both are All Rights Reserved.
 - A bed inside a tent sleeps only when a lit campfire burns within 4 blocks of the tent outside (D13).
+- Resting is being by a lit fire: a player within 4 blocks of one rests at once, with nothing to wait for and no need to stand still. The camp, the afternoon at the caravan's fire, the Warm effect and the Flare all count that rest.
 - The fire's stories stay. If a night has one, the voice's long talk, a person's scene or Maren's visit, it plays once most of the team sits at the caravan's fire, and sleep waits until it is over; a night without one goes straight to sleep. Resting half a minute at a fire still warms the ember, so the player eats like a settled person until the next dusk.
 - Every tool, weapon and armour, Silent Gear's, Simply Swords', vanilla's and every other mod's, stops at its last use instead of breaking (D13), and at its last use a tool is a bare hand, in speed and in what drops: a diamond pick at its last use takes nothing from obsidian. Silent Gear already keeps broken gear (`breaks_permanently = false`), and the Wayfarer mod brings the rest to the same rule.
-- At a fire, a repair kit and the tool's own material mend it back to half its durability at most, never beyond. A smith restores it fully: the peoples' smiths ask for goods, and Hob does it for nothing once his side quest has found the old ore (C7).
+- At a fire, a repair kit mends a worn tool: Silent Gear's repair kit, filled with the tool's own material and set beside the tool in a crafting grid within 4 blocks of a lit campfire, brings it back to half its durability at most, never beyond, and away from a fire it mends nothing. The same kit, filled with the right material, mends vanilla's and Simply Swords' gear too, iron for iron and diamond for diamond. A smith restores it fully: the peoples' smiths ask for goods, and Hob does it for nothing once his side quest has found the old ore (C7).
 
   ```text
-  At the fire you bind the cracked pick with flint and cord. It will hold: half its strength, no more.
+  At the fire you bind the cracked pick with a kit of flint. It will hold: half its strength, no more.
   Hob turns it over. "Leave it with me tonight."
   ```
 
-**Why:** The tent the pack needs is the folded space it already has, and its safety rules are already written into it, so only the mallet goes. The evening is where the story is told, and the sleep rule keeps anyone from sleeping through it. Mending to half keeps the road going while a full repair stays something to reach a smith for.
+**Why:** The tent the pack needs is the folded space it already has, and its safety rules are already written into it, so only the mallet goes. The evening is where the story is told, and the sleep rule keeps anyone from sleeping through it. Mending to half keeps the road going while a full repair stays something to reach a smith for, and Silent Gear's own kit is the mending players of the pack already know, bound to the fire as the rest of the road's work is.
 
 **The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/TentSpike.java` and `LastUseSpike.java`, dev code that never ships, with `[tent]` in `balance.toml` and `enter_when_safe` and `pickup_when_safe` on in `pack/config/nomadictents-common.toml`): a right-click with a small yurt puts up the whole tent at once, in 2 to 3 ms or 110 ms for the first, a right-click on its door takes the player inside, and a crouching right-click on its door with an empty hand packs it into the inventory; with a husk beside the door, entering and packing up are both refused ("there are monsters nearby"). Inside the tent a bed refuses sleep until a lit campfire burns within 4 blocks of the door outside, a fire 7 blocks off is not enough, and a bed outside any tent is furniture. A diamond pick worn to its last use breaks stone at a bare hand's 7.5 s with nothing dropped, and two more blocks leave it at its last use; a Simply Swords cutlass drops from 6 attack damage to a bare hand's 1 and stays; a shovel at its last use makes no path; a diamond chestplate hit for more than it had left stops at its last use and gives 0 armour. What it showed:
 
@@ -553,7 +561,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | Part | What it does today | Verdict |
 |---|---|---|
 | The ember (`Ember`) | Wakes after the first day, one per team | Kept, changed: wakes at the end of P2, and a shared fire's light is one for the world (D11) |
-| Shrines and shards (`Shrines`, `Shards`, the pedestal, the halls) | Twelve halls in two distance tiers, a shard on each pedestal | Kept, changed: the pedestal is the calling stone, the halls have their fates (S6), the two tiers become the three acts' rings, and the Diggers' hall is always nearest the Last Camp; halls stay free of spawns, now as hallowed ground |
+| Shrines and shards (`Shrines`, `Shards`, the pedestal, the halls) | Twelve halls in two distance tiers, a shard on each pedestal | Kept, changed: the pedestal is the calling stone, the halls have their fates (S6), the two tiers become the three acts' rings, and the Diggers' hall is put down ahead by its quest (S24); halls stay free of spawns, now as hallowed ground |
 | The compass (`Compass`) | Points at shards, friends and the grave | Kept, changed: the tracked quest's goal as the player knows it (D6), friends and stones (M2) |
 | Leads (`Leads`) | Places someone told the player of | Folded into the quest engine: a lead is a goal someone told of (S7) |
 | The fire (`Fire`, `Warm`) | The circle keeps monsters off, resting warms the ember, the voice speaks at rest | Kept, changed: the circle and the warming stay, and the voice's long talks and the night's stories play at the caravan's fire (S4, M12) |
@@ -665,7 +673,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | Finding | For the engine |
 |---|---|
 | The afternoon is the evening's own ease, only timed to `afternoon_seconds` instead of `dusk_run_seconds` | One curve drives every stretch of the clock, set by how long it must take |
-| Resting is the pack's own: still, within 4 blocks of a lit fire, for 30 seconds (`[fire]`), so turning in early costs half a minute at the fire before the sky turns | Sitting on the fire's logs (`mods.md`) can be that rest |
+| Resting is the pack's own: within 4 blocks of a lit fire (`[fire]` `rest_blocks`), counted at once, so turning in early costs only the walk to the fire before the sky turns | Sitting on the fire's logs (`mods.md`) is a way to be by it, not a wait |
 | Fast-forwarding the server (`/tick sprint`) leaves a client's clock to catch up by hundreds of ticks at once | A sprint measures the server's clock; the sky is judged in real time |
 
 ### M21 Old campsites: the caravan's camps stay
@@ -707,7 +715,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 ### M23 A stone of one's own
 
-- Every player carries one waystone of their own. They set it down where they leave the road, a quest left halfway or a camp to come back to, and touch it. From any waystone they have touched since, they can fold back to it, and arriving takes it up into their pack again, so nothing of theirs stays standing. Crouching and taking it up by hand works too, to set it down somewhere else.
+- Every player carries one waystone of their own, a settled Wayfarer's from W5 The Cache (S24), which waits in the journal for each player. They set it down where they leave the road, a quest left halfway or a camp to come back to, and touch it. From any waystone they have touched since, they can fold back to it, and arriving takes it up into their pack again, so nothing of theirs stays standing. Crouching and taking it up by hand works too, to set it down somewhere else.
 
   ```text
   You set your stone down at the edge of the marsh and touch it.
@@ -734,30 +742,6 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | The pack's server setting that bans JourneyMap waypoints hides Waystones' own map markers: the world map showed no waystone and no toggle for them | Touched waystones are drawn by the Wayfarer mod as its own map markers, as found places are (M2), with a show and hide of its own |
 | The Waystones menu shows its own costs, and a fold's hunger is paid after the fold | Not settled: whether the menu shows the hunger a fold will cost |
 
-### M17 Distant Horizons SeedGen
-
-- The far view is drawn by Distant Horizons SeedGen, on the client and on the server: the far land's hills, coasts, rivers and trees come from the world's seed, so the horizon fills in fast wherever the team goes.
-- SeedGen draws no buildings. A town, a temple or a shrine shows in the far view only once the land around it has really been made, as it does in vanilla, so nothing on the horizon is a place that is not there.
-
-  ```text
-  You crest the ridge. Hills roll out to the edge of sight, a river shining between them.
-  Nothing tells you yet that a village waits behind the third hill.
-  ```
-
-**Why:** The far view is what makes the world feel vast, and SeedGen fills it fast with land that matches the real one. Its own copies of vanilla buildings ignore the pack's spread and would show temples that vanish on approach, which a pack whose places are quest goals cannot afford.
-
-**The test** (SeedGen 0.8.0, a beta under All Rights Reserved, in dev clients started with `--far`, which keeps Distant Horizons on with a far view of 1,024 blocks; the dev step `/wayfarer far phantom` in `mod/src/dev/java/io/github/roman16/wayfarer/spike/FarSpike.java`): SeedGen's own measuring commands against the real generator, then the far view photographed from 150 to 170 blocks away before and after the real land there loaded. What it showed:
-
-| Finding | For the engine |
-|---|---|
-| SeedGen is on as soon as it is installed, and turns its own structures back on unless its settings carry the mark of its newest defaults | `pack/config/seedgen.json` carries that mark beside `structures` off |
-| Terrain heights from the seed match the real world in 90% of 4,096 columns over 4,096 blocks, off by 1.8 blocks on average, 15 blocks for the worst twentieth, 115 at most | The far view's hills, coasts and rivers sit where they really are |
-| Near a shore only 47% of the ground blocks match: SeedGen draws grass, stone or sand where Terralith's brushland and gravel beaches lay gravel, dirt and clay | Far land can look greener than it is, and its colour changes when the player comes near |
-| Photographed before and after the real land loaded, snowy hills and a lake under cliffs looked nearly the same; the trees stood in other places | The far view is close enough not to be noticed on the move |
-| SeedGen draws towns, villages, outposts and the pack's own places from their real definitions, but six vanilla kinds (desert and jungle temples, witch huts, igloos, woodland mansions, ocean monuments) from copies of its own at vanilla spacing (read in its code, not seen in game: the one tried stood in snow) | With the pack's structures spread 8.5 times wider, a far view would show such buildings about seventy times as often as they stand, gone when the player comes near; a pack whose places are quest goals cannot show places that are not there |
-| Around a new spot the far view out to 1,024 blocks filled in 91 to 129 s with the graphics card and much slower on the hidden screen; Distant Horizons' own generator was not measured beside it | Fast enough on foot; whether it keeps up with a ship or an aircraft is for the playtest |
-| Three launches with C2ME in the pack, which SeedGen warns about, ran without a crash | No change needed |
-
 ### M24 Roads: worn tracks, no built roads
 
 - The land stays wild: the world has no built roads between its places. The paths are what feet make: tracks wear into grass, dirt and sand where people and animals walk often (The Roads More Travelled), and the caravan's old camps stay (M21). The lore's old roads are such tracks, worn between villages by the settled world.
@@ -783,8 +767,101 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 **Why:** The story spans perhaps fifty to eighty days, too few for a calendar to give every act its own weather, and a random winter would break quests written for another season; Red Dead Redemption 2 sets its seasons by chapter in the same way, a snowy prologue and then summer. Serene Seasons stops its cycle with a game rule and sets the season by command, so the engine can turn it.
 
+### M27 Anyone alive answers
+
+- Right-clicking any living person always gets an answer. When the story has nothing for them to say, they say a line about the moment the team is in, heard by every player within talk reach of them; clicked again, they walk through their lines for that moment and never repeat one twice running. The dead give no answer, and nobody speaks over a conversation already going.
+
+  ```text
+  The cellar door shakes. You right-click Pip.
+  <Pip> I'm not scared. I'm not.
+  You right-click Hob.
+  <Hob> I've got the door. You get the ones that come round.
+  ```
+
+- A step of a quest gives each person their lines for it, and a person keeps the lines of the last step that gave them any until the story moves on; past every quest that speaks of them, they have a few lines of their own for any day on the road.
+
+**Why:** A person who stands mute when spoken to breaks the feeling that the caravan is people; a line about the night in hand makes the world answer, and costs a line of text, not a scene.
+
+### M28 Heading in on any day
+
+- Once the caravan's camp has packed up, a "Make for the caravan" entry stands in the journal every day. Choosing it, or a quest step that ends the day, sets the camp up out of sight ahead (M5, M19) and points the compass at it; if nobody has chosen by 17:00, it is tracked by itself.
+- Before 17:00 the afternoon then passes at its fire (M20); from 17:00 the run home starts (M6).
+
+  ```text
+  Journal › Quests   [Make for the caravan]
+  17:00  The ember tugs towards smoke.
+         [Main] Make for the caravan   Compass ◆ 512 blocks
+  ```
+
+**Why:** D2 promises that the team heads in when the day's quests are done or whenever it chooses, and a day whose quest runs long must still end: without a way in, the sun would wait at 17:30 for good, as it did in the first playtest's evening.
+
+### M29 The task panel: what to do now, and how
+
+- The top right of the screen always shows the tracked quest's title and its current objective, and under them the tasks: how to do what the step asks, and the controls the first time each is needed, every one with its key. A task ticks the moment the player does it and fades; a control once learned never shows again for that player. Counts stay live: the blocks still to walk, the seconds rested, who the team still waits for.
+- How-to lines never go to chat; chat keeps the story, the people's lines and the world's own explanations.
+
+  ```text
+  The Last Fire
+  Sit with the stranger.
+  ☐ Open your journal (J)
+  ☐ Answer: open the chat (T) and click a reply
+
+  The First Day
+  Walk until his camp is far behind: 312 blocks to go.
+
+  The First Day
+  Pitch your tent, light a campfire beside it, and rest by the fire.
+  ☑ Pitch your tent: right-click the ground with it
+  ☐ Rest by the fire: stand near it
+  ☐ Waiting for Carinthia to rest by the fire
+  ```
+
+**Why:** The Witcher 3 and Cyberpunk 2077 keep the tracked quest and its objectives in the top right, so players know where to look, and teaching each control the moment it is first needed, ticked off when done, teaches without a tutorial or a wall of text. The first playtest stalled at every step where only the journal or chat said what to do and how.
+
 ## Open
 
 ### M26 How often the other owners' places stand
 
 M13 spaces the Gazebound's, the settled world's towns and villages, the ruins and the campsites. The rest of the pack's places have an owner in `generator/owners.toml` but no spacing of their own, and stand as their mods spread them, 8.5 times wider than the mods made them: the settled world's small places (farms, wells, taverns, watchtowers, stalls, about 140 kinds), the land's own (trees, boulders, log piles, ponds, about 40), the sea's (wrecks, sunken ruins, islands, about 20), what lies under the ground (dungeons, mines, about 40), and the Twelve Peoples' temples, monuments and crypts (about 80) until the generator sets them near their halls. To decide: how often each of these stands, and whether the taverns (W11's dice) and the old mines (M13's rich ore) need a spacing of their own.
+
+### M30 The rest of the HUD
+
+The task panel (M29) is built; the compass, its captions, the night's icons, the gaze bar and the notices (a quest done, a quest begun, a reward waiting) are still what each system drew for itself. To decide: one look and one place for each, beside the panel and under the shaders, and what shows only when it matters.
+
+### M31 The journal screen
+
+The journal works but reads as a list: the first playtest found the Take button for a waiting reward hard to see and nothing saying that taking it ends the step. To decide: its layout and tabs (M2 names eight, four are built), how rewards and their Take show, and how it reads at a glance.
+
+### M32 A screen for conversations
+
+Talks run in chat with answers to click, and the first playtest found that new players did not know answers could be clicked, or that chat had to be opened first. To decide: whether talks move to a screen of their own, as in The Witcher 3 (the speaker, their line, the answers as buttons, a pace that waits for reading), and what the other players see while one of them talks.
+
+### M33 Room for the team's tents at the caravan's fire
+
+The prologue ends with "Sleep in your tent by their fire", and a tent sleeps only with a lit campfire within 4 blocks of it (M12). In the walkthrough the caravan's households filled the ground around its fire, and most spots within a few blocks of it had no room for a small yurt, so the team pitched further out with a campfire of their own, which the task panel teaches. To decide: whether the camp keeps pitches free for the team's tents beside its fire, how many and how big, or whether a tent near the camp counts the caravan's fire from further away.
+
+### M17 Distant Horizons SeedGen
+
+Reopened by the first playtest on a server: on each client SeedGen could not read Geophilic's worldgen data (unbound configured features such as `geophilic:biome_specific/cherry_grove/pond`), worked from vanilla's instead, turned itself off for the server and posted two lines in chat about it, and Distant Horizons downloaded the far view from the server. To decide: whether SeedGen can be made to read the pack's worldgen on a client, or leaves the pack, and what a player sees of it either way. The decision as it stood:
+
+- The far view is drawn by Distant Horizons SeedGen, on the client and on the server: the far land's hills, coasts, rivers and trees come from the world's seed, so the horizon fills in fast wherever the team goes.
+- SeedGen draws no buildings. A town, a temple or a shrine shows in the far view only once the land around it has really been made, as it does in vanilla, so nothing on the horizon is a place that is not there.
+
+  ```text
+  You crest the ridge. Hills roll out to the edge of sight, a river shining between them.
+  Nothing tells you yet that a village waits behind the third hill.
+  ```
+
+**Why:** The far view is what makes the world feel vast, and SeedGen fills it fast with land that matches the real one. Its own copies of vanilla buildings ignore the pack's spread and would show temples that vanish on approach, which a pack whose places are quest goals cannot afford.
+
+**The test** (SeedGen 0.8.0, a beta under All Rights Reserved, in dev clients started with `--far`, which keeps Distant Horizons on with a far view of 1,024 blocks; the dev step `/wayfarer far phantom` in `mod/src/dev/java/io/github/roman16/wayfarer/spike/FarSpike.java`): SeedGen's own measuring commands against the real generator, then the far view photographed from 150 to 170 blocks away before and after the real land there loaded. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| SeedGen is on as soon as it is installed, and turns its own structures back on unless its settings carry the mark of its newest defaults | `pack/config/seedgen.json` carries that mark beside `structures` off |
+| Terrain heights from the seed match the real world in 90% of 4,096 columns over 4,096 blocks, off by 1.8 blocks on average, 15 blocks for the worst twentieth, 115 at most | The far view's hills, coasts and rivers sit where they really are |
+| Near a shore only 47% of the ground blocks match: SeedGen draws grass, stone or sand where Terralith's brushland and gravel beaches lay gravel, dirt and clay | Far land can look greener than it is, and its colour changes when the player comes near |
+| Photographed before and after the real land loaded, snowy hills and a lake under cliffs looked nearly the same; the trees stood in other places | The far view is close enough not to be noticed on the move |
+| SeedGen draws towns, villages, outposts and the pack's own places from their real definitions, but six vanilla kinds (desert and jungle temples, witch huts, igloos, woodland mansions, ocean monuments) from copies of its own at vanilla spacing (read in its code, not seen in game: the one tried stood in snow) | With the pack's structures spread 8.5 times wider, a far view would show such buildings about seventy times as often as they stand, gone when the player comes near; a pack whose places are quest goals cannot show places that are not there |
+| Around a new spot the far view out to 1,024 blocks filled in 91 to 129 s with the graphics card and much slower on the hidden screen; Distant Horizons' own generator was not measured beside it | Fast enough on foot; whether it keeps up with a ship or an aircraft is for the playtest |
+| Three launches with C2ME in the pack, which SeedGen warns about, ran without a crash | No change needed |

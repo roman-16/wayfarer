@@ -1,4 +1,6 @@
 from blocks import AIR, Material, Template, candle, coherent, noise
+from poses import DEAD as POSES
+from townsfolk import townsfolk
 
 STONE = Material(
     "tollbridge/stone",
@@ -72,7 +74,7 @@ SQUARE = Material(
 CHAR = ["minecraft:dark_oak_log", "minecraft:stripped_dark_oak_log"]
 CHAR_PLANKS = Material(
     "tollbridge/planks",
-    [("minecraft:dark_oak_planks", 55), ("minecraft:spruce_planks", 20), ("minecraft:coarse_dirt", 25)],
+    [("minecraft:dark_oak_planks", 55), ("minecraft:spruce_planks", 20), ("minecraft:dark_oak_wood", 25)],
 )
 FIRE = {"age": 0, "east": False, "north": False, "south": False, "up": False, "west": False}
 TOWER = 7
@@ -89,8 +91,10 @@ def burning(t, pos):
     t.set(pos, "minecraft:fire", **FIRE)
 
 
-def smoulder(t, pos):
-    t.set(pos, "minecraft:campfire", facing="south", lit=True, signal_fire=False, waterlogged=False)
+def smoulder(t, pos, signal=False):
+    if signal:
+        t.set((pos[0], pos[1] - 1, pos[2]), "minecraft:hay_block", axis="y")
+    t.set(pos, "minecraft:campfire", facing="south", lit=True, signal_fire=signal, waterlogged=False)
 
 
 MARGIN = 2
@@ -128,77 +132,340 @@ def outward(facing):
     return {"north": "south", "south": "north", "west": "east", "east": "west"}[facing]
 
 
-def house(seed, width=7, depth=9, chimney_west=True):
+STOREY = 4
+LEAN = 3
+PORCH = 2
+STYLES = ["planks", "plaster", "plaster", "stone", "stone", "stone", "timber"]
+RUINS = ["broken", "broken", "fallen", "roofed", "shell"]
+TRADES = ["baker", "carpenter", "cooper", "home", "home", "weaver"]
+LIME = Material(
+    "tollbridge/lime",
+    [
+        ("minecraft:calcite", 30),
+        ("minecraft:light_gray_terracotta", 25),
+        ("minecraft:gray_terracotta", 20),
+        ("minecraft:tuff", 10),
+        ("minecraft:black_terracotta", 15),
+    ],
+    ground=4,
+    fade=4,
+)
+PLANKS = Material(
+    "tollbridge/boards",
+    [
+        ("minecraft:spruce_planks", 30),
+        ("minecraft:dark_oak_planks", 40),
+        ("minecraft:stripped_dark_oak_log", 10),
+        ("minecraft:dark_oak_wood", 20),
+    ],
+)
+BRICK = Material(
+    "tollbridge/brick", [("minecraft:bricks", 70), ("minecraft:mud_bricks", 15), ("minecraft:cobblestone", 15)]
+)
+
+
+def choose(seed, options):
+    return options[int(noise(seed) * len(options)) % len(options)]
+
+
+def stairs(t, pos, facing, half="bottom", block="minecraft:dark_oak_stairs"):
+    t.set(pos, block, facing=facing, half=half, shape="straight", waterlogged=False)
+
+
+def wall_block(style, seed, pos, corner, post, plinth):
+    x, y, z = pos
+    if style == "stone":
+        return QUOIN if corner else SOOT if y >= STOREY and coherent(f"{seed}/soot", pos) > 0.5 else STONE
+    if corner or post:
+        return "post"
+    if style == "plaster":
+        return STONE if plinth else LIME
+    if style == "planks":
+        return STONE if plinth else PLANKS
+    return CHAR_PLANKS
+
+
+def home(seed, storeys=None, style=None, width=None, depth=None, leans=("back", "east", "west")):
     t = Template()
     m = MARGIN
-    apron(t, width, depth, seed)
-    burnt_floor(t, width, depth)
-    x0, z0, x1, z1 = m, m, m + width - 1, m + depth - 1
-    door = m + width // 2
-    gable = x0 if chimney_west else x1
-    stone_gable = noise(f"tollbridge/{seed}/gable-kind") > 0.4
-    chimney_top = 5 + int(noise(f"tollbridge/{seed}/chimney") * 5)
-    chimney_wide = noise(f"tollbridge/{seed}/chimney-width") > 0.55
+    width = width or choose(f"{seed}/width", [5, 7, 7, 9])
+    depth = depth or choose(f"{seed}/depth", [7, 9, 9, 11])
+    storeys = storeys or (2 if width >= 7 and noise(f"{seed}/storeys") < 0.45 else 1)
+    style = style or choose(f"{seed}/style", STYLES)
+    ruin = choose(f"{seed}/ruin", RUINS)
+    lean = choose(f"{seed}/lean", [None, None, *leans])
+    porch = noise(f"{seed}/porch") < 0.35
+    trade = choose(f"{seed}/trade", TRADES)
+    x0 = m + (LEAN if lean == "west" else 0)
+    z0 = m + (LEAN if lean == "back" else 0)
+    x1, z1 = x0 + width - 1, z0 + depth - 1
+    outer_w = width + (LEAN if lean in ("east", "west") else 0)
+    outer_d = depth + (LEAN if lean == "back" else 0) + (PORCH if porch else 0)
+    apron(t, outer_w, outer_d, seed)
     for x in range(x0, x1 + 1):
         for z in range(z0, z1 + 1):
-            if not (x in (x0, x1) or z in (z0, z1)) or (z == z1 and x == door):
-                continue
-            if x == gable and stone_gable:
-                peak = 5 - abs(z - (z0 + z1) / 2) * 0.6
-                high = int(peak - coherent(f"tollbridge/{seed}/gable", (x, 0, z)) * 2)
-                for y in range(1, max(2, high) + 1):
-                    t.set((x, y, z), STONE if y <= 3 else SOOT)
-                continue
-            for y in range(1, 2 + (coherent(f"tollbridge/{seed}/wall", (x, 0, z)) > 0.6)):
-                t.set((x, y, z), STONE)
-    other = x1 if chimney_west else x0
-    for x, z in ((other, z0), (other, z1)):
-        for y in range(1, 3 + int(coherent(f"tollbridge/{seed}/post", (x, 0, z)) * 3)):
-            if t.get((x, y, z)) is None:
-                char(t, (x, y, z))
-    studs = [(x, z) for x in range(x0 + 1, x1) for z in (z0, z1) if abs(x - door) > 1 or z == z0]
-    studs += [(other, z) for z in range(z0 + 1, z1)]
-    for x, z in studs:
-        roll = coherent(f"tollbridge/{seed}/stud", (x, 0, z))
-        top = 1 + int(roll * 4)
-        for y in range(1, top + 1):
-            if t.get((x, y, z)) is None:
-                if (x + z) % 2 and y <= 3 and roll > 0.35:
-                    t.set((x, y, z), PLASTER)
-                else:
-                    fence(t, (x, y, z))
-    for y in (1, 2):
-        fence(t, (door - 1, y, z1))
-        fence(t, (door + 1, y, z1))
-    cz = (z0 + z1) // 2
-    for y in range(1, chimney_top + 1):
-        t.set((gable, y, cz), SOOT if y > 4 else STONE)
-        if chimney_wide:
-            t.set((gable, y, cz + 1), SOOT if y > 4 else STONE)
-    hearth = gable + 1 if chimney_west else gable - 1
-    t.set((hearth, 0, cz), "minecraft:cobblestone")
-    t.set((hearth, 0, cz + 1), "minecraft:cobblestone")
-    smoulder(t, (hearth, 1, cz))
-    if chimney_wide:
-        t.set((hearth, 1, cz + 1), "minecraft:cauldron")
-    beam = x0 + 3 if chimney_west else x0 + 1
-    fallen_beam(t, (beam, z0 + 2), width - 4, "x", 1)
-    burning(t, (beam + 1, 2, z0 + 2))
-    fallen_beam(t, (door, z0 + 4), max(2, depth - 6), "z", 1)
-    burning(t, (door, 2, z0 + 5))
-    inner = other - 1 if chimney_west else other + 1
-    t.set((door - 1, 1, z1 - 2), "minecraft:dark_oak_slab", type="bottom", waterlogged=False)
-    t.set(
-        (door + 1, 1, z0 + 1),
-        "minecraft:dark_oak_stairs",
-        facing="west",
-        half="bottom",
-        shape="straight",
-        waterlogged=False,
+            t.set((x, 0, z), CHAR_PLANKS if coherent(f"{seed}/floor", (x, 0, z)) > 0.55 else ASH)
+    full = STOREY * storeys
+    door = (
+        x0
+        + width // 2
+        + (
+            choose(f"{seed}/door", [-2, 0, 0, 2])
+            if width >= 9
+            else choose(f"{seed}/door", [-1, 0, 0, 1])
+            if width >= 7
+            else 0
+        )
     )
-    t.set((inner, 1, z1 - 1), "minecraft:magma_block")
-    t.set((inner, 1, z0 + 1), "minecraft:barrel", facing="up", open=True)
+    chimney = choose(f"{seed}/chimney", ["back", "east", "west"])
+    cx, cz = {
+        "back": ((x0 + x1) // 2 + (1 if door == (x0 + x1) // 2 else 0), z0),
+        "east": (x1, (z0 + z1) // 2),
+        "west": (x0, (z0 + z1) // 2),
+    }[chimney]
+    windows = set()
+    for x in range(x0 + 2, x1 - 1, 3):
+        windows |= {(x, z0)}
+    for z in range(z0 + 2, z1 - 1, 3):
+        windows |= {(x0, z), (x1, z)}
+    for x in range(x0, x1 + 1):
+        for z in range(z0, z1 + 1):
+            if not (x in (x0, x1) or z in (z0, z1)) or (x, z) == (cx, cz):
+                continue
+            corner = x in (x0, x1) and z in (z0, z1)
+            post = (x - x0) % 3 == 0 if z in (z0, z1) else (z - z0) % 3 == 0
+            roll = coherent(f"{seed}/ruin", (x, 0, z))
+            high = {
+                "broken": max(1, round(full * (0.25 + roll * 0.85))),
+                "fallen": (2 + int(roll * 3)) if corner else int(roll * 2),
+                "roofed": full,
+                "shell": full - (1 if roll > 0.7 else 0),
+            }[ruin]
+            if corner and ruin != "fallen":
+                high = max(high, full - 1)
+            for y in range(1, high + 1):
+                if z == z1 and abs(x - door) == 0 and y <= 2:
+                    continue
+                if (x, z) in windows and (y % STOREY) in (2, 3) and not corner:
+                    if (y % STOREY) == 2 and noise(f"{seed}/sill", x, z, y) > 0.5:
+                        t.set((x, y - 1, z), "minecraft:stone_brick_slab", type="top", waterlogged=False)
+                    continue
+                kind = wall_block(style, seed, (x, y, z), corner, post, y == 1)
+                burnt_down = 1 + int(coherent(f"{seed}/infill", (x, 0, z)) * (4 if style == "plaster" else 3))
+                if kind == "post":
+                    char(t, (x, y, z))
+                elif style != "stone" and (y > burnt_down or coherent(f"{seed}/burnt", (x, y, z)) > 0.62):
+                    continue
+                else:
+                    t.set((x, y, z), kind)
+            if storeys == 2 and high >= STOREY + 1:
+                axis = "x" if z in (z0, z1) else "z"
+                char(t, (x, STOREY + 1, z), axis)
+    t.set((door, 0, z1), "minecraft:cobblestone")
+    if noise(f"{seed}/door-left") > 0.5:
+        t.set(
+            (door, 1, z1),
+            "minecraft:dark_oak_door",
+            facing="north",
+            half="lower",
+            hinge="left",
+            open=True,
+            powered=False,
+        )
+        t.set(
+            (door, 2, z1),
+            "minecraft:dark_oak_door",
+            facing="north",
+            half="upper",
+            hinge="left",
+            open=True,
+            powered=False,
+        )
+    else:
+        t.set(
+            (door, 0, z1 + 1),
+            "minecraft:dark_oak_trapdoor",
+            facing="north",
+            half="top",
+            open=False,
+            powered=False,
+            waterlogged=False,
+        )
+    top = full + (2 + int(noise(f"{seed}/chimney-top") * 3))
+    for y in range(0, top + 1):
+        t.set((cx, y, cz), (BRICK if style == "plaster" else STONE) if y <= STOREY else SOOT)
+    inward = {"back": (0, 1), "east": (-1, 0), "west": (1, 0)}[chimney]
+    hx, hz = cx + inward[0], cz + inward[1]
+    t.set((hx, 0, hz), "minecraft:cobblestone")
+    smoulder(t, (hx, 1, hz))
+    if storeys == 2:
+        for z in range(z0 + 1, z1):
+            if (z - z0) % 2 == 0 and coherent(f"{seed}/joist", (0, STOREY, z)) > 0.35:
+                for x in range(x0 + 1, x1):
+                    if coherent(f"{seed}/joist-break", (x, STOREY, z)) > 0.3:
+                        char(t, (x, STOREY + 1, z), "x")
+        for i in range(STOREY):
+            sx = x1 - 1 - i if chimney != "east" else x0 + 1 + i
+            if coherent(f"{seed}/stair", (i, 0, 0)) > 0.25:
+                stairs(t, (sx, 1 + i, z0 + 1), "west" if chimney != "east" else "east")
+    if ruin == "roofed":
+        ridge = (x0 + x1) / 2
+        span = int(noise(f"{seed}/roof-span") * depth / 2) + depth // 2
+        side = choose(f"{seed}/roof-side", ["east", "west"])
+        for z in range(z0 - 1, min(z1 + 1, z0 - 1 + span) + 1):
+            for k in range(width // 2 + 1):
+                x = x0 - 1 + k if side == "west" else x1 + 1 - k
+                if coherent(f"{seed}/roof-hole", (x, k, z)) > 0.72:
+                    continue
+                if abs(x - ridge) < 0.6:
+                    t.set((x, full + 1 + k, z), "minecraft:dark_oak_slab", type="bottom", waterlogged=False)
+                else:
+                    stairs(t, (x, full + 1 + k, z), "east" if side == "west" else "west")
+        if style == "stone":
+            for k in range(width // 2):
+                for x in range(x0 + k, x1 - k + 1):
+                    if coherent(f"{seed}/gable", (x, k, z0)) > 0.25:
+                        t.set((x, full + 1 + k, z0), SOOT)
+    if ruin == "fallen":
+        for i in range(2 + int(noise(f"{seed}/rubble") * 4)):
+            rx = x0 + 1 + int(noise(f"{seed}/rubble", i, "x") * max(1, width - 2))
+            rz = z0 + 1 + int(noise(f"{seed}/rubble", i, "z") * max(1, depth - 2))
+            if (rx, rz) != (hx, hz):
+                t.set(
+                    (rx, 1, rz),
+                    choose(
+                        f"{seed}/rubble/{i}",
+                        ["minecraft:cobblestone", "minecraft:gravel", "minecraft:cobblestone_slab"],
+                    ),
+                )
+    beam = (x0 + 1, z0 + 2) if width > 5 else (x0 + 1, z0 + 1)
+    fallen_beam(t, beam, max(2, width - 3), "x", 1)
+    burning(t, (beam[0] + 1, 2, beam[1]))
+    if depth > 7:
+        fallen_beam(t, (door, z0 + 3), max(2, depth - 6), "z", 1)
+        burning(t, (door, 2, z0 + 4))
+    furnish(t, seed, trade, x0, z0, x1, z1, door, {(hx, hz), (cx, cz)})
+    if lean:
+        lean_to(t, seed, lean, x0, z0, x1, z1)
+    if porch:
+        for x in (door - 1, door + 1):
+            for y in range(1, 3 + (noise(f"{seed}/porch-post", x) > 0.4)):
+                char(t, (x, y, z1 + PORCH))
+        for x in range(door - 1, door + 2):
+            if noise(f"{seed}/porch-roof", x) > 0.3:
+                t.set((x, 3, z1 + PORCH), "minecraft:dark_oak_slab", type="bottom", waterlogged=False)
+    yard(t, seed, x0, z0, x1, z1, outer_w, outer_d, door)
+    t.door = (door, z1)
+    t.extent = (outer_w + 2 * m, outer_d + 2 * m)
     return t
+
+
+def furnish(t, seed, trade, x0, z0, x1, z1, door, taken):
+    spots = [(x, z) for x in range(x0 + 1, x1) for z in (z0 + 1, z1 - 1)] + [
+        (x, z) for z in range(z0 + 2, z1 - 1) for x in (x0 + 1, x1 - 1)
+    ]
+    spots = [s for s in spots if s not in taken and abs(s[0] - door) > 0 and t.get((s[0], 1, s[1])) is None]
+    spots.sort(key=lambda s: noise(f"{seed}/spot", *s))
+    things = {
+        "baker": [
+            ("minecraft:smoker", {"facing": "south", "lit": False}),
+            ("minecraft:hay_block", {"axis": "y"}),
+            ("minecraft:barrel", {"facing": "up", "open": True}),
+        ],
+        "carpenter": [
+            ("minecraft:crafting_table", {}),
+            ("minecraft:stripped_oak_log", {"axis": "x"}),
+            ("minecraft:stripped_oak_log", {"axis": "x"}),
+        ],
+        "cooper": [
+            ("minecraft:barrel", {"facing": "up", "open": False}),
+            ("minecraft:barrel", {"facing": "east", "open": False}),
+            ("minecraft:barrel", {"facing": "up", "open": True}),
+        ],
+        "home": [
+            ("bed", {}),
+            ("table", {}),
+            ("minecraft:flower_pot", {}),
+            ("minecraft:barrel", {"facing": "up", "open": True}),
+        ],
+        "weaver": [
+            ("minecraft:loom", {"facing": "south"}),
+            ("minecraft:white_carpet", {}),
+            ("minecraft:barrel", {"facing": "up", "open": True}),
+        ],
+    }[trade]
+    for (name, properties), (x, z) in zip(things, spots, strict=False):
+        if name == "bed":
+            t.set((x, 1, z), "minecraft:brown_carpet")
+        elif name == "table":
+            fence(t, (x, 1, z))
+            t.set((x, 2, z), "minecraft:dark_oak_pressure_plate", powered=False)
+        else:
+            t.set((x, 1, z), name, **properties)
+
+
+def lean_to(t, seed, side, x0, z0, x1, z1):
+    if side == "back":
+        xs, zs = range(x0, x1 + 1), range(z0 - LEAN, z0)
+    elif side == "east":
+        xs, zs = range(x1 + 1, x1 + 1 + LEAN), range(z0 + 1, z1)
+    else:
+        xs, zs = range(x0 - LEAN, x0), range(z0 + 1, z1)
+    xs, zs = list(xs), list(zs)
+    for x in xs:
+        for z in zs:
+            t.set((x, 0, z), "minecraft:coarse_dirt" if coherent(f"{seed}/lean-floor", (x, 0, z)) > 0.4 else ASH)
+            if side == "back":
+                walled = z == zs[0] or x in (xs[0], xs[-1])
+            else:
+                walled = x == (xs[-1] if side == "east" else xs[0]) or z in (zs[0], zs[-1])
+            if not walled:
+                continue
+            for y in range(1, 2 + int(coherent(f"{seed}/lean-wall", (x, 0, z)) * 2)):
+                if coherent(f"{seed}/lean-gap", (x, y, z)) >= 0.8:
+                    continue
+                if (x + z) % 3:
+                    fence(t, (x, y, z))
+                else:
+                    char(t, (x, y, z))
+    name, properties = choose(
+        f"{seed}/lean-store",
+        [
+            ("minecraft:hay_block", {"axis": "y"}),
+            ("minecraft:stripped_spruce_log", {"axis": "y"}),
+            ("minecraft:composter", {"level": 3}),
+        ],
+    )
+    t.set((xs[len(xs) // 2], 1, zs[len(zs) // 2]), name, **properties)
+
+
+def yard(t, seed, x0, z0, x1, z1, outer_w, outer_d, door):
+    m = MARGIN
+    edge = [(x, m - 2) for x in range(0, outer_w + 2 * m)] + [(m - 2, z) for z in range(0, outer_d + 2 * m)]
+    if noise(f"{seed}/fence") > 0.45:
+        for x, z in edge:
+            if coherent(f"{seed}/fence-run", (x, 0, z)) > 0.45 and t.get((x, 1, z)) is None:
+                fence(t, (x, 1, z))
+    props = [
+        ("woodpile", None),
+        ("minecraft:hay_block", {"axis": "y"}),
+        ("minecraft:cauldron", {}),
+        ("minecraft:barrel", {"facing": "up", "open": True}),
+        ("minecraft:composter", {"level": 2}),
+    ]
+    for i in range(int(noise(f"{seed}/props") * 3)):
+        name, properties = choose(f"{seed}/prop/{i}", props)
+        spot = choose(
+            f"{seed}/prop-at/{i}", [(x1 + 2, z0 + 1 + i), (x0 - 2, z0 + 2 + i), (x0 + 1 + i, z0 - 2), (x1 + 1, z1 - i)]
+        )
+        if t.get((spot[0], 1, spot[1])) is not None or spot[0] < 0 or spot[1] < 0:
+            continue
+        if name == "woodpile":
+            for dz in range(2):
+                for y in (1, 2) if dz == 0 else (1,):
+                    t.set((spot[0], y, spot[1] + dz), "minecraft:stripped_spruce_log", axis="x")
+        else:
+            t.set((spot[0], 1, spot[1]), name, **properties)
 
 
 def tower():
@@ -464,6 +731,7 @@ def hall(seed, width, depth, strongbox=False):
     else:
         t.set((x1 - 1, 1, z0 + 1), "minecraft:barrel", facing="up", open=True)
         t.set((x0 + 1, 1, z1 - 1), "minecraft:cauldron")
+    t.door = (door, z1)
     return t
 
 
@@ -496,6 +764,7 @@ def smithy():
     t.set((x0 + 1, 1, z0 + 4), "minecraft:barrel", facing="up", open=True)
     fallen_beam(t, (x0 + 1, z0 + 5), 4, "x", 1)
     burning(t, (x0 + 2, 2, z0 + 5))
+    t.door = (x0 + 3, z1)
     return t
 
 
@@ -527,6 +796,54 @@ def barn(seed):
         t.set((x, 1, z), "minecraft:hay_block", axis="y")
         t.set((x + 1, 1, z), "minecraft:coarse_dirt")
     t.set((x1 - 1, 1, z0 + 1), "minecraft:magma_block")
+    t.door = (door, z1)
+    return t
+
+
+def shed(seed):
+    t = Template()
+    m = MARGIN
+    closed = noise(f"{seed}/closed") < 0.5
+    width = 5
+    depth = choose(f"{seed}/depth", [4, 5]) if closed else 3
+    apron(t, width, depth, seed)
+    x0, z0, x1, z1 = m, m, m + width - 1, m + depth - 1
+    door = x0 + width // 2
+    for x in range(x0, x1 + 1):
+        for z in range(z0, z1 + 1):
+            t.set((x, 0, z), "minecraft:coarse_dirt" if coherent(f"{seed}/floor", (x, 0, z)) > 0.5 else ASH)
+            if not (x in (x0, x1) or z in (z0, z1)):
+                continue
+            if x in (x0, x1) and z in (z0, z1):
+                for y in range(1, 3 + (coherent(f"{seed}/post", (x, 0, z)) > 0.5)):
+                    char(t, (x, y, z))
+                continue
+            if z == z1 and (not closed or x == door):
+                continue
+            for y in range(1, 2 + int(coherent(f"{seed}/infill", (x, 0, z)) * 3)):
+                if coherent(f"{seed}/gap", (x, y, z)) > 0.7:
+                    continue
+                if closed:
+                    t.set((x, y, z), PLANKS)
+                else:
+                    fence(t, (x, y, z))
+    for x in range(x0, x1 + 1):
+        for z in range(z0, z1 + 1):
+            if coherent(f"{seed}/roof", (x, 0, z)) > 0.45:
+                t.set((x, 3, z), "minecraft:dark_oak_slab", type="bottom", waterlogged=False)
+    if closed:
+        fallen_beam(t, (x0 + 1, z0 + 1), width - 2, "x", 1)
+        burning(t, (x0 + 2, 2, z0 + 1))
+        t.set((x1 - 1, 1, z1 - 1), "minecraft:barrel", facing="up", open=True)
+        if depth > 4:
+            t.set((x0 + 1, 1, z1 - 1), "minecraft:hay_block", axis="y")
+    else:
+        for x in range(x0 + 1, x1):
+            for y in range(1, 2 + (coherent(f"{seed}/stack", (x, 0, z0)) > 0.4)):
+                t.set((x, y, z0 + 1), "minecraft:stripped_spruce_log", axis="x")
+        t.set((x1 + 1, 1, z1), "minecraft:stripped_oak_log", axis="y")
+    t.door = (door, z1)
+    t.extent = (width + 2 * m, depth + 2 * m)
     return t
 
 
@@ -601,14 +918,16 @@ def bridge():
 
 
 KINDS = {
-    "barn": ((9, 13), lambda seed: barn(seed)),
-    "house": ((7, 9), lambda seed: house(seed, 7, 9, noise(f"{seed}/side") > 0.5)),
-    "house_long": ((7, 11), lambda seed: house(seed, 7, 11, noise(f"{seed}/side") > 0.5)),
-    "house_small": ((5, 7), lambda seed: house(seed, 5, 7, noise(f"{seed}/side") > 0.5)),
-    "house_wide": ((9, 7), lambda seed: house(seed, 9, 7, noise(f"{seed}/side") > 0.5)),
-    "townhouse": ((7, 9), lambda seed: hall(seed, 7, 9)),
+    "barn": ("outer", 3, barn),
+    "cottage": ("any", 6, lambda seed: home(seed, 1, None, 5, choose(f"{seed}/depth", [5, 7]), leans=())),
+    "home": ("any", 12, home),
+    "shed": ("outer", 4, shed),
+    "townhouse": (
+        "inner",
+        4,
+        lambda seed: home(seed, 2, choose(f"{seed}/rich", ["plaster", "stone"]), choose(f"{seed}/rich-width", [7, 9])),
+    ),
 }
-VARIANTS = 3
 PIECES = {
     "bridge": bridge,
     "inn": lambda: hall("inn", 9, 13, strongbox=True),
@@ -617,219 +936,109 @@ PIECES = {
     "toll_house": toll_house,
     "well": well,
 } | {
-    f"{kind}_{variant}": (lambda kind=kind, variant=variant: KINDS[kind][1](f"{kind}/{variant}"))
-    for kind in KINDS
-    for variant in range(1, VARIANTS + 1)
+    f"{kind}_{variant}": (lambda kind=kind, variant=variant: KINDS[kind][2](f"{kind}/{variant}"))
+    for kind, (_, variants, _) in KINDS.items()
+    for variant in range(1, variants + 1)
 }
-LOT_KINDS = [
-    "house",
-    "house",
-    "house_small",
-    "house_small",
-    "house_wide",
-    "house_long",
-    "townhouse",
-    "townhouse",
+LOTS = [
     "barn",
+    "cottage",
+    "cottage",
+    "cottage",
+    "home",
+    "home",
+    "home",
+    "home",
+    "home",
+    "home",
+    "shed",
+    "shed",
+    "townhouse",
+    "townhouse",
 ]
-SIZE = 104
-MAIN_STREET = (50, 54)
-CROSS_STREET = (50, 54)
-LANES_X = [(24, 26), (78, 80)]
-YARDS = 0.4
-LANES_Z = [(24, 26), (78, 80)]
-SQUARE_AREA = ((38, 66), (40, 64))
-RIVER = (93, 99)
-FIXED = [
-    ("bell_tower", (55, 31), 0, CELLAR),
-    ("well", (50, 48), 0, 0),
-    ("inn", (35, 14), 3, 0),
-    ("smithy", (56, 17), 1, 0),
-    ("stall", (42, 56), 0, 0),
-    ("stall", (46, 58), 0, 0),
-    ("stall", (57, 58), 0, 0),
-    ("stall", (61, 56), 0, 0),
-    ("toll_house", (55, 86), 0, 0),
-]
-BRIDGE = ("bridge", (50, 89), 0, 0)
 DEAD = 32
-FIXED_SIZES = {
-    "bell_tower": (TOWER + 2, TOWER + 2),
-    "inn": (17, 13),
-    "smithy": (11, 11),
-    "stall": (3, 3),
-    "toll_house": (5, 5),
-    "well": (5, 5),
-}
+SMOKE = 8
+STRONGBOX = (MARGIN + 1, 1, MARGIN + 1)
+BELL = (9, 12)
+BELL_SEAT = (8, 12)
 
 
-def kind_of(name):
-    return name.rsplit("_", 1)[0] if name.rsplit("_", 1)[-1].isdigit() else name
+def size(t):
+    measured = [max(pos[axis] for pos in t.blocks) + 1 for axis in range(3)]
+    extent = getattr(t, "extent", None)
+    if extent:
+        measured[0], measured[2] = max(measured[0], extent[0]), max(measured[2], extent[1])
+    return measured
 
 
-def footprint(name, turns):
-    width, depth = KINDS[kind_of(name)][0]
-    return (depth, width) if turns % 2 else (width, depth)
+def hearth(t):
+    found = [list(pos) for pos, (name, _, _) in t.blocks.items() if name == "minecraft:campfire" and pos[1] == 1]
+    return found[0] if found else None
 
 
-def free(taken, x0, z0, width, depth):
-    if x0 < 1 or z0 < 1 or x0 + width >= SIZE - 1 or z0 + depth >= RIVER[0] - 1:
-        return False
-    return all((x, z) not in taken for x in range(x0 - 1, x0 + width + 1) for z in range(z0 - 1, z0 + depth + 1))
+OPEN = {"bridge": ([2, 0], 0), "stall": ([1, 2], 0), "toll_house": ([2, 4], 0), "well": ([2, 4], 0)}
 
 
-def claim(taken, x0, z0, width, depth):
-    taken.update((x, z) for x in range(x0, x0 + width) for z in range(z0, z0 + depth))
+def entrance(name, t):
+    if name in OPEN:
+        return OPEN[name]
+    return [*t.door], MARGIN
 
 
-def streets():
-    cells = set()
-    for x in range(MAIN_STREET[0], MAIN_STREET[1] + 1):
-        cells.update((x, z) for z in range(SIZE))
-    for z in range(CROSS_STREET[0], CROSS_STREET[1] + 1):
-        cells.update((x, z) for x in range(SIZE))
-    for low, high in LANES_X:
-        cells.update((x, z) for x in range(low, high + 1) for z in range(SIZE) if z < RIVER[0])
-    for low, high in LANES_Z:
-        cells.update((x, z) for z in range(low, high + 1) for x in range(SIZE))
-    (sx0, sx1), (sz0, sz1) = SQUARE_AREA
-    square = {(x, z) for x in range(sx0, sx1 + 1) for z in range(sz0, sz1 + 1)}
-    return cells, square
+def catalog():
+    pieces = {}
+    for name, build in PIECES.items():
+        t = build()
+        doorway, margin = entrance(name, t)
+        pieces[name] = {"door": doorway, "margin": margin, "size": size(t)} | (
+            {"hearth": hearth(t)} if name.rsplit("_", 1)[0] in KINDS and hearth(t) else {}
+        )
+    return pieces
 
 
-def lots(taken):
-    placed = []
-    runs = []
-    for low, high in [MAIN_STREET, *LANES_X]:
-        runs.append(("x", low, high))
-    for low, high in [CROSS_STREET, *LANES_Z]:
-        runs.append(("z", low, high))
-    for axis, low, high in runs:
-        for side in (-1, 1):
-            along = 2
-            while along < SIZE - 2:
-                if noise(f"tollbridge/yard/{axis}/{low}/{side}/{along}") < YARDS:
-                    along += 5 + int(noise(f"tollbridge/yard-size/{axis}/{low}/{side}/{along}") * 4)
-                    continue
-                kind = pick_kind(f"{axis}/{low}/{side}/{along}")
-                if axis == "x":
-                    turns = 3 if side < 0 else 1
-                    width, depth = footprint(kind, turns)
-                    x0 = low - 2 - width if side < 0 else high + 3
-                    z0 = along
-                    span = depth
-                else:
-                    turns = 0 if side < 0 else 2
-                    width, depth = footprint(kind, turns)
-                    x0 = along
-                    z0 = low - 2 - depth if side < 0 else high + 3
-                    span = width
-                if free(taken, x0, z0, width, depth):
-                    claim(taken, x0, z0, width, depth)
-                    variant = 1 + int(noise(f"tollbridge/variant/{axis}/{low}/{side}/{along}") * VARIANTS) % VARIANTS
-                    placed.append((f"{kind}_{variant}", (x0 - MARGIN, z0 - MARGIN), turns, 0))
-                    along += span + 3 + int(noise(f"tollbridge/gap/{axis}/{low}/{side}/{along}") * 4)
-                else:
-                    along += 1
-    return placed
+def dead():
+    folk = townsfolk()
+    well = next(name for name, look in folk.items() if any("p" in row for row in look["body_front"]))
+    door = next(name for name, look in folk.items() if "arm_front" in look)
+    rest = [name for name in folk if name not in (well, door)][: DEAD - 2]
+    return {"doorway": door, "others": rest, "well": well}
 
 
-def pick_kind(seed):
-    return LOT_KINDS[int(noise(f"tollbridge/kind/{seed}") * len(LOT_KINDS)) % len(LOT_KINDS)]
-
-
-def layout():
-    cells, square = streets()
-    taken = set(cells) | square
-    taken.update((x, z) for x in range(SIZE) for z in range(RIVER[0] - 1, SIZE))
-    for name, (ox, oz), _, _ in FIXED:
-        claim(taken, ox, oz, *FIXED_SIZES[name])
-    return FIXED + lots(taken), cells, square
-
-
-def dead(pieces, cells):
-    spots = []
-    for index, (name, (ox, oz), turns, _) in enumerate(pieces):
-        if kind_of(name) not in KINDS:
-            continue
-        width, depth = footprint(name, turns)
-        cx, cz = ox + MARGIN + width // 2, oz + MARGIN + depth // 2
-        door = {
-            0: (cx, oz + MARGIN + depth + 1),
-            2: (cx, oz + MARGIN - 2),
-            1: (ox + MARGIN - 2, cz),
-            3: (ox + MARGIN + width + 1, cz),
-        }[turns]
-        if noise(f"tollbridge/dead/{index}") > 0.35:
-            spots.append(door)
-    extra = sorted(cells, key=lambda cell: noise("tollbridge/street-dead", *cell))
-    for cell in extra:
-        if len(spots) >= DEAD:
-            break
-        if all(abs(cell[0] - x) + abs(cell[1] - z) > 6 for x, z in spots):
-            spots.append(cell)
-    return [
-        {"skin": f"townsfolk_{i + 1:02d}", "x": x, "yaw": int(noise("tollbridge/yaw", x, z) * 360), "z": z}
-        for i, (x, z) in enumerate(spots[:DEAD])
-    ]
-
-
-def scorched(t):
-    for (x, y, z), (name, _, _) in list(t.blocks.items()):
-        if y == 0 and name == "minecraft:grass_block":
-            roll = coherent("tollbridge/scorch", (x, 0, z))
-            if roll > 0.62:
-                t.set((x, 0, z), "minecraft:coarse_dirt" if roll > 0.76 else "minecraft:podzol", snowy=False)
-    for x, z in ((44, 45), (60, 47), (52, 70), (30, 52), (76, 52), (52, 20)):
-        smoulder(t, (x, 1, z))
-
-
-def town():
-    pieces, cells, square = layout()
-    t = Template()
-    for x in range(SIZE):
-        for z in range(SIZE):
-            if RIVER[0] <= z <= RIVER[1]:
-                t.set((x, 0, z), "minecraft:water", level=0)
-            elif (x, z) in square:
-                t.set((x, 0, z), SQUARE)
-            elif (x, z) in cells:
-                t.set((x, 0, z), STREET)
-            else:
-                t.set((x, 0, z), "minecraft:grass_block", snowy=False)
-    built = {"bell_tower": tower_above} | PIECES
-    for name, (ox, oz), turns, _ in [*pieces, BRIDGE]:
-        piece = rotate(built[name](), turns)
-        lift = -1 if name == "bridge" else 0
-        for (x, y, z), block in piece.blocks.items():
-            if y + lift >= 0:
-                t.blocks[(ox + x, y + lift, oz + z)] = block
-    scorched(t)
-    t.set(BELL, "wayfarer:tollbridge_bell", facing="east", fallen=True)
-    return t
+def palette(material):
+    return [[block, weight] for block, weight in material.entries]
 
 
 def plan():
-    pieces, cells, _ = layout()
+    lo, hi = 1, TOWER
+    mid = lo + TOWER // 2
     return {
-        "bell": {"facing": "east", "x": BELL[0], "z": BELL[2]},
-        "bridge": {"piece": BRIDGE[0], "x": BRIDGE[1][0], "z": BRIDGE[1][1]},
-        "dead": dead(pieces, cells),
-        "pieces": [
-            {"ground": ground, "piece": name, "turns": turns, "x": ox, "z": oz}
-            for name, (ox, oz), turns, ground in pieces
-        ],
-        "size": SIZE,
+        "dead": dead(),
+        "dead_poses": POSES,
+        "found_pose": "fallen_back",
+        "kinds": {
+            kind: {"pieces": [f"{kind}_{variant}" for variant in range(1, variants + 1)], "ring": ring}
+            for kind, (ring, variants, _) in sorted(KINDS.items())
+        },
+        "lots": LOTS,
+        "materials": {"ash": palette(ASH), "square": palette(SQUARE), "street": palette(STREET)},
+        "pieces": catalog(),
+        "smoke": SMOKE,
+        "strongbox": list(STRONGBOX),
+        "tower": {
+            "bell": list(BELL),
+            "bell_facing": "east",
+            "bell_seat": list(BELL_SEAT),
+            "clue": [mid, CELLAR + 1, hi],
+            "door": [mid, hi],
+            "fire": [hi - 1, 1, hi - 1],
+            "ground": CELLAR,
+            "margin": 1,
+            "seats": {
+                "agna": [hi - 2, 1, hi - 1, "sitting_crossed"],
+                "hob": [lo + 4, 1, lo + 2, "standing_arms_crossed"],
+                "pip": [hi - 1, 1, hi - 2, "sitting_hunched"],
+                "tamsin": [lo + 3, 1, lo + 2, "sitting_grieving"],
+            },
+            "size": size(tower()),
+        },
     }
-
-
-BELL = (64, 1, 43)
-
-
-def tower_above():
-    full = tower()
-    t = Template()
-    for (x, y, z), block in full.blocks.items():
-        if y >= CELLAR:
-            t.blocks[(x, y - CELLAR, z)] = block
-    return t

@@ -21,7 +21,6 @@ public record CompassPayload(
 
     public enum Mode {
         AIR,
-        ASLEEP,
         DIM,
         FAR,
         HIDDEN,

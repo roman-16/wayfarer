@@ -139,12 +139,16 @@ public final class Cuts {
             return;
         }
         if (event.getPlacedBlock().is(ROOTLESS)) {
-            event.setCanceled(true);
-            tell(player, "wayfarer.cut.root");
+            refuse(event, player, "wayfarer.cut.root");
         } else if (event.getPlacedBlock().is(STORAGE) && !Tents.isTent(player.level().dimension())) {
-            event.setCanceled(true);
-            tell(player, "wayfarer.cut.storage");
+            refuse(event, player, "wayfarer.cut.storage");
         }
+    }
+
+    private static void refuse(BlockEvent.EntityPlaceEvent event, ServerPlayer player, String key) {
+        event.setCanceled(true);
+        tell(player, key);
+        player.server.execute(() -> player.containerMenu.sendAllDataToRemote());
     }
 
     @SubscribeEvent

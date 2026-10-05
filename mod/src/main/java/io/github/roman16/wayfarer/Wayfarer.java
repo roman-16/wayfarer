@@ -3,15 +3,27 @@ package io.github.roman16.wayfarer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.github.roman16.wayfarer.client.Books;
+import io.github.roman16.wayfarer.client.JournalScreen;
+import io.github.roman16.wayfarer.story.Caravan;
+import io.github.roman16.wayfarer.story.Engine;
+import io.github.roman16.wayfarer.story.Hold;
+import io.github.roman16.wayfarer.story.Journal;
+import io.github.roman16.wayfarer.story.People;
+import io.github.roman16.wayfarer.story.Places;
+import io.github.roman16.wayfarer.story.Sense;
+import io.github.roman16.wayfarer.story.Talk;
+import io.github.roman16.wayfarer.story.Tasks;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -61,6 +73,9 @@ public final class Wayfarer {
     public static final Supplier<AttachmentType<CompoundTag>> STILLNESS = ATTACHMENTS.register("stillness",
             () -> AttachmentType.builder(() -> new CompoundTag()).serialize(CompoundTag.CODEC).copyOnDeath().build());
 
+    public static final GameRules.Key<GameRules.BooleanValue> STORY =
+            GameRules.register(MODID + "Story", GameRules.Category.MISC, GameRules.BooleanValue.create(true));
+
     public static final DeferredHolder<MobEffect, MobEffect> WARM = EFFECTS.register("warm", Warm::new);
     public static final DeferredHolder<StructureProcessorType<?>, StructureProcessorType<NetherSwap>> NETHER_SWAP =
             PROCESSORS.register("nether_swap", () -> () -> NetherSwap.CODEC);
@@ -96,8 +111,17 @@ public final class Wayfarer {
                     .strength(-1, 3_600_000)
                     .sound(SoundType.ANVIL)
                     .noOcclusion());
+    public static final DeferredBlock<WayfarerSign> WAYFARER_SIGN = BLOCKS.registerBlock("wayfarer_sign", WayfarerSign::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .noCollission()
+                    .instabreak()
+                    .noLootTable()
+                    .sound(SoundType.STONE));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ShrinePedestalBlockEntity>> SHRINE_PEDESTAL_ENTITY =
             BLOCK_ENTITIES.register("shrine_pedestal", () -> BlockEntityType.Builder.of(ShrinePedestalBlockEntity::new, SHRINE_PEDESTAL.get()).build(null));
+
+    public static final DeferredItem<Item> COLD_EMBER = ITEMS.registerSimpleItem("cold_ember", new Item.Properties().stacksTo(1));
 
     public static final List<DeferredItem<Item>> VEILS = IntStream.rangeClosed(1, 3)
             .mapToObj(level -> ITEMS.registerSimpleItem("ember_veil_" + level, new Item.Properties().stacksTo(1).rarity(Rarity.values()[level])))
@@ -120,26 +144,39 @@ public final class Wayfarer {
         STRUCTURES.register(modBus);
         modBus.addListener(Wayfarer::registerPayloads);
         modBus.addListener(Shards::setup);
+        NeoForge.EVENT_BUS.register(Caravan.class);
+        NeoForge.EVENT_BUS.register(Clock.class);
         NeoForge.EVENT_BUS.register(Compass.class);
         NeoForge.EVENT_BUS.register(Cuts.class);
         NeoForge.EVENT_BUS.register(Daylight.class);
         NeoForge.EVENT_BUS.register(Difficulty.class);
         NeoForge.EVENT_BUS.register(Ember.class);
+        NeoForge.EVENT_BUS.register(Engine.class);
         NeoForge.EVENT_BUS.register(Fire.class);
         NeoForge.EVENT_BUS.register(Firsts.class);
         NeoForge.EVENT_BUS.register(Gate.class);
         NeoForge.EVENT_BUS.register(Gaze.class);
         NeoForge.EVENT_BUS.register(Graves.class);
+        NeoForge.EVENT_BUS.register(Hold.class);
+        NeoForge.EVENT_BUS.register(Joining.class);
         NeoForge.EVENT_BUS.register(Nights.class);
+        NeoForge.EVENT_BUS.register(People.class);
+        NeoForge.EVENT_BUS.register(Places.class);
         NeoForge.EVENT_BUS.register(Rowing.class);
         NeoForge.EVENT_BUS.register(Rules.class);
+        NeoForge.EVENT_BUS.register(Sense.class);
         NeoForge.EVENT_BUS.register(Shards.class);
         NeoForge.EVENT_BUS.register(Shrines.class);
         NeoForge.EVENT_BUS.register(Stillness.class);
+        NeoForge.EVENT_BUS.register(Talk.class);
+        NeoForge.EVENT_BUS.register(Tasks.class);
         NeoForge.EVENT_BUS.register(Tents.class);
         NeoForge.EVENT_BUS.register(WorldSetup.class);
         if (ModList.get().isLoaded("hordes")) {
             NeoForge.EVENT_BUS.register(HordeRefuge.class);
+        }
+        if (ModList.get().isLoaded("nomadictents")) {
+            NeoForge.EVENT_BUS.register(TentPitch.class);
         }
         if (ModList.get().isLoaded("lootr")) {
             NeoForge.EVENT_BUS.register(Loot.class);
@@ -153,6 +190,12 @@ public final class Wayfarer {
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1");
         registrar.playToClient(BookPayload.TYPE, BookPayload.STREAM_CODEC, (payload, context) -> Books.open(payload));
+        registrar.playToClient(Journal.View.TYPE, Journal.View.STREAM_CODEC, (payload, context) -> JournalScreen.show(payload.json()));
+        registrar.playToServer(Journal.Claim.TYPE, Journal.Claim.STREAM_CODEC,
+                (payload, context) -> Engine.claim((ServerPlayer) context.player(), payload.reward()));
+        registrar.playToServer(Sense.Payload.TYPE, Sense.Payload.STREAM_CODEC, (payload, context) -> Sense.sense((ServerPlayer) context.player()));
+        registrar.playToClient(Tasks.Panel.TYPE, Tasks.Panel.STREAM_CODEC, (payload, context) -> HudState.panel = payload);
+        registrar.playToServer(Tasks.Did.TYPE, Tasks.Did.STREAM_CODEC, (payload, context) -> Tasks.told((ServerPlayer) context.player(), payload.task()));
         registrar.playToClient(CompassPayload.TYPE, CompassPayload.STREAM_CODEC, (payload, context) -> HudState.compass = payload);
         registrar.playToClient(GazePayload.TYPE, GazePayload.STREAM_CODEC, (payload, context) -> HudState.gaze = payload);
         registrar.playToClient(NightPayload.TYPE, NightPayload.STREAM_CODEC, (payload, context) -> HudState.night = payload);

@@ -1,8 +1,6 @@
 package io.github.roman16.wayfarer.spike;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.io.IOException;
@@ -149,7 +147,6 @@ public final class GearSpike {
         smithy.learned.clear();
         smithy.orders.clear();
         smithy.setDirty();
-        QuestSpike.sync(server);
         say(server, "gear: the journal's Gear page forgets what it learned");
         return 1;
     }
@@ -218,26 +215,10 @@ public final class GearSpike {
         Smithy smithy = Smithy.of(server);
         if (smithy.learned.add(key)) {
             smithy.setDirty();
-            QuestSpike.sync(server);
             say(server, "gear: the journal's Gear page learns %s".formatted(key));
         }
     }
 
-    static JsonArray view(MinecraftServer server) {
-        Set<String> learned = Smithy.of(server).learned;
-        JsonArray page = new JsonArray();
-        for (JsonElement element : GEAR) {
-            JsonObject tier = element.getAsJsonObject();
-            JsonObject learn = tier.has("learn") ? tier.getAsJsonObject("learn") : new JsonObject();
-            JsonObject shown = new JsonObject();
-            for (String field : List.of("name", "needs", "where", "who")) {
-                boolean known = !learn.has(field) || learned.contains(learn.get(field).getAsString());
-                shown.addProperty(field, known ? tier.get(field).getAsString() : UNKNOWN);
-            }
-            page.add(shown);
-        }
-        return page;
-    }
 
     private static void say(MinecraftServer server, String text) {
         server.getPlayerList().broadcastSystemMessage(Component.literal(text), false);

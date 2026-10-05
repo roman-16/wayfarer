@@ -5,16 +5,19 @@ import shutil
 from pathlib import Path
 
 import png
+import poses
 import tomllib
-from blocks import Template, box, cuboid, text
-from camp import FIRE, GRAVE, HEADSTONE, OLD_SIZE, camp, grave, old_camp
+from blocks import LAMP, Template, box, cuboid, text
+from camp import FIRE, GRAVE, HEADSTONE, OLD_SIZE, STRANGER, WAKE, camp, grave, old_camp
 from camp import SIZE as CAMP
 from caravan import caravan
 from creatures import creatures
+from diggers import entrance, tunnels
 from entrances import ENTRANCES, Cover
 from halls import HALLS
+from scenes import SCENES
 from skins import skin
-from tollbridge import PIECES, plan, tower, town
+from tollbridge import PIECES, plan, size, tower
 from townsfolk import townsfolk
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -151,6 +154,7 @@ def showroom(eyes):
         f"/execute in wayfarer:showroom run tp @s 0.5 {y + 20} 0.5",
         "settle",
         "/gamerule doDaylightCycle false",
+        "/gamerule wayfarerStory false",
         "/gamerule doMobSpawning false",
         "/gamerule doWeatherCycle false",
         "/time set noon",
@@ -271,6 +275,20 @@ def textures(spec):
             palette = {key: rgba(value) for key, value in {**texture["colors"], **colors}.items()}
             pixels = [[palette.get(cell, (0, 0, 0, 0)) for cell in row] for row in texture["rows"]]
             png.write(MAIN / f"assets/wayfarer/textures/{texture.get('folder', 'item')}/{variant}.png", pixels)
+
+
+def story(quests, cast, skins, caravan_households):
+    for person in cast:
+        if person not in skins:
+            raise ValueError(f"story/people.toml: {person} has no skin in generator/skins.toml")
+    write_json(
+        MAIN / "wayfarer/story.json",
+        {
+            "people": {person: spec | {"skin": person} for person, spec in sorted(cast.items())},
+            "caravan": caravan_households["households"],
+            "quests": quests["quests"],
+        },
+    )
 
 
 def people(spec):
@@ -401,7 +419,9 @@ def salt(name):
 
 
 def states(value):
-    return [{"Name": name} for name in value] if isinstance(value, list) else {"Name": value}
+    if isinstance(value, list):
+        return [{"Name": name} for name in value]
+    return {"Name": value, "Properties": {"lit": "true"}} if value == LAMP else {"Name": value}
 
 
 def worldgen(eyes, layouts, tiers, balance):
@@ -584,17 +604,40 @@ def main():
     write_json(MAIN / "wayfarer/swaps.json", tomllib.loads((ROOT / "generator/nether.toml").read_text())["swaps"])
     camp().save(MAIN / "data/wayfarer/structure/last_camp.nbt")
     grave().save(MAIN / "data/wayfarer/structure/last_camp/grave.nbt")
+    write_json(
+        MAIN / "wayfarer/last_camp.json",
+        {
+            "fire": [FIRE[0], 1, FIRE[1]],
+            "grave": [GRAVE[0], 0, GRAVE[1]],
+            "sign": [HEADSTONE[0], 1, HEADSTONE[1] - 1],
+            "stranger": list(STRANGER),
+            "wake": list(WAKE),
+        },
+    )
     tower().save(MAIN / "data/wayfarer/structure/tollbridge/bell_tower.nbt")
     for name, piece in PIECES.items():
-        piece().save(MAIN / f"data/wayfarer/structure/tollbridge/{name}.nbt")
-    town().save(DEV / "data/wayfarer/structure/tollbridge/town.nbt")
+        built = piece()
+        built.save(MAIN / f"data/wayfarer/structure/tollbridge/{name}.nbt", size(built))
     write_json(MAIN / "wayfarer/tollbridge.json", plan())
+    entrance().save(MAIN / "data/wayfarer/structure/diggers/entrance.nbt")
+    for name, scene in SCENES.items():
+        scene().save(MAIN / f"data/wayfarer/structure/scene/{name}.nbt")
+    tunnels(eyes["lost"]).save(MAIN / "data/wayfarer/structure/diggers/tunnels.nbt")
     empty()
-    caravan(DEV)
+    caravan(MAIN)
     creatures(DEV)
     showroom(eyes)
     textures(tomllib.loads((ROOT / "generator/textures.toml").read_text()))
-    people(tomllib.loads((ROOT / "generator/skins.toml").read_text()) | townsfolk())
+    skins = tomllib.loads((ROOT / "generator/skins.toml").read_text()) | townsfolk()
+    people(skins)
+    poses.write(MAIN)
+    story(
+        tomllib.loads((ROOT / "story/quests.toml").read_text()),
+        tomllib.loads((ROOT / "story/people.toml").read_text()),
+        skins,
+        tomllib.loads((ROOT / "story/caravan.toml").read_text()),
+    )
+    write_json(DEV / "wayfarer/states.json", tomllib.loads((ROOT / "story/states.toml").read_text()))
     old_camps()
     books(written, eyes, library(written, eyes))
     shaders()

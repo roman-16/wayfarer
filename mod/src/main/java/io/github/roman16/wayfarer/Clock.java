@@ -1,0 +1,259 @@
+package io.github.roman16.wayfarer;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.GameRules;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+
+public final class Clock {
+    public static final long DAY = 24000;
+    private static final int CHECK_TICKS = 20;
+    private static final long HOUR = 1000;
+    private static final float HOLD = 1f / 1024;
+    private static final int MORNING_HOUR = 6;
+    private static final int OPEN_SKY = 15;
+    private static final int TICKS_PER_SECOND = 20;
+    private static final float VANILLA = -1;
+    private static final Set<UUID> rested = new HashSet<>();
+    private static Mode mode = Mode.OFF;
+    private static long from;
+    private static long target;
+    private static double pace = 1;
+    private static long day;
+    @Nullable
+    private static String after;
+    @Nullable
+    private static BlockPos caravan;
+
+    private Clock() {}
+
+    private enum Mode {
+        EASE,
+        EVENING,
+        OFF,
+        PASS
+    }
+
+    public static boolean storied(MinecraftServer server) {
+        return server.getGameRules().getBoolean(Wayfarer.STORY) && !Journey.slain(server);
+    }
+
+    public static void road(ServerLevel level) {
+        ease(level, Balance.INSTANCE.clock().road());
+        caravan = null;
+    }
+
+    public static void ease(ServerLevel level, String hour) {
+        mode = Mode.EASE;
+        from = level.getDayTime();
+        day = Math.floorDiv(from, DAY);
+        target = next(from, hour);
+        pace = 1;
+        after = null;
+        speed(level);
+    }
+
+    public static long pass(ServerLevel level, String hour, int seconds, @Nullable String then) {
+        long until = next(level.getDayTime(), hour);
+        until(level, until, seconds, then);
+        return until;
+    }
+
+    public static void until(ServerLevel level, long until, int seconds, @Nullable String then) {
+        long now = level.getDayTime();
+        if (now >= until) {
+            arrive(level, now, then);
+            return;
+        }
+        mode = Mode.PASS;
+        from = now;
+        day = Math.floorDiv(from, DAY);
+        target = until;
+        pace = (target - from) / (double) (seconds * TICKS_PER_SECOND);
+        after = then;
+        speed(level);
+    }
+
+    public static void jump(ServerLevel level, String hour, @Nullable String then) {
+        long at = next(level.getDayTime(), hour);
+        level.setDayTime(at);
+        arrive(level, at, then);
+    }
+
+    private static void arrive(ServerLevel level, long now, @Nullable String then) {
+        if (then != null) {
+            ease(level, then);
+            return;
+        }
+        mode = Mode.EASE;
+        from = now;
+        target = now;
+        day = Math.floorDiv(now, DAY);
+        pace = 1;
+        after = null;
+        speed(level);
+    }
+
+    public static void caravan(ServerLevel level, BlockPos camp) {
+        caravan = camp.immutable();
+        rested.clear();
+    }
+
+    public static boolean rested(ServerPlayer player) {
+        return rested.contains(player.getUUID());
+    }
+
+    public static boolean afternoon(ServerLevel level) {
+        return mode == Mode.EASE && caravan != null && Math.floorMod(level.getDayTime(), DAY) < ticks(Balance.INSTANCE.clock().runFrom());
+    }
+
+    public static boolean nightfall() {
+        return mode == Mode.EVENING;
+    }
+
+    public static boolean passed() {
+        return mode != Mode.PASS;
+    }
+
+    public static boolean evening(ServerLevel level) {
+        return mode == Mode.EVENING && level.getDayTime() >= target;
+    }
+
+    public static long next(long now, String hour) {
+        long at = Math.floorDiv(now, DAY) * DAY + ticks(hour);
+        return at <= now ? at + DAY : at;
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onServerStarted(ServerStartedEvent event) {
+        mode = Mode.OFF;
+        caravan = null;
+        rested.clear();
+        ServerLevel level = event.getServer().overworld();
+        if (storied(event.getServer())) {
+            road(level);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerTick(ServerTickEvent.Post event) {
+        MinecraftServer server = event.getServer();
+        ServerLevel level = server.overworld();
+        if (!storied(server)) {
+            if (mode != Mode.OFF) {
+                mode = Mode.OFF;
+                level.setDayTimePerTick(VANILLA);
+            }
+            return;
+        }
+        long now = level.getDayTime();
+        if (mode == Mode.OFF || Math.floorDiv(now, DAY) > day && mode != Mode.PASS) {
+            road(level);
+            return;
+        }
+        if (mode == Mode.PASS && now >= target) {
+            arrive(level, now, after);
+            return;
+        }
+        if (server.getTickCount() % CHECK_TICKS != 0) {
+            return;
+        }
+        if (mode == Mode.EASE && caravan != null) {
+            evening(server, level, now);
+        }
+        speed(level);
+    }
+
+    private static void evening(MinecraftServer server, ServerLevel level, long now) {
+        Balance.Clock clock = Balance.INSTANCE.clock();
+        List<ServerPlayer> players = server.getPlayerList().getPlayers().stream().filter(player -> !player.isSpectator()).toList();
+        if (players.isEmpty()) {
+            return;
+        }
+        int share = Balance.INSTANCE.sleep().playersPercentage();
+        if (Math.floorMod(now, DAY) >= ticks(clock.runFrom())) {
+            int reach = clock.caravanBlocks();
+            long near = players.stream().filter(player -> near(player, level, reach)).count();
+            if (near * 100 >= (long) players.size() * share) {
+                begin(level, now, clock.duskRunSeconds());
+            }
+            return;
+        }
+        long sat = players.stream().filter(player -> rested.contains(player.getUUID())).count();
+        if (sat * 100 >= (long) players.size() * share) {
+            begin(level, now, clock.afternoonSeconds());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRest(RestEvent event) {
+        if (mode == Mode.EASE && caravan != null && event.fire().closerThan(caravan, Balance.INSTANCE.fire().restBlocks())) {
+            rested.add(event.player().getUUID());
+        }
+    }
+
+    private static boolean near(ServerPlayer player, ServerLevel level, int blocks) {
+        return player.level() == level && player.distanceToSqr(caravan.getX() + 0.5, player.getY(), caravan.getZ() + 0.5) <= (double) blocks * blocks;
+    }
+
+    private static void begin(ServerLevel level, long now, int seconds) {
+        mode = Mode.EVENING;
+        from = now;
+        target = Math.floorDiv(now, DAY) * DAY + ticks(Balance.INSTANCE.clock().evening());
+        long out = monsterHour(level, now, target);
+        long gap = target - from;
+        pace = out <= now ? 1 : gap / (double) (TICKS_PER_SECOND * seconds) * Math.log(gap / (double) (target - out));
+        caravan = null;
+        rested.clear();
+        speed(level);
+    }
+
+    private static long monsterHour(ServerLevel level, long now, long until) {
+        if (level.isThundering()) {
+            return now;
+        }
+        int light = level.dimensionType().monsterSpawnLightTest().getMaxValue();
+        for (long time = now; time < until; time++) {
+            if (OPEN_SKY - darken(level, time) <= light) {
+                return time;
+            }
+        }
+        return until;
+    }
+
+    private static int darken(ServerLevel level, long time) {
+        double rain = 1.0 - level.getRainLevel(1.0F) * 5.0F / 16.0;
+        double thunder = 1.0 - level.getThunderLevel(1.0F) * 5.0F / 16.0;
+        double sun = 0.5 + 2.0 * Mth.clamp(Mth.cos(level.dimensionType().timeOfDay(time) * (float) (Math.PI * 2)), -0.25, 0.25);
+        return (int) ((1.0 - sun * rain * thunder) * 11.0);
+    }
+
+    private static void speed(ServerLevel level) {
+        level.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(true, level.getServer());
+        if (mode == Mode.PASS) {
+            level.setDayTimePerTick((float) pace);
+            return;
+        }
+        long left = target - level.getDayTime();
+        float speed = left <= 0 || target == from ? HOLD : (float) Math.max(HOLD, pace * left / (target - from));
+        level.setDayTimePerTick(speed);
+    }
+
+    public static long ticks(String clock) {
+        String[] parts = clock.split(":");
+        int hour = Integer.parseInt(parts[0]);
+        int minute = Integer.parseInt(parts[1]);
+        return Math.floorMod(hour - MORNING_HOUR, 24) * HOUR + minute * HOUR / 60;
+    }
+}

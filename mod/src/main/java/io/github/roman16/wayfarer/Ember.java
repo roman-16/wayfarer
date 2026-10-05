@@ -4,7 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.MinecraftServer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
@@ -20,15 +20,15 @@ public final class Ember {
                         .requires(source -> source.hasPermission(GAMEMASTER))
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes(context -> {
-                                    wake(EntityArgument.getPlayer(context, "player"));
+                                    wake(EntityArgument.getPlayer(context, "player").server);
                                     return 1;
                                 }))));
     }
 
-    public static void wake(ServerPlayer player) {
-        if (Journey.of(player.server).wake()) {
+    public static void wake(MinecraftServer server) {
+        if (Journey.of(server).wake()) {
             Component message = Component.translatable("wayfarer.ember.awake").withStyle(ChatFormatting.GOLD);
-            player.server.getPlayerList().getPlayers().forEach(member -> member.sendSystemMessage(message));
+            server.getPlayerList().getPlayers().forEach(member -> member.sendSystemMessage(message));
         }
     }
 }

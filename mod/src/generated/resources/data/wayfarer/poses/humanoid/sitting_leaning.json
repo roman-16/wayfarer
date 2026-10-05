@@ -1,0 +1,82 @@
+{
+  "animations": {
+    "sitting_leaning": {
+      "bones": {
+        "Body": {
+          "position": [
+            0,
+            -10.5,
+            3
+          ],
+          "rotation": [
+            -20,
+            0,
+            0
+          ]
+        },
+        "Head": {
+          "position": [
+            0,
+            -10.5,
+            3
+          ],
+          "rotation": [
+            -8,
+            0,
+            0
+          ]
+        },
+        "LeftArm": {
+          "position": [
+            0,
+            -10.5,
+            3
+          ],
+          "rotation": [
+            24,
+            0,
+            -12
+          ]
+        },
+        "LeftLeg": {
+          "position": [
+            0,
+            -10,
+            0
+          ],
+          "rotation": [
+            -90,
+            -10,
+            0
+          ]
+        },
+        "RightArm": {
+          "position": [
+            0,
+            -10.5,
+            3
+          ],
+          "rotation": [
+            24,
+            0,
+            12
+          ]
+        },
+        "RightLeg": {
+          "position": [
+            0,
+            -10,
+            0
+          ],
+          "rotation": [
+            -90,
+            15,
+            0
+          ]
+        }
+      },
+      "loop": "hold_on_last_frame"
+    }
+  },
+  "format_version": "1.8.0"
+}

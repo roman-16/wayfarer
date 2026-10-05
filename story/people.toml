@@ -1,14 +1,17 @@
 [agna]
 color = "green"
 name = "Agna"
+remarks = ["Eat something. You look like a ghost.", "If it hurts, show me. If it doesn't, walk."]
 
 [hob]
 color = "red"
 name = "Hob"
+remarks = ["Bring me that blade when it's dull.", "Don't mind me. I think better with a hammer in my hand."]
 
 [pip]
 color = "yellow"
 name = "Pip"
+remarks = ["Where are we going tomorrow?", "I practised walking quiet. Like you."]
 
 [stranger]
 color = "gold"
@@ -17,3 +20,4 @@ name = "The stranger"
 [tamsin]
 color = "aqua"
 name = "Tamsin"
+remarks = ["We follow your marks. Don't make me regret it.", "The bell's still with us. So are we."]

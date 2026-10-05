@@ -103,3 +103,65 @@ s = "#3a2e24"
 t = "#2a221c"
 
 [tollbridge_bell.variants.tollbridge_bell]
+
+[wayfarer_sign]
+folder = "block"
+rows = [
+  "................",
+  "................",
+  ".......ld.......",
+  ".......ld.......",
+  ".....llllld.....",
+  "....lddlddld....",
+  "...ldd.ld..ld...",
+  "...ld..ld..ld...",
+  "...ld..ld..ld...",
+  "...ld..ld..ld...",
+  "...ld..ld..ld...",
+  "....ld.ld.ldd...",
+  ".....llllldd....",
+  "......dlddd.....",
+  ".......ld.......",
+  "........d.......",
+]
+
+[wayfarer_sign.colors]
+d = "#3a3632"
+l = "#b9b2a6"
+
+[wayfarer_sign.variants.wayfarer_sign]
+
+[cold_ember]
+rows = [
+  "................",
+  "................",
+  "......ooo.......",
+  ".....okHHo......",
+  "....okHhkko.....",
+  "...okhkkkkko....",
+  "...okkkkkaako...",
+  "..oLLLLLLLLLso..",
+  "..oLMMMMMMMMDo..",
+  "..oLMMlMMMMMDo..",
+  "..oMMMMMMmMMDo..",
+  "..oMMMMMMMMDDo..",
+  "..oMDDDDDDDDDo..",
+  "...oooooooooo...",
+  "................",
+  "................",
+]
+
+[cold_ember.colors]
+D = "#6c6c6c"
+H = "#555555"
+L = "#cfcfcf"
+M = "#a2a2a2"
+a = "#8a8580"
+h = "#383838"
+k = "#222222"
+l = "#bdbdbd"
+m = "#8a8a8a"
+o = "#2b2b2b"
+s = "#7a7a7a"
+
+[cold_ember.variants.cold_ember]

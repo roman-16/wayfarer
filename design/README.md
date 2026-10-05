@@ -4,7 +4,7 @@ What Wayfarer is becoming, decided here before anything is built. Each document 
 
 ## Now
 
-**Phase 4, Vertical slice.** Act 1 playable end to end, every new system at its minimum, built from `story.md` and `systems.md`. The slice is planned quest by quest in `slice.md`. Step 1, the world, is built and waits for Roman's walk through it; M26 (how often the other owners' places stand) is open in `systems.md`. Step 2, the prologue, is designed (`story.md`, S23), its texts written and its looks made. Next: **building step 2**, once Roman's verdict on step 1 is in.
+**Phase 4, Vertical slice.** Act 1 playable end to end, every new system at its minimum, built from `story.md` and `systems.md`. The slice is planned quest by quest in `slice.md`. Step 1, the world, is built and waits for the user's walk through it; M26 (how often the other owners' places stand) is open in `systems.md`. Step 2, the prologue (`story.md`, S23), is built; the user's first play on a server stalled at the first evening and crashed at dusk, and those findings are fixed, with M30 to M33 (the rest of the HUD, the journal screen, conversations, room for the team's tents at the caravan's fire) and M17 (SeedGen on a server) open in `systems.md`. Step 3, 1.1 The Pull and the caravan's day, is designed (S24) with its lore facts and its looks; its texts are written with its build. Next: **the user plays steps 1 and 2 again**, and meanwhile step 3's build.
 
 ## Phases
 
@@ -13,7 +13,7 @@ What Wayfarer is becoming, decided here before anything is built. Each document 
 | 1 Vision | `vision.md`: pillars, the player's fantasy, the loops, the twist, the ending, scope, references, what is out | Two sentences say what the game is and what the player does each hour |
 | 2 Story and world | `story.md`, and `lore.md` rewritten from it: acts, beats, characters, factions, regions, every main and side quest with its place, verb, gate and turn | Every main and side quest has a place, a verb and a turn |
 | 3 Systems | `systems.md`: progression and gates, the quest log, road encounters, dialogue, the voice on the road, a verdict on every vanilla system and every Wayfarer mechanic, and a spike proving each new system can be built | Every mechanic has a reason in the lore and a spike that works |
-| 4 Vertical slice | Act 1 playable end to end, every new system at its minimum | Roman played it and it was not boring |
+| 4 Vertical slice | Act 1 playable end to end, every new system at its minimum | The user played it and it was not boring |
 | 5 Production | The other acts, one at a time: detail, build, playtest | Every act is in |
 | 6 Polish | Balance, and the narration (`narration.md`) and the music and sound (`sound.md`) once the story is final | |
 

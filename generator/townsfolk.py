@@ -46,6 +46,17 @@ WOUNDS = [
     ["clcc", "lxXc", "Xxlc", "cXcc"],
     ["ccOc", "clxl", "cXxc", "clXc"],
 ]
+SOOT = ["#2a2420", "#342c26", "#3e352d"]
+MUD = ["#4a3c2c", "#56463a", "#625040"]
+CHAR = "#1a1410"
+STAINS = [
+    ["zz.", ".zz"],
+    ["z.z", "zzz", ".z."],
+    ["zz", "zz", ".z"],
+    ["z..", "zz.", ".zz"],
+    [".z", "zz", "z."],
+]
+RAISED = {"arm": "ODRqr", "body": "ADORaklpry", "head": "Hgh", "leg": "BbDq"}
 KINDS = ["man"] * 10 + ["woman"] * 10 + ["old_man"] * 4 + ["old_woman"] * 4 + ["boy"] * 2 + ["girl"] * 2
 CHILD = 0.75
 
@@ -130,6 +141,77 @@ def dress(wound, apron, shawl, ring):
     return spec
 
 
+def chance(seed, share):
+    return noise(seed) < share
+
+
+def paint(rows, x, y, letter, cloth):
+    if 0 <= y < len(rows) and 0 <= x < len(rows[y]) and rows[y][x] in cloth:
+        rows[y] = rows[y][:x] + letter + rows[y][x + 1 :]
+
+
+def ragged(rows, bottom, deepest, letter, cloth, seed):
+    for x in range(len(rows[0])):
+        for y in range(bottom, bottom - 1 - int(noise(f"{seed}/{x}") * deepest), -1):
+            paint(rows, x, y, letter, cloth)
+
+
+def side(spec, part, limb):
+    for key in [key for key in spec if key == limb or key.startswith(limb + "_")]:
+        spec[part + key.removeprefix(limb)] = list(spec[key])
+    return [key for key in spec if key == part or key.startswith(part + "_")]
+
+
+def wear(spec, seed, cloth, dress):
+    hand = pick(f"{seed}/hand", ["right", "left"])
+    other = "left" if hand == "right" else "right"
+    hem = 10 if dress else 8
+    if chance(f"{seed}/hem", 0.5):
+        for key in [key for key in spec if key == "leg" or key.startswith("leg_")]:
+            spec[key] = list(spec[key])
+            ragged(spec[key], hem, 3, "q" if dress else "z", cloth, f"{seed}/hem/{key}")
+    if chance(f"{seed}/mud", 0.5):
+        for key in [key for key in spec if key == "leg" or key.startswith("leg_")]:
+            spec[key] = list(spec[key])
+            ragged(spec[key], hem - 1, 2, "w", cloth, f"{seed}/mud/{key}")
+    if chance(f"{seed}/sleeve", 0.4):
+        for key in side(spec, f"{hand}_arm", "arm"):
+            ragged(spec[key], 10, 4, "s", cloth, f"{seed}/sleeve/{key}")
+    elif chance(f"{seed}/cuff", 0.5):
+        for key in side(spec, f"{hand}_arm", "arm"):
+            ragged(spec[key], 10, 2, "q", cloth, f"{seed}/cuff/{key}")
+    if chance(f"{seed}/rip", 0.35):
+        for key in side(spec, f"{other}_leg", "leg"):
+            column = 1 + int(noise(f"{seed}/rip/x") * 2)
+            for y in range(2, 5):
+                paint(spec[key], column, y, "s", cloth)
+    if chance(f"{seed}/barefoot", 0.15):
+        for key in side(spec, f"{other}_leg", "leg"):
+            spec[key] = [row.replace("B", "s").replace("b", "s") for row in spec[key]]
+    targets = ["body_back", "body_front", f"{hand}_leg", f"{other}_arm", "body_side"]
+    for stain in range(1 + int(noise(f"{seed}/stains") * 3)):
+        target = pick(f"{seed}/stain/{stain}/at", targets)
+        base = target.split("_", 1)[1] if target.split("_", 1)[0] in ("left", "right") else None
+        keys = side(spec, target, base) if base and target not in spec else [target] if target in spec else []
+        for key in keys[:1]:
+            rows = list(spec[key])
+            shape = pick(f"{seed}/stain/{stain}/shape", STAINS)
+            x0 = int(noise(f"{seed}/stain/{stain}/x") * max(1, len(rows[0]) - len(shape[0]) + 1))
+            y0 = int(noise(f"{seed}/stain/{stain}/y") * max(1, len(rows) - len(shape) - 1))
+            for dy, line in enumerate(shape):
+                for dx, mark in enumerate(line):
+                    wound = key == "body_front" and 4 <= x0 + dx <= 7 and 2 <= y0 + dy <= 5
+                    if mark == "z" and not wound:
+                        paint(rows, x0 + dx, y0 + dy, "z", cloth)
+            spec[key] = rows
+    if chance(f"{seed}/bleed", 0.4):
+        rows = list(spec["body_front"])
+        column = 5 + int(noise(f"{seed}/bleed/x") * 2)
+        for y in range(6, 8 + int(noise(f"{seed}/bleed/y") * 2)):
+            paint(rows, column, y, "x", cloth | {"k", "y"})
+        spec["body_front"] = rows
+
+
 def person(index, kind):
     seed = f"townsfolk/{index}"
     tone, shadow = pick(f"{seed}/tone", TONES)
@@ -179,10 +261,13 @@ def person(index, kind):
             palette |= {"R": darker(shawl[0]), "r": shawl}
     else:
         palette |= {"O": darker(cloth[0]), "o": cloth, "t": trousers}
+    wear(spec, seed, {"d", "D", "a", "A", "r", "R"} if woman else {"o", "O", "t"}, woman)
+    palette |= {"q": CHAR, "w": MUD, "z": SOOT}
     used = {letter for key, rows in spec.items() for row in rows for letter in row} - {"."}
     child = kind in ("boy", "girl")
     return spec | {
         "model": "humanoid_slim" if woman else "humanoid",
+        "raised": RAISED,
         "palette": {letter: palette[letter] for letter in sorted(used)},
         "scale": CHILD if child else 1.0,
     }

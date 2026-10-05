@@ -1,0 +1,82 @@
+{
+  "animations": {
+    "fallen_slumped": {
+      "bones": {
+        "Body": {
+          "position": [
+            0,
+            -10.5,
+            -1
+          ],
+          "rotation": [
+            8,
+            0,
+            12
+          ]
+        },
+        "Head": {
+          "position": [
+            0,
+            -10.5,
+            -1
+          ],
+          "rotation": [
+            32,
+            0,
+            28
+          ]
+        },
+        "LeftArm": {
+          "position": [
+            0,
+            -10.5,
+            -1
+          ],
+          "rotation": [
+            -12,
+            0,
+            -16
+          ]
+        },
+        "LeftLeg": {
+          "position": [
+            0,
+            -10,
+            0
+          ],
+          "rotation": [
+            -90,
+            -10,
+            0
+          ]
+        },
+        "RightArm": {
+          "position": [
+            0,
+            -10.5,
+            -1
+          ],
+          "rotation": [
+            -8,
+            0,
+            20
+          ]
+        },
+        "RightLeg": {
+          "position": [
+            0,
+            -10,
+            0
+          ],
+          "rotation": [
+            -90,
+            15,
+            0
+          ]
+        }
+      },
+      "loop": "hold_on_last_frame"
+    }
+  },
+  "format_version": "1.8.0"
+}

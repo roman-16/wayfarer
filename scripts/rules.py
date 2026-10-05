@@ -14,6 +14,8 @@ PAGE_LIMIT = 256
 TITLE_LIMIT = 17
 SUBTITLE_LIMIT = 35
 SIDES = {"both", "client"}
+SIGN_LINES = 4
+SIGN_WIDTH = 15
 TRANSLATION = re.compile(r'"(wayfarer\.[a-z_.]+[a-z_])"')
 
 
@@ -97,8 +99,67 @@ def books():
         yield f"story/books.toml has {len(story['memories'])} memories for {len(eyes['eyes'])} shards"
 
 
+KINDS = {"bury", "camp", "caravan", "clues", "dawn", "dusk", "hold", "reach", "rest", "sleep", "talk", "walk"}
+PLACES = {"bell", "caravan", "cellar", "last_camp", "tollbridge"}
+TASKS = {"bed", "bury", "ember", "enter", "fire", "map", "pack", "rest", "stone", "tent"}
+
+
+def story():
+    quests = tomllib.loads((ROOT / "story/quests.toml").read_text())["quests"]
+    people = set(tomllib.loads((ROOT / "story/people.toml").read_text()))
+    lang = json.loads((MOD / "main/resources/assets/wayfarer/lang/en_us.json").read_text())
+    ids = [quest["id"] for quest in quests]
+    for quest in quests:
+        for after in quest.get("after", []):
+            if after not in ids:
+                yield f"story/quests.toml: {quest['id']} comes after {after}, which is not a quest"
+        for step in quest["steps"]:
+            where = f"story/quests.toml: {quest['id']}/{step['id']}"
+            if step["kind"] not in KINDS:
+                yield f"{where} is a {step['kind']} step; the engine knows {', '.join(sorted(KINDS))}"
+            named = [line["by"] for line in step.get("lines", []) + step.get("done", []) if "by" in line]
+            named += [step[key] for key in ("whom", "with") if key in step]
+            named += (
+                list(step.get("people", {}))
+                + list(step.get("poses", {}))
+                + list(step.get("moves", {}))
+                + list(step.get("remarks", {}))
+                + step.get("keep", [])
+            )
+            for person in named:
+                if person not in people:
+                    yield f"{where} names {person}, who is not in story/people.toml"
+            for word in step.get("words", {}):
+                if f"wayfarer.word.{word}" not in lang:
+                    yield f"{where} teaches the word {word}; add wayfarer.word.{word} to the language file"
+            places = [step[key] for key in ("from", "place", "at") if key in step]
+            places += [move["place"] for move in step.get("moves", {}).values()]
+            for place in places:
+                if place not in PLACES:
+                    yield f"{where} names the place {place}; the story builds {', '.join(sorted(PLACES))}"
+            for task in step.get("tasks", []):
+                if task not in TASKS:
+                    yield f"{where} names the task {task}; the panel knows {', '.join(sorted(TASKS))}"
+                elif f"wayfarer.task.{task}" not in lang:
+                    yield f"{where} names the task {task}; add wayfarer.task.{task} to the language file"
+            if step["kind"] == "clues" and step["needed"] > len(step.get("clues", [])):
+                yield f"{where} needs {step['needed']} clues but has {len(step.get('clues', []))}"
+
+
+def states():
+    recipe = tomllib.loads((ROOT / "story/states.toml").read_text())
+    lines = []
+    for word in recipe["stone"].split():
+        if lines and len(lines[-1]) + 1 + len(word) <= SIGN_WIDTH:
+            lines[-1] += " " + word
+        else:
+            lines.append(word)
+    if len(lines) > SIGN_LINES or any(len(line) > SIGN_WIDTH for line in lines):
+        yield f"story/states.toml: the stone's words take {len(lines)} lines; a sign holds {SIGN_LINES} of {SIGN_WIDTH} letters"
+
+
 def main():
-    findings = [*sides(), *eyes(), *translations(), *titles(), *recipes(), *books()]
+    findings = [*sides(), *eyes(), *translations(), *titles(), *recipes(), *books(), *story(), *states()]
     for finding in findings:
         print(finding)
     if findings:

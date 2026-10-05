@@ -14,12 +14,14 @@
     "CarvedPumpkinBlockMixin",
     "ChunkGeneratorMixin",
     "ChunkGeneratorStructureStateMixin",
+    "FireBlockMixin",
     "ImprovedMobsPathContextMixin",
     "OreFeatureMixin",
     "PlacedFeatureMixin",
     "PlayerMixin",
     "SinglePoolElementMixin",
-    "TemplateStructurePieceMixin"
+    "TemplateStructurePieceMixin",
+    "ToughAsNailsTargetMixin"
   ],
   "package": "io.github.roman16.wayfarer.mixin",
   "required": true

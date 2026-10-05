@@ -72,6 +72,20 @@ public final class Tents {
         }
     }
 
+    public static boolean pitchedNear(ServerLevel level, BlockPos fire, int blocks) {
+        for (int x = (fire.getX() - blocks) >> 4; x <= (fire.getX() + blocks) >> 4; x++) {
+            for (int z = (fire.getZ() - blocks) >> 4; z <= (fire.getZ() + blocks) >> 4; z++) {
+                LevelChunk chunk = level.getChunkSource().getChunkNow(x, z);
+                if (chunk != null && chunk.getBlockEntities().values().stream()
+                        .anyMatch(entity -> BuiltInRegistries.BLOCK_ENTITY_TYPE.getKey(entity.getType()).getNamespace().equals(NAMESPACE)
+                                && entity.getBlockPos().closerThan(fire, blocks + 1))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static void eject(ServerPlayer player) {
         ServerLevel tent = player.serverLevel();
         Optional<CompoundTag> door = doors(tent, player.chunkPosition())

@@ -22,6 +22,7 @@ def boxes(arm):
     }
 
 
+FACES = ("back", "bottom", "front", "left", "right", "side", "top")
 GRIDS = {
     "head": "head",
     "hat": "hat",
@@ -80,14 +81,45 @@ def shade(name, letter, value, x, y):
     return rgba(dark if noise < DARK else light if noise > LIGHT else mid)
 
 
+LAYERS = {
+    "arm": "sleeve",
+    "body": "jacket",
+    "head": "hat",
+    "leg": "pants",
+    "left_arm": "left_sleeve",
+    "left_leg": "left_pants",
+    "right_arm": "right_sleeve",
+    "right_leg": "right_pants",
+}
+
+
+def keys(spec, name):
+    return [key for key in spec if key == name or key.startswith(name + "_") and key.removeprefix(name + "_") in FACES]
+
+
+def lifted(spec):
+    raised = spec.get("raised", {})
+    outer = dict(spec)
+    for inner, layer in LAYERS.items():
+        letters = raised.get(inner.removeprefix("left_").removeprefix("right_"), "")
+        if not letters or keys(spec, layer):
+            continue
+        for key in keys(spec, inner):
+            outer[layer + key.removeprefix(inner)] = [
+                "".join(c if c in letters else "." for c in row) for row in spec[key]
+            ]
+    return outer
+
+
 def skin(name, spec):
+    spec = lifted(spec)
     arm = 3 if spec["model"] == "humanoid_slim" else 4
     palette = spec["palette"]
     pixels = [[(0, 0, 0, 0)] * SIZE for _ in range(SIZE)]
     for part, (u, v, w, h, d) in boxes(arm).items():
         for face, (x0, y0, fw, fh) in faces(u, v, w, h, d).items():
             kind = GRIDS[part]
-            rows = grid(spec, kind, face)
+            rows = grid(spec, part, face) or grid(spec, kind, face)
             if rows is None and face in ("top", "bottom"):
                 rows = edge(spec, kind, face, fw, fh)
             if rows is None:

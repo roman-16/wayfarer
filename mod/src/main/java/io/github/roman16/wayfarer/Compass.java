@@ -39,7 +39,7 @@ public final class Compass {
     private Compass() {}
 
     public record Aim(ResourceLocation target, BlockPos pos) {
-        static final Aim NONE = new Aim(CompassPayload.NOTHING, null);
+        public static final Aim NONE = new Aim(CompassPayload.NOTHING, null);
     }
 
     private static final class Bearing {
@@ -93,7 +93,7 @@ public final class Compass {
         CompassPayload.Shelter shelter = shelter(player);
         boolean sight = claimed.size() >= Balance.INSTANCE.sight().shards() && !Journey.slain(player.server);
         if (!event.awake()) {
-            return still(CompassPayload.Mode.ASLEEP, claimed, markers, shelter, sight);
+            return CompassPayload.hidden(claimed);
         }
         if (Gaze.airborne(player)) {
             return still(CompassPayload.Mode.AIR, claimed, markers, shelter, sight);

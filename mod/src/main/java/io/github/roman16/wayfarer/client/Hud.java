@@ -1,11 +1,11 @@
 package io.github.roman16.wayfarer.client;
 
-import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Compass;
 import io.github.roman16.wayfarer.CompassPayload;
 import io.github.roman16.wayfarer.GazePayload;
 import io.github.roman16.wayfarer.HudState;
 import io.github.roman16.wayfarer.NightPayload;
+import io.github.roman16.wayfarer.story.Tasks;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +15,11 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 
 public final class Hud {
@@ -48,6 +50,16 @@ public final class Hud {
     private static final int LINE = 12;
     private static final int TOP = 4;
     private static final int EDGE = 4;
+    private static final int EFFECT_ROW = 26;
+    private static final int PANEL_WIDTH = 168;
+    private static final int PANEL_PAD = 4;
+    private static final int PANEL_LINE = 10;
+    private static final int HEADING_COLOR = 0xFFD27A;
+    private static final int TEXT_COLOR = 0xFFFFFF;
+    private static final int TASK_COLOR = 0xD0D0D0;
+    private static final int DONE_COLOR = 0x80E080;
+    private static final String OPEN_BOX = "☐ ";
+    private static final String DONE_BOX = "☑ ";
 
     private Hud() {}
 
@@ -60,28 +72,82 @@ public final class Hud {
         Font font = minecraft.font;
         CompassPayload reading = HudState.compass;
         int y = TOP;
+        int half = 0;
         if (reading.mode() != CompassPayload.Mode.HIDDEN) {
             ribbon(graphics, font, reading, player, y);
+            half = HALF_WIDTH + EDGE;
             y += RIBBON_HEIGHT + POINTER;
-            line(graphics, font, caption(reading).append(night(HudState.night)), y);
+            half = Math.max(half, line(graphics, font, caption(reading).append(night(HudState.night)), y));
             y += LINE;
             Component shelter = shelter(reading.shelter());
             if (shelter != null) {
-                line(graphics, font, shelter, y);
+                half = Math.max(half, line(graphics, font, shelter, y));
                 y += LINE;
             }
             for (Component lead : leads(reading, player)) {
-                line(graphics, font, lead, y);
+                half = Math.max(half, line(graphics, font, lead, y));
                 y += LINE;
             }
         } else if (HudState.night.hard()) {
-            line(graphics, font, night(HudState.night), y);
+            half = line(graphics, font, night(HudState.night), y);
             y += LINE;
         }
         Component gaze = gaze(HudState.gaze);
         if (gaze != null) {
-            line(graphics, font, gaze, y);
+            half = Math.max(half, line(graphics, font, gaze, y));
+            y += LINE;
         }
+        if (!minecraft.getDebugOverlay().showDebugScreen() && (minecraft.screen == null || minecraft.screen instanceof ChatScreen)) {
+            int left = graphics.guiWidth() - EDGE - PANEL_WIDTH;
+            int below = half > 0 && left < graphics.guiWidth() / 2 + half ? y : TOP;
+            panel(graphics, font, HudState.panel, Math.max(below, TOP + effectRows(player) * EFFECT_ROW));
+        }
+    }
+
+    private static void panel(GuiGraphics graphics, Font font, Tasks.Panel panel, int top) {
+        List<Row> rows = new ArrayList<>();
+        int width = PANEL_WIDTH - PANEL_PAD * 2;
+        rows(rows, font, panel.heading(), width, HEADING_COLOR);
+        rows(rows, font, panel.objective(), width, TEXT_COLOR);
+        for (Component task : panel.open()) {
+            task(rows, font, OPEN_BOX, task, width, TASK_COLOR);
+        }
+        for (Component task : panel.done()) {
+            task(rows, font, DONE_BOX, task, width, DONE_COLOR);
+        }
+        if (rows.isEmpty()) {
+            return;
+        }
+        int right = graphics.guiWidth() - EDGE;
+        int left = right - PANEL_WIDTH;
+        graphics.fill(left, top, right, top + rows.size() * PANEL_LINE + PANEL_PAD * 2, BACKGROUND);
+        int y = top + PANEL_PAD;
+        for (Row row : rows) {
+            graphics.drawString(font, row.text(), left + PANEL_PAD + row.indent(), y, row.color());
+            y += PANEL_LINE;
+        }
+    }
+
+    private record Row(FormattedCharSequence text, int indent, int color) {}
+
+    private static void rows(List<Row> rows, Font font, Component text, int width, int color) {
+        if (text.getString().isEmpty()) {
+            return;
+        }
+        font.split(text, width).forEach(line -> rows.add(new Row(line, 0, color)));
+    }
+
+    private static void task(List<Row> rows, Font font, String box, Component text, int width, int color) {
+        int indent = font.width(box);
+        List<FormattedCharSequence> lines = font.split(text, width - indent);
+        rows.add(new Row(FormattedCharSequence.composite(Component.literal(box).getVisualOrderText(), lines.getFirst()), 0, color));
+        lines.stream().skip(1).forEach(line -> rows.add(new Row(line, indent, color)));
+    }
+
+    private static int effectRows(LocalPlayer player) {
+        boolean good = player.getActiveEffects().stream().anyMatch(effect -> effect.showIcon() && effect.getEffect().value().isBeneficial());
+        boolean bad = player.getActiveEffects().stream().anyMatch(effect -> effect.showIcon() && !effect.getEffect().value().isBeneficial());
+        return bad ? 2 : good ? 1 : 0;
     }
 
     private static void ribbon(GuiGraphics graphics, Font font, CompassPayload reading, LocalPlayer player, int y) {
@@ -144,13 +210,12 @@ public final class Hud {
     }
 
     private static List<Component> leads(CompassPayload reading, LocalPlayer player) {
-        int exact = Balance.INSTANCE.compass().exactBlocks();
         List<Component> lines = new ArrayList<>();
         for (CompassPayload.Marker marker : reading.markers()) {
             int distance = (int) Math.hypot(marker.x() + 0.5 - player.getX(), marker.z() + 0.5 - player.getZ());
-            if (marker.kind() == CompassPayload.Kind.LEAD && distance <= exact) {
+            if (marker.kind() == CompassPayload.Kind.LEAD) {
                 lines.add(Component.literal(LEAD_MARK + " ").withStyle(style -> style.withColor(LEAD_COLOR))
-                        .append(Component.literal(marker.name()).withStyle(ChatFormatting.WHITE))
+                        .append(Component.translatable(marker.name()).withStyle(ChatFormatting.WHITE))
                         .append(separator())
                         .append(Component.translatable("wayfarer.compass.exact", blocks(distance))));
             }
@@ -161,7 +226,6 @@ public final class Hud {
     private static MutableComponent caption(CompassPayload reading) {
         return switch (reading.mode()) {
             case AIR -> Component.translatable("wayfarer.compass.air").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
-            case ASLEEP -> Component.translatable("wayfarer.compass.asleep").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
             case DIM -> Component.translatable("wayfarer.compass.dim").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
             case LOST, HIDDEN -> Component.translatable("wayfarer.compass.lost").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
             case FAR -> target(reading)
@@ -209,11 +273,12 @@ public final class Hud {
         return icons;
     }
 
-    private static void line(GuiGraphics graphics, Font font, Component text, int y) {
+    private static int line(GuiGraphics graphics, Font font, Component text, int y) {
         int center = graphics.guiWidth() / 2;
         int half = font.width(text) / 2 + 4;
         graphics.fill(center - half, y - 2, center + half, y + font.lineHeight + 1, BACKGROUND);
         graphics.drawCenteredString(font, text, center, y, 0xFFFFFF);
+        return half;
     }
 
     private static Component separator() {

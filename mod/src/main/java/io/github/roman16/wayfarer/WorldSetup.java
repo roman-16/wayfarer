@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Prologue;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -58,6 +59,6 @@ public final class WorldSetup {
     }
 
     private static void placeLastCamp(ServerLevel level) {
-        Camps.place(level, Wayfarer.id("last_camp"), level.getSharedSpawnPos());
+        Prologue.lastCamp(level, Camps.place(level, Wayfarer.id("last_camp"), level.getSharedSpawnPos()));
     }
 }

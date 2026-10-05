@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Talk;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -39,18 +41,14 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 public final class Fire {
     private static final int SCAN_TICKS = 10;
     private static final int REST_CHECK_TICKS = 20;
-    private static final int TICKS_PER_SECOND = 20;
     private static final int FLEE_MARGIN = 6;
     private static final double FLEE_SPEED = 1.2;
-    private static final double STILL_BLOCKS = 0.2;
     private static final long TICKS_PER_DAY = 24000;
     private static final long DUSK = 12000;
     private static final Map<UUID, BlockPos> SHELTERED = new HashMap<>();
-    private static final Map<UUID, Rest> RESTS = new HashMap<>();
+    private static final Set<UUID> RESTING = new HashSet<>();
     private static final ResourceLocation WARMED = Wayfarer.id("warm");
     private static final String RESTED = "rested";
-
-    private record Rest(Vec3 at, int seconds) {}
 
     private Fire() {}
 
@@ -163,31 +161,27 @@ public final class Fire {
         if (!(event.getEntity() instanceof ServerPlayer player) || player.tickCount % REST_CHECK_TICKS != 0) {
             return;
         }
-        Balance.Fire balance = Balance.INSTANCE.fire();
         Optional<BlockPos> fire = Tents.isTent(player.level().dimension()) || Gaze.airborne(player) || player.isSpectator()
                 ? Optional.empty()
-                : nearest(player.serverLevel(), player.position(), balance.restBlocks());
-        Rest before = RESTS.get(player.getUUID());
+                : nearest(player.serverLevel(), player.position(), Balance.INSTANCE.fire().restBlocks());
         if (fire.isEmpty()) {
-            RESTS.remove(player.getUUID());
+            RESTING.remove(player.getUUID());
             return;
         }
-        boolean still = before != null && before.at().distanceTo(player.position()) < STILL_BLOCKS;
-        int seconds = still ? before.seconds() + REST_CHECK_TICKS / TICKS_PER_SECOND : 0;
-        RESTS.put(player.getUUID(), new Rest(still ? before.at() : player.position(), seconds));
-        if (seconds == balance.restSeconds()) {
-            rest(player, fire.get());
-        }
+        RESTING.add(player.getUUID());
+        rest(player, fire.get());
+    }
+
+    public static boolean resting(ServerPlayer player) {
+        return RESTING.contains(player.getUUID());
     }
 
     private static void rest(ServerPlayer player, BlockPos fire) {
-        boolean warm = player.hasEffect(Wayfarer.WARM);
-        if (!Journey.slain(player.server)) {
+        NeoForge.EVENT_BUS.post(new RestEvent(player, fire));
+        if (Journey.awake(player.server) && !Journey.slain(player.server) && !player.hasEffect(Wayfarer.WARM) && !Talk.busy()) {
             player.addEffect(new MobEffectInstance(Wayfarer.WARM, untilTomorrowsDusk(player.server.overworld().getDayTime()), 0, true, false, true));
-            if (!warm) {
-                player.displayClientMessage(Component.translatable("wayfarer.fire.warm").withStyle(ChatFormatting.GOLD), false);
-                Firsts.first(player, "warm");
-            }
+            player.displayClientMessage(Component.translatable("wayfarer.fire.warm").withStyle(ChatFormatting.GOLD), false);
+            Firsts.first(player, "warm");
             AdvancementHolder advancement = player.server.getAdvancements().get(WARMED);
             if (advancement != null) {
                 player.getAdvancements().award(advancement, RESTED);
@@ -198,6 +192,6 @@ public final class Fire {
     @SubscribeEvent
     public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         SHELTERED.remove(event.getEntity().getUUID());
-        RESTS.remove(event.getEntity().getUUID());
+        RESTING.remove(event.getEntity().getUUID());
     }
 }

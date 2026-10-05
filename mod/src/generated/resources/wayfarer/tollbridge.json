@@ -1,461 +1,782 @@
 {
-  "bell": {
-    "facing": "east",
-    "x": 64,
-    "z": 43
+  "dead": {
+    "doorway": "townsfolk_11",
+    "others": [
+      "townsfolk_01",
+      "townsfolk_03",
+      "townsfolk_04",
+      "townsfolk_05",
+      "townsfolk_06",
+      "townsfolk_07",
+      "townsfolk_08",
+      "townsfolk_09",
+      "townsfolk_10",
+      "townsfolk_12",
+      "townsfolk_13",
+      "townsfolk_14",
+      "townsfolk_15",
+      "townsfolk_16",
+      "townsfolk_17",
+      "townsfolk_18",
+      "townsfolk_19",
+      "townsfolk_20",
+      "townsfolk_21",
+      "townsfolk_22",
+      "townsfolk_23",
+      "townsfolk_24",
+      "townsfolk_25",
+      "townsfolk_26",
+      "townsfolk_27",
+      "townsfolk_28",
+      "townsfolk_29",
+      "townsfolk_30",
+      "townsfolk_31",
+      "townsfolk_32"
+    ],
+    "well": "townsfolk_02"
   },
-  "bridge": {
-    "piece": "bridge",
-    "x": 50,
-    "z": 89
+  "dead_poses": [
+    "fallen_back",
+    "fallen_back_knee",
+    "fallen_face",
+    "fallen_face_still",
+    "fallen_reaching",
+    "fallen_side",
+    "fallen_side_open",
+    "fallen_slumped",
+    "sleeping"
+  ],
+  "found_pose": "fallen_back",
+  "kinds": {
+    "barn": {
+      "pieces": [
+        "barn_1",
+        "barn_2",
+        "barn_3"
+      ],
+      "ring": "outer"
+    },
+    "cottage": {
+      "pieces": [
+        "cottage_1",
+        "cottage_2",
+        "cottage_3",
+        "cottage_4",
+        "cottage_5",
+        "cottage_6"
+      ],
+      "ring": "any"
+    },
+    "home": {
+      "pieces": [
+        "home_1",
+        "home_2",
+        "home_3",
+        "home_4",
+        "home_5",
+        "home_6",
+        "home_7",
+        "home_8",
+        "home_9",
+        "home_10",
+        "home_11",
+        "home_12"
+      ],
+      "ring": "any"
+    },
+    "shed": {
+      "pieces": [
+        "shed_1",
+        "shed_2",
+        "shed_3",
+        "shed_4"
+      ],
+      "ring": "outer"
+    },
+    "townhouse": {
+      "pieces": [
+        "townhouse_1",
+        "townhouse_2",
+        "townhouse_3",
+        "townhouse_4"
+      ],
+      "ring": "inner"
+    }
   },
-  "dead": [
-    {
-      "skin": "townsfolk_01",
-      "x": 55,
-      "yaw": 315,
-      "z": 12
-    },
-    {
-      "skin": "townsfolk_02",
-      "x": 27,
-      "yaw": 147,
-      "z": 6
-    },
-    {
-      "skin": "townsfolk_03",
-      "x": 27,
-      "yaw": 281,
-      "z": 69
-    },
-    {
-      "skin": "townsfolk_04",
-      "x": 27,
-      "yaw": 223,
-      "z": 88
-    },
-    {
-      "skin": "townsfolk_05",
-      "x": 77,
-      "yaw": 335,
-      "z": 4
-    },
-    {
-      "skin": "townsfolk_06",
-      "x": 77,
-      "yaw": 77,
-      "z": 14
-    },
-    {
-      "skin": "townsfolk_07",
-      "x": 77,
-      "yaw": 235,
-      "z": 45
-    },
-    {
-      "skin": "townsfolk_08",
-      "x": 81,
-      "yaw": 183,
-      "z": 19
-    },
-    {
-      "skin": "townsfolk_09",
-      "x": 91,
-      "yaw": 24,
-      "z": 77
-    },
-    {
-      "skin": "townsfolk_10",
-      "x": 7,
-      "yaw": 35,
-      "z": 81
-    },
-    {
-      "skin": "townsfolk_11",
-      "x": 41,
-      "yaw": 238,
-      "z": 81
-    },
-    {
-      "skin": "townsfolk_12",
-      "x": 51,
-      "yaw": 62,
-      "z": 86
-    },
-    {
-      "skin": "townsfolk_13",
-      "x": 97,
-      "yaw": 3,
-      "z": 50
-    },
-    {
-      "skin": "townsfolk_14",
-      "x": 42,
-      "yaw": 43,
-      "z": 25
-    },
-    {
-      "skin": "townsfolk_15",
-      "x": 98,
-      "yaw": 232,
-      "z": 80
-    },
-    {
-      "skin": "townsfolk_16",
-      "x": 80,
-      "yaw": 288,
-      "z": 75
-    },
-    {
-      "skin": "townsfolk_17",
-      "x": 95,
-      "yaw": 300,
-      "z": 24
-    },
-    {
-      "skin": "townsfolk_18",
-      "x": 65,
-      "yaw": 324,
-      "z": 52
-    },
-    {
-      "skin": "townsfolk_19",
-      "x": 37,
-      "yaw": 107,
-      "z": 78
-    },
-    {
-      "skin": "townsfolk_20",
-      "x": 53,
-      "yaw": 16,
-      "z": 64
-    },
-    {
-      "skin": "townsfolk_21",
-      "x": 78,
-      "yaw": 317,
-      "z": 27
-    },
-    {
-      "skin": "townsfolk_22",
-      "x": 82,
-      "yaw": 273,
-      "z": 80
-    },
-    {
-      "skin": "townsfolk_23",
-      "x": 54,
-      "yaw": 140,
-      "z": 28
-    },
-    {
-      "skin": "townsfolk_24",
-      "x": 76,
-      "yaw": 124,
-      "z": 51
-    },
-    {
-      "skin": "townsfolk_25",
-      "x": 24,
-      "yaw": 92,
-      "z": 77
-    },
-    {
-      "skin": "townsfolk_26",
-      "x": 51,
-      "yaw": 52,
-      "z": 6
-    },
-    {
-      "skin": "townsfolk_27",
-      "x": 55,
-      "yaw": 128,
-      "z": 79
-    },
-    {
-      "skin": "townsfolk_28",
-      "x": 80,
-      "yaw": 311,
-      "z": 8
-    },
-    {
-      "skin": "townsfolk_29",
-      "x": 50,
-      "yaw": 232,
-      "z": 16
-    },
-    {
-      "skin": "townsfolk_30",
-      "x": 1,
-      "yaw": 202,
-      "z": 80
-    },
-    {
-      "skin": "townsfolk_31",
-      "x": 1,
-      "yaw": 166,
-      "z": 51
-    },
-    {
-      "skin": "townsfolk_32",
-      "x": 88,
-      "yaw": 299,
-      "z": 51
-    }
+  "lots": [
+    "barn",
+    "cottage",
+    "cottage",
+    "cottage",
+    "home",
+    "home",
+    "home",
+    "home",
+    "home",
+    "home",
+    "shed",
+    "shed",
+    "townhouse",
+    "townhouse"
   ],
-  "pieces": [
-    {
-      "ground": 4,
-      "piece": "bell_tower",
-      "turns": 0,
-      "x": 55,
-      "z": 31
+  "materials": {
+    "ash": [
+      [
+        "minecraft:coarse_dirt",
+        30
+      ],
+      [
+        "minecraft:gravel",
+        22
+      ],
+      [
+        "minecraft:gray_concrete_powder",
+        18
+      ],
+      [
+        "minecraft:tuff",
+        12
+      ],
+      [
+        "minecraft:dirt",
+        18
+      ]
+    ],
+    "square": [
+      [
+        "minecraft:cobblestone",
+        45
+      ],
+      [
+        "minecraft:stone_bricks",
+        15
+      ],
+      [
+        "minecraft:gravel",
+        15
+      ],
+      [
+        "minecraft:andesite",
+        15
+      ],
+      [
+        "minecraft:coarse_dirt",
+        10
+      ]
+    ],
+    "street": [
+      [
+        "minecraft:dirt_path",
+        35
+      ],
+      [
+        "minecraft:gravel",
+        20
+      ],
+      [
+        "minecraft:coarse_dirt",
+        25
+      ],
+      [
+        "minecraft:cobblestone",
+        20
+      ]
+    ]
+  },
+  "pieces": {
+    "barn_1": {
+      "door": [
+        6,
+        14
+      ],
+      "margin": 2,
+      "size": [
+        13,
+        7,
+        17
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "well",
-      "turns": 0,
-      "x": 50,
-      "z": 48
+    "barn_2": {
+      "door": [
+        6,
+        14
+      ],
+      "margin": 2,
+      "size": [
+        13,
+        6,
+        17
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "inn",
-      "turns": 3,
-      "x": 35,
-      "z": 14
+    "barn_3": {
+      "door": [
+        6,
+        14
+      ],
+      "margin": 2,
+      "size": [
+        13,
+        7,
+        17
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "smithy",
-      "turns": 1,
-      "x": 56,
-      "z": 17
+    "bridge": {
+      "door": [
+        2,
+        0
+      ],
+      "margin": 0,
+      "size": [
+        5,
+        6,
+        15
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "stall",
-      "turns": 0,
-      "x": 42,
-      "z": 56
+    "cottage_1": {
+      "door": [
+        4,
+        8
+      ],
+      "hearth": [
+        5,
+        1,
+        5
+      ],
+      "margin": 2,
+      "size": [
+        9,
+        9,
+        13
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "stall",
-      "turns": 0,
-      "x": 46,
-      "z": 58
+    "cottage_2": {
+      "door": [
+        4,
+        6
+      ],
+      "hearth": [
+        5,
+        1,
+        3
+      ],
+      "margin": 2,
+      "size": [
+        9,
+        9,
+        9
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "stall",
-      "turns": 0,
-      "x": 57,
-      "z": 58
+    "cottage_3": {
+      "door": [
+        4,
+        6
+      ],
+      "hearth": [
+        5,
+        1,
+        4
+      ],
+      "margin": 2,
+      "size": [
+        9,
+        8,
+        11
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "stall",
-      "turns": 0,
-      "x": 61,
-      "z": 56
+    "cottage_4": {
+      "door": [
+        4,
+        6
+      ],
+      "hearth": [
+        5,
+        1,
+        4
+      ],
+      "margin": 2,
+      "size": [
+        9,
+        8,
+        9
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "toll_house",
-      "turns": 0,
-      "x": 55,
-      "z": 86
+    "cottage_5": {
+      "door": [
+        4,
+        6
+      ],
+      "hearth": [
+        3,
+        1,
+        4
+      ],
+      "margin": 2,
+      "size": [
+        9,
+        7,
+        11
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "townhouse_1",
-      "turns": 3,
-      "x": 37,
-      "z": 28
+    "cottage_6": {
+      "door": [
+        4,
+        8
+      ],
+      "hearth": [
+        5,
+        1,
+        3
+      ],
+      "margin": 2,
+      "size": [
+        9,
+        7,
+        11
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_1",
-      "turns": 3,
-      "x": 37,
-      "z": 64
+    "home_1": {
+      "door": [
+        4,
+        12
+      ],
+      "hearth": [
+        3,
+        1,
+        7
+      ],
+      "margin": 2,
+      "size": [
+        9,
+        9,
+        15
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "townhouse_1",
-      "turns": 1,
-      "x": 55,
-      "z": 7
+    "home_10": {
+      "door": [
+        4,
+        10
+      ],
+      "hearth": [
+        3,
+        1,
+        6
+      ],
+      "margin": 2,
+      "size": [
+        11,
+        11,
+        15
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_small_3",
-      "turns": 1,
-      "x": 55,
-      "z": 64
+    "home_11": {
+      "door": [
+        6,
+        8
+      ],
+      "hearth": [
+        5,
+        1,
+        3
+      ],
+      "margin": 2,
+      "size": [
+        11,
+        11,
+        11
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "barn_3",
-      "turns": 3,
-      "x": 7,
-      "z": 7
+    "home_12": {
+      "door": [
+        9,
+        10
+      ],
+      "hearth": [
+        10,
+        1,
+        6
+      ],
+      "margin": 2,
+      "size": [
+        14,
+        11,
+        15
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "barn_3",
-      "turns": 3,
-      "x": 7,
-      "z": 28
+    "home_2": {
+      "door": [
+        7,
+        10
+      ],
+      "hearth": [
+        8,
+        1,
+        3
+      ],
+      "margin": 2,
+      "size": [
+        14,
+        12,
+        13
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_small_1",
-      "turns": 3,
-      "x": 13,
-      "z": 42
+    "home_3": {
+      "door": [
+        8,
+        10
+      ],
+      "hearth": [
+        6,
+        1,
+        3
+      ],
+      "margin": 2,
+      "size": [
+        13,
+        8,
+        13
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_small_2",
-      "turns": 3,
-      "x": 13,
-      "z": 54
+    "home_4": {
+      "door": [
+        6,
+        12
+      ],
+      "hearth": [
+        9,
+        1,
+        7
+      ],
+      "margin": 2,
+      "size": [
+        13,
+        14,
+        17
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_3",
-      "turns": 3,
-      "x": 11,
-      "z": 64
+    "home_5": {
+      "door": [
+        6,
+        12
+      ],
+      "hearth": [
+        9,
+        1,
+        7
+      ],
+      "margin": 2,
+      "size": [
+        16,
+        10,
+        15
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "barn_2",
-      "turns": 1,
-      "x": 27,
-      "z": 0
+    "home_6": {
+      "door": [
+        5,
+        10
+      ],
+      "hearth": [
+        6,
+        1,
+        3
+      ],
+      "margin": 2,
+      "size": [
+        11,
+        12,
+        13
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_small_3",
-      "turns": 1,
-      "x": 27,
-      "z": 31
+    "home_7": {
+      "door": [
+        6,
+        12
+      ],
+      "hearth": [
+        3,
+        1,
+        7
+      ],
+      "margin": 2,
+      "size": [
+        13,
+        12,
+        17
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_1",
-      "turns": 1,
-      "x": 27,
-      "z": 64
+    "home_8": {
+      "door": [
+        6,
+        10
+      ],
+      "hearth": [
+        5,
+        1,
+        3
+      ],
+      "margin": 2,
+      "size": [
+        14,
+        8,
+        13
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_small_1",
-      "turns": 1,
-      "x": 27,
-      "z": 84
+    "home_9": {
+      "door": [
+        6,
+        10
+      ],
+      "hearth": [
+        3,
+        1,
+        6
+      ],
+      "margin": 2,
+      "size": [
+        16,
+        12,
+        13
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_small_2",
-      "turns": 3,
-      "x": 67,
-      "z": 0
+    "inn": {
+      "door": [
+        6,
+        14
+      ],
+      "margin": 2,
+      "size": [
+        13,
+        8,
+        17
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_wide_1",
-      "turns": 3,
-      "x": 67,
-      "z": 8
+    "shed_1": {
+      "door": [
+        4,
+        4
+      ],
+      "margin": 2,
+      "size": [
+        9,
+        4,
+        7
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_small_1",
-      "turns": 3,
-      "x": 67,
-      "z": 41
+    "shed_2": {
+      "door": [
+        4,
+        5
+      ],
+      "margin": 2,
+      "size": [
+        9,
+        4,
+        8
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "barn_1",
-      "turns": 1,
-      "x": 81,
-      "z": 0
+    "shed_3": {
+      "door": [
+        4,
+        4
+      ],
+      "margin": 2,
+      "size": [
+        9,
+        4,
+        7
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_3",
-      "turns": 1,
-      "x": 81,
-      "z": 14
+    "shed_4": {
+      "door": [
+        4,
+        5
+      ],
+      "margin": 2,
+      "size": [
+        9,
+        4,
+        8
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_1",
-      "turns": 1,
-      "x": 81,
-      "z": 27
+    "smithy": {
+      "door": [
+        5,
+        8
+      ],
+      "margin": 2,
+      "size": [
+        11,
+        8,
+        11
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_long_3",
-      "turns": 1,
-      "x": 81,
-      "z": 39
+    "stall": {
+      "door": [
+        1,
+        2
+      ],
+      "margin": 0,
+      "size": [
+        3,
+        3,
+        3
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "townhouse_2",
-      "turns": 0,
-      "x": 93,
-      "z": 37
+    "toll_house": {
+      "door": [
+        2,
+        4
+      ],
+      "margin": 0,
+      "size": [
+        5,
+        5,
+        5
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "townhouse_3",
-      "turns": 2,
-      "x": 0,
-      "z": 55
+    "townhouse_1": {
+      "door": [
+        4,
+        12
+      ],
+      "hearth": [
+        5,
+        1,
+        3
+      ],
+      "margin": 2,
+      "size": [
+        11,
+        13,
+        15
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_wide_2",
-      "turns": 2,
-      "x": 26,
-      "z": 55
+    "townhouse_2": {
+      "door": [
+        4,
+        8
+      ],
+      "hearth": [
+        3,
+        1,
+        5
+      ],
+      "margin": 2,
+      "size": [
+        14,
+        12,
+        11
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_small_2",
-      "turns": 0,
-      "x": 0,
-      "z": 13
+    "townhouse_3": {
+      "door": [
+        5,
+        10
+      ],
+      "hearth": [
+        7,
+        1,
+        6
+      ],
+      "margin": 2,
+      "size": [
+        11,
+        11,
+        13
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "barn_2",
-      "turns": 0,
-      "x": 85,
-      "z": 61
+    "townhouse_4": {
+      "door": [
+        6,
+        8
+      ],
+      "hearth": [
+        5,
+        1,
+        3
+      ],
+      "margin": 2,
+      "size": [
+        14,
+        11,
+        13
+      ]
     },
-    {
-      "ground": 0,
-      "piece": "house_wide_3",
-      "turns": 2,
-      "x": 1,
-      "z": 81
-    },
-    {
-      "ground": 0,
-      "piece": "house_small_1",
-      "turns": 2,
-      "x": 37,
-      "z": 81
+    "well": {
+      "door": [
+        2,
+        4
+      ],
+      "margin": 0,
+      "size": [
+        5,
+        5,
+        5
+      ]
     }
+  },
+  "smoke": 8,
+  "strongbox": [
+    3,
+    1,
+    3
   ],
-  "size": 104
+  "tower": {
+    "bell": [
+      9,
+      12
+    ],
+    "bell_facing": "east",
+    "bell_seat": [
+      8,
+      12
+    ],
+    "clue": [
+      4,
+      5,
+      7
+    ],
+    "door": [
+      4,
+      7
+    ],
+    "fire": [
+      6,
+      1,
+      6
+    ],
+    "ground": 4,
+    "margin": 1,
+    "seats": {
+      "agna": [
+        5,
+        1,
+        6,
+        "sitting_crossed"
+      ],
+      "hob": [
+        5,
+        1,
+        3,
+        "standing_arms_crossed"
+      ],
+      "pip": [
+        6,
+        1,
+        5,
+        "sitting_hunched"
+      ],
+      "tamsin": [
+        4,
+        1,
+        3,
+        "sitting_grieving"
+      ]
+    },
+    "size": [
+      9,
+      25,
+      9
+    ]
+  }
 }

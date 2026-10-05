@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.GlUtil;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.logging.LogUtils;
+import io.github.roman16.wayfarer.story.StoryDev;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -45,11 +46,13 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
@@ -63,6 +66,8 @@ import net.minecraft.world.level.WorldDataConfiguration;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -79,6 +84,11 @@ public final class Driver {
     private static final String WORLD_SUFFIX = Boolean.getBoolean(Wayfarer.MODID + ".lean") ? "-lean" : "";
     private static final String PLAY_WORLD = "play" + WORLD_SUFFIX;
     private static final String SHOWROOM_WORLD = "showroom" + WORLD_SUFFIX;
+    private static final String STATE = System.getProperty(Wayfarer.MODID + ".state", "");
+    private static final String STATE_CACHE = System.getProperty(Wayfarer.MODID + ".state.cache", "");
+    private static final String STATE_WORLD = "state" + WORLD_SUFFIX;
+    private static final String STORY_LINE = "chat: story: ";
+    private static final String STORY_AT = STORY_LINE + "at ";
     private static final long SEED = 20260929L;
     private static final String DISTANT_HORIZONS = "distanthorizons";
     private static final Pattern FAILED = Pattern.compile("^[^:<]+ failed: ");
@@ -92,7 +102,7 @@ public final class Driver {
     private static final Field CLICK_COUNT = clickCount();
     private static final String EXPERIMENTAL_WARNING = "selectWorld.backupQuestion.experimental";
     private static final String LOAD_WITHOUT_BACKUP = "selectWorld.backupJoinSkipButton";
-    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "hud", "inspect", "interact", "key", "person", "place", "sky", "spawn", "state", "workshop");
+    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "hud", "inspect", "interact", "key", "person", "place", "sky", "spawn", "state", "story", "workshop");
     private static final double INTERACT_REACH = 8;
     private static final String SENTINEL = "execute if entity @s";
     private static final String SENTINEL_REPLY = "commands.execute.conditional.pass_count";
@@ -113,6 +123,7 @@ public final class Driver {
     private static CompassPayload compassFrom;
     private static String current = "";
     private static long progressed;
+    private static long loadingMark = -1;
     private static String failure;
     private static String waitingOn;
 
@@ -157,6 +168,9 @@ public final class Driver {
             waiting--;
             progressed = System.nanoTime();
             return;
+        }
+        if (minecraft.player == null) {
+            loading(minecraft);
         }
         if (System.nanoTime() - progressed > STEP_LIMIT_NANOS) {
             String stuck = until != null || pending != null ? current : steps.isEmpty() ? "the end of the batch" : steps.peek();
@@ -228,6 +242,16 @@ public final class Driver {
         }
     }
 
+    private static void loading(Minecraft minecraft) {
+        IntegratedServer server = minecraft.getSingleplayerServer();
+        ServerLevel level = server == null ? null : server.overworld();
+        long mark = level == null ? -1 : level.getChunkSource().getLoadedChunksCount() + (long) server.getTickCount() * Integer.MAX_VALUE;
+        if (mark != loadingMark) {
+            loadingMark = mark;
+            progressed = System.nanoTime();
+        }
+    }
+
     private static boolean take(Path signal) {
         try {
             return Files.deleteIfExists(signal);
@@ -250,6 +274,10 @@ public final class Driver {
                     .map(step -> step.getAsString())
                     .toList());
             enter(minecraft, SHOWROOM_WORLD, GameType.CREATIVE, SEED);
+        } else if (!STATE.isEmpty()) {
+            boolean built = minecraft.getLevelSource().levelExists(STATE_WORLD);
+            begin(built ? List.of("settle") : List.of("settle", "story " + STATE + " " + STATE_CACHE, "settle"));
+            enter(minecraft, STATE_WORLD, GameType.SURVIVAL, StoryDev.seed());
         } else {
             begin(List.of("settle"));
             enter(minecraft, PLAY_WORLD, GameType.SURVIVAL, WorldOptions.randomSeed());
@@ -491,11 +519,18 @@ public final class Driver {
             case "quit" -> minecraft.stop();
             case "screen" -> describe(minecraft);
             case "settle" -> framesFrom = -1;
+            case "sneak" -> {
+                boolean on = argument.equals("on");
+                minecraft.options.keyShift.setDown(on);
+                until = () -> minecraft.player.isShiftKeyDown() == on;
+            }
             case "shot" -> {
                 framesFrom = -1;
                 shot(minecraft, argument);
             }
             case "state" -> command(minecraft, "wayfarer state");
+            case "story" -> story(minecraft, argument);
+            case "use" -> use(minecraft, argument);
             case "type" -> argument.chars().forEach(character -> {
                 if (minecraft.screen != null) {
                     minecraft.screen.charTyped((char) character, 0);
@@ -549,6 +584,25 @@ public final class Driver {
     private static void command(Minecraft minecraft, String command) {
         synced = false;
         minecraft.player.connection.sendCommand(command);
+    }
+
+    private static void story(Minecraft minecraft, String argument) {
+        String[] words = argument.split(" ");
+        command(minecraft, words.length > 1 ? "wayfarer story build \"%s\" %s".formatted(words[1], words[0]) : "wayfarer story to " + words[0]);
+        int[] seen = {log.size()};
+        waitingOn = "the story to stand at " + words[0];
+        until = () -> {
+            for (; seen[0] < log.size(); seen[0]++) {
+                String line = log.get(seen[0]);
+                if (line.startsWith(STORY_LINE)) {
+                    progressed = System.nanoTime();
+                    if (line.startsWith(STORY_AT)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
     }
 
     private static void perf(Minecraft minecraft) {
@@ -708,6 +762,19 @@ public final class Driver {
             return;
         }
         minecraft.gameMode.interact(minecraft.player, nearest, InteractionHand.MAIN_HAND);
+        synced = false;
+    }
+
+    private static void use(Minecraft minecraft, String argument) {
+        String[] xyz = argument.split(" ");
+        BlockPos pos = new BlockPos(Integer.parseInt(xyz[0]), Integer.parseInt(xyz[1]), Integer.parseInt(xyz[2]));
+        Vec3 centre = Vec3.atCenterOf(pos);
+        Vec3 towards = minecraft.player.getEyePosition().subtract(centre).normalize();
+        Direction face = Arrays.stream(Direction.values()).filter(side -> minecraft.level.getBlockState(pos.relative(side)).canBeReplaced())
+                .max(Comparator.comparingDouble(side -> side.getStepX() * towards.x + side.getStepY() * towards.y + side.getStepZ() * towards.z))
+                .orElse(Direction.getNearest(towards.x, towards.y, towards.z));
+        Vec3 at = centre.add(face.getStepX() * 0.5, face.getStepY() * 0.5, face.getStepZ() * 0.5);
+        minecraft.gameMode.useItemOn(minecraft.player, InteractionHand.MAIN_HAND, new BlockHitResult(at, face, pos, false));
         synced = false;
     }
 

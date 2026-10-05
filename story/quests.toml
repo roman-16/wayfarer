@@ -6,8 +6,19 @@ summary = "I woke by a stranger's fire with no name and no memory of the road. H
 title = "The Last Fire"
 
 [quests.reward]
-claimed = "You take up his pack: a tent, a little food, and room for everything else."
-text = "His pack: a backpack, a tent and a little food."
+claimed = "You take up his pack: a tent, a little food, his patterns for tools, and room for everything else."
+items = [
+  { id = "sophisticatedbackpacks:backpack" },
+  { id = "nomadictents:small_yurt" },
+  { count = 16, id = "minecraft:bread" },
+  { id = "silentgear:rod_blueprint" },
+  { id = "silentgear:pickaxe_blueprint" },
+  { id = "silentgear:axe_blueprint" },
+  { id = "silentgear:shovel_blueprint" },
+  { id = "silentgear:hoe_blueprint" },
+  { id = "silentgear:sword_blueprint" },
+]
+text = "a backpack, a tent, a little food, and his patterns for tools."
 title = "His Pack"
 
 [[quests.steps]]
@@ -90,6 +101,7 @@ lines = [
 ]
 objective = "Sit with the stranger."
 people.stranger = "He died before I learned his name."
+poses.stranger = "sleeping"
 story = [
   "He died before he could finish: \"Don't let it... the shards. I took them. Don't let it have...\" I don't know what he meant.",
 ]
@@ -103,7 +115,9 @@ id = "the_grave"
 kind = "bury"
 objective = "Bury him."
 story = ["I buried him by his fire. On the stone I wrote: \"{stone}\""]
+tasks = ["bury", "stone"]
 unwritten = "I buried him by his fire, and left the stone blank. I didn't know what to write."
+whom = "stranger"
 
 [[quests]]
 act = "prologue"
@@ -117,9 +131,13 @@ title = "The First Day"
 done = [
   { text = "His camp is far behind you now. Make yours before dark." },
 ]
+from = "last_camp"
 id = "away"
 kind = "walk"
-objective = "Walk until his camp is far behind."
+lines = [
+  { text = "His rules come back to you: walk every day, and never stay long in one place." },
+]
+objective = "Walk until his camp is far behind: {left} blocks to go."
 story = ["I walked away from his fire, as he told me."]
 
 [[quests.steps]]
@@ -127,16 +145,18 @@ id = "camp"
 kind = "camp"
 objective = "Pitch your tent, light a campfire beside it, and rest by the fire."
 story = ["I made my first camp: my tent, and a fire beside it."]
+tasks = ["tent", "fire", "rest"]
 
 [[quests.steps]]
-id = "dusk"
-kind = "dusk"
-lines = [
+done = [
   { text = "You sit by your fire. The shadows stretch, and the sky goes gold, then red." },
   { text = "The ember in your hand grows warm. Then, for the first time, it glows." },
   { text = "Over the ridge ahead, smoke. Under it, the sky is red." },
 ]
+id = "dusk"
+kind = "dusk"
 objective = "Rest by your fire."
+place = "tollbridge"
 story = [
   "At dusk the ember woke in my hand. It had seen new land, the way he said it would.",
   "Then I saw the smoke over the ridge.",
@@ -158,16 +178,22 @@ done = [
 id = "the_town"
 kind = "reach"
 objective = "Go to the burning town."
+place = "tollbridge"
+tasks = ["map"]
 
 [[quests.steps]]
-hint = "Hold up the ember ({key}): for a moment it shows what has passed by."
 id = "the_dead"
 kind = "clues"
 needed = 4
 objective = "Hold up the ember and find out what happened here. ({found}/{needed})"
+remarks.agna = ["Not now. Listen. Are they gone?"]
+remarks.hob = ["One more step and I'll swing."]
+remarks.pip = ["Mam?"]
+remarks.tamsin = ["Shut that door. Quietly."]
 story = [
   "Whatever came to the town wasn't after plunder. It opened people over the heart, and left their purses.",
 ]
+tasks = ["ember"]
 words.ember = "Held up, it shows me for a moment what has passed by."
 
 [[quests.steps.clues]]
@@ -224,6 +250,7 @@ story = "I told Pip I suppose I am one."
 text = "I suppose I am."
 
 [[quests.steps]]
+at = "cellar"
 id = "their_fire"
 kind = "rest"
 lines = [
@@ -232,15 +259,25 @@ lines = [
 ]
 objective = "Rest by their fire."
 people.hob = "He gave me a blade he made for a man who didn't live to fetch it."
+remarks.agna = ["Warm your hands first. Talk after.", "Pip, sit still. Let them be."]
+remarks.hob = ["Three hundred years of iron in my forge, and all I saved is a hammer."]
+remarks.pip = ["Is it warm? The fire in your hand? Can I hold it?", "Mam used to sing at the fire."]
+remarks.tamsin = ["Sit, if you're staying. We've nothing to give you but the fire."]
+tasks = ["rest"]
 
 [quests.steps.reward]
 claimed = "Hob's blade is plain and heavy, and sharper than it looks."
-text = "Hob's blade, made for a man who didn't live to fetch it."
+items = [
+  { id = "minecraft:iron_sword", name = "Hob's Blade" },
+]
+text = "made for a man who didn't live to fetch it."
 title = "Hob's Blade"
 
 [[quests.steps]]
+at = "cellar"
 failed = "The door gives way, and everything goes dark."
 id = "the_door"
+keep = ["agna", "hob", "pip", "tamsin"]
 kind = "hold"
 lines = [
   { text = "Outside, something scrapes at the stones. Then more of them." },
@@ -249,6 +286,16 @@ lines = [
 ]
 objective = "Hold the cellar door until morning."
 people.tamsin = "She asked what I brought with me when they came back. I think she meant the ember."
+remarks.agna = ["Stay behind me, Pip.", "Keep them off the door. I can't mend what they open."]
+remarks.hob = [
+  "I've got the door. You get the ones that come round.",
+  "Hold! It's oak. It'll take it if we do.",
+]
+remarks.pip = ["I'm not scared. I'm not.", "Are they going to come in?"]
+remarks.tamsin = [
+  "The stone will hold. Make sure the door does.",
+  "They never came back before. Never.",
+]
 retry = "Try the night again from the cellar"
 story = [
   "They came back in the night, for the cellar. Tamsin thinks they came for me. We held the door until morning.",
@@ -256,13 +303,17 @@ story = [
 wave = "The cellar door: wave {wave} of {waves}"
 
 [[quests.steps]]
-id = "morning"
-kind = "dawn"
-lines = [
+done = [
   { text = "The last of them falls back into the dark. The sky greys, and then it is morning." },
   { text = "What is left of them crumbles in the sun." },
 ]
+id = "morning"
+kind = "dawn"
 objective = "Hold the cellar door until morning."
+remarks.agna = ["Nobody's bleeding who wasn't. That's a good night, now."]
+remarks.hob = ["Listen. Birds. They're gone."]
+remarks.pip = ["Is it over? Is it morning?"]
+remarks.tamsin = ["Morning. We're still here."]
 
 [[quests.steps]]
 id = "the_bell"
@@ -273,11 +324,16 @@ lines = [
   { text = "Tamsin sits by the town's bell, fallen from its tower and black with smoke." },
   { by = "tamsin", text = "The bell comes with us." },
 ]
+moves.tamsin = { place = "bell", pose = "sitting_hunched" }
 objective = "Talk to Tamsin."
 people.agna = "She took Pip in, the morning after."
+remarks.agna = ["Talk to Tamsin. She won't go anywhere without it."]
+remarks.hob = ["If she says the bell comes, the bell comes. I'll find a cart."]
+remarks.pip = ["The bell rang when I was born. Tamsin says it rang for everyone."]
 story = [
   "At dawn they asked me to lead them. I don't know where to. Tamsin won't go anywhere without her town's bell.",
 ]
+with = "tamsin"
 
 [[quests.steps.choices]]
 id = "leave_it"
@@ -298,6 +354,11 @@ lines = [
   { by = "tamsin", text = "Go on ahead. We'll be by water before dark. Look for our smoke." },
 ]
 objective = "Make for their smoke."
+remarks.agna = ["Sit. The rest of the day can pass without you."]
+remarks.hob = ["The cart held. That bell's heavier than it looks."]
+remarks.pip = ["We made a camp! A real one, like the Wayfarers in the stories."]
+remarks.tamsin = ["Sit by the fire. You've walked enough for one day."]
+tasks = ["pack", "rest"]
 
 [[quests.steps]]
 id = "evening"
@@ -316,6 +377,7 @@ people.tamsin = "She made me their scout: I walk ahead, and they follow my marks
 story = [
   "They made camp by water, and I found their smoke. Tamsin says I'm their scout now: I walk ahead, and they follow my marks.",
 ]
+with = "tamsin"
 
 [[quests.steps.choices]]
 id = "one_day"
@@ -336,3 +398,8 @@ done = [
 id = "night"
 kind = "sleep"
 objective = "Sleep in your tent by their fire."
+remarks.agna = ["Get in your tent. I'll see to the fire."]
+remarks.hob = ["Go on. I'll sit up a while."]
+remarks.pip = ["Goodnight, Wayfarer."]
+remarks.tamsin = ["Sleep. Someone has to walk ahead tomorrow."]
+tasks = ["tent", "fire", "enter", "bed"]
