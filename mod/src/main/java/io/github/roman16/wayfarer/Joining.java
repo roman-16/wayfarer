@@ -60,7 +60,7 @@ public final class Joining {
         Place at = null;
         int away = Balance.INSTANCE.join().awayBlocks();
         if (anchor != null) {
-            Place beside = inTent(anchor) ? outside.getOrDefault(anchor.getUUID(), Place.of(anchor)) : Place.of(anchor);
+            Place beside = beside(anchor);
             boolean far = !player.level().dimension().equals(beside.dimension) || player.blockPosition().distSqr(beside.pos) > (double) away * away;
             if (!known || far) {
                 at = ground(server, beside);
@@ -104,13 +104,9 @@ public final class Joining {
         if (server.getTickCount() % CHECK_TICKS != 0) {
             return;
         }
-        boolean tents = ModList.get().isLoaded(NOMADIC_TENTS);
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             if (!inTent(player)) {
                 outside.put(player.getUUID(), Place.of(player));
-                if (tents) {
-                    TentPitch.track(player, State.of(server));
-                }
             }
         }
     }
@@ -119,7 +115,11 @@ public final class Joining {
         return player.level().dimension().location().getNamespace().equals(NOMADIC_TENTS);
     }
 
-    private static Place ground(MinecraftServer server, Place near) {
+    static Place beside(ServerPlayer anchor) {
+        return inTent(anchor) ? outside.getOrDefault(anchor.getUUID(), Place.of(anchor)) : Place.of(anchor);
+    }
+
+    static Place ground(MinecraftServer server, Place near) {
         ServerLevel level = server.getLevel(near.dimension);
         for (int ring : RINGS) {
             for (int step = 0; step < STEPS; step++) {
@@ -172,7 +172,7 @@ public final class Joining {
         @Nullable
         private Place left;
 
-        static State of(MinecraftServer server) {
+        public static State of(MinecraftServer server) {
             return server.overworld().getDataStorage().computeIfAbsent(new Factory<>(State::new, State::load, null), DATA);
         }
 

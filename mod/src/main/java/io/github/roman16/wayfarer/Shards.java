@@ -1,11 +1,18 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Story;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemLore;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -21,7 +28,7 @@ public final class Shards {
     private static final String EYE_SUFFIX = "_eye";
     private static final String TAKEN = "taken";
     private static final int SYNC_TICKS = 100;
-    private static final ICurioItem LOCKED = new ICurioItem() {
+    static final ICurioItem LOCKED = new ICurioItem() {
         @Override
         public boolean canUnequip(SlotContext slotContext, ItemStack stack) {
             return false;
@@ -58,12 +65,26 @@ public final class Shards {
         }
     }
 
+    private static ItemStack shard(ResourceLocation shrine) {
+        ItemStack shard = new ItemStack(Shrines.eye(shrine));
+        List<Component> lore = new ArrayList<>();
+        gift(Shrines.eyeKey(shrine)).ifPresent(gift -> lore.add(Component.translatable("wayfarer.gift." + gift).withStyle(ChatFormatting.GOLD)));
+        shard.set(DataComponents.LORE, new ItemLore(lore));
+        return shard;
+    }
+
+    private static Optional<String> gift(String eye) {
+        return Story.INSTANCE.quests().stream().flatMap(quest -> quest.steps().stream())
+                .filter(step -> step.kind().equals("shard") && step.text("eye").equals(eye) && step.spec().has("gift"))
+                .map(step -> step.text("gift")).findFirst();
+    }
+
     public static void sync(ServerPlayer player) {
         List<ResourceLocation> claimed = Journey.claimed(player.server);
         CuriosApi.getCuriosInventory(player).flatMap(curios -> curios.getStacksHandler(SLOT)).ifPresent(handler -> {
             var stacks = handler.getStacks();
             for (int slot = 0; slot < stacks.getSlots(); slot++) {
-                ItemStack shard = slot < claimed.size() ? new ItemStack(Shrines.eye(claimed.get(slot))) : ItemStack.EMPTY;
+                ItemStack shard = slot < claimed.size() ? shard(claimed.get(slot)) : ItemStack.EMPTY;
                 if (!ItemStack.matches(stacks.getStackInSlot(slot), shard)) {
                     stacks.setStackInSlot(slot, shard);
                 }

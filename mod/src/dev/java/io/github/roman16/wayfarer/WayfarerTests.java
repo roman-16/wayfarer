@@ -11,11 +11,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -50,14 +56,6 @@ public final class WayfarerTests {
     }
 
     @GameTest(template = "empty")
-    public static void farReadingsStepByFiveHundred(GameTestHelper helper) {
-        check(helper, Compass.round(600) == 500, "just past the shard's answer reads five hundred");
-        check(helper, Compass.round(1240) == 1000, "distances round down to the nearer step");
-        check(helper, Compass.round(1260) == 1500, "and up to the nearer step");
-        helper.succeed();
-    }
-
-    @GameTest(template = "empty")
     public static void dawnSparesPeopleAndNames(GameTestHelper helper) {
         Zombie named = helper.spawn(EntityType.ZOMBIE, new BlockPos(1, 2, 1));
         named.setCustomName(Component.literal("Gerald"));
@@ -85,6 +83,24 @@ public final class WayfarerTests {
         double expected = tries / (factor * factor);
         check(helper, Math.abs(kept - expected) < expected * 0.15, "a decoration is as much rarer as a spread structure");
         check(helper, Spread.keeps(ResourceLocation.withDefaultNamespace("ore_iron"), random), "an ore is left alone");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void gearStopsAtItsLastUse(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos at = helper.absolutePos(BlockPos.ZERO);
+        BlockState ore = Blocks.IRON_ORE.defaultBlockState();
+        float bare = player.getDigSpeed(ore, at);
+        ItemStack pick = new ItemStack(Items.IRON_PICKAXE);
+        pick.setDamageValue(pick.getMaxDamage() - 4);
+        player.setItemInHand(InteractionHand.MAIN_HAND, pick);
+        check(helper, player.hasCorrectToolForDrops(ore, helper.getLevel(), at) && player.getDigSpeed(ore, at) > bare, "a sound pick mines iron ore");
+        pick.hurtAndBreak(16, helper.getLevel(), player, item -> {});
+        check(helper, !pick.isEmpty() && pick.getDamageValue() == pick.getMaxDamage() - 1, "a pick stops at its last use and never breaks");
+        check(helper, LastUse.lastUse(pick), "the pick is at its last use");
+        check(helper, !player.hasCorrectToolForDrops(ore, helper.getLevel(), at), "at its last use iron ore drops nothing, as for a bare hand");
+        check(helper, player.getDigSpeed(ore, at) == bare, "at its last use it digs as a bare hand");
         helper.succeed();
     }
 
@@ -144,15 +160,6 @@ public final class WayfarerTests {
     }
 
     @GameTest(template = "empty")
-    public static void nightsFollowTheCalendar(GameTestHelper helper) {
-        check(helper, !Nights.horde(1) && !Nights.bloodMoon(1), "the first night is calm");
-        check(helper, Nights.horde(4) && !Nights.bloodMoon(4), "the fourth night brings a horde");
-        check(helper, Nights.bloodMoon(5) && !Nights.horde(5), "the fifth night brings a blood moon");
-        check(helper, Nights.horde(20) && Nights.bloodMoon(20), "the twentieth night brings both");
-        helper.succeed();
-    }
-
-    @GameTest(template = "empty")
     public static void fireKeepsItsCircle(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
         check(helper, Fire.fears(EntityType.ZOMBIE.create(level)) && Fire.fears(EntityType.SKELETON.create(level)), "the gaze's creatures fear fire");
@@ -187,9 +194,8 @@ public final class WayfarerTests {
 
     @GameTest(template = "empty")
     public static void theRoadEndsWithTheDragon(GameTestHelper helper) {
-        check(helper, Nights.sleepless(false, 4, false) && Nights.redMoon(false, 5), "the fourth night is sleepless and the fifth is red");
-        check(helper, Nights.sleepless(false, 1, true), "the gaze finds those who stay");
-        check(helper, !Nights.sleepless(true, 4, true) && !Nights.redMoon(true, 5), "once the dragon is dead the night is quiet and the moon white");
+        check(helper, Nights.sleepless(false, true) && !Nights.sleepless(false, false), "only the gaze finding those who stay makes a sleepless night");
+        check(helper, !Nights.sleepless(true, true), "once the dragon is dead the night is quiet");
         helper.succeed();
     }
 }

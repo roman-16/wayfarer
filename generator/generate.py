@@ -12,13 +12,13 @@ from camp import FIRE, GRAVE, HEADSTONE, OLD_SIZE, STRANGER, WAKE, camp, grave, 
 from camp import SIZE as CAMP
 from caravan import caravan
 from creatures import creatures
-from diggers import entrance, tunnels
+from diggers import entrance, layout, tunnels
 from entrances import ENTRANCES, Cover
 from halls import HALLS
 from scenes import SCENES
 from skins import skin
 from tollbridge import PIECES, plan, size, tower
-from townsfolk import townsfolk
+from townsfolk import roadfolk, townsfolk
 
 ROOT = Path(__file__).resolve().parent.parent
 MAIN = ROOT / "mod/src/generated/resources"
@@ -199,7 +199,7 @@ def showroom(eyes):
     demo = {
         "companion": DEMO_COMPANION | {"centre": [FIRE[0] - CAMP // 2, FIRE[1] - CAMP // 2]},
         "grave": [GRAVE[0] + HEADSTONE[0] - CAMP // 2, GRAVE[1] + HEADSTONE[1] - CAMP // 2],
-        "target": {"at": [target[0], y, target[1]], "shrine": f"wayfarer:shrine/{sorted(eyes)[0]}"},
+        "target": {"at": [target[0], y, target[1]]},
     }
     write_json(DEV / "wayfarer/showroom.json", {"demo": demo, "steps": lines})
     write_json(
@@ -269,26 +269,78 @@ def rgba(color):
     return tuple(int(color[i : i + 2], 16) for i in (1, 3, 5)) + (255,)
 
 
+def marked(texture):
+    width, height = texture["size"]
+    rows = [["."] * width for _ in range(height)]
+    for letter, points in texture["marks"].items():
+        for x, y in points:
+            rows[y][x] = letter
+    return rows
+
+
 def textures(spec):
     for texture in spec.values():
         for variant, colors in texture["variants"].items():
             palette = {key: rgba(value) for key, value in {**texture["colors"], **colors}.items()}
-            pixels = [[palette.get(cell, (0, 0, 0, 0)) for cell in row] for row in texture["rows"]]
+            pixels = [
+                [palette.get(cell, (0, 0, 0, 0)) for cell in row] for row in texture.get("rows") or marked(texture)
+            ]
             png.write(MAIN / f"assets/wayfarer/textures/{texture.get('folder', 'item')}/{variant}.png", pixels)
 
 
 def story(quests, cast, skins, caravan_households):
-    for person in cast:
-        if person not in skins:
+    for person, spec in cast.items():
+        if person not in skins and not spec.get("road"):
             raise ValueError(f"story/people.toml: {person} has no skin in generator/skins.toml")
     write_json(
         MAIN / "wayfarer/story.json",
         {
-            "people": {person: spec | {"skin": person} for person, spec in sorted(cast.items())},
+            "people": {
+                person: spec | ({} if spec.get("road") else {"skin": person}) for person, spec in sorted(cast.items())
+            },
             "caravan": caravan_households["households"],
             "quests": quests["quests"],
         },
     )
+
+
+def shard_names(eyes):
+    write_json(
+        MAIN / "assets/endrem/lang/en_us.json",
+        {
+            f"item.endrem.{eye}_eye": spec["people"] + ("' Shard" if spec["people"].endswith("s") else "'s Shard")
+            for eye, spec in eyes.items()
+        },
+    )
+
+
+def sounds(spec):
+    write_json(
+        MAIN / "assets/wayfarer/sounds.json",
+        {
+            f"story_music.{piece}": {"sounds": [{"name": f"wayfarer:music/{piece}", "stream": True}]}
+            for piece in spec["music"]
+        },
+    )
+    write_json(
+        MAIN / "wayfarer/cues.json",
+        {
+            cue: [
+                {
+                    "delay": layer.get("delay", 0),
+                    "event": layer["event"],
+                    "pitch": layer.get("pitch", 1),
+                    "volume": layer.get("volume", 1),
+                }
+                for layer in spec["layers"]
+            ]
+            for cue, spec in spec["cues"].items()
+        },
+    )
+    credits = [
+        f"- {piece['credit']}. {piece['licence']}. {piece['page']}" for _, piece in sorted(spec["music"].items())
+    ]
+    (ROOT / "pack/CREDITS.md").write_text("# Credits\n\nMusic in the Wayfarer mod:\n\n" + "\n".join(credits) + "\n")
 
 
 def people(spec):
@@ -474,6 +526,9 @@ def worldgen(eyes, layouts, tiers, balance):
     for tier, name in TIER_NAMES.items():
         members = [f"wayfarer:shrine/{eye}" for eye in names if eyes[eye]["tier"] == tier]
         write_json(MAIN / f"data/wayfarer/tags/worldgen/structure/shrines/{name}.json", {"values": members})
+        members = [
+            member for member in members if not eyes[member.removeprefix("wayfarer:shrine/")].get("story", False)
+        ]
         spacing = tiers[str(tier)]["spacing"]
         write_json(
             MAIN / f"data/wayfarer/worldgen/structure_set/shrines/{name}.json",
@@ -568,7 +623,12 @@ def owners(spec, balance):
 def removals(spec):
     write_json(
         MAIN / "wayfarer/cuts.json",
-        {"creatures": spec["creatures"], "enchantments": spec["enchantments"], "items": spec["items"]},
+        {
+            "creatures": spec["creatures"],
+            "enchantments": spec["enchantments"],
+            "features": spec["features"],
+            "items": spec["items"],
+        },
     )
     write_json(
         MAIN / "data/c/tags/item/hidden_from_recipe_viewers.json",
@@ -623,12 +683,13 @@ def main():
     for name, scene in SCENES.items():
         scene().save(MAIN / f"data/wayfarer/structure/scene/{name}.nbt")
     tunnels(eyes["lost"]).save(MAIN / "data/wayfarer/structure/diggers/tunnels.nbt")
+    write_json(MAIN / "wayfarer/diggers.json", layout())
     empty()
     caravan(MAIN)
     creatures(DEV)
     showroom(eyes)
     textures(tomllib.loads((ROOT / "generator/textures.toml").read_text()))
-    skins = tomllib.loads((ROOT / "generator/skins.toml").read_text()) | townsfolk()
+    skins = tomllib.loads((ROOT / "generator/skins.toml").read_text()) | townsfolk() | roadfolk()
     people(skins)
     poses.write(MAIN)
     story(
@@ -638,6 +699,9 @@ def main():
         tomllib.loads((ROOT / "story/caravan.toml").read_text()),
     )
     write_json(DEV / "wayfarer/states.json", tomllib.loads((ROOT / "story/states.toml").read_text()))
+    write_json(MAIN / "wayfarer/scenes.json", tomllib.loads((ROOT / "story/scenes.toml").read_text())["scenes"])
+    sounds(tomllib.loads((ROOT / "story/sounds.toml").read_text()))
+    shard_names(eyes)
     old_camps()
     books(written, eyes, library(written, eyes))
     shaders()

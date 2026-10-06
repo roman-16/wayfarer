@@ -41,9 +41,14 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.AlertScreen;
 import net.minecraft.client.gui.screens.BackupConfirmScreen;
 import net.minecraft.client.gui.screens.ConfirmScreen;
+import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.DisconnectedScreen;
+import net.minecraft.client.gui.screens.GenericMessageScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -151,7 +156,7 @@ public final class Driver {
             stopBatch(folder, "aborted");
             return;
         }
-        if (running && minecraft.player == null && dialog(minecraft, folder)) {
+        if (running && minecraft.player == null && !joinNext() && dialog(minecraft, folder)) {
             return;
         }
         if (!running) {
@@ -490,7 +495,11 @@ public final class Driver {
                 String[] at = argument.split(" ");
                 click(minecraft, Double.parseDouble(at[0]), Double.parseDouble(at[1]));
             }
-            case "close" -> minecraft.setScreen(null);
+            case "close" -> {
+                if (minecraft.screen != null) {
+                    minecraft.screen.onClose();
+                }
+            }
             case "far" -> far();
             case "find" -> find(minecraft, argument);
             case "fly" -> {
@@ -504,6 +513,7 @@ public final class Driver {
                 compassFrom = null;
             }
             case "interact" -> interact(minecraft, argument);
+            case "join" -> join(minecraft, argument);
             case "key" -> key(minecraft, argument);
             case "log" -> {
                 List<String> problems = Problems.drain();
@@ -715,6 +725,26 @@ public final class Driver {
                 .toList();
         note("found %d %s within %d: %s".formatted(found.size(), id, radius,
                 found.stream().map(pos -> pos.getX() + " " + pos.getY() + " " + pos.getZ()).collect(Collectors.joining(", "))));
+    }
+
+    private static boolean joinNext() {
+        return until == null && pending == null && steps.peek() != null && steps.peek().startsWith("join ");
+    }
+
+    private static void join(Minecraft minecraft, String address) {
+        if (minecraft.level != null) {
+            boolean local = minecraft.isLocalServer();
+            minecraft.level.disconnect();
+            if (local) {
+                minecraft.disconnect(new GenericMessageScreen(Component.translatable("menu.savingLevel")));
+            } else {
+                minecraft.disconnect();
+            }
+        }
+        ConnectScreen.startConnecting(new TitleScreen(), minecraft, ServerAddress.parseString(address), new ServerData(address, address, ServerData.Type.OTHER),
+                false, null);
+        until = () -> minecraft.player != null && minecraft.level != null && !minecraft.isLocalServer()
+                && (minecraft.screen == null || minecraft.screen instanceof DeathScreen) && loaded(minecraft);
     }
 
     private static void key(Minecraft minecraft, String name) {

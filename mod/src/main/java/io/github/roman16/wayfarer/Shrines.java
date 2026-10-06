@@ -18,8 +18,6 @@ import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.MobCategory;
@@ -42,6 +40,7 @@ public final class Shrines {
 
     private static final int TITLE_CHECK_TICKS = 20;
     private static final int STIRRING_SHARDS = 2;
+    private static final String SHARD_TAKEN = "shard_taken";
     private static final Map<UUID, ResourceLocation> INSIDE = new HashMap<>();
 
     private Shrines() {}
@@ -108,12 +107,12 @@ public final class Shrines {
             player.displayClientMessage(Component.translatable("wayfarer.shrine.spent", eyeName(shrine)).withStyle(ChatFormatting.GRAY), true);
             return;
         }
-        player.serverLevel().playSound(null, pedestal, SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.BLOCKS, 1, 1);
         int taken = Journey.claimed(player.server).size();
         String memory = Library.INSTANCE.memory(taken - 1);
         Component message = Component.translatable("wayfarer.shrine.claimed", player.getDisplayName(), eyeName(shrine), taken)
                 .withStyle(ChatFormatting.GOLD);
         for (ServerPlayer member : player.server.getPlayerList().getPlayers()) {
+            Cues.play(member, SHARD_TAKEN);
             member.sendSystemMessage(message);
             Library.INSTANCE.book(memory).ifPresent(book -> member.sendSystemMessage(
                     Component.translatable("wayfarer.shrine.memory", book.title()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)));
@@ -125,7 +124,6 @@ public final class Shrines {
             }
             Shards.sync(member);
             Compass.forget(member);
-            Difficulty.catchUp(member);
         }
     }
 

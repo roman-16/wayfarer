@@ -36,6 +36,7 @@ public final class Hold {
     private static final String KEEP = Wayfarer.MODID + "_keep";
     private static final String WAVE = "wave";
     private static final String FAILED = "failed";
+    private static final String TABLE = Wayfarer.MODID + ":gaze";
     private static final int REACH = 96;
     private static final int TICKS_PER_SECOND = 20;
     @Nullable
@@ -89,7 +90,7 @@ public final class Hold {
                 running.monsters.clear();
                 Talk.notice(Component.literal(active.step().text("wave").replace("{wave}", String.valueOf(wave + 1))
                         .replace("{waves}", String.valueOf(hold.waves()))).withStyle(ChatFormatting.RED));
-                command(server, "hordes spawnWave %s %d".formatted(player.getScoreboardName(), hold.firstWave() + hold.waveGrowth() * wave));
+                command(server, "hordes spawnWave %s %d %s".formatted(player.getScoreboardName(), hold.firstWave() + hold.waveGrowth() * wave, TABLE));
             });
             return;
         }

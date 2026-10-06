@@ -234,6 +234,8 @@ def bridge(room, x, walk):
 
 
 def mark(room, pos):
+    if pos not in MARKS:
+        MARKS.append(pos)
     if room.get(pos) != AIR:
         raise ValueError(f"diggers: the sign at {pos} has no free spot")
     for facing, (dx, dz) in WALLS.items():
@@ -301,6 +303,26 @@ def hall(room, spec, walk):
         if (x, HALL_FLOOR + 1, z) in room.open:
             room.set((x, HALL_FLOOR + 1, z), "minecraft:barrel", facing="up", open=False)
     hanging(room, cx, 106, room.top(cx, 106, HALL_FLOOR + 6), 2)
+
+
+MARKS = []
+
+
+def layout():
+    width, depth = ENTRANCE
+    return {
+        "entrance": {
+            "centre": [width // 2, GROUND, depth // 2],
+            "join": [width // 2, 0, depth],
+            "mouth": [width // 2, GROUND + 1, MOUTH],
+        },
+        "tunnels": {
+            "hall": {"from": [0, HALL_FLOOR - 1, 94], "to": [SIZE[0] // 2 - 4, HALL_FLOOR + 9, SIZE[2] - 1]},
+            "join": [24, TOP, 0],
+            "marks": [list(pos) for pos in MARKS],
+            "pedestal": [10, HALL_FLOOR + 2, 112],
+        },
+    }
 
 
 def tunnels(spec):

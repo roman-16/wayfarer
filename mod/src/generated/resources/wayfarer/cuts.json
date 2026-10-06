@@ -7,6 +7,29 @@
   "enchantments": [
     "minecraft:mending"
   ],
+  "features": [
+    "terralith:skylands/dirt_tops",
+    "terralith:skylands/extend_down",
+    "terralith:skylands/extend_down_high",
+    "terralith:skylands/floating_islands",
+    "terralith:skylands/grassy_tops",
+    "terralith:skylands/spring/extend_down",
+    "terralith:skylands/spring/extend_down_high",
+    "terralith:skylands/spring/floating_islands",
+    "terralith:skylands/spring/lake",
+    "terralith:skylands/spring_water",
+    "terralith:skylands/summer/dirt_lines",
+    "terralith:skylands/summer/extend_down",
+    "terralith:skylands/summer/extend_down_high",
+    "terralith:skylands/summer/floating_islands",
+    "terralith:skylands/summer/grassy_tops",
+    "terralith:skylands/summer/mud_lines",
+    "terralith:skylands/waterfall",
+    "terralith:skylands/winter/extend_down",
+    "terralith:skylands/winter/extend_down_high",
+    "terralith:skylands/winter/floating_islands",
+    "terralith:skylands/winter/grassy_tops"
+  ],
   "items": [
     "artifacts:eternal_steak",
     "artifacts:everlasting_beef",

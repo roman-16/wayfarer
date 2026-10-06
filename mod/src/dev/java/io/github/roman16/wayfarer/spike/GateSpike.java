@@ -1,6 +1,7 @@
 package io.github.roman16.wayfarer.spike;
 
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.LastUse;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,7 @@ public final class GateSpike {
     private static boolean lesserPick(Player player, BlockState state, BlockPos pos) {
         return state.is(GATE_STONE)
                 && player.getMainHandItem().canPerformAction(ItemAbilities.PICKAXE_DIG)
-                && !LastUseSpike.lastUse(player.getMainHandItem())
+                && !LastUse.lastUse(player.getMainHandItem())
                 && !player.hasCorrectToolForDrops(state, player.level(), pos);
     }
 

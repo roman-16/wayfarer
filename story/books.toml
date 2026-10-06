@@ -95,6 +95,18 @@ pages = [
 title = "The Twelfth Memory"
 
 [[found]]
+author = "A Wayfarer"
+id = "cache/journal"
+pages = [
+  "Autumn. Found the valley today: water, birch, a south slope. The ember brightened at the pond. One winter. I'll build a cabin for one winter.",
+  "The cabin stands. I sleep in a bed for the first time since I was a child. The ember is quieter. It's resting, I think. We've walked a long way.",
+  "Spring. I meant to go. The roof wanted mending, and then the garden. The ember is the size of a pea. It doesn't warm my hand any more.",
+  "Second winter. Something scratched at the door last night and went away. It came back the next night. I keep the fire high.",
+  "One more winter here. The ember is so small now. I'll walk in spring.",
+]
+title = "A Journal"
+
+[[found]]
 author = "A young Wayfarer"
 id = "wend/first_camp"
 pages = [

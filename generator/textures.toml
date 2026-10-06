@@ -131,6 +131,48 @@ l = "#b9b2a6"
 
 [wayfarer_sign.variants.wayfarer_sign]
 
+[ember]
+rows = [
+  "................",
+  "................",
+  "................",
+  "................",
+  ".....ooo........",
+  "....ohhloo......",
+  "...ohhlmmmoo....",
+  "...ohlmmcmmko...",
+  "..olmsmmgcmkko..",
+  "..olmmmmcmkcko..",
+  "..ommmsmmckkko..",
+  "...okmmmkkckko..",
+  "...okkkkkckko...",
+  "....oookkkoo....",
+  ".......ooo......",
+  "................",
+]
+
+[ember.colors]
+c = "#211f1d"
+g = "#211f1d"
+h = "#8a847e"
+k = "#2b2927"
+l = "#66615c"
+m = "#45413e"
+o = "#1c1b1a"
+s = "#3b3e48"
+
+[ember.variants.ember]
+
+[ember.variants.ember_lit]
+c = "#f07a12"
+g = "#ffd24a"
+h = "#7a6658"
+k = "#251c18"
+l = "#5a4a42"
+m = "#3d2e28"
+o = "#1a1311"
+s = "#4a2a1e"
+
 [cold_ember]
 rows = [
   "................",
@@ -165,3 +207,13 @@ o = "#2b2b2b"
 s = "#7a7a7a"
 
 [cold_ember.variants.cold_ember]
+
+[mule_eyes]
+folder = "entity/fallen"
+marks = { e = [[3, 21], [16, 21]] }
+size = [64, 64]
+
+[mule_eyes.colors]
+e = "#000000"
+
+[mule_eyes.variants.mule_eyes]

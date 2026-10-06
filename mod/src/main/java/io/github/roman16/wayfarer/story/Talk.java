@@ -2,11 +2,15 @@ package io.github.roman16.wayfarer.story;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Cues;
+import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -17,7 +21,8 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -34,13 +39,17 @@ public final class Talk {
 
     private sealed interface Speech permits Said, Then, Ask {}
 
-    private record Said(Component line, int ticks) implements Speech {}
+    private record Said(Function<MinecraftServer, Component> line, Consumer<MinecraftServer> heard, int ticks) implements Speech {}
 
     private record Then(Runnable run) implements Speech {}
 
     private record Ask(Offer offer) implements Speech {}
 
-    public record Offer(String quest, String step, @Nullable String speaker, List<Story.Choice> choices) {}
+    public record Offer(@Nullable String speaker, List<Story.Choice> choices, @Nullable Vec3 at, Answer answer) {}
+
+    public interface Answer {
+        void chosen(ServerPlayer player, Story.Choice choice);
+    }
 
     public static void say(List<Story.Line> lines, Placeholders placeholders) {
         for (Story.Line line : lines) {
@@ -53,7 +62,7 @@ public final class Talk {
     }
 
     public static void notice(Component line) {
-        queue.add(new Said(line, 0));
+        queue.add(new Said(server -> line, server -> {}, 0));
     }
 
     public static void then(Runnable run) {
@@ -80,7 +89,17 @@ public final class Talk {
 
     private static Said said(Story.Line line, Placeholders placeholders) {
         String text = placeholders.fill(line.text());
-        return new Said(line(line.by(), Component.literal(text)), reading(text));
+        return new Said(server -> line(server, line.by(), Component.literal(text)), server -> heard(server, line), reading(text));
+    }
+
+    private static void heard(MinecraftServer server, Story.Line line) {
+        People.introduce(server, line.names());
+        if (line.sound() != null) {
+            Cues.play(server, line.sound());
+        }
+        if (line.music() != null) {
+            Music.play(server, line.music(), false);
+        }
     }
 
     private static int reading(String text) {
@@ -88,12 +107,12 @@ public final class Talk {
         return Math.max(talk.leastSeconds(), Math.ceilDiv(text.length(), talk.charactersPerSecond())) * TICKS_PER_SECOND;
     }
 
-    public static MutableComponent line(@Nullable String by, Component text) {
+    public static MutableComponent line(MinecraftServer server, @Nullable String by, Component text) {
         if (by == null) {
             return text.copy().withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
         }
-        Story.Person person = Story.INSTANCE.person(by);
-        return Component.literal("<" + person.name() + "> ").withStyle(person.color()).append(text.copy().withStyle(ChatFormatting.WHITE));
+        return Component.literal("<" + People.label(server, by) + "> ").withStyle(Story.INSTANCE.person(by).color())
+                .append(text.copy().withStyle(ChatFormatting.WHITE));
     }
 
     @SubscribeEvent
@@ -107,7 +126,8 @@ public final class Talk {
             Speech speech = queue.poll();
             switch (speech) {
                 case Said said -> {
-                    broadcast(server, said.line());
+                    broadcast(server, said.line().apply(server));
+                    said.heard().accept(server);
                     next = now + said.ticks();
                 }
                 case Then then -> then.run().run();
@@ -142,9 +162,8 @@ public final class Talk {
             source.sendFailure(Component.translatable("wayfarer.talk.nobody"));
             return 0;
         }
-        Optional<Entity> speaker = offer.speaker() == null ? Optional.empty() : People.find(player.server, offer.speaker());
         int reach = Balance.INSTANCE.talk().reachBlocks();
-        if (speaker.isPresent() && (speaker.get().level() != player.level() || speaker.get().distanceToSqr(player) > (double) reach * reach)) {
+        if (offer.at() != null && (player.level().dimension() != Level.OVERWORLD || offer.at().distanceToSqr(player.position()) > (double) reach * reach)) {
             source.sendFailure(Component.translatable("wayfarer.talk.far"));
             return 0;
         }
@@ -153,7 +172,7 @@ public final class Talk {
         next = player.server.getTickCount() + reading(picked.text());
         Tasks.did(player, "answer");
         broadcast(player.server, Component.translatable("wayfarer.talk.chose", player.getDisplayName(), picked.text()).withStyle(ChatFormatting.DARK_GRAY));
-        Engine.chosen(player.server, answered, picked);
+        answered.answer().chosen(player, picked);
         return 1;
     }
 

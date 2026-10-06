@@ -1,0 +1,34 @@
+{
+  "story_music.first_fire": {
+    "sounds": [
+      {
+        "name": "wayfarer:music/first_fire",
+        "stream": true
+      }
+    ]
+  },
+  "story_music.hold": {
+    "sounds": [
+      {
+        "name": "wayfarer:music/hold",
+        "stream": true
+      }
+    ]
+  },
+  "story_music.last_fire": {
+    "sounds": [
+      {
+        "name": "wayfarer:music/last_fire",
+        "stream": true
+      }
+    ]
+  },
+  "story_music.morning": {
+    "sounds": [
+      {
+        "name": "wayfarer:music/morning",
+        "stream": true
+      }
+    ]
+  }
+}

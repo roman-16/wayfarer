@@ -2,7 +2,7 @@
 enableAutoUpdater = false
 
 [client.advanced.graphics.quality]
-lodChunkRenderDistanceRadius = 1024
+lodChunkRenderDistanceRadius = 256
 
 [common.logging.warning]
 showGarbageCollectorWarning = false

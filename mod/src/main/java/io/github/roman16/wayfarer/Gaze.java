@@ -77,7 +77,6 @@ public final class Gaze {
         if (witnessed && Journey.of(level.getServer()).slay()) {
             for (ServerPlayer member : level.getServer().getPlayerList().getPlayers()) {
                 member.sendSystemMessage(Component.translatable("wayfarer.gaze.lifted").withStyle(ChatFormatting.GOLD));
-                Difficulty.hold(member);
                 Nights.sync(member);
             }
         }

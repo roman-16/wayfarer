@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer.spike;
 
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Nights;
+import io.github.roman16.wayfarer.Shine;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +63,7 @@ public final class SeaSpike {
         ServerLevel level = player.serverLevel();
         say(player.server, "sea: %s is %s, on %s; %s; the beast comes one check in %d; %d beasts near".formatted(player.getScoreboardName(),
                 afloat(player) ? "afloat" : "not afloat", open(level, player.blockPosition()) ? "open water" : "water near land",
-                calling(level) ? "it is dark or raining" : "it is day and dry", oneIn(), beasts(level, player).size()));
+                calling(level) ? "it is dark or raining" : "it is day and dry", oneIn(player.server), beasts(level, player).size()));
         return 1;
     }
 
@@ -82,9 +83,9 @@ public final class SeaSpike {
         return Nights.night(level.getServer().overworld()) || level.isRaining();
     }
 
-    private static int oneIn() {
+    private static int oneIn(MinecraftServer server) {
         Balance.Sea sea = Balance.INSTANCE.sea();
-        return Math.max(sea.beastOneInLeast(), sea.beastOneIn() - ShineSpike.shine() / sea.shinePerStep());
+        return Math.max(sea.beastOneInLeast(), sea.beastOneIn() - Shine.of(server) / sea.shinePerStep());
     }
 
     static boolean open(ServerLevel level, BlockPos at) {
@@ -136,7 +137,7 @@ public final class SeaSpike {
         if (server.getTickCount() % (sea.checkSeconds() * TICKS_PER_SECOND) == 0) {
             for (ServerPlayer player : level.players()) {
                 if (afloat(player) && calling(level) && beasts(level, player).isEmpty() && open(level, player.blockPosition())
-                        && level.random.nextInt(oneIn()) == 0) {
+                        && level.random.nextInt(oneIn(server)) == 0) {
                     rise(player);
                 }
             }

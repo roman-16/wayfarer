@@ -10,17 +10,15 @@ road = "17:30"
 run_from = "17:00"
 
 [compass]
-exact_blocks = 500
-far_rounding_blocks = 500
+exact_blocks = 256
 refresh_ticks = 20
-research_after_blocks = 256
 trail_blocks = 20
 
 [daylight]
 crumble_seconds = 60
 
-[difficulty]
-per_eye = 3.33
+[diggers]
+ahead_blocks = 2048
 
 [dragon]
 blind_aim_blocks = 16
@@ -33,6 +31,10 @@ sight_shards = 6
 circle_blocks = 12
 line_seconds = 3
 rest_blocks = 4
+
+[first_camp]
+ahead_blocks = 3072
+lake_blocks = 512
 
 [flare]
 charges = 1
@@ -62,10 +64,6 @@ warm_exhaustion_factor = 1.0
 [join]
 away_blocks = 256
 
-[nights]
-blood_moon_every = 5
-horde_every = 4
-
 [shrines]
 tier_one_leg_blocks = 5000
 tier_two_leg_blocks = 8000
@@ -82,6 +80,17 @@ redstone = 0.125
 
 [prologue]
 away_blocks = 512
+
+[scenes]
+ask_blocks = 48
+every_seconds = 300
+farthest_blocks = 128
+gone_blocks = 64
+group_blocks = 128
+jitter_seconds = 60
+nearest_blocks = 64
+voice_gap_seconds = 150
+wolves_seconds = 120
 
 [sea]
 beast_one_in = 32
@@ -100,7 +109,6 @@ reach_blocks = 24
 act = [0, 16, 32]
 notice_blocks_per_shine = 0.5
 per_shard = 4
-remedy = 8
 spawn_every_seconds = 8
 spawn_limit = 16
 spawn_shine = 16
@@ -111,6 +119,9 @@ shards = 7
 
 [sleep]
 players_percentage = 66
+
+[spawns]
+creature_cap = 20
 
 [stillness]
 dimming_days = 1
@@ -123,7 +134,7 @@ jitter_blocks = 1000
 radius_blocks = 35000
 
 [structures]
-spread_factor = 8.5
+spread_factor = 6
 spread_features = ["campsite_structures", "yungsextras"]
 unspread = [
   "betterstrongholds:stronghold",
@@ -133,21 +144,21 @@ unspread = [
 ]
 
 [structures.every_blocks]
-campsite = 512
-capital = 16384
-fort = 8192
-outpost = 2048
-ruin = 512
-town = 4096
-village = 1024
+campsite = 384
+capital = 12288
+fort = 6144
+outpost = 1536
+ruin = 384
+town = 3072
+village = 768
 
 [story]
 arrive_blocks = 32
 near_blocks = 8
 
 [talk]
-characters_per_second = 16
-least_seconds = 2
+characters_per_second = 8
+least_seconds = 4
 reach_blocks = 32
 start_blocks = 8
 

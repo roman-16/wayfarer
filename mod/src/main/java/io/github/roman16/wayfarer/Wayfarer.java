@@ -4,26 +4,37 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.github.roman16.wayfarer.client.Books;
 import io.github.roman16.wayfarer.client.JournalScreen;
+import io.github.roman16.wayfarer.client.MusicPlayer;
 import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Engine;
+import io.github.roman16.wayfarer.story.Fallen;
 import io.github.roman16.wayfarer.story.Hold;
 import io.github.roman16.wayfarer.story.Journal;
 import io.github.roman16.wayfarer.story.People;
 import io.github.roman16.wayfarer.story.Places;
+import io.github.roman16.wayfarer.story.Scenes;
 import io.github.roman16.wayfarer.story.Sense;
 import io.github.roman16.wayfarer.story.Talk;
 import io.github.roman16.wayfarer.story.Tasks;
+import io.github.roman16.wayfarer.story.Wards;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -54,22 +65,26 @@ public final class Wayfarer {
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
     private static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT, MODID);
+    private static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, MODID);
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
     private static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIERS =
             DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MODID);
+    private static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MODID);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FireRepair>> FIRE_REPAIR =
+            DeferredHolder.create(Registries.RECIPE_SERIALIZER, id("fire_repair"));
     private static final DeferredRegister<StructurePieceType> PIECES = DeferredRegister.create(Registries.STRUCTURE_PIECE, MODID);
     private static final DeferredRegister<StructurePlacementType<?>> PLACEMENTS = DeferredRegister.create(Registries.STRUCTURE_PLACEMENT, MODID);
     private static final DeferredRegister<StructureProcessorType<?>> PROCESSORS = DeferredRegister.create(Registries.STRUCTURE_PROCESSOR, MODID);
     private static final DeferredRegister<StructureType<?>> STRUCTURES = DeferredRegister.create(Registries.STRUCTURE_TYPE, MODID);
 
-    public static final Supplier<AttachmentType<Integer>> EYE_STEPS = ATTACHMENTS.register("eye_steps",
-            () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
     public static final Supplier<AttachmentType<List<String>>> FIRSTS = ATTACHMENTS.register("firsts",
             () -> AttachmentType.<List<String>>builder(() -> List.of()).serialize(Codec.STRING.listOf()).copyOnDeath().build());
     public static final Supplier<AttachmentType<Integer>> GAZE = ATTACHMENTS.register("gaze",
             () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).copyOnDeath().build());
     public static final Supplier<AttachmentType<CompoundTag>> GRAVE_CURIOS = ATTACHMENTS.register("grave_curios",
             () -> AttachmentType.builder(() -> new CompoundTag()).serialize(CompoundTag.CODEC).copyOnDeath().build());
+    public static final Supplier<AttachmentType<GlobalPos>> LAST_FIRE = ATTACHMENTS.register("last_fire",
+            () -> AttachmentType.builder(() -> GlobalPos.of(Level.OVERWORLD, BlockPos.ZERO)).serialize(GlobalPos.CODEC).copyOnDeath().build());
     public static final Supplier<AttachmentType<CompoundTag>> STILLNESS = ATTACHMENTS.register("stillness",
             () -> AttachmentType.builder(() -> new CompoundTag()).serialize(CompoundTag.CODEC).copyOnDeath().build());
 
@@ -121,7 +136,11 @@ public final class Wayfarer {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ShrinePedestalBlockEntity>> SHRINE_PEDESTAL_ENTITY =
             BLOCK_ENTITIES.register("shrine_pedestal", () -> BlockEntityType.Builder.of(ShrinePedestalBlockEntity::new, SHRINE_PEDESTAL.get()).build(null));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<Fallen>> FALLEN = ENTITY_TYPES.register("fallen",
+            () -> EntityType.Builder.<Fallen>of(Fallen::new, MobCategory.MISC).sized(1.25F, 0.5F).clientTrackingRange(8).build("fallen"));
+
     public static final DeferredItem<Item> COLD_EMBER = ITEMS.registerSimpleItem("cold_ember", new Item.Properties().stacksTo(1));
+    public static final DeferredItem<Item> EMBER = ITEMS.registerSimpleItem("ember", new Item.Properties().stacksTo(1));
 
     public static final List<DeferredItem<Item>> VEILS = IntStream.rangeClosed(1, 3)
             .mapToObj(level -> ITEMS.registerSimpleItem("ember_veil_" + level, new Item.Properties().stacksTo(1).rarity(Rarity.values()[level])))
@@ -136,20 +155,27 @@ public final class Wayfarer {
         BLOCK_ENTITIES.register(modBus);
         BLOCKS.register(modBus);
         EFFECTS.register(modBus);
+        ENTITY_TYPES.register(modBus);
         ITEMS.register(modBus);
         LOOT_MODIFIERS.register(modBus);
         PIECES.register(modBus);
+        if (ModList.get().isLoaded("silentgear")) {
+            NeoForge.EVENT_BUS.register(Patterns.class);
+            RECIPE_SERIALIZERS.register(FIRE_REPAIR.getId().getPath(), () -> new SimpleCraftingRecipeSerializer<>(FireRepair::new));
+            RECIPE_SERIALIZERS.register(modBus);
+        }
         PLACEMENTS.register(modBus);
         PROCESSORS.register(modBus);
         STRUCTURES.register(modBus);
         modBus.addListener(Wayfarer::registerPayloads);
+        modBus.addListener(Ember::setup);
         modBus.addListener(Shards::setup);
         NeoForge.EVENT_BUS.register(Caravan.class);
         NeoForge.EVENT_BUS.register(Clock.class);
         NeoForge.EVENT_BUS.register(Compass.class);
+        NeoForge.EVENT_BUS.register(Cues.class);
         NeoForge.EVENT_BUS.register(Cuts.class);
         NeoForge.EVENT_BUS.register(Daylight.class);
-        NeoForge.EVENT_BUS.register(Difficulty.class);
         NeoForge.EVENT_BUS.register(Ember.class);
         NeoForge.EVENT_BUS.register(Engine.class);
         NeoForge.EVENT_BUS.register(Fire.class);
@@ -159,19 +185,32 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Graves.class);
         NeoForge.EVENT_BUS.register(Hold.class);
         NeoForge.EVENT_BUS.register(Joining.class);
+        NeoForge.EVENT_BUS.register(LastUse.class);
+        NeoForge.EVENT_BUS.register(Music.class);
         NeoForge.EVENT_BUS.register(Nights.class);
         NeoForge.EVENT_BUS.register(People.class);
         NeoForge.EVENT_BUS.register(Places.class);
+        NeoForge.EVENT_BUS.register(Respawn.class);
         NeoForge.EVENT_BUS.register(Rowing.class);
         NeoForge.EVENT_BUS.register(Rules.class);
+        NeoForge.EVENT_BUS.register(Scenes.class);
         NeoForge.EVENT_BUS.register(Sense.class);
         NeoForge.EVENT_BUS.register(Shards.class);
+        NeoForge.EVENT_BUS.register(Shine.class);
         NeoForge.EVENT_BUS.register(Shrines.class);
         NeoForge.EVENT_BUS.register(Stillness.class);
         NeoForge.EVENT_BUS.register(Talk.class);
         NeoForge.EVENT_BUS.register(Tasks.class);
         NeoForge.EVENT_BUS.register(Tents.class);
+        NeoForge.EVENT_BUS.register(Wards.class);
         NeoForge.EVENT_BUS.register(WorldSetup.class);
+        if (ModList.get().isLoaded("waystones")) {
+            NeoForge.EVENT_BUS.register(Waystone.class);
+            Waystone.listen();
+        }
+        if (ModList.get().isLoaded("gravestone")) {
+            NeoForge.EVENT_BUS.register(StoneWatch.class);
+        }
         if (ModList.get().isLoaded("hordes")) {
             NeoForge.EVENT_BUS.register(HordeRefuge.class);
         }
@@ -195,9 +234,11 @@ public final class Wayfarer {
                 (payload, context) -> Engine.claim((ServerPlayer) context.player(), payload.reward()));
         registrar.playToServer(Sense.Payload.TYPE, Sense.Payload.STREAM_CODEC, (payload, context) -> Sense.sense((ServerPlayer) context.player()));
         registrar.playToClient(Tasks.Panel.TYPE, Tasks.Panel.STREAM_CODEC, (payload, context) -> HudState.panel = payload);
+        registrar.playToServer(Caravan.HeadIn.TYPE, Caravan.HeadIn.STREAM_CODEC, (payload, context) -> Caravan.headIn((ServerPlayer) context.player()));
         registrar.playToServer(Tasks.Did.TYPE, Tasks.Did.STREAM_CODEC, (payload, context) -> Tasks.told((ServerPlayer) context.player(), payload.task()));
         registrar.playToClient(CompassPayload.TYPE, CompassPayload.STREAM_CODEC, (payload, context) -> HudState.compass = payload);
         registrar.playToClient(GazePayload.TYPE, GazePayload.STREAM_CODEC, (payload, context) -> HudState.gaze = payload);
         registrar.playToClient(NightPayload.TYPE, NightPayload.STREAM_CODEC, (payload, context) -> HudState.night = payload);
+        registrar.playToClient(Music.Play.TYPE, Music.Play.STREAM_CODEC, (payload, context) -> MusicPlayer.play(payload));
     }
 }

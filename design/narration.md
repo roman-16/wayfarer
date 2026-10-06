@@ -1,6 +1,6 @@
 # Narration
 
-Everything in Wayfarer that speaks in words is to be read aloud: books, chat, signs and the rest. The audio comes from ElevenLabs, generated from the same text the player sees, and plays in the Voice/Speech sound category. It is built in phase 6, once the story is final; this file holds the decisions.
+Everything in Wayfarer that speaks in words is to be read aloud: books, chat, signs and the rest. The audio comes from ElevenLabs, generated from the same text the player sees, and plays in the Voice/Speech sound category. It is recorded once, in phase 6, from the final texts, since every recording costs money; a text rewritten after its recording is recorded again. This file holds the decisions.
 
 ## How it plays
 
@@ -47,3 +47,7 @@ The account is on the free plan. It cannot use Voice Library voices or design vo
 ### N1 The narrator
 
 Who reads the lines nobody in the story speaks: the memories' scene text, the road's scenes, place names, the ending and its last line, and with which effect. Sarah, the built-in voice with an ethereal effect, is free since the memories became Wend's own life.
+
+### N2 The plan and its credits
+
+Whether the free plan's monthly credits, its attribution and its non-commercial terms carry every line, or a paid plan is needed, which would also unlock Voice Library and designed voices. Settled before the first recording.

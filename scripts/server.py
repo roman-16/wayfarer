@@ -118,7 +118,7 @@ def state(replies):
     found = [reply for reply in replies if reply.startswith(STATE)]
     if not found:
         return {"replies": replies, "error": "the server gave no state; is the Wayfarer mod's dev code loaded?"}
-    return {"state": json.loads(found[0].removeprefix(STATE))}
+    return {"state": json.loads(Path(found[0].removeprefix(STATE)).read_text())}
 
 
 def swap(arguments):

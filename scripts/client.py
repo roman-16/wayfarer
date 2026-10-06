@@ -239,7 +239,7 @@ def parse(report):
         found = NOTE.fullmatch(line)
         key, value = found.groups() if found else ("note", line)
         if key == "chat" and value.startswith(STATE):
-            entries[-1]["state"] = json.loads(value.removeprefix(STATE))
+            entries[-1]["state"] = json.loads(Path(value.removeprefix(STATE)).read_text())
             continue
         entries[-1].setdefault(key, []).append(json.loads(value) if key in ("hud", "inspect") else value)
     return entries

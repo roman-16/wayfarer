@@ -1,6 +1,5 @@
 package io.github.roman16.wayfarer.client;
 
-import io.github.roman16.wayfarer.Compass;
 import io.github.roman16.wayfarer.CompassPayload;
 import io.github.roman16.wayfarer.GazePayload;
 import io.github.roman16.wayfarer.HudState;
@@ -34,12 +33,15 @@ public final class Hud {
     private static final int DIRECTION_COLOR = 0xFFFFFF;
     private static final int CARDINAL_COLOR = 0xFFD700;
     private static final int EYE_COLOR = 0x55FFFF;
-    private static final int STRONGHOLD_COLOR = 0xFF55FF;
     private static final int GRAVE_COLOR = 0xE0E0E0;
     private static final int LEAD_COLOR = 0xFFAA55;
     private static final String LEAD_MARK = "✦";
     private static final String FIRE_MARK = "♨";
     private static final String SHRINE_MARK = "⌂";
+    private static final String GRAVE_MARK = "✝";
+    private static final String TENT_MARK = "▲";
+    private static final int TENT_COLOR = 0xC8A878;
+    private static final int TENT_FAR = 256;
     private static final int FIRE_COLOR = 0xFFAA00;
     private static final int GAP = "    ".length();
     private static final int HALF_WIDTH = 90;
@@ -77,8 +79,11 @@ public final class Hud {
             ribbon(graphics, font, reading, player, y);
             half = HALF_WIDTH + EDGE;
             y += RIBBON_HEIGHT + POINTER;
-            half = Math.max(half, line(graphics, font, caption(reading).append(night(HudState.night)), y));
-            y += LINE;
+            MutableComponent caption = caption(reading).append(night(HudState.night));
+            if (!caption.getString().isEmpty()) {
+                half = Math.max(half, line(graphics, font, caption, y));
+                y += LINE;
+            }
             Component shelter = shelter(reading.shelter());
             if (shelter != null) {
                 half = Math.max(half, line(graphics, font, shelter, y));
@@ -88,7 +93,7 @@ public final class Hud {
                 half = Math.max(half, line(graphics, font, lead, y));
                 y += LINE;
             }
-        } else if (HudState.night.hard()) {
+        } else if (HudState.night.sleepless()) {
             half = line(graphics, font, night(HudState.night), y);
             y += LINE;
         }
@@ -173,21 +178,18 @@ public final class Hud {
         }
         for (CompassPayload.Marker marker : reading.markers()) {
             String symbol = switch (marker.kind()) {
-                case GRAVE -> "✝";
+                case GRAVE -> GRAVE_MARK;
                 case LEAD -> LEAD_MARK;
                 case TEAMMATE -> "☻";
+                case TENT -> TENT_MARK;
             };
             int color = switch (marker.kind()) {
                 case GRAVE -> GRAVE_COLOR;
                 case LEAD -> LEAD_COLOR;
                 case TEAMMATE -> TEAMMATE_COLORS[Math.floorMod(marker.name().hashCode(), TEAMMATE_COLORS.length)];
+                case TENT -> TENT_COLOR;
             };
             mark(graphics, font, symbol, color, bearing(marker.x(), marker.z(), player), center, y);
-        }
-        if (reading.mode() == CompassPayload.Mode.NEAR) {
-            boolean stronghold = reading.target().equals(Compass.STRONGHOLD);
-            mark(graphics, font, stronghold ? "◆" : "◇", stronghold ? STRONGHOLD_COLOR : EYE_COLOR,
-                    bearing(reading.targetX(), reading.targetZ(), player), center, y);
         }
     }
 
@@ -213,11 +215,24 @@ public final class Hud {
         List<Component> lines = new ArrayList<>();
         for (CompassPayload.Marker marker : reading.markers()) {
             int distance = (int) Math.hypot(marker.x() + 0.5 - player.getX(), marker.z() + 0.5 - player.getZ());
-            if (marker.kind() == CompassPayload.Kind.LEAD) {
-                lines.add(Component.literal(LEAD_MARK + " ").withStyle(style -> style.withColor(LEAD_COLOR))
+            switch (marker.kind()) {
+                case GRAVE -> lines.add(Component.literal(GRAVE_MARK + " ").withStyle(style -> style.withColor(GRAVE_COLOR))
+                        .append(Component.translatable("wayfarer.compass.things", marker.name()).withStyle(ChatFormatting.WHITE))
+                        .append(separator())
+                        .append(Component.translatable("wayfarer.compass.exact", blocks(distance))));
+                case LEAD -> lines.add(Component.literal(LEAD_MARK + " ").withStyle(style -> style.withColor(LEAD_COLOR))
                         .append(Component.translatable(marker.name()).withStyle(ChatFormatting.WHITE))
                         .append(separator())
                         .append(Component.translatable("wayfarer.compass.exact", blocks(distance))));
+                case TENT -> {
+                    if (distance > TENT_FAR) {
+                        lines.add(Component.literal(TENT_MARK + " ").withStyle(style -> style.withColor(TENT_COLOR))
+                                .append(Component.translatable("wayfarer.compass.tent").withStyle(ChatFormatting.WHITE))
+                                .append(separator())
+                                .append(Component.translatable("wayfarer.compass.exact", blocks(distance))));
+                    }
+                }
+                case TEAMMATE -> {}
             }
         }
         return lines;
@@ -226,16 +241,13 @@ public final class Hud {
     private static MutableComponent caption(CompassPayload reading) {
         return switch (reading.mode()) {
             case AIR -> Component.translatable("wayfarer.compass.air").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
+            case BARE -> Component.empty();
+            case COLD -> Component.translatable("wayfarer.compass.cold").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
             case DIM -> Component.translatable("wayfarer.compass.dim").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
             case LOST, HIDDEN -> Component.translatable("wayfarer.compass.lost").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
-            case FAR -> target(reading)
+            case FAR -> Component.translatable("wayfarer.compass.ember").withStyle(ChatFormatting.WHITE)
                     .append(separator())
-                    .append(Component.translatable("wayfarer.compass." + HEAT[reading.heat() + 2]).withStyle(heatColor(reading.heat())))
-                    .append(separator())
-                    .append(Component.translatable("wayfarer.compass.about", blocks(reading.distance())));
-            case NEAR -> target(reading)
-                    .append(separator())
-                    .append(Component.translatable("wayfarer.compass.exact", blocks(reading.distance())));
+                    .append(Component.translatable("wayfarer.compass." + HEAT[reading.heat() + 2]).withStyle(heatColor(reading.heat())));
         };
     }
 
@@ -249,28 +261,8 @@ public final class Hud {
         };
     }
 
-    private static MutableComponent target(CompassPayload reading) {
-        if (reading.target().equals(Compass.STRONGHOLD)) {
-            return Component.literal("◆ ").withStyle(ChatFormatting.LIGHT_PURPLE)
-                    .append(Component.translatable("wayfarer.compass.stronghold").withStyle(ChatFormatting.WHITE));
-        }
-        return Component.literal("◇ ").withStyle(ChatFormatting.AQUA)
-                .append(Component.translatable("wayfarer.compass.shard").withStyle(ChatFormatting.WHITE));
-    }
-
     private static Component night(NightPayload night) {
-        MutableComponent icons = Component.empty();
-        if (!night.hard()) {
-            return icons;
-        }
-        icons.append(Component.literal(" ".repeat(GAP)));
-        if (night.bloodMoon()) {
-            icons.append(Component.literal("☾").withStyle(ChatFormatting.RED));
-        }
-        if (night.horde()) {
-            icons.append(Component.literal(night.bloodMoon() ? " ✕" : "✕").withStyle(ChatFormatting.RED));
-        }
-        return icons;
+        return night.sleepless() ? Component.literal(" ".repeat(GAP)).append(Component.literal("✕").withStyle(ChatFormatting.RED)) : Component.empty();
     }
 
     private static int line(GuiGraphics graphics, Font font, Component text, int y) {

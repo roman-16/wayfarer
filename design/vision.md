@@ -187,7 +187,7 @@ The reveals' places are settled in `story.md` (S2), and the voice's in S4.
 
   | How the player knows the goal | What the compass shows |
   |---|---|
-  | By feeling: a hall, or anything only the ember senses | No direction and no distance from afar: the ember flares when the player walks towards it and gutters when they walk away; the exact mark within 256 blocks |
+  | By feeling: a hall, or anything only the ember senses | No mark and no distance from afar: the ember flares when the player walks towards it and gutters when they walk away, and held up and swept round it burns brighter the closer they face the goal; the exact mark within 256 blocks |
   | By rumour: "somewhere north-east" | A direction and a rough distance, and the exact mark within 256 blocks, once the place shows itself |
   | By being told: a person, a page or a sign named the place | The exact mark from the start, with its distance |
 
@@ -200,7 +200,7 @@ The reveals' places are settled in `story.md` (S2), and the voice's in S4.
   Compass  ◆ north-east, 1,812 blocks
   ```
 
-- The tracked quest, its objective and its tasks, how to do what the step asks and each control the first time it is needed, stand in the task panel at the top right of the screen (`systems.md`, M29).
+- The tracked quest, its objective and its tasks, how to do what the step asks and each control the first time it is needed, stand in the task panel at the top right of the screen (`interface.md`, I1).
 
 - What failing means depends on what went wrong:
   - Falling never fails a quest: the player wakes at their fire, and the quest waits where they left it.
@@ -396,18 +396,18 @@ The catch-up lives in the quest engine (`systems.md`, M1), and the distances and
 The herder looks up from his fire. "You again. The dogs remember you."
 ```
 
-- Easy NPC gives the people their bodies, looks, poses and trading; the Wayfarer mod carries the conversations, in the shared chat (D11). Clicking a person starts one, their lines go to everyone, and the answers are clickable. The first click decides an ordinary answer; a hard decision, such as a shard or a door, needs two thirds of the team, and the chat shows who chose what. Trading stays Easy NPC's own screen, one player at a time.
+- Easy NPC gives the people their bodies, looks, poses and trading; the Wayfarer mod carries the conversations, for the whole team (D11). Clicking a person starts one: their lines stand as subtitles for everyone near and come in chat for those farther away, and the answers stand numbered beside the crosshair (`interface.md`, I4). The first answer chosen decides an ordinary one; a hard decision, such as a shard or a door, needs two thirds of the team, and everyone sees who chose what. Trading stays Easy NPC's own screen, one player at a time.
 
   ```text
-  <Corin> They've got my brother at the outpost. I can't ask you. I'm asking anyway.
-    [Go tonight]  [Not yet]  [Why should we?]
+  Corin  They've got my brother at the outpost. I can't ask you. I'm asking anyway.
+    1 Go tonight   2 Not yet   3 Why should we?
   Kai chose: Go tonight
 
-  <Nell> Give it to me. I'll bury it with them.
-    [Give it to her 1/3]  [Keep the shard 2/3]
+  Nell  Give it to me. I'll bury it with them.
+    1 Give it to her 1/3   2 Keep the shard 2/3
   ```
 
-**Why:** As the pack stands the world feels empty. People on the road carry the variety ground truth 2 asks for, and people who come back are where "Every choice comes back" shows. Easy NPC's own dialogues open as a screen for the one player who clicked and check conditions per player, while the story is one for the whole world, so the conversation runs where the voice and Maren already speak: in chat, from data, for everyone.
+**Why:** As the pack stands the world feels empty. People on the road carry the variety ground truth 2 asks for, and people who come back are where "Every choice comes back" shows. Easy NPC's own dialogues open as a screen for the one player who clicked and check conditions per player, while the story is one for the whole world, so the conversation runs from the Wayfarer mod's data, for everyone, without a screen that would stop a player in a team.
 
 How far a conversation reaches and how votes wait are settled in `systems.md` (M3).
 

@@ -15,23 +15,25 @@ public record Balance(
         Clock clock,
         Compass compass,
         Daylight daylight,
-        Difficulty difficulty,
+        Diggers diggers,
         Dragon dragon,
         Fire fire,
+        FirstCamp firstCamp,
         Flare flare,
         Gate gate,
         Gaze gaze,
         Hold hold,
         Hunger hunger,
         Join join,
-        Nights nights,
         Ore ore,
         Prologue prologue,
+        Scenes scenes,
         Sea sea,
         Sense sense,
         Shine shine,
         Sight sight,
         Sleep sleep,
+        Spawns spawns,
         Stillness stillness,
         Story story,
         Structures structures,
@@ -45,15 +47,17 @@ public record Balance(
     public record Clock(int afternoonSeconds, int caravanBlocks, int dawnSeconds, String dusk, int duskRunSeconds, String evening, String night, String road,
             String runFrom) {}
 
-    public record Compass(int exactBlocks, int farRoundingBlocks, int refreshTicks, int researchAfterBlocks, int trailBlocks) {}
+    public record Compass(int exactBlocks, int refreshTicks, int trailBlocks) {}
 
     public record Daylight(int crumbleSeconds) {}
 
-    public record Difficulty(float perEye) {}
+    public record Diggers(int aheadBlocks) {}
 
     public record Dragon(int blindAimBlocks, int healthBase, int healthPerPlayer, int healthPerShard, int sightShards) {}
 
     public record Fire(int circleBlocks, int lineSeconds, int restBlocks) {}
+
+    public record FirstCamp(int aheadBlocks, int lakeBlocks) {}
 
     public record Flare(int charges, int reachBlocks) {}
 
@@ -67,21 +71,25 @@ public record Balance(
 
     public record Join(int awayBlocks) {}
 
-    public record Nights(int bloodMoonEvery, int hordeEvery) {}
 
     public record Prologue(int awayBlocks) {}
 
     public record Sea(int beastOneIn, int beastOneInLeast, int checkSeconds, int openWaterBlocks, int ramDamage, int ramSeconds, int shinePerStep) {}
 
+    public record Scenes(int askBlocks, int everySeconds, int farthestBlocks, int goneBlocks, int groupBlocks, int jitterSeconds, int nearestBlocks,
+            int voiceGapSeconds, int wolvesSeconds) {}
+
     public record Sense(int glowSeconds, int reachBlocks) {}
 
-    public record Shine(List<Integer> act, double noticeBlocksPerShine, int perShard, int remedy, int spawnEverySeconds, int spawnLimit, int spawnShine) {}
+    public record Shine(List<Integer> act, double noticeBlocksPerShine, int perShard, int spawnEverySeconds, int spawnLimit, int spawnShine) {}
 
     public record Sight(int reachBlocks, int shards) {}
 
     public record Ore(Map<String, Double> shares) {}
 
     public record Sleep(int playersPercentage) {}
+
+    public record Spawns(int creatureCap) {}
 
     public record Stillness(int dimmingDays, int hordeDays, int radiusBlocks) {}
 
@@ -122,12 +130,10 @@ public record Balance(
                             toml.get("clock.run_from")),
                     new Compass(
                             toml.getInt("compass.exact_blocks"),
-                            toml.getInt("compass.far_rounding_blocks"),
                             toml.getInt("compass.refresh_ticks"),
-                            toml.getInt("compass.research_after_blocks"),
                             toml.getInt("compass.trail_blocks")),
                     new Daylight(toml.getInt("daylight.crumble_seconds")),
-                    new Difficulty(toml.<Number>get("difficulty.per_eye").floatValue()),
+                    new Diggers(toml.getInt("diggers.ahead_blocks")),
                     new Dragon(
                             toml.getInt("dragon.blind_aim_blocks"),
                             toml.getInt("dragon.health_base"),
@@ -138,6 +144,7 @@ public record Balance(
                             toml.getInt("fire.circle_blocks"),
                             toml.getInt("fire.line_seconds"),
                             toml.getInt("fire.rest_blocks")),
+                    new FirstCamp(toml.getInt("first_camp.ahead_blocks"), toml.getInt("first_camp.lake_blocks")),
                     new Flare(toml.getInt("flare.charges"), toml.getInt("flare.reach_blocks")),
                     new Gate(toml.getInt("gate.reach_blocks")),
                     new Gaze(
@@ -156,10 +163,12 @@ public record Balance(
                             toml.<Number>get("hunger.rowing_exhaustion_per_block").floatValue(),
                             toml.<Number>get("hunger.warm_exhaustion_factor").floatValue()),
                     new Join(toml.getInt("join.away_blocks")),
-                    new Nights(toml.getInt("nights.blood_moon_every"), toml.getInt("nights.horde_every")),
                     new Ore(toml.<Config>get("ore").entrySet().stream()
                             .collect(Collectors.toUnmodifiableMap(UnmodifiableConfig.Entry::getKey, entry -> entry.<Number>getValue().doubleValue()))),
                     new Prologue(toml.getInt("prologue.away_blocks")),
+                    new Scenes(toml.getInt("scenes.ask_blocks"), toml.getInt("scenes.every_seconds"), toml.getInt("scenes.farthest_blocks"),
+                            toml.getInt("scenes.gone_blocks"), toml.getInt("scenes.group_blocks"), toml.getInt("scenes.jitter_seconds"),
+                            toml.getInt("scenes.nearest_blocks"), toml.getInt("scenes.voice_gap_seconds"), toml.getInt("scenes.wolves_seconds")),
                     new Sea(
                             toml.getInt("sea.beast_one_in"),
                             toml.getInt("sea.beast_one_in_least"),
@@ -173,12 +182,12 @@ public record Balance(
                             toml.<List<Number>>get("shine.act").stream().map(Number::intValue).toList(),
                             toml.<Number>get("shine.notice_blocks_per_shine").doubleValue(),
                             toml.getInt("shine.per_shard"),
-                            toml.getInt("shine.remedy"),
                             toml.getInt("shine.spawn_every_seconds"),
                             toml.getInt("shine.spawn_limit"),
                             toml.getInt("shine.spawn_shine")),
                     new Sight(toml.getInt("sight.reach_blocks"), toml.getInt("sight.shards")),
                     new Sleep(toml.getInt("sleep.players_percentage")),
+                    new Spawns(toml.getInt("spawns.creature_cap")),
                     new Stillness(toml.getInt("stillness.dimming_days"), toml.getInt("stillness.horde_days"), toml.getInt("stillness.radius_blocks")),
                     new Story(toml.getInt("story.arrive_blocks"), toml.getInt("story.near_blocks")),
                     new Structures(toml.<Number>get("structures.spread_factor").doubleValue(), toml.<List<String>>get("structures.spread_features")),

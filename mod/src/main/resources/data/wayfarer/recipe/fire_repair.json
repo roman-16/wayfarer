@@ -1,0 +1,10 @@
+{
+  "neoforge:conditions": [
+    {
+      "modid": "silentgear",
+      "type": "neoforge:mod_loaded"
+    }
+  ],
+  "category": "equipment",
+  "type": "wayfarer:fire_repair"
+}

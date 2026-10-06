@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer.client;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Journal;
 import io.github.roman16.wayfarer.story.Tasks;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public final class JournalScreen extends Screen {
     private static final int TAB_WIDTH = 96;
     private static final int TAB_HEIGHT = 20;
     private static final int TAKE_WIDTH = 64;
+    private static final int HEAD_IN_WIDTH = 128;
     private static final int GAP = 4;
     private static final int TITLE = 0xFFD27A;
     private static final int TEXT = 0xFFFFFF;
@@ -82,9 +84,17 @@ public final class JournalScreen extends Screen {
                     .bounds(MARGIN, y, TAB_WIDTH, TAB_HEIGHT).build());
         }
         waiting = new ArrayList<>();
+        header = 0;
         if (open == Tab.QUESTS) {
             int left = MARGIN * 2 + TAB_WIDTH;
             int at = TOP;
+            if (view().has("headIn") && view().get("headIn").getAsBoolean()) {
+                addRenderableWidget(Button.builder(Component.translatable("wayfarer.journal.head_in"), pressed -> {
+                    PacketDistributor.sendToServer(new Caravan.HeadIn());
+                    onClose();
+                }).bounds(width - MARGIN - HEAD_IN_WIDTH, at, HEAD_IN_WIDTH, TAB_HEIGHT).build());
+                at += TAB_HEIGHT + GAP;
+            }
             for (JsonElement element : view().getAsJsonArray("rewards")) {
                 JsonObject reward = element.getAsJsonObject();
                 if (!reward.get("claimed").getAsBoolean()) {
@@ -126,7 +136,7 @@ public final class JournalScreen extends Screen {
                 y += LINE;
             }
         }
-        int top = TOP + (waiting.isEmpty() ? 0 : header);
+        int top = TOP + header;
         List<Row> rows = rows(right - left);
         contentHeight = rows.size() * LINE;
         scroll = Mth.clamp(scroll, 0, Math.max(0, contentHeight - (bottom - top)));

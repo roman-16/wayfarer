@@ -23,13 +23,11 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Nights {
+    private static final String HORDE_MUSIC = "hold";
     private static final String NAME = "wayfarer_nights";
-    private static final String BLOOD_MOON = "enhancedcelestials2defaultlunarevents:blood_moon";
-    private static final String CELESTIALS = "enhancedcelestials2core";
     private static final String HORDES = "hordes";
     private static final long TICKS_PER_DAY = 24000;
     private static final long DUSK = 12000;
-    private static final long MOONRISE = 12600;
     private static final long MIDNIGHT = 18000;
     private static final int CHECK_TICKS = 20;
 
@@ -38,14 +36,12 @@ public final class Nights {
     private static final class State extends SavedData {
         long dawn = -1;
         long dusk = -1;
-        long moon = -1;
         long horde = -1;
 
         static State load(CompoundTag tag, HolderLookup.Provider registries) {
             State state = new State();
             state.dawn = tag.getLong("dawn");
             state.dusk = tag.getLong("dusk");
-            state.moon = tag.getLong("moon");
             state.horde = tag.getLong("horde");
             return state;
         }
@@ -54,34 +50,17 @@ public final class Nights {
         public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
             tag.putLong("dawn", dawn);
             tag.putLong("dusk", dusk);
-            tag.putLong("moon", moon);
             tag.putLong("horde", horde);
             return tag;
         }
     }
 
-    public static boolean horde(long night) {
-        return night % Balance.INSTANCE.nights().hordeEvery() == 0;
-    }
-
-    public static boolean bloodMoon(long night) {
-        return night % Balance.INSTANCE.nights().bloodMoonEvery() == 0;
-    }
-
     public static boolean sleepless(ServerPlayer player) {
-        return sleepless(Journey.slain(player.server), tonight(player.server.overworld()), Stillness.found(player));
+        return sleepless(Journey.slain(player.server), Stillness.found(player));
     }
 
-    public static boolean sleepless(boolean slain, long night, boolean found) {
-        return !slain && (horde(night) || found);
-    }
-
-    public static boolean redMoon(MinecraftServer server) {
-        return redMoon(Journey.slain(server), tonight(server.overworld()));
-    }
-
-    public static boolean redMoon(boolean slain, long night) {
-        return !slain && bloodMoon(night);
+    public static boolean sleepless(boolean slain, boolean found) {
+        return !slain && found;
     }
 
     public static boolean night(Level overworld) {
@@ -89,11 +68,11 @@ public final class Nights {
     }
 
     public static boolean fearless(ServerPlayer player) {
-        return night(player.server.overworld()) && (sleepless(player) || redMoon(player.server));
+        return night(player.server.overworld()) && sleepless(player);
     }
 
     public static NightPayload forecast(ServerPlayer player) {
-        return new NightPayload(sleepless(player), redMoon(player.server));
+        return new NightPayload(sleepless(player));
     }
 
     public static boolean tentsShut(ServerPlayer player) {
@@ -102,10 +81,6 @@ public final class Nights {
 
     public static void sync(ServerPlayer player) {
         PacketDistributor.sendToPlayer(player, forecast(player));
-    }
-
-    private static long tonight(Level overworld) {
-        return overworld.getDayTime() / TICKS_PER_DAY + 1;
     }
 
     @SubscribeEvent
@@ -121,10 +96,16 @@ public final class Nights {
             state.dawn = day;
             state.setDirty();
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                if (ModList.get().isLoaded(HORDES)) {
+                    command(server, "hordes stop " + player.getGameProfile().getName());
+                }
+                if (HORDE_MUSIC.equals(Music.looping(player))) {
+                    Music.stop(player);
+                }
                 NightPayload forecast = forecast(player);
                 PacketDistributor.sendToPlayer(player, forecast);
-                if (forecast.hard()) {
-                    warn(player, forecast);
+                if (forecast.sleepless()) {
+                    warn(player);
                 }
             }
         }
@@ -138,16 +119,6 @@ public final class Nights {
                         Tents.eject(player);
                     }
                 }
-                if (redMoon(server)) {
-                    Firsts.first(player, "blood_moon");
-                }
-            }
-        }
-        if (time >= MOONRISE && state.moon != day && redMoon(server)) {
-            state.moon = day;
-            state.setDirty();
-            if (ModList.get().isLoaded(CELESTIALS)) {
-                command(server, "enhancedcelestials2core setLunarEvent " + BLOOD_MOON);
             }
         }
         if (time >= MIDNIGHT && state.horde != day) {
@@ -157,6 +128,7 @@ public final class Nights {
                 for (ServerPlayer player : level.players()) {
                     if (sleepless(player)) {
                         command(server, "hordes start " + player.getGameProfile().getName() + " " + (TICKS_PER_DAY - time));
+                        Music.play(player, HORDE_MUSIC, true);
                     }
                 }
             }
@@ -170,8 +142,8 @@ public final class Nights {
         }
         NightPayload forecast = forecast(player);
         PacketDistributor.sendToPlayer(player, forecast);
-        if (forecast.hard()) {
-            player.sendSystemMessage(Component.translatable("wayfarer.night." + kind(forecast) + ".chat").withStyle(ChatFormatting.RED));
+        if (forecast.sleepless()) {
+            player.sendSystemMessage(Component.translatable("wayfarer.night.chat").withStyle(ChatFormatting.RED));
         }
     }
 
@@ -184,17 +156,12 @@ public final class Nights {
         }
     }
 
-    private static void warn(ServerPlayer player, NightPayload forecast) {
-        String kind = kind(forecast);
+    private static void warn(ServerPlayer player) {
         player.connection.send(new ClientboundSetTitlesAnimationPacket(20, 80, 30));
-        player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("wayfarer.night." + kind + ".subtitle")));
-        player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("wayfarer.night." + kind + ".title").withStyle(ChatFormatting.RED)));
-        player.sendSystemMessage(Component.translatable("wayfarer.night." + kind + ".chat").withStyle(ChatFormatting.RED));
+        player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("wayfarer.night.subtitle")));
+        player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("wayfarer.night.title").withStyle(ChatFormatting.RED)));
+        player.sendSystemMessage(Component.translatable("wayfarer.night.chat").withStyle(ChatFormatting.RED));
         player.playNotifySound(SoundEvents.RAID_HORN.value(), SoundSource.AMBIENT, 0.6F, 1);
-    }
-
-    private static String kind(NightPayload forecast) {
-        return forecast.horde() && forecast.bloodMoon() ? "both" : forecast.horde() ? "horde" : "blood_moon";
     }
 
     private static void command(MinecraftServer server, String command) {

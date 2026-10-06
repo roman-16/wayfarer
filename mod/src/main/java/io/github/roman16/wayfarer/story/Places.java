@@ -21,7 +21,8 @@ public final class Places {
         }
         switch (name) {
             case Tollbridge.NAME -> Tollbridge.begin(server);
-            case Caravan.NAME -> Caravan.begin(server);
+            case Diggers.NAME, Diggers.HALL -> Diggers.begin(server);
+            case FirstCamp.NAME -> FirstCamp.find(server);
             default -> throw new IllegalArgumentException("the story has no way to build " + name);
         }
     }
@@ -44,6 +45,7 @@ public final class Places {
         if (event.getServer().getTickCount() % CHECK_TICKS == 0 && Engine.running(event.getServer())) {
             Tollbridge.tick(event.getServer());
             Caravan.tick(event.getServer());
+            Diggers.tick(event.getServer());
         }
     }
 
@@ -51,5 +53,6 @@ public final class Places {
     public static void onServerStopped(ServerStoppedEvent event) {
         Tollbridge.reset();
         Caravan.reset();
+        Diggers.reset();
     }
 }

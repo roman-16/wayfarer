@@ -42,30 +42,61 @@
   "people": {
     "agna": {
       "color": "green",
+      "mornings": [
+        "Eat something before you go. Then go on; we'll follow.",
+        "Go. I'll keep the child from running after you."
+      ],
       "name": "Agna",
       "remarks": [
         "Eat something. You look like a ghost.",
         "If it hurts, show me. If it doesn't, walk."
       ],
-      "skin": "agna"
+      "skin": "agna",
+      "unnamed": "A woman in green"
+    },
+    "gazebound": {
+      "color": "gray",
+      "name": "A Gazebound",
+      "road": true,
+      "unnamed": "A man in grey"
+    },
+    "herder": {
+      "color": "white",
+      "name": "The herder",
+      "road": true
     },
     "hob": {
       "color": "red",
+      "mornings": [
+        "We'll be packing a while yet. Go on ahead.",
+        "Cart's loaded by noon. Walk on, we'll find your marks."
+      ],
       "name": "Hob",
       "remarks": [
         "Bring me that blade when it's dull.",
         "Don't mind me. I think better with a hammer in my hand."
       ],
-      "skin": "hob"
+      "skin": "hob",
+      "unnamed": "A big man"
+    },
+    "pedlar": {
+      "color": "white",
+      "name": "The pedlar",
+      "road": true
     },
     "pip": {
       "color": "yellow",
+      "mornings": [
+        "Can I walk with you today? ...Fine. Go on, then.",
+        "Tamsin says we're slow. Go on, we'll catch up!"
+      ],
       "name": "Pip",
       "remarks": [
         "Where are we going tomorrow?",
         "I practised walking quiet. Like you."
       ],
-      "skin": "pip"
+      "skin": "pip",
+      "unnamed": "A child"
     },
     "stranger": {
       "color": "gold",
@@ -74,12 +105,22 @@
     },
     "tamsin": {
       "color": "aqua",
+      "mornings": [
+        "We're packing up. Go on ahead; we'll follow your marks.",
+        "Don't wait for us. Look for our smoke tonight."
+      ],
       "name": "Tamsin",
       "remarks": [
         "We follow your marks. Don't make me regret it.",
         "The bell's still with us. So are we."
       ],
-      "skin": "tamsin"
+      "skin": "tamsin",
+      "unnamed": "A grey-haired woman"
+    },
+    "traveller": {
+      "color": "white",
+      "name": "The traveller",
+      "road": true
     }
   },
   "quests": [
@@ -88,7 +129,7 @@
       "id": "the_last_fire",
       "kind": "main",
       "reward": {
-        "claimed": "You take up his pack: a tent, a little food, his patterns for tools, and room for everything else.",
+        "claimed": "You take up his pack: a tent, a bed, a little food, and room for everything else.",
         "items": [
           {
             "id": "sophisticatedbackpacks:backpack"
@@ -97,29 +138,14 @@
             "id": "nomadictents:small_yurt"
           },
           {
+            "tag": "minecraft:beds"
+          },
+          {
             "count": 16,
             "id": "minecraft:bread"
-          },
-          {
-            "id": "silentgear:rod_blueprint"
-          },
-          {
-            "id": "silentgear:pickaxe_blueprint"
-          },
-          {
-            "id": "silentgear:axe_blueprint"
-          },
-          {
-            "id": "silentgear:shovel_blueprint"
-          },
-          {
-            "id": "silentgear:hoe_blueprint"
-          },
-          {
-            "id": "silentgear:sword_blueprint"
           }
         ],
-        "text": "a backpack, a tent, a little food, and his patterns for tools.",
+        "text": "a backpack, a tent, a bed and a little food.",
         "title": "His Pack"
       },
       "steps": [
@@ -132,7 +158,7 @@
             },
             {
               "id": "where",
-              "reply": "On the road. Where I found you, near enough.",
+              "reply": "By my fire. Off the road, where nobody comes.",
               "text": "Where am I?"
             },
             {
@@ -145,7 +171,10 @@
           "kind": "talk",
           "lines": [
             {
-              "text": "You wake on cold ground. A fire burns beside you, and an old man lies on its other side, watching you."
+              "text": "You wake on cold ground beside a fire. You don't remember lying down. You don't remember anything before this fire."
+            },
+            {
+              "text": "An old man sits across the flames, propped against a log. His face is grey, and his breath rattles."
             },
             {
               "by": "stranger",
@@ -177,16 +206,24 @@
           "kind": "talk",
           "lines": [
             {
+              "by": "stranger",
+              "text": "I found you lying by the road and brought you here. It took the last of what I had."
+            },
+            {
+              "by": "stranger",
+              "text": "Don't look at me like that. I'm dying, that's all. I'm old, and I walked further than I had left in me."
+            },
+            {
               "text": "His shirt is open at the collar. An old white scar runs across his chest, over the heart."
             },
             {
               "by": "stranger",
-              "text": "Let me look at you. Yes. It's you, then."
+              "text": "Let me look at you. ...Yes. It's you, then."
             }
           ],
           "objective": "Sit with the stranger.",
           "people": {
-            "stranger": "He knew my face, and wouldn't say how. He had an old white scar over his heart."
+            "stranger": "He said bringing me to his fire took the last of his strength. He knew my face, and wouldn't say how. An old white scar ran over his heart."
           }
         },
         {
@@ -208,27 +245,51 @@
           "kind": "talk",
           "lines": [
             {
+              "text": "He fumbles at his belt and holds out a closed fist. It shakes."
+            },
+            {
               "by": "stranger",
               "text": "Hold out your hand."
             },
             {
-              "text": "He presses something into your palm: a coal no bigger than a thumb, grey and cold."
+              "sound": "ember_given",
+              "text": "He presses something into your palm: a coal no bigger than a thumb, grey and cold as a stone."
             },
             {
               "by": "stranger",
-              "text": "It's cold. It's been cold for years. Walk with it and it wakes. It lives on what you see."
+              "names": [
+                "ember"
+              ],
+              "text": "That's an ember. Mine. It's been cold for years."
             },
             {
               "by": "stranger",
-              "text": "Three things, then. Walk every day. Never stay long in one place. And never sleep in the open: a tent, with a fire by it."
+              "text": "Walk with it and it wakes. It lives on what you see: new ground, every day."
+            },
+            {
+              "by": "stranger",
+              "text": "Three things, and I won't have the breath to say them twice."
+            },
+            {
+              "by": "stranger",
+              "text": "Walk every day. A cold ember is no use to anyone."
+            },
+            {
+              "by": "stranger",
+              "text": "Never stay long in one place. Stay, and something finds you."
+            },
+            {
+              "by": "stranger",
+              "text": "And never sleep in the open. A tent, with a fire by it. Sleep in the open and something comes to look."
             }
           ],
           "objective": "Sit with the stranger.",
           "story": [
-            "He gave me his ember, cold as a stone, and told me to walk with it."
+            "He gave me his ember, cold as a stone, and told me to walk with it.",
+            "He gave me three rules: walk every day, never stay long in one place, and never sleep in the open, only in a tent with a fire by it."
           ],
           "words": {
-            "ember": "What the stranger gave me: a coal no bigger than a thumb, cold as a stone. He said it wakes if I walk with it, and that it lives on what I see."
+            "ember": "What the stranger gave me: an ember, a coal no bigger than a thumb, cold as a stone. He said it wakes if I walk with it, and that it lives on what I see."
           }
         },
         {
@@ -236,11 +297,15 @@
           "kind": "talk",
           "lines": [
             {
+              "music": "last_fire",
+              "text": "He coughs for a long time. When he looks up, he looks past you, at something that isn't there."
+            },
+            {
               "by": "stranger",
               "text": "Don't let it... the shards. I took them. Don't let it have..."
             },
             {
-              "text": "He doesn't finish. The fire pops. The ember lies cold in your hand."
+              "text": "He doesn't finish. His hand goes slack, and his head drops to his chest."
             }
           ],
           "objective": "Sit with the stranger.",
@@ -248,7 +313,7 @@
             "stranger": "He died before I learned his name."
           },
           "poses": {
-            "stranger": "sleeping"
+            "stranger": "fallen_slumped"
           },
           "story": [
             "He died before he could finish: \"Don't let it... the shards. I took them. Don't let it have...\" I don't know what he meant."
@@ -258,22 +323,69 @@
           }
         },
         {
+          "burial": [
+            {
+              "text": "You dig beside his fire until your hands are raw, and lay him in. At the head of the grave you raise a stone."
+            },
+            {
+              "text": "It's blank. You never learned his name."
+            },
+            {
+              "text": "What do you write on his stone?"
+            }
+          ],
+          "choices": [
+            {
+              "id": "fire",
+              "reply": "You scratch the words into the stone.",
+              "stone": "He gave me fire.",
+              "text": "He gave me fire."
+            },
+            {
+              "id": "stranger",
+              "reply": "You scratch the words into the stone.",
+              "stone": "Here lies a stranger.",
+              "text": "Here lies a stranger."
+            },
+            {
+              "id": "own",
+              "reply": "You find a sharp flint by the fire.",
+              "text": "Write my own words.",
+              "write": true
+            },
+            {
+              "id": "bare",
+              "reply": "You leave the stone as it is.",
+              "text": "Leave it bare."
+            }
+          ],
           "done": [
             {
-              "text": "You lay him by his fire and raise the earth over him. The stone waits for words."
+              "text": "You stand at the grave a while. His fire is burning low. He said not to stay."
+            },
+            {
+              "text": "His pack lies by the fire. He won't need it now."
             }
           ],
           "id": "the_grave",
           "kind": "bury",
+          "lines": [
+            {
+              "text": "The fire pops. The old man is dead."
+            },
+            {
+              "text": "You can't leave him here for the crows."
+            }
+          ],
           "objective": "Bury him.",
           "story": [
-            "I buried him by his fire. On the stone I wrote: \"{stone}\""
+            "I buried him by his fire. On his stone I wrote: \"{stone}\""
           ],
           "tasks": [
             "bury",
             "stone"
           ],
-          "unwritten": "I buried him by his fire, and left the stone blank. I didn't know what to write.",
+          "unwritten": "I buried him by his fire, and left his stone bare. I didn't know what to write.",
           "whom": "stranger"
         }
       ],
@@ -310,6 +422,11 @@
         {
           "id": "camp",
           "kind": "camp",
+          "lines": [
+            {
+              "text": "The sun is getting low. His last rule comes back to you: never sleep in the open. A tent, with a fire by it."
+            }
+          ],
           "objective": "Pitch your tent, light a campfire beside it, and rest by the fire.",
           "story": [
             "I made my first camp: my tent, and a fire beside it."
@@ -326,10 +443,14 @@
               "text": "You sit by your fire. The shadows stretch, and the sky goes gold, then red."
             },
             {
+              "sound": "ember_wakes",
               "text": "The ember in your hand grows warm. Then, for the first time, it glows."
             },
             {
               "text": "Over the ridge ahead, smoke. Under it, the sky is red."
+            },
+            {
+              "text": "The ember leans in your palm, the way a needle leans, towards the smoke."
             }
           ],
           "id": "dusk",
@@ -341,7 +462,7 @@
             "Then I saw the smoke over the ridge."
           ],
           "words": {
-            "ember": "It woke on my first evening on the road. It's warm now, and it glows."
+            "ember": "It woke on my first evening on the road. It's warm now, it glows, and it leans towards where I'm meant to go."
           }
         }
       ],
@@ -357,6 +478,7 @@
       "kind": "main",
       "steps": [
         {
+          "awake": "Not tonight. The sky over the ridge is red.",
           "done": [
             {
               "text": "The town burns. Roofs have fallen in, and nothing moves but the fire."
@@ -364,13 +486,15 @@
           ],
           "id": "the_town",
           "kind": "reach",
-          "objective": "Go to the burning town.",
+          "objective": "Go to the burning town, tonight.",
           "place": "tollbridge",
           "tasks": [
+            "pack",
             "map"
           ]
         },
         {
+          "awake": "Not here. Not among the dead.",
           "clues": [
             {
               "id": "well",
@@ -395,8 +519,13 @@
           ],
           "id": "the_dead",
           "kind": "clues",
+          "lines": [
+            {
+              "text": "In the smoke, the ember throbs in your fist, as if it wants to be held up."
+            }
+          ],
           "needed": 4,
-          "objective": "Hold up the ember and find out what happened here. ({found}/{needed})",
+          "objective": "Find {needed} signs of what happened here. ({found}/{needed})",
           "remarks": {
             "agna": [
               "Not now. Listen. Are they gone?"
@@ -422,6 +551,7 @@
           }
         },
         {
+          "awake": "Not now. Someone is crying under the bell tower.",
           "choices": [
             {
               "id": "unsure",
@@ -440,10 +570,6 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "agna",
-              "text": "Look. They never take anything. They only open the chest."
-            },
-            {
               "text": "Behind the cellar door, four faces in the light of a small fire."
             },
             {
@@ -451,12 +577,30 @@
               "text": "Stay back! ...It's a person. It's only a person."
             },
             {
+              "by": "agna",
+              "names": [
+                "agna",
+                "hob"
+              ],
+              "text": "I'm Agna. I mend people, when there's anything left to mend. That's Hob, our smith."
+            },
+            {
+              "by": "agna",
+              "text": "You've seen them out there. They never take anything. They only open the chest."
+            },
+            {
               "by": "tamsin",
-              "text": "Tollbridge stood three hundred years. One night."
+              "names": [
+                "tamsin"
+              ],
+              "text": "Tamsin. I was Tollbridge's elder. It stood three hundred years. One night."
             },
             {
               "by": "pip",
-              "text": "You've got fire in your hand. Like in the stories. Are you a Wayfarer?"
+              "names": [
+                "pip"
+              ],
+              "text": "I'm Pip. You've got fire in your hand. Like in the stories. Are you a Wayfarer?"
             }
           ],
           "objective": "Go down into the cellar.",
@@ -476,6 +620,7 @@
         },
         {
           "at": "cellar",
+          "awake": "Not yet. Sit with them by their fire first.",
           "id": "their_fire",
           "kind": "rest",
           "lines": [
@@ -525,6 +670,7 @@
         },
         {
           "at": "cellar",
+          "awake": "Not with them at the door.",
           "failed": "The door gives way, and everything goes dark.",
           "id": "the_door",
           "keep": [
@@ -547,6 +693,7 @@
               "text": "Hold the door!"
             }
           ],
+          "music": "hold",
           "objective": "Hold the cellar door until morning.",
           "people": {
             "tamsin": "She asked what I brought with me when they came back. I think she meant the ember."
@@ -578,6 +725,7 @@
         {
           "done": [
             {
+              "music": "morning",
               "text": "The last of them falls back into the dark. The sky greys, and then it is morning."
             },
             {
@@ -687,7 +835,6 @@
             ]
           },
           "tasks": [
-            "pack",
             "rest"
           ]
         },
@@ -711,6 +858,7 @@
           "lines": [
             {
               "by": "tamsin",
+              "music": "first_fire",
               "text": "You walk ahead. We'll follow your marks."
             },
             {
@@ -729,6 +877,10 @@
               "text": "That blade's yours now. When it's dull you bring it to me. Don't you dare throw it away."
             },
             {
+              "by": "hob",
+              "text": "And take these. My patterns. Copper and iron want shaping, not just hammering."
+            },
+            {
               "by": "pip",
               "text": "Will you teach me? To be a Wayfarer?"
             }
@@ -737,6 +889,31 @@
           "people": {
             "agna": "At the fire she held my wrist too long, and said my heart was slow, like something asleep.",
             "tamsin": "She made me their scout: I walk ahead, and they follow my marks."
+          },
+          "reward": {
+            "claimed": "You take Hob's patterns: one for every tool he makes, and one for its rod.",
+            "items": [
+              {
+                "id": "silentgear:axe_blueprint"
+              },
+              {
+                "id": "silentgear:hoe_blueprint"
+              },
+              {
+                "id": "silentgear:pickaxe_blueprint"
+              },
+              {
+                "id": "silentgear:rod_blueprint"
+              },
+              {
+                "id": "silentgear:shovel_blueprint"
+              },
+              {
+                "id": "silentgear:sword_blueprint"
+              }
+            ],
+            "text": "his patterns for tools, from his own bench.",
+            "title": "Hob's Patterns"
           },
           "story": [
             "They made camp by water, and I found their smoke. Tamsin says I'm their scout now: I walk ahead, and they follow my marks."
@@ -776,6 +953,289 @@
       ],
       "summary": "Something is burning over the ridge, a whole town of it. Go and see.",
       "title": "Ash"
+    },
+    {
+      "act": "1",
+      "after": [
+        "ash"
+      ],
+      "id": "the_pull",
+      "kind": "main",
+      "steps": [
+        {
+          "done": [
+            {
+              "text": "Under the trees, a mouth in the hillside, framed in old timber. Old rails run out of it into the grass, broken in places, past a heap of spoil."
+            },
+            {
+              "text": "The pull comes from below now."
+            }
+          ],
+          "id": "pull",
+          "kind": "reach",
+          "known": "feeling",
+          "lines": [
+            {
+              "text": "The ember tugs at your hand, the way it leaned towards the smoke over Tollbridge. This time there is no smoke."
+            },
+            {
+              "text": "Somewhere far ahead, something is calling it."
+            }
+          ],
+          "objective": "Follow the pull: walk where the ember flares.",
+          "place": "diggers",
+          "story": [
+            "The morning after the caravan's first fire, the ember pulled for the first time, towards something far ahead."
+          ],
+          "tasks": [
+            "sweep"
+          ],
+          "words": {
+            "ember": "It pulls towards something it wants. Held up, it flares when I face the way."
+          }
+        },
+        {
+          "done": [
+            {
+              "text": "The drift opens into a hall, cut square and high. On a stone at its far end, something hums."
+            }
+          ],
+          "id": "tunnels",
+          "kind": "reach",
+          "lines": [
+            {
+              "text": "Cold air breathes out of the dark. Someone dug this a long time ago, and went a long way down."
+            }
+          ],
+          "objective": "Go down into the old tunnels, where the ember pulls.",
+          "place": "diggers_hall",
+          "story": [
+            "It led me to old tunnels under a forest, and down."
+          ],
+          "tasks": [
+            "marks"
+          ]
+        },
+        {
+          "at": "diggers_hall",
+          "done": [
+            {
+              "text": "A warmth runs up your arm, and then a voice you last heard dying:"
+            },
+            {
+              "by": "stranger",
+              "text": "Well. That's one."
+            },
+            {
+              "by": "stranger",
+              "text": "Don't look so surprised. Did you think I'd let you carry it alone?"
+            },
+            {
+              "by": "stranger",
+              "text": "You heard me at the fire. The shards. Gather them, bring them to a frame, and we put its eye out for good."
+            },
+            {
+              "by": "stranger",
+              "text": "A frame. You'll know one when you see it. No more burning towns."
+            },
+            {
+              "text": "When you look down, old tracks stand out on the ground, as if the ember held them up for you."
+            }
+          ],
+          "eye": "lost",
+          "gift": "trail_sight",
+          "id": "shard",
+          "kind": "shard",
+          "lines": [
+            {
+              "text": "On the stone lies a sliver of something like dark glass. It hums, and the ember in your hand hums back."
+            }
+          ],
+          "objective": "Take it from the stone: right-click it.",
+          "people": {
+            "stranger": "His voice came back with the first shard. Nobody else hears it. He wants the shards brought to a frame, to put out \"its eye\"."
+          },
+          "story": [
+            "In a hall at the bottom of the tunnels lay a shard. When I took it, it sank into the ember, and the stranger spoke to me. He's dead. I heard him anyway."
+          ],
+          "words": {
+            "shards": "The first lay on a stone in a hall under the forest, humming. It sank into the ember, and his voice came with it."
+          }
+        },
+        {
+          "id": "the_caravan",
+          "kind": "caravan",
+          "lines": [
+            {
+              "by": "stranger",
+              "text": "Go on, back to your caravan. Don't mind me. I'll be quiet. Mostly."
+            }
+          ],
+          "objective": "Make for their smoke.",
+          "tasks": [
+            "rest"
+          ]
+        },
+        {
+          "id": "the_fireside",
+          "kind": "talk",
+          "lines": [
+            {
+              "by": "tamsin",
+              "text": "You came back different. What's in that hand now?"
+            },
+            {
+              "by": "stranger",
+              "text": "She can't hear me. Only you can."
+            },
+            {
+              "by": "stranger",
+              "text": "The ember was mine once. Now it's yours, and it seems I came with it."
+            },
+            {
+              "by": "stranger",
+              "text": "I made my first camp by a lake, under three pines. It's to the {direction} of here. I'd like to see it again."
+            }
+          ],
+          "objective": "Sit with Tamsin at the caravan's fire.",
+          "place": "first_camp",
+          "story": [
+            "At the caravan's fire his voice told me where he made his first camp: by a lake, under three pines, to the {direction}. He wants to see it again."
+          ]
+        }
+      ],
+      "summary": "The ember pulls towards something far ahead, and it won't say where. Hold it up, turn until it flares, and walk that way.",
+      "title": "The Pull"
+    },
+    {
+      "act": "1",
+      "after": [
+        "the_pull"
+      ],
+      "id": "his_first_camp",
+      "kind": "main",
+      "steps": [
+        {
+          "id": "the_lake",
+          "kind": "reach",
+          "objective": "Find his first camp, by a lake.",
+          "place": "first_camp"
+        }
+      ],
+      "summary": "The voice wants to see the camp he made when he first set out, by a lake under three pines. Find it.",
+      "title": "His First Camp"
+    },
+    {
+      "act": "1",
+      "after": [
+        "the_pull"
+      ],
+      "found": "cache",
+      "id": "the_cache",
+      "kind": "side",
+      "steps": [
+        {
+          "clues": [
+            {
+              "id": "tin",
+              "text": "A tin box under the stones. Inside, a coal no bigger than a thumb, black and cold. An ember, gone out."
+            },
+            {
+              "id": "journal",
+              "text": "A journal, swollen with rain. It is signed with a circle cut through by a line: the mark from the tunnels."
+            },
+            {
+              "id": "cloth",
+              "text": "Something heavy in old cloth: a carved stone, cut down to fit a pack. It hums faintly at your touch."
+            }
+          ],
+          "done": [
+            {
+              "text": "The journal's last page reads: \"One more winter here. The ember is so small now. I'll walk in spring.\""
+            },
+            {
+              "by": "stranger",
+              "text": "They didn't. Spring doesn't come for someone who stops. Take the stone. They'd want it walked."
+            }
+          ],
+          "id": "the_camp",
+          "kind": "clues",
+          "needed": 3,
+          "objective": "Search the old camp: {found}/{needed}.",
+          "place": "cache",
+          "reward": {
+            "claimed": "You wrap the stone in its cloth again and pack it, with the journal.",
+            "items": [
+              {
+                "own": true
+              },
+              {
+                "book": "cache/journal"
+              }
+            ],
+            "text": "a stone of one's own, cut down to fit a pack, and the journal it was left with.",
+            "title": "Their Stone"
+          },
+          "story": [
+            "In an old camp by the road I found another Wayfarer's ember, gone out, and their journal. They stopped walking, and their ember went home. They left their stone. I carry it now."
+          ],
+          "tasks": [
+            "search"
+          ],
+          "words": {
+            "stone": "A stone of my own, cut down to fit a pack. Set down and touched, it folds me back to it from any waystone I've touched, and the ember burns the walk it saves."
+          }
+        }
+      ],
+      "summary": "An old camp by the road, and the voice wants me to look at it. Somebody sat there too long.",
+      "title": "The Cache"
+    },
+    {
+      "act": "1",
+      "after": [
+        "the_pull"
+      ],
+      "id": "the_road",
+      "kind": "side",
+      "steps": [
+        {
+          "done": [
+            {
+              "by": "pip",
+              "text": "She's mine? She's really mine?"
+            },
+            {
+              "by": "pip",
+              "text": "Bramble. Her name's Bramble."
+            },
+            {
+              "text": "Pip leads Bramble to Agna's tent, and Agna pretends not to smile."
+            }
+          ],
+          "id": "a_horse",
+          "keeper": "agna",
+          "kind": "horse",
+          "lines": [
+            {
+              "by": "pip",
+              "text": "In the stories every Wayfarer has a horse. Find me one? A brown one."
+            }
+          ],
+          "name": "Bramble",
+          "objective": "Find Pip a horse and bring it to the caravan's fire.",
+          "people": {
+            "pip": "Pip wanted a horse, like the Wayfarers in the stories. I found one, and Pip called her Bramble."
+          },
+          "story": [
+            "I brought Pip a horse. Pip called her Bramble, and she grazes by Agna's tent now."
+          ],
+          "tasks": [
+            "horse"
+          ]
+        }
+      ],
+      "summary": "Pip wants a horse, like the Wayfarers in the stories. Any horse will do, Pip says, as long as it's brown.",
+      "title": "The Road"
     }
   ]
 }

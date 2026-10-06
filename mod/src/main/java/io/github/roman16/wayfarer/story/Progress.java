@@ -16,6 +16,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.saveddata.SavedData;
 
 public final class Progress extends SavedData {
@@ -32,6 +33,9 @@ public final class Progress extends SavedData {
     final Map<String, BlockPos> places = new LinkedHashMap<>();
     final Map<String, Float> yaws = new LinkedHashMap<>();
     final Map<String, UUID> bodies = new LinkedHashMap<>();
+    final Map<String, BoundingBox> wards = new LinkedHashMap<>();
+    final Set<String> gifts = new LinkedHashSet<>();
+    final Set<String> named = new LinkedHashSet<>();
     String stone = "";
 
     public static Progress of(MinecraftServer server) {
@@ -67,6 +71,23 @@ public final class Progress extends SavedData {
         setDirty();
     }
 
+    void ward(String name, BoundingBox box) {
+        wards.put(name, box);
+        setDirty();
+    }
+
+    public boolean gift(String gift) {
+        return gifts.contains(gift);
+    }
+
+    public boolean named(String thing) {
+        return named.contains(thing);
+    }
+
+    public boolean met(String person) {
+        return people.containsKey(person);
+    }
+
     public boolean claimed(String reward, UUID player) {
         return claims.getOrDefault(reward, Set.of()).contains(player);
     }
@@ -95,6 +116,13 @@ public final class Progress extends SavedData {
         yaws.getAllKeys().forEach(key -> progress.yaws.put(key, yaws.getFloat(key)));
         CompoundTag bodies = tag.getCompound("bodies");
         bodies.getAllKeys().forEach(key -> progress.bodies.put(key, bodies.getUUID(key)));
+        CompoundTag wards = tag.getCompound("wards");
+        wards.getAllKeys().forEach(key -> {
+            int[] box = wards.getIntArray(key);
+            progress.wards.put(key, new BoundingBox(box[0], box[1], box[2], box[3], box[4], box[5]));
+        });
+        progress.gifts.addAll(strings(tag.getList("gifts", Tag.TAG_STRING)));
+        progress.named.addAll(strings(tag.getList("named", Tag.TAG_STRING)));
         progress.stone = tag.getString("stone");
         return progress;
     }
@@ -130,6 +158,11 @@ public final class Progress extends SavedData {
         CompoundTag bodies = new CompoundTag();
         this.bodies.forEach(bodies::putUUID);
         tag.put("bodies", bodies);
+        CompoundTag wards = new CompoundTag();
+        this.wards.forEach((name, box) -> wards.putIntArray(name, new int[] {box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ()}));
+        tag.put("wards", wards);
+        tag.put("gifts", list(List.copyOf(gifts)));
+        tag.put("named", list(List.copyOf(named)));
         tag.putString("stone", stone);
         return tag;
     }

@@ -1,17 +1,39 @@
 [agna]
 color = "green"
+mornings = ["Eat something before you go. Then go on; we'll follow.", "Go. I'll keep the child from running after you."]
 name = "Agna"
 remarks = ["Eat something. You look like a ghost.", "If it hurts, show me. If it doesn't, walk."]
+unnamed = "A woman in green"
+
+[gazebound]
+color = "gray"
+name = "A Gazebound"
+road = true
+unnamed = "A man in grey"
+
+[herder]
+color = "white"
+name = "The herder"
+road = true
 
 [hob]
 color = "red"
+mornings = ["We'll be packing a while yet. Go on ahead.", "Cart's loaded by noon. Walk on, we'll find your marks."]
 name = "Hob"
 remarks = ["Bring me that blade when it's dull.", "Don't mind me. I think better with a hammer in my hand."]
+unnamed = "A big man"
+
+[pedlar]
+color = "white"
+name = "The pedlar"
+road = true
 
 [pip]
 color = "yellow"
+mornings = ["Can I walk with you today? ...Fine. Go on, then.", "Tamsin says we're slow. Go on, we'll catch up!"]
 name = "Pip"
 remarks = ["Where are we going tomorrow?", "I practised walking quiet. Like you."]
+unnamed = "A child"
 
 [stranger]
 color = "gold"
@@ -19,5 +41,12 @@ name = "The stranger"
 
 [tamsin]
 color = "aqua"
+mornings = ["We're packing up. Go on ahead; we'll follow your marks.", "Don't wait for us. Look for our smoke tonight."]
 name = "Tamsin"
 remarks = ["We follow your marks. Don't make me regret it.", "The bell's still with us. So are we."]
+unnamed = "A grey-haired woman"
+
+[traveller]
+color = "white"
+name = "The traveller"
+road = true

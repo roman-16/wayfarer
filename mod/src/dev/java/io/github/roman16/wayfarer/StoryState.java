@@ -43,6 +43,7 @@ public final class StoryState {
     private static int report(CommandSourceStack source) {
         MinecraftServer server = source.getServer();
         JsonObject state = new JsonObject();
+        Path written = server.getServerDirectory().resolve("driver").resolve("state.json").toAbsolutePath().normalize();
         try {
             server.getAllLevels().forEach(level -> level.getDataStorage().save());
             IOUtilities.waitUntilIOWorkerComplete();
@@ -66,11 +67,13 @@ public final class StoryState {
                     state.add(place, NbtOps.INSTANCE.convertTo(JsonOps.INSTANCE, saved.getCompound("data")));
                 }
             }
+            Files.createDirectories(written.getParent());
+            Files.writeString(written, state.toString());
         } catch (IOException exception) {
-            source.sendFailure(Component.literal("state failed: could not read the world's saved data: " + exception.getMessage()));
+            source.sendFailure(Component.literal("state failed: could not read the world's saved data or write it to " + written + ": " + exception.getMessage()));
             return 0;
         }
-        source.sendSuccess(() -> Component.literal("state: " + state), false);
+        source.sendSuccess(() -> Component.literal("state: " + written), false);
         return 1;
     }
 }

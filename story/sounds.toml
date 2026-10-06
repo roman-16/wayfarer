@@ -1,0 +1,48 @@
+[cues.ember_given]
+layers = [
+  { event = "minecraft:block.amethyst_block.resonate", pitch = 0.75 },
+  { event = "minecraft:block.respawn_anchor.charge", pitch = 0.625, volume = 0.625 },
+]
+
+[cues.ember_wakes]
+layers = [
+  { delay = 8, event = "minecraft:block.beacon.activate", pitch = 1.25, volume = 0.75 },
+  { event = "minecraft:item.firecharge.use", pitch = 0.625, volume = 0.5 },
+]
+
+[cues.reward_taken]
+layers = [
+  { event = "minecraft:entity.item.pickup", pitch = 0.75, volume = 0.625 },
+  { event = "minecraft:item.bundle.insert" },
+]
+
+[cues.shard_taken]
+layers = [
+  { delay = 8, event = "minecraft:block.conduit.activate", volume = 0.75 },
+  { event = "minecraft:block.end_portal_frame.fill", pitch = 0.75 },
+]
+
+[music.first_fire]
+credit = "Calm fireplace guitar song, by ShggothSlave"
+downloaded = "05.10.2026"
+licence = "CC0 1.0"
+page = "https://opengameart.org/content/calm-fireplace-guitar-song"
+
+[music.hold]
+credit = "Heartfelt Battle (loop), by request"
+downloaded = "05.10.2026"
+licence = "CC0 1.0"
+loop = true
+page = "https://opengameart.org/content/heartfelt-battle-loopable-fantasy-stringspianohorn"
+
+[music.last_fire]
+credit = "Edvard Grieg, The Death of Åse (Peer Gynt Suite No. 1, Op. 46), Musopen Symphony"
+downloaded = "05.10.2026"
+licence = "Public domain"
+page = "https://commons.wikimedia.org/wiki/File:Grieg_-_Peer_Gynt_Suite_No._1,_Op._46_-_II._The_Death_of_Aase_(Musopen_Symphony).flac"
+
+[music.morning]
+credit = "Edvard Grieg, Morning Mood (Peer Gynt Suite No. 1, Op. 46), Musopen Symphony"
+downloaded = "05.10.2026"
+licence = "Public domain"
+page = "https://commons.wikimedia.org/wiki/File:Grieg_-_Peer_Gynt_Suite_No._1,_Op._46_-_I._Morning_Mood_(Musopen_Symphony).flac"

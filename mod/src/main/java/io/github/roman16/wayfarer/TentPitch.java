@@ -1,7 +1,5 @@
 package io.github.roman16.wayfarer;
 
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.Arrays;
 import java.util.List;
@@ -20,10 +18,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -95,10 +92,10 @@ public final class TentPitch {
         entrance.setOwner(player.getUUID());
         entrance.setChanged();
         held.shrink(1);
-    }
-
-    public static boolean carries(ServerPlayer player) {
-        return player.getInventory().items.stream().anyMatch(stack -> stack.getItem() instanceof TentItem);
+        Joining.State state = Joining.State.of(player.server);
+        state.tents.removeIf(pitched -> pitched.id() == tent.getId());
+        state.tents.add(new Joining.Pitched(player.getUUID(), new Joining.Place(level.dimension(), door.immutable()), tent.getId()));
+        state.setDirty();
     }
 
     private static TentSize size(ItemStack held) {
@@ -121,6 +118,28 @@ public final class TentPitch {
         if (!player.getInventory().add(item)) {
             player.drop(item, false);
         }
+        Joining.State state = Joining.State.of(player.server);
+        state.tents.removeIf(tent -> tent.id() == pitched.getId());
+        state.setDirty();
+    }
+
+    public static List<Joining.Pitched> mine(ServerPlayer player) {
+        return Joining.State.of(player.server).tents.stream().filter(tent -> tent.owner().equals(player.getUUID())).toList();
+    }
+
+    public static boolean pitched(ServerPlayer player) {
+        return !mine(player).isEmpty();
+    }
+
+    public static void bringBack(MinecraftServer server, Joining.Place camp) {
+        int away = Balance.INSTANCE.join().awayBlocks();
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+            List<Joining.Pitched> far = mine(player).stream().filter(tent -> !tent.place().dimension().equals(camp.dimension())
+                    || tent.place().pos().distSqr(camp.pos()) > (double) away * away).toList();
+            if (!far.isEmpty() && recall(player, far, Joining.State.of(server).tents)) {
+                player.sendSystemMessage(Component.translatable("wayfarer.tent.brought").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            }
+        }
     }
 
     @SubscribeEvent
@@ -132,7 +151,14 @@ public final class TentPitch {
         }
         Optional<BlockPos> fire = Optional.empty();
         if (level.getBlockEntity(INSIDE_DOOR) instanceof TentDoorBlockEntity inside && inside.getSpawnDimension() != null) {
-            fire = Fire.nearest(inside.getSpawnDimension(), inside.getSpawnpoint(), Balance.INSTANCE.tent().fireBlocks());
+            int reach = Balance.INSTANCE.tent().fireBlocks();
+            BlockPos outside = BlockPos.containing(inside.getSpawnpoint());
+            for (int x = (outside.getX() - reach) >> 4; x <= (outside.getX() + reach) >> 4; x++) {
+                for (int z = (outside.getZ() - reach) >> 4; z <= (outside.getZ() + reach) >> 4; z++) {
+                    inside.getSpawnDimension().getChunk(x, z);
+                }
+            }
+            fire = Fire.nearest(inside.getSpawnDimension(), inside.getSpawnpoint(), reach);
         }
         if (fire.isEmpty()) {
             event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
@@ -143,40 +169,24 @@ public final class TentPitch {
         }
     }
 
-    static void track(ServerPlayer player, Joining.State state) {
-        ServerLevel level = player.serverLevel();
-        ChunkPos at = player.chunkPosition();
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                LevelChunk chunk = level.getChunkSource().getChunkNow(at.x + dx, at.z + dz);
-                if (chunk == null) {
-                    continue;
-                }
-                for (BlockEntity entity : chunk.getBlockEntities().values()) {
-                    if (entity instanceof TentDoorBlockEntity door && player.getUUID().equals(door.getOwner())
-                            && state.tents.stream().noneMatch(tent -> tent.id() == door.getTent().getId())) {
-                        state.tents.add(new Joining.Pitched(player.getUUID(), new Joining.Place(level.dimension(), door.getBlockPos()), door.getTent().getId()));
-                        state.setDirty();
-                    }
-                }
-            }
-        }
+    static void recall(ServerPlayer player, List<Joining.Pitched> tents) {
+        int away = Balance.INSTANCE.join().awayBlocks();
+        recall(player, tents.stream().filter(tent -> tent.owner().equals(player.getUUID())).filter(tent -> !tent.place().dimension().equals(player.level().dimension())
+                || tent.place().pos().distSqr(player.blockPosition()) > (double) away * away).toList(), tents);
     }
 
-    static void recall(ServerPlayer player, List<Joining.Pitched> tents) {
+    private static boolean recall(ServerPlayer player, List<Joining.Pitched> far, List<Joining.Pitched> tents) {
         MinecraftServer server = player.server;
-        int away = Balance.INSTANCE.join().awayBlocks();
-        for (Joining.Pitched tent : List.copyOf(tents)) {
-            if (!tent.owner().equals(player.getUUID())) {
-                continue;
-            }
+        boolean brought = false;
+        for (Joining.Pitched tent : far) {
             ServerLevel level = server.getLevel(tent.place().dimension());
-            BlockPos pos = tent.place().pos();
-            if (level == null || level == player.level() && pos.distSqr(player.blockPosition()) <= (double) away * away) {
+            tents.remove(tent);
+            Joining.State.of(server).setDirty();
+            if (level == null) {
                 continue;
             }
+            BlockPos pos = tent.place().pos();
             level.getChunk(pos);
-            tents.remove(tent);
             if (!(level.getBlockEntity(pos) instanceof TentDoorBlockEntity door) || !player.getUUID().equals(door.getOwner())) {
                 continue;
             }
@@ -186,6 +196,8 @@ public final class TentPitch {
             if (!player.getInventory().add(item)) {
                 player.drop(item, false);
             }
+            brought = true;
         }
+        return brought;
     }
 }

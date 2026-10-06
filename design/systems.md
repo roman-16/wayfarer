@@ -85,6 +85,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Map | The world map |
 
 - The map is JourneyMap's world map, opened from its tab in the journal or with M. There is no minimap anywhere on screen, no cave mapping, no radar and no waypoints of the player's own; the places they have found are added by the Wayfarer mod. Map Atlases leaves the pack.
+- The compass is on screen from the first moment of the world, before the ember wakes: until then it reads "the ember is cold" and shows only friends, the player's own tent (▲) and their stones. A tent standing more than 256 blocks away gets its own line under the compass, so a tent left at an old camp is never lost. The first time a goal shows, the task panel says to follow its mark at the top of the screen.
 - The compass shows the tracked quest's goal, the player's friends and their stones. A goal known by feeling shows only the ember's flaring, in gold, and its guttering, in blue, with no distance until the exact mark within 256 blocks (D6). Every fall leaves its own stone where the player fell; the compass shows all of them, the one holding the most the strongest. In the journal a stone can be tracked, so the compass points at it like a quest, or let go, which takes it off the compass, as when a player gives their old things up and starts afresh.
 
   ```text
@@ -109,8 +110,16 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 ### M3 Conversations: one scene at a time, for everyone
 
-- Every player online sees a conversation's lines in chat, each speaker in a colour of their own, as the voice and Maren have today.
-- An ordinary answer can be clicked only by a player near the person, within about 32 blocks, and the first click decides. A hard decision, a shard or a door, can be voted on by every player online, wherever they are, and needs two thirds.
+- Every player online follows a conversation: within reach as subtitles, with the answers numbered beside the crosshair, and farther away in chat, each speaker in a colour of their own (`interface.md`, I4).
+- An ordinary answer can be chosen only by a player near the person, within about 32 blocks, and the first choice decides. A hard decision, a shard or a door, can be voted on by every player online, wherever they are, and needs two thirds.
+- A person speaks under what the player sees until someone says their name, and under their name from that line on; the name over their head follows. Every person is introduced in their first scene.
+
+  ```text
+  <A big man> Stay back! ...It's a person. It's only a person.
+  <A woman in green> I'm Agna. I mend people, when there's anything left to mend. That's Hob, our smith.
+  <Agna> You've seen them out there. They never take anything. They only open the chest.
+  ```
+
 - There is one conversation at a time in the world. A second person spoken to answers with a line of their own and waits.
 
   ```text
@@ -124,7 +133,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
     [Give it to her 1/3]  [Keep the shard 1/3]   (waiting for Mo)
   ```
 
-**Why:** The story stays one for the whole world, while nobody far away answers for the player standing in front of the person, and the decisions that belong to everyone reach everyone. One scene at a time keeps the chat readable and matches the narration's one voice at a time, and a decision that waits never lets someone's absence choose a shard.
+**Why:** The story stays one for the whole world, while nobody far away answers for the player standing in front of the person, and the decisions that belong to everyone reach everyone. One scene at a time keeps the chat readable and matches the narration's one voice at a time, and a decision that waits never lets someone's absence choose a shard. A name the player never heard is a riddle in the speaker's place, so names wait for the line that says them.
 
 **The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/TalkSpike.java`, dev code that never ships), with Easy NPC 7.13.0 in the pack: a right-click on a person's Easy NPC body starts their lines in chat for everyone; an ordinary answer is a link in chat that counts only from a player within 32 blocks, and the first decides; a hard decision shows its tally and who is still missing after every vote, needs two thirds of the players online when it opened, keeps the vote of a player who leaves and takes the vote of one who joins later; and a second person spoken to says they are busy. Walking away and coming back is not in it yet. What it showed:
 
@@ -220,6 +229,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 - A day is a night slept. The stillness rule counts nights slept within 256 blocks of one place, and the difficulty that grows per day goes, since the danger grows with the player's shine (S12).
 - By day, danger is shade, storms, people and the land: dense forests and caves keep the gaze's creatures alive in daylight, a thunderstorm darkens the sky enough for them to walk, the Gazebound are people and the sun means nothing to them, predators hunt, and the cold, the heat and the water are the land's gates.
 - A quest gets no exception from the stillness rule, which already allows two nights in one place; a quest that keeps the player longer happens on a living people's hallowed land (S6), where the gaze cannot see them.
+- No night event comes from a calendar. A night the story already holds (a hold, a scripted hard night) takes no other with it, and every horde ends when the sun rises. While the story holds a night, no bed takes anyone, and the refusal says why: "Not tonight. The sky over the ridge is red."
 - The gaze finds the caravan when a quest calls for it (The Bell, The Hollow, The Empty Grave), when the caravan has slept three nights in one place, or by a chance each night that grows with the player's shine, and more while Tamsin's bell is with the caravan. When the camp goes up that evening the ember warns: "The ember is uneasy tonight." The red moon comes only when the story wants it, once or twice an act.
 
 **Why:** A clock the story drives lets every night land where the people are and every hard night land as a set piece, and easing out keeps the sky moving so time never visibly stops. Counting days in nights slept cannot be cheated, and daylight that is safe only in the open keeps the forest, the storm and the Gazebound dangerous on a long day's road.
@@ -325,7 +335,7 @@ The fourth effect, the chance each night that the gaze finds the caravan, is the
 | Track | A trail laid ahead, followed with the ember sense | The Wayfarer mod |
 | Hold | Something kept alive against waves until dawn or a set time | The Hordes, and the Wayfarer mod |
 
-- **The ember sense** is a key. Held, the ember flares, and for a few seconds clues and tracks within about 24 blocks glow faintly. A clue is something in the world the player looks at and clicks; each adds a line to the journal, and the step is done once enough are found. A trail is a line of marks laid on the ground ahead, the way road scenes are (M4), such as hoofprints, blood or a cold fire, and taken away afterwards. The Trail-sight gift (S6) makes tracks glow all the time.
+- **The ember sense** is a key, the one left of X on every keyboard (Z on an English one, Y on a German one). Held, the ember flares, and for a few seconds clues and tracks within about 24 blocks glow faintly. While a goal is known by feeling, the held ember burns brighter the closer the player faces it, so sweeping it round finds the way; where the story laid a trail (the caravan's wheel ruts, the Diggers' marks, a hall's hidden entrance) it glows. Every quest that searches asks for the ember: clues, entrances and tracks are found with it, not by luck. A clue is something in the world the player looks at and clicks; each adds a line to the journal, and the step is done once enough are found. A trail is a line of marks laid on the ground ahead, the way road scenes are (M4), such as hoofprints, blood or a cold fire, and taken away afterwards. The Trail-sight gift (S6) makes tracks glow all the time.
 
   ```text
   You hold up the ember. Prints glow in the snow, a hunter's, heading for the ridge.
@@ -373,7 +383,7 @@ Act 3:
 | Carry | Someone on the player's back: no sprinting, and running wakes them | The Wayfarer mod |
 | Tame | Vanilla taming, and the horse that never sleeps with a rule of its own | Vanilla, and the Wayfarer mod |
 
-- Only the land and the weather can make a player dangerously hot or cold. Fires, lanterns, ovens, running, armour and what they hold warm or cool them, but never past warm or cool, and in the cold lands a fire still brings them back to comfortable.
+- Only the land and the weather can make a player dangerously hot or cold: deserts and badlands by day, icy land by night. The season colours the land and brings its snow, but never makes a warm land hot or a cool one icy (M25). The first time a player is too hot or too cold, the task panel says what helps. Fires, lanterns, ovens, running, armour and what they hold warm or cool them, but never past warm or cool, and in the cold lands a fire still brings them back to comfortable.
 
   ```text
   Noon on the plains, you sit by your campfire: warm, never burning.
@@ -502,19 +512,21 @@ What it showed:
   | Netherite, crimson iron | None | Only around the Ancient Cities |
 
 - **Backpacks.** Stack upgrades go up to tier 3.
+- **Wild animals.** Twice vanilla's: up to 20 around each player instead of 10, since breeding and planting are cut (D7) and hunting feeds the team.
+- **Floating islands.** Terralith's sky islands go; its sky biomes stay as plain land.
 - **Animals added twice.** Each pair from Naturalist and Wilder Nature, and the crab from Friends and Foes as well, is set side by side in the workshop (`tooling.md`, T1), and the one that looks and behaves better stays, with what it drops counting, since hunting is now a main source of food.
 - **Structures.** About one place of a kind every so many blocks:
 
   | Owner | Kind | About one every |
   |---|---|---|
   | The Twelve Peoples | Their own places | A handful per people, set near their hall by the generator |
-  | The Gazebound | Outposts and camps | 2,048 blocks |
-  | | Forts and mansions | 8,192 blocks |
-  | The settled world | Villages | 1,024 blocks |
-  | | Towns | 4,096 blocks |
-  | | Capitals | 16,384 blocks, a few in the world |
-  | | Ruins of burnt towns | 512 blocks |
-  | Wayfarers and travellers | Campsites | 512 blocks |
+  | The Gazebound | Outposts and camps | 1,536 blocks |
+  | | Forts and mansions | 6,144 blocks |
+  | The settled world | Villages | 768 blocks |
+  | | Towns | 3,072 blocks |
+  | | Capitals | 12,288 blocks, a few in the world |
+  | | Ruins of burnt towns | 384 blocks |
+  | Wayfarers and travellers | Campsites | 384 blocks |
   | The first civilisation | Ancient Cities | As rare as vanilla's, deep |
 
   Every one of the pack's structure kinds gets its owner or is cut in `generator/owners.toml`, and the kinds this table spaces share one placement each.
@@ -581,7 +593,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | Story, books, notes and journal (`Story`, `Library`, `Notes`, `Journal`) | The voice's lines, the books, the notes, the FTB Quests book | Replaced by the quest engine and the journal (M1, M2); the books stay as content |
 | Teams (`Teams`) | FTB Teams | Replaced: everyone in the world is one team (D11) |
 | Camps (`Camps`) | The Last Camp and Wend's first and last camps | Kept: the prologue's camp and the memories' places; the camp generator also builds the caravan's pieces (M5) |
-| Structure spread and the ring (`Spread`, `ExactRingPlacement`, the world-generation mixins) | Spreads structures 8.5 times apart and places the ring of frames | Changed: frequencies by owner (M13); the ring stays |
+| Structure spread and the ring (`Spread`, `ExactRingPlacement`, the world-generation mixins) | Spreads structures 6 times apart and places the ring of frames | Changed: frequencies by owner (M13); the ring stays |
 | Loot (`Loot`) | Fills Lootr chests near players | Kept |
 | Hidden pop-ups (the toast mixin) | Hides vanilla's advancement pop-ups | Kept (D7) |
 | The showroom and the driver (dev only) | The showroom and `scripts/client.py` | Kept, as tooling (T1, T2), the showroom opened by `just showroom` |
@@ -621,6 +633,13 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   | 2 | Bort and diamond, from the deep places | Tide steel, Sand Singer glass-bronze | The diamond hook and backpack, large tents, ships |
   | 3 | | Crimson steel from the deep stone around the Ancient Cities, then the top tier from a far metal, forged by the Keepers' smiths or at the far ring | The top hook, backpack and tent, airships |
 
+- What vanilla makes from wood, stone and leather stays as vanilla makes it, so the first hours play as Minecraft does; everything of metal and better is Silent Gear's. Hob hands each player his patterns at the caravan's first fire, and the task panel walks them through the first head and the first tool.
+
+  ```text
+  <Hob> And take these. My patterns. Copper and iron want shaping, not just hammering.
+  ☐ Make a tool head: one of Hob's patterns and its copper or iron in a crafting grid
+  ```
+
 - A smith's tier is forged overnight: the work is left at a forge in the evening and collected at dawn. The player's own bench stays instant.
 
   ```text
@@ -628,9 +647,19 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   Morning: a sword the colour of river ice lies on the anvil.
   ```
 
-- The journal's Gear page shows the road: every tier of every kind, what it needs, where that is found and who forges it, filled in as the player learns it (D6). A few smiths' commissions are side quests with turns of their own, such as Hob's masterwork or a people's blade.
+- The journal's Gear page shows the road. It has a row for every kind the player can grow into, each appearing when it first matters: weapons; tools; armour; against the cold (wool clothes, the fur cloak, snowshoes, Warmth); against the heat (leaf clothes, the drinks that cool, the Sand Singers' shade); under water (the snorkel, the flippers, Deep-sight); in the dark (torches, lanterns, glowsticks, the night-vision goggles, Dark-sight); carrying (backpacks and their upgrades, lunchboxes); the camp (tents from tiny to mega, the crossbeams and shovels that make the inside bigger, the cooking pot); getting about (grappling hooks, the hang glider, ziplines, a horse with its saddle and armour, the stone of one's own); ships, with Act 2; aircraft, with Act 3; food and health (more hearts from food eaten in variety, the meals); and charms (the trinkets and the shards' gifts).
+- Each row shows what the player has, what it is good for, which land or gate it opens, and the next tier: what it needs, where that is found and who makes it, "?" until the player learns it, filled in for the whole team by what anyone does (D6, D11). "How it's made" opens JEI on its recipe. Track puts the next step in the task panel as a quest's tasks are, as Horizon Forbidden West turns a missing part into a job; nothing on the page has to be done, and nothing pays for ticking it.
+- Each kind names the one in the caravan who knows it, and at the fire they now and then say a line about its next tier: Hob for metal, weapons, tools, armour and hooks; Agna for clothes against the cold and the heat, food and remedies; Tamsin for tents and the camp; Pip for horses. A few smiths' commissions are side quests with turns of their own, such as Hob's masterwork or a people's blade.
 
-**Why:** Silent Gear is already the deepest gear system for 1.21.1, and Tinkers' Construct has not reached it; its materials as data let the peoples' metals join it. Tiers tied to places send the player down the road for better gear, an overnight forge makes the smiths matter without a waiting bar, and a page instead of "have item X" quests keeps "No quest is a chore". The top within the story lets a player who works for it face the end at their best.
+  ```text
+  Gear › Against the cold
+    Wool clothes · from sheep, at your bench               [How it's made]
+    Next: the Frost Walkers' snowshoes · from ? · made by ?        [Track]
+  ☐ Iron: in caves under the hills   ☐ Make an iron pick head with Hob's pattern
+  <Hob> Iron's fine. But the Frost Walkers had a metal that laughed at the cold.
+  ```
+
+**Why:** Silent Gear is already the deepest gear system for 1.21.1, and Tinkers' Construct has not reached it; its materials as data let the peoples' metals join it. Tiers tied to places send the player down the road for better gear, an overnight forge makes the smiths matter without a waiting bar, and a page instead of "have item X" quests keeps "No quest is a chore". The top within the story lets a player who works for it face the end at their best. A page that says where the next tier is and who knows it, with JEI for the recipe and a Track the player chooses, guides the way Monster Hunter's upgrade tree and Horizon's jobs do without becoming the checklist the old quest book was.
 
 **The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/GearSpike.java` and `SilentGearSword.java`, dev code that never ships, with frost iron as data in `mod/src/dev/resources/data/wayfarer/silentgear_materials/frost_iron.json` and the Gear page in `mod/src/dev/resources/wayfarer/spike/gear.json`): frost iron is a Silent Gear material written only as data, pale blue, harder-wearing than iron and with the Chilled trait, made from a stand-in ingot that looks like iron. A player who leaves two frost iron at an anvil hears "Leave it with me tonight"; half a minute later nothing is there, and at the next dawn a Silent Gear sword with a frost iron blade and an oak handle lies on the anvil. The journal's Gear page lists iron as known from the start and frost iron as "needs ?, from ?, made by ?", fills in "frost iron, from the Frost Walkers' old mine" once a player carries some, and "a smith, overnight" once one has left it with a smith. What it showed:
 
@@ -756,7 +785,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 ### M25 Seasons: set by the story
 
-- Serene Seasons colours the land, sets the cold and the heat through Tough As Nails and brings snow to temperate lands in winter, but while the story runs its cycle stands still and the quest engine turns the season: Act 1 runs from late summer into early autumn, Act 2 through mid and late autumn with its storms at sea, Act 3 through early and mid winter, and the frame stands in late winter. Once the story has ended, the cycle runs on its own, as the day does (M6).
+- Serene Seasons colours the land and brings snow to temperate lands in winter, but never changes how hot or cold the land is (M10), but while the story runs its cycle stands still and the quest engine turns the season: Act 1 runs from late summer into early autumn, Act 2 through mid and late autumn with its storms at sea, Act 3 through early and mid winter, and the frame stands in late winter. Once the story has ended, the cycle runs on its own, as the day does (M6).
 
   ```text
   The leaves turn as you leave the Frost Walkers' land.
@@ -795,28 +824,36 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 **Why:** D2 promises that the team heads in when the day's quests are done or whenever it chooses, and a day whose quest runs long must still end: without a way in, the sun would wait at 17:30 for good, as it did in the first playtest's evening.
 
-### M29 The task panel: what to do now, and how
+### M34 Waking after a fall
 
-- The top right of the screen always shows the tracked quest's title and its current objective, and under them the tasks: how to do what the step asks, and the controls the first time each is needed, every one with its key. A task ticks the moment the player does it and fades; a control once learned never shows again for that player. Counts stay live: the blocks still to walk, the seconds rested, who the team still waits for.
-- How-to lines never go to chat; chat keeps the story, the people's lines and the world's own explanations.
+- A player who falls comes to beside the teammate nearest the place they fell, on safe ground, as a player who joins does (M7); with nobody else on the road, they come to by the last fire they rested at. A bed, a tent or a story's fire never sets where they wake. Their things stay under the stone where they fell, and the task panel says to fetch them while any stone of theirs stands.
 
   ```text
-  The Last Fire
-  Sit with the stranger.
-  ☐ Open your journal (J)
-  ☐ Answer: open the chat (T) and click a reply
-
-  The First Day
-  Walk until his camp is far behind: 312 blocks to go.
-
-  The First Day
-  Pitch your tent, light a campfire beside it, and rest by the fire.
-  ☑ Pitch your tent: right-click the ground with it
-  ☐ Rest by the fire: stand near it
-  ☐ Waiting for Carinthia to rest by the fire
+  You come to beside Mo. The ember found the nearest warmth it knew.
+  ☐ Fetch your things: the stone where you fell, ✝ on your compass
   ```
 
-**Why:** The Witcher 3 and Cyberpunk 2077 keep the tracked quest and its objectives in the top right, so players know where to look, and teaching each control the moment it is first needed, ticked off when done, teaches without a tutorial or a wall of text. The first playtest stalled at every step where only the journal or chat said what to do and how.
+**Why:** In the playtest a fall sent a player to a tent five thousand blocks behind and another to a story's fire the team had long left, alone and naked, and the cold took them in minutes. Waking beside a friend keeps a team together, which the story assumes everywhere, and the last fire is the lore's answer for a player alone.
+
+### M35 The story's places hold
+
+- What the story builds and still needs cannot be broken, built on, burnt, flooded or blown up: the Last Camp with the stranger's grave, Tollbridge's bell tower and its cellar until Ash is done, and the caravan's camp while it stands. Doors, beds and chests in them still work. A refusal says why: "Leave it standing: it is all Tollbridge has left."
+
+**Why:** In the playtest one swing at the cellar's fire stopped the story until someone typed a command. A place the story waits on that one player can break ends the story for everyone, and the reasons are the world's own: a grave, a ruin, someone else's camp.
+
+### M36 Everything given has a form
+
+- Whatever the story gives can be found again. The ember sits in a charm slot of its own from the moment the stranger presses it into the player's hand: grey and cold until it wakes, glowing after, never taken off and kept through a death, as the shards are in theirs. Its tooltip says its state and how many shards it holds; a shard is named for its people, "The Diggers' Shard", and its tooltip names the gift it gave. Everything else the story gives is an item.
+- The first time the ember is given, the task panel says where it is.
+
+  ```text
+  ☐ Your ember sits with your charms: open your inventory (E)
+  The ember
+    Warm, and it glows.
+    Shards: 1
+  ```
+
+**Why:** The ember is the thing the whole story turns on, and a player who cannot see it has nothing to hold; the shards already sit in their slots, so the ember belongs beside them.
 
 ## Open
 
@@ -824,21 +861,13 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 M13 spaces the Gazebound's, the settled world's towns and villages, the ruins and the campsites. The rest of the pack's places have an owner in `generator/owners.toml` but no spacing of their own, and stand as their mods spread them, 8.5 times wider than the mods made them: the settled world's small places (farms, wells, taverns, watchtowers, stalls, about 140 kinds), the land's own (trees, boulders, log piles, ponds, about 40), the sea's (wrecks, sunken ruins, islands, about 20), what lies under the ground (dungeons, mines, about 40), and the Twelve Peoples' temples, monuments and crypts (about 80) until the generator sets them near their halls. To decide: how often each of these stands, and whether the taverns (W11's dice) and the old mines (M13's rich ore) need a spacing of their own.
 
-### M30 The rest of the HUD
-
-The task panel (M29) is built; the compass, its captions, the night's icons, the gaze bar and the notices (a quest done, a quest begun, a reward waiting) are still what each system drew for itself. To decide: one look and one place for each, beside the panel and under the shaders, and what shows only when it matters.
-
-### M31 The journal screen
-
-The journal works but reads as a list: the first playtest found the Take button for a waiting reward hard to see and nothing saying that taking it ends the step. To decide: its layout and tabs (M2 names eight, four are built), how rewards and their Take show, and how it reads at a glance.
-
-### M32 A screen for conversations
-
-Talks run in chat with answers to click, and the first playtest found that new players did not know answers could be clicked, or that chat had to be opened first. To decide: whether talks move to a screen of their own, as in The Witcher 3 (the speaker, their line, the answers as buttons, a pace that waits for reading), and what the other players see while one of them talks.
-
 ### M33 Room for the team's tents at the caravan's fire
 
 The prologue ends with "Sleep in your tent by their fire", and a tent sleeps only with a lit campfire within 4 blocks of it (M12). In the walkthrough the caravan's households filled the ground around its fire, and most spots within a few blocks of it had no room for a small yurt, so the team pitched further out with a campfire of their own, which the task panel teaches. To decide: whether the camp keeps pitches free for the team's tents beside its fire, how many and how big, or whether a tent near the camp counts the caravan's fire from further away.
+
+### M37 The fights
+
+Fights are scattered over M9, M10, M14 and M22 and Improved Mobs, with Better Combat and Combat Roll in the pack, and no roster says what the team meets where. To decide: which monsters, beasts and Gazebound the team meets in each act and land; how each warns before it strikes; what each asks of the team and its gear (M18); how the named fights differ (the cellar's hold, the ford, the champion, the worm, the sea's beast, the dragon); and how Improved Mobs and the shine (M9) scale them.
 
 ### M17 Distant Horizons SeedGen
 

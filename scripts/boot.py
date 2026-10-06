@@ -45,7 +45,11 @@ def locate(server, structure, at=None):
 
 def check(server):
     balance = tomllib.loads((ROOT / "balance.toml").read_text())["strongholds"]
-    eyes = sorted(tomllib.loads((ROOT / "generator/eyes.toml").read_text())["eyes"])
+    eyes = sorted(
+        eye
+        for eye, spec in tomllib.loads((ROOT / "generator/eyes.toml").read_text())["eyes"].items()
+        if not spec.get("story", False)
+    )
     failures = []
     found = locate(server, "betterstrongholds:stronghold")
     ring = found[0] if found else None
@@ -105,7 +109,7 @@ def world(server, seed):
 def journey(server, eyes, start, legs):
     pos = start
     for tier in legs:
-        remaining = [eye for eye in sorted(eyes) if eyes[eye]["tier"] == tier]
+        remaining = [eye for eye in sorted(eyes) if eyes[eye]["tier"] == tier and not eyes[eye].get("story", False)]
         while remaining:
             found = [(hit, eye) for eye in remaining if (hit := locate(server, f"wayfarer:shrine/{eye}", pos))]
             if not found:

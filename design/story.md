@@ -214,6 +214,8 @@ Around them live their households and a few townsfolk families: about 15 to 20 p
 | Ilse | Nobody | A tent full of books |
 | The townsfolk | Three or four families | Their own tents |
 
+Each of the first four knows a part of the road's gear and says so at the fire (`systems.md`, M18): Hob metal, weapons, tools, armour and hooks; Agna clothes against the cold and the heat, food and remedies; Tamsin tents and the camp; Pip horses, from the stories.
+
 Outside the caravan:
 
 - Wend, the dead stranger, a Gazebound captain who broke the oath, known through his trail of halls, his camps, Corin, Maren and Nell's hatred; his real last whisper comes near the end.
@@ -326,6 +328,7 @@ A cut gets a reason in the lore only where the player notices it by trying: a se
 | Ore is thin in plain stone | The Ancient Cities and the peoples mined the land bare long ago; what is left lies in their old mines and in the deep stone around the Cities | Hob: "You won't find iron worth the name by digging where you stand" |
 | The volcanic and basalt lands | Where the Nether once pressed up, before the Keepers sealed it | An old book, and the land's name |
 | The Last Sea | The edge of the world past the far ring, where the land gives out; its cold hints at the silence (S21) | The Keepers, and the voice: "Don't go out there. Nothing I sent ever came back" |
+| A fall wakes the player beside a friend | The ember is bound to fire and to its kin: it brings the fallen back to the nearest warmth it knows, a friend's ember, or else the last fire they sat by | The first fall: "You come to beside Mo. The ember found the nearest warmth it knew." |
 | Gear never breaks, and at its last use it is no better than a hand | Everything carried: a Wayfarer throws nothing away, so a worn-out tool is still carried, no better than a hand, until a fire or a smith mends it | Hob: "You don't throw it away. You bring it to me." |
 | Gate stone that a lesser pick barely breaks, and the pick spent on it | The peoples built their gates from deep stone the Cities' Nether-fire hardened: only metal from the same deep places cuts it, and a softer pick blunts itself to nothing | Hob, or a people's book |
 | Held up, the ember makes tracks and clues glow | The ember is the Eye's light, and light is sight: held up, it shows for a moment what has passed by | The voice, the first time: "Hold it up. Look." |
@@ -542,20 +545,23 @@ The prologue step by step, as the slice builds it (`slice.md`, step 2). Every li
 
 **P1 The Last Fire** (the Last Camp; Talk, then Build):
 
-1. The world's first player wakes at dawn on the ground by the Last Camp's lit fire. The stranger lies beside it, old and spent, with a scar over his heart: the Gazebound's mark (S18), which Corin explains in 1.3.
-2. He speaks first, in chat, with answers to click (M3). He knows the player's face and will not say why. He presses a cold ember into their hand, gives three rules in his own words, walk, never stay, sleep only in a tent by a fire, and dies with his charge cut off (S22).
-3. The player buries him: a right-click on him and "Bury him", the screen dims, and a grave stands by the camp with a blank stone. Whoever buried him writes it, since nobody knows his name, and the journal keeps the words.
-4. His pack is the first reward, waiting in the journal for each player to claim: a backpack, a tent, a little food, and his patterns for tools, the blueprints Silent Gear makes its gear from. Nothing else comes with a new world.
+1. The world's first player wakes at dawn on the ground by the Last Camp's lit fire, remembering nothing before it. The stranger sits across the flames, propped against a log, grey and short of breath, with a scar over his heart: the Gazebound's mark (S18), which Corin explains in 1.3.
+2. He speaks first, in chat, with answers to click (M3). He says plainly that he is dying and why: he is old, and finding the player and bringing them to his fire took the last of him. He knows the player's face and will not say why. He presses a cold coal into their hand and names it, "That's an ember", and only then does the compass name it. He gives three rules, each with its reason in his words, walk, never stay, sleep only in a tent by a fire, and dies with his charge cut off (S22), slumping where he sits.
+3. The narrator says that he is dead and gives the reason to bury him. The player buries him: a right-click on him, the screen dims, and a grave stands by the camp with a blank stone. Whoever buried him chooses its words from answers in chat, a few ready words, their own (only then the stone's writing screen opens, with a task saying what to do there) or none, and the journal keeps them.
+4. His pack is the first reward, waiting in the journal for each player to claim: a backpack, a tent, a bed of any colour and a little food. Nothing else comes with a new world. Silent Gear's blueprints come later, as Hob's patterns at the caravan's first fire (M18).
 
 The Last Camp is his fire, burning, his tent and his things, with no grave until the player buries him and no letter, since he says it himself. It stays as it is for good: the last memory is played there (S13).
 
 ```text
-<Stranger> There you are. Thought I'd go before you woke.
-<Stranger> Hold out your hand. It's cold, it's been cold for years. Walk with it and it wakes. It lives on what you see.
-<Stranger> Never stay. Never sleep in the open: a tent, and a fire by it.
-<Stranger> Don't let it... the shards. I took them. Don't let it have...
-He doesn't finish. You bury him by his fire. On the stone you write: "He gave me fire."
-Journal: I buried him by his fire. On the stone I wrote: "He gave me fire."
+You wake on cold ground beside a fire. You don't remember anything before this fire.
+An old man sits across the flames, propped against a log. His face is grey, and his breath rattles.
+<The stranger> I'm dying, that's all. I'm old, and I walked further than I had left in me.
+<The stranger> That's an ember. Mine. It's been cold for years.
+<The stranger> Never stay long in one place. Stay, and something finds you.
+<The stranger> Don't let it... the shards. I took them. Don't let it have...
+The fire pops. The old man is dead.
+What do you write on his stone?  [He gave me fire.] [Here lies a stranger.] [Write my own words.] [Leave it bare.]
+Journal: I buried him by his fire. On his stone I wrote: "He gave me fire."
 ```
 
 **P2 The First Day** (wherever the player makes camp; Build):
@@ -563,7 +569,7 @@ Journal: I buried him by his fire. On the stone I wrote: "He gave me fire."
 1. "Not here": the player walks at least 512 blocks from the Last Camp, any way they like.
 2. They make their first camp: the tent pitched, a campfire crafted from logs, sticks and coal or charcoal and lit within 4 blocks of it, and a rest by the fire, which counts the moment a player stands near it. In a team, two thirds of the team have done so.
 3. Once the camp is made, the afternoon passes at the fire in half a minute (M20) and dusk falls.
-4. The ember wakes: it has seen new land (S19). The compass appears, and the ember sense with it.
+4. The ember wakes: it has seen new land (S19). It leans in the player's palm towards the smoke, which ties it to the compass that has stood at the top of the screen from the start, and the ember sense wakes with it.
 5. Smoke and a red glow rise over the land ahead, and P3 opens. The player sees the town, so the compass shows its exact mark.
 
 The sun eases as on every day out (M6), and the road's rules teach themselves when tried, through the first-time hints: a sapling that withers, a chest that will not stand.
@@ -579,14 +585,15 @@ Over the ridge ahead, smoke. Under it, the sky is red.
 
 1. The quest puts the town down at dusk past the player's camp, on the way they walked, out of sight behind the land and close enough that its smoke shows over it, already burning, with fires that do not spread. It is a town that grew too big: about a hundred blocks across and about thirty buildings round the bell tower's square, from the inn, the smithy and the market to houses of every size. It grows on its land the way a village does: streets leave the square and bend with the ground, every building stands on its own footing beside its street with its door towards it, and a path joins each door to the street. Its site keeps 64 blocks clear of any other place and prefers land beside a river, and where it finds one the town stands on both banks with the toll bridge across; elsewhere it stands without. About thirty-two dead lie in it, each with a face of their own: most indoors, where they hid, some at the doors they tried to get out of, fewer in the streets where they fled. It stays afterwards as a ruin of the settled world: Tamsin's town.
 2. The player investigates by night with the ember sense (M10): bodies with their shirts torn open over the heart, purses still on their belts, emeralds in an open strongbox, each a line in the journal.
-3. The survivors, Tamsin, Pip, Agna and Hob, hide in the cellar of the stone bell tower. Resting at their fire makes it where the player wakes if they fall that night, and Hob hands them a blade from his forge.
+3. The survivors, Tamsin, Pip, Agna and Hob, hide in the cellar of the stone bell tower, and each gives their name there, since the player knows none of them. Resting at their fire makes it where the player wakes if they fall that night, and Hob hands them a blade from his forge.
 4. The gaze's creatures come back, drawn by the ember that has just woken: the player shines (S12) before anyone knows what that means.
 5. The hold: four waves at the cellar door, with the survivors as their target. If one falls, the step is tried again from the cellar, with the failed try's waves gone (D6). The night eases towards midnight while the hold lasts; after the last wave it passes to dawn in half a minute, and what is left crumbles in the sun.
 6. In the morning the survivors beg the one with the ember to lead them. Tamsin sits by the fallen bell and asks what to do with it; she takes it whatever the player says, and remembers what they said, which comes back in The Bell (1.10).
 7. Make for the caravan: the survivors' first camp goes up out of sight ahead, at its smallest, the fire, Tamsin's tent and the bell's cart, the healers' tent and Hob's wagon (M5). The player walks in by daylight, the afternoon passes at the fire, everyone has a word, Agna binds a cut on the player's arm and finds their heart slow, and Tamsin makes them the caravan's scout. They sleep in their tent by its fire, and the next morning Act 1 opens with the ember's first pull (1.1).
 
 ```text
-<Agna> Look. They never take anything. They only open the chest.
+<A woman in green> I'm Agna. I mend people, when there's anything left to mend. That's Hob, our smith.
+<Agna> You've seen them out there. They never take anything. They only open the chest.
 <Tamsin> They never come back. What did you bring?
   [Hold] The cellar door - wave 1 of 4
 <Tamsin> The bell stays with us.  [Leave it, it'll slow us]  [We'll take it]
@@ -635,8 +642,8 @@ The first day of Act 1 step by step, and the caravan's day it runs in, as the sl
 |---|---|
 | People | A herder resting his sheep, who shares a little food or a warning; a pedlar, Minecraft's wandering trader, with a few trades |
 | What the gaze left | A traveller by the road with their chest opened and their purse untouched; a cart on its side, a dead mule and tracks into the reeds, followed or left |
-| The Gazebound | A patrol crossing a far ridge; a patrol questioning a traveller, where the player steps in, hides or walks on, and each answer comes back: stepping in is a fight with three Gazebound, and the traveller thanks the team with a rumour of a place nearby; hiding, the patrol takes his purse and moves on, and he curses whoever watched from the trees; walking on, they take him with them, and some days later another scene finds his pack on the road |
-| The land | Wolves shadowing the team along a ridge; a fallen trunk across a gorge |
+| The Gazebound | A patrol crossing a far ridge; a patrol questioning a traveller after a light ("Seen anyone with a coal in their hand that glows?"), where the player steps in, hides or walks on, and each answer comes back: stepping in is a fight with three Gazebound, and the traveller thanks the team with a rumour of the nearest ruin ahead, which the compass marks until they reach it; hiding, the patrol takes his purse and moves on, and he curses whoever watched from the trees; walking on, they take him with them, and some days later another scene finds his pack on the road |
+| The land | Wolves shadowing the team along a ridge, keeping pace at a distance and never coming close unless struck; a fallen trunk across a gorge |
 
 The gear teaches itself when tried, through the first-time hints, as the prologue's rules do: the player's own bench makes Act 1's tiers, flint, copper and iron (M18); a tool at its last use works like a bare hand, and Hob says what to do with it ("You don't throw it away. You bring it to me."); a repair kit mends it at a fire (M12).
 
@@ -664,10 +671,10 @@ Evening  <Tamsin> You came back different. What's in that hand now?
          [Main] His First Camp   Compass ◆ 3,072 blocks
 ```
 
-**W5 The Cache** (an old campsite; Investigate). The first old campsite ahead of the team after the first hall holds it. As they pass, the voice: "That camp. Somebody sat there too long. Go and look." The compass marks it. With the ember sense the player finds a cold black ember in a tin, his journal, telling how he built a cabin, how the ember dimmed and how one winter it went out, and, wrapped in cloth, his stone of one's own (M23), which waits in the journal for each player.
+**W5 The Cache** (an old campsite; Investigate). The first old campsite ahead of the team after the first hall holds it. As they pass, the voice: "That camp. Somebody sat there too long. Go and look." The compass marks it. With the ember sense the player finds a cold black ember in a tin, a journal signed only with the circle mark, telling how its writer built a cabin, how the ember dimmed and how one winter it went out, and, wrapped in cloth, their stone of one's own (M23), which waits in the journal for each player.
 
 ```text
-Journal: He stopped walking, and his ember went home. He left his stone. I carry it now.
+Journal: Whoever camped here stopped walking, and their ember went home. They left their stone. I carry it now.
 ```
 
 **C8 The Road, its first stage** (Pip; Tame). On the evening after the first hall Pip asks for a horse, and any horse will do: a wild one tamed on the plains, or the frightened horse that ran from the cart on its side, if the player followed its tracks into the reeds. Brought to the caravan's fire, it gets its name from Pip and grazes by Agna's tent from then on. Tracking, the next stage, comes later.
@@ -697,4 +704,10 @@ What 1.1 and the caravan's day ask of the systems, at their minimum:
 
 ## Open
 
-Nothing is open.
+### S25 The road's curve
+
+One chart of the 25 to 30 hours, evening by evening: each evening's quests and activities, how tense it runs (quiet, uneasy, a fight, a revelation), its hard nights and red moons, its season, and the moments that get music (`sound.md`), so that no two evenings in a row feel alike and the big moments stand apart.
+
+### S26 The shards' books
+
+Each shard taken still gives a book from the old pack, the first civilisation's account of its fall, named as a memory: "The shard remembers: The First Memory. It is copied into your journal." The memories are Wend's life now (M8), first met at 1.2, so the line names a memory the story has not shown, at the first shard. To decide: whether the shards' books stay, whose words they are, what they are called and what the line says.

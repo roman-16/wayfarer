@@ -56,6 +56,7 @@ public final class Cuts {
     private static final Set<ResourceLocation> ITEMS;
     private static final Set<ResourceLocation> CREATURES;
     private static final Set<ResourceLocation> ENCHANTMENTS;
+    private static final Set<ResourceLocation> FEATURES;
 
     static {
         try (var stream = Cuts.class.getResourceAsStream("/wayfarer/cuts.json")) {
@@ -66,12 +67,17 @@ public final class Cuts {
             ITEMS = ids(json.getAsJsonArray("items"));
             CREATURES = ids(json.getAsJsonArray("creatures"));
             ENCHANTMENTS = ids(json.getAsJsonArray("enchantments"));
+            FEATURES = ids(json.getAsJsonArray("features"));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
     private Cuts() {}
+
+    public static boolean feature(ResourceLocation feature) {
+        return FEATURES.contains(feature);
+    }
 
     public static boolean cut(ItemStack stack) {
         return ITEMS.contains(BuiltInRegistries.ITEM.getKey(stack.getItem()))

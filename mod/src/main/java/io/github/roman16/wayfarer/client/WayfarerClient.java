@@ -10,6 +10,7 @@ import io.github.roman16.wayfarer.story.Tasks;
 import java.util.List;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ChestedHorseModel;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
@@ -20,16 +21,18 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
+import top.theillusivec4.curios.api.client.ICuriosScreen;
 
 @Mod(value = Wayfarer.MODID, dist = Dist.CLIENT)
 public final class WayfarerClient {
     public static final KeyMapping JOURNAL = new KeyMapping("key.wayfarer.journal", GLFW.GLFW_KEY_J, "key.categories.wayfarer");
     private static final KeyMapping MAP = new KeyMapping("key.wayfarer.map", GLFW.GLFW_KEY_M, "key.categories.wayfarer");
-    private static final KeyMapping SENSE = new KeyMapping(Sense.KEY, GLFW.GLFW_KEY_Y, "key.categories.wayfarer");
+    private static final KeyMapping SENSE = new KeyMapping(Sense.KEY, GLFW.GLFW_KEY_Z, "key.categories.wayfarer");
     private static final String JOURNEYMAP = "journeymap";
 
     public WayfarerClient(IEventBus modBus) {
@@ -40,9 +43,18 @@ public final class WayfarerClient {
         });
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> keys(Minecraft.getInstance()));
         modBus.addListener(RegisterGuiLayersEvent.class, event -> event.registerAboveAll(Wayfarer.id("hud"), Hud::render));
-        modBus.addListener(EntityRenderersEvent.RegisterRenderers.class,
-                event -> event.registerBlockEntityRenderer(Wayfarer.SHRINE_PEDESTAL_ENTITY.get(), ShrinePedestalRenderer::new));
+        modBus.addListener(EntityRenderersEvent.RegisterLayerDefinitions.class,
+                event -> event.registerLayerDefinition(FallenRenderer.MULE, ChestedHorseModel::createBodyLayer));
+        modBus.addListener(EntityRenderersEvent.RegisterRenderers.class, event -> {
+            event.registerBlockEntityRenderer(Wayfarer.SHRINE_PEDESTAL_ENTITY.get(), ShrinePedestalRenderer::new);
+            event.registerEntityRenderer(Wayfarer.FALLEN.get(), FallenRenderer::new);
+        });
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Sight.tick(Minecraft.getInstance()));
+        NeoForge.EVENT_BUS.addListener(ScreenEvent.Opening.class, event -> {
+            if (event.getNewScreen() instanceof ICuriosScreen) {
+                PacketDistributor.sendToServer(new Tasks.Did("charms"));
+            }
+        });
         NeoForge.EVENT_BUS.addListener(RenderGuiLayerEvent.Pre.class, event -> {
             if (event.getName().equals(VanillaGuiLayers.EXPERIENCE_BAR) || event.getName().equals(VanillaGuiLayers.EXPERIENCE_LEVEL)) {
                 event.setCanceled(true);

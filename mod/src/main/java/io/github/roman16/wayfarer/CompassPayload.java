@@ -8,11 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public record CompassPayload(
         Mode mode,
-        ResourceLocation target,
         int heat,
-        int distance,
-        int targetX,
-        int targetZ,
         List<ResourceLocation> claimed,
         List<Marker> markers,
         Shelter shelter,
@@ -21,17 +17,19 @@ public record CompassPayload(
 
     public enum Mode {
         AIR,
+        BARE,
+        COLD,
         DIM,
         FAR,
         HIDDEN,
-        LOST,
-        NEAR
+        LOST
     }
 
     public enum Kind {
         GRAVE,
         LEAD,
-        TEAMMATE
+        TEAMMATE,
+        TENT
     }
 
     public enum Shelter {
@@ -44,19 +42,13 @@ public record CompassPayload(
 
     public static final Type<CompassPayload> TYPE = new Type<>(Wayfarer.id("compass"));
     public static final StreamCodec<FriendlyByteBuf, CompassPayload> STREAM_CODEC = StreamCodec.ofMember(CompassPayload::write, CompassPayload::new);
-    public static final ResourceLocation NOTHING = Wayfarer.id("nothing");
-
     public static CompassPayload hidden(List<ResourceLocation> claimed) {
-        return new CompassPayload(Mode.HIDDEN, NOTHING, 0, 0, 0, 0, claimed, List.of(), Shelter.NONE, false);
+        return new CompassPayload(Mode.HIDDEN, 0, claimed, List.of(), Shelter.NONE, false);
     }
 
     private CompassPayload(FriendlyByteBuf buf) {
         this(
                 buf.readEnum(Mode.class),
-                buf.readResourceLocation(),
-                buf.readVarInt(),
-                buf.readVarInt(),
-                buf.readVarInt(),
                 buf.readVarInt(),
                 buf.readList(FriendlyByteBuf::readResourceLocation),
                 buf.readList(marker -> new Marker(marker.readEnum(Kind.class), marker.readUtf(), marker.readVarInt(), marker.readVarInt())),
@@ -66,11 +58,7 @@ public record CompassPayload(
 
     private void write(FriendlyByteBuf buf) {
         buf.writeEnum(mode);
-        buf.writeResourceLocation(target);
         buf.writeVarInt(heat);
-        buf.writeVarInt(distance);
-        buf.writeVarInt(targetX);
-        buf.writeVarInt(targetZ);
         buf.writeCollection(claimed, FriendlyByteBuf::writeResourceLocation);
         buf.writeCollection(markers, (out, marker) -> {
             out.writeEnum(marker.kind());

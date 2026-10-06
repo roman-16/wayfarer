@@ -13,8 +13,9 @@ The user's playtest is for how the pack feels. Everything that would leave a pla
 
   ```console
   $ python3 scripts/server.py start --fresh
-  $ python3 scripts/client.py start --visible   # then join localhost:25566
-  $ python3 scripts/server.py run 'wayfarer pretend join Mo' 'spreadplayers 0 0 0 4 false Mo'
+  $ python3 scripts/server.py run 'op Wayfarer' 'wayfarer pretend join Mo' 'spreadplayers 0 0 0 4 false Mo'
+  $ python3 scripts/client.py start
+  $ python3 scripts/client.py run 'join localhost:25566'
   ```
 
   The teammate does what you tell it (`execute as Mo run ...`, `tp Mo @p`); move it the way a real teammate would, late and in the wrong place.
@@ -23,19 +24,25 @@ The user's playtest is for how the pack feels. Everything that would leave a pla
 
 ## Play by the screen alone
 
-At every step, using only what the screen shows (the task panel, chat, the HUD, the open screen) and nothing from the code, answer each question. A no is a finding.
+Play as someone who knows vanilla Minecraft and nothing else. At every step, using only what the screen shows (the task panel, chat, the HUD, the open screen) and nothing from the code or the design, answer each question. A no is a finding.
 
 | Ask | Fails when |
 |---|---|
+| What is happening? | Something big happened (a death, an arrival, a loss) and no line says it plainly, or the scene cuts from one state to the next with only a new objective |
+| What is that? | A word, a name or a HUD text shows before the story said it, or a person speaks under a name nobody gave |
+| Why am I doing this? | The task panel asks for an action the story gave no reason for |
 | What do I do now? | The task panel shows no objective, or only the journal says it |
 | How? | The step needs a key or a click that no task names with its key |
 | Is it working? | Something takes time (resting, walking, waiting for dusk) and nothing counts it |
 | Why not? | An action does nothing, or a refusal does not say why and what to do instead |
+| Who opened this screen? | A screen opens that the player did not ask for, or opens without a word on what it is for |
 | What about my teammate? | One player is done and does not know whom they wait for, or the other does not know they are waited for |
 | What about a restart? | Stopping the server inside the step (`server.py stop` mid-dusk, mid-hold, mid-build) and starting it again moves the clock, repeats lines, builds twice or crashes |
 | What about odd land? | A place the story puts down (a town, a camp, a hall) crashes, floats or comes out thin on another seed; build it on the state seed and on at least three others (`server.py start --seed <n>`, then `story <quest/step>`), and on the seed of any world the user reported |
 | What else speaks? | A mod's chat line, key, HUD element, starting item or random event that the design does not know of |
 | Does it look right? | A block is not what the thing is made of, as the art skill's structures rule asks |
+| Does it sound? | A moment's music or a cue the design names does not fire (the client log names each story piece and cue it plays), or Reactive Music does not fade out under a piece and come back after |
+| Where is it? | Something the story gives cannot be found again: no item, charm or tooltip shows it |
 
 ## Then
 

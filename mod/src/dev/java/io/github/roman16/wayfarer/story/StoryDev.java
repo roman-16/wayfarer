@@ -6,17 +6,18 @@ import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Joining;
 import io.github.roman16.wayfarer.Journey;
+import io.github.roman16.wayfarer.Shards;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -25,6 +26,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -37,8 +39,6 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
-import net.minecraft.world.level.block.entity.SignText;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -61,8 +61,6 @@ public final class StoryDev {
     private static final int STAND_FAR = 4;
     private static final int RING_STEPS = 8;
     private static final int HEIGHT = 4;
-    private static final int SIGN_LINES = 4;
-    private static final int SIGN_WIDTH = 15;
     @Nullable
     private static Run run;
 
@@ -220,14 +218,18 @@ public final class StoryDev {
         }
         switch (step.kind()) {
             case "talk" -> {
+                if (step.spec().has("place") && !built(server, step.text("place"))) {
+                    return false;
+                }
                 step.choices().stream().findFirst().ifPresent(choice -> Engine.choose(server, active.quest().id(), step.id(), choice));
                 body(server, step.with()).ifPresent(at -> run.here = at);
             }
             case "bury" -> {
                 People.find(server, step.text("whom")).ifPresent(Entity::discard);
                 BlockPos sign = Prologue.grave(level);
-                write(level, sign, STATES.get("stone").getAsString());
-                progress.stone = STATES.get("stone").getAsString();
+                String words = step.choices().stream().map(Story.Choice::stone).filter(Objects::nonNull).findFirst().orElse("");
+                Prologue.engrave(level, sign, words);
+                progress.stone = words;
                 run.here = sign;
             }
             case "walk" -> run.here = road(level, Engine.at(server, step.text("from")));
@@ -244,16 +246,31 @@ public final class StoryDev {
                 Clock.jump(level, clock.dusk(), clock.night());
                 Journey.of(server).wake();
             }
-            case "reach" -> run.here = Engine.at(server, step.text("place"));
+            case "reach" -> {
+                if (!built(server, step.text("place"))) {
+                    return false;
+                }
+                run.here = Engine.at(server, step.text("place"));
+            }
+            case "shard" -> {
+                Journey.of(server).claim(Wayfarer.id("shrine/" + step.text("eye")));
+                server.getPlayerList().getPlayers().forEach(Shards::sync);
+                if (step.spec().has("gift")) {
+                    progress.gifts.add(step.text("gift"));
+                }
+                run.here = Engine.at(server, step.text("at"));
+            }
             case "rest" -> {
                 BlockPos fire = Engine.at(server, step.text("at"));
-                server.getPlayerList().getPlayers().forEach(player -> player.setRespawnPosition(Level.OVERWORLD, fire.above(), player.getYRot(), true, false));
+                server.getPlayerList().getPlayers().forEach(player -> player.setData(Wayfarer.LAST_FIRE, GlobalPos.of(Level.OVERWORLD, fire)));
                 run.here = fire;
             }
             case "hold" -> Hold.stop();
             case "dawn", "sleep" -> Clock.jump(level, Steps.DAWN, clock.road());
             case "caravan" -> {
-                if (!built(server, Caravan.NAME)) {
+                if (!Caravan.campedToday(server)) {
+                    Caravan.headIn(server);
+                    run.building = Caravan.NAME;
                     return false;
                 }
                 Clock.jump(level, clock.evening(), null);
@@ -283,7 +300,6 @@ public final class StoryDev {
         float yaw = (float) Math.toDegrees(Math.atan2(subject.getZ() - feet.getZ(), subject.getX() - feet.getX())) - 90;
         Progress progress = Progress.of(server);
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-            player.setGameMode(run.modes.getOrDefault(player.getUUID(), GameType.SURVIVAL));
             player.teleportTo(level, feet.getX() + 0.5, feet.getY(), feet.getZ() + 0.5, yaw, 0);
             List.copyOf(progress.rewards).forEach(reward -> Engine.claim(player, reward));
         }
@@ -291,12 +307,15 @@ public final class StoryDev {
         if (run.save != null) {
             save(server, run.save);
         }
-        Steps.enter(server, active);
+        Engine.active(server).stream().filter(open -> !Steps.entered(open)).forEach(open -> Steps.enter(server, open));
         say("story: at " + active.key() + ", after " + steps(run.played));
         finish(server);
     }
 
     private static void finish(MinecraftServer server) {
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+            player.setGameMode(run.modes.getOrDefault(player.getUUID(), GameType.SURVIVAL));
+        }
         if (run.ticket != null) {
             Engine.overworld(server).getChunkSource().removeRegionTicket(TICKET, run.ticket, LOAD_RADIUS, run.ticket);
         }
@@ -305,12 +324,6 @@ public final class StoryDev {
 
     private static void fail(MinecraftServer server, String why) {
         run.source.sendFailure(Component.literal("story failed: " + why));
-        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-            GameType mode = run.modes.get(player.getUUID());
-            if (mode != null) {
-                player.setGameMode(mode);
-            }
-        }
         finish(server);
     }
 
@@ -335,6 +348,8 @@ public final class StoryDev {
         switch (place) {
             case Tollbridge.NAME -> Tollbridge.tick(server);
             case Caravan.NAME -> Caravan.tick(server);
+            case Diggers.NAME, Diggers.HALL -> Diggers.tick(server);
+            case FirstCamp.NAME -> {}
             default -> throw new IllegalStateException("the story has no way to build " + place);
         }
     }
@@ -420,28 +435,6 @@ public final class StoryDev {
                 && !under.is(Blocks.CAMPFIRE) && level.getFluidState(floor).isEmpty()
                 && level.getBlockState(feet).getCollisionShape(level, feet).isEmpty() && level.getFluidState(feet).isEmpty()
                 && level.getBlockState(feet.above()).getCollisionShape(level, feet.above()).isEmpty() && level.getFluidState(feet.above()).isEmpty();
-    }
-
-    private static void write(ServerLevel level, BlockPos sign, String words) {
-        if (!(level.getBlockEntity(sign) instanceof SignBlockEntity entity)) {
-            throw new IllegalStateException("the grave has no sign at " + sign.toShortString());
-        }
-        List<String> lines = new ArrayList<>();
-        for (String word : words.split(" ")) {
-            if (!lines.isEmpty() && lines.getLast().length() + 1 + word.length() <= SIGN_WIDTH) {
-                lines.set(lines.size() - 1, lines.getLast() + " " + word);
-            } else {
-                lines.add(word);
-            }
-        }
-        SignText text = entity.getFrontText();
-        for (int line = 0; line < Math.min(lines.size(), SIGN_LINES); line++) {
-            text = text.setMessage(line, Component.literal(lines.get(line)));
-        }
-        entity.setText(text, true);
-        entity.setWaxed(true);
-        entity.setChanged();
-        level.sendBlockUpdated(sign, entity.getBlockState(), entity.getBlockState(), Block.UPDATE_ALL);
     }
 
     private static void save(MinecraftServer server, Path folder) {

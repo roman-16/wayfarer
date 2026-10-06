@@ -1,0 +1,133 @@
+{
+  "cache": {
+    "voice": [
+      "That camp. Somebody sat there too long. Go and look."
+    ]
+  },
+  "cart": {
+    "clues": {
+      "mule": "The mule lies dead in its traces. Hoofprints lead off into the reeds, wide apart, running.",
+      "tracks": "Hoofprints, wide apart. Something ran from here as fast as it could, and it was not the mule."
+    },
+    "voice": [
+      "Somebody left in a hurry. Or didn't."
+    ]
+  },
+  "herder": {
+    "again": [
+      "Go on, then. Safe road.",
+      "Mind the sheep. They mind nobody."
+    ],
+    "gift": "Here. Bread's yesterday's, but it's bread.",
+    "gifts": [
+      {
+        "count": 2,
+        "id": "minecraft:bread"
+      }
+    ],
+    "voice": [
+      "A herder. Sheep don't care who's watching. I envied them once."
+    ],
+    "warning": "Keep off the ridges today. There were men in grey up there at first light, asking at every fire."
+  },
+  "pack": {
+    "clues": {
+      "pack": "A pack lies in the road, its straps cut. Needles spill out of it. Of the man who carried it, nothing."
+    },
+    "voice": [
+      "You walked on. So did I, once."
+    ]
+  },
+  "pedlar": {
+    "greeting": "A trade or two, then I'm gone. Strangers bring trouble, and I've had my share.",
+    "voice": [
+      "A pedlar. Count your fingers after you shake his hand."
+    ]
+  },
+  "questioning": {
+    "ask": [
+      {
+        "text": "On the road ahead, three men in grey stand around a traveller on his knees."
+      },
+      {
+        "by": "gazebound",
+        "text": "Seen anyone with a coal in their hand that glows? A fire that walks?"
+      },
+      {
+        "by": "traveller",
+        "text": "I've seen nothing! I sell needles, that's all!"
+      }
+    ],
+    "choices": [
+      {
+        "id": "step_in",
+        "reply": "You step out onto the road.",
+        "text": "Step in."
+      },
+      {
+        "id": "hide",
+        "reply": "You get off the road and into the trees.",
+        "text": "Hide in the trees."
+      },
+      {
+        "id": "walk_on",
+        "reply": "You keep walking. Behind you, nobody calls out.",
+        "text": "Keep walking."
+      }
+    ],
+    "hid": [
+      {
+        "by": "gazebound",
+        "text": "Nothing, he says. Take his purse for the lie."
+      },
+      {
+        "text": "They take his purse and walk on, laughing."
+      },
+      {
+        "by": "traveller",
+        "text": "I saw you in the trees! I hope it finds you, whatever you are!"
+      }
+    ],
+    "voice": [
+      "They're asking after you. Don't stand there."
+    ],
+    "won": [
+      {
+        "by": "traveller",
+        "text": "You... you came out for me. Nobody comes out."
+      },
+      {
+        "by": "traveller",
+        "text": "Listen. Past the hill there's a burnt-out place. Whoever lived there buried what they had. Nobody came back for it."
+      }
+    ]
+  },
+  "ridge": {
+    "names": [
+      "gazebound"
+    ],
+    "seen": "On the ridge, a line of figures in grey, walking. None of them looks down.",
+    "voice": [
+      "Gazebound. The heir's people. Keep low and let them pass."
+    ]
+  },
+  "traveller": {
+    "clues": {
+      "traveller": "A traveller lies by the road, opened over the heart, like the dead in Tollbridge. The purse on the belt is still full."
+    },
+    "voice": [
+      "They walked alone, at night. Don't."
+    ]
+  },
+  "trunk": {
+    "voice": [
+      "Somebody's bridge, or the wind's. Mind your feet."
+    ]
+  },
+  "wolves": {
+    "seen": "Wolves on the ridge, keeping pace. They don't come closer.",
+    "voice": [
+      "Hungry. Not that hungry. Yet."
+    ]
+  }
+}

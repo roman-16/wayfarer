@@ -1,0 +1,14 @@
+{
+  "overrides": [
+    {
+      "model": "wayfarer:item/ember_lit",
+      "predicate": {
+        "custom_model_data": 1
+      }
+    }
+  ],
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "wayfarer:item/ember"
+  }
+}

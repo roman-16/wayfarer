@@ -82,6 +82,7 @@ lore = [
 
 [eyes.lost]
 tier = 1
+story = true
 biomes = ["#c:is_forest", "#minecraft:is_forest"]
 people = "The Diggers"
 lore = [

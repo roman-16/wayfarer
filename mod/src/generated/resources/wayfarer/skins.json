@@ -11,6 +11,62 @@
     "model": "easy_npc:humanoid",
     "scale": 0.75
   },
+  "road_01": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "road_02": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "road_03": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "road_04": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "road_05": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "road_06": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "road_07": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "road_08": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "road_09": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "road_10": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "road_11": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "road_12": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "road_dead_01": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "road_dead_02": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
   "stranger": {
     "model": "easy_npc:humanoid",
     "scale": 1.0

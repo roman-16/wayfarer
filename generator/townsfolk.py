@@ -47,6 +47,7 @@ WOUNDS = [
     ["ccOc", "clxl", "cXxc", "clXc"],
 ]
 SOOT = ["#2a2420", "#342c26", "#3e352d"]
+DUST = ["#6e6252", "#7c705e", "#8a7e6a"]
 MUD = ["#4a3c2c", "#56463a", "#625040"]
 CHAR = "#1a1410"
 STAINS = [
@@ -58,6 +59,8 @@ STAINS = [
 ]
 RAISED = {"arm": "ODRqr", "body": "ADORaklpry", "head": "Hgh", "leg": "BbDq"}
 KINDS = ["man"] * 10 + ["woman"] * 10 + ["old_man"] * 4 + ["old_woman"] * 4 + ["boy"] * 2 + ["girl"] * 2
+ROAD = ["man"] * 5 + ["woman"] * 4 + ["old_man"] * 2 + ["old_woman"]
+ROAD_DEAD = ["man", "woman"]
 CHILD = 0.75
 
 
@@ -94,7 +97,7 @@ def head(style, eyes, beard):
 
 
 def shirt(wound, purse):
-    w = [row.replace("c", "o").replace("O", "O") for row in WOUNDS[wound]]
+    w = ["oooo"] * 4 if wound is None else [row.replace("c", "o") for row in WOUNDS[wound]]
     hip = "ttttttpt" if purse else "tttttttt"
     return {
         "arm": ["oooo"] * 10 + ["OOOO", "ssss"],
@@ -108,7 +111,7 @@ def shirt(wound, purse):
 
 
 def dress(wound, apron, shawl, ring):
-    w = [row.replace("c", "d").replace("O", "D") for row in WOUNDS[wound]]
+    w = ["dddd"] * 4 if wound is None else [row.replace("c", "d").replace("O", "D") for row in WOUNDS[wound]]
     front = (
         ["dddssddd", "dddddddd"]
         + [f"dddd{row}" for row in w]
@@ -162,7 +165,7 @@ def side(spec, part, limb):
     return [key for key in spec if key == part or key.startswith(part + "_")]
 
 
-def wear(spec, seed, cloth, dress):
+def wear(spec, seed, cloth, dress, opened):
     hand = pick(f"{seed}/hand", ["right", "left"])
     other = "left" if hand == "right" else "right"
     hem = 10 if dress else 8
@@ -204,7 +207,7 @@ def wear(spec, seed, cloth, dress):
                     if mark == "z" and not wound:
                         paint(rows, x0 + dx, y0 + dy, "z", cloth)
             spec[key] = rows
-    if chance(f"{seed}/bleed", 0.4):
+    if opened and chance(f"{seed}/bleed", 0.4):
         rows = list(spec["body_front"])
         column = 5 + int(noise(f"{seed}/bleed/x") * 2)
         for y in range(6, 8 + int(noise(f"{seed}/bleed/y") * 2)):
@@ -212,14 +215,13 @@ def wear(spec, seed, cloth, dress):
         spec["body_front"] = rows
 
 
-def person(index, kind):
-    seed = f"townsfolk/{index}"
+def person(seed, kind, fate):
     tone, shadow = pick(f"{seed}/tone", TONES)
     old = kind.startswith("old")
     hair = pick(f"{seed}/hair", GREYS if old else HAIRS)
     cloth = pick(f"{seed}/cloth", CLOTHS)
     trousers = pick(f"{seed}/trousers", TROUSERS)
-    wound = int(noise(f"{seed}/wound") * len(WOUNDS)) % len(WOUNDS)
+    wound = int(noise(f"{seed}/wound") * len(WOUNDS)) % len(WOUNDS) if fate != "living" else None
     woman = kind in ("woman", "old_woman", "girl")
     if kind in ("man", "old_man"):
         style = pick(f"{seed}/style", ["bald", "short", "short"] if old else ["short", "short", "messy", "long"])
@@ -261,8 +263,9 @@ def person(index, kind):
             palette |= {"R": darker(shawl[0]), "r": shawl}
     else:
         palette |= {"O": darker(cloth[0]), "o": cloth, "t": trousers}
-    wear(spec, seed, {"d", "D", "a", "A", "r", "R"} if woman else {"o", "O", "t"}, woman)
-    palette |= {"q": CHAR, "w": MUD, "z": SOOT}
+    wear(spec, seed, {"d", "D", "a", "A", "r", "R"} if woman else {"o", "O", "t"}, woman, fate != "living")
+    burned = fate == "burned"
+    palette |= {"q": CHAR if burned else MUD[0], "w": MUD, "z": SOOT if burned else DUST}
     used = {letter for key, rows in spec.items() for row in rows for letter in row} - {"."}
     child = kind in ("boy", "girl")
     return spec | {
@@ -273,17 +276,25 @@ def person(index, kind):
     }
 
 
-def townsfolk():
+def folk(prefix, kinds, fate):
     people = {}
     seen = set()
-    for index, kind in enumerate(KINDS, start=1):
+    for index, kind in enumerate(kinds, start=1):
         attempt = 0
         while True:
-            look = person(f"{index}/{attempt}", kind)
+            look = person(f"{prefix}/{index}/{attempt}", kind, fate)
             key = repr(sorted((k, repr(v)) for k, v in look.items()))
             if key not in seen:
                 break
             attempt += 1
         seen.add(key)
-        people[f"townsfolk_{index:02d}"] = look
+        people[f"{prefix}_{index:02d}"] = look
     return people
+
+
+def townsfolk():
+    return folk("townsfolk", KINDS, "burned")
+
+
+def roadfolk():
+    return folk("road", ROAD, "living") | folk("road_dead", ROAD_DEAD, "opened")

@@ -45,8 +45,8 @@
   "kinds": {
     "campsite": {
       "salt": 833296063,
-      "separation": 16,
-      "spacing": 32,
+      "separation": 12,
+      "spacing": 24,
       "structures": [
         "dungeons_arise:merchant_campsite",
         "explorify:campsite",
@@ -74,8 +74,8 @@
     },
     "capital": {
       "salt": 508105543,
-      "separation": 512,
-      "spacing": 1024,
+      "separation": 384,
+      "spacing": 768,
       "structures": [
         "minecraft:village_desert",
         "minecraft:village_plains",
@@ -86,8 +86,8 @@
     },
     "fort": {
       "salt": 1106426114,
-      "separation": 256,
-      "spacing": 512,
+      "separation": 192,
+      "spacing": 384,
       "structures": [
         "dungeons_arise:bandit_village",
         "dungeons_arise:illager_fort",
@@ -99,8 +99,8 @@
     },
     "outpost": {
       "salt": 294568561,
-      "separation": 64,
-      "spacing": 128,
+      "separation": 48,
+      "spacing": 96,
       "structures": [
         "ctov:pillager_outpost_badlands",
         "ctov:pillager_outpost_beach",
@@ -178,8 +178,8 @@
     },
     "ruin": {
       "salt": 615953233,
-      "separation": 16,
-      "spacing": 32,
+      "separation": 12,
+      "spacing": 24,
       "structures": [
         "explorify:ruins",
         "minecraft:trail_ruins",
@@ -242,8 +242,8 @@
     },
     "town": {
       "salt": 1632811164,
-      "separation": 128,
-      "spacing": 256,
+      "separation": 96,
+      "spacing": 192,
       "structures": [
         "ctov:large/village_beach",
         "ctov:large/village_christmas",
@@ -272,8 +272,8 @@
     },
     "village": {
       "salt": 652268828,
-      "separation": 32,
-      "spacing": 64,
+      "separation": 24,
+      "spacing": 48,
       "structures": [
         "ctov:medium/village_beach",
         "ctov:medium/village_christmas",

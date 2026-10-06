@@ -1,49 +1,35 @@
 package io.github.roman16.wayfarer;
 
-import com.mojang.datafixers.util.Pair;
+import io.github.roman16.wayfarer.story.Sense;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.GlobalPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.SectionPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.StructureTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.status.ChunkStatus;
-import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Compass {
-    public static final ResourceLocation STRONGHOLD = ResourceLocation.withDefaultNamespace("stronghold");
-
-    private static final ResourceLocation GRAVESTONE = ResourceLocation.fromNamespaceAndPath("gravestone", "gravestone");
-    private static final int GRAVE_REACH = 2;
-    private static final int SEARCH_RADIUS = 100;
+    private static final String TENTS = "nomadictents";
     private static final Map<UUID, Bearing> BEARINGS = new HashMap<>();
 
     private Compass() {}
 
-    public record Aim(ResourceLocation target, BlockPos pos) {
-        public static final Aim NONE = new Aim(CompassPayload.NOTHING, null);
+    public record Aim(@Nullable BlockPos pos) {
+        public static final Aim NONE = new Aim(null);
     }
 
     private static final class Bearing {
-        BlockPos searchedFrom;
         Aim aim = Aim.NONE;
         BlockPos trailStart;
         int heat;
@@ -79,22 +65,17 @@ public final class Compass {
         Bearing bearing = BEARINGS.computeIfAbsent(player.getUUID(), key -> new Bearing());
         BlockPos pos = player.blockPosition();
         boolean shown = player.level().dimension() == Level.OVERWORLD;
-        boolean awake = Journey.awake(player.server);
-        if (shown && awake && (bearing.searchedFrom == null || horizontal(bearing.searchedFrom, pos) > balance.researchAfterBlocks())) {
-            bearing.searchedFrom = pos;
-            bearing.aim(search(player.serverLevel(), pos, claimed));
-        }
-        CompassEvent event = NeoForge.EVENT_BUS.post(new CompassEvent(player, shown, awake, bearing.aim, markers(player)));
+        CompassEvent event = NeoForge.EVENT_BUS.post(new CompassEvent(player, shown, Journey.awake(player.server), Aim.NONE, markers(player)));
         if (!event.shown()) {
             return CompassPayload.hidden(claimed);
         }
-        bearing.aim(event.aim());
         List<CompassPayload.Marker> markers = List.copyOf(event.markers());
         CompassPayload.Shelter shelter = shelter(player);
-        boolean sight = claimed.size() >= Balance.INSTANCE.sight().shards() && !Journey.slain(player.server);
         if (!event.awake()) {
-            return CompassPayload.hidden(claimed);
+            return still(event.named() ? CompassPayload.Mode.COLD : CompassPayload.Mode.BARE, claimed, markers, shelter, false);
         }
+        bearing.aim(event.aim());
+        boolean sight = claimed.size() >= Balance.INSTANCE.sight().shards() && !Journey.slain(player.server);
         if (Gaze.airborne(player)) {
             return still(CompassPayload.Mode.AIR, claimed, markers, shelter, sight);
         }
@@ -105,31 +86,25 @@ public final class Compass {
         if (aim.pos() == null) {
             return still(CompassPayload.Mode.LOST, claimed, markers, shelter, sight);
         }
-        int distance = (int) horizontal(pos, aim.pos());
-        if (distance <= balance.exactBlocks()) {
-            return new CompassPayload(
-                    CompassPayload.Mode.NEAR, aim.target(), 0, distance, aim.pos().getX(), aim.pos().getZ(), claimed, markers, shelter, sight);
-        }
         if (bearing.trailStart == null) {
             bearing.trailStart = pos;
         }
         double moved = horizontal(bearing.trailStart, pos);
-        if (moved >= balance.trailBlocks()) {
-            bearing.heat = heat(horizontal(bearing.trailStart, aim.pos()) - distance, moved);
+        if (Sense.held(player)) {
+            Vec3 look = player.getLookAngle();
+            Vec3 towards = new Vec3(aim.pos().getX() + 0.5 - player.getX(), 0, aim.pos().getZ() + 0.5 - player.getZ()).normalize();
+            bearing.heat = facing(new Vec3(look.x, 0, look.z).normalize().dot(towards));
+            bearing.trailStart = pos;
+        } else if (moved >= balance.trailBlocks()) {
+            bearing.heat = heat(horizontal(bearing.trailStart, aim.pos()) - horizontal(pos, aim.pos()), moved);
             bearing.trailStart = pos;
         }
-        return new CompassPayload(
-                CompassPayload.Mode.FAR, aim.target(), bearing.heat, round(distance), 0, 0, claimed, markers, shelter, sight);
-    }
-
-    public static int round(int distance) {
-        int rounding = Balance.INSTANCE.compass().farRoundingBlocks();
-        return Math.max(rounding, Math.round((float) distance / rounding) * rounding);
+        return new CompassPayload(CompassPayload.Mode.FAR, bearing.heat, claimed, markers, shelter, sight);
     }
 
     private static CompassPayload still(
             CompassPayload.Mode mode, List<ResourceLocation> claimed, List<CompassPayload.Marker> markers, CompassPayload.Shelter shelter, boolean sight) {
-        return new CompassPayload(mode, CompassPayload.NOTHING, 0, 0, 0, 0, claimed, markers, shelter, sight);
+        return new CompassPayload(mode, 0, claimed, markers, shelter, sight);
     }
 
     private static CompassPayload.Shelter shelter(ServerPlayer player) {
@@ -147,26 +122,23 @@ public final class Compass {
                         CompassPayload.Kind.TEAMMATE, member.getGameProfile().getName(), member.getBlockX(), member.getBlockZ()));
             }
         }
-        grave(player).ifPresent(grave -> markers.add(new CompassPayload.Marker(CompassPayload.Kind.GRAVE, "", grave.getX(), grave.getZ())));
+        for (Stones.Stone stone : Stones.mine(player)) {
+            if (stone.dimension() == player.level().dimension()) {
+                markers.add(new CompassPayload.Marker(CompassPayload.Kind.GRAVE, String.valueOf(stone.things()), stone.pos().getX(), stone.pos().getZ()));
+            }
+        }
+        if (ModList.get().isLoaded(TENTS)) {
+            for (Joining.Pitched tent : TentPitch.mine(player)) {
+                if (tent.place().dimension() == player.level().dimension()) {
+                    markers.add(new CompassPayload.Marker(CompassPayload.Kind.TENT, "", tent.place().pos().getX(), tent.place().pos().getZ()));
+                }
+            }
+        }
         return markers;
     }
 
-    private static Optional<BlockPos> grave(ServerPlayer player) {
-        Optional<GlobalPos> death = player.getLastDeathLocation();
-        if (death.isEmpty() || death.get().dimension() != player.level().dimension()) {
-            return Optional.empty();
-        }
-        BlockPos pos = death.get().pos();
-        ServerLevel level = player.serverLevel();
-        if (!level.isLoaded(pos)) {
-            return Optional.of(pos);
-        }
-        for (BlockPos near : BlockPos.betweenClosed(pos.offset(-GRAVE_REACH, -GRAVE_REACH, -GRAVE_REACH), pos.offset(GRAVE_REACH, GRAVE_REACH, GRAVE_REACH))) {
-            if (BuiltInRegistries.BLOCK.getKey(level.getBlockState(near).getBlock()).equals(GRAVESTONE)) {
-                return Optional.of(near.immutable());
-            }
-        }
-        return Optional.empty();
+    public static int facing(double alignment) {
+        return heat(alignment, 1);
     }
 
     public static int heat(double closerBy, double moved) {
@@ -181,39 +153,6 @@ public final class Compass {
             return -1;
         }
         return -2;
-    }
-
-    private static Aim search(ServerLevel level, BlockPos pos, List<ResourceLocation> claimed) {
-        List<Holder<Structure>> open = unclaimed(level, Shrines.TIER_ONE, claimed);
-        if (open.isEmpty()) {
-            open = unclaimed(level, Shrines.TIER_TWO, claimed);
-        }
-        if (open.isEmpty()) {
-            return new Aim(STRONGHOLD, level.findNearestMapStructure(StructureTags.EYE_OF_ENDER_LOCATED, pos, SEARCH_RADIUS, false));
-        }
-        Pair<BlockPos, Holder<Structure>> found = level.getChunkSource().getGenerator()
-                .findNearestMapStructure(level, HolderSet.direct(open), pos, SEARCH_RADIUS, false);
-        return found == null ? Aim.NONE : new Aim(Shrines.key(found.getSecond()), entrance(level, found.getFirst(), found.getSecond()));
-    }
-
-    private static BlockPos entrance(ServerLevel level, BlockPos located, Holder<Structure> structure) {
-        if (!(structure.value() instanceof ShrineStructure shrine)) {
-            return located;
-        }
-        StructureStart start = level.getChunk(SectionPos.blockToSectionCoord(located.getX()), SectionPos.blockToSectionCoord(located.getZ()), ChunkStatus.STRUCTURE_STARTS)
-                .getStartForStructure(shrine);
-        if (start == null || !start.isValid()) {
-            return located;
-        }
-        return start.getPieces().stream()
-                .filter(piece -> piece instanceof EntrancePiece)
-                .findFirst()
-                .map(piece -> piece.getBoundingBox().getCenter())
-                .orElse(located);
-    }
-
-    private static List<Holder<Structure>> unclaimed(ServerLevel level, TagKey<Structure> tier, List<ResourceLocation> claimed) {
-        return Shrines.tier(level, tier).stream().filter(shrine -> !claimed.contains(Shrines.key(shrine))).toList();
     }
 
     private static double horizontal(BlockPos a, BlockPos b) {

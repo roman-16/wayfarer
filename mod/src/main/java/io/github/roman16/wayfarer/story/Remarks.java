@@ -28,7 +28,7 @@ final class Remarks {
         String key = person + "\n" + lines.getFirst();
         int next = (said.getOrDefault(key, -1) + 1) % lines.size();
         said.put(key, next);
-        Component line = Talk.line(person, Component.literal(lines.get(next)));
+        Component line = Talk.line(player.server, person, Component.literal(lines.get(next)));
         int reach = Balance.INSTANCE.talk().reachBlocks();
         player.server.getPlayerList().getPlayers().stream()
                 .filter(listener -> listener.level() == body.level() && listener.distanceToSqr(body) <= (double) reach * reach)

@@ -29,6 +29,7 @@ public final class Sense {
     public static final String KEY = "key.wayfarer.ember_sense";
     public static final int AMBER = 0xFFB040;
     private static final String TEAM = Wayfarer.MODID + "_sense";
+    private static final String TRAIL_SIGHT = "trail_sight";
     private static final int GLOWING = 1 << 6;
     private static final int TICKS_PER_SECOND = 20;
     private static final Field FLAGS = flags();
@@ -46,19 +47,38 @@ public final class Sense {
         }
     }
 
-    private record Sensing(List<Entity> glowing, long until) {}
+    private record Sensing(List<Entity> glowing, long until, boolean held) {}
+
+    public static boolean held(ServerPlayer player) {
+        Sensing now = sensing.get(player.getUUID());
+        return now != null && now.held();
+    }
 
     public static void sense(ServerPlayer player) {
-        if (!Journey.awake(player.server) || sensing.containsKey(player.getUUID())) {
+        Sensing now = sensing.get(player.getUUID());
+        if (!Journey.awake(player.server) || now != null && now.held()) {
             return;
         }
+        if (now != null) {
+            stop(player, now);
+        }
         Tasks.did(player, "ember");
+        glow(player, true);
+    }
+
+    private static void glow(ServerPlayer player, boolean held) {
         Balance.Sense sense = Balance.INSTANCE.sense();
         List<Entity> near = player.serverLevel().getEntities((Entity) null, new AABB(player.blockPosition()).inflate(sense.reachBlocks()),
                 entity -> entity.getTags().stream().anyMatch(tag -> tag.startsWith(Steps.CLUE)) && !entity.getTags().contains(Steps.CLUE_BOX));
         near.forEach(entity -> glow(player, entity, true));
         player.connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team(near), true));
-        sensing.put(player.getUUID(), new Sensing(near, player.serverLevel().getGameTime() + (long) sense.glowSeconds() * TICKS_PER_SECOND));
+        sensing.put(player.getUUID(), new Sensing(near, player.serverLevel().getGameTime() + (long) sense.glowSeconds() * TICKS_PER_SECOND, held));
+    }
+
+    private static void stop(ServerPlayer player, Sensing ended) {
+        sensing.remove(player.getUUID());
+        ended.glowing().forEach(entity -> glow(player, entity, false));
+        player.connection.send(ClientboundSetPlayerTeamPacket.createRemovePacket(team(ended.glowing())));
     }
 
     @SubscribeEvent
@@ -66,11 +86,16 @@ public final class Sense {
         MinecraftServer server = event.getServer();
         for (Map.Entry<UUID, Sensing> entry : List.copyOf(sensing.entrySet())) {
             ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
-            if (player == null || player.serverLevel().getGameTime() >= entry.getValue().until()) {
+            if (player == null) {
                 sensing.remove(entry.getKey());
-                if (player != null) {
-                    entry.getValue().glowing().forEach(entity -> glow(player, entity, false));
-                    player.connection.send(ClientboundSetPlayerTeamPacket.createRemovePacket(team(entry.getValue().glowing())));
+            } else if (player.serverLevel().getGameTime() >= entry.getValue().until()) {
+                stop(player, entry.getValue());
+            }
+        }
+        if (Engine.running(server) && Progress.of(server).gift(TRAIL_SIGHT)) {
+            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+                if (!sensing.containsKey(player.getUUID()) && Journey.awake(server)) {
+                    glow(player, false);
                 }
             }
         }

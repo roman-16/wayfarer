@@ -1,6 +1,8 @@
 # Wayfarer
 
-A Minecraft modpack about a nomadic journey, for Minecraft 1.21.1 on NeoForge. Twelve eye shards lie hidden in shrines at the far ends of a vast world. The ember you carry flares as you walk towards one and gutters as you walk away, until the shard answers. Gather all twelve, find the true gate, and kill the dragon. Never settle on the way.
+Unreleased and in development: nothing is published yet, and a world made with one version may not open in the next.
+
+A Minecraft modpack about a nomadic journey, for Minecraft 1.21.1 on NeoForge, for one to four players. You wake at a dying stranger's fire with no name, and he gives you his ember. It leads to twelve hidden halls across a vast, sparse world, where the shards of the dragon's broken Eye each met their own fate. A caravan of survivors follows your marks, and each day you walk from its fire into the road's people, scenes and nights. Every choice comes back.
 
 The same pack runs in singleplayer and on a dedicated server: every rule ships inside the Wayfarer mod or the pack's configs.
 

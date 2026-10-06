@@ -1,0 +1,58 @@
+{
+  "ember_given": [
+    {
+      "delay": 0,
+      "event": "minecraft:block.amethyst_block.resonate",
+      "pitch": 0.75,
+      "volume": 1
+    },
+    {
+      "delay": 0,
+      "event": "minecraft:block.respawn_anchor.charge",
+      "pitch": 0.625,
+      "volume": 0.625
+    }
+  ],
+  "ember_wakes": [
+    {
+      "delay": 8,
+      "event": "minecraft:block.beacon.activate",
+      "pitch": 1.25,
+      "volume": 0.75
+    },
+    {
+      "delay": 0,
+      "event": "minecraft:item.firecharge.use",
+      "pitch": 0.625,
+      "volume": 0.5
+    }
+  ],
+  "reward_taken": [
+    {
+      "delay": 0,
+      "event": "minecraft:entity.item.pickup",
+      "pitch": 0.75,
+      "volume": 0.625
+    },
+    {
+      "delay": 0,
+      "event": "minecraft:item.bundle.insert",
+      "pitch": 1,
+      "volume": 1
+    }
+  ],
+  "shard_taken": [
+    {
+      "delay": 8,
+      "event": "minecraft:block.conduit.activate",
+      "pitch": 1,
+      "volume": 0.75
+    },
+    {
+      "delay": 0,
+      "event": "minecraft:block.end_portal_frame.fill",
+      "pitch": 0.75,
+      "volume": 1
+    }
+  ]
+}

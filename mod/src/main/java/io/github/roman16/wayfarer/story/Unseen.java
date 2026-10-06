@@ -4,11 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
 import net.minecraft.server.level.ChunkTrackingView;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
@@ -27,6 +30,11 @@ final class Unseen {
     static List<Viewer> viewers(ServerLevel level) {
         return level.players().stream().filter(player -> !player.isSpectator())
                 .map(player -> new Viewer(player.getEyePosition(), Vec3.directionFromRotation(0, player.getYRot()), player.chunkPosition())).toList();
+    }
+
+    static boolean beyond(List<Viewer> viewers, Vec3 target, int view) {
+        ChunkPos chunk = new ChunkPos(BlockPos.containing(target));
+        return viewers.stream().noneMatch(viewer -> ChunkTrackingView.isWithinDistance(viewer.chunk().x, viewer.chunk().z, view, chunk.x, chunk.z, true));
     }
 
     static boolean hidden(Heights heights, List<Viewer> viewers, List<Vec3> targets, int view, boolean beyondView) {
@@ -77,6 +85,10 @@ final class Unseen {
             int cellZ = Math.floorDiv(z, CELL) * CELL;
             return surfaces.computeIfAbsent(BlockPos.asLong(cellX, 0, cellZ),
                     key -> generator.getBaseHeight(cellX, cellZ, Heightmap.Types.WORLD_SURFACE_WG, height, random) - 1);
+        }
+
+        Holder<Biome> biome(int x, int y, int z) {
+            return generator.getBiomeSource().getNoiseBiome(QuartPos.fromBlock(x), QuartPos.fromBlock(y), QuartPos.fromBlock(z), random.sampler());
         }
 
         synchronized boolean wet(int x, int z) {

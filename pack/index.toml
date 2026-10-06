@@ -1,8 +1,12 @@
 hash-format = "sha256"
 
 [[files]]
+file = "CREDITS.md"
+hash = "5ac87472691a4f947aed4b0a04cdba5bc49121985f9d84338d2fdf95783ea22e"
+
+[[files]]
 file = "config/DistantHorizons.toml"
-hash = "7701685903d13666b4a0c2907cd718340339f6edf9c718ca6c82180b4566fdf8"
+hash = "e9c8a7a8f77314778f169b2c39533d1fa1eda4037bd2edc576d2b8342327cd80"
 
 [[files]]
 file = "config/EndRemastered-NeoForge/Eyes/black_eye.json"
@@ -57,16 +61,16 @@ file = "config/EndRemastered-NeoForge/endrem.json"
 hash = "c33f117ee215030b666b6a2d6b31df6297b81b978322319d1f5b3cc7e7349f5a"
 
 [[files]]
+file = "config/ReactiveMusic.json5"
+hash = "22a454b1606bbaa2ac1d4fec11b220be81059c5bd493a155b7478177ba4852cc"
+
+[[files]]
 file = "config/asynclocator.toml"
 hash = "bd946e5d04c34cb73cddf39a43aa62364a043c83a7d0dfd05171544c0449bd41"
 
 [[files]]
 file = "config/c2me.toml"
 hash = "01064a300391147f410c79abfb7c5955bf049c4d700827832fbb97a6bc374482"
-
-[[files]]
-file = "config/campfirespawnandtweaks.json5"
-hash = "99905b778180ff0bb9982efb59cfeb215e5461326876c9604358d374d88d9530"
 
 [[files]]
 file = "config/carryon-common.toml"
@@ -78,7 +82,7 @@ hash = "6514968dd7b1e4991128ed071b678d8986c800fd70ea103681c2566ef219dc76"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
-hash = "862b7d7efd7417ad8964ff989e7ab9207f0eb236fd77b7aaa19a2ae1b2e96611"
+hash = "6afc9752d7e364e0545ed2a967513133c9e95e4b3d40e99bfd37592390639013"
 
 [[files]]
 file = "config/dynamic_fps.json"
@@ -162,7 +166,7 @@ hash = "b2ce9644c74ba7c36ce239b281ac1193e1db015f1546e5faaf17cf54b47d0d4c"
 
 [[files]]
 file = "config/sparsestructures.json5"
-hash = "dfeb573850eaf9db546c71876999deaf353d660d30f6506c4af4500c599e40e9"
+hash = "318e890959d0185b2e775cfbdf014be0f55ca5d85f249b85cfb4a70d48a49f48"
 
 [[files]]
 file = "config/streamsreflowing-common.toml"
@@ -257,18 +261,8 @@ hash = "438170e7e704a1b8ed67bf0521dc5d77cdeeaabf6f729dba9f8dfdad75330acf"
 metafile = true
 
 [[files]]
-file = "mods/better-respawn.pw.toml"
-hash = "351699dbe71ce07dd41179e5a72e84bbb02c2ef416ccfe702b3c8078a19de775"
-metafile = true
-
-[[files]]
 file = "mods/c2me-neoforge.pw.toml"
 hash = "b29065f7eb51b2fa53043366d0df737483b600c2f549d31c783fe52c4d72bfb5"
-metafile = true
-
-[[files]]
-file = "mods/campfire-spawn-and-tweaks.pw.toml"
-hash = "d5d38e07174f6d0b2e0e030d7e2fcba9b8cb0336856769e5a021c75a5455cb70"
 metafile = true
 
 [[files]]
@@ -314,11 +308,6 @@ metafile = true
 [[files]]
 file = "mods/corgilib.pw.toml"
 hash = "2b8c5286980b8d864085d02a6b2153cefa401a965833139ffac8e7661a322f7c"
-metafile = true
-
-[[files]]
-file = "mods/cosy-critters.pw.toml"
-hash = "b3035edda00323cd2439177ee1e8df738a9ceae12428a4fc7233293269323672"
 metafile = true
 
 [[files]]

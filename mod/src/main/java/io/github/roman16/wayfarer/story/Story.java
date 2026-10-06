@@ -20,13 +20,17 @@ import net.minecraft.resources.ResourceLocation;
 public record Story(List<Quest> quests, Map<String, Person> people) {
     public static final Story INSTANCE = load();
 
-    public record Person(String id, String name, ChatFormatting color, List<String> remarks) {}
+    public record Person(String id, String name, @Nullable String unnamed, ChatFormatting color, List<String> mornings, List<String> remarks) {}
 
-    public record Line(@Nullable String by, String text) {}
+    public record Line(@Nullable String by, String text, List<String> names, @Nullable String sound, @Nullable String music) {
+        public Line(@Nullable String by, String text) {
+            this(by, text, List.of(), null, null);
+        }
+    }
 
-    public record Choice(String id, String text, String reply, @Nullable String story) {}
+    public record Choice(String id, String text, String reply, @Nullable String story, @Nullable String stone, boolean write) {}
 
-    public record Item(ResourceLocation id, int count, @Nullable String name) {}
+    public record Item(@Nullable ResourceLocation id, @Nullable ResourceLocation tag, int count, @Nullable String name, @Nullable String book, boolean own) {}
 
     public record Reward(String key, String title, String text, String claimed, List<Item> items) {}
 
@@ -51,6 +55,10 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
             return spec.get(key).getAsString();
         }
 
+        public List<Line> lines(String key) {
+            return list(spec, key, Story::line);
+        }
+
         public int number(String key) {
             return spec.get(key).getAsInt();
         }
@@ -64,7 +72,8 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
         }
     }
 
-    public record Quest(String id, String kind, String act, List<String> after, String title, String summary, @Nullable Reward reward, List<Step> steps) {}
+    public record Quest(String id, String kind, String act, List<String> after, @Nullable String found, String title, String summary, @Nullable Reward reward,
+            List<Step> steps) {}
 
     public Optional<Quest> quest(String id) {
         return quests.stream().filter(quest -> quest.id().equals(id)).findFirst();
@@ -88,7 +97,8 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
             json.getAsJsonObject("people").entrySet().forEach(entry -> {
                 JsonObject person = entry.getValue().getAsJsonObject();
                 people.put(entry.getKey(), new Person(entry.getKey(), person.get("name").getAsString(),
-                        ChatFormatting.getByName(person.get("color").getAsString()), strings(person, "remarks")));
+                        person.has("unnamed") ? person.get("unnamed").getAsString() : null, ChatFormatting.getByName(person.get("color").getAsString()),
+                        strings(person, "mornings"), strings(person, "remarks")));
             });
             List<Quest> quests = json.getAsJsonArray("quests").asList().stream().map(JsonElement::getAsJsonObject).map(Story::quest).toList();
             return new Story(quests, Map.copyOf(people));
@@ -100,8 +110,9 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
     private static Quest quest(JsonObject quest) {
         String id = quest.get("id").getAsString();
         List<Step> steps = quest.getAsJsonArray("steps").asList().stream().map(JsonElement::getAsJsonObject).map(step -> step(id, step)).toList();
-        return new Quest(id, quest.get("kind").getAsString(), quest.get("act").getAsString(), strings(quest, "after"), quest.get("title").getAsString(),
-                quest.get("summary").getAsString(), reward(id, quest), steps);
+        return new Quest(id, quest.get("kind").getAsString(), quest.get("act").getAsString(), strings(quest, "after"),
+                quest.has("found") ? quest.get("found").getAsString() : null, quest.get("title").getAsString(), quest.get("summary").getAsString(),
+                reward(id, quest), steps);
     }
 
     private static Step step(String quest, JsonObject step) {
@@ -112,12 +123,14 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
     }
 
     private static Line line(JsonObject line) {
-        return new Line(line.has("by") ? line.get("by").getAsString() : null, line.get("text").getAsString());
+        return new Line(line.has("by") ? line.get("by").getAsString() : null, line.get("text").getAsString(), strings(line, "names"),
+                line.has("sound") ? line.get("sound").getAsString() : null, line.has("music") ? line.get("music").getAsString() : null);
     }
 
     private static Choice choice(JsonObject choice) {
         return new Choice(choice.get("id").getAsString(), choice.get("text").getAsString(), choice.get("reply").getAsString(),
-                choice.has("story") ? choice.get("story").getAsString() : null);
+                choice.has("story") ? choice.get("story").getAsString() : null, choice.has("stone") ? choice.get("stone").getAsString() : null,
+                choice.has("write") && choice.get("write").getAsBoolean());
     }
 
     private static Clue clue(JsonObject clue) {
@@ -130,8 +143,10 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
             return null;
         }
         JsonObject reward = owner.getAsJsonObject("reward");
-        List<Item> items = list(reward, "items", item -> new Item(ResourceLocation.parse(item.get("id").getAsString()),
-                item.has("count") ? item.get("count").getAsInt() : 1, item.has("name") ? item.get("name").getAsString() : null));
+        List<Item> items = list(reward, "items", item -> new Item(item.has("id") ? ResourceLocation.parse(item.get("id").getAsString()) : null,
+                item.has("tag") ? ResourceLocation.parse(item.get("tag").getAsString()) : null, item.has("count") ? item.get("count").getAsInt() : 1,
+                item.has("name") ? item.get("name").getAsString() : null, item.has("book") ? item.get("book").getAsString() : null,
+                item.has("own") && item.get("own").getAsBoolean()));
         return new Reward(key, reward.get("title").getAsString(), reward.get("text").getAsString(), reward.get("claimed").getAsString(), items);
     }
 

@@ -28,10 +28,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.QuartPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.FloatTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -40,7 +36,6 @@ import net.minecraft.server.level.TicketType;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
@@ -63,6 +58,7 @@ import org.slf4j.Logger;
 
 final class Tollbridge {
     static final String NAME = "tollbridge";
+    static final String QUEST = "ash";
     static final String CELLAR = "cellar";
     static final String BELL = "bell";
     static final String DEAD = Wayfarer.MODID + "_dead";
@@ -105,7 +101,6 @@ final class Tollbridge {
     private static final int TRACKS = 8;
     private static final int TREE_REACH = 32;
     private static final int WELL = 6;
-    private static final float CLUE_SCALE = 1.02f;
     @Nullable
     private static Build build;
 
@@ -1001,6 +996,9 @@ final class Tollbridge {
         progress.yaws.put("seat_" + BELL, (float) yaw(seatAt, bellAt));
         BlockPos fire = world(tower, TOWER.getAsJsonArray("fire"));
         progress.place(CELLAR, fire);
+        BoundingBox ward = template(level, TOWER_PIECE).getBoundingBox(tower.settings(), tower.origin());
+        progress.ward(NAME, new BoundingBox(Math.min(ward.minX(), bellAt.getX()), Math.min(ward.minY(), bellAt.getY()), Math.min(ward.minZ(), bellAt.getZ()),
+                Math.max(ward.maxX(), bellAt.getX()), Math.max(ward.maxY(), bellAt.getY()), Math.max(ward.maxZ(), bellAt.getZ())));
         TOWER.getAsJsonObject("seats").entrySet().forEach(entry -> {
             BlockPos at = world(tower, entry.getValue().getAsJsonArray());
             progress.place("seat_" + entry.getKey(), at);
@@ -1009,8 +1007,8 @@ final class Tollbridge {
         survivors(server);
         dead(level, town);
         build.placed.stream().filter(placed -> placed.lot().piece().equals("inn")).findFirst()
-                .ifPresent(inn -> marker(level, world(inn, PLAN.getAsJsonArray("strongbox")), "strongbox"));
-        marker(level, world(tower, TOWER.getAsJsonArray("clue")), "cellar");
+                .ifPresent(inn -> Clues.marker(level, world(inn, PLAN.getAsJsonArray("strongbox")), "strongbox"));
+        Clues.marker(level, world(tower, TOWER.getAsJsonArray("clue")), "cellar");
         tracks(level, town);
         progress.place(NAME, surface(level, town.centre));
         progress.places.remove(SITE);
@@ -1106,67 +1104,14 @@ final class Tollbridge {
         for (int print = 0; print < TRACKS && 2 + print * 2 < street.size(); print++) {
             Cell cell = street.get(2 + print * 2);
             BlockPos at = surface(level, cell.at().relative(cell.way().getClockWise(), print % 2)).above();
-            CompoundTag tag = new CompoundTag();
-            tag.putString("id", "minecraft:block_display");
-            CompoundTag dirt = new CompoundTag();
-            dirt.putString("Name", "minecraft:coarse_dirt");
-            tag.put("block_state", dirt);
-            tag.put("transformation", transformation(0.25f, 0.02f, 0.45f, 0));
-            spawnClue(level, tag, new Vec3(at.getX() + 0.375, at.getY() + 0.01, at.getZ() + 0.275), "tracks");
+            Clues.print(level, at, "tracks");
             if (print == TRACKS / 2) {
                 middle = at;
             }
         }
         if (middle != null) {
-            Entity box = EntityType.INTERACTION.create(level);
-            box.moveTo(middle.getX() + 0.5, middle.getY(), middle.getZ() + 0.5);
-            box.addTag(Steps.CLUE + "tracks");
-            box.addTag(Steps.CLUE_BOX);
-            level.addFreshEntity(box);
+            Clues.box(level, Vec3.atBottomCenterOf(middle), "tracks");
         }
-    }
-
-    private static void marker(ServerLevel level, BlockPos at, String clue) {
-        BlockState state = level.getBlockState(at);
-        CompoundTag tag = new CompoundTag();
-        tag.putString("id", "minecraft:block_display");
-        tag.put("block_state", NbtUtils.writeBlockState(state));
-        tag.put("transformation", transformation(CLUE_SCALE, CLUE_SCALE, CLUE_SCALE, (1 - CLUE_SCALE) / 2));
-        spawnClue(level, tag, Vec3.atLowerCornerOf(at), clue);
-        Entity box = EntityType.INTERACTION.create(level);
-        box.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5);
-        box.addTag(Steps.CLUE + clue);
-        box.addTag(Steps.CLUE_BOX);
-        level.addFreshEntity(box);
-    }
-
-    private static void spawnClue(ServerLevel level, CompoundTag tag, Vec3 at, String clue) {
-        tag.putInt("glow_color_override", Sense.AMBER);
-        Entity entity = EntityType.loadEntityRecursive(tag, level, loaded -> {
-            loaded.moveTo(at.x, at.y, at.z, 0, 0);
-            return loaded;
-        });
-        if (entity != null) {
-            entity.addTag(Steps.CLUE + clue);
-            level.addFreshEntity(entity);
-        }
-    }
-
-    private static CompoundTag transformation(float x, float y, float z, float shift) {
-        CompoundTag tag = new CompoundTag();
-        tag.put("left_rotation", floats(0, 0, 0, 1));
-        tag.put("right_rotation", floats(0, 0, 0, 1));
-        tag.put("scale", floats(x, y, z));
-        tag.put("translation", floats(shift, shift, shift));
-        return tag;
-    }
-
-    private static ListTag floats(float... values) {
-        ListTag list = new ListTag();
-        for (float value : values) {
-            list.add(FloatTag.valueOf(value));
-        }
-        return list;
     }
 
     private static BlockPos surface(ServerLevel level, BlockPos column) {

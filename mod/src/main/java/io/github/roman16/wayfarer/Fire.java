@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Hold;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,6 +14,7 @@ import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -117,7 +119,7 @@ public final class Fire {
         int radius = Balance.INSTANCE.fire().circleBlocks();
         Set<BlockPos> holding = new HashSet<>();
         for (ServerPlayer player : level.players()) {
-            Optional<BlockPos> fire = Nights.fearless(player) ? Optional.empty() : nearest(level, player.position(), radius);
+            Optional<BlockPos> fire = Nights.fearless(player) || Hold.active(player.server) ? Optional.empty() : nearest(level, player.position(), radius);
             if (fire.isPresent()) {
                 SHELTERED.put(player.getUUID(), fire.get());
                 holding.add(fire.get());
@@ -177,6 +179,7 @@ public final class Fire {
     }
 
     private static void rest(ServerPlayer player, BlockPos fire) {
+        player.setData(Wayfarer.LAST_FIRE, GlobalPos.of(player.level().dimension(), fire.immutable()));
         NeoForge.EVENT_BUS.post(new RestEvent(player, fire));
         if (Journey.awake(player.server) && !Journey.slain(player.server) && !player.hasEffect(Wayfarer.WARM) && !Talk.busy()) {
             player.addEffect(new MobEffectInstance(Wayfarer.WARM, untilTomorrowsDusk(player.server.overworld().getDayTime()), 0, true, false, true));

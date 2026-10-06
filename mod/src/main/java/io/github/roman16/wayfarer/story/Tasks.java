@@ -3,8 +3,14 @@ package io.github.roman16.wayfarer.story;
 import com.google.gson.JsonElement;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
+import io.github.roman16.wayfarer.Ember;
 import io.github.roman16.wayfarer.Fire;
 import io.github.roman16.wayfarer.Firsts;
+import io.github.roman16.wayfarer.Heat;
+import io.github.roman16.wayfarer.LastUse;
+import io.github.roman16.wayfarer.OwnStone;
+import io.github.roman16.wayfarer.Patterns;
+import io.github.roman16.wayfarer.Stones;
 import io.github.roman16.wayfarer.TentPitch;
 import io.github.roman16.wayfarer.Tents;
 import io.github.roman16.wayfarer.Wayfarer;
@@ -35,14 +41,17 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Tasks {
-    public static final Set<String> STEP_TASKS = Set.of("bed", "bury", "ember", "enter", "fire", "map", "pack", "rest", "stone", "tent");
-    private static final Set<String> TOLD_BY_CLIENT = Set.of("journal", "map");
+    public static final Set<String> STEP_TASKS = Set.of("bed", "bury", "ember", "enter", "fire", "horse", "map", "marks", "pack", "rest", "search", "stone", "sweep", "tent");
+    private static final Set<String> TOLD_BY_CLIENT = Set.of("charms", "journal", "map");
     private static final Set<String> QUIET = Set.of("evening", "waiting");
     private static final String FIRST = "task.";
+    private static final String INVENTORY_KEY = "key.inventory";
     private static final String JOURNAL_KEY = "key.wayfarer.journal";
     private static final int CHECK_TICKS = 20;
     private static final int FADE_TICKS = 60;
     private static final int NEAR = 32;
+    private static final int FOLLOWED = 64;
+    private static final Map<UUID, Double> COMPASS_FROM = new HashMap<>();
     private static final Map<UUID, Panel> SENT = new HashMap<>();
     private static final Map<UUID, Map<String, Component>> OPEN = new HashMap<>();
     private static final Map<UUID, Map<String, Fading>> FADING = new HashMap<>();
@@ -102,6 +111,7 @@ public final class Tasks {
         SENT.remove(player);
         OPEN.remove(player);
         FADING.remove(player);
+        COMPASS_FROM.remove(player);
     }
 
     static void refresh(ServerPlayer player) {
@@ -118,11 +128,30 @@ public final class Tasks {
             return Panel.EMPTY;
         }
         Map<String, Component> open = new LinkedHashMap<>();
+        if (Ember.carried(server) && !Firsts.seen(player, FIRST + "charms")) {
+            open.put("charms", task("charms", Component.keybind(INVENTORY_KEY)));
+        }
         if (!Firsts.seen(player, FIRST + "journal")) {
             open.put("journal", task("journal", Component.keybind(JOURNAL_KEY)));
         }
+        if (LastUse.lastUse(player.getMainHandItem()) && !Firsts.seen(player, FIRST + "mend")) {
+            open.put("mend", task("mend", Balance.INSTANCE.fire().restBlocks()));
+        }
         if (Talk.open().isPresent() && !Firsts.seen(player, FIRST + "answer")) {
             open.put("answer", task("answer", Component.keybind("key.chat")));
+        }
+        Engine.marked(player).ifPresent(goal -> compass(player, goal, open));
+        if (!Stones.mine(player).isEmpty()) {
+            open.put("things", task("things"));
+        }
+        if (ModList.get().isLoaded("toughasnails")) {
+            Heat.task(player).ifPresent(id -> open.put(id, task(id)));
+        }
+        if (ModList.get().isLoaded("silentgear")) {
+            Patterns.task(player).ifPresent(id -> open.put(id, task(id)));
+        }
+        if (Caravan.moving(server) && Clock.morning(player.serverLevel()) && pitchedAway(player)) {
+            open.put("pack", task("pack"));
         }
         Progress progress = Progress.of(server);
         for (Story.Reward reward : Engine.rewards()) {
@@ -133,19 +162,23 @@ public final class Tasks {
         Component heading = Component.empty();
         Component objective = Component.empty();
         Optional<Engine.Active> tracked = Engine.tracked(server);
-        if (tracked.isPresent()) {
+        if (Caravan.heading(server) && tracked.map(active -> !active.step().kind().equals("caravan")).orElse(true)) {
+            heading = Component.translatable("wayfarer.journal.main").append(" ").append(Component.translatable("wayfarer.caravan.title"));
+            objective = Component.translatable("wayfarer.caravan.objective");
+            rest(player, "caravan", Clock::rested, open);
+        } else if (tracked.isPresent()) {
             Engine.Active active = tracked.get();
             heading = Component.translatable("wayfarer.journal." + active.quest().kind()).append(" ").append(active.quest().title());
             objective = Component.literal(Journal.objective(player, active));
-            if (active.step().spec().has("tasks")) {
-                for (JsonElement task : active.step().spec().getAsJsonArray("tasks")) {
-                    if (task.getAsString().equals("rest")) {
-                        rest(player, active, open);
-                    } else {
-                        step(player, active, task.getAsString()).ifPresent(text -> open.put(task.getAsString(), text));
-                    }
-                }
+            tasks(player, active, open);
+        }
+        for (Engine.Active side : Engine.active(server)) {
+            if (!side.quest().kind().equals("main")) {
+                tasks(player, side, open);
             }
+        }
+        if (OwnStone.carried(player) && !Firsts.seen(player, FIRST + "stone_set")) {
+            open.put("stone_set", task("stone_set"));
         }
         int now = server.getTickCount();
         Map<String, Fading> fading = FADING.computeIfAbsent(player.getUUID(), key -> new LinkedHashMap<>());
@@ -161,39 +194,80 @@ public final class Tasks {
         return new Panel(heading, objective, List.copyOf(open.values()), fading.values().stream().map(Fading::text).toList());
     }
 
+    private static void tasks(ServerPlayer player, Engine.Active active, Map<String, Component> open) {
+        if (!active.step().spec().has("tasks") || !Steps.entered(active)) {
+            return;
+        }
+        for (JsonElement task : active.step().spec().getAsJsonArray("tasks")) {
+            if (task.getAsString().equals("rest")) {
+                rest(player, active.step().kind(), rested(active), open);
+            } else {
+                step(player, active, task.getAsString()).ifPresent(text -> open.put(task.getAsString(), text));
+            }
+        }
+    }
+
     private static Optional<Component> step(ServerPlayer player, Engine.Active active, String id) {
         ServerLevel level = player.serverLevel();
         boolean inTent = Tents.isTent(level.dimension());
         return switch (id) {
             case "bury" -> unless(active.scratch().contains(Steps.BURIED), task("bury"));
-            case "stone" -> unless(!active.scratch().contains(Steps.BURIED), task("stone"));
+            case "stone" -> unless(!active.scratch().getBoolean(Steps.WRITING), task("stone"));
             case "tent" -> unless(inTent || Tents.pitchedNear(level, player.blockPosition(), NEAR), task("tent"));
             case "fire" -> unless(inTent || campfire(level, player.blockPosition()), task("fire", Balance.INSTANCE.tent().fireBlocks()));
-            case "ember" -> unless(Firsts.seen(player, FIRST + "ember"), task("ember", Component.keybind(Sense.KEY)));
+            case "ember" -> Optional.of(task("ember", Component.keybind(Sense.KEY)));
+            case "marks" -> Optional.of(task("marks", Component.keybind(Sense.KEY)));
+            case "sweep" -> Optional.of(task("sweep", Component.keybind(Sense.KEY)));
+            case "search" -> Optional.of(task("search", Component.keybind(Sense.KEY)));
+            case "horse" -> Optional.of(task("horse"));
             case "map" -> unless(Firsts.seen(player, FIRST + "map") || !ModList.get().isLoaded("journeymap"),
                     task("map", Component.keybind("key.wayfarer.map")));
-            case "pack" -> unless(inTent || !ModList.get().isLoaded("nomadictents") || TentPitch.carries(player), task("pack"));
+            case "pack" -> unless(!pitchedAway(player), task("pack"));
             case "enter" -> unless(inTent, task("enter"));
             case "bed" -> unless(!inTent, task("bed"));
             default -> throw new IllegalStateException(active.quest().id() + "/" + active.step().id() + " names the task " + id + ", which the panel does not know");
         };
     }
 
+    private static boolean pitchedAway(ServerPlayer player) {
+        return ModList.get().isLoaded("nomadictents") && TentPitch.pitched(player);
+    }
+
+    private static void compass(ServerPlayer player, BlockPos goal, Map<String, Component> open) {
+        if (Firsts.seen(player, FIRST + "compass")) {
+            return;
+        }
+        double distance = Math.sqrt(player.blockPosition().distToCenterSqr(goal.getX(), player.getY(), goal.getZ()));
+        if (!COMPASS_FROM.containsKey(player.getUUID()) && distance <= FOLLOWED) {
+            return;
+        }
+        double from = COMPASS_FROM.computeIfAbsent(player.getUUID(), key -> distance);
+        if (distance <= from - FOLLOWED || distance <= Balance.INSTANCE.story().arriveBlocks()) {
+            Firsts.first(player, FIRST + "compass");
+            COMPASS_FROM.remove(player.getUUID());
+            return;
+        }
+        open.put("compass", task("compass"));
+    }
+
     private static boolean campfire(ServerLevel level, BlockPos near) {
         return Fire.nearest(level, near.getCenter(), NEAR).filter(fire -> Tents.pitchedNear(level, fire, Balance.INSTANCE.tent().fireBlocks())).isPresent();
     }
 
-    private static void rest(ServerPlayer player, Engine.Active active, Map<String, Component> open) {
-        Predicate<ServerPlayer> rested = switch (active.step().kind()) {
+    private static Predicate<ServerPlayer> rested(Engine.Active active) {
+        return switch (active.step().kind()) {
             case "camp" -> member -> active.scratch().getCompound(Steps.RESTED).contains(member.getStringUUID());
             case "caravan" -> Clock::rested;
             default -> member -> false;
         };
-        if (active.step().kind().equals("caravan") && Clock.nightfall()) {
+    }
+
+    private static void rest(ServerPlayer player, String kind, Predicate<ServerPlayer> rested, Map<String, Component> open) {
+        if (kind.equals("caravan") && Clock.nightfall()) {
             open.put("evening", task("evening"));
             return;
         }
-        if (active.step().kind().equals("caravan") && !Clock.afternoon(player.serverLevel())) {
+        if (kind.equals("caravan") && !(Clock.afternoon(player.serverLevel()) && Clock.atCaravan(player))) {
             return;
         }
         if (!rested.test(player)) {

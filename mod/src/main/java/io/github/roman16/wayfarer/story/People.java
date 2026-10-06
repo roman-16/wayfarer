@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.network.chat.Component;
@@ -78,11 +80,35 @@ public final class People {
         Progress progress = Progress.of(level.getServer());
         find(level.getServer(), person).ifPresent(Entity::discard);
         Entity body = spawn(level, person, at, yaw, pose, TAG + "_" + person);
-        body.setCustomName(Component.literal(Story.INSTANCE.person(person).name()));
+        body.setCustomName(Component.literal(label(level.getServer(), person)));
         name(body, NameVisibilityType.MOUSE_OVER);
         progress.bodies.put(person, body.getUUID());
         progress.setDirty();
         return body;
+    }
+
+    static Entity role(ServerLevel level, String role, String skin, Vec3 at, float yaw, String pose, String... tags) {
+        String[] all = Arrays.copyOf(tags, tags.length + 1);
+        all[tags.length] = TAG + "_" + role;
+        Entity body = spawn(level, skin, at, yaw, pose, all);
+        body.setCustomName(Component.literal(label(level.getServer(), role)));
+        name(body, NameVisibilityType.MOUSE_OVER);
+        return body;
+    }
+
+    public static String label(MinecraftServer server, String person) {
+        Story.Person spec = Story.INSTANCE.person(person);
+        return spec.unnamed() == null || Progress.of(server).named(person) ? spec.name() : spec.unnamed();
+    }
+
+    static void introduce(MinecraftServer server, List<String> things) {
+        Progress progress = Progress.of(server);
+        for (String thing : things) {
+            if (progress.named.add(thing)) {
+                progress.setDirty();
+                find(server, thing).ifPresent(body -> body.setCustomName(Component.literal(label(server, thing))));
+            }
+        }
     }
 
     public static void pose(Entity body, String pose) {

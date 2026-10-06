@@ -74,6 +74,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | What is happening to me? | With every shard I take, more of the Eye comes together in me. Endermen stop flinching from my gaze, I hear the calling stones, my heart slows; later I see through stone, my eyes glow in the dark and the peoples' guardians bow; at last I dream the dragon's dreams |
 | What does it cost? | I shine. The more of the Eye is in me, the more my heart shines like a shard, and the more the gaze's creatures come for me and the harder they search. Only taking fewer shards slows it; Agna's remedy dims me for a night |
 | Why do I go after the shards? | The stranger died asking me not to let "it" have them, the shards he took; the burnt town showed me what he meant. At the first hall his voice finished the sentence: bring them to a frame and put the dragon's eye out for good, so no town burns again |
+| Why was the stranger dying? | He was old, and he spent the last of his strength looking for me and carrying me from the road to his fire: "I walked further than I had left in me" |
 | Why did the stranger give me the ember? | His ember had been dark for twenty years and he was dying. A dying ember's light flies home to the Eye, and only the Eye's own body could light it again, so he gave it to the one thing the gaze grew to carry its Eye home, and bet I would choose otherwise |
 | What is the voice? | The dragon, speaking through the Eye in me. It speaks from the first hall on: short words on the road, long talks when I sit apart at a fire. Nobody else hears it, and it is silent in a tent |
 | What do I call it? | The stranger, as the journal does, since I do not know his name |
@@ -98,7 +99,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Why will animals not breed near me? | They feel the gaze in the ember |
 | Why am I always hungry? | The ember burns what I eat: a Wayfarer eats twice what a settled person does, unless the ember is warm from a fire. It burns on the water too |
 | Why does varied food make me stronger? | The ember lives on what is new, and that is true of food as much as sights |
-| Why do I respawn at a fire? | The ember is bound to fire, and wherever I light one it brings me back |
+| Where do I wake after a fall? | The ember is bound to fire and to its kin: it brings me back to the nearest warmth it knows, a friend's ember, or else the last fire I sat by |
 | What happens to my things when I fall? | The road keeps them under a stone where I fell, until I come back; the compass marks the stone |
 | Why is ore thin in plain stone? | The Ancient Cities and the peoples mined the land bare long ago. What is left lies in their old mines and in the deep stone around the Cities |
 | Why do villagers trade so little? | Towns that grow burn, so they keep their stores, fear strangers and have few children |
@@ -119,7 +120,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Why do they follow me? | I carry an ember and can feel the way. I am their scout, and they follow the marks I leave on the road |
 | What are they looking for? | A place the gaze cannot see. The voice says it knows one, past the sea |
 | Why do I never see them travel? | They break camp after I set out and make camp before I come back; in the evening their smoke shows me where |
-| Who are its people? | Old Tamsin, the elder, who carries the town's bell; Corin, a Gazebound deserter who served under Wend; Nell, last of the Frost Walkers; Bram, a herder; Ilse, a Keeper's apprentice; Mother Agna, the healer; Hob, the smith; Pip, a child who wants to be a Wayfarer, whose mother died the night Tollbridge burned and whom Agna took in at dawn |
+| Who are its people? | Old Tamsin, the elder, who carries the town's bell; Corin, a Gazebound deserter who served under Wend; Nell, last of the Frost Walkers; Bram, a herder; Ilse, a Keeper's apprentice; Mother Agna, the healer, who knows clothes against the cold and the heat, food and remedies; Hob, the smith, who knows metal; Pip, a child who wants to be a Wayfarer and knows every horse in the stories, whose mother died the night Tollbridge burned and whom Agna took in at dawn. Tamsin knows tents and the camp |
 | Why does their camp never burn? | A fire shared freely does not turn on the ones who share it: no spark of it catches their tents, and the sky's fire passes them by |
 
 ## The people
@@ -128,6 +129,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 |---|---|
 | Who was the stranger? | Wend, a Wayfarer who broke the oath. Young, he walked happily and looked in on the Diggers' hall every few winters, leaving its shard where it lay. Then he hid a shard in a young town's bell to keep it from the Gazebound, served them as their finder while his ember still burned, stole the Frost Walkers' shard, and one winter night took their bread and stopped walking. His ember went dark in his ninth winter in their grass halls; he became their captain anyway, raised Maren, and read in the Scribes' books what a thirteenth shard is |
 | Who is Maren? | A Gazebound evoker Wend raised from a child; it was her hand that held out the bread the night he gave in. She follows the smoke of my fire, visits it as a guest, names Wend, and at the frame opens his letter and turns on her own band |
+| Who left the Cache? | A Wayfarer nobody can name, who signed their journal only with the circle mark. They found a place they loved, built a cabin for one winter and stayed; the ember grew small, and one winter it went out. Their stone of one's own waited, wrapped in cloth, for someone who walks |
 | Why can no one hurt Maren at a fire? | She comes as a guest and leaves in smoke before anything can happen; nothing fights at a fire shared freely |
 | Who is the Grass King's heir? | The leader of the Gazebound, of the Grass King's line. He wants a world that is seen, with no crime and no war, as his ancestor's kingdom had for one summer, at the price of everyone being watched |
 | Who was the Grass King? | The king of the grasslands, one of the Twelve Peoples. He kept his people's shard in his crown instead of hiding it, and for one summer he saw everything that stood still in his kingdom. His own people tore it from his crown and sealed it, and drove out his heirs and everyone who followed them |
@@ -142,6 +144,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Who are the settled? | The villages, towns and capitals: the people who forgot the oath. The gaze burns them, one by one |
 | What do the settled remember? | Wayfarers only as a story told to children: walkers who carried fire and never stayed. They have no name for what burns their towns; they say "they", or "the night" |
 | Who are the Gazebound? | An Illager cult under the Grass King's heir that serves the gaze to use it: they believe its sight will run through them once the Eye is set. Their outposts, camps, forts and mansions stand across the world |
+| What do the Gazebound ask on the road? | After a light: "Seen anyone with a coal in their hand that glows? A fire that walks?" They are looking for whoever carries an ember |
 | Where do the Illagers come from? | They are the Grass Kingdom's outcasts and their children |
 | Why do monsters leave the Gazebound alone? | At their oath, every Gazebound lets the gaze's creatures open their chest just far enough to look. Not all survive it; those who do carry the scar over the heart, and the gaze never searches a heart twice. They call it a blessing |
 | Why do the Gazebound feed Wayfarers? | Only an ember can lift a shard, and an ember cannot be taken. So they feed Wayfarers, follow their smoke, and wait |

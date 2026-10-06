@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -47,9 +46,7 @@ public final class Demo {
 
     private static Compass.Aim target(JsonObject target) {
         JsonArray at = target.getAsJsonArray("at");
-        return new Compass.Aim(
-                ResourceLocation.parse(target.get("shrine").getAsString()),
-                new BlockPos(at.get(0).getAsInt(), at.get(1).getAsInt(), at.get(2).getAsInt()));
+        return new Compass.Aim(new BlockPos(at.get(0).getAsInt(), at.get(1).getAsInt(), at.get(2).getAsInt()));
     }
 
     private static JsonObject spec() {

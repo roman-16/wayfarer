@@ -96,6 +96,7 @@ public final class Journal {
         JsonArray places = new JsonArray();
         PLACES.forEach((name, key) -> progress.place(name).ifPresent(pos -> places.add(place(key, pos))));
         view.add("places", places);
+        view.addProperty("headIn", Caravan.canHeadIn(server));
         return view;
     }
 

@@ -114,6 +114,14 @@ public final class Clock {
         return rested.contains(player.getUUID());
     }
 
+    public static boolean morning(ServerLevel level) {
+        return storied(level.getServer()) && Math.floorMod(level.getDayTime(), DAY) < ticks(Balance.INSTANCE.clock().runFrom());
+    }
+
+    public static boolean atCaravan(ServerPlayer player) {
+        return caravan != null && near(player, player.serverLevel(), Balance.INSTANCE.fire().circleBlocks());
+    }
+
     public static boolean afternoon(ServerLevel level) {
         return mode == Mode.EASE && caravan != null && Math.floorMod(level.getDayTime(), DAY) < ticks(Balance.INSTANCE.clock().runFrom());
     }
