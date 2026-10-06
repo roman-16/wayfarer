@@ -1,6 +1,6 @@
 # Wayfarer
 
-A vanilla+ Minecraft modpack about a nomadic journey, for Minecraft 1.21.1 on NeoForge. Twelve eye shards lie hidden in shrines at the far ends of a vast world. The ember you carry flares as you walk towards one and gutters as you walk away, until the shard answers. Gather all twelve, find the true gate, and kill the dragon. Never settle on the way.
+A Minecraft modpack about a nomadic journey, for Minecraft 1.21.1 on NeoForge. Twelve eye shards lie hidden in shrines at the far ends of a vast world. The ember you carry flares as you walk towards one and gutters as you walk away, until the shard answers. Gather all twelve, find the true gate, and kill the dragon. Never settle on the way.
 
 The same pack runs in singleplayer and on a dedicated server: every rule ships inside the Wayfarer mod or the pack's configs.
 
