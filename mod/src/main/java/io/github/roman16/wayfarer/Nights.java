@@ -10,8 +10,6 @@ import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -23,6 +21,7 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Nights {
+    private static final String HARD_NIGHT = "hard_night";
     private static final String HORDE_MUSIC = "hold";
     private static final String NAME = "wayfarer_nights";
     private static final String HORDES = "hordes";
@@ -161,7 +160,7 @@ public final class Nights {
         player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("wayfarer.night.subtitle")));
         player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("wayfarer.night.title").withStyle(ChatFormatting.RED)));
         player.sendSystemMessage(Component.translatable("wayfarer.night.chat").withStyle(ChatFormatting.RED));
-        player.playNotifySound(SoundEvents.RAID_HORN.value(), SoundSource.AMBIENT, 0.6F, 1);
+        Sounds.play(player, HARD_NIGHT);
     }
 
     private static void command(MinecraftServer server, String command) {

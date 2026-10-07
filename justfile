@@ -19,10 +19,17 @@ exaroton server="":
     python3 scripts/exaroton.py {{ server }}
 
 [doc("Boot the whole pack on a headless dedicated server after auditing its jars, and check the world with /locate")]
-boot: build
+boot: build boot-server
+
+[private]
+boot-server:
     python3 scripts/instance.py server build/server {{ jar }}
     python3 scripts/audit.py build/server/mods
     python3 scripts/boot.py build/server
+
+[doc("Shoot the gallery's pictures in the dev client from gallery/shots.toml and write its pages; names choose shots or folders, such as journal or hud/compass, all when none are named")]
+gallery *folders:
+    python3 scripts/gallery.py {{ folders }}
 
 [doc("Run the mod's game tests headless")]
 gametest:
@@ -38,6 +45,7 @@ compile:
 
 [doc("Run the dev server in the foreground: the whole pack with the Wayfarer mod's dev code, in build/devserver; `just devserver lean` loads only the Wayfarer mod and what it needs, in a world of its own")]
 devserver mode="full":
+    [ -n "${WAYFARER_DRIVEN:-}" ] || python3 scripts/server.py stop
     python3 scripts/instance.py devserver build/devserver --mode {{ mode }}
     cd mod && ./gradlew --console=plain runServer
 
@@ -45,7 +53,7 @@ devserver mode="full":
 lint: generate compile
     ruff format generator scripts
     ruff check --fix generator scripts
-    taplo format balance.toml generator/*.toml
+    taplo format balance.toml gallery/shots.toml generator/*.toml
     just --fmt --unstable
     cd pack && packwiz refresh
     python3 scripts/rules.py
@@ -64,8 +72,9 @@ pack: build
 
 [doc("Open the pack in a dev client on a fresh natural world, played in survival the way a player meets it; `just play lean` loads only the Wayfarer mod and what it needs, in a world of its own; `just play far` keeps Distant Horizons' far view on")]
 play mode="full":
+    [ -n "${WAYFARER_DRIVEN:-}" ] || python3 scripts/client.py stop
     python3 scripts/instance.py client build/client --mode {{ mode }}
-    rm --recursive --force build/client/saves/play{{ if mode == "lean" { "-lean" } else { "" } }}
+    python3 scripts/instance.py fresh build/client play --mode {{ mode }}
     cd mod && WAYFARER_LEAN={{ if mode == "lean" { "true" } else { "false" } }} LD_LIBRARY_PATH="$DEVBOX_PACKAGES_DIR/lib:/run/opengl-driver/lib" ./gradlew runPlay
 
 [doc("Run the pack's dedicated server locally")]
@@ -80,8 +89,9 @@ survey apply="": build
 
 [doc("Open the pack in a dev client in the showroom: a flat dimension rebuilt each launch with every shrine and item and a compass demo, beside an empty workshop and a kept natural world; `just showroom lean` loads only the Wayfarer mod and what it needs, in a save of its own; `just showroom far` keeps Distant Horizons' far view on")]
 showroom mode="full":
+    [ -n "${WAYFARER_DRIVEN:-}" ] || python3 scripts/client.py stop
     python3 scripts/instance.py client build/client --mode {{ mode }}
-    rm --recursive --force build/client/saves/showroom{{ if mode == "lean" { "-lean" } else { "" } }}/dimensions/wayfarer/{showroom,workshop}
+    python3 scripts/instance.py fresh build/client showroom --mode {{ mode }}
     cd mod && WAYFARER_LEAN={{ if mode == "lean" { "true" } else { "false" } }} LD_LIBRARY_PATH="$DEVBOX_PACKAGES_DIR/lib:/run/opengl-driver/lib" ./gradlew runShowroom
 
 [doc("Write everything the pack contains, from every mod, into build/reports/: every registry with its entries, the content of every data-driven one, every tag and every recipe; starts the dev server and stops it after")]
@@ -90,14 +100,37 @@ registries:
     python3 scripts/server.py run "wayfarer registries {{ justfile_directory() }}/build/reports"
     python3 scripts/server.py stop
 
+[doc("Ask an audio model about sound files, through OpenRouter with pi's own sign-in, after a brief on the pack's sound; each clip is labelled with its file name, and --plain leaves the brief out: just hear \"<question>\" <file>...")]
+hear question *files:
+    python3 scripts/hear.py {{ quote(question) }} {{ files }}
+
+[doc("Fetch, cut and loudness-match the pack's own sounds from story/sounds.toml into the mod's assets; names choose which, and a missing piece of music is made either way")]
+sounds *names:
+    python3 scripts/sounds.py {{ names }}
+
 [doc("Unpack Minecraft's and NeoForge's code with Parchment names and every mod decompiled with Vineflower into build/sources/, for searching with rg; only what changed is redone")]
 sources:
     cd mod && ./gradlew createMinecraftArtifacts vineflower
     python3 scripts/instance.py client build/client
     python3 scripts/sources.py
 
-[doc("Run the game tests, then the boot test")]
-test: gametest boot
+[doc("Run the game tests beside the boot test, with the game tests' log in build/gametest.log")]
+test: build
+    #!/usr/bin/env bash
+    set -uo pipefail
+    mkdir --parents build
+    (cd mod && ./gradlew --console=plain runGameTestServer) > build/gametest.log 2>&1 &
+    tests=$!
+    just boot-server
+    booted=$?
+    wait "$tests"
+    tested=$?
+    if ! grep --extended-regexp --only-matching "All [0-9]+ required tests passed" build/gametest.log; then
+        tested=1
+        grep --extended-regexp --only-matching "[0-9]+ required tests? failed.*|Failed to start the minecraft server" build/gametest.log
+        tail --lines 60 build/gametest.log
+    fi
+    exit $(( booted || tested ))
 
 [doc("Move every mod, tool and dependency to its newest version, then prove the pack still holds")]
 update:

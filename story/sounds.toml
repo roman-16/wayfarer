@@ -1,27 +1,225 @@
-[cues.ember_given]
-layers = [
-  { event = "minecraft:block.amethyst_block.resonate", pitch = 0.75 },
-  { event = "minecraft:block.respawn_anchor.charge", pitch = 0.625, volume = 0.625 },
-]
+[effects.answer_chosen]
+credit = "aturax_leatherBookUI_92, by GeoffAturax"
+cut = { fade_out = 0.025, length = 0.25 }
+downloaded = "06.10.2026"
+gain = -1
+kind = "frequent"
+licence = "CC BY 4.0"
+page = "https://freesound.org/people/GeoffAturax/sounds/532189"
+slider = "master"
 
-[cues.ember_wakes]
-layers = [
-  { delay = 8, event = "minecraft:block.beacon.activate", pitch = 1.25, volume = 0.75 },
-  { event = "minecraft:item.firecharge.use", pitch = 0.625, volume = 0.5 },
-]
+[effects.camp]
+credit = "Bonfire, by Electroviolence"
+downloaded = "06.10.2026"
+gain = -3
+kind = "loop"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/Electroviolence/sounds/234542"
+reach = 64
+slider = "ambient"
 
-[cues.reward_taken]
-layers = [
-  { event = "minecraft:entity.item.pickup", pitch = 0.75, volume = 0.625 },
-  { event = "minecraft:item.bundle.insert" },
-]
+[effects.clues_glow]
+credit = "Shiny Object of Value - Rare Loot Find, by LilMati"
+cut = { fade_out = 0.1, length = 1.15 }
+downloaded = "06.10.2026"
+gain = -2
+kind = "rare"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/LilMati/sounds/659677"
+slider = "players"
 
-[cues.shard_taken]
-layers = [
-  { delay = 8, event = "minecraft:block.conduit.activate", volume = 0.75 },
-  { event = "minecraft:block.end_portal_frame.fill", pitch = 0.75 },
-]
+[effects.compass_mark]
+credit = "Hand Crank Music Box (E5 Note), by moodyfingers"
+downloaded = "06.10.2026"
+kind = "rare"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/moodyfingers/sounds/732942"
+slider = "players"
 
+[effects.door_blow]
+credit = "Door Hits; multiple, by RossBell"
+cut = { fade_out = 0.03, length = 1.1, start = 0.08 }
+downloaded = "06.10.2026"
+gain = -2
+kind = "frequent"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/RossBell/sounds/389418"
+reach = 32
+slider = "hostile"
+
+[effects.ember_flares]
+credit = "Fire.wav, by danielpodlovics"
+downloaded = "06.10.2026"
+gain = -2
+kind = "frequent"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/danielpodlovics/sounds/530355"
+slider = "players"
+
+[effects.ember_given]
+credit = "mystic 2, by Zixem"
+cut = { fade_out = 1 }
+downloaded = "06.10.2026"
+kind = "rare"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/Zixem/sounds/69506"
+slider = "players"
+
+[effects.ember_gutters]
+credit = "embers 4, by AuDRoger"
+cut = { fade_out = 0.03, length = 1.1 }
+downloaded = "06.10.2026"
+kind = "frequent"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/AuDRoger/sounds/471158"
+slider = "players"
+
+[effects.ember_wakes]
+credit = "Magic 2.Wouw+SinePad, by gsb1039"
+cut = { fade_in = 0.25, fade_out = 1, length = 5.6, start = 0.1 }
+downloaded = "07.10.2026"
+gain = 1
+kind = "rare"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/gsb1039/sounds/430894"
+slider = "players"
+
+[effects.fire_circle]
+credit = "Fire, Campfire, Bonfire, by yaros_nov"
+cut = { fade_in = 0.5, fade_out = 0.25, length = 2.7, start = 0.05 }
+downloaded = "06.10.2026"
+gain = -3
+kind = "rare"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/yaros_nov/sounds/434026"
+slider = "ambient"
+
+[effects.gaze_crumbles]
+credit = "Cinematic Dragon Sound - Dragon Hiss 4, by Soughtaftersounds"
+cut = { fade_out = 0.07, length = 0.78 }
+downloaded = "06.10.2026"
+gain = -2
+kind = "rare"
+licence = "CC BY 3.0"
+page = "https://freesound.org/people/Soughtaftersounds/sounds/239650"
+reach = 16
+slider = "hostile"
+
+[effects.gaze_rises]
+credit = "Growl - Large Creature, Fantasy, by 8bitmyketison"
+cut = { fade_out = 0.4, length = 1.2, start = 0.1 }
+downloaded = "06.10.2026"
+gain = -4
+kind = "frequent"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/8bitmyketison/sounds/699932"
+reach = 16
+slider = "hostile"
+
+[effects.hard_night]
+credit = "Dark Horn Blast, by hykenfreak"
+cut = { fade_out = 0.5, length = 7 }
+downloaded = "06.10.2026"
+kind = "rare"
+licence = "CC BY 4.0"
+page = "https://freesound.org/people/hykenfreak/sounds/218072"
+slider = "hostile"
+
+[effects.journal_entry]
+credit = "Pencil, Writing, Close, A, by InspectorJ"
+cut = { fade_out = 1.5, length = 3.9 }
+downloaded = "06.10.2026"
+gain = -4
+kind = "frequent"
+licence = "CC BY 4.0"
+page = "https://freesound.org/people/InspectorJ/sounds/398271"
+slider = "master"
+
+[effects.journal_page]
+credit = "Page Turn, by qubodup"
+cut = { fade_out = 0.025, length = 0.55 }
+downloaded = "06.10.2026"
+kind = "frequent"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/qubodup/sounds/442857"
+slider = "master"
+
+[effects.quest_begun]
+credit = "Magic 3.Glitter+Arrival, by gsb1039"
+cut = { fade_out = 0.5, length = 6 }
+downloaded = "06.10.2026"
+gain = -3
+kind = "rare"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/gsb1039/sounds/430893"
+slider = "master"
+
+[effects.quest_done]
+credit = "Level Up/Mission Complete (Fantasy), by SilverIllusionist"
+cut = { fade_out = 0.1, length = 3 }
+downloaded = "06.10.2026"
+kind = "rare"
+licence = "CC BY 4.0"
+page = "https://freesound.org/people/SilverIllusionist/sounds/665203"
+slider = "master"
+
+[effects.reward_taken]
+credit = "Item Received, by spookymodem"
+cut = { fade_in = 0.01, fade_out = 0.12, length = 1.03, start = 0.02 }
+downloaded = "07.10.2026"
+gain = 2
+kind = "frequent"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/spookymodem/sounds/249815"
+slider = "players"
+
+[effects.shard_taken]
+credit = "DSGNSrce Glass-metal Resonant Transition 13, by newlocknew"
+cut = { fade_out = 1 }
+downloaded = "06.10.2026"
+kind = "rare"
+licence = "CC BY 4.0"
+page = "https://freesound.org/people/newlocknew/sounds/711059"
+slider = "players"
+
+[effects.task_ticked]
+credit = "Tarea completa, by valeulloam97"
+cut = { fade_out = 0.25, length = 1 }
+downloaded = "06.10.2026"
+gain = -2
+kind = "frequent"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/valeulloam97/sounds/541389"
+slider = "master"
+
+[effects.tent_packed]
+credit = "Canvas Tent 1, by kevinkace"
+cut = { fade_out = 0.02, start = 0.02 }
+downloaded = "06.10.2026"
+kind = "rare"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/kevinkace/sounds/66773"
+reach = 16
+slider = "blocks"
+
+[effects.tent_pitched]
+credit = "Umbrella Close 3, by Geoff-Bremner-Audio"
+cut = { fade_out = 0.025, length = 1.2 }
+downloaded = "06.10.2026"
+kind = "rare"
+licence = "CC BY 4.0"
+page = "https://freesound.org/people/Geoff-Bremner-Audio/sounds/790255"
+reach = 16
+slider = "blocks"
+
+[effects.town_burning]
+credit = "FIREPLACE, by leosalom"
+downloaded = "06.10.2026"
+kind = "loop"
+licence = "CC BY 3.0"
+page = "https://freesound.org/people/leosalom/sounds/234288"
+reach = 128
+slider = "ambient"
 [music.first_fire]
 credit = "Calm fireplace guitar song, by ShggothSlave"
 downloaded = "05.10.2026"
@@ -46,3 +244,10 @@ credit = "Edvard Grieg, Morning Mood (Peer Gynt Suite No. 1, Op. 46), Musopen Sy
 downloaded = "05.10.2026"
 licence = "Public domain"
 page = "https://commons.wikimedia.org/wiki/File:Grieg_-_Peer_Gynt_Suite_No._1,_Op._46_-_I._Morning_Mood_(Musopen_Symphony).flac"
+
+[music.title]
+credit = "Emotional Original Soundtrack - FORGIVENESS, by Magmi.Soundtracks"
+downloaded = "06.10.2026"
+licence = "CC0 1.0"
+loop = true
+page = "https://freesound.org/people/Magmi.Soundtracks/sounds/478246"

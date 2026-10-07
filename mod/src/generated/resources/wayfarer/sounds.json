@@ -1,0 +1,80 @@
+{
+  "answer_chosen": {
+    "slider": "master"
+  },
+  "camp": {
+    "loop_ticks": 300,
+    "reach": 64,
+    "slider": "ambient"
+  },
+  "clues_glow": {
+    "slider": "players"
+  },
+  "compass_mark": {
+    "slider": "players"
+  },
+  "door_blow": {
+    "reach": 32,
+    "slider": "hostile"
+  },
+  "ember_flares": {
+    "slider": "players"
+  },
+  "ember_given": {
+    "slider": "players"
+  },
+  "ember_gutters": {
+    "slider": "players"
+  },
+  "ember_wakes": {
+    "slider": "players"
+  },
+  "fire_circle": {
+    "slider": "ambient"
+  },
+  "gaze_crumbles": {
+    "reach": 16,
+    "slider": "hostile"
+  },
+  "gaze_rises": {
+    "reach": 16,
+    "slider": "hostile"
+  },
+  "hard_night": {
+    "slider": "hostile"
+  },
+  "journal_entry": {
+    "slider": "master"
+  },
+  "journal_page": {
+    "slider": "master"
+  },
+  "quest_begun": {
+    "slider": "master"
+  },
+  "quest_done": {
+    "slider": "master"
+  },
+  "reward_taken": {
+    "slider": "players"
+  },
+  "shard_taken": {
+    "slider": "players"
+  },
+  "task_ticked": {
+    "slider": "master"
+  },
+  "tent_packed": {
+    "reach": 16,
+    "slider": "blocks"
+  },
+  "tent_pitched": {
+    "reach": 16,
+    "slider": "blocks"
+  },
+  "town_burning": {
+    "loop_ticks": 554,
+    "reach": 128,
+    "slider": "ambient"
+  }
+}

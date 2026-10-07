@@ -36,6 +36,8 @@ import nomadictents.util.TentSize;
 
 public final class TentPitch {
     private static final BlockPos INSIDE_DOOR = Tent.calculatePos(0);
+    private static final String TENT_PACKED = "tent_packed";
+    private static final String TENT_PITCHED = "tent_pitched";
 
     private TentPitch() {}
 
@@ -96,6 +98,7 @@ public final class TentPitch {
         state.tents.removeIf(pitched -> pitched.id() == tent.getId());
         state.tents.add(new Joining.Pitched(player.getUUID(), new Joining.Place(level.dimension(), door.immutable()), tent.getId()));
         state.setDirty();
+        Sounds.play(level, door.getCenter(), TENT_PITCHED);
     }
 
     private static TentSize size(ItemStack held) {
@@ -112,6 +115,7 @@ public final class TentPitch {
             return;
         }
         Tent pitched = door.getTent();
+        Sounds.play(player.serverLevel(), door.getBlockPos().getCenter(), TENT_PACKED);
         TentPlacer.getInstance().removeTent(player.level(), door.getBlockPos(), pitched.getType(), TentPlacer.getOverworldSize(pitched.getSize()),
                 door.getDirection());
         ItemStack item = pitched.asItem();

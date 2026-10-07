@@ -25,7 +25,7 @@ public final class Progress extends SavedData {
     final Map<String, Integer> steps = new LinkedHashMap<>();
     final Map<String, CompoundTag> scratch = new LinkedHashMap<>();
     final Map<String, String> choices = new LinkedHashMap<>();
-    final List<String> told = new ArrayList<>();
+    final Map<String, List<String>> told = new LinkedHashMap<>();
     final Map<String, List<String>> people = new LinkedHashMap<>();
     final Map<String, List<String>> words = new LinkedHashMap<>();
     final List<String> rewards = new ArrayList<>();
@@ -36,6 +36,8 @@ public final class Progress extends SavedData {
     final Map<String, BoundingBox> wards = new LinkedHashMap<>();
     final Set<String> gifts = new LinkedHashSet<>();
     final Set<String> named = new LinkedHashSet<>();
+    final Map<UUID, Set<String>> seen = new LinkedHashMap<>();
+    final Map<UUID, String> tracking = new LinkedHashMap<>();
     String stone = "";
 
     public static Progress of(MinecraftServer server) {
@@ -100,7 +102,7 @@ public final class Progress extends SavedData {
         scratch.getAllKeys().forEach(key -> progress.scratch.put(key, scratch.getCompound(key)));
         CompoundTag choices = tag.getCompound("choices");
         choices.getAllKeys().forEach(key -> progress.choices.put(key, choices.getString(key)));
-        progress.told.addAll(strings(tag.getList("told", Tag.TAG_STRING)));
+        lines(tag.getList("told", Tag.TAG_COMPOUND), progress.told);
         lines(tag.getList("people", Tag.TAG_COMPOUND), progress.people);
         lines(tag.getList("words", Tag.TAG_COMPOUND), progress.words);
         progress.rewards.addAll(strings(tag.getList("rewards", Tag.TAG_STRING)));
@@ -124,6 +126,10 @@ public final class Progress extends SavedData {
         progress.gifts.addAll(strings(tag.getList("gifts", Tag.TAG_STRING)));
         progress.named.addAll(strings(tag.getList("named", Tag.TAG_STRING)));
         progress.stone = tag.getString("stone");
+        CompoundTag seen = tag.getCompound("seen");
+        seen.getAllKeys().forEach(key -> progress.seen.put(UUID.fromString(key), new LinkedHashSet<>(strings(seen.getList(key, Tag.TAG_STRING)))));
+        CompoundTag tracking = tag.getCompound("tracking");
+        tracking.getAllKeys().forEach(key -> progress.tracking.put(UUID.fromString(key), tracking.getString(key)));
         return progress;
     }
 
@@ -138,7 +144,7 @@ public final class Progress extends SavedData {
         CompoundTag choices = new CompoundTag();
         this.choices.forEach(choices::putString);
         tag.put("choices", choices);
-        tag.put("told", list(told));
+        tag.put("told", lines(told));
         tag.put("people", lines(people));
         tag.put("words", lines(words));
         tag.put("rewards", list(rewards));
@@ -163,6 +169,12 @@ public final class Progress extends SavedData {
         tag.put("wards", wards);
         tag.put("gifts", list(List.copyOf(gifts)));
         tag.put("named", list(List.copyOf(named)));
+        CompoundTag seen = new CompoundTag();
+        this.seen.forEach((player, keys) -> seen.put(player.toString(), list(List.copyOf(keys))));
+        tag.put("seen", seen);
+        CompoundTag tracking = new CompoundTag();
+        this.tracking.forEach((player, quest) -> tracking.putString(player.toString(), quest));
+        tag.put("tracking", tracking);
         tag.putString("stone", stone);
         return tag;
     }

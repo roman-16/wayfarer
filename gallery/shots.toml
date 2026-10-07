@@ -1,0 +1,1026 @@
+[[shots]]
+at = "the_last_fire/the_stranger"
+caption = "Waking at the stranger's fire: the task panel and the compass band"
+id = "hud/first-night"
+kind = "hud"
+
+[[shots]]
+at = "ash/the_town"
+caption = "Making for the smoke: the tracked goal's mark with its distance under it"
+id = "hud/goal-distance"
+kind = "hud"
+
+[[shots]]
+at = "the_first_day/dusk"
+caption = "A quest begun: the parchment banner under the compass"
+id = "hud/banner-begun"
+kind = "hud"
+steps = ["story ash/the_town"]
+
+[[shots]]
+at = "ash/night"
+caption = "A quest done: the parchment banner as Ash ends"
+id = "hud/banner-done"
+kind = "hud"
+steps = ["story the_pull/pull"]
+
+[[shots]]
+at = "the_pull/pull"
+caption = "Following the pull: no mark yet, the ember's feeling under the band"
+id = "hud/feeling"
+kind = "hud"
+
+[[shots]]
+at = "the_first_day/away"
+caption = "A reward waiting: the task panel keeps it until it is taken"
+id = "hud/reward-waiting"
+kind = "hud"
+steps = ["/wayfarer story unclaim the_last_fire"]
+
+[[shots]]
+at = "ash/the_door"
+caption = "The hold at the bell tower's door"
+id = "hud/the-hold"
+kind = "hud"
+
+[[shots]]
+at = "showroom"
+caption = "The compass demo: a waymark, a companion circling the camp and the camp's grave"
+id = "hud/showroom-compass"
+kind = "hud"
+
+[[shots]]
+at = "the_last_fire/the_stranger"
+caption = "The first night: only Quests, The story so far, People and the Map"
+id = "journal/quests/first-night"
+kind = "screen"
+steps = ["key key.wayfarer.journal"]
+
+[[shots]]
+at = "the_first_day/away"
+caption = "A reward waiting: first in the list, in gold, its items in slots and one Take"
+id = "journal/quests/reward-waiting"
+kind = "screen"
+steps = [
+  "/wayfarer story unclaim the_last_fire",
+  "key key.wayfarer.journal",
+  "press Quests",
+  "press His Pack",
+]
+
+[[shots]]
+at = "ash/the_cellar"
+caption = "The tracked quest, with its story, objective and tasks"
+id = "journal/quests/tracked"
+kind = "screen"
+steps = ["key key.wayfarer.journal", "press Quests", "press Ash"]
+
+[[shots]]
+at = "ash/the_cellar"
+caption = "Done quests unfolded, one of them chosen"
+id = "journal/quests/done-quest"
+kind = "screen"
+steps = [
+  "key key.wayfarer.journal",
+  "press Quests",
+  "press Done (3)",
+  "press The Last Fire",
+]
+
+[[shots]]
+at = "ash/the_cellar"
+caption = "A reward already taken: its items still shown, no Take"
+id = "journal/quests/taken-reward"
+kind = "screen"
+steps = [
+  "key key.wayfarer.journal",
+  "press Quests",
+  "press Done (3)",
+  "press His Pack",
+]
+
+[[shots]]
+at = "his_first_camp/the_lake"
+caption = "Side quests open beside the main quest, one chosen with its Track button"
+id = "journal/quests/side-quests"
+kind = "screen"
+steps = ["key key.wayfarer.journal", "press Quests", "press The Road"]
+
+[[shots]]
+at = "ash/the_cellar"
+caption = "The story so far: one chapter per quest, told as I"
+id = "journal/story-so-far/the-last-fire"
+kind = "screen"
+steps = [
+  "key key.wayfarer.journal",
+  "press The story so far",
+  "press The Last Fire",
+]
+
+[[shots]]
+at = "ash/the_cellar"
+caption = "People: the stranger, as the player knows him"
+id = "journal/people/the-stranger"
+kind = "screen"
+steps = ["key key.wayfarer.journal", "press People", "press The stranger"]
+
+[[shots]]
+at = "ash/the_cellar"
+caption = "Words: the ember, as the player has learned it"
+id = "journal/words/the-ember"
+kind = "screen"
+steps = ["key key.wayfarer.journal", "press Words", "press The ember"]
+
+[[shots]]
+at = "the_first_day/away"
+caption = "The inventory with the cold ember among the charms"
+id = "items/charms-cold-ember"
+kind = "screen"
+steps = ["key key.inventory"]
+
+[[shots]]
+at = "the_pull/pull"
+caption = "The inventory with the ember lit among the charms"
+id = "items/charms-lit-ember"
+kind = "screen"
+steps = ["key key.inventory"]
+
+[[shots]]
+at = "showroom"
+caption = "The showroom's item frame wall"
+id = "items/item-wall"
+kind = "world"
+steps = ["/execute in wayfarer:showroom run tp @s 0.5 1 -5.5 180 0"]
+
+[[shots]]
+at = "the_last_fire/the_stranger"
+caption = "The Last Camp at night: the stranger dying by his fire"
+id = "story/the-last-fire/the-stranger"
+kind = "world"
+
+[[shots]]
+at = "the_last_fire/the_grave"
+caption = "The stranger dead by his fire, before the burial"
+id = "story/the-last-fire/the-grave"
+kind = "world"
+
+[[shots]]
+at = "the_first_day/dusk"
+caption = "Dusk on the first day: the smoke over the ridge"
+id = "story/the-first-day/dusk"
+kind = "world"
+
+[[shots]]
+at = "ash/the_town"
+caption = "Tollbridge burning at dusk"
+id = "story/ash/the-town"
+kind = "world"
+
+[[shots]]
+at = "ash/the_dead"
+caption = "Tollbridge's dead"
+id = "story/ash/the-dead"
+kind = "world"
+
+[[shots]]
+at = "ash/the_cellar"
+caption = "The bell tower's cellar"
+id = "story/ash/the-cellar"
+kind = "world"
+
+[[shots]]
+at = "ash/evening"
+caption = "The caravan's first fire"
+id = "story/ash/evening"
+kind = "world"
+
+[[shots]]
+at = "the_pull/tunnels"
+caption = "The Diggers' tunnels: the entrance in the hillside"
+id = "story/the-pull/tunnels"
+kind = "world"
+
+[[shots]]
+at = "the_pull/shard"
+caption = "The Diggers' hall: the shard on its stone"
+id = "story/the-pull/shard"
+kind = "world"
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "The caravan's camp in the evening"
+id = "story/the-pull/the-fireside"
+kind = "world"
+
+[[shots]]
+at = "his_first_camp/the_lake"
+caption = "The morning after the voice spoke: making for his first camp"
+id = "story/his-first-camp/the-lake"
+kind = "world"
+
+[[shots]]
+at = "showroom"
+caption = "The stranger"
+id = "people/the-caravan/the-stranger"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person stranger"]
+
+[[shots]]
+at = "showroom"
+caption = "Tamsin"
+id = "people/the-caravan/tamsin"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person tamsin"]
+
+[[shots]]
+at = "showroom"
+caption = "Agna"
+id = "people/the-caravan/agna"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person agna"]
+
+[[shots]]
+at = "showroom"
+caption = "Hob"
+id = "people/the-caravan/hob"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person hob"]
+
+[[shots]]
+at = "showroom"
+caption = "Pip"
+id = "people/the-caravan/pip"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person pip"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (1 of 31)"
+id = "people/townsfolk/01"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_01"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (2 of 31)"
+id = "people/townsfolk/02"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_02"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (3 of 31)"
+id = "people/townsfolk/03"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_03"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (4 of 31)"
+id = "people/townsfolk/04"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_04"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (5 of 31)"
+id = "people/townsfolk/05"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_05"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (6 of 31)"
+id = "people/townsfolk/06"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_06"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (7 of 31)"
+id = "people/townsfolk/07"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_07"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (8 of 31)"
+id = "people/townsfolk/08"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_08"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (9 of 31)"
+id = "people/townsfolk/09"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_09"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (10 of 31)"
+id = "people/townsfolk/10"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_10"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (11 of 31)"
+id = "people/townsfolk/11"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_11"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (12 of 31)"
+id = "people/townsfolk/12"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_12"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (13 of 31)"
+id = "people/townsfolk/13"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_13"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (14 of 31)"
+id = "people/townsfolk/14"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_14"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (15 of 31)"
+id = "people/townsfolk/15"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_15"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (16 of 31)"
+id = "people/townsfolk/16"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_16"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (17 of 31)"
+id = "people/townsfolk/17"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_17"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (18 of 31)"
+id = "people/townsfolk/18"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_18"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (19 of 31)"
+id = "people/townsfolk/19"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_19"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (20 of 31)"
+id = "people/townsfolk/20"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_20"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (21 of 31)"
+id = "people/townsfolk/21"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_21"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (22 of 31)"
+id = "people/townsfolk/22"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_22"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (23 of 31)"
+id = "people/townsfolk/23"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_23"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (24 of 31)"
+id = "people/townsfolk/24"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_24"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (25 of 31)"
+id = "people/townsfolk/25"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_25"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (26 of 31)"
+id = "people/townsfolk/26"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_26"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (27 of 31)"
+id = "people/townsfolk/27"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_27"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (28 of 31)"
+id = "people/townsfolk/28"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_28"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (29 of 31)"
+id = "people/townsfolk/29"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_29"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (30 of 31)"
+id = "people/townsfolk/30"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_30"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people (31 of 31)"
+id = "people/townsfolk/31"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_31"]
+
+[[shots]]
+at = "showroom"
+caption = "Someone met on the road (1 of 12)"
+id = "people/the-road/01"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person road_01"]
+
+[[shots]]
+at = "showroom"
+caption = "Someone met on the road (2 of 12)"
+id = "people/the-road/02"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person road_02"]
+
+[[shots]]
+at = "showroom"
+caption = "Someone met on the road (3 of 12)"
+id = "people/the-road/03"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person road_03"]
+
+[[shots]]
+at = "showroom"
+caption = "Someone met on the road (4 of 12)"
+id = "people/the-road/04"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person road_04"]
+
+[[shots]]
+at = "showroom"
+caption = "Someone met on the road (5 of 12)"
+id = "people/the-road/05"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person road_05"]
+
+[[shots]]
+at = "showroom"
+caption = "Someone met on the road (6 of 12)"
+id = "people/the-road/06"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person road_06"]
+
+[[shots]]
+at = "showroom"
+caption = "Someone met on the road (7 of 12)"
+id = "people/the-road/07"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person road_07"]
+
+[[shots]]
+at = "showroom"
+caption = "Someone met on the road (8 of 12)"
+id = "people/the-road/08"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person road_08"]
+
+[[shots]]
+at = "showroom"
+caption = "Someone met on the road (9 of 12)"
+id = "people/the-road/09"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person road_09"]
+
+[[shots]]
+at = "showroom"
+caption = "Someone met on the road (10 of 12)"
+id = "people/the-road/10"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person road_10"]
+
+[[shots]]
+at = "showroom"
+caption = "Someone met on the road (11 of 12)"
+id = "people/the-road/11"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person road_11"]
+
+[[shots]]
+at = "showroom"
+caption = "Someone met on the road (12 of 12)"
+id = "people/the-road/12"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person road_12"]
+
+[[shots]]
+at = "showroom"
+caption = "One of the dead on the road, back"
+id = "people/the-dead/back"
+kind = "views"
+sides = ["three-quarters", "above"]
+steps = ["person road_dead_01 fallen_back"]
+
+[[shots]]
+at = "showroom"
+caption = "One of the dead on the road, back knee"
+id = "people/the-dead/back-knee"
+kind = "views"
+sides = ["three-quarters", "above"]
+steps = ["person road_dead_02 fallen_back_knee"]
+
+[[shots]]
+at = "showroom"
+caption = "One of the dead on the road, face"
+id = "people/the-dead/face"
+kind = "views"
+sides = ["three-quarters", "above"]
+steps = ["person road_dead_01 fallen_face"]
+
+[[shots]]
+at = "showroom"
+caption = "One of the dead on the road, face still"
+id = "people/the-dead/face-still"
+kind = "views"
+sides = ["three-quarters", "above"]
+steps = ["person road_dead_02 fallen_face_still"]
+
+[[shots]]
+at = "showroom"
+caption = "One of the dead on the road, reaching"
+id = "people/the-dead/reaching"
+kind = "views"
+sides = ["three-quarters", "above"]
+steps = ["person road_dead_01 fallen_reaching"]
+
+[[shots]]
+at = "showroom"
+caption = "One of the dead on the road, side"
+id = "people/the-dead/side"
+kind = "views"
+sides = ["three-quarters", "above"]
+steps = ["person road_dead_02 fallen_side"]
+
+[[shots]]
+at = "showroom"
+caption = "One of the dead on the road, side open"
+id = "people/the-dead/side-open"
+kind = "views"
+sides = ["three-quarters", "above"]
+steps = ["person road_dead_01 fallen_side_open"]
+
+[[shots]]
+at = "showroom"
+caption = "One of the dead on the road, slumped"
+id = "people/the-dead/slumped"
+kind = "views"
+sides = ["three-quarters", "above"]
+steps = ["person road_dead_02 fallen_slumped"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people, sitting crossed"
+id = "people/the-living/sitting-crossed"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_01 sitting_crossed"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people, sitting grieving"
+id = "people/the-living/sitting-grieving"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_02 sitting_grieving"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people, sitting hunched"
+id = "people/the-living/sitting-hunched"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_03 sitting_hunched"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people, sitting leaning"
+id = "people/the-living/sitting-leaning"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_04 sitting_leaning"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people, standing arms crossed"
+id = "people/the-living/standing-arms-crossed"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_05 standing_arms_crossed"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people, standing behind back"
+id = "people/the-living/standing-behind-back"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_06 standing_behind_back"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people, standing head down"
+id = "people/the-living/standing-head-down"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_07 standing_head_down"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people, standing looking up"
+id = "people/the-living/standing-looking-up"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_08 standing_looking_up"]
+
+[[shots]]
+at = "showroom"
+caption = "One of Tollbridge's people, standing weight"
+id = "people/the-living/standing-weight"
+kind = "views"
+sides = ["front", "three-quarters"]
+steps = ["person townsfolk_09 standing_weight"]
+
+[[shots]]
+at = "showroom"
+caption = "The dead mule from the overturned cart, both sides down, beside a living mule"
+id = "creatures/dead-mule"
+kind = "views"
+steps = [
+  "spawn minecraft:mule",
+  "/summon wayfarer:fallen 8.5 1 0.5 {Creature:\"minecraft:mule\",LeftDown:1b,Rotation:[180f,0f]}",
+  "/summon wayfarer:fallen 13.5 1 0.5 {Creature:\"minecraft:mule\",LeftDown:0b,Rotation:[180f,0f]}",
+]
+
+[[shots]]
+at = "showroom"
+caption = "The stranger's first camp, by a lake under three pines"
+id = "places/his-first-camp"
+kind = "views"
+steps = ["place wayfarer:old_camp/first_camp"]
+
+[[shots]]
+at = "showroom"
+caption = "The stranger's last camp, as the player finds it later"
+id = "places/his-last-camp"
+kind = "views"
+steps = ["place wayfarer:old_camp/last_camp"]
+
+[[shots]]
+at = "showroom"
+caption = "The stranger's grave"
+id = "places/the-grave"
+kind = "views"
+steps = ["place wayfarer:last_camp/grave"]
+
+[[shots]]
+at = "showroom"
+caption = "The Cache"
+id = "places/road-scenes/the-cache"
+kind = "views"
+steps = ["place wayfarer:scene/cache"]
+
+[[shots]]
+at = "showroom"
+caption = "The overturned cart"
+id = "places/road-scenes/the-cart"
+kind = "views"
+steps = ["place wayfarer:scene/cart"]
+
+[[shots]]
+at = "showroom"
+caption = "The herder's camp"
+id = "places/road-scenes/the-herder"
+kind = "views"
+steps = ["place wayfarer:scene/herder"]
+
+[[shots]]
+at = "showroom"
+caption = "The pedlar's stall"
+id = "places/road-scenes/the-pedlar"
+kind = "views"
+steps = ["place wayfarer:scene/pedlar"]
+
+[[shots]]
+at = "showroom"
+caption = "The dead traveller"
+id = "places/road-scenes/the-traveller"
+kind = "views"
+steps = ["place wayfarer:scene/traveller"]
+
+[[shots]]
+at = "showroom"
+caption = "The fallen trunk across the road"
+id = "places/road-scenes/the-trunk"
+kind = "views"
+steps = ["place wayfarer:scene/trunk"]
+
+[[shots]]
+at = "showroom"
+caption = "The Diggers' entrance"
+id = "places/diggers-entrance"
+kind = "views"
+steps = ["place wayfarer:diggers/entrance"]
+
+[[shots]]
+at = "showroom"
+caption = "The caravan's fire"
+id = "places/caravan/fire"
+kind = "views"
+steps = ["place wayfarer:caravan/fire"]
+
+[[shots]]
+at = "showroom"
+caption = "The caravan's tents and shelters"
+id = "places/caravan/tents"
+kind = "views"
+steps = [
+  "place wayfarer:caravan/tent",
+  "place wayfarer:caravan/large_tent",
+  "place wayfarer:caravan/book_tent",
+  "place wayfarer:caravan/healer_tent",
+  "place wayfarer:caravan/hide_shelter",
+  "place wayfarer:caravan/lean_to",
+]
+
+[[shots]]
+at = "showroom"
+caption = "The caravan's bell cart and forge wagon"
+id = "places/caravan/wagons"
+kind = "views"
+steps = [
+  "place wayfarer:caravan/bell_cart",
+  "place wayfarer:caravan/forge_wagon",
+]
+
+[[shots]]
+at = "showroom"
+caption = "Tollbridge: cottages"
+id = "places/tollbridge/cottages"
+kind = "views"
+steps = [
+  "place wayfarer:tollbridge/cottage_1",
+  "place wayfarer:tollbridge/cottage_2",
+  "place wayfarer:tollbridge/cottage_3",
+  "place wayfarer:tollbridge/cottage_4",
+  "place wayfarer:tollbridge/cottage_5",
+  "place wayfarer:tollbridge/cottage_6",
+]
+
+[[shots]]
+at = "showroom"
+caption = "Tollbridge: homes 1 6"
+id = "places/tollbridge/homes-1-6"
+kind = "views"
+steps = [
+  "place wayfarer:tollbridge/home_1",
+  "place wayfarer:tollbridge/home_2",
+  "place wayfarer:tollbridge/home_3",
+  "place wayfarer:tollbridge/home_4",
+  "place wayfarer:tollbridge/home_5",
+  "place wayfarer:tollbridge/home_6",
+]
+
+[[shots]]
+at = "showroom"
+caption = "Tollbridge: homes 7 12"
+id = "places/tollbridge/homes-7-12"
+kind = "views"
+steps = [
+  "place wayfarer:tollbridge/home_7",
+  "place wayfarer:tollbridge/home_8",
+  "place wayfarer:tollbridge/home_9",
+  "place wayfarer:tollbridge/home_10",
+  "place wayfarer:tollbridge/home_11",
+  "place wayfarer:tollbridge/home_12",
+]
+
+[[shots]]
+at = "showroom"
+caption = "Tollbridge: townhouses"
+id = "places/tollbridge/townhouses"
+kind = "views"
+steps = [
+  "place wayfarer:tollbridge/townhouse_1",
+  "place wayfarer:tollbridge/townhouse_2",
+  "place wayfarer:tollbridge/townhouse_3",
+  "place wayfarer:tollbridge/townhouse_4",
+]
+
+[[shots]]
+at = "showroom"
+caption = "Tollbridge: barns and sheds"
+id = "places/tollbridge/barns-and-sheds"
+kind = "views"
+steps = [
+  "place wayfarer:tollbridge/barn_1",
+  "place wayfarer:tollbridge/barn_2",
+  "place wayfarer:tollbridge/barn_3",
+  "place wayfarer:tollbridge/shed_1",
+  "place wayfarer:tollbridge/shed_2",
+  "place wayfarer:tollbridge/shed_3",
+  "place wayfarer:tollbridge/shed_4",
+]
+
+[[shots]]
+at = "showroom"
+caption = "Tollbridge: the square"
+id = "places/tollbridge/the-square"
+kind = "views"
+steps = [
+  "place wayfarer:tollbridge/bell_tower",
+  "place wayfarer:tollbridge/inn",
+  "place wayfarer:tollbridge/smithy",
+  "place wayfarer:tollbridge/toll_house",
+  "place wayfarer:tollbridge/well",
+  "place wayfarer:tollbridge/stall",
+  "place wayfarer:tollbridge/bridge",
+]
+
+[[shots]]
+at = "showroom"
+caption = "The Last Camp, where the story begins"
+id = "places/last-camp"
+kind = "tour"
+subject = "camp"
+
+[[shots]]
+at = "showroom"
+caption = "The black eye's shrine, from its cover down the shaft into the hall"
+id = "shrines/black"
+kind = "tour"
+subject = "black"
+
+[[shots]]
+at = "showroom"
+caption = "The cold eye's shrine, from its cover down the shaft into the hall"
+id = "shrines/cold"
+kind = "tour"
+subject = "cold"
+
+[[shots]]
+at = "showroom"
+caption = "The corrupted eye's shrine, from its cover down the shaft into the hall"
+id = "shrines/corrupted"
+kind = "tour"
+subject = "corrupted"
+
+[[shots]]
+at = "showroom"
+caption = "The cryptic eye's shrine, from its cover down the shaft into the hall"
+id = "shrines/cryptic"
+kind = "tour"
+subject = "cryptic"
+
+[[shots]]
+at = "showroom"
+caption = "The evil eye's shrine, from its cover down the shaft into the hall"
+id = "shrines/evil"
+kind = "tour"
+subject = "evil"
+
+[[shots]]
+at = "showroom"
+caption = "The exotic eye's shrine, from its cover down the shaft into the hall"
+id = "shrines/exotic"
+kind = "tour"
+subject = "exotic"
+
+[[shots]]
+at = "showroom"
+caption = "The lost eye's shrine, from its cover down the shaft into the hall"
+id = "shrines/lost"
+kind = "tour"
+subject = "lost"
+
+[[shots]]
+at = "showroom"
+caption = "The magical eye's shrine, from its cover down the shaft into the hall"
+id = "shrines/magical"
+kind = "tour"
+subject = "magical"
+
+[[shots]]
+at = "showroom"
+caption = "The old eye's shrine, from its cover down the shaft into the hall"
+id = "shrines/old"
+kind = "tour"
+subject = "old"
+
+[[shots]]
+at = "showroom"
+caption = "The rogue eye's shrine, from its cover down the shaft into the hall"
+id = "shrines/rogue"
+kind = "tour"
+subject = "rogue"
+
+[[shots]]
+at = "showroom"
+caption = "The undead eye's shrine, from its cover down the shaft into the hall"
+id = "shrines/undead"
+kind = "tour"
+subject = "undead"
+
+[[shots]]
+at = "showroom"
+caption = "The witch eye's shrine, from its cover down the shaft into the hall"
+id = "shrines/witch"
+kind = "tour"
+subject = "witch"

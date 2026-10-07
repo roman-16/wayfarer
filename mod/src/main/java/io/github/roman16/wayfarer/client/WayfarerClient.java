@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer.client;
 import io.github.roman16.wayfarer.CompassPayload;
 import io.github.roman16.wayfarer.GazePayload;
 import io.github.roman16.wayfarer.HudState;
+import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.NightPayload;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.github.roman16.wayfarer.story.Sense;
@@ -10,6 +11,7 @@ import io.github.roman16.wayfarer.story.Tasks;
 import java.util.List;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.model.ChestedHorseModel;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -17,6 +19,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -34,6 +37,7 @@ public final class WayfarerClient {
     private static final KeyMapping MAP = new KeyMapping("key.wayfarer.map", GLFW.GLFW_KEY_M, "key.categories.wayfarer");
     private static final KeyMapping SENSE = new KeyMapping(Sense.KEY, GLFW.GLFW_KEY_Z, "key.categories.wayfarer");
     private static final String JOURNEYMAP = "journeymap";
+    private static final String TITLE = "title";
 
     public WayfarerClient(IEventBus modBus) {
         modBus.addListener(RegisterKeyMappingsEvent.class, event -> {
@@ -42,7 +46,7 @@ public final class WayfarerClient {
             event.register(SENSE);
         });
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> keys(Minecraft.getInstance()));
-        modBus.addListener(RegisterGuiLayersEvent.class, event -> event.registerAboveAll(Wayfarer.id("hud"), Hud::render));
+        modBus.addListener(RegisterGuiLayersEvent.class, event -> event.registerBelow(VanillaGuiLayers.SUBTITLE_OVERLAY, Wayfarer.id("hud"), Hud::render));
         modBus.addListener(EntityRenderersEvent.RegisterLayerDefinitions.class,
                 event -> event.registerLayerDefinition(FallenRenderer.MULE, ChestedHorseModel::createBodyLayer));
         modBus.addListener(EntityRenderersEvent.RegisterRenderers.class, event -> {
@@ -51,20 +55,28 @@ public final class WayfarerClient {
         });
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Sight.tick(Minecraft.getInstance()));
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Opening.class, event -> {
+            if (event.getNewScreen() instanceof TitleScreen) {
+                MusicPlayer.play(new Music.Play(TITLE, true));
+            }
             if (event.getNewScreen() instanceof ICuriosScreen) {
                 PacketDistributor.sendToServer(new Tasks.Did("charms"));
             }
         });
+        NeoForge.EVENT_BUS.addListener(RenderGuiLayerEvent.Pre.class, Hud::beforeLayer);
+        NeoForge.EVENT_BUS.addListener(CustomizeGuiOverlayEvent.BossEventProgress.class, Hud::bossBar);
         NeoForge.EVENT_BUS.addListener(RenderGuiLayerEvent.Pre.class, event -> {
             if (event.getName().equals(VanillaGuiLayers.EXPERIENCE_BAR) || event.getName().equals(VanillaGuiLayers.EXPERIENCE_LEVEL)) {
                 event.setCanceled(true);
             }
         });
+        NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingIn.class, event -> MusicPlayer.play(new Music.Play("", false)));
         NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingOut.class, event -> {
             HudState.compass = CompassPayload.hidden(List.of());
             HudState.gaze = GazePayload.CLOSED;
             HudState.night = NightPayload.CALM;
             HudState.panel = Tasks.Panel.EMPTY;
+            Hud.clearBanners();
+            JournalScreen.forget();
         });
     }
 

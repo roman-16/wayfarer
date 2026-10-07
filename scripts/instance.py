@@ -167,6 +167,13 @@ def client(target, mode):
     options(target)
 
 
+def fresh(target, world, mode):
+    save = target / "saves" / (f"{world}-lean" if mode == "lean" else world)
+    parts = [save] if world == "play" else [save / "dimensions/wayfarer" / name for name in ("showroom", "workshop")]
+    for part in parts:
+        shutil.rmtree(part, ignore_errors=True)
+
+
 def settings(target):
     for folder in SETTINGS:
         shutil.copytree(PACK / folder, target / folder, dirs_exist_ok=True)
@@ -228,6 +235,12 @@ def main():
             help="lean leaves the mods folder empty: only the Wayfarer mod and what it needs, from the dev classpath; "
             "far keeps Distant Horizons' far view on, out to 1,024 blocks",
         )
+    fresh_parser = sides.add_parser(
+        "fresh", help="clear what the dev client builds anew: the play world, or the showroom and the workshop"
+    )
+    fresh_parser.add_argument("target", type=Path)
+    fresh_parser.add_argument("world", choices=["play", "showroom"])
+    fresh_parser.add_argument("--mode", choices=["far", "full", "lean"], default="full")
     server_parser = sides.add_parser("server", help="a complete dedicated server, rebuilt from nothing")
     server_parser.add_argument("target", type=Path)
     server_parser.add_argument("jar", type=Path)
@@ -236,6 +249,8 @@ def main():
         client(arguments.target.resolve(), arguments.mode)
     elif arguments.side == "devserver":
         dev_server(arguments.target.resolve(), arguments.mode == "lean")
+    elif arguments.side == "fresh":
+        fresh(arguments.target.resolve(), arguments.world, arguments.mode)
     else:
         server(arguments.target.resolve(), arguments.jar.resolve())
 

@@ -74,6 +74,7 @@ public final class Workshop {
     private static final JsonObject SKINS = skins();
     private static final List<BoundingBox> designs = new ArrayList<>();
     private static final List<BoundingBox> touched = new ArrayList<>();
+    private static final List<BlockPos> signs = new ArrayList<>();
     private static int cursor;
 
     private Workshop() {}
@@ -81,6 +82,7 @@ public final class Workshop {
     @SubscribeEvent
     public static void onServerStarting(ServerStartingEvent event) {
         designs.clear();
+        signs.clear();
         touched.clear();
         cursor = 0;
     }
@@ -102,7 +104,21 @@ public final class Workshop {
                                         StringArgumentType.getString(context, "skin"), StringArgumentType.getString(context, "pose"))))))
                         .then(adding("beside", Kind.BESIDE))
                         .then(Commands.literal("bounds").executes(context -> bounds(context.getSource())))
-                        .then(Commands.literal("clear").executes(context -> clear(context.getSource())))));
+                        .then(Commands.literal("clear").executes(context -> clear(context.getSource())))
+                        .then(Commands.literal("unsign").executes(context -> unsign(context.getSource())))));
+    }
+
+    private static int unsign(CommandSourceStack source) {
+        ServerLevel level = level(source);
+        if (level == null) {
+            source.sendFailure(Component.literal("workshop failed: there is no wayfarer:workshop world"));
+            return 0;
+        }
+        signs.forEach(sign -> level.setBlock(sign, Blocks.AIR.defaultBlockState(), QUIET));
+        int taken = signs.size();
+        signs.clear();
+        source.sendSuccess(() -> Component.literal("workshop: took away " + taken + " name signs"), false);
+        return 1;
     }
 
     private static LiteralArgumentBuilder<CommandSourceStack> adding(String name, Kind kind) {
@@ -117,7 +133,7 @@ public final class Workshop {
             source.sendFailure(Component.literal("workshop failed: the workshop needs a player and the wayfarer:workshop world"));
             return 0;
         }
-        BoundingBox all = union();
+        BoundingBox all = union(level);
         double x = all == null ? 0.5 : (all.minX() + all.maxX() + 1) / 2.0;
         double z = (all == null ? 0 : all.maxZ() + 1) + STANDING_DISTANCE + 0.5;
         player.teleportTo(level, x, standing(level), z, 180, 0);
@@ -277,11 +293,13 @@ public final class Workshop {
             entity.setWaxed(true);
         }
         touched.add(new BoundingBox(sign));
+        signs.add(sign);
         cursor = Math.max(cursor, box.maxX() + 1 + GAP);
     }
 
     private static int bounds(CommandSourceStack source) {
-        BoundingBox all = union();
+        ServerLevel level = level(source);
+        BoundingBox all = level == null ? null : union(level);
         if (all == null) {
             source.sendFailure(Component.literal("workshop failed: the workshop is empty"));
             return 0;
@@ -311,6 +329,7 @@ public final class Workshop {
         removeEntities(level);
         designs.clear();
         touched.clear();
+        signs.clear();
         cursor = 0;
         source.sendSuccess(() -> Component.literal("workshop: cleared"), false);
         return 1;
@@ -326,8 +345,15 @@ public final class Workshop {
         entities.forEach(Entity::discard);
     }
 
-    private static BoundingBox union() {
-        return BoundingBox.encapsulatingBoxes(designs).orElse(null);
+    private static BoundingBox union(ServerLevel level) {
+        List<BoundingBox> boxes = new ArrayList<>(designs);
+        level.getAllEntities().forEach(entity -> {
+            if (!(entity instanceof Player)) {
+                AABB box = entity.getBoundingBox();
+                boxes.add(new BoundingBox(block(box.minX), block(box.minY), block(box.minZ), block(box.maxX), block(box.maxY), block(box.maxZ)));
+            }
+        });
+        return BoundingBox.encapsulatingBoxes(boxes).orElse(null);
     }
 
     private static int block(double coordinate) {

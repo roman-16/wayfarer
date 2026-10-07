@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "5ac87472691a4f947aed4b0a04cdba5bc49121985f9d84338d2fdf95783ea22e"
+hash = "86d74380fd48734b3ba22ceb693fe3d8771d975235ab2c8722233d32d8b08837"
 
 [[files]]
 file = "config/DistantHorizons.toml"
@@ -78,7 +78,7 @@ hash = "00fd7cd1cc4dc55a9cedad03e7942c738011e90ceebc8604ba29888be52d02ee"
 
 [[files]]
 file = "config/defaultoptions/keybindings.txt"
-hash = "6514968dd7b1e4991128ed071b678d8986c800fd70ea103681c2566ef219dc76"
+hash = "c831e807fc43a09432d4ec6b5a0094e2d5bbf357a2f1e8de98c0cd2298555cb4"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
@@ -109,6 +109,10 @@ file = "config/improvedmobs/common.toml"
 hash = "054c496cf8ac08e4be1e2c140fefbbe8b76f011de59190402d7b4fbd52e292ff"
 
 [[files]]
+file = "config/inventorysorter-client.toml"
+hash = "1f7cc9dda767ba9e8f1a48f04bac4d4c54b6b6cabba7367c910583224fedf454"
+
+[[files]]
 file = "config/iris.properties"
 hash = "11f5c69a972ea8c240f59ef2fd9ab36993918842038aad770c4d6f90e238226f"
 
@@ -118,7 +122,11 @@ hash = "55af2f0e56f3dbce98b158543e375f9cffd7c3233311f15c57fe66bc347bc4f4"
 
 [[files]]
 file = "config/jade/jade.json"
-hash = "94c99843a2135cade988f4b39ef92ac0f95dd64b6fa79c969b8d02cf75c2e470"
+hash = "9e1c88118d77b540573284e4861aa236fa2fc852e1d3a4de2c39065f15cce583"
+
+[[files]]
+file = "config/jade/plugins.json"
+hash = "2ea17f07c1e0ac86f1e325a160a8503652fbe8a1f1c3226a29ae0bf7173032d8"
 
 [[files]]
 file = "config/kiwi-client.yaml"
@@ -186,7 +194,7 @@ hash = "45c7e32ed5789e958f102422f029beab1007b5f02d0359c3c9fbbd1e02f820c2"
 
 [[files]]
 file = "config/travelerstitles-neoforge-1_21.toml"
-hash = "bf0fd0906e4830b89732fef78f8314ccaf694e38db1f1cd46a2a606d5424aad6"
+hash = "50ea5ddc9894b778fd39f550b4f2cbbcd4515e35d2cf615bd4176f7af2b653bd"
 
 [[files]]
 file = "config/waystones-common.toml"
@@ -195,6 +203,14 @@ hash = "95c55f5a51e25dca37f887896486ba413b6ce5d1c1ce59c753be61a4ca894637"
 [[files]]
 file = "journeymap/config/6.0/journeymap.core.config"
 hash = "f6709f55e91282ae6ac39c56cde36352ab3d2a208da4b8d1f583c8ce0f9a3449"
+
+[[files]]
+file = "journeymap/config/6.0/journeymap.minimap.config"
+hash = "5c1a0116575a5a1be57cf03b56a516bf02f772ca9dfc65e95c89be504e58cfbe"
+
+[[files]]
+file = "journeymap/config/6.0/journeymap.minimap2.config"
+hash = "5c1a0116575a5a1be57cf03b56a516bf02f772ca9dfc65e95c89be504e58cfbe"
 
 [[files]]
 file = "journeymap/server/6.0/journeymap.server.global.config"
@@ -521,6 +537,11 @@ hash = "d5ae502f1f70b8fb8c495cc007b11d7585f5914bd3ef55af55cab1b8559bcfe2"
 metafile = true
 
 [[files]]
+file = "mods/inventory-sorter.pw.toml"
+hash = "01d2dc33988b6daf0fad9a63b7474832d3876455d1119d6c6e1dde9d203ad718"
+metafile = true
+
+[[files]]
 file = "mods/invmove.pw.toml"
 hash = "a246c345f9568f6b244d017c4201c6170b1ad54808c9c4799c146a0a794663aa"
 metafile = true
@@ -643,11 +664,6 @@ metafile = true
 [[files]]
 file = "mods/naturalist.pw.toml"
 hash = "6ea52b0dccdc5110b48ac9d5528fc2accb1c970b1fbcae34120e16001ddf115f"
-metafile = true
-
-[[files]]
-file = "mods/nemos-inventory-sorting.pw.toml"
-hash = "fdf4ea21466a92d1c6616fa5dd0a575294fd93a8c3bbb27ea67f800d6c66637d"
 metafile = true
 
 [[files]]

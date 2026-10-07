@@ -2,3 +2,11 @@
 
 	["Traveler's Titles"."Dimension Titles"]
 		"Enable Dimension Titles" = false
+
+	["Traveler's Titles"."Biome Titles"]
+		"Text Size" = 1.5
+		"Text Y Offset" = -20
+
+	["Traveler's Titles"."Waystone Titles"]
+		"Text Size" = 1.5
+		"Text Y Offset" = -20

@@ -101,8 +101,6 @@ Everything the player reads off the screen outside the world: the HUD, the pack'
 
 **Why:** The games the pack follows give every screen one source in their world, Breath of the Wild's Sheikah Slate, Red Dead Redemption 2's journal, and keep the HUD bare, so a look of the Wayfarer's own things, a book, parchment and the ember's gold, makes the screens part of the story while the pixels, scale and font keep it Minecraft. Vanilla's grey windows read as a settings menu, which is how the first plays found the journal.
 
-## Open
-
 ### I6 The front door: Wayfarer's own title, the story so far while loading
 
 - The title screen is Wayfarer's own: a "WAYFARER" logo in Minecraft's logo style, a panorama taken at the Last Camp at dawn, the fire, the bedroll and the road leading away, no yellow splash lines, vanilla's buttons, and the pack's own title piece (`sound.md`, A4). The launcher shows an ember as the pack's icon wherever the launcher takes one.
@@ -120,4 +118,15 @@ Everything the player reads off the screen outside the world: the HUD, the pack'
 
 ### I7 Options and access
 
-To decide: subtitles for the pack's sounds; how long chat and conversation lines stay and how fast the next comes; text size; nothing told by colour alone; flashing in the red moon and the memories; and whether a player who comes for the story can play with gentler fights, since the server pack sets `difficulty=hard`.
+- **Subtitles.** Vanilla's Subtitles option covers the pack's own sounds too, each with a short subtitle in the lore's voice ("Ember flares", "Embers die down", "Something claws out of the ground"), off by default as in vanilla. Conversations always show as subtitles, since they are the dialogue (I4).
+- **Pace.** A conversation keeps one pace for everyone, since its lines are shared: 8 characters a second and at least 4 seconds a line (`balance.toml` `[talk]`). The two lines before the current one stay faintly above it, and any line missed is in the journal's At the Fire.
+- **Size.** Everything the pack draws follows vanilla's GUI scale, and the conversation subtitles have a Subtitle Size option of their own: Small, Normal or Large, Normal by default.
+- **Colour.** Nothing is told by colour alone: the ember's state is also a word, a task done is also a tick, and a teammate on the compass also shows their initial.
+- **Flashing.** The red moon's pulse and a memory's flash play in full by default; vanilla's Hide Lightning Flashes, off by default, calms them too, so one switch covers every flash.
+- **Difficulty.** New worlds and the server pack start on Normal; Hard is chosen in Create New World or the server's settings, and a team that comes for the story picks Easy.
+
+**Why:** Vanilla's own switches are where players already look, so the pack hangs its options on them and adds only Subtitle Size, which the conversations need. A shared line cannot run at each player's speed, so it keeps one pace and stays findable afterwards. Normal lets the story be played by friends of every skill, and Hard is one setting away.
+
+## Open
+
+Nothing is open.

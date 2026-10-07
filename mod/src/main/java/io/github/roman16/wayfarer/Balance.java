@@ -65,7 +65,7 @@ public record Balance(
 
     public record Gaze(List<Integer> capacitySeconds, int drainFactor, int huntIntervalSeconds, int huntPhantoms) {}
 
-    public record Hold(int firstWave, int keepHealth, int waveGrowth, int waveSeconds, int waves) {}
+    public record Hold(int blowTicks, int doorStrength, int firstWave, int keepHealth, int waveGrowth, int waveSeconds, int waves) {}
 
     public record Hunger(float exhaustionFactor, float rowingExhaustionPerBlock, float warmExhaustionFactor) {}
 
@@ -153,6 +153,8 @@ public record Balance(
                             toml.getInt("gaze.hunt_interval_seconds"),
                             toml.getInt("gaze.hunt_phantoms")),
                     new Hold(
+                            toml.getInt("hold.blow_ticks"),
+                            toml.getInt("hold.door_strength"),
                             toml.getInt("hold.first_wave"),
                             toml.getInt("hold.keep_health"),
                             toml.getInt("hold.wave_growth"),

@@ -65,6 +65,7 @@ Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftE
 | `just compile` | Compiles the Wayfarer mod and its dev code |
 | `just devserver` | Runs the dev server in the foreground, with the Wayfarer mod's dev code; `just devserver lean` with only the Wayfarer mod |
 | `just exaroton` | Records the exaroton server's console, status and players, memory, tick time, log and world sizes into `exaroton/` until you stop it |
+| `just gallery` | Shoots `gallery/`'s pictures in the dev client from `gallery/shots.toml` and writes its pages; `just gallery journal` shoots one folder |
 | `just gametest` | Runs the mod's game tests headless |
 | `just generate` | Regenerates the shrines, structure sets, templates, removals, textures and the quest book |
 | `just lint` | Fixes and formats everything, then checks the pack's rules |
@@ -75,7 +76,7 @@ Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftE
 | `just showroom` | Opens the pack in a creative dev client, in the showroom, with the compass demo; `just showroom lean` with only the Wayfarer mod |
 | `just sources` | Unpacks Minecraft's and NeoForge's code and every mod, decompiled, into `build/sources/` for searching |
 | `just survey` | Walks journeys through five fixed worlds at once, always to the nearest shrine not yet taken, and prints each tier's legs in blocks and minutes on foot against the targets in `balance.toml`; `just survey apply` writes tuned spacings |
-| `just test` | Runs `just gametest`, then `just boot` |
+| `just test` | Runs `just gametest` beside `just boot`, and fails when either fails |
 | `just update` | Moves every mod and tool to its newest version, then lints and tests |
 
 ## Layout
@@ -84,6 +85,7 @@ Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftE
 |---|---|
 | `balance.toml` | Every balancing number: compass, daylight, difficulty, fire, gate, gaze, hunger, leads, nights, sight, stillness, unlocks, shrine legs and stronghold distances, structure spread |
 | `design/` | What the pack is becoming, decided before it is built (`README.md` names the phase and what comes next), the lore everything else is written from (`lore.md`) and the narration cast (`narration.md`) |
+| `gallery/` | Pictures of every facet of what a player sees, each under its caption, listed in `shots.toml` |
 | `generator/` | The structure generator (the twelve halls, their surface covers, the Last Camp and the stranger's old camps), the twelve eyes, their peoples' places and each tier's shrine spacing (`eyes.toml`), the recipe and structure removals, the Nether audit list and the features accepted as natural |
 | `mod/` | The Wayfarer mod (NeoForge, Java 21); `src/dev` holds the game tests and the dev client's driver, which never ship |
 | `pack/` | The packwiz pack: one file per mod, and the pack's configs |

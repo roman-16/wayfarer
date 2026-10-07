@@ -253,7 +253,7 @@ A system, place, creature or item, from vanilla or from a mod, goes or changes w
 | Map Atlases | Cut | JourneyMap's world map in the journal (`systems.md`, M2) |
 | Nature's Compass | Cut | Leads, people and the land |
 | Just Enough Resources | Cut; JEI's recipes stay | People, books and leads |
-| Achievement pop-ups | Cut | The journal |
+| Advancements, vanilla's and every mod's, with their pop-ups | Cut | The pack's own achievements, only for rare feats (`systems.md`, M38) |
 | The best gear | Made by the peoples' smiths, overnight; everyday tools at the player's own bench (`systems.md`, M18) | |
 | The endless world | It ends in the Last Sea | |
 | Lit Nether portals built into structures: Trek's pillager mansion and portal sword | Cut, as "There is no Nether" demands | |

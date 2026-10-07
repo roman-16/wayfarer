@@ -1,4 +1,160 @@
 {
+  "answer_chosen": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/answer_chosen"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.answer_chosen"
+  },
+  "camp": {
+    "sounds": [
+      {
+        "attenuation_distance": 64,
+        "name": "wayfarer:effects/camp"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.camp"
+  },
+  "clues_glow": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/clues_glow"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.clues_glow"
+  },
+  "compass_mark": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/compass_mark"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.compass_mark"
+  },
+  "door_blow": {
+    "sounds": [
+      {
+        "attenuation_distance": 32,
+        "name": "wayfarer:effects/door_blow"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.door_blow"
+  },
+  "ember_flares": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/ember_flares"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.ember_flares"
+  },
+  "ember_given": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/ember_given"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.ember_given"
+  },
+  "ember_gutters": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/ember_gutters"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.ember_gutters"
+  },
+  "ember_wakes": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/ember_wakes"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.ember_wakes"
+  },
+  "fire_circle": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/fire_circle"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.fire_circle"
+  },
+  "gaze_crumbles": {
+    "sounds": [
+      {
+        "attenuation_distance": 16,
+        "name": "wayfarer:effects/gaze_crumbles"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.gaze_crumbles"
+  },
+  "gaze_rises": {
+    "sounds": [
+      {
+        "attenuation_distance": 16,
+        "name": "wayfarer:effects/gaze_rises"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.gaze_rises"
+  },
+  "hard_night": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/hard_night"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.hard_night"
+  },
+  "journal_entry": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/journal_entry"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.journal_entry"
+  },
+  "journal_page": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/journal_page"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.journal_page"
+  },
+  "quest_begun": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/quest_begun"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.quest_begun"
+  },
+  "quest_done": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/quest_done"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.quest_done"
+  },
+  "reward_taken": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/reward_taken"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.reward_taken"
+  },
+  "shard_taken": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/shard_taken"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.shard_taken"
+  },
   "story_music.first_fire": {
     "sounds": [
       {
@@ -30,5 +186,48 @@
         "stream": true
       }
     ]
+  },
+  "story_music.title": {
+    "sounds": [
+      {
+        "name": "wayfarer:music/title",
+        "stream": true
+      }
+    ]
+  },
+  "task_ticked": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/task_ticked"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.task_ticked"
+  },
+  "tent_packed": {
+    "sounds": [
+      {
+        "attenuation_distance": 16,
+        "name": "wayfarer:effects/tent_packed"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.tent_packed"
+  },
+  "tent_pitched": {
+    "sounds": [
+      {
+        "attenuation_distance": 16,
+        "name": "wayfarer:effects/tent_pitched"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.tent_pitched"
+  },
+  "town_burning": {
+    "sounds": [
+      {
+        "attenuation_distance": 128,
+        "name": "wayfarer:effects/town_burning"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.town_burning"
   }
 }

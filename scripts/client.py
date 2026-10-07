@@ -4,6 +4,7 @@ import json
 import math
 import os
 import re
+import shutil
 import signal
 import subprocess
 import sys
@@ -19,9 +20,11 @@ CLIENT = ROOT / "build/client"
 DRIVER = CLIENT / "driver"
 LAUNCHER = DRIVER / "launcher.pid"
 GAME = DRIVER / "game.pid"
+LAUNCHED = DRIVER / "launched.json"
+WORLD = DRIVER / "world.json"
 SCREEN = DRIVER / "screen.pid"
 SNAPSHOT = DRIVER / "classes"
-SCREEN_SIZE = "1280x720x24"
+SCREEN_SIZE = "1920x1080x24"
 LAUNCH_LOG = CLIENT / "launch.log"
 CRASHES = CLIENT / "crash-reports"
 DISPLAY_FAILED = "Failed to initialize the mod loading system and display"
@@ -35,16 +38,20 @@ SHEETS = CLIENT / "tour"
 WORKSHOP_SHEETS = CLIENT / "workshop"
 WORKSHOP = "wayfarer:workshop"
 BOUNDS = re.compile(r"workshop bounds: (-?\d+) (-?\d+) (-?\d+) (-?\d+) (-?\d+) (-?\d+)")
-FIELD_OF_VIEW = 70
+OPTIONS = ROOT / "pack/config/defaultoptions/options.txt"
+FLYING_FOV = 1.1
+FIELD_OF_VIEW = FLYING_FOV * (70 + 40 * float(re.search(r"^fov:(.*)$", OPTIONS.read_text(), re.MULTILINE).group(1)))
 ASPECT = 1280 / 720
 FRAMING = 1.1
 NOTE = re.compile(r"([a-z]+): (.*)")
 STATE = "state: "
+FAILED_AT_ONCE = "` failed at once: "
 SIDES = {"front": (0, 0, 1), "side": (1, 0, 0), "above": (0, 1, 0.001), "three-quarters": (0.6, 1.0, 0.6)}
 SCREENSHOTS = CLIENT / "screenshots"
 FOUND = re.compile(r"found \d+ \S+ within \d+: (-?\d+) (-?\d+) (-?\d+)")
 EYE_HEIGHT = 1.62
 SHAFTS = {"ladder": 5, "spiral": 11, "switchback": 11}
+SHAFT_CAMERAS = ("outside", "above", "entrance", "stair-top", "stair-bottom", "stair-door")
 SOUTH, WEST, NORTH, EAST = (0, 1), (-1, 0), (0, -1), (1, 0)
 
 
@@ -84,7 +91,7 @@ def screen(visible):
         return environment
     ready, announce = os.pipe()
     process = subprocess.Popen(
-        ["Xvfb", "-displayfd", str(announce), "-screen", "0", SCREEN_SIZE, "-nolisten", "tcp"],
+        ["Xvfb", "-displayfd", str(announce), "-screen", "0", SCREEN_SIZE, "-nolisten", "tcp", "-terminate"],
         pass_fds=(announce,),
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
@@ -99,6 +106,7 @@ def screen(visible):
     environment.pop("WAYLAND_DISPLAY", None)
     return environment | {
         "DISPLAY": f":{display}",
+        "WAYFARER_BACKGROUND": "true",
         "WAYFARER_SILENT": "true",
         "XDG_SESSION_TYPE": "x11",
         "__GLX_VENDOR_LIBRARY_NAME": "mesa",
@@ -127,17 +135,19 @@ def release_screen():
     SCREEN.unlink(missing_ok=True)
 
 
-def launch(fresh, timeout, visible, mode="full", state=None):
+def launch(world, timeout, visible, mode, state, rebuild):
     DRIVER.mkdir(parents=True, exist_ok=True)
-    for stale in ("abort", "commands.txt", "done.txt", "game.pid", "quit"):
+    for stale in ("abort", "commands.txt", "done.txt", "game.pid", "launched.json", "quit", "world.json"):
         (DRIVER / stale).unlink(missing_ok=True)
     release_screen()
+    shutil.rmtree(SCREENSHOTS, ignore_errors=True)
     before = crashes(CRASHES)
-    command = ["just", "play" if fresh or state else "showroom", mode]
-    environment = screen(visible)
+    command = ["just", "showroom" if world == "showroom" else "play", mode]
+    environment = screen(visible) | {"WAYFARER_DRIVEN": "true"}
+    cached = False
     if state:
         cache = states.folder("client", mode, state)
-        cached = states.prepare(cache, CLIENT / "saves" / ("state-lean" if mode == "lean" else "state"))
+        cached = states.prepare(cache, CLIENT / "saves" / ("state-lean" if mode == "lean" else "state"), rebuild)
         environment |= {"WAYFARER_STATE": state, "WAYFARER_STATE_CACHE": str(cache)}
     started = time.monotonic()
     with LAUNCH_LOG.open("w") as log:
@@ -166,29 +176,93 @@ def launch(fresh, timeout, visible, mode="full", state=None):
         shut(STOP_SECONDS)
         sys.exit(f"the client could not open its world: {blocked[0].removeprefix('blocked: ')}")
     hotswap.remember(SNAPSHOT)
+    LAUNCHED.write_text(json.dumps(wanted(mode, visible)))
+    say(world, state, cached, f"launched in {time.monotonic() - started:.0f} s", visible, mode, report)
+
+
+def say(world, state, cached, took, visible, mode, report):
     errors = [line for line in report.splitlines() if line.startswith("error:")]
-    if state:
-        world = f"state {state}, " + ("from the cache," if cached else f"built in {time.monotonic() - started:.0f} s,")
-    else:
-        world = "a fresh natural world" if fresh else "the showroom"
-    where = ("on the user's screen" if visible else "on a hidden screen") + {
+    where = {
+        "play": "a fresh natural world",
+        "showroom": "the showroom",
+        "state": f"state {state}, " + ("from the cache," if cached else "built,"),
+    }[world]
+    screen = ("on the user's screen" if visible else "on a hidden screen") + {
         "far": ", with Distant Horizons' far view",
         "full": "",
         "lean": ", with only the Wayfarer mod",
     }[mode]
-    print(f"the client is running in {world} {where} ({len(report.splitlines())} log lines, {len(errors)} errors)")
+    stopped = [line for line in errors if FAILED_AT_ONCE in line]
+    if stopped:
+        sys.exit(f"opening {state or world} failed: {stopped[0].removeprefix('error: ')}")
+    print(
+        f"the client is running in {where} {screen} ({took}, {len(report.splitlines())} log lines, {len(errors)} errors)"
+    )
     print("\n".join(errors))
+
+
+def wanted(mode, visible):
+    return {"inputs": states.inputs(), "mode": mode, "visible": visible}
+
+
+def current():
+    if not alive() or not LAUNCHED.exists() or not WORLD.exists():
+        return None, None
+    return json.loads(LAUNCHED.read_text()), json.loads(WORLD.read_text())
+
+
+def swap_in():
+    try:
+        result = hotswap.swap(hotswap.port("client_swap_port"), SNAPSHOT)
+    except Failure as failure:
+        sys.exit(str(failure))
+    if result["listeners"]:
+        batch(["listeners " + " ".join(result["listeners"])], RUN_SECONDS)
+    return result
+
+
+def swapped():
+    result = swap_in()
+    if any(result[key] for key in ("swapped", "listeners", "needs a restart")):
+        print(json.dumps(result))
+    return not result["needs a restart"]
+
+
+def ensure(world, timeout, visible, mode, state=None, rebuild=False, anew=False):
+    launched, opened = current()
+    if launched == wanted(mode, visible) and swapped():
+        if world == "showroom" and opened["world"] == "showroom" and not anew:
+            print("the client is running in the showroom")
+            return
+        switch(world, timeout, visible, mode, state, rebuild)
+        return
+    if alive():
+        shut(STOP_SECONDS)
+    launch(world, timeout, visible, mode, state, rebuild)
+
+
+def switch(world, timeout, visible, mode, state, rebuild):
+    started = time.monotonic()
+    batch(["leave"], timeout)
+    cached = False
+    if state:
+        cache = states.folder("client", mode, state)
+        cached = states.prepare(cache, CLIENT / "saves" / ("state-lean" if mode == "lean" else "state"), rebuild)
+        target = f"state {state} {cache}"
+    else:
+        subprocess.run(
+            ["python3", "scripts/instance.py", "fresh", str(CLIENT), world, "--mode", mode], cwd=ROOT, check=True
+        )
+        target = world
+    report = batch([f"enter {target}"], timeout)
+    say(world, state, cached, f"opened in {time.monotonic() - started:.0f} s", visible, mode, report)
 
 
 def start(arguments):
     if arguments.state:
         states.check(arguments.state)
-    if alive():
-        if arguments.state:
-            sys.exit(f"the client is already running; stop it to open state {arguments.state}")
-        print("the client is already running")
-        return
-    launch(arguments.fresh, arguments.timeout, arguments.visible, arguments.mode, arguments.state)
+    world = "state" if arguments.state else "play" if arguments.fresh else "showroom"
+    ensure(world, arguments.timeout, arguments.visible, arguments.mode, arguments.state, arguments.rebuild)
 
 
 def batch(steps, timeout):
@@ -268,23 +342,31 @@ def compare(step, timeout):
 
 def views(step, timeout):
     name = step.removeprefix("views ").strip()
+    shots, errors = sides(name, timeout)
+    if not shots:
+        return {"step": step, "error": errors}
+    target = sheet(WORKSHOP_SHEETS / f"{name}.jpg", shots, "2x")
+    return {"step": step, "sheet": str(target)} | ({"error": errors} if errors else {})
+
+
+def sides(name, timeout, chosen=tuple(SIDES)):
     report = batch(["/wayfarer workshop bounds"], timeout)
     found = BOUNDS.search(report)
     if not found:
-        return {"step": step, "error": ["views needs something in the workshop"], "driver": parse(report)}
+        return [], ["views needs something in the workshop"]
     low, high = [int(value) for value in found.groups()[:3]], [int(value) + 1 for value in found.groups()[3:]]
     centre = [(low[axis] + high[axis]) / 2 for axis in range(3)]
     corners = [[(low, high)[(index >> axis) & 1][axis] - centre[axis] for axis in range(3)] for index in range(8)]
     steps = ["gui off", "/gamemode spectator"]
-    for label, direction in SIDES.items():
+    for label in chosen:
+        direction = SIDES[label]
         distance = framed(direction, corners)
         length = math.hypot(*direction)
         eye = [centre[axis] + direction[axis] / length * distance for axis in range(3)]
         steps += view(f"workshop-{name}-{label}", (eye[0], eye[1] - EYE_HEIGHT, eye[2]), centre, WORKSHOP)
     entries = parse(batch([*steps, "/gamemode creative", "gui on"], timeout))
-    target = sheet(WORKSHOP_SHEETS / f"{name}.jpg", [(label, f"workshop-{name}-{label}") for label in SIDES], "2x")
     errors = [error for entry in entries for error in entry.get("error", [])]
-    return {"step": step, "sheet": str(target)} | ({"error": errors} if errors else {})
+    return [(label, f"workshop-{name}-{label}") for label in chosen], errors
 
 
 def framed(direction, corners):
@@ -359,20 +441,18 @@ def shrine_cameras(shrine, pedestal, surface):
     middle = size / 2
     centre = [shaft[0] + middle, surface + 2, shaft[2] + middle]
     side = (-ez, ex)
-    cameras = {
-        "outside": ([centre[0] + ex * 13 + side[0] * 5, surface + 2, centre[2] + ez * 13 + side[1] * 5], centre),
-        "above": ([centre[0] - 12, surface + 16, centre[2] + 12], [centre[0], surface, centre[2]]),
-        "entrance": ([centre[0] + ex * 6, surface, centre[2] + ez * 6], [centre[0], surface, centre[2]]),
-        "stair-top": (
-            [shaft[0] + top_x, surface - 1, shaft[2] + top_z],
-            [shaft[0] + down_x, surface - 6, shaft[2] + down_z],
-        ),
-        "stair-bottom": (
+    views = (
+        ([centre[0] + ex * 13 + side[0] * 5, surface + 2, centre[2] + ez * 13 + side[1] * 5], centre),
+        ([centre[0] - 12, surface + 16, centre[2] + 12], [centre[0], surface, centre[2]]),
+        ([centre[0] + ex * 6, surface, centre[2] + ez * 6], [centre[0], surface, centre[2]]),
+        ([shaft[0] + top_x, surface - 1, shaft[2] + top_z], [shaft[0] + down_x, surface - 6, shaft[2] + down_z]),
+        (
             [shaft[0] + size - 2.5, floor, shaft[2] + 1.5],
             [shaft[0] + size - 2.5, floor + 5, shaft[2] + size - 2.5],
         ),
-        "stair-door": ([shaft[0] + middle, floor, shaft[2] + 2.5], [shaft[0] + middle, floor + 1.5, shaft[2] - 6]),
-    }
+        ([shaft[0] + middle, floor, shaft[2] + 2.5], [shaft[0] + middle, floor + 1.5, shaft[2] - 6]),
+    )
+    cameras = dict(zip(SHAFT_CAMERAS, views, strict=True))
     for camera in shrine["cameras"]:
         cameras[camera["name"]] = (offset(origin, camera["at"]), offset(origin, camera["look"]))
     return cameras
@@ -405,19 +485,15 @@ def sheet(target, shots, tile):
 
 
 def tour(arguments):
-    if alive():
-        shut(STOP_SECONDS)
-    launch(False, START_SECONDS, arguments.visible)
-    try:
-        photograph(arguments)
-    finally:
-        shut(STOP_SECONDS)
+    ensure("showroom", START_SECONDS, arguments.visible, "full")
+    for subject, shots in photograph(arguments.subjects, arguments.timeout).items():
+        print(sheet(SHEETS / f"{subject}.jpg", shots, "3x"))
 
 
-def photograph(arguments):
+def photograph(chosen, timeout):
     plan = json.loads(TOUR.read_text())
     surface = plan["surface"]
-    shrines = [shrine for shrine in plan["shrines"] if not arguments.subjects or shrine["eye"] in arguments.subjects]
+    shrines = [shrine for shrine in plan["shrines"] if not chosen or shrine["eye"] in chosen]
     locate = ["gui off", "/gamemode spectator"]
     for shrine in shrines:
         x, z = shrine["centre"]
@@ -426,15 +502,13 @@ def photograph(arguments):
             "settle",
             "find wayfarer:shrine_pedestal 16",
         ]
-    found = [
-        tuple(int(value) for value in match.groups()) for match in FOUND.finditer(batch(locate, arguments.timeout))
-    ]
+    found = [tuple(int(value) for value in match.groups()) for match in FOUND.finditer(batch(locate, timeout))]
     if len(found) != len(shrines):
         sys.exit(f"found {len(found)} pedestals for {len(shrines)} shrines; the showroom does not match the generator")
     subjects = {}
     for shrine, pedestal in zip(shrines, found, strict=True):
         subjects[shrine["eye"]] = shrine_cameras(shrine, pedestal, surface)
-    if not arguments.subjects or "camp" in arguments.subjects:
+    if not chosen or "camp" in chosen:
         origin = plan["camp"]["origin"]
         subjects["camp"] = {
             camera["name"]: (offset(origin, camera["at"]), offset(origin, camera["look"]))
@@ -444,18 +518,14 @@ def photograph(arguments):
     for subject, cameras in subjects.items():
         for name, (at, look) in cameras.items():
             steps += view(f"tour-{subject}-{name}", at, look, "wayfarer:showroom")
-    batch(steps + ["/gamemode creative", "gui on"], arguments.timeout)
-    for subject, cameras in subjects.items():
-        print(sheet(SHEETS / f"{subject}.jpg", [(name, f"tour-{subject}-{name}") for name in cameras], "3x"))
+    batch(steps + ["/gamemode creative", "gui on"], timeout)
+    return {subject: [(name, f"tour-{subject}-{name}") for name in cameras] for subject, cameras in subjects.items()}
 
 
 def swap(arguments):
     if not alive():
         sys.exit("the client is not running; start it with: python3 scripts/client.py start")
-    try:
-        print(json.dumps(hotswap.swap(hotswap.port("client_swap_port"), SNAPSHOT)))
-    except Failure as failure:
-        sys.exit(str(failure))
+    print(json.dumps(swap_in()))
 
 
 def stop(arguments):
@@ -473,7 +543,7 @@ def shut(timeout):
     if running(GAME):
         os.kill(int(GAME.read_text()), signal.SIGKILL)
         print(f"the client did not exit within {timeout} s and was killed")
-    for pid_file in (GAME, LAUNCHER):
+    for pid_file in (GAME, LAUNCHED, LAUNCHER, WORLD):
         pid_file.unlink(missing_ok=True)
     (DRIVER / "quit").unlink(missing_ok=True)
     release_screen()
@@ -486,7 +556,10 @@ def main():
     )
     commands = parser.add_subparsers(dest="command", required=True)
     start_parser = commands.add_parser(
-        "start", help="launch the client unless it runs; returns once the showroom is built"
+        "start",
+        help="open the showroom, a fresh world or a state in the running client, swapping in changed code first, "
+        "or launch it when none runs, its mods, data or screen changed, or a change needs a restart; returns once "
+        "the world is open",
     )
     worlds = start_parser.add_mutually_exclusive_group()
     worlds.add_argument("--fresh", action="store_true", help="open a fresh natural world instead of the showroom")
@@ -495,6 +568,11 @@ def main():
         metavar="QUEST/STEP",
         help="open the world at a step of the story, such as ash/the_door, built from story/states.toml and kept "
         "in build/states/",
+    )
+    start_parser.add_argument(
+        "--rebuild",
+        action="store_true",
+        help="build the state anew instead of from the cache, after a change to code that builds an earlier step",
     )
     start_parser.add_argument("--timeout", type=int, default=START_SECONDS)
     start_parser.add_argument(
@@ -529,7 +607,7 @@ def main():
     stop_parser.add_argument("--timeout", type=int, default=STOP_SECONDS)
     tour_parser = commands.add_parser(
         "tour",
-        help="launch the client on a fresh showroom, photograph every shrine and the Last Camp, quit the client; "
+        help="open the showroom as start does, photograph every shrine and the Last Camp; "
         "prints one contact sheet per subject",
     )
     tour_parser.add_argument("subjects", nargs="*", help="eyes (and camp) to photograph; all when none are named")
@@ -541,4 +619,5 @@ def main():
     {"run": run, "start": start, "stop": stop, "swap": swap, "tour": tour}[arguments.command](arguments)
 
 
-main()
+if __name__ == "__main__":
+    main()

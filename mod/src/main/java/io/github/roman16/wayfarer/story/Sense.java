@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Journey;
+import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
 import java.lang.reflect.Field;
@@ -28,6 +29,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 public final class Sense {
     public static final String KEY = "key.wayfarer.ember_sense";
     public static final int AMBER = 0xFFB040;
+    private static final String CLUES_GLOW = "clues_glow";
     private static final String TEAM = Wayfarer.MODID + "_sense";
     private static final String TRAIL_SIGHT = "trail_sight";
     private static final int GLOWING = 1 << 6;
@@ -71,6 +73,9 @@ public final class Sense {
         List<Entity> near = player.serverLevel().getEntities((Entity) null, new AABB(player.blockPosition()).inflate(sense.reachBlocks()),
                 entity -> entity.getTags().stream().anyMatch(tag -> tag.startsWith(Steps.CLUE)) && !entity.getTags().contains(Steps.CLUE_BOX));
         near.forEach(entity -> glow(player, entity, true));
+        if (held && !near.isEmpty()) {
+            Sounds.play(player, CLUES_GLOW);
+        }
         player.connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team(near), true));
         sensing.put(player.getUUID(), new Sensing(near, player.serverLevel().getGameTime() + (long) sense.glowSeconds() * TICKS_PER_SECOND, held));
     }

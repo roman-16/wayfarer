@@ -50,6 +50,8 @@ hunt_interval_seconds = 10
 hunt_phantoms = 2
 
 [hold]
+blow_ticks = 32
+door_strength = 128
 first_wave = 8
 keep_health = 32
 wave_growth = 4

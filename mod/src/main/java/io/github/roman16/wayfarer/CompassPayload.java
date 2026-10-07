@@ -26,6 +26,7 @@ public record CompassPayload(
     }
 
     public enum Kind {
+        GOAL,
         GRAVE,
         LEAD,
         TEAMMATE,

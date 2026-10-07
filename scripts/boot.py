@@ -26,10 +26,13 @@ SURVEY_PORT = 25600
 VOICE_PORT = 24600
 SHARED = ("libraries", "mods")
 WALK_BLOCKS_PER_SECOND = 4.317
+ASYNC = re.compile(r"(?m)^\s*locateCommandEnabled = false$")
+CONCURRENT = re.compile(r"(?m)^maxConcurrentLocates = \d+$")
+CONCURRENT_SEARCHES = 8
 REJECTED = re.compile(r"Tried to load invalid item|Couldn't parse element .*\]:wayfarer:")
 
 
-def locate(server, structure, at=None):
+def question(structure, at):
     prefix = f"execute positioned {at[0]} 0 {at[1]} run " if at else ""
 
     def answer(said):
@@ -40,39 +43,46 @@ def locate(server, structure, at=None):
             return ()
         return None
 
-    return server.ask(f"{prefix}locate structure {structure}", answer, LOCATE_SECONDS) or None
+    return f"{prefix}locate structure {structure}", answer
+
+
+def locate(server, structures, at=None):
+    answers = server.asks([question(structure, at) for structure in structures], LOCATE_SECONDS)
+    return {structure: found or None for structure, found in zip(structures, answers, strict=True)}
 
 
 def check(server):
-    balance = tomllib.loads((ROOT / "balance.toml").read_text())["strongholds"]
+    balance = tomllib.loads((ROOT / "balance.toml").read_text())
+    strongholds = balance["strongholds"]
     eyes = sorted(
         eye
         for eye, spec in tomllib.loads((ROOT / "generator/eyes.toml").read_text())["eyes"].items()
         if not spec.get("story", False)
     )
+    kinds = balance["structures"]["every_blocks"]
+    cut = tomllib.loads((ROOT / "generator/owners.toml").read_text())["cut"]
+    shrines = {eye: f"wayfarer:shrine/{eye}" for eye in eyes}
+    owners = {kind: f"#wayfarer:owners/{kind}" for kind in kinds}
+    found = locate(server, ["betterstrongholds:stronghold", *shrines.values(), *owners.values(), *cut])
     failures = []
-    found = locate(server, "betterstrongholds:stronghold")
-    ring = found[0] if found else None
-    low = balance["radius_blocks"] - balance["jitter_blocks"] - BIOME_SHIFT_BLOCKS * 4
-    high = balance["radius_blocks"] + balance["jitter_blocks"] + BIOME_SHIFT_BLOCKS * 4
+    ring = found["betterstrongholds:stronghold"][0] if found["betterstrongholds:stronghold"] else None
+    low = strongholds["radius_blocks"] - strongholds["jitter_blocks"] - BIOME_SHIFT_BLOCKS * 4
+    high = strongholds["radius_blocks"] + strongholds["jitter_blocks"] + BIOME_SHIFT_BLOCKS * 4
     print(f"nearest stronghold: {ring} blocks")
     if ring is None or not low <= ring <= high:
         failures.append(f"the nearest stronghold is {ring} blocks from spawn, not {low}-{high}")
-    for eye in eyes:
-        found = locate(server, f"wayfarer:shrine/{eye}")
-        print(f"nearest {eye} shrine: {found[0] if found else None} blocks")
-        if found is None:
+    for eye, structure in shrines.items():
+        print(f"nearest {eye} shrine: {found[structure][0] if found[structure] else None} blocks")
+        if found[structure] is None:
             failures.append(f"no {eye} shrine was found")
-    for kind in tomllib.loads((ROOT / "balance.toml").read_text())["structures"]["every_blocks"]:
-        found = locate(server, f"#wayfarer:owners/{kind}")
-        print(f"nearest {kind}: {found[0] if found else None} blocks")
-        if found is None:
+    for kind, structure in owners.items():
+        print(f"nearest {kind}: {found[structure][0] if found[structure] else None} blocks")
+        if found[structure] is None:
             failures.append(f"no {kind} was found")
-    for structure in tomllib.loads((ROOT / "generator/owners.toml").read_text())["cut"]:
-        found = locate(server, structure)
-        if found is not None:
+    for structure in cut:
+        if found[structure] is not None:
             failures.append(
-                f"{structure} is cut in generator/owners.toml but still generates {found[0]} blocks from spawn"
+                f"{structure} is cut in generator/owners.toml but still generates {found[structure][0]} blocks from spawn"
             )
     failures += [f"the game rejects our data: {line.strip()[:300]}" for line in server.lines() if REJECTED.search(line)]
     return failures
@@ -96,10 +106,7 @@ def world(server, seed):
         if path.is_file() and path.suffix != ".log":
             shutil.copy2(path, target / path.name)
     shutil.copytree(server / "config", target / "config")
-    properties = target / "server.properties"
-    overrides = {"level-seed": seed, "max-tick-time": -1, "server-port": SURVEY_PORT + seed}
-    lines = [line for line in properties.read_text().splitlines() if line.split("=", 1)[0] not in overrides]
-    properties.write_text("\n".join([*lines, *(f"{key}={value}" for key, value in overrides.items())]) + "\n")
+    configure(target, {"level-seed": seed, "server-port": SURVEY_PORT + seed})
     voice = target / "config/voicechat/voicechat-server.properties"
     voice.parent.mkdir(parents=True, exist_ok=True)
     voice.write_text(f"port={VOICE_PORT + seed}\n")
@@ -111,7 +118,8 @@ def journey(server, eyes, start, legs):
     for tier in legs:
         remaining = [eye for eye in sorted(eyes) if eyes[eye]["tier"] == tier and not eyes[eye].get("story", False)]
         while remaining:
-            found = [(hit, eye) for eye in remaining if (hit := locate(server, f"wayfarer:shrine/{eye}", pos))]
+            hits = locate(server, [f"wayfarer:shrine/{eye}" for eye in remaining], pos)
+            found = [(hit, eye) for eye in remaining if (hit := hits[f"wayfarer:shrine/{eye}"])]
             if not found:
                 break
             (distance, x, z), eye = min(found)
@@ -170,8 +178,20 @@ def survey(server, count, apply):
         )
 
 
+def configure(directory, overrides):
+    properties = directory / "server.properties"
+    overrides = {"max-tick-time": -1} | overrides
+    lines = [line for line in properties.read_text().splitlines() if line.split("=", 1)[0] not in overrides]
+    properties.write_text("\n".join([*lines, *(f"{key}={value}" for key, value in overrides.items())]) + "\n")
+
+
 def boot(directory, action):
     (directory / "eula.txt").write_text("eula=true\n")
+    configure(directory, {})
+    searches = directory / "config/asynclocator.toml"
+    text = ASYNC.sub("locateCommandEnabled = true", searches.read_text())
+    concurrent = f"maxConcurrentLocates = {CONCURRENT_SEARCHES}"
+    searches.write_text(CONCURRENT.sub(concurrent, text) if CONCURRENT.search(text) else f"{concurrent}\n{text}")
     server = Server(directory, ["bash", "run.sh", "--nogui"])
     started = time.monotonic()
     server.start(TIMEOUT_SECONDS)

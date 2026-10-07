@@ -17,6 +17,8 @@ Everything a player sees has to look as if it was always in Minecraft: the same 
    $ python3 scripts/client.py run workshop 'spawn wayfarer:worm' 'beside minecraft:zombie' 'views worm'
    ```
 
+4. **Show it to the user.** Every look gets its shots in `gallery/shots.toml`, one for each facet: each side in the workshop, each pose and state, each place in the story it stands, each scale of a screen; `just gallery` shoots them, and the report names the pictures that are new or changed (AGENTS.md, The gallery).
+
 ## The order of work
 
 The same five steps make a building, a creature, an item or a screen, in this order, since a fault in an early step cannot be fixed by a later one:
@@ -102,6 +104,7 @@ Before calling a look done, in the workshop beside its vanilla relative:
 - Does a structure have its masses, its hero, its depth, its odd widths and its three to five blocks, and does it sit on its land?
 - Is every block what that part is made of?
 - Does every detail have a reason in the lore: who made it, and what happened to it since?
+- Does `gallery/` show every facet of it, shot again since the last change?
 
 ## Sources
 

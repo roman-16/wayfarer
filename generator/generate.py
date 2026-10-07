@@ -21,6 +21,7 @@ from tollbridge import PIECES, plan, size, tower
 from townsfolk import roadfolk, townsfolk
 
 ROOT = Path(__file__).resolve().parent.parent
+TICKS_PER_SECOND = 20
 MAIN = ROOT / "mod/src/generated/resources"
 DEV = ROOT / "mod/src/generated/dev"
 ENDREM_EYES = ROOT / "pack/config/EndRemastered-NeoForge/Eyes"
@@ -285,7 +286,10 @@ def textures(spec):
             pixels = [
                 [palette.get(cell, (0, 0, 0, 0)) for cell in row] for row in texture.get("rows") or marked(texture)
             ]
-            png.write(MAIN / f"assets/wayfarer/textures/{texture.get('folder', 'item')}/{variant}.png", pixels)
+            target = MAIN / f"assets/wayfarer/textures/{texture.get('folder', 'item')}/{variant}.png"
+            png.write(target, pixels)
+            if "scaling" in texture:
+                write_json(target.with_name(f"{variant}.png.mcmeta"), {"gui": {"scaling": texture["scaling"]}})
 
 
 def story(quests, cast, skins, caravan_households):
@@ -315,32 +319,57 @@ def shard_names(eyes):
 
 
 def sounds(spec):
+    effects = spec["effects"]
     write_json(
         MAIN / "assets/wayfarer/sounds.json",
         {
-            f"story_music.{piece}": {"sounds": [{"name": f"wayfarer:music/{piece}", "stream": True}]}
-            for piece in spec["music"]
+            **{
+                f"story_music.{piece}": {"sounds": [{"name": f"wayfarer:music/{piece}", "stream": True}]}
+                for piece in spec["music"]
+            },
+            **{
+                name: {
+                    "sounds": [
+                        {"name": f"wayfarer:effects/{name}"}
+                        | ({"attenuation_distance": effect["reach"]} if "reach" in effect else {})
+                    ],
+                    "subtitle": f"subtitles.wayfarer.{name}",
+                }
+                for name, effect in effects.items()
+            },
         },
     )
     write_json(
-        MAIN / "wayfarer/cues.json",
+        MAIN / "wayfarer/sounds.json",
         {
-            cue: [
-                {
-                    "delay": layer.get("delay", 0),
-                    "event": layer["event"],
-                    "pitch": layer.get("pitch", 1),
-                    "volume": layer.get("volume", 1),
-                }
-                for layer in spec["layers"]
-            ]
-            for cue, spec in spec["cues"].items()
+            name: {"slider": effect["slider"]}
+            | ({"reach": effect["reach"]} if "reach" in effect else {})
+            | ({"loop_ticks": effect_ticks(name)} if effect["kind"] == "loop" else {})
+            for name, effect in effects.items()
         },
     )
-    credits = [
-        f"- {piece['credit']}. {piece['licence']}. {piece['page']}" for _, piece in sorted(spec["music"].items())
-    ]
-    (ROOT / "pack/CREDITS.md").write_text("# Credits\n\nMusic in the Wayfarer mod:\n\n" + "\n".join(credits) + "\n")
+
+    def line(entry):
+        return f"- {entry['credit']}. {entry['licence']}. {entry['page']}"
+
+    music = [line(piece) for _, piece in sorted(spec["music"].items())]
+    effect_lines = [line(effect) for _, effect in sorted(effects.items())]
+    (ROOT / "pack/CREDITS.md").write_text(
+        "# Credits\n\nMusic in the Wayfarer mod:\n\n"
+        + "\n".join(music)
+        + "\n\nSounds in the Wayfarer mod:\n\n"
+        + "\n".join(effect_lines)
+        + "\n"
+    )
+
+
+def effect_ticks(name):
+    data = (MAIN.parent.parent / "main/resources/assets/wayfarer/sounds/effects" / f"{name}.ogg").read_bytes()
+    header = data.index(b"\x01vorbis")
+    rate = int.from_bytes(data[header + 12 : header + 16], "little")
+    last = data.rindex(b"OggS")
+    samples = int.from_bytes(data[last + 6 : last + 14], "little")
+    return round(samples / rate * TICKS_PER_SECOND)
 
 
 def people(spec):

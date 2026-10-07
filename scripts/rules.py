@@ -5,6 +5,8 @@ from pathlib import Path
 
 import tomllib
 
+import gallery
+
 ROOT = Path(__file__).resolve().parent.parent
 PACK = ROOT / "pack"
 MOD = ROOT / "mod/src"
@@ -16,6 +18,8 @@ SUBTITLE_LIMIT = 35
 SIDES = {"both", "client"}
 SIGN_LINES = 4
 SIGN_WIDTH = 15
+SLIDERS = {"ambient", "blocks", "hostile", "master", "music", "neutral", "players", "record", "voice", "weather"}
+SOUND_KINDS = {"frequent", "loop", "rare"}
 TRANSLATION = re.compile(r'"(wayfarer\.[a-z_.]+[a-z_])"')
 
 
@@ -143,6 +147,15 @@ def story():
     for piece in sounds["music"]:
         if not (MOD / f"main/resources/assets/wayfarer/sounds/music/{piece}.ogg").exists():
             yield f"story/sounds.toml has the piece {piece}, but sounds/music/{piece}.ogg is missing"
+    for effect, spec in sounds["effects"].items():
+        if not (MOD / f"main/resources/assets/wayfarer/sounds/effects/{effect}.ogg").exists():
+            yield f"story/sounds.toml has the sound {effect}, but sounds/effects/{effect}.ogg is missing; run just sounds {effect}"
+        if f"subtitles.wayfarer.{effect}" not in lang:
+            yield f"story/sounds.toml has the sound {effect}; add subtitles.wayfarer.{effect} to the language file"
+        if spec["kind"] not in SOUND_KINDS:
+            yield f"story/sounds.toml gives {effect} the kind {spec['kind']}, not one of {', '.join(sorted(SOUND_KINDS))}"
+        if spec["slider"] not in SLIDERS:
+            yield f"story/sounds.toml puts {effect} under {spec['slider']}, not one of {', '.join(sorted(SLIDERS))}"
     ids = [quest["id"] for quest in quests]
     books = {entry["id"] for entry in story_books()}
     for scene, spec in tomllib.loads((ROOT / "story/scenes.toml").read_text())["scenes"].items():
@@ -183,8 +196,8 @@ def story():
                 if "stone" in choice:
                     yield from stone(where, choice["stone"])
             for line in said:
-                if "sound" in line and line["sound"] not in sounds["cues"]:
-                    yield f"{where} plays the cue {line['sound']}, which story/sounds.toml does not have"
+                if "sound" in line and line["sound"] not in sounds["effects"]:
+                    yield f"{where} plays the sound {line['sound']}, which story/sounds.toml does not have"
                 if "music" in line and line["music"] not in sounds["music"]:
                     yield f"{where} plays the piece {line['music']}, which story/sounds.toml does not have"
             if "music" in step and not sounds["music"].get(step["music"], {}).get("loop"):
@@ -222,7 +235,7 @@ def stone(where, words):
 
 
 def main():
-    findings = [*sides(), *eyes(), *translations(), *titles(), *recipes(), *books(), *story()]
+    findings = [*sides(), *eyes(), *translations(), *titles(), *recipes(), *books(), *story(), *gallery.problems()]
     for finding in findings:
         print(finding)
     if findings:

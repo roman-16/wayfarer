@@ -5,7 +5,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.GlUtil;
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
+import io.github.roman16.wayfarer.client.Hud;
 import io.github.roman16.wayfarer.story.StoryDev;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +26,7 @@ import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CancellationException;
@@ -32,8 +35,10 @@ import java.util.concurrent.CompletionException;
 import java.util.function.BooleanSupplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.MouseHandler;
 import net.minecraft.client.Screenshot;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -62,6 +67,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.ChatVisiblity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
@@ -105,16 +111,26 @@ public final class Driver {
     private static final long PERF_NANOS = 1_000_000_000L;
     private static final long STEP_LIMIT_NANOS = 60_000_000_000L;
     private static final Field CLICK_COUNT = clickCount();
+    private static final Map<String, Integer> BUTTONS = Map.of("left", GLFW.GLFW_MOUSE_BUTTON_LEFT, "middle", GLFW.GLFW_MOUSE_BUTTON_MIDDLE,
+            "right", GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+    private static final Method MOUSE_MOVE = mouse("onMove", long.class, double.class, double.class);
+    private static final Method MOUSE_PRESS = mouse("onPress", long.class, int.class, int.class, int.class);
     private static final String EXPERIMENTAL_WARNING = "selectWorld.backupQuestion.experimental";
     private static final String LOAD_WITHOUT_BACKUP = "selectWorld.backupJoinSkipButton";
     private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "hud", "inspect", "interact", "key", "person", "place", "sky", "spawn", "state", "story", "workshop");
     private static final double INTERACT_REACH = 8;
+    private static final int IDLE_FPS = 5;
+    private static final int WINDOW_WIDTH = 1280;
+    private static final int WINDOW_HEIGHT = 720;
+    private static final int GUI_WIDTH = 320;
+    private static final int GUI_HEIGHT = 240;
     private static final String SENTINEL = "execute if entity @s";
     private static final String SENTINEL_REPLY = "commands.execute.conditional.pass_count";
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Deque<String> steps = new ArrayDeque<>();
     private static final List<String> log = new ArrayList<>();
     private static final Set<Integer> awaited = new HashSet<>();
+    private static boolean leaving;
     private static boolean opened;
     private static boolean running;
     private static boolean synced = true;
@@ -149,6 +165,12 @@ public final class Driver {
         }
         Path folder = minecraft.gameDirectory.toPath().resolve("driver");
         if (take(folder.resolve("quit"))) {
+            minecraft.stop();
+            return;
+        }
+        if (!running && !leaving && Background.idle()) {
+            leaving = true;
+            Background.leave("the client");
             minecraft.stop();
             return;
         }
@@ -274,18 +296,60 @@ public final class Driver {
         } catch (IOException exception) {
             throw new UncheckedIOException(exception);
         }
-        if (SHOWROOM) {
-            begin(JsonParser.parseString(resource("/wayfarer/showroom.json")).getAsJsonObject().getAsJsonArray("steps").asList().stream()
-                    .map(step -> step.getAsString())
-                    .toList());
-            enter(minecraft, SHOWROOM_WORLD, GameType.CREATIVE, SEED);
-        } else if (!STATE.isEmpty()) {
-            boolean built = minecraft.getLevelSource().levelExists(STATE_WORLD);
-            begin(built ? List.of("settle") : List.of("settle", "story " + STATE + " " + STATE_CACHE, "settle"));
-            enter(minecraft, STATE_WORLD, GameType.SURVIVAL, StoryDev.seed());
-        } else {
-            begin(List.of("settle"));
-            enter(minecraft, PLAY_WORLD, GameType.SURVIVAL, WorldOptions.randomSeed());
+        begin(enter(minecraft, SHOWROOM ? "showroom" : STATE.isEmpty() ? "play" : "state " + STATE + " " + STATE_CACHE));
+    }
+
+    private static List<String> enter(Minecraft minecraft, String world) {
+        String[] words = world.split(" ");
+        standing(minecraft, words[0], words.length > 1 ? words[1] : null);
+        switch (words[0]) {
+            case "showroom" -> {
+                enter(minecraft, SHOWROOM_WORLD, GameType.CREATIVE, SEED);
+                return JsonParser.parseString(resource("/wayfarer/showroom.json")).getAsJsonObject().getAsJsonArray("steps").asList().stream()
+                        .map(step -> step.getAsString())
+                        .toList();
+            }
+            case "state" -> {
+                boolean built = minecraft.getLevelSource().levelExists(STATE_WORLD);
+                enter(minecraft, STATE_WORLD, GameType.SURVIVAL, StoryDev.seed());
+                return built ? List.of("settle") : List.of("settle", "story " + words[1] + " " + words[2], "settle");
+            }
+            case "play" -> {
+                enter(minecraft, PLAY_WORLD, GameType.SURVIVAL, WorldOptions.randomSeed());
+                return List.of("settle");
+            }
+            default -> {
+                note("error: enter takes showroom, play or state <quest/step> <cache>, not " + world);
+                return List.of();
+            }
+        }
+    }
+
+    private static void leave(Minecraft minecraft) {
+        if (minecraft.level != null) {
+            boolean local = minecraft.isLocalServer();
+            minecraft.level.disconnect();
+            if (local) {
+                minecraft.disconnect(new GenericMessageScreen(Component.translatable("menu.savingLevel")));
+            } else {
+                minecraft.disconnect();
+            }
+        }
+        minecraft.setScreen(new TitleScreen());
+        standing(minecraft, "title", null);
+        until = () -> minecraft.level == null && minecraft.getSingleplayerServer() == null && minecraft.screen instanceof TitleScreen;
+    }
+
+    private static void standing(Minecraft minecraft, String world, @Nullable String state) {
+        JsonObject where = new JsonObject();
+        where.addProperty("state", state);
+        where.addProperty("world", world);
+        try {
+            Path folder = minecraft.gameDirectory.toPath().resolve("driver");
+            Files.createDirectories(folder);
+            Files.writeString(folder.resolve("world.json"), where.toString());
+        } catch (IOException exception) {
+            throw new UncheckedIOException(exception);
         }
     }
 
@@ -333,10 +397,19 @@ public final class Driver {
         failure = null;
         running = true;
         progressed = System.nanoTime();
+        draw(Minecraft.getInstance(), true);
+    }
+
+    private static void draw(Minecraft minecraft, boolean busy) {
+        Background.use();
+        if (Background.ON) {
+            minecraft.getWindow().setFramerateLimit(busy ? minecraft.options.framerateLimit().get() : IDLE_FPS);
+        }
     }
 
     private static void finish(Path folder) {
         running = false;
+        draw(Minecraft.getInstance(), false);
         try {
             Files.createDirectories(folder);
             Path partial = folder.resolve("done.tmp");
@@ -436,6 +509,27 @@ public final class Driver {
         }
     }
 
+    private static Method mouse(String name, Class<?>... parameters) {
+        try {
+            Method method = MouseHandler.class.getDeclaredMethod(name, parameters);
+            method.setAccessible(true);
+            return method;
+        } catch (NoSuchMethodException exception) {
+            throw new IllegalStateException(exception);
+        }
+    }
+
+    private static void mouse(Minecraft minecraft, Method method, Object... arguments) {
+        Object[] call = new Object[arguments.length + 1];
+        call[0] = minecraft.getWindow().getWindow();
+        System.arraycopy(arguments, 0, call, 1, arguments.length);
+        try {
+            method.invoke(minecraft.mouseHandler, call);
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException(exception);
+        }
+    }
+
     private static String translationKey(Component component) {
         return component.getContents() instanceof TranslatableContents contents ? contents.getKey() : "";
     }
@@ -491,9 +585,10 @@ public final class Driver {
                 waitingOn = "the loading screen to fade";
             }
             case "beside", "clear", "person", "place", "spawn" -> command(minecraft, "wayfarer workshop " + step);
+            case "chat" -> minecraft.options.chatVisibility().set(argument.equals("on") ? ChatVisiblity.FULL : ChatVisiblity.HIDDEN);
             case "click" -> {
                 String[] at = argument.split(" ");
-                click(minecraft, Double.parseDouble(at[0]), Double.parseDouble(at[1]));
+                click(minecraft, Double.parseDouble(at[0]), Double.parseDouble(at[1]), at.length > 2 ? at[2] : "left");
             }
             case "close" -> {
                 if (minecraft.screen != null) {
@@ -513,8 +608,16 @@ public final class Driver {
                 compassFrom = null;
             }
             case "interact" -> interact(minecraft, argument);
+            case "enter" -> {
+                List<String> next = enter(minecraft, argument);
+                for (int index = next.size() - 1; index >= 0; index--) {
+                    steps.addFirst(next.get(index));
+                }
+            }
             case "join" -> join(minecraft, argument);
             case "key" -> key(minecraft, argument);
+            case "leave" -> leave(minecraft);
+            case "listeners" -> Arrays.stream(argument.split(" ")).map(Swapped::listen).forEach(Driver::note);
             case "log" -> {
                 List<String> problems = Problems.drain();
                 if (problems.isEmpty()) {
@@ -525,8 +628,17 @@ public final class Driver {
             case "perf" -> perf(minecraft);
             case "pos" -> note("pos: %.1f %.1f %.1f facing %.0f %.0f in %s".formatted(minecraft.player.getX(), minecraft.player.getY(),
                     minecraft.player.getZ(), minecraft.player.getYRot(), minecraft.player.getXRot(), minecraft.level.dimension().location()));
+            case "point" -> {
+                if (minecraft.screen == null) {
+                    note("error: no screen to point at");
+                } else {
+                    String[] at = argument.split(" ");
+                    point(minecraft, Double.parseDouble(at[0]), Double.parseDouble(at[1]));
+                }
+            }
             case "press" -> press(minecraft, argument);
             case "quit" -> minecraft.stop();
+            case "scale" -> scale(minecraft, Integer.parseInt(argument));
             case "screen" -> describe(minecraft);
             case "settle" -> framesFrom = -1;
             case "sneak" -> {
@@ -607,6 +719,9 @@ public final class Driver {
                 if (line.startsWith(STORY_LINE)) {
                     progressed = System.nanoTime();
                     if (line.startsWith(STORY_AT)) {
+                        if (words.length > 1) {
+                            Hud.clearBanners();
+                        }
                         return true;
                     }
                 }
@@ -731,16 +846,23 @@ public final class Driver {
         return until == null && pending == null && steps.peek() != null && steps.peek().startsWith("join ");
     }
 
-    private static void join(Minecraft minecraft, String address) {
-        if (minecraft.level != null) {
-            boolean local = minecraft.isLocalServer();
-            minecraft.level.disconnect();
-            if (local) {
-                minecraft.disconnect(new GenericMessageScreen(Component.translatable("menu.savingLevel")));
-            } else {
-                minecraft.disconnect();
+    private static void scale(Minecraft minecraft, int scale) {
+        int height = Math.max(WINDOW_HEIGHT, scale * GUI_HEIGHT);
+        int width = Math.max(WINDOW_WIDTH, Math.max(scale * GUI_WIDTH, height * WINDOW_WIDTH / WINDOW_HEIGHT));
+        minecraft.getWindow().setWindowed(width, height);
+        until = () -> {
+            if (minecraft.getWindow().getWidth() != width || minecraft.getWindow().getHeight() != height) {
+                return false;
             }
-        }
+            minecraft.options.guiScale().set(scale);
+            minecraft.resizeDisplay();
+            return minecraft.getWindow().getGuiScale() == scale;
+        };
+    }
+
+    private static void join(Minecraft minecraft, String address) {
+        leave(minecraft);
+        standing(minecraft, "server", address);
         ConnectScreen.startConnecting(new TitleScreen(), minecraft, ServerAddress.parseString(address), new ServerData(address, address, ServerData.Type.OTHER),
                 false, null);
         until = () -> minecraft.player != null && minecraft.level != null && !minecraft.isLocalServer()
@@ -771,14 +893,31 @@ public final class Driver {
         }
     }
 
-    private static void click(Minecraft minecraft, double x, double y) {
+    private static void click(Minecraft minecraft, double x, double y, String name) {
+        Integer button = BUTTONS.get(name);
+        if (button == null) {
+            note("error: click takes left, middle or right, not " + name);
+            return;
+        }
         if (minecraft.screen == null) {
             note("error: no screen to click");
             return;
         }
-        Screen screen = minecraft.screen;
-        screen.mouseClicked(x, y, GLFW.GLFW_MOUSE_BUTTON_LEFT);
-        screen.mouseReleased(x, y, GLFW.GLFW_MOUSE_BUTTON_LEFT);
+        point(minecraft, x, y);
+        long moved = frames;
+        until = () -> {
+            if (frames <= moved + SETTLE_FRAMES) {
+                return false;
+            }
+            mouse(minecraft, MOUSE_PRESS, button, GLFW.GLFW_PRESS, 0);
+            mouse(minecraft, MOUSE_PRESS, button, GLFW.GLFW_RELEASE, 0);
+            return true;
+        };
+    }
+
+    private static void point(Minecraft minecraft, double x, double y) {
+        Window window = minecraft.getWindow();
+        mouse(minecraft, MOUSE_MOVE, x * window.getScreenWidth() / window.getGuiScaledWidth(), y * window.getScreenHeight() / window.getGuiScaledHeight());
     }
 
     private static void interact(Minecraft minecraft, String type) {
@@ -814,7 +953,7 @@ public final class Driver {
             note("error: no widget labelled " + label);
             return;
         }
-        click(minecraft, widget.getX() + widget.getWidth() / 2.0, widget.getY() + widget.getHeight() / 2.0);
+        click(minecraft, widget.getX() + widget.getWidth() / 2.0, widget.getY() + widget.getHeight() / 2.0, "left");
     }
 
     private static AbstractWidget labelled(Minecraft minecraft, String label) {

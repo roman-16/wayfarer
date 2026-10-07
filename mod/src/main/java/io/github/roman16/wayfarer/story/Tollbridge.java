@@ -56,10 +56,11 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 
-final class Tollbridge {
+public final class Tollbridge {
     static final String NAME = "tollbridge";
     static final String QUEST = "ash";
     static final String CELLAR = "cellar";
+    private static final String BURNS_UNTIL = "morning";
     static final String BELL = "bell";
     static final String DEAD = Wayfarer.MODID + "_dead";
     private static final String SITE = "tollbridge_site";
@@ -105,6 +106,12 @@ final class Tollbridge {
     private static Build build;
 
     private Tollbridge() {}
+
+    public static Optional<BlockPos> burning(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        int morning = Story.INSTANCE.quest(QUEST).map(quest -> quest.steps().stream().map(Story.Step::id).toList().indexOf(BURNS_UNTIL)).orElse(0);
+        return progress.place(NAME).filter(at -> !progress.done(QUEST) && progress.steps.getOrDefault(QUEST, 0) < morning);
+    }
 
     private enum Stage {
         SEARCHING,

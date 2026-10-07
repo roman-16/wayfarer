@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import io.github.roman16.wayfarer.client.Books;
 import io.github.roman16.wayfarer.client.JournalScreen;
 import io.github.roman16.wayfarer.client.MusicPlayer;
+import io.github.roman16.wayfarer.story.Banners;
 import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Engine;
 import io.github.roman16.wayfarer.story.Fallen;
@@ -16,6 +17,7 @@ import io.github.roman16.wayfarer.story.Scenes;
 import io.github.roman16.wayfarer.story.Sense;
 import io.github.roman16.wayfarer.story.Talk;
 import io.github.roman16.wayfarer.story.Tasks;
+import io.github.roman16.wayfarer.story.Tollbridge;
 import io.github.roman16.wayfarer.story.Wards;
 import java.util.List;
 import java.util.function.Supplier;
@@ -173,7 +175,6 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Caravan.class);
         NeoForge.EVENT_BUS.register(Clock.class);
         NeoForge.EVENT_BUS.register(Compass.class);
-        NeoForge.EVENT_BUS.register(Cues.class);
         NeoForge.EVENT_BUS.register(Cuts.class);
         NeoForge.EVENT_BUS.register(Daylight.class);
         NeoForge.EVENT_BUS.register(Ember.class);
@@ -198,6 +199,9 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Shards.class);
         NeoForge.EVENT_BUS.register(Shine.class);
         NeoForge.EVENT_BUS.register(Shrines.class);
+        NeoForge.EVENT_BUS.register(Sounds.class);
+        Sounds.loop("camp", Caravan::standing);
+        Sounds.loop("town_burning", Tollbridge::burning);
         NeoForge.EVENT_BUS.register(Stillness.class);
         NeoForge.EVENT_BUS.register(Talk.class);
         NeoForge.EVENT_BUS.register(Tasks.class);
@@ -228,10 +232,16 @@ public final class Wayfarer {
 
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1");
+        registrar.playToClient(Banners.Payload.TYPE, Banners.Payload.STREAM_CODEC, (payload, context) -> HudState.banners.add(payload.text()));
         registrar.playToClient(BookPayload.TYPE, BookPayload.STREAM_CODEC, (payload, context) -> Books.open(payload));
         registrar.playToClient(Journal.View.TYPE, Journal.View.STREAM_CODEC, (payload, context) -> JournalScreen.show(payload.json()));
         registrar.playToServer(Journal.Claim.TYPE, Journal.Claim.STREAM_CODEC,
                 (payload, context) -> Engine.claim((ServerPlayer) context.player(), payload.reward()));
+        registrar.playToServer(Journal.Seen.TYPE, Journal.Seen.STREAM_CODEC, (payload, context) -> Engine.seen((ServerPlayer) context.player(), payload.entry()));
+        registrar.playToServer(Journal.Track.TYPE, Journal.Track.STREAM_CODEC, (payload, context) -> {
+            Engine.track((ServerPlayer) context.player(), payload.quest());
+            Tasks.refresh((ServerPlayer) context.player());
+        });
         registrar.playToServer(Sense.Payload.TYPE, Sense.Payload.STREAM_CODEC, (payload, context) -> Sense.sense((ServerPlayer) context.player()));
         registrar.playToClient(Tasks.Panel.TYPE, Tasks.Panel.STREAM_CODEC, (payload, context) -> HudState.panel = payload);
         registrar.playToServer(Caravan.HeadIn.TYPE, Caravan.HeadIn.STREAM_CODEC, (payload, context) -> Caravan.headIn((ServerPlayer) context.player()));

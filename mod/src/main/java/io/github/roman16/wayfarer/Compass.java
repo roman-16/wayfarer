@@ -20,8 +20,13 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Compass {
+    private static final String COMPASS_MARK = "compass_mark";
+    private static final String EMBER_FLARES = "ember_flares";
+    private static final String EMBER_GUTTERS = "ember_gutters";
+    private static final String FIRE_CIRCLE = "fire_circle";
     private static final String TENTS = "nomadictents";
     private static final Map<UUID, Bearing> BEARINGS = new HashMap<>();
+    private static final Map<UUID, CompassPayload> SENT = new HashMap<>();
 
     private Compass() {}
 
@@ -45,18 +50,42 @@ public final class Compass {
 
     public static void forget(ServerPlayer player) {
         BEARINGS.remove(player.getUUID());
+        SENT.remove(player.getUUID());
     }
 
     @SubscribeEvent
     public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         BEARINGS.remove(event.getEntity().getUUID());
+        SENT.remove(event.getEntity().getUUID());
     }
 
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         if (event.getEntity() instanceof ServerPlayer player && player.tickCount % Balance.INSTANCE.compass().refreshTicks() == 0) {
-            PacketDistributor.sendToPlayer(player, reading(player));
+            CompassPayload reading = reading(player);
+            CompassPayload before = SENT.put(player.getUUID(), reading);
+            if (before != null) {
+                heard(player, before, reading);
+            }
+            PacketDistributor.sendToPlayer(player, reading);
         }
+    }
+
+    private static void heard(ServerPlayer player, CompassPayload before, CompassPayload now) {
+        if (before.mode() == CompassPayload.Mode.FAR && now.mode() == CompassPayload.Mode.FAR && now.heat() != before.heat()) {
+            Sounds.play(player, now.heat() > before.heat() ? EMBER_FLARES : EMBER_GUTTERS);
+        }
+        if (leads(now).stream().anyMatch(lead -> !leads(before).contains(lead))) {
+            Sounds.play(player, COMPASS_MARK);
+        }
+        if (before.shelter() != CompassPayload.Shelter.FIRE && now.shelter() == CompassPayload.Shelter.FIRE) {
+            Sounds.play(player, FIRE_CIRCLE);
+        }
+    }
+
+    private static List<CompassPayload.Marker> leads(CompassPayload reading) {
+        return reading.markers().stream()
+                .filter(marker -> marker.kind() == CompassPayload.Kind.GOAL || marker.kind() == CompassPayload.Kind.LEAD).toList();
     }
 
     private static CompassPayload reading(ServerPlayer player) {

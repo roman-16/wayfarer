@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer.client;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
@@ -40,14 +41,13 @@ public final class MapLink implements IClientPlugin {
         return Wayfarer.MODID;
     }
 
-    static void show(JsonObject view) {
-        String places = view.has("places") ? view.get("places").toString() : "[]";
-        if (api == null || places.equals(placed)) {
+    static void show(JsonArray places) {
+        if (api == null || places.toString().equals(placed)) {
             return;
         }
-        placed = places;
+        placed = places.toString();
         api.removeAll(Wayfarer.MODID);
-        for (JsonElement element : view.getAsJsonArray("places")) {
+        for (JsonElement element : places) {
             JsonObject place = element.getAsJsonObject();
             BlockPos at = new BlockPos(place.get("x").getAsInt(), 0, place.get("z").getAsInt());
             String name = Component.translatable(place.get("name").getAsString()).getString();

@@ -2,8 +2,8 @@ package io.github.roman16.wayfarer.story;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.roman16.wayfarer.Balance;
-import io.github.roman16.wayfarer.Cues;
 import io.github.roman16.wayfarer.Music;
+import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -29,6 +29,7 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class Talk {
+    private static final String ANSWER_CHOSEN = "answer_chosen";
     private static final int TICKS_PER_SECOND = 20;
     private static final Deque<Speech> queue = new ArrayDeque<>();
     private static long next;
@@ -95,7 +96,7 @@ public final class Talk {
     private static void heard(MinecraftServer server, Story.Line line) {
         People.introduce(server, line.names());
         if (line.sound() != null) {
-            Cues.play(server, line.sound());
+            Sounds.play(server, line.sound());
         }
         if (line.music() != null) {
             Music.play(server, line.music(), false);
@@ -171,6 +172,7 @@ public final class Talk {
         offer = null;
         next = player.server.getTickCount() + reading(picked.text());
         Tasks.did(player, "answer");
+        Sounds.play(player.server, ANSWER_CHOSEN);
         broadcast(player.server, Component.translatable("wayfarer.talk.chose", player.getDisplayName(), picked.text()).withStyle(ChatFormatting.DARK_GRAY));
         answered.answer().chosen(player, picked);
         return 1;

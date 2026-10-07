@@ -45,6 +45,7 @@ Verdicts: **Use** as it is, **Use changed** (configured or edited), **Take a fea
 | Mod Menu | A list of the installed mods | Fabric and Quilt only | Leave out | NeoForge's own Mods screen does it |
 | Chat Animation | Chat lines slide in smoothly (MIT) | 1.3.3 | Use | Conversations with the caravan's people and the voice run in chat (M3), line by line; lines that arrive gently read as speech, not as a log |
 | Immersive UI | Animated inventory: particle trails behind rare items, wiggling and growing items, a sliding hotbar (All Rights Reserved, Shatterbyte Lib) | 0.3.3 | Use | The user's pick: an inventory that feels alive, and its trails mark the rare finds the gear road (M18) is made of |
+| Inventory Sorter | A middle click sorts the inventory under the cursor, on the server (GPL-3.0, on CurseForge only) | 24.0.24 | Use | The user's pick: one click sorts the player's own inventory or a chest alike, where Nemo's Inventory Sorting gives each inventory a key of its own and cannot tell which one the cursor is over; its mouse-wheel moving stays off, since Mouse Tweaks has the wheel |
 | Visual Workbench | Items lie on the crafting table while crafting (MPL-2.0, Puzzles Lib, already in the pack) | 21.1.2 | Use | Small, looks like vanilla, and the bench stays the player's own instant craft (M18) |
 | Tooltip Rareness | Item names coloured by rarity groups | Fabric only | Use Rarity Core instead | The user's pick. Rarity Core (GPL-3.0, 1211.14.9 for NeoForge 1.21.1) gives every item one of seven rarities, from its own lists for over 70 mods and from its recipes, and draws it behind the item, which the pack keeps for the Epic tier and above (purple, gold, light red, red, in `pack/config/raritycore/RarityStyle.json`) so a backdrop marks a find; it feeds Legendary Tooltips' borders and Immersive UI's trails |
 | Legendary Tooltips | Ornate tooltip borders by rarity (CC-BY-NC-ND-4.0, needs Iceberg and Prism Lib) | 1.5.5 | Use | The user's pick: a piece's worth shows at a glance, beside the Gear page and Silent Gear's own tooltips |
@@ -58,6 +59,15 @@ Verdicts: **Use** as it is, **Use changed** (configured or edited), **Take a fea
 | Eating Animation | First-person eating and drinking sprites | Fabric only | Leave out | No NeoForge port; Not Enough Animations covers what friends see |
 | LambDynamicLights | Light from held and dropped torches | 4.8.11 | Leave out | As before: the shader already lights what a player holds |
 | Continuity | Connected textures for glass, bookshelves and the like | Only through Sinytra Connector | Leave out | Native alternatives exist (Fusion, Athena), but the pack ships no resource pack that uses connected textures, and seamless glass is not vanilla's look |
+
+## The front door, the map and a greeting
+
+| Asked for | What it is | NeoForge 1.21.1 | Verdict | Why |
+|---|---|---|---|---|
+| FancyMenu | Lays out the title screen, the pause menu and other screens as data, with conditions, variables and text read from files; its addon Drippy Loading Screen does the game's own loading screen (DSMSL 3.1, a licence of its own) | 3.9.14 | Try | It could build I6's title, pause menu and loading recap without code, if a text element can show the page of The Story So Far the mod writes to a file; whether it can, and whether its licence lets a pack ship it, are not checked. If either fails, the Wayfarer mod draws them itself |
+| Xaero's World Map | A self-writing fullscreen map, with server-side profiles that switch features off per player (All Rights Reserved) | 1.47.0 | Keep JourneyMap | JourneyMap is in and working (M2): the pack's server settings switch off its minimap, cave mapping, radar and waypoints for everyone, and the places found are marks the mod draws through its stable API. Xaero's looks cleaner and is lighter, and its server profiles could do the switching too, but how a mod draws its own marks on it is not checked, and the switch would rebuild the map link and the marks. Worth a look side by side if JourneyMap's map fails I5's look |
+| Dap ur Homies | Fist-bump a friend with a charged key: five tiers up to explosions and a fire sphere, plus throwing and catching each other (MIT) | 3.0.0, but on NeoForge only through Sinytra Connector and Forgified Fabric API | Leave out; Emotecraft carries the greeting | It needs a Fabric bridge under the whole pack, and its explosions and throws break the road's rules and its tone |
+| Emotecraft | An emote wheel on a key, emotes synced to every player, new emotes made in Blockbench (GPL-3.0, needed on both sides) | 2.4.12 | Try, with the pack's own emotes | A team of friends gets a language without chat: a clasped-hands greeting for two, a wave, warming the hands at a fire, sitting at the fire, kneeling at a grave, pointing the way, each made with the art skill so it looks vanilla. Its wheel keeps a key, since it is social and changes nothing in the world. It carries its own copy of the player-animation library that Better Combat and Combat Roll share, so it is tried beside them and Not Enough Animations first; players may still add emotes of their own |
 
 ## Already in the pack, worth changing
 
@@ -97,7 +107,7 @@ Found in the pack's mods, each breaking a Settled rule:
 | Carry On | Pick up and carry creatures and blocks with what is in them (LGPL-3.0) | Yes | Use changed | Act 3's Carry (someone on your back, no running) is this mod's core; limited to the people a quest names, since carrying full chests around sidesteps "storage only in a tent" |
 | ParCool | Climbing ledges, vaulting, wall runs and rolls (LGPL-3.0) | 3.4.3.3; 4.0.1.0 crashes a dedicated server at startup | Use changed | Reach (a goal at a hard place) gets a body that climbs; only climbing and vaulting, since Combat Roll already rolls and wall runs are not vanilla's feel |
 
-Checked and not for 1.21.1 on NeoForge: Presence Footsteps, Falling Leaves, Visuality and FabricSit. Left out on purpose: LambDynamicLights, since the shader already lights a held torch, and Emotecraft, which is far bigger than the one pose the fire needs.
+Checked and not for 1.21.1 on NeoForge: Presence Footsteps, Falling Leaves, Visuality and FabricSit. Left out on purpose: LambDynamicLights, since the shader already lights a held torch.
 
 ## Worth building
 

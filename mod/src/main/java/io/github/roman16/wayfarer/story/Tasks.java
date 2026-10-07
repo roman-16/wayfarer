@@ -10,6 +10,7 @@ import io.github.roman16.wayfarer.Heat;
 import io.github.roman16.wayfarer.LastUse;
 import io.github.roman16.wayfarer.OwnStone;
 import io.github.roman16.wayfarer.Patterns;
+import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Stones;
 import io.github.roman16.wayfarer.TentPitch;
 import io.github.roman16.wayfarer.Tents;
@@ -45,6 +46,7 @@ public final class Tasks {
     private static final Set<String> TOLD_BY_CLIENT = Set.of("charms", "journal", "map");
     private static final Set<String> QUIET = Set.of("evening", "waiting");
     private static final String FIRST = "task.";
+    private static final String TASK_TICKED = "task_ticked";
     private static final String INVENTORY_KEY = "key.inventory";
     private static final String JOURNAL_KEY = "key.wayfarer.journal";
     private static final int CHECK_TICKS = 20;
@@ -114,7 +116,7 @@ public final class Tasks {
         COMPASS_FROM.remove(player);
     }
 
-    static void refresh(ServerPlayer player) {
+    public static void refresh(ServerPlayer player) {
         Panel panel = panel(player);
         if (!panel.equals(SENT.get(player.getUUID()))) {
             SENT.put(player.getUUID(), panel);
@@ -161,7 +163,7 @@ public final class Tasks {
         }
         Component heading = Component.empty();
         Component objective = Component.empty();
-        Optional<Engine.Active> tracked = Engine.tracked(server);
+        Optional<Engine.Active> tracked = Engine.tracked(player);
         if (Caravan.heading(server) && tracked.map(active -> !active.step().kind().equals("caravan")).orElse(true)) {
             heading = Component.translatable("wayfarer.journal.main").append(" ").append(Component.translatable("wayfarer.caravan.title"));
             objective = Component.translatable("wayfarer.caravan.objective");
@@ -187,6 +189,9 @@ public final class Tasks {
                 fading.put(id, new Fading(text, now));
             }
         });
+        if (OPEN.getOrDefault(player.getUUID(), Map.of()).keySet().stream().anyMatch(id -> !open.containsKey(id) && !QUIET.contains(id))) {
+            Sounds.play(player, TASK_TICKED);
+        }
         open.keySet().forEach(fading::remove);
         fading.keySet().removeIf(QUIET::contains);
         fading.values().removeIf(done -> now - done.since() > FADE_TICKS);

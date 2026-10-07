@@ -2,17 +2,21 @@ package io.github.roman16.wayfarer.story;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Stones;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Journal {
@@ -29,6 +33,26 @@ public final class Journal {
 
         @Override
         public Type<View> type() {
+            return TYPE;
+        }
+    }
+
+    public record Track(String quest) implements CustomPacketPayload {
+        public static final Type<Track> TYPE = new Type<>(Wayfarer.id("track"));
+        public static final StreamCodec<ByteBuf, Track> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(Track::new, Track::quest);
+
+        @Override
+        public Type<Track> type() {
+            return TYPE;
+        }
+    }
+
+    public record Seen(String entry) implements CustomPacketPayload {
+        public static final Type<Seen> TYPE = new Type<>(Wayfarer.id("seen"));
+        public static final StreamCodec<ByteBuf, Seen> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(Seen::new, Seen::entry);
+
+        @Override
+        public Type<Seen> type() {
             return TYPE;
         }
     }
@@ -61,11 +85,15 @@ public final class Journal {
                 continue;
             }
             JsonObject entry = new JsonObject();
+            entry.addProperty("id", quest.id());
             entry.addProperty("title", quest.title());
             entry.addProperty("kind", quest.kind());
             entry.addProperty("summary", quest.summary());
             boolean done = progress.done(quest.id());
             entry.addProperty("done", done);
+            JsonArray told = new JsonArray();
+            progress.told.getOrDefault(quest.id(), List.of()).forEach(told::add);
+            entry.add("story", told);
             if (!done) {
                 Story.Step step = quest.steps().get(progress.step(quest.id()));
                 entry.addProperty("objective", objective(player, new Engine.Active(quest, step, progress.scratch(quest.id()))));
@@ -84,19 +112,42 @@ public final class Journal {
                 entry.addProperty("title", reward.title());
                 entry.addProperty("text", reward.text());
                 entry.addProperty("claimed", progress.claimed(reward.key(), player.getUUID()));
+                JsonArray items = new JsonArray();
+                reward.items().forEach(item -> items.add(ItemStack.CODEC.encodeStart(player.registryAccess().createSerializationContext(JsonOps.INSTANCE),
+                        Engine.stack(player, reward.key(), item)).getOrThrow()));
+                entry.add("items", items);
                 rewards.add(entry);
             }
         }
         view.add("rewards", rewards);
-        JsonArray story = new JsonArray();
-        progress.told.forEach(story::add);
-        view.add("story", story);
+        JsonArray chapters = new JsonArray();
+        progress.told.forEach((quest, lines) -> {
+            JsonObject chapter = new JsonObject();
+            chapter.addProperty("key", quest);
+            chapter.addProperty("title", Story.INSTANCE.quest(quest).map(Story.Quest::title).orElse(quest));
+            JsonArray text = new JsonArray();
+            lines.forEach(text::add);
+            chapter.add("lines", text);
+            chapters.add(chapter);
+        });
+        view.add("story", chapters);
         view.add("people", entries(progress.people, person -> Story.INSTANCE.person(person).name()));
         view.add("words", entries(progress.words, word -> word));
         JsonArray places = new JsonArray();
         PLACES.forEach((name, key) -> progress.place(name).ifPresent(pos -> places.add(place(key, pos))));
         view.add("places", places);
         view.addProperty("headIn", Caravan.canHeadIn(server));
+        Engine.tracked(player).ifPresent(active -> view.addProperty("tracked", active.quest().id()));
+        JsonArray seen = new JsonArray();
+        progress.seen.getOrDefault(player.getUUID(), Set.of()).forEach(seen::add);
+        view.add("seen", seen);
+        JsonArray stones = new JsonArray();
+        for (Stones.Stone stone : Stones.mine(player)) {
+            JsonObject entry = place("stone", stone.pos());
+            entry.addProperty("things", stone.things());
+            stones.add(entry);
+        }
+        view.add("stones", stones);
         return view;
     }
 

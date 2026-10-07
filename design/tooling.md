@@ -39,7 +39,9 @@ How the pack is seen, tried and built. Coding agents build most of it, so the to
 - **No sleeping.** A command never waits a guessed time: it waits on an event, such as the world having loaded or a command having run, or on a check repeated about every second until it holds, and returns the moment it does. A wait that does not finish in time fails and says where it stuck, and a failure the game already knows ends the wait at once: code that knows something failed says so in a line `<what> failed: <why>`, and the drivers stop on it with that line as the error. This already holds for `scripts/client.py`, whose steps return when the dev-only driver writes `done.txt`, and for `scripts/boot.py`, which waits for the server's own "Done" line.
 - **A server driver.** `scripts/server.py` drives a dev server the way `client.py` drives the client: start, run a batch of commands, stop, each command returning the moment the server has run it, with its replies.
 - **Pretend players.** NeoForge's fake players join, leave, vote and walk into the frame on the server without a client, so every rule for a team of one to four has a fast test. A second real dev client joins only for what has to be seen.
-- **Changing a running game.** Data reaches it with `processResources` and `/reload`, as today; code is swapped into the running game by the JetBrains Java runtime, and a restart comes only when a change cannot be swapped.
+- **Changing a running game.** Data reaches it with `processResources` and `/reload`, as today; code is swapped into the running game by the JetBrains Java runtime with HotswapAgent, which gives new static fields their starting values, and classes whose event methods changed are registered again, so a restart comes only when a change cannot be swapped.
+- **One game, kept running.** The dev client and the dev server stay up between batches and quit after 30 minutes without one; the client opens the showroom, a fresh world or a state in place, and between batches a hidden client draws at 5 frames a second. A launch is paid only when none runs, when the mods, data or assets changed, or when a change needs a restart.
+- **Game time on fast-forward.** Everything the story waits on counts ticks, so vanilla's `/tick rate` checks a timed step in a fraction of its length; pace and feel are judged at normal speed.
 - **Structured output.** Every step of either driver reports what happened as one line of JSON, and a `state` step returns the world's story state: the quests, each player's tracked quest, the caravan, the shards and the shine.
 - **Four layers of tests:**
 
@@ -102,17 +104,17 @@ The tasks and tools are named for what they open or do, and only what the reposi
 
 - **A state is a point in the story,** named `quest/step` as `ash/the_door` is. Every step of the story is a state without anything written for it, and opening one stands the team at the step's start, in a world whose earlier steps are all played.
 - **It is built from the repository, not saved by hand.** `story/states.toml` holds the one fixed seed every state grows from and the words a state writes on the stranger's stone. Building a state opens a fresh world from that seed and plays each earlier step's outcome without waiting for it: the first answer of every talk chosen, the stone written, the first camp's fire lit, Tollbridge and the caravan's camp built at once and out of anyone's sight, the clock set to the hour the step leaves it at, every reward taken. The step itself then begins as it does in play.
-- **The built world is a cache.** It is kept under `build/states/`, keyed by everything it is made from: the mod's code and data, the story, `balance.toml` and the pack. The next start copies it in seconds, and any change to what it is made from builds it again on its own.
+- **The built world is a cache.** It is kept under `build/states/`, keyed by what it is made from: the mod's data and assets, the story, `balance.toml` and the pack. The next start copies it in seconds, and any change to those builds it again on its own. The mod's code is left out, since each step begins with the code that runs and code rarely changes what earlier steps built; a change that does, to Tollbridge's town or the caravan's camp, is built anew with `--rebuild`.
 - **One way to move the story on.** `/wayfarer story to <quest/step>` and `/wayfarer story next` take a running world forward by the same outcomes, and the driver step `story <quest/step>` returns once it stands there.
 
 ```console
 $ python3 scripts/client.py start --state ash/the_door
-the client is running in state ash/the_door, built in 112 s, on a hidden screen
+the client is running in state ash/the_door, built, on a hidden screen (opened in 95 s, 22 log lines, 0 errors)
 $ python3 scripts/client.py start --state ash/the_door
-the client is running in state ash/the_door, from the cache, on a hidden screen
+the client is running in state ash/the_door, from the cache, on a hidden screen (opened in 21 s, 3 log lines, 0 errors)
 ```
 
-**Why:** A fresh random world sets every test back to the story's first minutes and lands in the sea as often as not, so most of a test went on reaching the moment to be tested. A recipe never goes stale, where a saved world as the source would be wrong after the next change to the code or data and is large binary nobody can read; the cache keeps a recipe as quick to open as a saved world, where a recipe alone would rebuild Tollbridge on every start. Resuming the last world was turned down: a state is a story point anyone can come back to, which the last world is not.
+**Why:** A fresh random world sets every test back to the story's first minutes and lands in the sea as often as not, so most of a test went on reaching the moment to be tested. A recipe never goes stale, where a saved world as the source would be wrong after the next change to the code or data and is large binary nobody can read; the cache keeps a recipe as quick to open as a saved world, where a recipe alone would rebuild Tollbridge on every start. Resuming the last world was turned down: a state is a story point anyone can come back to, which the last world is not. Keying the cache on the code as well rebuilt nearly every start, 4 of about 40 coming from the cache, since nearly every test follows a code change.
 
 ## Open
 

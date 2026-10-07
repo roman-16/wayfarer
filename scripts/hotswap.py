@@ -20,6 +20,9 @@ DISPOSE = 6
 ID_SIZES = 7
 REDEFINE_CLASSES = 18
 STATIC = 0x0008
+INVOCATIONS = {0xB6, 0xB7, 0xB8, 0xB9}
+REGISTERING = re.compile(r"(?:\.register\w*|KeyMapping\.<init>|\.install)$")
+LISTENER = "Lnet/neoforged/bus/api/SubscribeEvent;"
 CONSTANT_SIZES = {
     3: 4,
     4: 4,
@@ -178,13 +181,73 @@ def instructions(constants, body):
 
 def initialiser(code):
     constants, fields, methods = parse(code)
-    starting = sorted(
-        (field, resolved(constants, struct.unpack(">H", attributes["ConstantValue"])[0]))
+    starting = {
+        field: resolved(constants, struct.unpack(">H", attributes["ConstantValue"])[0])
         for access, field, attributes in fields
         if access & STATIC and "ConstantValue" in attributes
-    )
+    }
     body = next((attributes["Code"] for _, method, attributes in methods if method == "<clinit> ()V"), None)
     return starting, instructions(constants, body) if body else []
+
+
+def contained(before, now):
+    remaining = iter(now)
+    return all(any(instruction == later for later in remaining) for instruction in before)
+
+
+def registers(steps):
+    return any(
+        opcode in INVOCATIONS and REGISTERING.search(".".join(operand.split(":")[1:3])) for opcode, operand, *_ in steps
+    )
+
+
+def extended(before, now):
+    starting, steps = initialiser(before)
+    later_starting, later_steps = initialiser(now)
+    return (
+        all(later_starting.get(field) == value for field, value in starting.items())
+        and contained(steps, later_steps)
+        and not registers(steps)
+    )
+
+
+def skip_value(code, offset):
+    tag = chr(code[offset])
+    if tag == "e":
+        return offset + 5
+    if tag == "@":
+        return skip_annotation(code, offset + 1)
+    if tag == "[":
+        offset += 3
+        for _ in range(struct.unpack_from(">H", code, offset - 2)[0]):
+            offset = skip_value(code, offset)
+        return offset
+    return offset + 3
+
+
+def skip_annotation(code, offset):
+    pairs = struct.unpack_from(">H", code, offset + 2)[0]
+    offset += 4
+    for _ in range(pairs):
+        offset = skip_value(code, offset + 2)
+    return offset
+
+
+def annotated(constants, attribute):
+    found, offset = [], 2
+    for _ in range(struct.unpack_from(">H", attribute, 0)[0]):
+        found.append(constants[struct.unpack_from(">H", attribute, offset)[0]][1])
+        offset = skip_annotation(attribute, offset)
+    return found
+
+
+def listeners(code):
+    constants, _, methods = parse(code)
+    return {
+        method
+        for _, method, attributes in methods
+        if LISTENER in annotated(constants, attributes.get("RuntimeVisibleAnnotations", b"\0\0"))
+    }
 
 
 class Debugger:
@@ -257,7 +320,7 @@ def swap(port, snapshot):
             references = debugger.loaded(path.removesuffix(".class"))
             if not references:
                 unloaded.append(path)
-            elif initialiser(before[path]) != initialiser(now[path]):
+            elif initialiser(before[path]) != initialiser(now[path]) and not extended(before[path], now[path]):
                 restart.append(path)
             else:
                 definitions += [(reference, now[path]) for reference in references]
@@ -273,6 +336,11 @@ def swap(port, snapshot):
         "swapped": swapped,
         "loaded when first used": [dotted(path) for path in unloaded],
         "new": [dotted(path) for path in sorted(set(now) - set(before))],
+        "listeners": [
+            dotted(path)
+            for path in changed
+            if path not in restart and path not in unloaded and listeners(before[path]) != listeners(now[path])
+        ],
         "needs a restart": [dotted(path) for path in restart],
     }
 

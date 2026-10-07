@@ -22,6 +22,9 @@ sourceSets {
 configurations {
     devCompileOnly.extendsFrom compileOnly
     devImplementation.extendsFrom implementation
+    hotswapAgent {
+        transitive = false
+    }
     vineflower
 }
 
@@ -47,13 +50,18 @@ repositories {
         content { includeGroup 'maven.modrinth' }
     }
     mavenCentral {
-        content { includeGroup 'org.vineflower' }
+        content {
+            includeGroup 'org.hotswapagent'
+            includeGroup 'org.vineflower'
+        }
     }
 }
 
 static List<String> swappable(String port) {
-    ['-XX:+AllowEnhancedClassRedefinition', "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=127.0.0.1:${port}".toString()]
+    ['-XX:+AllowEnhancedClassRedefinition', '-XX:HotswapAgent=external', "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=127.0.0.1:${port}".toString()]
 }
+
+Provider<String> hotswapAgentArgument = configurations.hotswapAgent.elements.map { files -> "-javaagent:${files.first().asFile}".toString() }
 
 neoForge {
     version = neo_version
@@ -74,8 +82,10 @@ neoForge {
                 gameDirectory = file('../build/client')
                 jvmArgument '-Xmx8G'
                 jvmArguments.addAll swappable(client_swap_port)
-                programArguments.addAll '--height', '720', '--username', 'Wayfarer', '--width', '1280'
+                jvmArguments.add hotswapAgentArgument
+                programArguments.addAll '--fml.mixinConfig', "${mod_id}.dev.mixins.json", '--height', '720', '--username', 'Wayfarer', '--width', '1280'
                 sourceSet = sourceSets.dev
+                systemProperty "${mod_id}.background", providers.environmentVariable('WAYFARER_BACKGROUND').orElse('false').get()
                 systemProperty "${mod_id}.showroom", showroom.toString()
                 systemProperty "${mod_id}.lean", providers.environmentVariable('WAYFARER_LEAN').orElse('false').get()
                 systemProperty "${mod_id}.state", providers.environmentVariable('WAYFARER_STATE').orElse('').get()
@@ -97,8 +107,10 @@ neoForge {
             gameDirectory = file('../build/devserver')
             jvmArgument '-Xmx8G'
             jvmArguments.addAll swappable(server_swap_port)
+            jvmArguments.add hotswapAgentArgument
             programArguments.add '--nogui'
             sourceSet = sourceSets.dev
+            systemProperty "${mod_id}.background", providers.environmentVariable('WAYFARER_BACKGROUND').orElse('false').get()
         }
     }
 
@@ -136,6 +148,7 @@ dependencies {
     devCompileOnly "curse.maven:infiniverse-568341:${infiniverse_version}"
     devCompileOnly "maven.modrinth:distanthorizons:${distant_horizons_version}"
     devCompileOnly "maven.modrinth:geckolib:${geckolib_version}"
+    hotswapAgent "org.hotswapagent:hotswap-agent-core:${hotswap_agent_version}"
     vineflower "org.vineflower:vineflower:${vineflower_version}"
 }
 

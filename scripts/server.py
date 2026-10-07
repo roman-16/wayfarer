@@ -14,6 +14,7 @@ from drive import Failure, Server, reply
 ROOT = Path(__file__).resolve().parent.parent
 DEV_SERVER = ROOT / "build/devserver"
 SNAPSHOT = DEV_SERVER / "driver/classes"
+LAUNCHED = DEV_SERVER / "driver/launched.json"
 START_SECONDS = 900
 STEP_SECONDS = 60
 STOP_SECONDS = 120
@@ -33,10 +34,12 @@ def start(arguments):
     if arguments.state:
         states.check(arguments.state)
     if server.alive():
-        if arguments.state:
-            sys.exit(f"the dev server is already running; stop it to open state {arguments.state}")
-        print("the dev server is already running")
-        return
+        launched = json.loads(LAUNCHED.read_text()) if LAUNCHED.exists() else None
+        world = arguments.state or arguments.fresh or arguments.seed is not None
+        if not world and launched == {"inputs": states.inputs(), "mode": mode} and swapped(server):
+            print("the dev server is running")
+            return
+        server.stop(STOP_SECONDS)
     if arguments.fresh or arguments.seed is not None:
         shutil.rmtree(DEV_SERVER / ("world-lean" if arguments.lean else "world"), ignore_errors=True)
     if arguments.seed is not None:
@@ -44,11 +47,13 @@ def start(arguments):
     cached = False
     if arguments.state:
         cache = states.folder("server", mode, arguments.state)
-        cached = states.prepare(cache, DEV_SERVER / ("state-lean" if arguments.lean else "state"))
+        cached = states.prepare(cache, DEV_SERVER / ("state-lean" if arguments.lean else "state"), arguments.rebuild)
         os.environ["WAYFARER_STATE"] = arguments.state
+    os.environ |= {"WAYFARER_BACKGROUND": "true", "WAYFARER_DRIVEN": "true"}
     started = time.monotonic()
     server.start(arguments.timeout)
     hotswap.remember(SNAPSHOT)
+    LAUNCHED.write_text(json.dumps({"inputs": states.inputs(), "mode": mode}))
     if arguments.state and not cached:
         server.run(f"wayfarer pretend join {WALKER}", STEP_SECONDS)
         story(server, f"{arguments.state} {cache}", STEP_SECONDS)
@@ -121,9 +126,24 @@ def state(replies):
     return {"state": json.loads(Path(found[0].removeprefix(STATE)).read_text())}
 
 
+def swap_in(server):
+    result = hotswap.swap(hotswap.port("server_swap_port"), SNAPSHOT)
+    if result["listeners"]:
+        server.run("wayfarer listeners " + " ".join(result["listeners"]), STEP_SECONDS)
+    return result
+
+
+def swapped(server):
+    result = swap_in(server)
+    if any(result[key] for key in ("swapped", "listeners", "needs a restart")):
+        print(json.dumps(result))
+    return not result["needs a restart"]
+
+
 def swap(arguments):
-    dev_server().attach()
-    print(json.dumps(hotswap.swap(hotswap.port("server_swap_port"), SNAPSHOT)))
+    server = dev_server()
+    server.attach()
+    print(json.dumps(swap_in(server)))
 
 
 def stop(arguments):
@@ -140,7 +160,11 @@ def main():
         description="Drive the dev server: the whole pack with the Wayfarer mod's dev code, kept running between batches"
     )
     commands = parser.add_subparsers(dest="command", required=True)
-    start_parser = commands.add_parser("start", help="launch unless running; returns once the server is ready")
+    start_parser = commands.add_parser(
+        "start",
+        help="keep the running server, swapping in changed code first, or launch it when none runs, its world is to "
+        "change, its mods or data changed, or a change needs a restart; returns once the server is ready",
+    )
     worlds = start_parser.add_mutually_exclusive_group()
     worlds.add_argument("--fresh", action="store_true", help="delete the dev server's world first")
     worlds.add_argument(
@@ -154,6 +178,11 @@ def main():
     )
     start_parser.add_argument(
         "--lean", action="store_true", help="load only the Wayfarer mod and what it needs, in a world of its own"
+    )
+    start_parser.add_argument(
+        "--rebuild",
+        action="store_true",
+        help="build the state anew instead of from the cache, after a change to code that builds an earlier step",
     )
     start_parser.add_argument("--timeout", type=int, default=START_SECONDS)
     run_parser = commands.add_parser(

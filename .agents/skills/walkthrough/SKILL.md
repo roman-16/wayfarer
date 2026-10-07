@@ -21,6 +21,7 @@ The user's playtest is for how the pack feels. Everything that would leave a pla
   The teammate does what you tell it (`execute as Mo run ...`, `tp Mo @p`); move it the way a real teammate would, late and in the wrong place.
 - **Start before the new work.** A state (`--state <quest/step>`) may bring you to the step before it; walk the new steps themselves, never `story next` past them.
 - **The pack's own settings.** Keys come from `pack/config/defaultoptions`; read every chat line on joining, since every mod's greeting reaches the user too.
+- **Each timed step once at the player's pace.** `/tick rate 80` checks quickly that a hold, a dusk or a long talk works and works again after a restart; the step is then played once more at 20, the way a player lives it, since how long it feels is a finding too.
 
 ## Play by the screen alone
 
@@ -48,5 +49,5 @@ Play as someone who knows vanilla Minecraft and nothing else. At every step, usi
 
 - Fix every finding before the report: in the code, the text (lore skill) or the look (art skill). A finding that needs a decision goes to the user as an Open question in its design document, never decided in code.
 - Read the server's and the client's logs for errors and warnings the new work caused (`log` on the client driver, `build/devserver/logs/latest.log`).
-- The report names what the walkthrough found and fixed in one line each, then hands the user the playtest skill's checklist for what only they can judge.
-- Close every client and server you started.
+- Shoot the work's facets into `gallery/` (AGENTS.md, The gallery): add or update a shot for every screen, state, step and side the walkthrough met, and run `just gallery` for those folders.
+- The report names what the walkthrough found and fixed in one line each and the gallery's new and changed pictures, then hands the user the playtest skill's checklist for what only they can judge.

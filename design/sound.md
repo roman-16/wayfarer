@@ -12,9 +12,9 @@ Music plays at points the story chooses, not by place and weather: strings when 
 
 ### Free to use
 
-Every sound effect and piece of music the pack ships is free to use in it. Effects come first from Minecraft's own sound events, referenced and never copied; then CC0 and public domain (Freesound, OpenGameArt, Musopen's recordings on Wikimedia Commons, found through Openverse); then CC-BY 4.0 with its credit in the pack; Pixabay last. Nothing NC or ND, and not Free To Use, whose free licence covers only videos. A classical piece is free only when its recording is CC0 or public domain too.
+Every sound effect and piece of music the pack chooses and ships itself is free to use in it; a mod's own sounds and music come with the mod (A4). The pack's own sounds come from free libraries, new to the player: CC0 and public domain first (Freesound, OpenGameArt, Musopen's recordings on Wikimedia Commons, found through Openverse), then CC BY 3.0 or 4.0 with its credit in the pack, then Pixabay; Minecraft's own sound events only where the thing is vanilla's own, referenced and never copied. Nothing NC or ND, and not Free To Use, whose free licence covers only videos. A classical piece is free only when its recording is CC0 or public domain too.
 
-**Why:** The pack is shared and played on servers, so nothing in it may need a licence bought or asked for, and Minecraft's own sounds keep the pack sounding like Minecraft.
+**Why:** The pack is shared and played on servers, so nothing in it may need a licence bought or asked for, and sounds of the pack's own, which the player has never heard in Minecraft, make its moments its own.
 
 ### How a piece plays
 
@@ -34,30 +34,69 @@ Each quest adds its moments here as it is built, along the road's curve (`story.
 | Moment | Sound | Source |
 |---|---|---|
 | The stranger's death (P1), from his cough through the burial | Edvard Grieg, The Death of Åse (Peer Gynt Suite No. 1), once | Musopen Symphony, CC0, Wikimedia Commons |
-| The stranger presses the ember into the player's hand (P1) | A respawn anchor charging, low, under amethyst ringing | Minecraft |
-| The ember wakes at dusk (P2) | A fire charge, low, then a beacon starting | Minecraft |
+| The stranger presses the ember into the player's hand (P1) | mystic 2, ambient magic | Zixem, CC0, [Freesound](https://freesound.org/people/Zixem/sounds/69506) |
+| The ember wakes at dusk (P2) | Magic 2.Wouw+SinePad, a soft warm swell | gsb1039, CC0, [Freesound](https://freesound.org/people/gsb1039/sounds/430894) |
 | The hold at the cellar door (P3), and every horde night | Heartfelt Battle, looping while it lasts | request, CC0, OpenGameArt |
 | The dawn after the hold (P3) | Edvard Grieg, Morning Mood (Peer Gynt Suite No. 1), once | Musopen Symphony, CC0, Wikimedia Commons |
 | The evening at the caravan's first fire (P3) | Calm fireplace guitar song, once | ShggothSlave, CC0, OpenGameArt |
-| A shard is taken | An eye set into an End portal frame, then a conduit waking | Minecraft |
-| A reward is taken from the journal | Something going into a bundle, then an item picked up | Minecraft |
+| A shard is taken | Glass-metal Resonant Transition 13, glass and metal resonating | newlocknew, CC-BY 4.0, [Freesound](https://freesound.org/people/newlocknew/sounds/711059) |
+| A reward is taken from the journal | Item Received, things stowed into a satchel | spookymodem, CC0, [Freesound](https://freesound.org/people/spookymodem/sounds/249815) |
+| A creature of the gaze crumbles at dawn | Cinematic Dragon Sound - Dragon Hiss 4, its first 0.85 s | Soughtaftersounds, CC BY 3.0, [Freesound](https://freesound.org/people/Soughtaftersounds/sounds/239650) |
+| The caravan's camp, heard within about 64 blocks while it stands | Bonfire, looping | Electroviolence, CC0, [Freesound](https://freesound.org/people/Electroviolence/sounds/234542) |
+| A burning town, heard within about 128 blocks before it shows | FIREPLACE, looping | leosalom, CC BY 3.0, [Freesound](https://freesound.org/people/leosalom/sounds/234288) |
+| A blow on the door at a hold | Door Hits; multiple, fists pounding wood | RossBell, CC0, [Freesound](https://freesound.org/people/RossBell/sounds/389418) |
+| A hall's calling stone, near its entrance | Choir Hum Loop for Game Loot, looping | armandem, CC0, [Freesound](https://freesound.org/people/armandem/sounds/825228) |
+| A memory opening | Bell 1 reverse, its last 5 s, fading in over the first 2 | Mornagar, CC0, [Freesound](https://freesound.org/people/Mornagar/sounds/160734) |
+| The dawn warning of a hard night | Dark Horn Blast | hykenfreak, CC BY 4.0, [Freesound](https://freesound.org/people/hykenfreak/sounds/218072) |
+| A creature of the gaze climbs out of the ground at night | Growl - Large Creature, Fantasy, eased out at its end | 8bitmyketison, CC0, [Freesound](https://freesound.org/people/8bitmyketison/sounds/699932) |
+| The ember flares a step brighter towards a felt goal | Fire.wav, a short flare whoosh | danielpodlovics, CC0, [Freesound](https://freesound.org/people/danielpodlovics/sounds/530355) |
+| The ember gutters a step darker, away from a felt goal | embers 4, embers crackling down | AuDRoger, CC0, [Freesound](https://freesound.org/people/AuDRoger/sounds/471158) |
+| The held ember lights the clues and tracks around | Shiny Object of Value - Rare Loot Find | LilMati, CC0, [Freesound](https://freesound.org/people/LilMati/sounds/659677) |
+| A goal's mark appears on the compass | Hand Crank Music Box (E5 Note), one music-box note | moodyfingers, CC0, [Freesound](https://freesound.org/people/moodyfingers/sounds/732942) |
+| A tent pitched | Umbrella Close 3, camping canvas closing with a click | Geoff-Bremner-Audio, CC BY 4.0, [Freesound](https://freesound.org/people/Geoff-Bremner-Audio/sounds/790255) |
+| A tent packed up | Canvas Tent 1, canvas rustling | kevinkace, CC0, [Freesound](https://freesound.org/people/kevinkace/sounds/66773) |
+| Stepping into a lit fire's circle | Fire, Campfire, Bonfire, a campfire's crackle swelling in, cut to about 3 s | yaros_nov, CC0, [Freesound](https://freesound.org/people/yaros_nov/sounds/434026) |
+| A quest begun: the parchment banner under the compass (`interface.md`, I2) | Magic 3.Glitter+Arrival, a glittering arrival | gsb1039, CC0, [Freesound](https://freesound.org/people/gsb1039/sounds/430893) |
+| A quest done: the banner | Level Up/Mission Complete (Fantasy) | SilverIllusionist, CC BY 4.0, [Freesound](https://freesound.org/people/SilverIllusionist/sounds/665203) |
+| A task ticked in the panel (I1) | Tarea completa, its first second | valeulloam97, CC0, [Freesound](https://freesound.org/people/valeulloam97/sounds/541389) |
+| A new journal entry: the gold dot on its ribbon (I3) | Pencil, Writing, Close, A, cut to 4 s and eased out | InspectorJ, CC BY 4.0, [Freesound](https://freesound.org/people/InspectorJ/sounds/398271) |
+| The journal opened, a ribbon or an entry chosen | Page Turn, a page flip | qubodup, CC0, [Freesound](https://freesound.org/people/qubodup/sounds/442857) |
+| An answer chosen in a conversation (I4) | aturax_leatherBookUI_92, a wooden click | GeoffAturax, CC BY 4.0, [Freesound](https://freesound.org/people/GeoffAturax/sounds/532189) |
+| A conversation's line | None: the words, and later the voice, carry it | |
+| The title screen (`interface.md`, I6) | FORGIVENESS, piano, strings and a music box, looping | Magmi.Soundtracks, CC0, [Freesound](https://freesound.org/people/Magmi.Soundtracks/sounds/478246) |
 
-**Why:** Strings carry the death and the morning after it, a looping piece holds a fight of unknown length, a guitar suits a fire among friends, and what the player gets sounds like Minecraft because it is Minecraft. Each is judged by ear in the playtest.
+Every sound the pack makes for its own things is its own, from a free library, chosen by ear; where a file is cut or faded, the table says so.
+
+**Why:** Strings carry the death and the morning after it, a looping piece holds a fight of unknown length, a guitar suits a fire among friends, and sounds the player has never heard in Minecraft make the pack's moments its own. Each is judged by ear in the playtest.
+
+### The land's sound and the everyday music
+
+- Everyday music is Reactive Music's own songpack, Adventure Redefined, with every set it ships, stepping aside for the story's pieces. Its songs are the mod's: Vindsvept's under CC BY 4.0, Adrian von Ziegler's for non-commercial use, Mufaya's with no licence stated. The pack takes them up again only if that becomes a problem, such as a claim on a player's video or a mod that changes its terms.
+- The land keeps AmbientSounds (birds, insects, wind, water and caves by land and hour), Sound Physics Remastered (echo in caves and halls, sound muffled through walls), Distant Thunders (thunder late by distance) and Sounds (about 170 effects for the interface, chat, items and blocks). Each is judged by ear in the playtest and configured only where it jars; their volumes are A7's.
+- The pack's sound aims to be one coherent whole, not vanilla's: a sound of the pack's own is judged beside what plays around it, vanilla's and these mods' alike (A5, A6).
+- The title screen plays the pack's own piece, FORGIVENESS (The moments), in place of Reactive Music's title songs.
+
+**Why:** The songpack and the land's mods already give the road and the land their sound, so the pack changes them only where the playtest or a licence finds a fault. A pack that sounds like one game matters more than one that sounds like vanilla, since its mods already move it away from vanilla everywhere.
+
+### The mix
+
+- Each of the pack's sounds sits under the slider a player would look for it under:
+
+  | Slider | The pack's sounds |
+  |---|---|
+  | Music | The story's pieces and the title piece |
+  | Players | What the story gives (the ember given and waking, a shard, a reward), the ember flaring and guttering, the clues' glow, the compass's mark |
+  | Blocks | The tent |
+  | Ambient | The fire's circle, the caravan's camp, a burning town, a calling stone |
+  | Hostile | The gaze's creatures rising and crumbling, the blows on a door, the hard night's horn |
+  | Master | The interface: the banners, a task ticked, a journal entry, a page, an answer, as vanilla's own clicks are |
+  | Voice | The narrator (`narration.md`, N1) |
+
+- The story wins, friends are left alone: Reactive Music fades out under a story piece and the land's sounds play on; while the narrator reads, all music dips to half and the land's sounds to two thirds, and comes back after. Simple Voice Chat lowers nothing and nothing lowers it; each player sets it with its own slider.
+- How loud a sound is follows how often it comes, measured beside what plays around it: a rare moment, a shard, the ember waking, a quest done, the horn, as loud as vanilla's level-up; a frequent one, flaring, guttering, a tick, a page, an answer, about half that; a loop, the camp, a burning town, a calling stone, under the land's own ambience, swelling as the player comes near and fading with distance.
+
+**Why:** A player who finds the horn too loud reaches for Hostile, and one who wants quiet menus for Master, as they do in vanilla. A sound heard thirty times in a search has to be quiet to stay welcome, and a moment that comes twelve times in the whole game can afford to be heard; friends talking is the player's own business, so voice chat is left to its own slider.
 
 ## Open
 
-### A4 The land's sound and the everyday music
-
-What the land sounds like by land, hour, weather and season, and a verdict on the mods that make it today, each on its defaults: AmbientSounds, Sounds, Sound Physics Remastered and Distant Thunders. And the everyday music: Reactive Music plays its own songpack, Adventure Redefined (61 tracks by Vindsvept, Adrian von Ziegler and Mufaya), with sets for the title screen, a home (a position saved per player, in a pack about never settling), bosses and monsters nearby; to decide which of its sets stay.
-
-### A5 The pack's sounds still to make
-
-The ember flaring and guttering, the compass, the clues' glow, the tent, the fire's circle, the caravan's camp, a burning town heard before it shows, a door straining at a hold, the gaze's creatures rising and crumbling (sand breaking, today), the calling stone, a memory opening, and the dawn warning of a hard night (the raid horn, today): a sound for each, and where it comes from.
-
-### A6 The interface's sounds
-
-A quest begun or done, a task ticked, a journal entry, a conversation's line. Taking a reward has its sound.
-
-### A7 The mix
-
-What is loud and what gives way: to the voice, and to Simple Voice Chat; each sound's category; and how the story's music meets the land's sound and Reactive Music's.
+Nothing is open; each quest adds its moments to The moments.

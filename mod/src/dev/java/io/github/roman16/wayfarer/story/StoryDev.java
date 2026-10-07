@@ -104,7 +104,24 @@ public final class StoryDev {
                                         StringArgumentType.getString(context, "step"), Path.of(StringArgumentType.getString(context, "folder")))))))
                         .then(Commands.literal("next").executes(context -> begin(context.getSource(), null, null)))
                         .then(Commands.literal("to").then(Commands.argument("step", StringArgumentType.greedyString())
-                                .executes(context -> begin(context.getSource(), StringArgumentType.getString(context, "step"), null))))));
+                                .executes(context -> begin(context.getSource(), StringArgumentType.getString(context, "step"), null))))
+                        .then(Commands.literal("unclaim").then(Commands.argument("reward", StringArgumentType.greedyString())
+                                .executes(context -> unclaim(context.getSource(), StringArgumentType.getString(context, "reward")))))));
+    }
+
+    private static int unclaim(CommandSourceStack source, String reward) {
+        ServerPlayer player = source.getPlayer();
+        Progress progress = Progress.of(source.getServer());
+        if (player == null || !progress.claimed(reward, player.getUUID())) {
+            source.sendFailure(Component.literal("story failed: " + (player == null ? "only a player has rewards to give back" : "no reward " + reward
+                    + " was taken; taken are " + progress.claims.keySet())));
+            return 0;
+        }
+        progress.claims.get(reward).remove(player.getUUID());
+        progress.setDirty();
+        Journal.sync(player);
+        source.sendSuccess(() -> Component.literal("story: " + reward + " waits again"), false);
+        return 1;
     }
 
     @SubscribeEvent
@@ -136,7 +153,7 @@ public final class StoryDev {
             source.sendFailure(Component.literal("story failed: nobody is online to walk it; bring someone in with wayfarer pretend join <name>"));
             return 0;
         }
-        Optional<Engine.Active> current = Engine.tracked(server);
+        Optional<Engine.Active> current = Engine.main(server);
         if (target != null) {
             Optional<String> wrong = wrong(server, target);
             if (wrong.isPresent()) {
@@ -170,7 +187,7 @@ public final class StoryDev {
         }
         Progress progress = Progress.of(server);
         if (progress.done(parts[0]) || progress.open(parts[0]) && progress.step(parts[0]) > index) {
-            return Optional.of(target + " is behind; the story stands at " + Engine.tracked(server).map(Engine.Active::key).orElse("its end"));
+            return Optional.of(target + " is behind; the story stands at " + Engine.main(server).map(Engine.Active::key).orElse("its end"));
         }
         return Optional.empty();
     }
@@ -184,7 +201,7 @@ public final class StoryDev {
             run.building = null;
         }
         while (run != null && loaded(server, run.here)) {
-            Optional<Engine.Active> tracked = Engine.tracked(server);
+            Optional<Engine.Active> tracked = Engine.main(server);
             if (tracked.isEmpty()) {
                 if (run.target == null && run.played > 0) {
                     say("story: at the end, after " + steps(run.played));

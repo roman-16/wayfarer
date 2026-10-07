@@ -6,7 +6,7 @@ What Wayfarer is becoming, decided here before anything is built. Each document 
 
 **Phase 4, Vertical slice.** The prologue and 1.1 at shipping quality in sound, music, the interface and the front door, within the performance budget; then the rest of Act 1 built to that bar, quest by quest as `slice.md` plans it, from `story.md` and `systems.md`. Step 1, the world, is built and waits for the user's walk through it; M26 (how often the other owners' places stand) is open in `systems.md`. Step 2, the prologue (`story.md`, S23), is built; the user's first play on a server stalled at the first evening and crashed at dusk, and those findings are fixed, with I2 to I4 (the rest of the HUD, the journal screen, conversations) open in `interface.md` and M33 (room for the team's tents at the caravan's fire) and M17 (SeedGen on a server) in `systems.md`. Step 3, 1.1 The Pull and the caravan's day, is built and waits for the user's play. Step 4 is the bar: the prologue and 1.1 as they ship, voice aside, played blind by friends.
 
-Next: **the user plays steps 1 to 3** in the exported pack, and meanwhile the bar's design sessions: A4 to A7, R1, R3, I7. Then S25, S26 and M37 before step 5. N1 and N2 wait for phase 6; R2, R4 and R5 come before release.
+Next: **the user plays steps 1 to 3** in the exported pack, and meanwhile the bar's build, from what its design sessions settled (`interface.md`, `sound.md`, `production.md` R1 and R3). Then S25, S26, M37 and M38 before step 5. N1 and N2 wait for phase 6; R2, R4 and R5 come before release.
 
 ## Phases
 
@@ -23,13 +23,13 @@ Next: **the user plays steps 1 to 3** in the exported pack, and meanwhile the ba
 
 | Document | Holds | State |
 |---|---|---|
-| `interface.md` | The HUD, the pack's screens and the front door: everything read off the screen outside the world | Open |
+| `interface.md` | The HUD, the pack's screens and the front door: everything read off the screen outside the world | Settled |
 | `lore.md` | What is true in the world, written from `story.md`; the pack's texts are written from it | Canon |
 | `mods.md` | Mods, resource packs and data packs weighed for the pack, each with a verdict, and what the pack could build itself | Picked: every Use goes in with phase 4 |
 | `narration.md` | Who reads which book and speaks which line aloud, with which voice, and why | Waits for phase 6 |
 | `production.md` | How the pack reaches its players and keeps up with them: the performance budget, updates and saves, blind players, languages, the release | Open |
 | `slice.md` | How phase 4 builds Act 1, quest by quest, and each step's state | In progress |
-| `sound.md` | Everything the player hears but the voice: what plays where, and where it comes from | Open: A4 to A7; each quest adds its moments |
+| `sound.md` | Everything the player hears but the voice: what plays where, and where it comes from | Settled; each quest adds its moments |
 | `story.md` | The story, act by act | Settled |
 | `systems.md` | Every mechanic, why the world has it, and the spike that proves it | Settled |
 | `tooling.md` | How the pack is seen, tried and built, by coding agents: the worlds, the commands, the tools | Settled |

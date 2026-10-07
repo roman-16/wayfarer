@@ -112,7 +112,7 @@ public final class Shrines {
         Component message = Component.translatable("wayfarer.shrine.claimed", player.getDisplayName(), eyeName(shrine), taken)
                 .withStyle(ChatFormatting.GOLD);
         for (ServerPlayer member : player.server.getPlayerList().getPlayers()) {
-            Cues.play(member, SHARD_TAKEN);
+            Sounds.play(member, SHARD_TAKEN);
             member.sendSystemMessage(message);
             Library.INSTANCE.book(memory).ifPresent(book -> member.sendSystemMessage(
                     Component.translatable("wayfarer.shrine.memory", book.title()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)));

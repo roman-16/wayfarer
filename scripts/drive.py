@@ -157,15 +157,23 @@ class Server:
 
         return self.wait(match, timeout, offset, f"the server to run {command!r}")
 
-    def ask(self, command, answer, timeout):
+    def asks(self, questions, timeout):
         offset = self.size()
-        self.write(command)
+        self.write(*(command for command, _ in questions))
+        answers = {}
 
         def match(line):
             said = reply(line)
-            return None if said is None else answer(said)
+            if said is not None:
+                for index, (_, answer) in enumerate(questions):
+                    found = None if index in answers else answer(said)
+                    if found is not None:
+                        answers[index] = found
+                        break
+            return answers if len(answers) == len(questions) else None
 
-        return self.wait(match, timeout, offset, f"an answer to {command!r}")
+        self.wait(match, timeout, offset, f"answers to {len(questions)} commands")
+        return [answers[index] for index in range(len(questions))]
 
     def stop(self, timeout):
         if not self.alive():

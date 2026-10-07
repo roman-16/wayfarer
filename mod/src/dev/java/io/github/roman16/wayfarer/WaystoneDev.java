@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer;
 import net.blay09.mods.waystones.api.MutableWaystone;
 import net.blay09.mods.waystones.api.WaystoneStyles;
 import net.blay09.mods.waystones.api.WaystonesAPI;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
@@ -26,15 +27,19 @@ public final class WaystoneDev {
         event.getDispatcher().register(Commands.literal(Wayfarer.MODID)
                 .then(Commands.literal("waystone")
                         .requires(source -> source.hasPermission(GAMEMASTER))
-                        .then(Commands.argument("pos", BlockPosArgument.blockPos()).executes(context -> {
-                            BlockPos pos = BlockPosArgument.getBlockPos(context, "pos");
-                            return WaystonesAPI.placeWaystone(context.getSource().getLevel(), pos, WaystoneStyles.DEFAULT).map(waystone -> {
-                                if (waystone instanceof MutableWaystone named) {
-                                    named.setName(Component.literal("Eastmarch"));
-                                }
-                                context.getSource().sendSuccess(() -> Component.literal("waystone: Eastmarch stands at " + pos.toShortString()), false);
-                                return 1;
-                            }).orElse(0);
-                        }))));
+                        .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                .executes(context -> Placing.place(context.getSource(), BlockPosArgument.getBlockPos(context, "pos"))))));
+    }
+
+    private static final class Placing {
+        private static int place(CommandSourceStack source, BlockPos pos) {
+            return WaystonesAPI.placeWaystone(source.getLevel(), pos, WaystoneStyles.DEFAULT).map(waystone -> {
+                if (waystone instanceof MutableWaystone named) {
+                    named.setName(Component.literal("Eastmarch"));
+                }
+                source.sendSuccess(() -> Component.literal("waystone: Eastmarch stands at " + pos.toShortString()), false);
+                return 1;
+            }).orElse(0);
+        }
     }
 }
