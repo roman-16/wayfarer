@@ -1,8 +1,8 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Talk;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +37,7 @@ public final class Firsts {
         if (event.getEntity() instanceof ServerPlayer player
                 && event.getLevel().getBlockState(event.getPos()).is(WAYSTONES)
                 && first(player, "waystone")) {
-            player.sendSystemMessage(Component.translatable("wayfarer.first.waystone").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            Talk.tell(player, Component.translatable("wayfarer.first.waystone"));
         }
     }
 }

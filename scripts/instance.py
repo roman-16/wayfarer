@@ -18,6 +18,7 @@ CACHE = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "wayfar
 CLIENT_CONFIGS = {
     "dynamic_fps.json": {"enabled": False},
     "iris.properties": {"enableShaders": "false"},
+    "wayfarer-client.toml": {"talk_size": "NORMAL"},
 }
 DISTANT_HORIZONS = {
     "far": {"client": {"advanced": {"graphics": {"quality": {"lodChunkRenderDistanceRadius": 64}}}}},
@@ -27,6 +28,7 @@ DISTANT_HORIZONS = {
     },
 }
 CLIENT_OPTIONS = {
+    "chatVisibility": "0",
     "fullscreen": "false",
     "pauseOnLostFocus": "false",
     "renderDistance": "8",

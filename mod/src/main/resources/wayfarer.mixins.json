@@ -1,5 +1,6 @@
 {
   "client": [
+    "AccessibilityOptionsScreenMixin",
     "GameRendererMixin",
     "MinecraftMixin",
     "SubtleEffectsEndRemasteredCompatMixin",

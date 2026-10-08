@@ -15,8 +15,10 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.model.ChestedHorseModel;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
@@ -39,14 +41,19 @@ public final class WayfarerClient {
     private static final String JOURNEYMAP = "journeymap";
     private static final String TITLE = "title";
 
-    public WayfarerClient(IEventBus modBus) {
+    public WayfarerClient(IEventBus modBus, ModContainer container) {
+        container.registerConfig(ModConfig.Type.CLIENT, TalkSize.SPEC);
         modBus.addListener(RegisterKeyMappingsEvent.class, event -> {
             event.register(JOURNAL);
             event.register(MAP);
             event.register(SENSE);
         });
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> keys(Minecraft.getInstance()));
-        modBus.addListener(RegisterGuiLayersEvent.class, event -> event.registerBelow(VanillaGuiLayers.SUBTITLE_OVERLAY, Wayfarer.id("hud"), Hud::render));
+        modBus.addListener(RegisterGuiLayersEvent.class, event -> {
+            event.registerBelow(VanillaGuiLayers.SUBTITLE_OVERLAY, Wayfarer.id("hud"), Hud::render);
+            event.registerBelow(VanillaGuiLayers.SUBTITLE_OVERLAY, Wayfarer.id("talk"), Conversation::render);
+        });
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, event -> Conversation.tick(Minecraft.getInstance()));
         modBus.addListener(EntityRenderersEvent.RegisterLayerDefinitions.class,
                 event -> event.registerLayerDefinition(FallenRenderer.MULE, ChestedHorseModel::createBodyLayer));
         modBus.addListener(EntityRenderersEvent.RegisterRenderers.class, event -> {
@@ -75,6 +82,7 @@ public final class WayfarerClient {
             HudState.gaze = GazePayload.CLOSED;
             HudState.night = NightPayload.CALM;
             HudState.panel = Tasks.Panel.EMPTY;
+            Conversation.forget();
             Hud.clearBanners();
             JournalScreen.forget();
         });

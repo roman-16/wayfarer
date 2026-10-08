@@ -4,8 +4,9 @@ Every facet of what a player sees, shot in the dev client by `just gallery` from
 
 | Folder | Shots | Pictures |
 | --- | --- | --- |
-| [HUD](hud/README.md) | 8 | 24 |
-| [Journal](journal/README.md) | 9 | 27 |
+| [HUD](hud/README.md) | 10 | 30 |
+| [Talk](talk/README.md) | 8 | 24 |
+| [Journal](journal/README.md) | 24 | 72 |
 | [Items](items/README.md) | 3 | 7 |
 | [Story](story/README.md) | 11 | 11 |
 | [People](people/README.md) | 65 | 135 |

@@ -101,7 +101,8 @@
     "stranger": {
       "color": "gold",
       "name": "The stranger",
-      "skin": "stranger"
+      "skin": "stranger",
+      "voice": true
     },
     "tamsin": {
       "color": "aqua",

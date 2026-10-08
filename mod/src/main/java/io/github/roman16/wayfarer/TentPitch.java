@@ -141,7 +141,7 @@ public final class TentPitch {
             List<Joining.Pitched> far = mine(player).stream().filter(tent -> !tent.place().dimension().equals(camp.dimension())
                     || tent.place().pos().distSqr(camp.pos()) > (double) away * away).toList();
             if (!far.isEmpty() && recall(player, far, Joining.State.of(server).tents)) {
-                player.sendSystemMessage(Component.translatable("wayfarer.tent.brought").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+                Talk.tell(player, Component.translatable("wayfarer.tent.brought"));
             }
         }
     }

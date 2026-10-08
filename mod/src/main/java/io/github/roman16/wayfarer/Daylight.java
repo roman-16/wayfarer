@@ -1,7 +1,7 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Talk;
 import java.util.Set;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -66,7 +66,7 @@ public final class Daylight {
         Sounds.play(level, mob.position(), GAZE_CRUMBLES);
         for (ServerPlayer player : level.players()) {
             if (player.distanceToSqr(mob) < WITNESS_BLOCKS * WITNESS_BLOCKS && Firsts.first(player, "dawn")) {
-                player.sendSystemMessage(Component.translatable("wayfarer.first.dawn").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+                Talk.tell(player, Component.translatable("wayfarer.first.dawn"));
             }
         }
         mob.discard();

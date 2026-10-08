@@ -124,6 +124,12 @@ public final class Hud {
             int below = half > 0 && left < graphics.guiWidth() / 2 + half ? y : TOP;
             int top = Math.max(below, TOP + effectRows(player) * EFFECT_ROW);
             int bottom = graphics.guiHeight() - (minecraft.options.showSubtitles().get() ? SUBTITLE_ROOM : EDGE);
+            if (Conversation.answersRight > left) {
+                bottom = Math.min(bottom, Conversation.answersTop - EDGE);
+            }
+            if (Conversation.bandRight > left) {
+                bottom = Math.min(bottom, Conversation.bandTop - EDGE);
+            }
             panel(graphics, font, HudState.panel, top, bottom, background);
         }
         banner(graphics, font, y);

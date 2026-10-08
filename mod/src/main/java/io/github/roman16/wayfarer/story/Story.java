@@ -20,7 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 public record Story(List<Quest> quests, Map<String, Person> people) {
     public static final Story INSTANCE = load();
 
-    public record Person(String id, String name, @Nullable String unnamed, ChatFormatting color, List<String> mornings, List<String> remarks) {}
+    public record Person(String id, String name, @Nullable String unnamed, ChatFormatting color, List<String> mornings, List<String> remarks, boolean voice) {}
 
     public record Line(@Nullable String by, String text, List<String> names, @Nullable String sound, @Nullable String music) {
         public Line(@Nullable String by, String text) {
@@ -98,7 +98,7 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
                 JsonObject person = entry.getValue().getAsJsonObject();
                 people.put(entry.getKey(), new Person(entry.getKey(), person.get("name").getAsString(),
                         person.has("unnamed") ? person.get("unnamed").getAsString() : null, ChatFormatting.getByName(person.get("color").getAsString()),
-                        strings(person, "mornings"), strings(person, "remarks")));
+                        strings(person, "mornings"), strings(person, "remarks"), person.has("voice") && person.get("voice").getAsBoolean()));
             });
             List<Quest> quests = json.getAsJsonArray("quests").asList().stream().map(JsonElement::getAsJsonObject).map(Story::quest).toList();
             return new Story(quests, Map.copyOf(people));

@@ -223,6 +223,40 @@ def story():
                 yield f"{where} needs {step['needed']} clues but has {len(step.get('clues', []))}"
 
 
+def gear():
+    spec = tomllib.loads((ROOT / "story/gear.toml").read_text())
+    quests = tomllib.loads((ROOT / "story/quests.toml").read_text())["quests"]
+    people = tomllib.loads((ROOT / "story/people.toml").read_text())
+    rewards = {quest["id"] for quest in quests if "reward" in quest} | {
+        f"{quest['id']}/{step['id']}" for quest in quests for step in quest["steps"] if "reward" in step
+    }
+    things = {f"{row['id']}/{thing['id']}" for row in spec["rows"] for thing in row["things"]}
+    if spec["opens"]["claimed"] not in rewards:
+        yield f"story/gear.toml: the page opens with the reward {spec['opens']['claimed']}, which story/quests.toml does not give"
+    lines = {line["id"] for line in spec["lines"]}
+    for line in spec["lines"]:
+        if line["by"] not in people:
+            yield f"story/gear.toml: the line {line['id']} is said by {line['by']}, who is not in story/people.toml"
+        for key in line["when"]:
+            if key not in things:
+                yield f"story/gear.toml: the line {line['id']} waits on {key}, which no row has"
+    for row in spec["rows"]:
+        if row["who"] not in people:
+            yield f"story/gear.toml: {row['id']} is known by {row['who']}, who is not in story/people.toml"
+        claimed = row["appears"].get("claimed")
+        if claimed is not None and claimed not in rewards:
+            yield f"story/gear.toml: {row['id']} appears with the reward {claimed}, which story/quests.toml does not give"
+        for key in row["appears"].get("has", []):
+            if key not in things:
+                yield f"story/gear.toml: {row['id']} appears with {key}, which no row has"
+        for thing in row["things"]:
+            named = thing.get("named_by")
+            if named is not None and named != "had" and named not in lines:
+                yield f"story/gear.toml: {row['id']}/{thing['id']} is named by the line {named}, which does not exist"
+            if not thing.get("hidden") and "name" not in thing:
+                yield f"story/gear.toml: {row['id']}/{thing['id']} has no name"
+
+
 def stone(where, words):
     lines = []
     for word in words.split():
@@ -235,7 +269,17 @@ def stone(where, words):
 
 
 def main():
-    findings = [*sides(), *eyes(), *translations(), *titles(), *recipes(), *books(), *story(), *gallery.problems()]
+    findings = [
+        *sides(),
+        *eyes(),
+        *translations(),
+        *titles(),
+        *recipes(),
+        *books(),
+        *story(),
+        *gear(),
+        *gallery.problems(),
+    ]
     for finding in findings:
         print(finding)
     if findings:

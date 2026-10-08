@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import io.github.roman16.wayfarer.story.Talk;
 import io.netty.channel.embedded.EmbeddedChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,7 @@ import net.minecraft.network.PacketSendListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.PacketFlow;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
 import net.minecraft.network.protocol.common.ClientboundKeepAlivePacket;
 import net.minecraft.network.protocol.common.ServerboundKeepAlivePacket;
 import net.minecraft.network.protocol.game.ClientboundDisguisedChatPacket;
@@ -35,6 +37,10 @@ import net.neoforged.neoforge.network.registration.NetworkRegistry;
 
 @EventBusSubscriber(modid = Wayfarer.MODID)
 public final class Pretend {
+    private static final String ANSWERS = " sees the answers: ";
+    private static final String CHAT = " hears: ";
+    private static final String OVERLAY = " sees above the hotbar: ";
+    private static final String SUBTITLE = " sees the subtitle: ";
     private static final int OWNER = 4;
     private static final List<Silent> connections = new ArrayList<>();
 
@@ -159,6 +165,11 @@ public final class Pretend {
                 hears(chat.chatType().decorate(content), false);
             } else if (packet instanceof ClientboundDisguisedChatPacket chat) {
                 hears(chat.chatType().decorate(chat.message()), false);
+            } else if (packet instanceof ClientboundCustomPayloadPacket custom && custom.payload() instanceof Talk.Subtitle line) {
+                sees(SUBTITLE, line.by().isEmpty() ? line.text() : Component.literal("<" + line.by() + "> ").append(line.text()));
+            } else if (packet instanceof ClientboundCustomPayloadPacket custom && custom.payload() instanceof Talk.Answers offered
+                    && !offered.choices().isEmpty()) {
+                sees(ANSWERS, Component.literal(String.join(" | ", offered.choices())));
             }
             if (listener != null) {
                 listener.onSuccess();
@@ -166,7 +177,10 @@ public final class Pretend {
         }
 
         private void hears(Component message, boolean overlay) {
-            String where = overlay ? " sees above the hotbar: " : " hears: ";
+            sees(overlay ? OVERLAY : CHAT, message);
+        }
+
+        private void sees(String where, Component message) {
             server.sendSystemMessage(Component.literal(name + where + message.getString()));
         }
     }

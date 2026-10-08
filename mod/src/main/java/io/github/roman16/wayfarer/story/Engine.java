@@ -262,7 +262,7 @@ public final class Engine {
         if (progress.step(active.quest().id()) != active.quest().steps().indexOf(active.step())) {
             return;
         }
-        Talk.say(active.step().done(), fill(progress));
+        Talk.say(active.quest().id(), Steps.anchor(server, active.step()), active.step().done(), fill(progress));
         Optional<Active> next = advance(server, active);
         if (next.isPresent()) {
             Talk.then(() -> Steps.enter(server, next.get()));
@@ -324,7 +324,7 @@ public final class Engine {
         MinecraftServer server = player.server;
         Progress progress = Progress.of(server);
         choose(server, questId, stepId, choice);
-        Talk.say(new Story.Line(speaker, choice.reply()));
+        Talk.say(questId, player.position(), new Story.Line(speaker, choice.reply()));
         Story.INSTANCE.quest(questId).ifPresent(quest -> quest.steps().stream().filter(step -> step.id().equals(stepId)).findFirst()
                 .ifPresent(step -> Talk.then(() -> Steps.chosen(player, new Active(quest, step, progress.scratch(quest.id())), choice))));
     }
@@ -362,6 +362,9 @@ public final class Engine {
             return false;
         }
         for (Story.Item item : reward.get().items()) {
+            if (item.book() != null) {
+                Pages.read(player.server, item.book());
+            }
             ItemStack stack = stack(player, key, item);
             if (!stack.isEmpty() && !player.getInventory().add(stack)) {
                 player.drop(stack, false);
@@ -369,7 +372,7 @@ public final class Engine {
         }
         progress.claims.computeIfAbsent(key, ignored -> new java.util.LinkedHashSet<>()).add(player.getUUID());
         progress.setDirty();
-        player.sendSystemMessage(Component.literal(reward.get().claimed()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        Talk.tell(player, Component.literal(reward.get().claimed()));
         Sounds.play(player, REWARD_TAKEN);
         Journal.sync(player);
         return true;

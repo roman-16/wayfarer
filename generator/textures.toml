@@ -377,3 +377,34 @@ h = "#b23a2e"
 r = "#8e1f1f"
 
 [ribbon.variants.ribbon]
+
+[talk_band]
+folder = "gui/sprites"
+rows = [
+  ".eeeeeeeeeeeeeeeeeeeeeeeeeeeeee.",
+  "ehhhhhhhhhhhhhhhhhhhhhhhhhhhhhhe",
+  "eppppppppppppppppppppppppppppppe",
+  "epppppppppppppqppppppppppppppppe",
+  "eppppqpppppppppppppppppppppppppe",
+  "epppppppppppppppppppppppppqppppe",
+  "eppppppppppppppppppppppppppppppe",
+  "eppppppppppppppppppppppppppppppe",
+  "epppppppqppppppppppppppppppppppe",
+  "eppppppppppppppppqpppppppppppppe",
+  "eppppppppppppppppppppppppppppqpe",
+  "epppppppppppppppppppppqppppppppe",
+  "eppppppppppqpppppppppppppppppppe",
+  "eppppppppppppppppppppppppppppppe",
+  "etttttttttttttttttttttttttttttte",
+  ".eeeeeeeeeeeeeeeeeeeeeeeeeeeeee.",
+]
+scaling = { border = 3, height = 16, type = "nine_slice", width = 32 }
+
+[talk_band.colors]
+e = "#b8a27a"
+h = "#fffdf6"
+p = "#fff9ec"
+q = "#f5ead2"
+t = "#e9dcbd"
+
+[talk_band.variants.talk_band]

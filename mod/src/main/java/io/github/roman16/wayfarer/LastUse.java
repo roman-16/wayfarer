@@ -1,9 +1,9 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.People;
 import io.github.roman16.wayfarer.story.Progress;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.List;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -35,9 +35,9 @@ public final class LastUse {
         if (!lastUse(stack) || !Firsts.first(player, "last_use")) {
             return;
         }
-        player.sendSystemMessage(Component.translatable("wayfarer.gear.worn", stack.getHoverName()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+        Talk.tell(player, Component.translatable("wayfarer.gear.worn", stack.getHoverName()));
         if (Progress.of(player.server).met(SMITH)) {
-            player.sendSystemMessage(Talk.line(player.server, SMITH, Component.translatable("wayfarer.gear.smith")));
+            Talk.tell(List.of(player), People.label(player.server, SMITH), Component.translatable("wayfarer.gear.smith"));
         }
     }
 

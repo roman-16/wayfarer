@@ -123,7 +123,9 @@ def shoot(shot):
                 steps.append(f"scale {scale}")
             steps.append(f"shot {name}")
         run(shot, steps)
-    client.batch(["/tick unfreeze", "close", "chat on", f"scale {USUAL_SCALE}", "gui on"], SHOT_SECONDS)
+    client.batch(
+        ["/tick unfreeze", "close", "chat on", f"scale {USUAL_SCALE}", "gui on", *shot.get("after", [])], SHOT_SECONDS
+    )
 
 
 def keep(shot):
@@ -248,11 +250,16 @@ def main():
     shutil.rmtree(WORK, ignore_errors=True)
     found = {}
     showroom = False
-    for shot in sorted(wanted, key=lambda shot: shot["at"] != "showroom"):
-        if shot["at"] != "showroom" or not showroom:
-            open_world(shot["at"])
-            showroom = shot["at"] == "showroom"
-        shoot(shot)
+    ordered = sorted(wanted, key=lambda shot: shot["at"] != "showroom")
+    for index, shot in enumerate(ordered):
+        try:
+            if shot["at"] != "showroom" or not showroom:
+                open_world(shot["at"])
+                showroom = shot["at"] == "showroom"
+            shoot(shot)
+        except SystemExit:
+            print("the rest: just gallery " + " ".join(rest["id"] for rest in ordered[index:]), flush=True)
+            raise
         kept = keep(shot)
         found |= kept
         counts = {status: list(kept.values()).count(status) for status in ("new", "changed", "the same")}

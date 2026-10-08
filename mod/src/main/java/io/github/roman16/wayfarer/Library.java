@@ -24,6 +24,11 @@ public record Library(Map<String, Book> books, List<String> memories, Map<Resour
         return Optional.ofNullable(books.get(id));
     }
 
+    public Optional<String> find(String title, String author) {
+        return books.entrySet().stream().filter(entry -> entry.getValue().title().equals(title) && entry.getValue().author().equals(author))
+                .map(Map.Entry::getKey).findFirst();
+    }
+
     public String memory(int index) {
         return memories.get(Math.clamp(index, 0, memories.size() - 1));
     }

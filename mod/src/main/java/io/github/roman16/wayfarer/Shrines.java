@@ -1,5 +1,7 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Pages;
+import io.github.roman16.wayfarer.story.Talk;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,19 +111,16 @@ public final class Shrines {
         }
         int taken = Journey.claimed(player.server).size();
         String memory = Library.INSTANCE.memory(taken - 1);
-        Component message = Component.translatable("wayfarer.shrine.claimed", player.getDisplayName(), eyeName(shrine), taken)
-                .withStyle(ChatFormatting.GOLD);
+        Talk.notice(Component.translatable("wayfarer.shrine.claimed", player.getDisplayName(), eyeName(shrine), taken));
+        Library.INSTANCE.book(memory).ifPresent(book -> Talk.notice(Component.translatable("wayfarer.shrine.memory", book.title())));
+        if (taken == 1) {
+            Talk.notice(Component.translatable("wayfarer.shrine.sinks"));
+        }
+        if (taken == STIRRING_SHARDS) {
+            Talk.notice(Component.translatable("wayfarer.shrine.stirs"));
+        }
         for (ServerPlayer member : player.server.getPlayerList().getPlayers()) {
             Sounds.play(member, SHARD_TAKEN);
-            member.sendSystemMessage(message);
-            Library.INSTANCE.book(memory).ifPresent(book -> member.sendSystemMessage(
-                    Component.translatable("wayfarer.shrine.memory", book.title()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC)));
-            if (taken == 1) {
-                member.sendSystemMessage(Component.translatable("wayfarer.shrine.sinks").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
-            }
-            if (taken == STIRRING_SHARDS) {
-                member.sendSystemMessage(Component.translatable("wayfarer.shrine.stirs").withStyle(ChatFormatting.GOLD, ChatFormatting.ITALIC));
-            }
             Shards.sync(member);
             Compass.forget(member);
         }
@@ -144,6 +143,8 @@ public final class Shrines {
         List<ResourceLocation> claimed = Journey.claimed(player.server);
         int index = claimed.contains(shrine) ? claimed.indexOf(shrine) : claimed.size();
         List<Component> pages = new ArrayList<>();
+        Pages.read(player.server, Library.INSTANCE.memory(index));
+        Optional.ofNullable(Library.INSTANCE.people().get(shrine)).ifPresent(book -> Pages.read(player.server, book));
         Library.INSTANCE.book(Library.INSTANCE.memory(index)).ifPresent(book -> book.pages().forEach(page -> pages.add(Component.literal(page))));
         Library.INSTANCE.people(shrine).ifPresent(people -> people.pages().forEach(page -> pages.add(Component.literal(page))));
         PacketDistributor.sendToPlayer(player, new BookPayload(pages));
@@ -166,7 +167,7 @@ public final class Shrines {
         ResourceLocation shrine = inside(player.serverLevel(), player.blockPosition()).orElse(null);
         ResourceLocation before = shrine == null ? INSIDE.remove(player.getUUID()) : INSIDE.put(player.getUUID(), shrine);
         if (shrine != null && !shrine.equals(before) && Firsts.first(player, "shrine")) {
-            player.sendSystemMessage(Component.translatable("wayfarer.first.shrine").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            Talk.tell(player, Component.translatable("wayfarer.first.shrine"));
         }
         if (shrine != null && !shrine.equals(before)) {
             player.connection.send(new ClientboundSetTitlesAnimationPacket(20, 60, 30));

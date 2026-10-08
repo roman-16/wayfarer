@@ -136,6 +136,7 @@ dependencies {
     compileOnly "maven.modrinth:balm:${balm_version}"
     compileOnly "maven.modrinth:endrem:${endrem_version}"
     compileOnly "maven.modrinth:gravestone-mod:${gravestone_version}"
+    compileOnly "maven.modrinth:jei:${jei_version}"
     compileOnly "maven.modrinth:journeymap:${journeymap_version}"
     compileOnly "maven.modrinth:lootr:${lootr_version}"
     compileOnly "maven.modrinth:the-hordes:${hordes_version}"

@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Banners {
@@ -24,5 +25,9 @@ public final class Banners {
 
     static void show(Component text) {
         PacketDistributor.sendToAllPlayers(new Payload(text));
+    }
+
+    static void show(ServerPlayer player, Component text) {
+        PacketDistributor.sendToPlayer(player, new Payload(text));
     }
 }

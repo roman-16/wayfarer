@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nullable;
-import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -302,7 +301,7 @@ public final class Caravan {
 
     public static void headIn(ServerPlayer player) {
         if (Engine.running(player.server) && canHeadIn(player.server)) {
-            Talk.notice(Component.translatable("wayfarer.caravan.chosen", player.getDisplayName()).withStyle(ChatFormatting.GOLD));
+            Talk.notice(Component.translatable("wayfarer.caravan.chosen", player.getDisplayName()));
             headIn(player.server);
         }
     }
@@ -355,7 +354,7 @@ public final class Caravan {
         switch (camp.phase) {
             case GONE -> {
                 if (!camp.heading && camp.ever && Math.floorMod(level.getDayTime(), Clock.DAY) >= Clock.ticks(Balance.INSTANCE.clock().runFrom())) {
-                    Talk.notice(Component.translatable("wayfarer.caravan.evening").withStyle(ChatFormatting.GOLD));
+                    Talk.notice(Component.translatable("wayfarer.caravan.evening"));
                     headIn(server);
                 }
                 if (camp.heading) {
@@ -407,7 +406,7 @@ public final class Caravan {
         RandomSource random = RandomSource.create(day);
         String by = awake.get(random.nextInt(awake.size()));
         List<String> lines = Story.INSTANCE.person(by).mornings();
-        Talk.say(new Story.Line(by, lines.get(random.nextInt(lines.size()))));
+        Talk.say(Talk.ROAD, null, new Story.Line(by, lines.get(random.nextInt(lines.size()))));
     }
 
     private static void start(MinecraftServer server, ServerLevel level, Camp camp) {

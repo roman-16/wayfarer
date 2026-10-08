@@ -197,6 +197,10 @@ file = "config/travelerstitles-neoforge-1_21.toml"
 hash = "50ea5ddc9894b778fd39f550b4f2cbbcd4515e35d2cf615bd4176f7af2b653bd"
 
 [[files]]
+file = "config/voicechat/voicechat-client.properties"
+hash = "8e641851a63f2f5bb42a47e170697f991f2d6eec6bbba36fedd415b62e832dc9"
+
+[[files]]
 file = "config/waystones-common.toml"
 hash = "95c55f5a51e25dca37f887896486ba413b6ce5d1c1ce59c753be61a4ca894637"
 

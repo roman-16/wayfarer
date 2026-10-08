@@ -105,8 +105,32 @@ public final class StoryDev {
                         .then(Commands.literal("next").executes(context -> begin(context.getSource(), null, null)))
                         .then(Commands.literal("to").then(Commands.argument("step", StringArgumentType.greedyString())
                                 .executes(context -> begin(context.getSource(), StringArgumentType.getString(context, "step"), null))))
+                        .then(Commands.literal("gear").then(Commands.argument("row", StringArgumentType.word())
+                                .executes(context -> gear(context.getSource(), StringArgumentType.getString(context, "row")))))
+                        .then(Commands.literal("said").then(Commands.argument("line", StringArgumentType.word())
+                                .executes(context -> said(context.getSource(), StringArgumentType.getString(context, "line")))))
                         .then(Commands.literal("unclaim").then(Commands.argument("reward", StringArgumentType.greedyString())
                                 .executes(context -> unclaim(context.getSource(), StringArgumentType.getString(context, "reward")))))));
+    }
+
+    private static int gear(CommandSourceStack source, String row) {
+        if (!Gear.show(Progress.of(source.getServer()), row)) {
+            source.sendFailure(Component.literal("story failed: story/gear.toml has no row " + row));
+            return 0;
+        }
+        Journal.syncAll(source.getServer());
+        source.sendSuccess(() -> Component.literal("story: the gear row " + row + " shows"), false);
+        return 1;
+    }
+
+    private static int said(CommandSourceStack source, String line) {
+        if (!Gear.said(Progress.of(source.getServer()), line)) {
+            source.sendFailure(Component.literal("story failed: story/gear.toml has no line " + line));
+            return 0;
+        }
+        Journal.syncAll(source.getServer());
+        source.sendSuccess(() -> Component.literal("story: " + line + " was said"), false);
+        return 1;
     }
 
     private static int unclaim(CommandSourceStack source, String reward) {
@@ -295,11 +319,34 @@ public final class StoryDev {
             }
             default -> {}
         }
+        hear(server, active);
         if (Engine.advance(server, active).isEmpty()) {
             Engine.open(server);
         }
         Talk.reset();
         return true;
+    }
+
+    private static void hear(MinecraftServer server, Engine.Active active) {
+        Story.Step step = active.step();
+        Progress progress = Progress.of(server);
+        Talk.Placeholders fill = Engine.fill(progress);
+        String quest = active.quest().id();
+        List<Progress.Heard> heard = List.copyOf(progress.fire.getOrDefault(quest, List.of()));
+        step.lines().stream().map(line -> new Progress.Heard(label(server, line.by()), fill.fill(line.text()))).filter(line -> !heard.contains(line))
+                .forEach(line -> progress.hear(quest, line.by(), line.text()));
+        String asker = step.kind().equals("talk") ? step.lines().stream().map(Story.Line::by).filter(Objects::nonNull).reduce((first, second) -> second)
+                .orElse(null) : null;
+        progress.choice(quest, step.id()).flatMap(chosen -> step.choices().stream().filter(choice -> choice.id().equals(chosen)).findFirst())
+                .ifPresent(choice -> {
+                    progress.hear(quest, server.getPlayerList().getPlayers().getFirst().getDisplayName().getString(), choice.text());
+                    progress.hear(quest, label(server, asker), choice.reply());
+                });
+        step.done().forEach(line -> progress.hear(quest, label(server, line.by()), fill.fill(line.text())));
+    }
+
+    private static String label(MinecraftServer server, @Nullable String by) {
+        return by == null ? "" : People.label(server, by);
     }
 
     private static void arrive(MinecraftServer server, Engine.Active active) {
@@ -321,6 +368,7 @@ public final class StoryDev {
             List.copyOf(progress.rewards).forEach(reward -> Engine.claim(player, reward));
         }
         Joining.leave(server, new Joining.Place(Level.OVERWORLD, feet));
+        restore(server);
         if (run.save != null) {
             save(server, run.save);
         }
@@ -329,10 +377,14 @@ public final class StoryDev {
         finish(server);
     }
 
-    private static void finish(MinecraftServer server) {
+    private static void restore(MinecraftServer server) {
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             player.setGameMode(run.modes.getOrDefault(player.getUUID(), GameType.SURVIVAL));
         }
+    }
+
+    private static void finish(MinecraftServer server) {
+        restore(server);
         if (run.ticket != null) {
             Engine.overworld(server).getChunkSource().removeRegionTicket(TICKET, run.ticket, LOAD_RADIUS, run.ticket);
         }

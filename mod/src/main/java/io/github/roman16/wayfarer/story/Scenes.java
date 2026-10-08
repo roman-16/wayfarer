@@ -283,7 +283,7 @@ public final class Scenes {
     public static void onTrade(PlayerInteractEvent.EntityInteract event) {
         if (event.getTarget() instanceof WanderingTrader trader && trader.getTags().contains(TAG) && event.getEntity() instanceof ServerPlayer player) {
             scene(player.server, trader).filter(scene -> scene.greeted.add(player.getUUID())).ifPresent(scene -> {
-                Talk.say(new Story.Line("pedlar", text(scene.kind).get("greeting").getAsString()));
+                Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line("pedlar", text(scene.kind).get("greeting").getAsString()));
                 Ledger.of(player.server).setDirty();
             });
         }
@@ -312,7 +312,7 @@ public final class Scenes {
         if (scene.kind.equals("herder") && People.who(target).filter(role -> role.equals("herder")).isPresent()) {
             if (scene.greeted.add(player.getUUID())) {
                 boolean gift = scene.state.equals("gift");
-                Talk.say(new Story.Line("herder", text.get(gift ? "gift" : "warning").getAsString()));
+                Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line("herder", text.get(gift ? "gift" : "warning").getAsString()));
                 if (gift) {
                     for (JsonElement item : text.getAsJsonArray("gifts")) {
                         ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(item.getAsJsonObject().get("id").getAsString())),
@@ -324,7 +324,7 @@ public final class Scenes {
                 }
             } else {
                 JsonArray again = text.getAsJsonArray("again");
-                Talk.say(new Story.Line("herder", again.get(player.getRandom().nextInt(again.size())).getAsString()));
+                Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line("herder", again.get(player.getRandom().nextInt(again.size())).getAsString()));
             }
             ledger.setDirty();
             return true;
@@ -332,7 +332,7 @@ public final class Scenes {
         if (text.has("clues")) {
             for (Map.Entry<String, JsonElement> clue : text.getAsJsonObject("clues").entrySet()) {
                 if (target.getTags().contains(Steps.CLUE + clue(scene.kind, clue.getKey()))) {
-                    Talk.say(new Story.Line(null, clue.getValue().getAsString()));
+                    Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(null, clue.getValue().getAsString()));
                     if (scene.kind.equals("pack")) {
                         ledger.packFound = true;
                         ledger.setDirty();
@@ -785,7 +785,7 @@ public final class Scenes {
     private static void seen(MinecraftServer server, Ledger ledger, Scene scene) {
         JsonObject text = text(scene.kind);
         if (text.has("seen")) {
-            Talk.say(new Story.Line(null, text.get("seen").getAsString()));
+            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(null, text.get("seen").getAsString()));
         }
         long now = server.overworld().getGameTime();
         boolean story = scene.kind.equals(CACHE);
@@ -793,7 +793,7 @@ public final class Scenes {
         if (text.has("voice") && !Journey.claimed(server).isEmpty() && (story || now - ledger.voiceAt >= gap)) {
             JsonArray voice = text.getAsJsonArray("voice");
             List<String> names = text.has("names") ? text.getAsJsonArray("names").asList().stream().map(JsonElement::getAsString).toList() : List.of();
-            Talk.say(new Story.Line(STRANGER, voice.get(server.overworld().getRandom().nextInt(voice.size())).getAsString(), names, null, null));
+            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(STRANGER, voice.get(server.overworld().getRandom().nextInt(voice.size())).getAsString(), names, null, null));
             ledger.voiceAt = now;
         }
         if (story) {
@@ -812,15 +812,15 @@ public final class Scenes {
             case "" -> {
                 if (scene.seen && !Talk.busy() && players.stream().anyMatch(player -> player.position().closerThan(Vec3.atCenterOf(scene.centre), ask))) {
                     scene.state = "asked";
-                    Talk.say(lines(text.getAsJsonArray("ask")), Talk.Placeholders.NONE);
+                    Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), lines(text.getAsJsonArray("ask")), Talk.Placeholders.NONE);
                     if (!Journey.claimed(server).isEmpty()) {
-                        Talk.say(new Story.Line(STRANGER, text.getAsJsonArray("voice").get(0).getAsString()));
+                        Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(STRANGER, text.getAsJsonArray("voice").get(0).getAsString()));
                     }
                     List<Story.Choice> choices = text.getAsJsonArray("choices").asList().stream().map(JsonElement::getAsJsonObject)
                             .map(choice -> new Story.Choice(choice.get("id").getAsString(), choice.get("text").getAsString(), choice.get("reply").getAsString(),
                                     null, null, false))
                             .toList();
-                    Talk.ask(new Talk.Offer(null, choices, Vec3.atCenterOf(scene.centre), (player, choice) -> chosen(player, scene, choice)));
+                    Talk.ask(new Talk.Offer(Talk.ROAD, null, choices, Vec3.atCenterOf(scene.centre), (player, choice) -> chosen(player, scene, choice)));
                 }
             }
             case "fighting" -> {
@@ -828,7 +828,7 @@ public final class Scenes {
                         .anyMatch(entity -> entity != null && entity.isAlive() && entity.getTags().contains(TAG + "_" + GAZEBOUND));
                 if (!standing && level.isPositionEntityTicking(scene.centre)) {
                     scene.state = "won";
-                    Talk.say(lines(text.getAsJsonArray("won")), Talk.Placeholders.NONE);
+                    Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), lines(text.getAsJsonArray("won")), Talk.Placeholders.NONE);
                     Talk.then(() -> rumourAhead(server, level, scene));
                 }
             }
@@ -840,7 +840,7 @@ public final class Scenes {
         MinecraftServer server = player.server;
         Ledger ledger = Ledger.of(server);
         if (ledger.scenes.contains(scene)) {
-            Talk.say(new Story.Line(null, choice.reply()));
+            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(null, choice.reply()));
             ServerLevel level = Engine.overworld(server);
             switch (choice.id()) {
                 case "step_in" -> {
@@ -853,7 +853,7 @@ public final class Scenes {
                 }
                 case "hide" -> {
                     scene.state = "hid";
-                    Talk.say(lines(text(scene.kind).getAsJsonArray("hid")), Talk.Placeholders.NONE);
+                    Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), lines(text(scene.kind).getAsJsonArray("hid")), Talk.Placeholders.NONE);
                 }
                 default -> {
                     scene.state = "walked";

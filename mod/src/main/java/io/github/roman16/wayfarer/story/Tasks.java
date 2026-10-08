@@ -43,12 +43,13 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Tasks {
     public static final Set<String> STEP_TASKS = Set.of("bed", "bury", "ember", "enter", "fire", "horse", "map", "marks", "pack", "rest", "search", "stone", "sweep", "tent");
-    private static final Set<String> TOLD_BY_CLIENT = Set.of("charms", "journal", "map");
+    private static final Set<String> TOLD_BY_CLIENT = Set.of("charms", "gear", "journal", "map");
     private static final Set<String> QUIET = Set.of("evening", "waiting");
-    private static final String FIRST = "task.";
+    static final String FIRST = "task.";
     private static final String TASK_TICKED = "task_ticked";
     private static final String INVENTORY_KEY = "key.inventory";
-    private static final String JOURNAL_KEY = "key.wayfarer.journal";
+    static final String JOURNAL_KEY = "key.wayfarer.journal";
+    private static final String HOTBAR = "key.hotbar.";
     private static final int CHECK_TICKS = 20;
     private static final int FADE_TICKS = 60;
     private static final int NEAR = 32;
@@ -130,6 +131,11 @@ public final class Tasks {
             return Panel.EMPTY;
         }
         Map<String, Component> open = new LinkedHashMap<>();
+        if (Talk.answering(player) && !Firsts.seen(player, FIRST + "answer")) {
+            int choices = Talk.open().map(offer -> offer.choices().size()).orElse(1);
+            open.put("answer", choices == 1 ? task("answer.one", Component.keybind(HOTBAR + 1))
+                    : task("answer", Component.keybind(HOTBAR + 1), Component.keybind(HOTBAR + choices)));
+        }
         if (Ember.carried(server) && !Firsts.seen(player, FIRST + "charms")) {
             open.put("charms", task("charms", Component.keybind(INVENTORY_KEY)));
         }
@@ -138,9 +144,6 @@ public final class Tasks {
         }
         if (LastUse.lastUse(player.getMainHandItem()) && !Firsts.seen(player, FIRST + "mend")) {
             open.put("mend", task("mend", Balance.INSTANCE.fire().restBlocks()));
-        }
-        if (Talk.open().isPresent() && !Firsts.seen(player, FIRST + "answer")) {
-            open.put("answer", task("answer", Component.keybind("key.chat")));
         }
         Engine.marked(player).ifPresent(goal -> compass(player, goal, open));
         if (!Stones.mine(player).isEmpty()) {
@@ -152,6 +155,7 @@ public final class Tasks {
         if (ModList.get().isLoaded("silentgear")) {
             Patterns.task(player).ifPresent(id -> open.put(id, task(id)));
         }
+        Gear.tasks(player, open);
         if (Caravan.moving(server) && Clock.morning(player.serverLevel()) && pitchedAway(player)) {
             open.put("pack", task("pack"));
         }

@@ -1,5 +1,21 @@
 # HUD
 
+## Gear first
+
+**The first time Gear has a row: the task panel says where it is**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear-first-2.jpg) | ![Scale 3](gear-first-3.jpg) | ![Scale 4](gear-first-4.jpg) |
+
+## Gear tracked
+
+**Copper tools tracked: their materials counted, then the making**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear-tracked-2.jpg) | ![Scale 3](gear-tracked-3.jpg) | ![Scale 4](gear-tracked-4.jpg) |
+
 ## First night
 
 **Waking at the stranger's fire: the task panel and the compass band**, in the story at `the_last_fire/the_stranger`

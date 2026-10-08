@@ -1,7 +1,7 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Talk;
 import java.util.List;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -75,8 +75,8 @@ public final class Gaze {
         }
         boolean witnessed = !level.getPlayers(player -> player.distanceToSqr(dragon) < SLAYER_REACH * SLAYER_REACH).isEmpty();
         if (witnessed && Journey.of(level.getServer()).slay()) {
+            Talk.notice(Component.translatable("wayfarer.gaze.lifted"));
             for (ServerPlayer member : level.getServer().getPlayerList().getPlayers()) {
-                member.sendSystemMessage(Component.translatable("wayfarer.gaze.lifted").withStyle(ChatFormatting.GOLD));
                 Nights.sync(member);
             }
         }

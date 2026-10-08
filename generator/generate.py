@@ -728,6 +728,7 @@ def main():
         tomllib.loads((ROOT / "story/caravan.toml").read_text()),
     )
     write_json(DEV / "wayfarer/states.json", tomllib.loads((ROOT / "story/states.toml").read_text()))
+    write_json(MAIN / "wayfarer/gear.json", tomllib.loads((ROOT / "story/gear.toml").read_text()))
     write_json(MAIN / "wayfarer/scenes.json", tomllib.loads((ROOT / "story/scenes.toml").read_text())["scenes"])
     sounds(tomllib.loads((ROOT / "story/sounds.toml").read_text()))
     shard_names(eyes)

@@ -74,6 +74,7 @@ Verdicts: **Use** as it is, **Use changed** (configured or edited), **Take a fea
 | Mod | Change | Why |
 |---|---|---|
 | Subtle Effects | Add the pack's biomes to its biome particles: pollen in Terralith's flower lands, spores in its mushroom lands, sculk dust stays in the deep dark | Its config lists only vanilla's biomes (`pollenBiomes`, `mushroomSporeBiomes`), so most of the pack's lands get none |
+| Simple Voice Chat | Ships its setup guide as done, with voice activation on and the microphone unmuted; V opens its menu to switch to push-to-talk or change the sensitivity | Its "Press V to set up" line is a greeting the design does not have, and with every voice key unbound a skipped guide would leave nobody able to talk; friends talk as in a call from the first join (the user's choice, 07.10.2026) |
 | Particle Rain | Its mist and haze, judged with the shader on | Mist after rain and in wet lands is the morning and swamp feel the fog packs promised; the haze is off by default because it can look odd with shaders |
 
 ## Cuts in mods already in the pack

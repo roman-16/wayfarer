@@ -8,6 +8,14 @@ import toughasnails.api.temperature.TemperatureLevel;
 public final class Heat {
     private Heat() {}
 
+    public static Optional<String> feels(ServerPlayer player) {
+        return switch (TemperatureHelper.getTemperatureForPlayer(player)) {
+            case ICY, COLD -> Optional.of("cold");
+            case WARM, HOT -> Optional.of("hot");
+            default -> Optional.empty();
+        };
+    }
+
     public static Optional<String> task(ServerPlayer player) {
         TemperatureLevel level = TemperatureHelper.getTemperatureForPlayer(player);
         return switch (level) {

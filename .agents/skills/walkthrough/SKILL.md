@@ -49,5 +49,5 @@ Play as someone who knows vanilla Minecraft and nothing else. At every step, usi
 
 - Fix every finding before the report: in the code, the text (lore skill) or the look (art skill). A finding that needs a decision goes to the user as an Open question in its design document, never decided in code.
 - Read the server's and the client's logs for errors and warnings the new work caused (`log` on the client driver, `build/devserver/logs/latest.log`).
-- Shoot the work's facets into `gallery/` (AGENTS.md, The gallery): add or update a shot for every screen, state, step and side the walkthrough met, and run `just gallery` for those folders.
+- Shoot the work's facets into `gallery/` (AGENTS.md, The gallery): add or update a shot for every screen, state, step and side the walkthrough met, and shoot only those with `just gallery <shot> ...`; after a failed run, only the rest it names.
 - The report names what the walkthrough found and fixed in one line each and the gallery's new and changed pictures, then hands the user the playtest skill's checklist for what only they can judge.

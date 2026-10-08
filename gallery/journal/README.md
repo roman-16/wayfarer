@@ -1,5 +1,101 @@
 # Journal
 
+## At the fire
+
+**At the Fire: every line of the stranger's talk, as it was said**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](at-the-fire/the-last-fire-2.png) | ![Scale 3](at-the-fire/the-last-fire-3.png) | ![Scale 4](at-the-fire/the-last-fire-4.png) |
+
+**At the Fire: Tollbridge's talks, each speaker as they were known then**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](at-the-fire/ash-2.png) | ![Scale 3](at-the-fire/ash-3.png) | ![Scale 4](at-the-fire/ash-4.png) |
+
+## Pages
+
+**Pages: a book read at a lectern, kept in full**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](pages/a-journal-2.png) | ![Scale 3](pages/a-journal-3.png) | ![Scale 4](pages/a-journal-4.png) |
+
+## Gear
+
+**Gear, Weapons: Hob's Blade, and a next tier nobody has named yet**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear/weapons-2.png) | ![Scale 3](gear/weapons-3.png) | ![Scale 4](gear/weapons-4.png) |
+
+**Gear, Weapons: after Hob's line at the fire, the next tier has a name and nothing more**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear/weapons-named-2.png) | ![Scale 3](gear/weapons-named-3.png) | ![Scale 4](gear/weapons-named-4.png) |
+
+**Gear, Tools: the first tier not yet made is chosen, with How it's made and Track**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear/tools-2.png) | ![Scale 3](gear/tools-3.png) | ![Scale 4](gear/tools-4.png) |
+
+**Gear, Tools: copper tools tracked**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear/tools-tracked-2.png) | ![Scale 3](gear/tools-tracked-3.png) | ![Scale 4](gear/tools-tracked-4.png) |
+
+**Gear, Tools: the spyglass, beside the tiers**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear/spyglass-2.png) | ![Scale 3](gear/spyglass-3.png) | ![Scale 4](gear/spyglass-4.png) |
+
+**How it's made: JEI opened on a copper pickaxe head's recipe**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear/how-its-made-2.png) | ![Scale 3](gear/how-its-made-3.png) | ![Scale 4](gear/how-its-made-4.png) |
+
+**Gear, Armour: appears once anyone wears armour**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear/armour-2.png) | ![Scale 3](gear/armour-3.png) | ![Scale 4](gear/armour-4.png) |
+
+**Gear, Carrying: his backpack, then copper and iron**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear/carrying-2.png) | ![Scale 3](gear/carrying-3.png) | ![Scale 4](gear/carrying-4.png) |
+
+**Gear, The camp: the yurts, and the tent shovel beside them**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear/camp-2.png) | ![Scale 3](gear/camp-3.png) | ![Scale 4](gear/camp-4.png) |
+
+**Gear, Getting about: appears with the first of these held or ridden**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear/getting-about-2.png) | ![Scale 3](gear/getting-about-3.png) | ![Scale 4](gear/getting-about-4.png) |
+
+**Gear, Against the cold: after Agna's line, the snowshoes are named**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear/cold-2.png) | ![Scale 3](gear/cold-3.png) | ![Scale 4](gear/cold-4.png) |
+
+**Gear, Against the heat: before Agna's line**, in the story at `the_pull/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](gear/heat-2.png) | ![Scale 3](gear/heat-3.png) | ![Scale 4](gear/heat-4.png) |
+
 ## Quests
 
 **The first night: only Quests, The story so far, People and the Map**, in the story at `the_last_fire/the_stranger`

@@ -8,15 +8,18 @@ import com.mojang.serialization.JsonOps;
 import io.github.roman16.wayfarer.HudState;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.github.roman16.wayfarer.story.Caravan;
+import io.github.roman16.wayfarer.story.Gear;
 import io.github.roman16.wayfarer.story.Journal;
 import io.github.roman16.wayfarer.story.Tasks;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
@@ -54,7 +57,7 @@ public final class JournalScreen extends Screen {
     private static final int RIBBON_TEXT = 4;
     private static final int RIBBON_TUCK = 4;
     private static final int BUTTON_HEIGHT = 20;
-    private static final int BUTTON_WIDTH = 72;
+    private static final int BUTTON_LEAST = 48;
     private static final int SLOT = 18;
     private static final int DOT = 3;
     private static final int INK = 0xFF3F2A14;
@@ -75,6 +78,10 @@ public final class JournalScreen extends Screen {
     private static String latest = "{}";
     private static Tab open = Tab.QUESTS;
     private static final Map<Tab, String> CHOSEN_ENTRY = new EnumMap<>(Tab.class);
+    private static final Map<String, String> CHOSEN_THING = new HashMap<>();
+    private static final String HAD_MARK = "☑ ";
+    private static final String MORE_MARK = "▾";
+    private static final String UNMADE_MARK = "☐ ";
     private final Set<String> seen = new HashSet<>();
     private boolean doneUnfolded;
     private JsonObject view = new JsonObject();
@@ -84,8 +91,9 @@ public final class JournalScreen extends Screen {
     private List<Line> page = List.of();
     private List<ItemStack> slots = List.of();
     private List<Row> rows = List.of();
+    private List<ThingButton> things = List.of();
     private boolean dirty;
-    private boolean acting;
+    private int acting;
     private int left;
     private int top;
     private int bookWidth;
@@ -111,6 +119,7 @@ public final class JournalScreen extends Screen {
         latest = "{}";
         open = Tab.QUESTS;
         CHOSEN_ENTRY.clear();
+        CHOSEN_THING.clear();
     }
 
     public static JsonArray places() {
@@ -127,8 +136,11 @@ public final class JournalScreen extends Screen {
         STORY("wayfarer.journal.story"),
         PEOPLE("wayfarer.journal.people"),
         WORDS("wayfarer.journal.words"),
+        PAGES("wayfarer.journal.pages"),
+        FIRE("wayfarer.journal.fire"),
         STONES("wayfarer.journal.stones"),
-        MAP("wayfarer.journal.map");
+        MAP("wayfarer.journal.map"),
+        GEAR("wayfarer.journal.gear");
 
         private final String key;
 
@@ -138,13 +150,16 @@ public final class JournalScreen extends Screen {
     }
 
     private enum Kind {
+        BOOK,
         CARAVAN,
         DONE,
         FOLD,
+        GEAR,
         LINES,
         QUEST,
         REWARD,
-        STONE
+        STONE,
+        TALK
     }
 
     private record Entry(Kind kind, String key, Component label, int color, JsonObject data) {}
@@ -175,6 +190,7 @@ public final class JournalScreen extends Screen {
         if (chosen != null) {
             see(chosen);
         }
+        things = new ArrayList<>();
         page = page(chosen);
         slots = chosen != null && chosen.kind() == Kind.REWARD ? stacks(chosen.data()) : List.of();
         int ribbonY = top + COVER_EDGE + RIBBON_GAP;
@@ -186,8 +202,12 @@ public final class JournalScreen extends Screen {
         for (Entry entry : entries) {
             rows.add(addWidget(new Row(entry, entry == chosen)));
         }
+        things.forEach(this::addWidget);
         place();
-        acting = false;
+        acting = 0;
+        if (chosen != null && chosen.kind() == Kind.GEAR) {
+            gearActions(chosen.data());
+        }
         if (chosen != null && chosen.kind() == Kind.REWARD && !chosen.data().get("claimed").getAsBoolean()) {
             String reward = chosen.data().get("key").getAsString();
             action("wayfarer.journal.claim", () -> PacketDistributor.sendToServer(new Journal.Claim(reward)));
@@ -205,10 +225,84 @@ public final class JournalScreen extends Screen {
     }
 
     private void action(String label, Runnable run) {
-        acting = true;
-        addRenderableWidget(Button.builder(Component.translatable(label), pressed -> run.run())
-                .bounds(left + bookWidth - COVER_EDGE - PAD - BUTTON_WIDTH, top + bookHeight - COVER_EDGE - PAD - BUTTON_HEIGHT, BUTTON_WIDTH, BUTTON_HEIGHT)
-                .build());
+        action(label, true, run);
+    }
+
+    private void action(String label, boolean active, Runnable run) {
+        Component text = Component.translatable(label);
+        int buttonWidth = Math.max(BUTTON_LEAST, font.width(text) + PAD + PAD / 2);
+        int right = left + bookWidth - COVER_EDGE - PAD - acting;
+        Button button = Button.builder(text, pressed -> run.run())
+                .bounds(right - buttonWidth, top + bookHeight - COVER_EDGE - PAD - BUTTON_HEIGHT, buttonWidth, BUTTON_HEIGHT).build();
+        button.active = active;
+        addRenderableWidget(button);
+        acting += buttonWidth + RIBBON_GAP;
+    }
+
+    private void gearActions(JsonObject row) {
+        JsonObject thing = chosenThing(row);
+        if (thing == null) {
+            return;
+        }
+        String key = thing.get("key").getAsString();
+        if (!thing.get("known").getAsBoolean()) {
+            action("wayfarer.journal.unknown", false, () -> {});
+            return;
+        }
+        if (thing.get("tracked").getAsBoolean()) {
+            action("wayfarer.journal.untrack", () -> PacketDistributor.sendToServer(new Gear.Track("")));
+        } else if (thing.get("trackable").getAsBoolean() && !thing.get("had").getAsBoolean()) {
+            action("wayfarer.journal.track", () -> PacketDistributor.sendToServer(new Gear.Track(key)));
+        }
+        if (thing.has("jei") && ModList.get().isLoaded("jei") && JeiLink.ready()) {
+            ResourceLocation item = ResourceLocation.parse(thing.get("jei").getAsString());
+            action("wayfarer.journal.how", () -> JeiLink.show(item));
+        }
+    }
+
+    @Nullable
+    private static JsonObject chosenThing(JsonObject row) {
+        List<JsonObject> all = row.getAsJsonArray("things").asList().stream().map(JsonElement::getAsJsonObject).toList();
+        String wanted = CHOSEN_THING.get(row.get("id").getAsString());
+        return all.stream().filter(thing -> thing.get("key").getAsString().equals(wanted)).findFirst()
+                .or(() -> all.stream().filter(thing -> thing.get("known").getAsBoolean() && !thing.get("had").getAsBoolean()).findFirst())
+                .or(() -> all.stream().filter(thing -> !thing.get("known").getAsBoolean()).findFirst())
+                .orElse(all.isEmpty() ? null : all.getLast());
+    }
+
+    private void gear(List<Line> lines, JsonObject row, int width) {
+        String who = row.get("who").getAsString();
+        JsonObject chosen = chosenThing(row);
+        for (JsonElement element : row.getAsJsonArray("things")) {
+            JsonObject thing = element.getAsJsonObject();
+            boolean known = thing.get("known").getAsBoolean();
+            Component label = known ? Component.literal((thing.get("had").getAsBoolean() ? HAD_MARK : UNMADE_MARK) + thing.get("name").getAsString())
+                    : Component.translatable("wayfarer.gear.unknown", who);
+            int color = thing == chosen ? GOLD : known && thing.get("had").getAsBoolean() ? QUIET_INK : INK;
+            Component name = known ? Component.literal(thing.get("name").getAsString()) : label;
+            things.add(new ThingButton(row.get("id").getAsString(), thing.get("key").getAsString(), name, lines.size()));
+            add(lines, label, 0, color, width);
+        }
+        lines.add(new Line(FormattedCharSequence.EMPTY, 0, INK));
+        if (chosen != null && chosen.get("known").getAsBoolean()) {
+            if (chosen.get("mystery").getAsBoolean()) {
+                add(lines, Component.translatable("wayfarer.gear.mystery"), 0, INK, width);
+            } else {
+                add(lines, Component.literal(chosen.get("good").getAsString()), 0, INK, width);
+            }
+            chosen.getAsJsonArray("needs").forEach(element -> {
+                JsonObject need = element.getAsJsonObject();
+                add(lines, Component.translatable("wayfarer.gear.need", need.get("count").getAsInt(), need.get("name").getAsString(),
+                        need.get("where").getAsString()), 0, INK, width);
+            });
+            if (!chosen.get("mystery").getAsBoolean()) {
+                add(lines, Component.literal(chosen.get("made").getAsString()), 0, QUIET_INK, width);
+            }
+            if (chosen.get("tracked").getAsBoolean()) {
+                add(lines, Component.translatable("wayfarer.gear.tracked"), 0, QUIET_INK, width);
+            }
+        }
+        add(lines, Component.translatable("wayfarer.gear.who", who), 0, QUIET_INK, width);
     }
 
     @Nullable
@@ -236,12 +330,28 @@ public final class JournalScreen extends Screen {
             case STORY -> lines(found, view.getAsJsonArray("story"), "chapter", false);
             case PEOPLE -> lines(found, view.getAsJsonArray("people"), "person", false);
             case WORDS -> lines(found, view.getAsJsonArray("words"), "word", true);
+            case PAGES -> view.getAsJsonArray("pages").forEach(element -> {
+                JsonObject book = element.getAsJsonObject();
+                found.add(new Entry(Kind.BOOK, "page:" + book.get("key").getAsString(), Component.literal(book.get("title").getAsString()), INK, book));
+            });
+            case FIRE -> view.getAsJsonArray("fire").forEach(element -> {
+                JsonObject talk = element.getAsJsonObject();
+                String title = talk.get("title").getAsString();
+                Component label = title.isEmpty() ? Component.translatable("wayfarer.journal.fire.road") : Component.literal(title);
+                String key = "fire:" + talk.get("key").getAsString() + ":" + talk.getAsJsonArray("lines").size();
+                found.add(new Entry(Kind.TALK, key, label, INK, talk));
+            });
             case STONES -> view.getAsJsonArray("stones").forEach(element -> {
                 JsonObject stone = element.getAsJsonObject();
                 String key = "stone:" + stone.get("x").getAsInt() + "," + stone.get("z").getAsInt();
                 found.add(new Entry(Kind.STONE, key, Component.translatable("wayfarer.journal.stone", stone.get("things").getAsInt()), INK, stone));
             });
             case MAP -> {}
+            case GEAR -> view.getAsJsonArray("gear").forEach(element -> {
+                JsonObject row = element.getAsJsonObject();
+                long known = row.getAsJsonArray("things").asList().stream().filter(thing -> thing.getAsJsonObject().get("known").getAsBoolean()).count();
+                found.add(new Entry(Kind.GEAR, "gear:" + row.get("id").getAsString() + ":" + known, Component.literal(row.get("title").getAsString()), INK, row));
+            });
         }
         return found;
     }
@@ -339,6 +449,23 @@ public final class JournalScreen extends Screen {
                 lines.add(new Line(FormattedCharSequence.EMPTY, 0, INK));
             });
             case STONE -> add(lines, Component.translatable("wayfarer.journal.stone.at", data.get("x").getAsInt(), data.get("z").getAsInt()), 0, INK, width);
+            case BOOK -> {
+                add(lines, Component.translatable("wayfarer.journal.book.by", data.get("author").getAsString()), 0, QUIET_INK, width);
+                for (JsonElement text : data.getAsJsonArray("pages")) {
+                    lines.add(new Line(FormattedCharSequence.EMPTY, 0, INK));
+                    add(lines, Component.literal(text.getAsString()), 0, INK, width);
+                }
+            }
+            case GEAR -> gear(lines, data, width);
+            case TALK -> data.getAsJsonArray("lines").forEach(element -> {
+                JsonObject said = element.getAsJsonObject();
+                String by = said.get("by").getAsString();
+                if (by.isEmpty()) {
+                    add(lines, Component.literal(said.get("text").getAsString()).withStyle(ChatFormatting.ITALIC), 0, QUIET_INK, width);
+                } else {
+                    add(lines, Component.literal(by + ": ").withColor(TITLE_INK).append(Component.literal(said.get("text").getAsString()).withColor(INK)), 0, INK, width);
+                }
+            });
             case FOLD -> {}
         }
         return lines;
@@ -408,6 +535,7 @@ public final class JournalScreen extends Screen {
         graphics.enableScissor(listLeft(), listTop(), listLeft() + pageWidth(), listBottom());
         rows.forEach(row -> row.render(graphics, mouseX, mouseY, partialTick));
         graphics.disableScissor();
+        things.forEach(thing -> thing.render(graphics, mouseX, mouseY, partialTick));
         entry(graphics, mouseX, mouseY);
     }
 
@@ -419,7 +547,17 @@ public final class JournalScreen extends Screen {
         return pagesBottom() - PAD;
     }
 
+    private void placeThings() {
+        int pageTop = pagesTop() + PAD;
+        for (ThingButton thing : things) {
+            int y = pageTop + thing.line * LINE - pageScroll;
+            thing.setY(y);
+            thing.visible = y >= pageTop && y + LINE <= pagesBottom() - PAD;
+        }
+    }
+
     private void place() {
+        placeThings();
         listScroll = Mth.clamp(listScroll, 0, Math.max(0, rows.size() * LINE - (listBottom() - listTop())));
         int y = listTop() - listScroll;
         for (Row row : rows) {
@@ -432,7 +570,7 @@ public final class JournalScreen extends Screen {
     private void entry(GuiGraphics graphics, int mouseX, int mouseY) {
         int x = pageLeft() + PAD;
         int pageTop = pagesTop() + PAD;
-        int bottom = pagesBottom() - PAD - (acting ? BUTTON_HEIGHT + PAD : 0) - (slots.isEmpty() ? 0 : SLOT + PAD);
+        int bottom = pagesBottom() - PAD - (acting > 0 ? BUTTON_HEIGHT + PAD : 0) - (slots.isEmpty() ? 0 : SLOT + PAD);
         pageScroll = Mth.clamp(pageScroll, 0, Math.max(0, page.size() * LINE - (bottom - pageTop)));
         graphics.enableScissor(pageLeft(), pageTop, pageLeft() + pageWidth(), bottom);
         int y = pageTop - pageScroll;
@@ -441,6 +579,9 @@ public final class JournalScreen extends Screen {
             y += LINE;
         }
         graphics.disableScissor();
+        if (y > bottom) {
+            graphics.drawString(font, MORE_MARK, pageLeft() + pageWidth() - PAD - font.width(MORE_MARK), bottom, QUIET_INK, false);
+        }
         ItemStack hovered = ItemStack.EMPTY;
         int slotX = x;
         for (ItemStack stack : slots) {
@@ -479,6 +620,9 @@ public final class JournalScreen extends Screen {
         if (tab == Tab.MAP) {
             MapLink.open();
             return;
+        }
+        if (tab == Tab.GEAR) {
+            PacketDistributor.sendToServer(new Tasks.Did("gear"));
         }
         if (tab != open) {
             open = tab;
@@ -526,6 +670,7 @@ public final class JournalScreen extends Screen {
             place();
         } else {
             pageScroll -= (int) (scrollY * LINE * 3);
+            placeThings();
         }
         return true;
     }
@@ -623,9 +768,43 @@ public final class JournalScreen extends Screen {
         }
     }
 
+    private final class ThingButton extends AbstractButton {
+        private final String row;
+        private final String key;
+        private final int line;
+
+        private ThingButton(String row, String key, Component label, int line) {
+            super(pageLeft() + PAD - 2, 0, pageWidth() - PAD * 2 + 4, LINE, label);
+            this.row = row;
+            this.key = key;
+            this.line = line;
+        }
+
+        @Override
+        public void onPress() {
+            CHOSEN_THING.put(row, key);
+            dirty = true;
+        }
+
+        @Override
+        public void playDownSound(SoundManager sounds) {}
+
+        @Override
+        protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+            if (isHoveredOrFocused()) {
+                graphics.fill(getX(), getY() - 1, getRight(), getBottom() - 1, POINTED);
+            }
+        }
+
+        @Override
+        protected void updateWidgetNarration(NarrationElementOutput output) {
+            defaultButtonNarrationText(output);
+        }
+    }
+
     private static JsonObject view() {
         JsonObject view = JsonParser.parseString(latest).getAsJsonObject();
-        for (String key : new String[] {"quests", "rewards", "story", "people", "words", "places", "stones", "seen"}) {
+        for (String key : new String[] {"fire", "gear", "pages", "people", "places", "quests", "rewards", "seen", "stones", "story", "words"}) {
             if (!view.has(key)) {
                 view.add(key, new JsonArray());
             }

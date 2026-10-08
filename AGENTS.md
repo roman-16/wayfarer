@@ -60,7 +60,7 @@ Every dev client (`just showroom`, `just play` and the driver) runs with test se
 
 devbox pins Mesa to the Nix snapshot the Java runtime (`jetbrains.jdk-no-jcef`) comes from (`github:NixOS/nixpkgs/<commit>#mesa`): the hidden screen loads Mesa into the game's Java, and a driver built against a newer C library than Java's does not load. When the Java runtime moves to a newer snapshot, move Mesa's commit with it. The justfile sets `JAVA_HOME` to devbox's Java for every task, and both drivers launch the game and compile through just recipes (`just showroom`, `just play`, `just devserver`, `just compile`), so a shell's own `JAVA_HOME` never matters.
 
-`run` prints one line of JSON per step, as soon as the step is done: the step, and lists of what it produced, such as every chat line the game received while it ran (command replies included) under `chat`, errors under `error`, the absolute path of each screenshot, written before `run` returns, under `screenshot`, and the step's own result under its name (`inspect`, `log`, `perf`, `pos`, `state`, `sheet`). A command step waits until the server has run it, so its replies always sit under it. Steps can also come one per line on stdin. `start --fresh` opens a fresh natural world in survival (`just play`) instead of the showroom (`just showroom`). A batch that does not finish within `--timeout` is aborted and its log shows where it stuck.
+`run` prints one line of JSON per step, as soon as the step is done: the step, and lists of what it produced, such as every chat line the game received while it ran (command replies included) under `chat`, every conversation line and set of answers the game showed under `talk` (`<Agna> ...`, `answers: Who are you? | ...`), errors under `error`, the absolute path of each screenshot, written before `run` returns, under `screenshot`, and the step's own result under its name (`inspect`, `log`, `perf`, `pos`, `state`, `sheet`). A command step waits until the server has run it, so its replies always sit under it. Steps can also come one per line on stdin. `start --fresh` opens a fresh natural world in survival (`just play`) instead of the showroom (`just showroom`). A batch that does not finish within `--timeout` is aborted and its log shows where it stuck.
 
 The story runs in every world whose game rule `wayfarerStory` is on, as it is by default; the showroom's save turns it off, so neither the story nor its clock runs there. Its keys are J for the journal (`key.wayfarer.journal`), M for the map (`key.wayfarer.map`) and Z, the key left of X on every layout, to hold up the ember (`key.wayfarer.ember_sense`).
 
@@ -87,9 +87,9 @@ $ python3 scripts/client.py run workshop 'place wayfarer:last_camp' 'spawn minec
 |---|---|
 | `/<command>` | Runs a command as the player |
 | `assets` | Reloads every texture, model and sound, as F3+T does, and returns once the reload is done and the loading screen has faded |
-| `await <text>` | Waits for a chat line containing the text, such as a quest's reply that comes on the server's own rhythm; each line answers one `await`, so a second `await` of the same text waits for the next such line |
+| `await <text>` | Waits for a chat line or a conversation's line (`talk`) containing the text, such as a quest's reply that comes on the server's own rhythm or `answers: Who are you`; each line answers one `await`, so a second `await` of the same text waits for the next such line |
 | `beside <thing>` | Puts a creature, structure, template, block or item, usually its vanilla relative, at the workshop's next free spot |
-| `chat on\|off` | Shows or hides the chat |
+| `chat on\|off` | Shows or hides the chat on the screen; the game still receives it |
 | `clear` | Empties the workshop and puts its floor back |
 | `click <x> <y> [button]` | Moves the mouse to GUI coordinates on the open screen and clicks there as a player's mouse does, with the left button or the one named (`middle`, `right`) |
 | `close` | Closes the open screen |
@@ -107,9 +107,10 @@ $ python3 scripts/client.py run workshop 'place wayfarer:last_camp' 'spawn minec
 | `perf` | Measures the frame rate over one second, and logs the server's tick time and which renderer draws |
 | `person <skin> [pose]` | Puts a person at the workshop's next free spot: an Easy NPC body wearing a skin from `generator/skins.toml`, with its model and size, standing or in an Easy NPC pose (`sitting`, `rest`, `sleeping` and the rest) |
 | `place <thing>` | Puts a structure, template, block or item at the workshop's next free spot, with its name sign |
+| `pause` | Opens the pause menu, as Escape does in the world |
 | `point <x> <y>` | Moves the mouse to GUI coordinates on the open screen without clicking |
 | `pos` | Logs the player's position, facing and dimension |
-| `press <label>` | Clicks the widget with that label on the open screen, once it is enabled; a label that is not there is an error at once |
+| `press <label>` | Clicks the widget with that label on the open screen, lists included, once the screen has been drawn and the widget is enabled, waiting up to two seconds for a screen still filling in, such as the journal right after a world opens; a label that does not appear is an error |
 | `quit` | Closes the client |
 | `scale <n>` | Sets the interface scale (2, 3 or 4, as the art skill judges a screen at), widening the window when a scale needs more room than 1280 by 720, and returns once the game draws at that scale |
 | `screen` | Logs the open screen and its widgets with labels, positions and sizes |
@@ -121,7 +122,7 @@ $ python3 scripts/client.py run workshop 'place wayfarer:last_camp' 'spawn minec
 | `state` | Returns the world's story state: every save file of the Wayfarer mod as JSON |
 | `story <quest/step>` | Plays the story to that step, as a state is built, and returns once it stands there |
 | `type <text>` | Types into the focused field |
-| `use <x> <y> <z>` | Right-clicks the block there with what the player holds, on its open face nearest the player, as a player does: a tent's door, a campfire, a sign |
+| `use <x> <y> <z>` | Right-clicks the block there, at absolute coordinates or relative ones (`~2 ~ ~`) as in vanilla's commands, with what the player holds, on its open face nearest the player, as a player does: a tent's door, a campfire, a lectern, a sign |
 | `views <name>` | Photographs everything in the workshop, creatures included, from the front, the side, above and three-quarters, each camera fitted to it at the pack's field of view, into `build/client/workshop/<name>.jpg` |
 | `wait <ticks>` | Waits a fixed time; only for watching something with no end, such as an animation, never to let a step finish |
 | `workshop` | Takes the player into the workshop, south of what stands there |
@@ -139,7 +140,7 @@ $ python3 scripts/server.py run 'locate structure wayfarer:shrine/old' 'await Th
 $ python3 scripts/server.py stop             # returns once the server has exited
 ```
 
-Pretend players stand in for a team on the dev server: `wayfarer pretend join <name>` brings one online through the game's own login, so every mod reacts as to a person; `wayfarer pretend leave <name>` logs it out and `wayfarer pretend respawn <name>` presses Respawn after a death. They do what vanilla commands tell them (`tp`, `spreadplayers`, `execute as <name> run ...`), every message one receives comes back as a reply (`Mo hears: ...`), and a returning name comes back where and as it left, so one that left dead joins dead until `wayfarer pretend respawn` brings it back. They never move on their own, not even to fall, so put them on the ground with `spreadplayers`; the chunks around them load wherever a command puts them, and a change of world completes for them, as a person's would. They join the dev client's own world the same way, beside the real player and its chat.
+Pretend players stand in for a team on the dev server: `wayfarer pretend join <name>` brings one online through the game's own login, so every mod reacts as to a person; `wayfarer pretend leave <name>` logs it out and `wayfarer pretend respawn <name>` presses Respawn after a death. They do what vanilla commands tell them (`tp`, `spreadplayers`, `execute as <name> run ...`), every message one receives comes back as a reply (`Mo hears: ...` for chat, `Mo sees the subtitle: ...` and `Mo sees the answers: ...` for a conversation), and a returning name comes back where and as it left, so one that left dead joins dead until `wayfarer pretend respawn` brings it back. They never move on their own, not even to fall, so put them on the ground with `spreadplayers`; the chunks around them load wherever a command puts them, and a change of world completes for them, as a person's would. They join the dev client's own world the same way, beside the real player and its chat.
 
 ```console
 $ python3 scripts/server.py run 'wayfarer pretend join Mo' 'spreadplayers 0 0 0 4 false Mo' 'execute as Mo run say hello'
@@ -163,9 +164,9 @@ The user sees the work through `gallery/`, which git keeps, so a commit shows wh
 $ just gallery journal hud/banner-begun      # shoot these shots and folders; all when none are named
 ```
 
-Every shot in the story opens its state anew, so no shot depends on another; the showroom's shots share one opening, and a `views` shot starts from a cleared workshop. A shot hides the chat unless it says `chat = true`, and the world is frozen (`/tick freeze`) while it is shot, so a shot of something unchanged comes out the same. A picture whose every pixel matches the one in `gallery/` (within 2%) keeps its file, so git shows only what moved. `just gallery` writes a page per folder and an index (`gallery/README.md`) with every picture under its caption, deletes the pictures no shot names, and prints what is new, changed and deleted; `just lint` fails while a shot lacks its pictures, a picture lacks its shot, or a page is out of date.
+A shot's `after` steps put back what its steps changed beyond the world, such as an option. A facet the story reaches only slowly is set up by a dev command among the shot's steps: `/wayfarer story unclaim <reward>` hands a taken reward back, `/wayfarer story said <line>` marks a line of `story/gear.toml` said, and `/wayfarer story gear <row>` shows a Gear row. Every shot in the story opens its state anew, so no shot depends on another; the showroom's shots share one opening, and a `views` shot starts from a cleared workshop. A shot hides the chat unless it says `chat = true`, and the world is frozen (`/tick freeze`) while it is shot, so a shot of something unchanged comes out the same. A picture whose every pixel matches the one in `gallery/` (within 2%) keeps its file, so git shows only what moved. `just gallery` writes a page per folder and an index (`gallery/README.md`) with every picture under its caption, deletes the pictures no shot names, and prints what is new, changed and deleted; `just lint` fails while a shot lacks its pictures, a picture lacks its shot, or a page is out of date.
 
-Every change to something a player sees, a screen, the HUD, a person, a creature, a place, an item, adds or updates its shots, one for each facet the player can meet: each ribbon and entry of a screen, each state it shows (empty, waiting, done, unfolded), each side of a thing, and each step of the story that shows it. `just gallery` for those folders runs before the report, and the report names the pictures that are new or changed.
+Every change to something a player sees, a screen, the HUD, a person, a creature, a place, an item, adds or updates its shots, one for each facet the player can meet: each ribbon and entry of a screen, each state it shows (empty, waiting, done, unfolded), each side of a thing, and each step of the story that shows it. Before the report, `just gallery` shoots only the shots the change can show, named one by one or by the narrowest folder: a story state's shot takes 20 to 30 s and the whole gallery about half an hour, so a change to one journal page shoots that page, not `journal`, and nothing in the showroom unless the change shows there. When a run fails, it prints the shots it did not reach (`the rest: just gallery ...`); fix the cause and shoot only those, never the run again from the start. The report names the pictures that are new or changed.
 
 ## Gates
 

@@ -38,6 +38,7 @@ unnamed = "A child"
 [stranger]
 color = "gold"
 name = "The stranger"
+voice = true
 
 [tamsin]
 color = "aqua"

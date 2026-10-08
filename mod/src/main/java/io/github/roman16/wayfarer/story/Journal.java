@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Library;
 import io.github.roman16.wayfarer.Stones;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
@@ -131,6 +132,35 @@ public final class Journal {
             chapters.add(chapter);
         });
         view.add("story", chapters);
+        JsonArray fire = new JsonArray();
+        progress.fire.forEach((key, heard) -> {
+            JsonObject talk = new JsonObject();
+            talk.addProperty("key", key);
+            talk.addProperty("title", Story.INSTANCE.quest(key).map(Story.Quest::title).orElse(""));
+            JsonArray lines = new JsonArray();
+            heard.forEach(line -> {
+                JsonObject said = new JsonObject();
+                said.addProperty("by", line.by());
+                said.addProperty("text", line.text());
+                lines.add(said);
+            });
+            talk.add("lines", lines);
+            fire.add(talk);
+        });
+        view.add("fire", fire);
+        JsonArray pages = new JsonArray();
+        progress.pages.forEach(id -> Library.INSTANCE.book(id).ifPresent(book -> {
+            JsonObject entry = new JsonObject();
+            entry.addProperty("key", id);
+            entry.addProperty("title", book.title());
+            entry.addProperty("author", book.author());
+            JsonArray text = new JsonArray();
+            book.pages().forEach(text::add);
+            entry.add("pages", text);
+            pages.add(entry);
+        }));
+        view.add("pages", pages);
+        view.add("gear", Gear.view(player));
         view.add("people", entries(progress.people, person -> Story.INSTANCE.person(person).name()));
         view.add("words", entries(progress.words, word -> word));
         JsonArray places = new JsonArray();

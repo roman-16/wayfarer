@@ -7,6 +7,7 @@ import com.mojang.blaze3d.platform.GlUtil;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
+import io.github.roman16.wayfarer.client.Conversation;
 import io.github.roman16.wayfarer.client.Hud;
 import io.github.roman16.wayfarer.story.StoryDev;
 import java.io.IOException;
@@ -42,6 +43,7 @@ import net.minecraft.client.MouseHandler;
 import net.minecraft.client.Screenshot;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.AlertScreen;
 import net.minecraft.client.gui.screens.BackupConfirmScreen;
@@ -67,7 +69,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.ChatVisiblity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
@@ -86,6 +87,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 
@@ -113,6 +116,8 @@ public final class Driver {
     private static final Field CLICK_COUNT = clickCount();
     private static final Map<String, Integer> BUTTONS = Map.of("left", GLFW.GLFW_MOUSE_BUTTON_LEFT, "middle", GLFW.GLFW_MOUSE_BUTTON_MIDDLE,
             "right", GLFW.GLFW_MOUSE_BUTTON_RIGHT);
+    private static final String RELATIVE = "~";
+    private static final long LABEL_NANOS = 2_000_000_000L;
     private static final Method MOUSE_MOVE = mouse("onMove", long.class, double.class, double.class);
     private static final Method MOUSE_PRESS = mouse("onPress", long.class, int.class, int.class, int.class);
     private static final String EXPERIMENTAL_WARNING = "selectWorld.backupQuestion.experimental";
@@ -129,6 +134,10 @@ public final class Driver {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Deque<String> steps = new ArrayDeque<>();
     private static final List<String> log = new ArrayList<>();
+    private static final String CHAT = "chat: ";
+    private static final String TALK = "talk: ";
+    private static long talked;
+    private static boolean chatHidden;
     private static final Set<Integer> awaited = new HashSet<>();
     private static boolean leaving;
     private static boolean opened;
@@ -158,6 +167,10 @@ public final class Driver {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
+        for (Conversation.Logged line : Conversation.since(talked)) {
+            note(TALK + line.text());
+            talked = line.seq();
+        }
         if (!opened && minecraft.screen instanceof TitleScreen) {
             opened = true;
             open(minecraft);
@@ -222,6 +235,9 @@ public final class Driver {
             then = null;
             if (finished != null) {
                 finished.run();
+                if (waiting > 0 || pending != null || until != null) {
+                    return;
+                }
             }
         }
         while (!steps.isEmpty()) {
@@ -253,6 +269,13 @@ public final class Driver {
     }
 
     @SubscribeEvent
+    public static void onRenderLayer(RenderGuiLayerEvent.Pre event) {
+        if (chatHidden && event.getName().equals(VanillaGuiLayers.CHAT)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
     public static void onChat(ClientChatReceivedEvent event) {
         Component message = event.getMessage();
         if (sentinelSent && message.getContents() instanceof TranslatableContents contents && contents.getKey().equals(SENTINEL_REPLY)) {
@@ -262,7 +285,7 @@ public final class Driver {
             return;
         }
         if (running) {
-            log.add("chat: " + message.getString());
+            log.add(CHAT + message.getString());
             if (failure == null && FAILED.matcher(message.getString()).find()) {
                 failure = message.getString();
             }
@@ -466,7 +489,7 @@ public final class Driver {
     private static Integer heard(String text) {
         for (int index = 0; index < log.size(); index++) {
             String line = log.get(index);
-            if (!awaited.contains(index) && line.startsWith("chat: ") && line.contains(text)) {
+            if (!awaited.contains(index) && (line.startsWith(CHAT) || line.startsWith(TALK)) && line.contains(text)) {
                 return index;
             }
         }
@@ -577,7 +600,7 @@ public final class Driver {
             case "await" -> {
                 int index = heard(argument);
                 awaited.add(index);
-                note("await: " + log.get(index).substring("chat: ".length()));
+                note("await: " + log.get(index).substring(log.get(index).indexOf(": ") + 2));
             }
             case "assets" -> {
                 pending = minecraft.reloadResourcePacks().thenApply(ignored -> "assets: reloaded");
@@ -585,7 +608,7 @@ public final class Driver {
                 waitingOn = "the loading screen to fade";
             }
             case "beside", "clear", "person", "place", "spawn" -> command(minecraft, "wayfarer workshop " + step);
-            case "chat" -> minecraft.options.chatVisibility().set(argument.equals("on") ? ChatVisiblity.FULL : ChatVisiblity.HIDDEN);
+            case "chat" -> chatHidden = argument.equals("off");
             case "click" -> {
                 String[] at = argument.split(" ");
                 click(minecraft, Double.parseDouble(at[0]), Double.parseDouble(at[1]), at.length > 2 ? at[2] : "left");
@@ -628,6 +651,7 @@ public final class Driver {
             case "perf" -> perf(minecraft);
             case "pos" -> note("pos: %.1f %.1f %.1f facing %.0f %.0f in %s".formatted(minecraft.player.getX(), minecraft.player.getY(),
                     minecraft.player.getZ(), minecraft.player.getYRot(), minecraft.player.getXRot(), minecraft.level.dimension().location()));
+            case "pause" -> minecraft.pauseGame(false);
             case "point" -> {
                 if (minecraft.screen == null) {
                     note("error: no screen to point at");
@@ -934,9 +958,14 @@ public final class Driver {
         synced = false;
     }
 
+    private static int coordinate(String text, int from) {
+        return text.startsWith(RELATIVE) ? from + (text.length() > 1 ? Integer.parseInt(text.substring(1)) : 0) : Integer.parseInt(text);
+    }
+
     private static void use(Minecraft minecraft, String argument) {
         String[] xyz = argument.split(" ");
-        BlockPos pos = new BlockPos(Integer.parseInt(xyz[0]), Integer.parseInt(xyz[1]), Integer.parseInt(xyz[2]));
+        BlockPos here = minecraft.player.blockPosition();
+        BlockPos pos = new BlockPos(coordinate(xyz[0], here.getX()), coordinate(xyz[1], here.getY()), coordinate(xyz[2], here.getZ()));
         Vec3 centre = Vec3.atCenterOf(pos);
         Vec3 towards = minecraft.player.getEyePosition().subtract(centre).normalize();
         Direction face = Arrays.stream(Direction.values()).filter(side -> minecraft.level.getBlockState(pos.relative(side)).canBeReplaced())
@@ -948,12 +977,17 @@ public final class Driver {
     }
 
     private static void press(Minecraft minecraft, String label) {
-        AbstractWidget widget = labelled(minecraft, label);
-        if (widget == null) {
-            note("error: no widget labelled " + label);
-            return;
-        }
-        click(minecraft, widget.getX() + widget.getWidth() / 2.0, widget.getY() + widget.getHeight() / 2.0, "left");
+        long drawn = frames;
+        long from = System.nanoTime();
+        until = () -> frames > drawn + SETTLE_FRAMES && (labelled(minecraft, label) != null || System.nanoTime() - from > LABEL_NANOS);
+        then = () -> {
+            AbstractWidget widget = labelled(minecraft, label);
+            if (widget == null) {
+                note("error: no widget labelled " + label);
+                return;
+            }
+            click(minecraft, widget.getX() + widget.getWidth() / 2.0, widget.getY() + widget.getHeight() / 2.0, "left");
+        };
     }
 
     private static AbstractWidget labelled(Minecraft minecraft, String label) {
@@ -977,9 +1011,19 @@ public final class Driver {
         if (minecraft.screen == null) {
             return List.of();
         }
-        return minecraft.screen.children().stream()
-                .filter(AbstractWidget.class::isInstance)
-                .map(AbstractWidget.class::cast)
-                .toList();
+        List<AbstractWidget> found = new ArrayList<>();
+        widgets(minecraft.screen.children(), found);
+        return found;
+    }
+
+    private static void widgets(List<? extends GuiEventListener> children, List<AbstractWidget> found) {
+        for (GuiEventListener child : children) {
+            if (child instanceof AbstractWidget widget && !(child instanceof ContainerEventHandler)) {
+                found.add(widget);
+            }
+            if (child instanceof ContainerEventHandler container) {
+                widgets(container.children(), found);
+            }
+        }
     }
 }

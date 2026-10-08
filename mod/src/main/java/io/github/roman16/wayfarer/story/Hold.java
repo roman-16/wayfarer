@@ -19,12 +19,10 @@ import java.util.Set;
 import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -47,7 +45,6 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
@@ -60,6 +57,7 @@ public final class Hold {
     private static final String DOOR_STATE = "door_state";
     private static final String WAVE = "wave";
     private static final String FAILED = "failed";
+    private static final String RETRY = "retry";
     private static final String TABLE = Wayfarer.MODID + ":gaze";
     private static final int BESIEGE_PRIORITY = 4;
     private static final int CRACK_STAGES = 10;
@@ -161,7 +159,7 @@ public final class Hold {
             People.find(server, person).ifPresent(Hold::vulnerable);
         }
         if (!ModList.get().isLoaded("hordes")) {
-            Talk.notice(Component.literal("hold failed: The Hordes is not in this game, so no wave can come").withStyle(ChatFormatting.RED));
+            server.getPlayerList().broadcastSystemMessage(Component.literal("hold failed: The Hordes is not in this game, so no wave can come").withStyle(ChatFormatting.RED), false);
         }
     }
 
@@ -184,7 +182,7 @@ public final class Hold {
                 running.waveStarted = now;
                 running.wave.clear();
                 Talk.notice(Component.literal(active.step().text("wave").replace("{wave}", String.valueOf(wave + 1))
-                        .replace("{waves}", String.valueOf(hold.waves()))).withStyle(ChatFormatting.RED));
+                        .replace("{waves}", String.valueOf(hold.waves()))).withStyle(ChatFormatting.DARK_RED));
                 command(server, "hordes spawnWave %s %d %s".formatted(player.getScoreboardName(), hold.firstWave() + hold.waveGrowth() * wave, TABLE));
             });
             return;
@@ -268,28 +266,29 @@ public final class Hold {
         running.monsters.stream().map(level::getEntity).filter(entity -> entity != null).forEach(Entity::discard);
         mend(level, active.scratch());
         running = null;
-        Talk.notice(Component.literal(active.step().text("failed")).withStyle(ChatFormatting.RED).append(" ")
-                .append(Component.literal("[" + active.step().text("retry") + "]").withStyle(style -> style.withColor(ChatFormatting.GOLD)
-                        .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + Wayfarer.MODID + " retry")))));
+        Talk.notice(Component.literal(active.step().text("failed")).withStyle(ChatFormatting.DARK_RED));
+        offerRetry(server, active);
     }
 
-    @SubscribeEvent
-    public static void onRegisterCommands(RegisterCommandsEvent event) {
-        event.getDispatcher().register(Commands.literal(Wayfarer.MODID).then(Commands.literal("retry").executes(context -> {
-            MinecraftServer server = context.getSource().getServer();
-            for (Engine.Active active : Engine.active(server)) {
-                if (active.step().kind().equals("hold") && active.scratch().getBoolean(FAILED)) {
-                    active.scratch().remove(FAILED);
-                    active.scratch().remove(WAVE);
-                    Progress.of(server).setDirty();
-                    Tollbridge.survivors(server);
-                    start(server, active);
-                    return 1;
-                }
-            }
-            context.getSource().sendFailure(Component.translatable("wayfarer.hold.nothing"));
-            return 0;
-        })));
+    static void resume(MinecraftServer server, Engine.Active active) {
+        if (active.scratch().getBoolean(FAILED)) {
+            offerRetry(server, active);
+        } else {
+            start(server, active);
+        }
+    }
+
+    private static void offerRetry(MinecraftServer server, Engine.Active active) {
+        Talk.ask(new Talk.Offer(active.quest().id(), null, List.of(new Story.Choice(RETRY, active.step().text("retry"), "", null, null, false)), null,
+                (player, choice) -> retry(server, active)));
+    }
+
+    private static void retry(MinecraftServer server, Engine.Active active) {
+        active.scratch().remove(FAILED);
+        active.scratch().remove(WAVE);
+        Progress.of(server).setDirty();
+        Tollbridge.survivors(server);
+        start(server, active);
     }
 
     @SubscribeEvent

@@ -69,6 +69,9 @@ Everything the player reads off the screen outside the world: the HUD, the pack'
 - A conversation opens no screen, so nobody stops moving or looking. Its lines stand as subtitles at the bottom centre on I5's parchment band, the speaker's name in gold, at the pace that waits for reading (`balance.toml` `[talk]`).
 - Answers stand as a short list right of the crosshair, numbered 1 to 4; while they stand, the number keys choose an answer instead of a hotbar slot. The first time answers come, the task panel says to press an answer's number.
 - Every player within the conversation's reach sees the same subtitles and answers, and "Mo chose: Bury him" once one is chosen. Players farther away get its lines in chat, since the story is shared. A hard decision shows its answers and their tally to every player online, wherever they are (`systems.md`, M3). The journal's At the Fire keeps every talk (I3).
+- The voice speaks through the ember each player carries, so its lines stand as subtitles for every player, wherever they are.
+- The story's notices are the narrator's lines on the band, never chat: a shard taken and what it remembers, a hold's waves and its door giving way, the ember tugging towards smoke, a teammate turning back, the dawn's first lesson, a worn tool, the night's warning. One for the whole team reaches every player wherever they are; one for a player reaches only them. A lost hold offers trying the night again as an answer, and offers it again after a restart. Chat keeps only what players say, and a conversation's lines for those too far to see it.
+- While answers stand, the task panel gives way to them and to the band: it shows as many rows as fit above them, the answer task first.
 
   ```text
                        +    1  Bury him
@@ -120,12 +123,12 @@ Everything the player reads off the screen outside the world: the HUD, the pack'
 
 - **Subtitles.** Vanilla's Subtitles option covers the pack's own sounds too, each with a short subtitle in the lore's voice ("Ember flares", "Embers die down", "Something claws out of the ground"), off by default as in vanilla. Conversations always show as subtitles, since they are the dialogue (I4).
 - **Pace.** A conversation keeps one pace for everyone, since its lines are shared: 8 characters a second and at least 4 seconds a line (`balance.toml` `[talk]`). The two lines before the current one stay faintly above it, and any line missed is in the journal's At the Fire.
-- **Size.** Everything the pack draws follows vanilla's GUI scale, and the conversation subtitles have a Subtitle Size option of their own: Small, Normal or Large, Normal by default.
+- **Size.** Everything the pack draws follows vanilla's GUI scale, and the conversation subtitles have a size option of their own, Conversation Size in Options, Accessibility Settings, beside Show Subtitles: Small, Normal or Large, Normal by default, each a whole screen pixel smaller or larger per letter pixel, so letters stay crisp. It is each player's own, kept on their machine.
 - **Colour.** Nothing is told by colour alone: the ember's state is also a word, a task done is also a tick, and a teammate on the compass also shows their initial.
 - **Flashing.** The red moon's pulse and a memory's flash play in full by default; vanilla's Hide Lightning Flashes, off by default, calms them too, so one switch covers every flash.
 - **Difficulty.** New worlds and the server pack start on Normal; Hard is chosen in Create New World or the server's settings, and a team that comes for the story picks Easy.
 
-**Why:** Vanilla's own switches are where players already look, so the pack hangs its options on them and adds only Subtitle Size, which the conversations need. A shared line cannot run at each player's speed, so it keeps one pace and stays findable afterwards. Normal lets the story be played by friends of every skill, and Hard is one setting away.
+**Why:** Vanilla's own switches are where players already look, so the pack hangs its options on them and adds only Conversation Size, which the conversations need. A shared line cannot run at each player's speed, so it keeps one pace and stays findable afterwards. Normal lets the story be played by friends of every skill, and Hard is one setting away.
 
 ## Open
 

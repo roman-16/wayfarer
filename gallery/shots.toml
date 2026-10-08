@@ -1,4 +1,157 @@
 [[shots]]
+at = "the_pull/the_fireside"
+caption = "The first time Gear has a row: the task panel says where it is"
+id = "hud/gear-first"
+kind = "hud"
+steps = []
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Copper tools tracked: their materials counted, then the making"
+id = "hud/gear-tracked"
+kind = "hud"
+steps = [
+  "key key.wayfarer.journal",
+  "press Gear",
+  "press Tools",
+  "press Copper tools",
+  "press Track",
+  "settle",
+  "close",
+]
+
+[[shots]]
+at = "the_last_fire/the_stranger"
+caption = "The stranger's first line on the band, the narrator's lines above it, nobody's answers yet"
+id = "talk/first-line"
+kind = "hud"
+steps = [
+  "/execute at @e[tag=wayfarer_person_stranger,limit=1] run tp @s ~0.5 ~ ~1.8 165 20",
+  "settle",
+  "interact easy_npc:humanoid",
+  "await There you are",
+]
+
+[[shots]]
+at = "the_last_fire/the_stranger"
+caption = "Answers numbered beside the crosshair; the task panel says to press a number, the first time"
+id = "talk/answers"
+kind = "hud"
+steps = [
+  "/execute at @e[tag=wayfarer_person_stranger,limit=1] run tp @s ~0.5 ~ ~1.8 165 20",
+  "settle",
+  "interact easy_npc:humanoid",
+  "/tick rate 80",
+  "await answers: Who are you",
+  "/tick rate 20",
+]
+
+[[shots]]
+at = "the_last_fire/the_stranger"
+caption = "An answer pressed: who chose it shows on the band, the question faint above"
+id = "talk/chose"
+kind = "hud"
+steps = [
+  "/execute at @e[tag=wayfarer_person_stranger,limit=1] run tp @s ~0.5 ~ ~1.8 165 20",
+  "settle",
+  "interact easy_npc:humanoid",
+  "/tick rate 80",
+  "await answers: Who are you",
+  "/tick rate 20",
+  "key key.hotbar.1",
+  "await chose",
+]
+
+[[shots]]
+at = "the_last_fire/the_stranger"
+caption = "Conversation Size: Small"
+id = "talk/small"
+kind = "hud"
+steps = [
+  "/execute at @e[tag=wayfarer_person_stranger,limit=1] run tp @s ~0.5 ~ ~1.8 165 20",
+  "settle",
+  "interact easy_npc:humanoid",
+  "/tick rate 80",
+  "await answers: Who are you",
+  "/tick rate 20",
+  "pause",
+  "press Options...",
+  "press Accessibility Settings...",
+  "press Conversation Size: Normal",
+  "press Conversation Size: Large",
+  "close",
+  "close",
+  "close",
+]
+after = [
+  "pause",
+  "press Options...",
+  "press Accessibility Settings...",
+  "press Conversation Size: Small",
+  "close",
+  "close",
+  "close",
+]
+
+[[shots]]
+at = "the_last_fire/the_stranger"
+caption = "Conversation Size: Large"
+id = "talk/large"
+kind = "hud"
+steps = [
+  "/execute at @e[tag=wayfarer_person_stranger,limit=1] run tp @s ~0.5 ~ ~1.8 165 20",
+  "settle",
+  "interact easy_npc:humanoid",
+  "/tick rate 80",
+  "await answers: Who are you",
+  "/tick rate 20",
+  "pause",
+  "press Options...",
+  "press Accessibility Settings...",
+  "press Conversation Size: Normal",
+  "close",
+  "close",
+  "close",
+]
+after = [
+  "pause",
+  "press Options...",
+  "press Accessibility Settings...",
+  "press Conversation Size: Large",
+  "press Conversation Size: Small",
+  "close",
+  "close",
+  "close",
+]
+
+[[shots]]
+at = "the_last_fire/the_stranger"
+caption = "Options, Accessibility Settings: Conversation Size beside Show Subtitles"
+id = "talk/size-option"
+kind = "screen"
+steps = ["pause", "press Options...", "press Accessibility Settings..."]
+
+[[shots]]
+at = "ash/the_door"
+caption = "A notice on the band for everyone, wherever they are: the hold's first wave"
+id = "talk/wave"
+kind = "hud"
+steps = ["/tick rate 80", "await wave 1 of", "/tick rate 20"]
+
+[[shots]]
+at = "ash/the_door"
+caption = "The door lost: the notice, and trying the night again offered as an answer"
+id = "talk/retry"
+kind = "hud"
+steps = [
+  "/tick rate 80",
+  "await wave 1 of",
+  "/kill @e[tag=wayfarer_keep,limit=1]",
+  "await answers: Try the night",
+  "/tick rate 20",
+]
+
+[[shots]]
 at = "the_last_fire/the_stranger"
 caption = "Waking at the stranger's fire: the task panel and the compass band"
 id = "hud/first-night"
@@ -48,6 +201,164 @@ at = "showroom"
 caption = "The compass demo: a waymark, a companion circling the camp and the camp's grave"
 id = "hud/showroom-compass"
 kind = "hud"
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "At the Fire: every line of the stranger's talk, as it was said"
+id = "journal/at-the-fire/the-last-fire"
+kind = "screen"
+steps = ["key key.wayfarer.journal", "press At the Fire", "press The Last Fire"]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "At the Fire: Tollbridge's talks, each speaker as they were known then"
+id = "journal/at-the-fire/ash"
+kind = "screen"
+steps = ["key key.wayfarer.journal", "press At the Fire", "press Ash"]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Pages: a book read at a lectern, kept in full"
+id = "journal/pages/a-journal"
+kind = "screen"
+steps = [
+  "/setblock ~2 ~ ~ lectern[has_book=true]{Book:{id:\"minecraft:written_book\",count:1,components:{\"minecraft:written_book_content\":{title:\"A Journal\",author:\"A Wayfarer\",pages:['\"x\"']}}}}",
+  "settle",
+  "use ~2 ~ ~",
+  "close",
+  "key key.wayfarer.journal",
+  "press Pages",
+]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Gear, Weapons: Hob's Blade, and a next tier nobody has named yet"
+id = "journal/gear/weapons"
+kind = "screen"
+steps = ["key key.wayfarer.journal", "press Gear", "press Weapons"]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Gear, Weapons: after Hob's line at the fire, the next tier has a name and nothing more"
+id = "journal/gear/weapons-named"
+kind = "screen"
+steps = [
+  "/wayfarer story said hob_metal",
+  "key key.wayfarer.journal",
+  "press Gear",
+  "press Weapons",
+]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Gear, Tools: the first tier not yet made is chosen, with How it's made and Track"
+id = "journal/gear/tools"
+kind = "screen"
+steps = ["key key.wayfarer.journal", "press Gear", "press Tools"]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Gear, Tools: copper tools tracked"
+id = "journal/gear/tools-tracked"
+kind = "screen"
+steps = [
+  "key key.wayfarer.journal",
+  "press Gear",
+  "press Tools",
+  "press Copper tools",
+  "press Track",
+  "settle",
+]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Gear, Tools: the spyglass, beside the tiers"
+id = "journal/gear/spyglass"
+kind = "screen"
+steps = [
+  "key key.wayfarer.journal",
+  "press Gear",
+  "press Tools",
+  "press Spyglass",
+]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "How it's made: JEI opened on a copper pickaxe head's recipe"
+id = "journal/gear/how-its-made"
+kind = "screen"
+steps = [
+  "key key.wayfarer.journal",
+  "press Gear",
+  "press Tools",
+  "press Copper tools",
+  "press How it's made",
+]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Gear, Armour: appears once anyone wears armour"
+id = "journal/gear/armour"
+kind = "screen"
+steps = [
+  "/item replace entity @s armor.chest with minecraft:leather_chestplate",
+  "/wayfarer story gear armour",
+  "key key.wayfarer.journal",
+  "press Gear",
+  "press Armour",
+]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Gear, Carrying: his backpack, then copper and iron"
+id = "journal/gear/carrying"
+kind = "screen"
+steps = ["key key.wayfarer.journal", "press Gear", "press Carrying"]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Gear, The camp: the yurts, and the tent shovel beside them"
+id = "journal/gear/camp"
+kind = "screen"
+steps = ["key key.wayfarer.journal", "press Gear", "press The camp"]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Gear, Getting about: appears with the first of these held or ridden"
+id = "journal/gear/getting-about"
+kind = "screen"
+steps = [
+  "/give @s hangglider:hang_glider",
+  "/wayfarer story gear getting_about",
+  "key key.wayfarer.journal",
+  "press Gear",
+  "press Getting about",
+]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Gear, Against the cold: after Agna's line, the snowshoes are named"
+id = "journal/gear/cold"
+kind = "screen"
+steps = [
+  "/wayfarer story gear cold",
+  "/wayfarer story said agna_cold",
+  "key key.wayfarer.journal",
+  "press Gear",
+  "press Against the cold",
+]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Gear, Against the heat: before Agna's line"
+id = "journal/gear/heat"
+kind = "screen"
+steps = [
+  "/wayfarer story gear heat",
+  "key key.wayfarer.journal",
+  "press Gear",
+  "press Against the heat",
+]
 
 [[shots]]
 at = "the_last_fire/the_stranger"

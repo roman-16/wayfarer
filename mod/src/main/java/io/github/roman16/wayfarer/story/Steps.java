@@ -8,6 +8,7 @@ import io.github.roman16.wayfarer.Tents;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -70,7 +71,7 @@ final class Steps {
             default -> {}
         }
         if (!step.kind().equals("talk")) {
-            Talk.say(step.lines(), Engine.fill(Progress.of(server)));
+            Talk.say(active.quest().id(), null, step.lines(), Engine.fill(Progress.of(server)));
         }
         Journal.syncAll(server);
     }
@@ -106,7 +107,7 @@ final class Steps {
                 Clock.until(Engine.overworld(server), until, clock.afternoonSeconds(), clock.night());
                 Places.build(server, active.step().text("place"));
             }
-            case "hold" -> Hold.start(server, active);
+            case "hold" -> Hold.resume(server, active);
             case "dawn" -> Clock.until(Engine.overworld(server), until, clock.dawnSeconds(), clock.road());
             case "reach" -> Places.build(server, active.step().text("place"));
             case "bury" -> {
@@ -219,7 +220,7 @@ final class Steps {
                     if (target.getTags().contains(CLUE + clue.id()) && !Engine.found(active.scratch()).contains(clue.id())) {
                         Engine.find(active.scratch(), clue.id());
                         Progress.of(server).setDirty();
-                        Talk.say(new Story.Line(null, clue.text()));
+                        Talk.say(active.quest().id(), target.position(), new Story.Line(null, clue.text()));
                         if (Engine.found(active.scratch()).size() >= step.number("needed")) {
                             Talk.then(() -> Engine.complete(server, active));
                         }
@@ -267,13 +268,13 @@ final class Steps {
         if (step.spec().has("place")) {
             Places.build(server, step.text("place"));
         }
-        Talk.say(step.lines(), Engine.fill(Progress.of(server)));
+        Talk.say(active.quest().id(), anchor(server, step), step.lines(), Engine.fill(Progress.of(server)));
         if (step.choices().isEmpty()) {
             Talk.then(() -> Engine.complete(server, active));
         } else {
             String asker = step.lines().stream().map(Story.Line::by).filter(by -> by != null).reduce((first, second) -> second).orElse(null);
             Vec3 at = asker == null ? null : People.find(server, asker).map(Entity::position).orElse(null);
-            Talk.ask(new Talk.Offer(asker, step.choices(), at, (player, choice) -> Engine.chosen(player, active.quest().id(), step.id(), asker, choice)));
+            Talk.ask(new Talk.Offer(active.quest().id(), asker, step.choices(), at, (player, choice) -> Engine.chosen(player, active.quest().id(), step.id(), asker, choice)));
         }
     }
 
@@ -284,14 +285,14 @@ final class Steps {
         BlockPos sign = Prologue.grave(player.serverLevel());
         active.scratch().putLong(BURIED, sign.asLong());
         Progress.of(server).setDirty();
-        Talk.say(active.step().lines(BURIAL), Talk.Placeholders.NONE);
+        Talk.say(active.quest().id(), Vec3.atCenterOf(sign), active.step().lines(BURIAL), Talk.Placeholders.NONE);
         ask(active);
         Journal.syncAll(server);
     }
 
     private static void ask(Engine.Active active) {
         Vec3 grave = Vec3.atCenterOf(BlockPos.of(active.scratch().getLong(BURIED)));
-        Talk.ask(new Talk.Offer(null, active.step().choices(), grave,
+        Talk.ask(new Talk.Offer(active.quest().id(), null, active.step().choices(), grave,
                 (player, choice) -> Engine.chosen(player, active.quest().id(), active.step().id(), null, choice)));
     }
 
@@ -341,6 +342,25 @@ final class Steps {
         progress.stone = words;
         progress.setDirty();
         Engine.complete(server, active);
+    }
+
+    @Nullable
+    static Vec3 anchor(MinecraftServer server, Story.Step step) {
+        if (step.with() != null) {
+            Optional<Entity> body = People.find(server, step.with());
+            if (body.isPresent()) {
+                return body.get().position();
+            }
+        }
+        for (String key : new String[] {"at", "place"}) {
+            if (step.spec().has(key)) {
+                Optional<BlockPos> place = Progress.of(server).place(step.text(key));
+                if (place.isPresent()) {
+                    return Vec3.atCenterOf(place.get());
+                }
+            }
+        }
+        return null;
     }
 
     static void moves(MinecraftServer server, Story.Step step) {

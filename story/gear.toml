@@ -1,0 +1,386 @@
+opens = { claimed = "ash/evening" }
+
+[[lines]]
+by = "hob"
+id = "hob_metal"
+text = "Iron's good. But the Frost Walkers had a metal that laughed at the cold. I've never seen it worked."
+when = ["armour/iron", "tools/iron", "weapons/hobs_blade"]
+
+[[lines]]
+by = "agna"
+id = "agna_cold"
+text = "Wool keeps you alive. The Frost Walkers walked on snow as if it were a road. They made shoes for it."
+when = ["cold/wool"]
+
+[[lines]]
+by = "agna"
+id = "agna_heat"
+text = "Leaves keep the sun off. The Sand Singers live where nothing else can. Ask one how, if you ever meet one."
+when = ["heat/leaves"]
+
+[[rows]]
+appears = { claimed = "ash/their_fire" }
+id = "weapons"
+ladder = true
+title = "Weapons"
+who = "hob"
+
+[[rows.things]]
+good = "Plain and heavy, and sharper than it looks. Hob mends it when it's dull."
+have = [{ item = "minecraft:iron_sword" }]
+id = "hobs_blade"
+made = "Hob made it for a man who didn't live to fetch it."
+name = "Hob's Blade"
+
+[[rows.things]]
+id = "frost_metal"
+name = "The Frost Walkers' metal"
+named_by = "hob_metal"
+
+[[rows]]
+appears = { claimed = "ash/evening" }
+id = "tools"
+ladder = true
+title = "Tools"
+who = "hob"
+
+[[rows.things]]
+good = "Enough for wood, stone, coal and iron."
+have = [
+  { item = "minecraft:stone_axe" },
+  { item = "minecraft:stone_pickaxe" },
+  { item = "minecraft:stone_shovel" },
+  { item = "minecraft:wooden_axe" },
+  { item = "minecraft:wooden_pickaxe" },
+  { item = "minecraft:wooden_shovel" },
+]
+id = "wood_and_stone"
+jei = "minecraft:stone_pickaxe"
+made = "Made at my bench."
+make = "Make a stone pickaxe: three cobblestone and two sticks in a crafting grid"
+name = "Wood and stone tools"
+needs = [
+  { count = 3, item = "minecraft:cobblestone", name = "cobblestone", where = "from stone, with any pickaxe" },
+]
+
+[[rows.things]]
+good = "Sharper than stone, and they wear like it."
+have = [{ gear = "tool", material = "silentgear:flint" }]
+id = "flint"
+jei = "silentgear:pickaxe_head"
+made = "Made at my bench, with Hob's patterns."
+make = "Make a flint pickaxe: Hob's pickaxe pattern and three flint in a crafting grid, then the head and a rod"
+name = "Flint tools"
+needs = [
+  { count = 3, item = "minecraft:flint", name = "flint", where = "dug from gravel" },
+]
+
+[[rows.things]]
+good = "Lighter than iron, and softer."
+have = [{ gear = "tool", material = "silentgear:copper" }]
+id = "copper"
+jei = "silentgear:pickaxe_head"
+made = "Made at my bench, with Hob's patterns."
+make = "Make a copper pickaxe: Hob's pickaxe pattern and three copper ingots in a crafting grid, then the head and a rod"
+name = "Copper tools"
+needs = [
+  { count = 3, item = "minecraft:copper_ingot", name = "copper ingots", where = "smelted from ore in the hills' stone" },
+]
+
+[[rows.things]]
+good = "Strong enough for diamond."
+have = [{ gear = "tool", material = "silentgear:iron" }]
+id = "iron"
+jei = "silentgear:pickaxe_head"
+made = "Made at my bench, with Hob's patterns."
+make = "Make an iron pickaxe: Hob's pickaxe pattern and three iron ingots in a crafting grid, then the head and a rod"
+name = "Iron tools"
+needs = [
+  { count = 3, item = "minecraft:iron_ingot", name = "iron ingots", where = "smelted from ore in caves and mountains" },
+]
+
+[[rows.things]]
+id = "frost_metal"
+name = "The Frost Walkers' metal"
+named_by = "hob_metal"
+
+[[rows.things]]
+apart = true
+good = "Spots smoke, a landmark or a hall's cover from far off."
+have = [{ item = "minecraft:spyglass" }]
+id = "spyglass"
+jei = "minecraft:spyglass"
+made = "Made at my bench."
+make = "Make a spyglass: two copper ingots and an amethyst shard in a crafting grid"
+name = "Spyglass"
+needs = [
+  { count = 2, item = "minecraft:copper_ingot", name = "copper ingots", where = "smelted from ore in the hills' stone" },
+  { count = 1, item = "minecraft:amethyst_shard", name = "amethyst shard", where = "from the purple geodes deep under the ground" },
+]
+
+[[rows]]
+appears = { worn = true }
+id = "armour"
+ladder = true
+title = "Armour"
+who = "hob"
+
+[[rows.things]]
+good = "Light. Better than nothing."
+have = [
+  { item = "minecraft:leather_boots" },
+  { item = "minecraft:leather_chestplate" },
+  { item = "minecraft:leather_helmet" },
+  { item = "minecraft:leather_leggings" },
+]
+id = "leather"
+jei = "minecraft:leather_chestplate"
+made = "Made at my bench."
+make = "Make a leather tunic: eight leather in a crafting grid"
+name = "Leather armour"
+needs = [
+  { count = 8, item = "minecraft:leather", name = "leather", where = "from cows" },
+]
+
+[[rows.things]]
+good = "Light metal, and it turns a blade."
+have = [{ gear = "armour", material = "silentgear:copper" }]
+id = "copper"
+jei = "silentgear:helmet_plates"
+made = "Made at my bench, with a template."
+make = "Make a copper helmet: a helmet template from five boards, then the template and five copper ingots in a crafting grid"
+name = "Copper armour"
+needs = [
+  { count = 5, item = "minecraft:copper_ingot", name = "copper ingots", where = "smelted from ore in the hills' stone" },
+  { count = 5, item = "silentgear:template_board", name = "template boards", where = "cut from logs with a knife" },
+]
+
+[[rows.things]]
+good = "Heavy, and it holds."
+have = [{ gear = "armour", material = "silentgear:iron" }]
+id = "iron"
+jei = "silentgear:helmet_plates"
+made = "Made at my bench, with a template."
+make = "Make an iron helmet: a helmet template from five boards, then the template and five iron ingots in a crafting grid"
+name = "Iron armour"
+needs = [
+  { count = 5, item = "minecraft:iron_ingot", name = "iron ingots", where = "smelted from ore in caves and mountains" },
+  { count = 5, item = "silentgear:template_board", name = "template boards", where = "cut from logs with a knife" },
+]
+
+[[rows.things]]
+id = "frost_metal"
+name = "The Frost Walkers' metal"
+named_by = "hob_metal"
+
+[[rows]]
+appears = { claimed = "the_last_fire" }
+id = "carrying"
+ladder = true
+title = "Carrying"
+who = "tamsin"
+
+[[rows.things]]
+good = "His pack: room for my tent, my bed and the rest."
+have = [{ item = "sophisticatedbackpacks:backpack" }]
+id = "backpack"
+made = "It was his."
+name = "Backpack"
+
+[[rows.things]]
+good = "More room."
+have = [{ item = "sophisticatedbackpacks:copper_backpack" }]
+id = "copper"
+jei = "sophisticatedbackpacks:copper_backpack"
+made = "Made at my bench."
+make = "Make a copper backpack: eight copper ingots around the backpack in a crafting grid"
+name = "Copper backpack"
+needs = [
+  { count = 8, item = "minecraft:copper_ingot", name = "copper ingots", where = "smelted from ore in the hills' stone" },
+]
+
+[[rows.things]]
+good = "More room still."
+have = [{ item = "sophisticatedbackpacks:iron_backpack" }]
+id = "iron"
+jei = "sophisticatedbackpacks:iron_backpack"
+made = "Made at my bench."
+make = "Make an iron backpack: four iron ingots around the copper backpack in a crafting grid"
+name = "Iron backpack"
+needs = [
+  { count = 4, item = "minecraft:iron_ingot", name = "iron ingots", where = "smelted from ore in caves and mountains" },
+]
+
+[[rows.things]]
+hidden = true
+id = "later"
+
+[[rows]]
+appears = { claimed = "the_last_fire" }
+id = "camp"
+ladder = true
+title = "The camp"
+who = "tamsin"
+
+[[rows.things]]
+good = "A tent for one, from his pack."
+have = [{ item = "nomadictents:small_yurt" }]
+id = "small_yurt"
+made = "It was his."
+name = "Small yurt"
+
+[[rows.things]]
+good = "Room for a friend."
+have = [{ item = "nomadictents:medium_yurt" }]
+id = "medium_yurt"
+jei = "nomadictents:medium_yurt"
+made = "Made at my bench."
+make = "Make a medium yurt: three yurt sections around the small yurt in a crafting grid"
+name = "Medium yurt"
+needs = [
+  { count = 3, item = "nomadictents:yurt_section", name = "yurt sections", where = "made at my bench from canvas, which is wool, and sticks" },
+]
+
+[[rows.things]]
+good = "Room for the whole team."
+have = [{ item = "nomadictents:large_yurt" }]
+id = "large_yurt"
+jei = "nomadictents:large_yurt"
+made = "Made at my bench."
+make = "Make a large yurt: three yurt sections and two golden crossbeams around the medium yurt in a crafting grid"
+name = "Large yurt"
+needs = [
+  { count = 3, item = "nomadictents:yurt_section", name = "yurt sections", where = "made at my bench from canvas, which is wool, and sticks" },
+  { count = 2, item = "nomadictents:golden_crossbeams", name = "golden crossbeams", where = "made at my bench from gold and sticks" },
+]
+
+[[rows.things]]
+hidden = true
+id = "later"
+
+[[rows.things]]
+apart = true
+good = "Digs a tent's inside deeper, so it holds more than it shows."
+have = [{ item = "nomadictents:stone_tent_shovel" }]
+id = "shovel"
+jei = "nomadictents:stone_tent_shovel"
+made = "Made at my bench."
+make = "Make a stone tent shovel: two canvas, cobblestone, a stick and an emerald in a crafting grid"
+name = "Stone tent shovel"
+needs = [
+  { count = 1, item = "minecraft:emerald", name = "emerald", where = "traded from villagers, or ore in the mountains" },
+  { count = 2, item = "nomadictents:tent_canvas", name = "tent canvas", where = "made at my bench from wool" },
+]
+
+[[rows]]
+appears = { has = [
+  "getting_about/glider",
+  "getting_about/hook",
+  "getting_about/horse",
+  "getting_about/stone",
+] }
+id = "getting_about"
+title = "Getting about"
+who = "pip"
+
+[[rows.things]]
+good = "Folds me back to it from any waystone I've touched."
+have = [{ item = "waystones:waystone" }]
+id = "stone"
+made = "Found, never made."
+name = "A stone of my own"
+named_by = "had"
+
+[[rows.things]]
+good = "Faster than walking, and it carries me."
+have = [{ ridden = true }]
+id = "horse"
+made = "Tamed, not made."
+make = "Tame a horse: climb on bareback again and again until it stops throwing you, then put a saddle on it"
+name = "A horse"
+needs = [
+  { count = 1, item = "minecraft:saddle", name = "saddle", where = "found in old chests" },
+]
+
+[[rows.things]]
+good = "Up a cliff in one pull."
+have = [{ item = "yo_hooks:iron_grappling_hook" }]
+id = "hook"
+jei = "yo_hooks:iron_grappling_hook"
+made = "Made at my bench."
+make = "Make an iron grappling hook: an iron hook head, a chain and a stick in a crafting grid"
+name = "Iron grappling hook"
+needs = [
+  { count = 5, item = "minecraft:iron_ingot", name = "iron ingots", where = "smelted from ore in caves and mountains" },
+]
+
+[[rows.things]]
+good = "Floats me down from a height, a long way."
+have = [{ item = "hangglider:hang_glider" }]
+id = "glider"
+jei = "hangglider:hang_glider"
+made = "Made at my bench."
+make = "Make a hang glider: two leather wings and an iron frame in a crafting grid"
+name = "Hang glider"
+needs = [
+  { count = 6, item = "minecraft:iron_ingot", name = "iron ingots", where = "smelted from ore in caves and mountains" },
+  { count = 6, item = "minecraft:leather", name = "leather", where = "from cows" },
+]
+
+[[rows]]
+appears = { feels = "cold" }
+id = "cold"
+ladder = true
+title = "Against the cold"
+who = "agna"
+
+[[rows.things]]
+good = "Warm in the snow."
+have = [
+  { item = "toughasnails:wool_boots" },
+  { item = "toughasnails:wool_chestplate" },
+  { item = "toughasnails:wool_helmet" },
+  { item = "toughasnails:wool_leggings" },
+]
+id = "wool"
+jei = "toughasnails:wool_chestplate"
+made = "Made at my bench."
+make = "Make a wool coat: eight wool in a crafting grid"
+name = "Wool clothes"
+needs = [
+  { count = 8, name = "wool", tag = "minecraft:wool", where = "shorn from sheep" },
+]
+
+[[rows.things]]
+id = "snowshoes"
+name = "The Frost Walkers' snowshoes"
+named_by = "agna_cold"
+
+[[rows]]
+appears = { feels = "hot" }
+id = "heat"
+ladder = true
+title = "Against the heat"
+who = "agna"
+
+[[rows.things]]
+good = "Keeps the sun off."
+have = [
+  { item = "toughasnails:leaf_boots" },
+  { item = "toughasnails:leaf_chestplate" },
+  { item = "toughasnails:leaf_helmet" },
+  { item = "toughasnails:leaf_leggings" },
+]
+id = "leaves"
+jei = "toughasnails:leaf_chestplate"
+made = "Made at my bench."
+make = "Make a leaf tunic: eight leaves in a crafting grid"
+name = "Leaf clothes"
+needs = [
+  { count = 8, name = "leaves", tag = "minecraft:leaves", where = "cut from trees with shears" },
+]
+
+[[rows.things]]
+id = "sand"
+name = "What the Sand Singers wear"
+named_by = "agna_heat"

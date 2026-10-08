@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Talk;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -142,7 +143,7 @@ public final class Nights {
         NightPayload forecast = forecast(player);
         PacketDistributor.sendToPlayer(player, forecast);
         if (forecast.sleepless()) {
-            player.sendSystemMessage(Component.translatable("wayfarer.night.chat").withStyle(ChatFormatting.RED));
+            Talk.tell(player, Component.translatable("wayfarer.night.chat").withStyle(ChatFormatting.DARK_RED));
         }
     }
 
@@ -159,7 +160,7 @@ public final class Nights {
         player.connection.send(new ClientboundSetTitlesAnimationPacket(20, 80, 30));
         player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("wayfarer.night.subtitle")));
         player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("wayfarer.night.title").withStyle(ChatFormatting.RED)));
-        player.sendSystemMessage(Component.translatable("wayfarer.night.chat").withStyle(ChatFormatting.RED));
+        Talk.tell(player, Component.translatable("wayfarer.night.chat").withStyle(ChatFormatting.DARK_RED));
         Sounds.play(player, HARD_NIGHT);
     }
 
