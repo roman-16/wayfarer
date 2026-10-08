@@ -1,0 +1,22 @@
+[body]
+ascent = 10
+author = "Daniel Linssen"
+default = true
+descent = 2
+file = "fonts/m5x7.ttf"
+licence = "CC0 1.0"
+name = "m5x7"
+ranges = [[33, 126], [160, 383], [8208, 8231], [8364, 8364]]
+size = 16
+url = "https://managore.itch.io/m5x7"
+
+[display]
+ascent = 12
+author = "Pix3M"
+descent = 3
+file = "fonts/alagard.ttf"
+licence = "CC BY 3.0"
+name = "Alagard"
+ranges = [[33, 126], [160, 383]]
+size = 16
+url = "https://opengameart.org/content/pixel-fonts-by-pix3m"

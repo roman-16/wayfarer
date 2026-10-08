@@ -101,7 +101,7 @@ public final class Gear {
             return;
         }
         if (DATA.rows().stream().anyMatch(row -> appeared(progress, row)) && !Firsts.seen(player, Tasks.FIRST + TASK)) {
-            open.put(TASK, Component.translatable("wayfarer.task.gear", Component.keybind(Tasks.JOURNAL_KEY)));
+            open.put(TASK, Component.translatable("wayfarer.task.gear", Tasks.key(Tasks.JOURNAL_KEY)));
         }
         Optional<Thing> tracked = Optional.ofNullable(progress.gearTracking.get(player.getUUID())).flatMap(Gear::thing);
         if (tracked.isEmpty() || had(player, tracked.get())) {
@@ -196,7 +196,7 @@ public final class Gear {
             Optional<Thing> tracked = Optional.ofNullable(progress.gearTracking.get(player.getUUID())).flatMap(Gear::thing);
             if (tracked.isPresent() && had(player, tracked.get())) {
                 progress.gearTracking.remove(player.getUUID());
-                Banners.show(player, Component.translatable("wayfarer.banner.gear", tracked.get().name()));
+                Banners.show(player, Component.translatable("wayfarer.banner.gear"), Component.literal(tracked.get().name()));
                 changed = true;
             }
         }

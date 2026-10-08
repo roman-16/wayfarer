@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "86d74380fd48734b3ba22ceb693fe3d8771d975235ab2c8722233d32d8b08837"
+hash = "31c4155ac8c2cd4495321283c657b9262b9687158eb655e9d03627e4477dc516"
 
 [[files]]
 file = "config/DistantHorizons.toml"
@@ -82,7 +82,7 @@ hash = "c831e807fc43a09432d4ec6b5a0094e2d5bbf357a2f1e8de98c0cd2298555cb4"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
-hash = "6afc9752d7e364e0545ed2a967513133c9e95e4b3d40e99bfd37592390639013"
+hash = "4528e9698142f2dfd44ff10f447c185229ea69a522dba1f567fc4b36b545e667"
 
 [[files]]
 file = "config/dynamic_fps.json"
@@ -91,6 +91,10 @@ hash = "c3e1984f020b1a8a07da3020c03bbf57e401baed0d096be6d6027cd3e7a5c685"
 [[files]]
 file = "config/enhancedcelestials2core/translations.json"
 hash = "24c34c89632454822eb2acc91d2b38b1a72fd370925c544c796396b2b174a205"
+
+[[files]]
+file = "config/fml.toml"
+hash = "452d2618167568939426064cd6d2467e5e12f0751a88ff0a244cd036b5a96878"
 
 [[files]]
 file = "config/gravestone-server.toml"
@@ -122,7 +126,7 @@ hash = "55af2f0e56f3dbce98b158543e375f9cffd7c3233311f15c57fe66bc347bc4f4"
 
 [[files]]
 file = "config/jade/jade.json"
-hash = "9e1c88118d77b540573284e4861aa236fa2fc852e1d3a4de2c39065f15cce583"
+hash = "188374a62e8fd7b081056b844337099354156512468076fd41e5ff347f574e09"
 
 [[files]]
 file = "config/jade/plugins.json"
@@ -185,6 +189,10 @@ file = "config/subtle_effects/general.toml"
 hash = "acdd4a35a9bb8a89e667245a10481f73f2fb1b0f137ecb9c77ef6605dc4f15d4"
 
 [[files]]
+file = "config/supplementaries-client.toml"
+hash = "3d250b12fd11a56d4d3355f40474f6e69ad2f7693ae20b2f0b8afa6945f30bb6"
+
+[[files]]
 file = "config/tectonic.json"
 hash = "1c89369d8fe65c38223a02f489899038e88744d9c31ba17b823a90c9667b3c4d"
 
@@ -206,7 +214,7 @@ hash = "95c55f5a51e25dca37f887896486ba413b6ce5d1c1ce59c753be61a4ca894637"
 
 [[files]]
 file = "journeymap/config/6.0/journeymap.core.config"
-hash = "f6709f55e91282ae6ac39c56cde36352ab3d2a208da4b8d1f583c8ce0f9a3449"
+hash = "837f0638e39dc55451f22771880bff2a944e85e93f01cde18d7bd17525f08ef3"
 
 [[files]]
 file = "journeymap/config/6.0/journeymap.minimap.config"
@@ -516,11 +524,6 @@ hash = "54bbfb896352f95dc539979ccf3fd59ae8af74e73d2104583d9f31131608dfe4"
 metafile = true
 
 [[files]]
-file = "mods/iceberg.pw.toml"
-hash = "a2fbecad69fcbff54919864ea8b95e54d140a1a2c637d73307fb366e76066fe6"
-metafile = true
-
-[[files]]
 file = "mods/immediatelyfast.pw.toml"
 hash = "2863a3b187723e1f69ed2ad2b2c3d834e8442468a1347c80df5b310e243c8753"
 metafile = true
@@ -588,11 +591,6 @@ metafile = true
 [[files]]
 file = "mods/kotlin-for-forge.pw.toml"
 hash = "712a69b3569a8055979de6eea262068535fe182dffb3833e53e5833e9cbf9766"
-metafile = true
-
-[[files]]
-file = "mods/legendary-tooltips.pw.toml"
-hash = "9ca14134538c66b6d8ef74107f6b15ba9487ec632d984427e84ad38aa47afa60"
 metafile = true
 
 [[files]]
@@ -718,11 +716,6 @@ metafile = true
 [[files]]
 file = "mods/polytone.pw.toml"
 hash = "a7af695080bf24f091c87d411ca0713ee95e047b2dc0051689c4e9d178c5ba6f"
-metafile = true
-
-[[files]]
-file = "mods/prism-lib.pw.toml"
-hash = "d9b38ba42434eb436d036b1c8add839bee003240dc85cc54ec626aac58c59070"
 metafile = true
 
 [[files]]

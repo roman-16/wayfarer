@@ -67,6 +67,8 @@ pack: build
     cp --recursive pack build/pack
     cp {{ jar }} build/pack/mods/
     (cd build/pack && packwiz refresh && packwiz curseforge export --yes --output "../../dist/Wayfarer-{{ packVersion }}.zip")
+    magick mod/src/generated/resources/assets/wayfarer/textures/item/ember_lit.png -filter point -resize 1600% build/icon.png
+    python3 -c 'import sys, zipfile; zipfile.ZipFile(sys.argv[1], "a").write(sys.argv[2], "icon.png")' "dist/Wayfarer-{{ packVersion }}.zip" build/icon.png
     python3 scripts/instance.py server build/server {{ jar }}
     python3 -c 'import shutil, sys; shutil.make_archive(sys.argv[1], "zip", sys.argv[2])' "dist/Wayfarer-{{ packVersion }}-server" build/server
 

@@ -33,3 +33,8 @@ Sounds in the Wayfarer mod:
 - Canvas Tent 1, by kevinkace. CC0 1.0. https://freesound.org/people/kevinkace/sounds/66773
 - Umbrella Close 3, by Geoff-Bremner-Audio. CC BY 4.0. https://freesound.org/people/Geoff-Bremner-Audio/sounds/790255
 - FIREPLACE, by leosalom. CC BY 3.0. https://freesound.org/people/leosalom/sounds/234288
+
+Fonts in the Wayfarer mod:
+
+- m5x7, by Daniel Linssen. CC0 1.0. https://managore.itch.io/m5x7
+- Alagard, by Pix3M. CC BY 3.0. https://opengameart.org/content/pixel-fonts-by-pix3m

@@ -237,7 +237,7 @@ public final class Wayfarer {
 
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1");
-        registrar.playToClient(Banners.Payload.TYPE, Banners.Payload.STREAM_CODEC, (payload, context) -> HudState.banners.add(payload.text()));
+        registrar.playToClient(Banners.Payload.TYPE, Banners.Payload.STREAM_CODEC, (payload, context) -> HudState.banners.add(payload));
         registrar.playToClient(BookPayload.TYPE, BookPayload.STREAM_CODEC, (payload, context) -> Books.open(payload));
         registrar.playToClient(Talk.Answers.TYPE, Talk.Answers.STREAM_CODEC, (payload, context) -> Conversation.ask(payload));
         registrar.playToServer(Talk.Pick.TYPE, Talk.Pick.STREAM_CODEC, (payload, context) -> Talk.pick((ServerPlayer) context.player(), payload.index()));

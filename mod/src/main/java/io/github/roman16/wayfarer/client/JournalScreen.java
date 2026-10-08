@@ -7,6 +7,8 @@ import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import io.github.roman16.wayfarer.HudState;
 import io.github.roman16.wayfarer.Wayfarer;
+import io.github.roman16.wayfarer.client.stamp.Inline;
+import io.github.roman16.wayfarer.client.stamp.Stamp;
 import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Gear;
 import io.github.roman16.wayfarer.story.Journal;
@@ -16,6 +18,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -25,6 +28,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
@@ -33,7 +37,6 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
@@ -41,47 +44,39 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class JournalScreen extends Screen {
     private static final String PAGE_SOUND = "journal_page";
-    private static final ResourceLocation COVER = Wayfarer.id("journal_cover");
-    private static final ResourceLocation SHEET = Wayfarer.id("journal_page");
-    private static final ResourceLocation RIBBON = Wayfarer.id("ribbon");
-    private static final int MAX_WIDTH = 384;
-    private static final int MAX_HEIGHT = 232;
+    private static final int MAX_WIDTH = 400;
+    private static final int MAX_HEIGHT = 240;
     private static final int OUTSIDE = 12;
-    private static final int COVER_EDGE = 8;
-    private static final int SPINE = 2;
-    private static final int PAD = 8;
-    private static final int LINE = 10;
-    private static final int RIBBON_HEIGHT = 12;
-    private static final int RIBBON_GAP = 3;
+    static final int COVER_EDGE = 12;
+    static final int SPINE = 10;
+    static final int PAD = 8;
+    static final int LINE = 10;
+    private static final int TASK_LINE = 12;
+    private static final int RIBBON_HEIGHT = 13;
+    private static final int RIBBON_GAP = 2;
     private static final int RIBBON_PULL = 6;
-    private static final int RIBBON_TEXT = 4;
-    private static final int RIBBON_TUCK = 4;
+    private static final int RIBBON_NOTCH = 5;
+    private static final int RIBBON_TUCK = 6;
+    private static final int RIBBON_WIDTH = Stamp.ICON_SIZE + 8;
     private static final int BUTTON_HEIGHT = 20;
     private static final int BUTTON_LEAST = 48;
     private static final int SLOT = 18;
     private static final int DOT = 3;
-    private static final int INK = 0xFF3F2A14;
-    private static final int TITLE_INK = 0xFF8A3A0A;
-    private static final int QUIET_INK = 0xFF8A7A62;
-    private static final int GOLD = 0xFFC8901E;
-    private static final int CHOSEN = 0x40B78A4E;
-    private static final int POINTED = 0x20B78A4E;
-    private static final int RIBBON_INK = 0xFFFFFFFF;
-    private static final int RIBBON_POINTED_INK = 0xFFFFFFA0;
-    private static final int SPINE_COLOR = 0xFF3A1408;
-    private static final int SLOT_FACE = 0xFF8B8B8B;
-    private static final int SLOT_SHADE = 0xFF373737;
-    private static final int SLOT_LIGHT = 0xFFFFFFFF;
-    private static final String TRACKED_MARK = "✦ ";
-    private static final String FOLDED_MARK = "▸ ";
-    private static final String UNFOLDED_MARK = "▾ ";
+    private static final int ICON_INDENT = Stamp.MARK_WIDTH + 3;
+    static final int TITLE_GAP = 4;
+    private static final int INK = Stamp.INK;
+    private static final int TITLE_INK = Stamp.INK_RED;
+    private static final int QUIET_INK = Stamp.INK_QUIET;
+    private static final int GOLD = Stamp.ramp("ember", 1);
+    private static final int CHOSEN = Stamp.withAlpha(Stamp.ramp("paper", 1), Stamp.FAINT);
+    private static final int POINTED = Stamp.withAlpha(Stamp.ramp("paper", 1), Stamp.FAINT / 2);
+    private static final String FOLDED_MARK = "+ ";
+    private static final String UNFOLDED_MARK = "- ";
+    private static final String MORE_MARK = "...";
     private static String latest = "{}";
     private static Tab open = Tab.QUESTS;
     private static final Map<Tab, String> CHOSEN_ENTRY = new EnumMap<>(Tab.class);
     private static final Map<String, String> CHOSEN_THING = new HashMap<>();
-    private static final String HAD_MARK = "☑ ";
-    private static final String MORE_MARK = "▾";
-    private static final String UNMADE_MARK = "☐ ";
     private final Set<String> seen = new HashSet<>();
     private boolean doneUnfolded;
     private JsonObject view = new JsonObject();
@@ -113,6 +108,7 @@ public final class JournalScreen extends Screen {
 
     public static void show(String view) {
         latest = view;
+        Recap.remember(view);
     }
 
     public static void forget() {
@@ -164,7 +160,15 @@ public final class JournalScreen extends Screen {
 
     private record Entry(Kind kind, String key, Component label, int color, JsonObject data) {}
 
-    private record Line(FormattedCharSequence text, int indent, int color) {}
+    private enum Icon {
+        DONE,
+        MARK,
+        OPEN
+    }
+
+    private record Line(List<Inline.Piece> pieces, int indent, int color, @Nullable Icon icon) {
+        static final Line BLANK = new Line(List.of(), 0, INK, null);
+    }
 
     @Override
     protected void init() {
@@ -177,7 +181,7 @@ public final class JournalScreen extends Screen {
                 ribbons.add(tab);
             }
         }
-        int room = ribbons.stream().mapToInt(tab -> font.width(Component.translatable(tab.key))).max().orElse(0) + RIBBON_TEXT * 2 + RIBBON_PULL;
+        int room = RIBBON_WIDTH + RIBBON_PULL;
         bookWidth = Math.min(width - OUTSIDE * 2 - room, MAX_WIDTH);
         bookHeight = Math.min(height - OUTSIDE * 2, MAX_HEIGHT);
         left = (width - bookWidth - room) / 2;
@@ -193,7 +197,7 @@ public final class JournalScreen extends Screen {
         things = new ArrayList<>();
         page = page(chosen);
         slots = chosen != null && chosen.kind() == Kind.REWARD ? stacks(chosen.data()) : List.of();
-        int ribbonY = top + COVER_EDGE + RIBBON_GAP;
+        int ribbonY = top + COVER_EDGE + RIBBON_GAP * 2;
         for (Tab tab : ribbons) {
             addRenderableWidget(new Ribbon(tab, left + bookWidth, ribbonY));
             ribbonY += RIBBON_HEIGHT + RIBBON_GAP;
@@ -276,14 +280,12 @@ public final class JournalScreen extends Screen {
         for (JsonElement element : row.getAsJsonArray("things")) {
             JsonObject thing = element.getAsJsonObject();
             boolean known = thing.get("known").getAsBoolean();
-            Component label = known ? Component.literal((thing.get("had").getAsBoolean() ? HAD_MARK : UNMADE_MARK) + thing.get("name").getAsString())
-                    : Component.translatable("wayfarer.gear.unknown", who);
+            Component label = known ? Component.literal(thing.get("name").getAsString()) : Component.translatable("wayfarer.gear.unknown", who);
             int color = thing == chosen ? GOLD : known && thing.get("had").getAsBoolean() ? QUIET_INK : INK;
-            Component name = known ? Component.literal(thing.get("name").getAsString()) : label;
-            things.add(new ThingButton(row.get("id").getAsString(), thing.get("key").getAsString(), name, lines.size()));
-            add(lines, label, 0, color, width);
+            things.add(new ThingButton(row.get("id").getAsString(), thing.get("key").getAsString(), label, lines.size()));
+            add(lines, label, 0, color, width, known ? thing.get("had").getAsBoolean() ? Icon.DONE : Icon.OPEN : null);
         }
-        lines.add(new Line(FormattedCharSequence.EMPTY, 0, INK));
+        lines.add(Line.BLANK);
         if (chosen != null && chosen.get("known").getAsBoolean()) {
             if (chosen.get("mystery").getAsBoolean()) {
                 add(lines, Component.translatable("wayfarer.gear.mystery"), 0, INK, width);
@@ -414,30 +416,28 @@ public final class JournalScreen extends Screen {
             return lines;
         }
         JsonObject data = entry.data();
-        add(lines, Component.literal(mark(entry)).append(entry.label()), 0, entry.kind() == Kind.REWARD && entry.color() == GOLD ? GOLD : TITLE_INK, width);
-        lines.add(new Line(FormattedCharSequence.EMPTY, 0, INK));
         switch (entry.kind()) {
             case REWARD -> {
                 add(lines, Component.literal(data.get("text").getAsString()), 0, INK, width);
                 if (data.get("claimed").getAsBoolean()) {
-                    lines.add(new Line(FormattedCharSequence.EMPTY, 0, INK));
+                    lines.add(Line.BLANK);
                     add(lines, Component.translatable("wayfarer.journal.claimed"), 0, QUIET_INK, width);
                 }
             }
             case QUEST, DONE -> {
                 for (JsonElement told : data.getAsJsonArray("story")) {
                     add(lines, Component.literal(told.getAsString()), 0, INK, width);
-                    lines.add(new Line(FormattedCharSequence.EMPTY, 0, INK));
+                    lines.add(Line.BLANK);
                 }
                 if (entry.kind() == Kind.QUEST) {
-                    add(lines, Component.literal("> " + data.get("objective").getAsString()), 0, INK, width);
+                    add(lines, Component.literal(data.get("objective").getAsString()), 0, INK, width, Icon.MARK);
                     if (data.get("id").getAsString().equals(tracked())) {
-                        HudState.panel.open().forEach(task -> add(lines, Component.literal("☐ ").append(task), PAD, INK, width));
-                        HudState.panel.done().forEach(task -> add(lines, Component.literal("☑ ").append(task), PAD, QUIET_INK, width));
+                        HudState.panel.open().forEach(task -> add(lines, task, ICON_INDENT, INK, width, Icon.OPEN));
+                        HudState.panel.done().forEach(task -> add(lines, task, ICON_INDENT, QUIET_INK, width, Icon.DONE));
                     }
                     JsonArray clues = data.getAsJsonArray("found");
                     if (!clues.isEmpty()) {
-                        lines.add(new Line(FormattedCharSequence.EMPTY, 0, INK));
+                        lines.add(Line.BLANK);
                         add(lines, Component.translatable("wayfarer.journal.found"), 0, TITLE_INK, width);
                         clues.forEach(clue -> add(lines, Component.literal("- " + clue.getAsString()), PAD, INK, width));
                     }
@@ -446,13 +446,13 @@ public final class JournalScreen extends Screen {
             case CARAVAN -> add(lines, Component.translatable("wayfarer.caravan.objective"), 0, INK, width);
             case LINES -> data.getAsJsonArray("lines").forEach(line -> {
                 add(lines, Component.literal(line.getAsString()), 0, INK, width);
-                lines.add(new Line(FormattedCharSequence.EMPTY, 0, INK));
+                lines.add(Line.BLANK);
             });
             case STONE -> add(lines, Component.translatable("wayfarer.journal.stone.at", data.get("x").getAsInt(), data.get("z").getAsInt()), 0, INK, width);
             case BOOK -> {
                 add(lines, Component.translatable("wayfarer.journal.book.by", data.get("author").getAsString()), 0, QUIET_INK, width);
                 for (JsonElement text : data.getAsJsonArray("pages")) {
-                    lines.add(new Line(FormattedCharSequence.EMPTY, 0, INK));
+                    lines.add(Line.BLANK);
                     add(lines, Component.literal(text.getAsString()), 0, INK, width);
                 }
             }
@@ -484,11 +484,19 @@ public final class JournalScreen extends Screen {
     }
 
     private void add(List<Line> lines, Component text, int indent, int color, int width) {
-        font.split(text, width - indent).forEach(line -> lines.add(new Line(line, indent, color)));
+        add(lines, text, indent, color, width, null);
+    }
+
+    private void add(List<Line> lines, Component text, int indent, int color, int width, @Nullable Icon icon) {
+        int shift = icon == null ? 0 : ICON_INDENT;
+        List<List<Inline.Piece>> split = Inline.lines(font, text, width - indent - shift);
+        for (int index = 0; index < split.size(); index++) {
+            lines.add(new Line(split.get(index), indent + shift, color, index == 0 ? icon : null));
+        }
     }
 
     private int pageWidth() {
-        return bookWidth / 2 - COVER_EDGE;
+        return (bookWidth - COVER_EDGE * 2 - SPINE) / 2;
     }
 
     private int listLeft() {
@@ -496,7 +504,7 @@ public final class JournalScreen extends Screen {
     }
 
     private int pageLeft() {
-        return left + bookWidth / 2 + SPINE;
+        return listLeft() + pageWidth() + SPINE;
     }
 
     private int pagesTop() {
@@ -519,19 +527,22 @@ public final class JournalScreen extends Screen {
         super.renderBackground(graphics, mouseX, mouseY, partialTick);
         for (GuiEventListener child : children()) {
             if (child instanceof Ribbon ribbon) {
-                graphics.blitSprite(RIBBON, ribbon.getX() - RIBBON_TUCK, ribbon.getY(), ribbon.getWidth() + RIBBON_TUCK + RIBBON_TEXT, RIBBON_HEIGHT);
+                graphics.blitSprite(ribbon.tab == open ? Stamp.RIBBON_ACTIVE : Stamp.RIBBON, ribbon.getX() - RIBBON_TUCK, ribbon.getY(),
+                        ribbon.getWidth() + RIBBON_TUCK + RIBBON_NOTCH, RIBBON_HEIGHT);
             }
         }
-        graphics.blitSprite(COVER, left, top, bookWidth, bookHeight);
-        graphics.blitSprite(SHEET, listLeft(), pagesTop(), pageWidth(), pagesBottom() - pagesTop());
-        graphics.blitSprite(SHEET, pageLeft() - SPINE, pagesTop(), pageWidth(), pagesBottom() - pagesTop());
-        graphics.fill(left + bookWidth / 2 - SPINE / 2, pagesTop(), left + bookWidth / 2 + SPINE / 2, pagesBottom(), SPINE_COLOR);
+        graphics.blitSprite(Stamp.BOOK, left, top, bookWidth, bookHeight);
+        graphics.blitSprite(Stamp.PAGE_LEFT, listLeft(), pagesTop(), pageWidth(), pagesBottom() - pagesTop());
+        graphics.blitSprite(Stamp.PAGE_RIGHT, pageLeft(), pagesTop(), pageWidth(), pagesBottom() - pagesTop());
+        graphics.blitSprite(Stamp.SPINE, listLeft() + pageWidth(), pagesTop(), SPINE, pagesBottom() - pagesTop());
+        Stamp.mark(graphics, listLeft() + pageWidth() + (SPINE - Stamp.MARK_WIDTH) / 2, top + (COVER_EDGE - Stamp.MARK_HEIGHT) / 2, false);
     }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
-        graphics.drawString(font, Component.translatable(open.key), listLeft() + PAD, pagesTop() + PAD, TITLE_INK, false);
+        Stamp.title(graphics, font, Component.translatable(open.key).getString(), listLeft() + PAD, pagesTop() + PAD, TITLE_INK, false);
+        Stamp.divider(graphics, listLeft() + PAD, listTop() - Stamp.DIVIDER_HEIGHT - 2, pageWidth() - PAD * 2, true);
         graphics.enableScissor(listLeft(), listTop(), listLeft() + pageWidth(), listBottom());
         rows.forEach(row -> row.render(graphics, mouseX, mouseY, partialTick));
         graphics.disableScissor();
@@ -540,7 +551,11 @@ public final class JournalScreen extends Screen {
     }
 
     private int listTop() {
-        return pagesTop() + PAD + LINE + LINE / 2;
+        return pagesTop() + PAD + Stamp.DISPLAY_HEIGHT + TITLE_GAP + Stamp.DIVIDER_HEIGHT + 2;
+    }
+
+    private int entryTop(@Nullable Entry entry) {
+        return pagesTop() + PAD + (entry == null ? 0 : Stamp.DISPLAY_HEIGHT + TITLE_GAP + Stamp.DIVIDER_HEIGHT + 2);
     }
 
     private int listBottom() {
@@ -548,9 +563,9 @@ public final class JournalScreen extends Screen {
     }
 
     private void placeThings() {
-        int pageTop = pagesTop() + PAD;
+        int pageTop = entryTop(chosen());
         for (ThingButton thing : things) {
-            int y = pageTop + thing.line * LINE - pageScroll;
+            int y = pageTop + page.subList(0, thing.line).stream().mapToInt(JournalScreen::height).sum() - pageScroll;
             thing.setY(y);
             thing.visible = y >= pageTop && y + LINE <= pagesBottom() - PAD;
         }
@@ -569,14 +584,29 @@ public final class JournalScreen extends Screen {
 
     private void entry(GuiGraphics graphics, int mouseX, int mouseY) {
         int x = pageLeft() + PAD;
-        int pageTop = pagesTop() + PAD;
+        Entry chosen = chosen();
+        if (chosen != null) {
+            int color = chosen.kind() == Kind.REWARD && chosen.color() == GOLD ? GOLD : TITLE_INK;
+            String title = font.substrByWidth(Stamp.display(chosen.label().getString()), pageWidth() - PAD * 2).getString();
+            Stamp.title(graphics, font, title, x, pagesTop() + PAD, color, false);
+            Stamp.divider(graphics, x, entryTop(chosen) - Stamp.DIVIDER_HEIGHT - 2, pageWidth() - PAD * 2, true);
+        }
+        int pageTop = entryTop(chosen);
         int bottom = pagesBottom() - PAD - (acting > 0 ? BUTTON_HEIGHT + PAD : 0) - (slots.isEmpty() ? 0 : SLOT + PAD);
-        pageScroll = Mth.clamp(pageScroll, 0, Math.max(0, page.size() * LINE - (bottom - pageTop)));
+        pageScroll = Mth.clamp(pageScroll, 0, Math.max(0, page.stream().mapToInt(JournalScreen::height).sum() - (bottom - pageTop)));
         graphics.enableScissor(pageLeft(), pageTop, pageLeft() + pageWidth(), bottom);
         int y = pageTop - pageScroll;
         for (Line line : page) {
-            graphics.drawString(font, line.text(), x + line.indent(), y, line.color(), false);
-            y += LINE;
+            if (line.icon() != null) {
+                int iconX = x + line.indent() - ICON_INDENT;
+                switch (line.icon()) {
+                    case DONE -> Stamp.ring(graphics, iconX, y + 1, true, QUIET_INK);
+                    case MARK -> Stamp.mark(graphics, iconX, y, true);
+                    case OPEN -> Stamp.ring(graphics, iconX, y + 1, false, INK);
+                }
+            }
+            Inline.draw(graphics, font, line.pieces(), x + line.indent(), y, line.color(), false);
+            y += height(line);
         }
         graphics.disableScissor();
         if (y > bottom) {
@@ -585,9 +615,7 @@ public final class JournalScreen extends Screen {
         ItemStack hovered = ItemStack.EMPTY;
         int slotX = x;
         for (ItemStack stack : slots) {
-            graphics.fill(slotX, bottom + PAD, slotX + SLOT, bottom + PAD + SLOT, SLOT_SHADE);
-            graphics.fill(slotX + 1, bottom + PAD + 1, slotX + SLOT, bottom + PAD + SLOT, SLOT_LIGHT);
-            graphics.fill(slotX + 1, bottom + PAD + 1, slotX + SLOT - 1, bottom + PAD + SLOT - 1, SLOT_FACE);
+            graphics.blitSprite(Stamp.SLOT, slotX, bottom + PAD, SLOT, SLOT);
             graphics.renderItem(stack, slotX + 1, bottom + PAD + 1);
             graphics.renderItemDecorations(font, stack, slotX + 1, bottom + PAD + 1);
             if (mouseX >= slotX && mouseX < slotX + SLOT && mouseY >= bottom + PAD && mouseY < bottom + PAD + SLOT) {
@@ -604,12 +632,12 @@ public final class JournalScreen extends Screen {
         graphics.fill(x, y, x + DOT, y + DOT, GOLD);
     }
 
-    private String mark(Entry entry) {
-        return switch (entry.kind()) {
-            case QUEST -> entry.data().get("id").getAsString().equals(tracked()) ? TRACKED_MARK : "";
-            case FOLD -> doneUnfolded ? UNFOLDED_MARK : FOLDED_MARK;
-            default -> "";
-        };
+    private static int height(Line line) {
+        return line.pieces().stream().anyMatch(Inline.Piece::key) ? TASK_LINE : LINE;
+    }
+
+    private boolean tracked(Entry entry) {
+        return entry.kind() == Kind.QUEST && entry.data().get("id").getAsString().equals(tracked());
     }
 
     private boolean unseen(Tab tab) {
@@ -695,9 +723,9 @@ public final class JournalScreen extends Screen {
         private final Tab tab;
 
         private Ribbon(Tab tab, int x, int y) {
-            super(x, y, Minecraft.getInstance().font.width(Component.translatable(tab.key)) + RIBBON_TEXT * 2 + (tab == open ? RIBBON_PULL : 0),
-                    RIBBON_HEIGHT, Component.translatable(tab.key));
+            super(x, y, RIBBON_WIDTH + (tab == open ? RIBBON_PULL : 0), RIBBON_HEIGHT, Component.translatable(tab.key));
             this.tab = tab;
+            setTooltip(Tooltip.create(Component.translatable(tab.key)));
         }
 
         @Override
@@ -711,10 +739,11 @@ public final class JournalScreen extends Screen {
         @Override
         protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
             int x = getX() + (tab == open ? RIBBON_PULL : 0);
-            graphics.drawString(font, getMessage(), x + RIBBON_TEXT, getY() + (RIBBON_HEIGHT - font.lineHeight) / 2 + 1,
-                    isHoveredOrFocused() ? RIBBON_POINTED_INK : RIBBON_INK);
+            boolean active = tab == open;
+            int color = active ? INK : isHoveredOrFocused() ? Stamp.GOLD : Stamp.BONE;
+            Stamp.tinted(graphics, Stamp.icon(tab.name().toLowerCase(Locale.ROOT), false), x + 3, getY() + 2, Stamp.ICON_SIZE, Stamp.ICON_SIZE, color);
             if (unseen(tab)) {
-                dot(graphics, x, getY() + RIBBON_HEIGHT / 2 - 1);
+                dot(graphics, x - 1, getY() + RIBBON_HEIGHT / 2 - 1);
             }
         }
 
@@ -755,11 +784,18 @@ public final class JournalScreen extends Screen {
             if (entry.kind() != Kind.FOLD && !seen.contains(entry.key())) {
                 dot(graphics, getX() - DOT, getY() + 3);
             }
-            String mark = mark(entry);
             int x = getX() + 2;
-            graphics.drawString(font, mark, x, getY(), entry.color(), false);
-            int room = getWidth() - 4 - font.width(mark);
-            graphics.drawString(font, font.substrByWidth(getMessage(), room).getString(), x + font.width(mark), getY(), entry.color(), false);
+            int shift = 0;
+            if (tracked(entry)) {
+                Stamp.mark(graphics, x, getY(), true);
+                shift = ICON_INDENT;
+            } else if (entry.kind() == Kind.FOLD) {
+                String fold = doneUnfolded ? UNFOLDED_MARK : FOLDED_MARK;
+                graphics.drawString(font, fold, x, getY(), entry.color(), false);
+                shift = font.width(fold);
+            }
+            int room = getWidth() - 4 - shift;
+            graphics.drawString(font, font.substrByWidth(getMessage(), room).getString(), x + shift, getY(), entry.color(), false);
         }
 
         @Override

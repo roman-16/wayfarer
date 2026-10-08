@@ -3,6 +3,7 @@ fov:0.5
 fullscreen:true
 gamma:1.0
 guiScale:3
+hideSplashTexts:true
 maxFps:260
 mouseSensitivity:0.335
 onboardAccessibility:false

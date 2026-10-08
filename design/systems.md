@@ -637,7 +637,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
   ```text
   <Hob> And take these. My patterns. Copper and iron want shaping, not just hammering.
-  ☐ Make a tool head: one of Hob's patterns and its copper or iron in a crafting grid
+  ○ Make a tool head: one of Hob's patterns and its copper or iron in a crafting grid
   ```
 
 - A smith's tier is forged overnight: the work is left at a forge in the evening and collected at dawn. The player's own bench stays instant.
@@ -658,7 +658,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   Gear › Against the cold
     Wool clothes · from sheep, at your bench               [How it's made]
     Next: the Frost Walkers' snowshoes · from ? · made by ?        [Track]
-  ☐ Iron: in caves under the hills   ☐ Make an iron pick head with Hob's pattern
+  ○ Iron: in caves under the hills   ○ Make an iron pick head with Hob's pattern
   <Hob> Iron's fine. But the Frost Walkers had a metal that laughed at the cold.
   ```
 
@@ -833,7 +833,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
   ```text
   You come to beside Mo. The ember found the nearest warmth it knew.
-  ☐ Fetch your things: the stone where you fell, ✝ on your compass
+  ○ Fetch your things: the stone where you fell, marked on your compass
   ```
 
 **Why:** In the playtest a fall sent a player to a tent five thousand blocks behind and another to a story's fire the team had long left, alone and naked, and the cold took them in minutes. Waking beside a friend keeps a team together, which the story assumes everywhere, and the last fire is the lore's answer for a player alone.
@@ -850,7 +850,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 - The first time the ember is given, the task panel says where it is.
 
   ```text
-  ☐ Your ember sits with your charms: open your inventory (E)
+  ○ Your ember sits with your charms: open your inventory [E]
   The ember
     Warm, and it glows.
     Shards: 1

@@ -12,10 +12,12 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public final class Banners {
     private Banners() {}
 
-    public record Payload(Component text) implements CustomPacketPayload {
+    public record Payload(Component label, Component title) implements CustomPacketPayload {
         public static final Type<Payload> TYPE = new Type<>(Wayfarer.id("banner"));
-        public static final StreamCodec<RegistryFriendlyByteBuf, Payload> STREAM_CODEC =
-                ComponentSerialization.TRUSTED_STREAM_CODEC.map(Payload::new, Payload::text);
+        public static final StreamCodec<RegistryFriendlyByteBuf, Payload> STREAM_CODEC = StreamCodec.composite(
+                ComponentSerialization.TRUSTED_STREAM_CODEC, Payload::label,
+                ComponentSerialization.TRUSTED_STREAM_CODEC, Payload::title,
+                Payload::new);
 
         @Override
         public Type<Payload> type() {
@@ -23,11 +25,11 @@ public final class Banners {
         }
     }
 
-    static void show(Component text) {
-        PacketDistributor.sendToAllPlayers(new Payload(text));
+    static void show(Component label, Component title) {
+        PacketDistributor.sendToAllPlayers(new Payload(label, title));
     }
 
-    static void show(ServerPlayer player, Component text) {
-        PacketDistributor.sendToPlayer(player, new Payload(text));
+    static void show(ServerPlayer player, Component label, Component title) {
+        PacketDistributor.sendToPlayer(player, new Payload(label, title));
     }
 }

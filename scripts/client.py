@@ -52,6 +52,12 @@ FOUND = re.compile(r"found \d+ \S+ within \d+: (-?\d+) (-?\d+) (-?\d+)")
 EYE_HEIGHT = 1.62
 SHAFTS = {"ladder": 5, "spiral": 11, "switchback": 11}
 SHAFT_CAMERAS = ("outside", "above", "entrance", "stair-top", "stair-bottom", "stair-door")
+PANORAMA = ROOT / "mod/src/main/resources/assets/minecraft/textures/gui/title/background"
+PANORAMA_CAMERA = (-217.5, 79.3, 178.5, 270)
+PANORAMA_CHUNKS = 16
+PANORAMA_FACES = 6
+PANORAMA_SEED = 5
+PANORAMA_TIME = 23200
 SOUTH, WEST, NORTH, EAST = (0, 1), (-1, 0), (0, -1), (1, 0)
 
 
@@ -135,7 +141,7 @@ def release_screen():
     SCREEN.unlink(missing_ok=True)
 
 
-def launch(world, timeout, visible, mode, state, rebuild):
+def launch(world, timeout, visible, mode, state, rebuild, seed):
     DRIVER.mkdir(parents=True, exist_ok=True)
     for stale in ("abort", "commands.txt", "done.txt", "game.pid", "launched.json", "quit", "world.json"):
         (DRIVER / stale).unlink(missing_ok=True)
@@ -143,7 +149,7 @@ def launch(world, timeout, visible, mode, state, rebuild):
     shutil.rmtree(SCREENSHOTS, ignore_errors=True)
     before = crashes(CRASHES)
     command = ["just", "showroom" if world == "showroom" else "play", mode]
-    environment = screen(visible) | {"WAYFARER_DRIVEN": "true"}
+    environment = screen(visible) | {"WAYFARER_DRIVEN": "true", "WAYFARER_SEED": "" if seed is None else str(seed)}
     cached = False
     if state:
         cache = states.folder("client", mode, state)
@@ -228,20 +234,20 @@ def swapped():
     return not result["needs a restart"]
 
 
-def ensure(world, timeout, visible, mode, state=None, rebuild=False, anew=False):
+def ensure(world, timeout, visible, mode, state=None, rebuild=False, anew=False, seed=None):
     launched, opened = current()
     if launched == wanted(mode, visible) and swapped():
         if world == "showroom" and opened["world"] == "showroom" and not anew:
             print("the client is running in the showroom")
             return
-        switch(world, timeout, visible, mode, state, rebuild)
+        switch(world, timeout, visible, mode, state, rebuild, seed)
         return
     if alive():
         shut(STOP_SECONDS)
-    launch(world, timeout, visible, mode, state, rebuild)
+    launch(world, timeout, visible, mode, state, rebuild, seed)
 
 
-def switch(world, timeout, visible, mode, state, rebuild):
+def switch(world, timeout, visible, mode, state, rebuild, seed):
     started = time.monotonic()
     batch(["leave"], timeout)
     cached = False
@@ -253,7 +259,7 @@ def switch(world, timeout, visible, mode, state, rebuild):
         subprocess.run(
             ["python3", "scripts/instance.py", "fresh", str(CLIENT), world, "--mode", mode], cwd=ROOT, check=True
         )
-        target = world
+        target = world if seed is None else f"{world} {seed}"
     report = batch([f"enter {target}"], timeout)
     say(world, state, cached, f"opened in {time.monotonic() - started:.0f} s", visible, mode, report)
 
@@ -261,8 +267,16 @@ def switch(world, timeout, visible, mode, state, rebuild):
 def start(arguments):
     if arguments.state:
         states.check(arguments.state)
-    world = "state" if arguments.state else "play" if arguments.fresh else "showroom"
-    ensure(world, arguments.timeout, arguments.visible, arguments.mode, arguments.state, arguments.rebuild)
+    world = "state" if arguments.state else "play" if arguments.fresh or arguments.seed is not None else "showroom"
+    ensure(
+        world,
+        arguments.timeout,
+        arguments.visible,
+        arguments.mode,
+        arguments.state,
+        arguments.rebuild,
+        seed=arguments.seed,
+    )
 
 
 def batch(steps, timeout):
@@ -522,6 +536,38 @@ def photograph(chosen, timeout):
     return {subject: [(name, f"tour-{subject}-{name}") for name in cameras] for subject, cameras in subjects.items()}
 
 
+def panorama(arguments):
+    ensure("play", START_SECONDS, False, "full", seed=PANORAMA_SEED)
+    x, y, z, yaw = PANORAMA_CAMERA
+    report = batch(
+        [
+            "gui off",
+            "chat off",
+            "/gamemode spectator",
+            "/weather clear",
+            f"/tp @s {x} {y} {z} {yaw} 0",
+            "particles minimal",
+            f"distance {PANORAMA_CHUNKS}",
+            f"/time set {PANORAMA_TIME}",
+            "/tick freeze",
+            "settle",
+            "panorama title",
+            "/tick unfreeze",
+            "/gamemode creative",
+            "particles all",
+            "chat on",
+            "gui on",
+        ],
+        arguments.timeout,
+    )
+    errors = [error for entry in parse(report) for error in entry.get("error", [])]
+    if errors:
+        sys.exit(f"panorama failed: {'; '.join(errors)}")
+    for face in range(PANORAMA_FACES):
+        shutil.copyfile(SCREENSHOTS / f"panorama/title/panorama_{face}.png", PANORAMA / f"panorama_{face}.png")
+    print(f"the title's panorama is in {PANORAMA.relative_to(ROOT)}")
+
+
 def swap(arguments):
     if not alive():
         sys.exit("the client is not running; start it with: python3 scripts/client.py start")
@@ -563,6 +609,7 @@ def main():
     )
     worlds = start_parser.add_mutually_exclusive_group()
     worlds.add_argument("--fresh", action="store_true", help="open a fresh natural world instead of the showroom")
+    worlds.add_argument("--seed", type=int, help="open a fresh natural world grown from this seed")
     worlds.add_argument(
         "--state",
         metavar="QUEST/STEP",
@@ -603,6 +650,12 @@ def main():
         "swap",
         help="compile the Wayfarer mod and swap every changed class into the running client; prints one line of JSON",
     )
+    panorama_parser = commands.add_parser(
+        "panorama",
+        help="grow the panorama's world from its seed, photograph the title's panorama from its camera at dawn and "
+        "write its six faces into the mod",
+    )
+    panorama_parser.add_argument("--timeout", type=int, default=START_SECONDS)
     stop_parser = commands.add_parser("stop", help="quit the client; returns once it has exited")
     stop_parser.add_argument("--timeout", type=int, default=STOP_SECONDS)
     tour_parser = commands.add_parser(
@@ -616,7 +669,9 @@ def main():
         "--visible", action="store_true", help="show the game on the user's screen instead of a hidden one"
     )
     arguments = parser.parse_args()
-    {"run": run, "start": start, "stop": stop, "swap": swap, "tour": tour}[arguments.command](arguments)
+    {"panorama": panorama, "run": run, "start": start, "stop": stop, "swap": swap, "tour": tour}[arguments.command](
+        arguments
+    )
 
 
 if __name__ == "__main__":

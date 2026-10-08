@@ -44,7 +44,7 @@ A moment that matters is played as a scene on the band, line by line, never told
 ## Teaching
 
 - **Say what to do, where the player looks.** Every step's objective is one instruction, shown in the task panel (`design/interface.md`, I1); a player who never opens the journal still knows what to do next.
-- **Name every key the first time.** A step that needs a key or a click lists its task in the panel, worded with the key itself (`Open your journal (%s)`, filled by the key the player has bound), the first time it is needed. How-to lines never go to chat, which keeps the story.
+- **Name every key the first time.** A step that needs a key or a click lists its task in the panel, worded with the key itself (`Open your journal %s`, filled by the key the player has bound through `Tasks.key` and drawn in a key cap, so never in brackets), the first time it is needed. How-to lines never go to chat, which keeps the story.
 - **Count what takes time.** Walking, resting and waiting show how far along they are: blocks to go, seconds rested, whom the team waits for.
 - **Every refusal says why and what to do.** "It will not stand here: a Wayfarer keeps no hoard in the world, only in a tent." names the rule, the reason and the way.
 

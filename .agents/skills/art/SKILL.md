@@ -1,6 +1,6 @@
 ---
 name: art
-description: Design how anything in Wayfarer looks - item, block and creature textures, item and creature models and their animations, structures, rooms and camps, and the pack's screens and HUD - so it reads as if Mojang had made it and belongs to its people in design/lore.md. Use whenever something a player sees is added or changed; the lore skill writes its words, this one its look.
+description: Design how anything in Wayfarer looks - item, block and creature textures, item and creature models and their animations, structures, rooms and camps, so they read as if Mojang had made them and belong to their people in design/lore.md, and the pack's screens and HUD, which wear the stamp of design/style.md. Use whenever something a player sees is added or changed; the lore skill writes its words, this one its look.
 ---
 
 # Art
@@ -88,13 +88,22 @@ Variety is the key. Anything a player meets more than once, people, buildings, w
 
 ## Screens and the HUD
 
-Everything the pack draws on the screen, the task panel, the compass, the journal, conversations, notices and tooltips, follows the look `design/interface.md` settles (I5), judged beside vanilla's own screens: the same font, the same nine-sliced panels and slot frames, the same few greys, and text that reads at every interface scale players use and under the shader. Vanilla's interface textures are in the same jar under `assets/minecraft/textures/gui/`. A screen is photographed beside the vanilla screen nearest it (the inventory, the advancements, a book) at interface scales 2, 3 and 4.
+Everything drawn over the world wears the stamp, `design/style.md`: the pack's HUD and screens, and vanilla's and the mods' interfaces with them. It does not follow Minecraft's interface; it follows its own system, and every screen is judged against the system, not against vanilla's menus.
+
+- **Tokens first.** Every colour is a token in `style.toml`: a ramp shade (ash, leather, iron, paper, ember, gaze, red, frost, moss) or a text colour (bone, label, quiet, dim, gold, ink, ink red, danger, gaze). A colour the stamp lacks is added there with its meaning, never written into a sprite or the code; `just lint` fails on a colour literal in the interface code.
+- **Components before screens.** A screen is built from the stamp's components (L5): panel, plate, band, strip, button, key cap, slot, tooltip, book, divider, mark, ring, meter, icons. A new need gets a component, drawn in `generator/stamp.py` from the shared parts (grain, rims, plates, rivets, cracks), shown on the style board (`board <page>`), and then used; never a one-off frame.
+- **Materials say what a thing is.** Char for surfaces, iron for rims, caps, slots and keys, leather for strips, bands, buttons, ribbons and covers, parchment only for books and pages. Text is light on char and leather, ink on parchment.
+- **Detail at the interface pixel.** One art pixel is one interface pixel at every scale: more shades, grain, wear and fittings than Minecraft's interface, never finer pixels; ornaments only at ends and corners.
+- **Type.** Running text in m5x7, titles in Alagard (`Stamp.title`), labels in tracked capitals (`Stamp.label`), keys in key caps (`Inline`, from a key the server marks with `Tasks.key`).
+- **Judge it where it lives.** Photograph it on the style board and where the player meets it, over snow at noon and in the dark, under the shader, at interface scales 2, 3 and 4, and give every state its gallery shot.
+- **The front door.** The title's logo is drawn in `generator/stamp.py` from the display face like any sprite; its panorama is a photograph of the world, framed like a structure (a hero to one side, depth and sky on the others, nothing at the lens), taken by `python3 scripts/client.py panorama` and judged on the title at every scale before it is kept.
+- **Vanilla's and the mods' screens** come in through the stamp's own sprites for vanilla's widgets, the recolour of vanilla's six interface greys for every texture that copies them, and, where a mod draws in colours of its own, its config or a texture in its namespace (L6).
 
 ## Checklist
 
 Before calling a look done, in the workshop beside its vanilla relative:
 
-- Would a player believe Mojang made it, or that it came with the pack's other mods?
+- In the world: would a player believe Mojang made it, or that it came with the pack's other mods? On the screen: is it built from the stamp's tokens and components, and could it stand on the style board beside them?
 - Walking up to it at eye height, from every side, does every part of it read as what the story says it is, and does it look good, not only present?
 - Seen many together, could any two be swapped unnoticed? Does where everything stands or lies make sense for what happened there?
 - Does it read at a glance: an item in its slot, a creature by its outline at night, a structure by its silhouette from far off?

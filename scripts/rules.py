@@ -21,6 +21,9 @@ SIGN_WIDTH = 15
 SLIDERS = {"ambient", "blocks", "hostile", "master", "music", "neutral", "players", "record", "voice", "weather"}
 SOUND_KINDS = {"frequent", "loop", "rare"}
 TRANSLATION = re.compile(r'"(wayfarer\.[a-z_.]+[a-z_])"')
+INTERFACE = MOD / "main/java/io/github/roman16/wayfarer/client"
+STAMP = INTERFACE / "stamp"
+COLOR = re.compile(r"\b0x[0-9A-Fa-f]{6,8}\b")
 
 
 def sides():
@@ -268,6 +271,19 @@ def stone(where, words):
         yield f"{where}: the stone's words {words!r} take {len(lines)} lines; a sign holds {SIGN_LINES} of {SIGN_WIDTH} letters"
 
 
+def interface():
+    found = []
+    for path in sorted(INTERFACE.rglob("*.java")):
+        if path.parent == STAMP:
+            continue
+        for number, line in enumerate(path.read_text().splitlines(), start=1):
+            if COLOR.search(line):
+                found.append(
+                    f"{path.relative_to(ROOT)}:{number}: a colour in the interface comes from style.toml through Stamp"
+                )
+    return found
+
+
 def main():
     findings = [
         *sides(),
@@ -278,6 +294,7 @@ def main():
         *books(),
         *story(),
         *gear(),
+        *interface(),
         *gallery.problems(),
     ]
     for finding in findings:

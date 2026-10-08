@@ -1,0 +1,29 @@
+{
+  "providers": [
+    {
+      "advances": {
+        " ": 5
+      },
+      "type": "space"
+    },
+    {
+      "ascent": 12,
+      "chars": [
+        "!\"#$%&'()*+,-./0",
+        "123456789:;<=>?@",
+        "ABCDEFGHIJKLMNOP",
+        "QRSTUVWXYZ[\\]^_`",
+        "abcdefghijklmnop",
+        "qrstuvwxyz{|}~\u00a2\u00a3",
+        "\u00a5\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
+      ],
+      "file": "wayfarer:font/display.png",
+      "height": 15,
+      "type": "bitmap"
+    },
+    {
+      "id": "minecraft:default",
+      "type": "reference"
+    }
+  ]
+}

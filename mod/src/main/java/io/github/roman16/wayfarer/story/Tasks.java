@@ -48,6 +48,7 @@ public final class Tasks {
     static final String FIRST = "task.";
     private static final String TASK_TICKED = "task_ticked";
     private static final String INVENTORY_KEY = "key.inventory";
+    public static final String KEY = "wayfarer:key";
     static final String JOURNAL_KEY = "key.wayfarer.journal";
     private static final String HOTBAR = "key.hotbar.";
     private static final int CHECK_TICKS = 20;
@@ -61,15 +62,16 @@ public final class Tasks {
 
     private Tasks() {}
 
-    public record Panel(Component heading, Component objective, List<Component> open, List<Component> done) implements CustomPacketPayload {
+    public record Panel(Component kind, Component title, Component objective, List<Component> open, List<Component> done) implements CustomPacketPayload {
         public static final Type<Panel> TYPE = new Type<>(Wayfarer.id("panel"));
         public static final StreamCodec<RegistryFriendlyByteBuf, Panel> STREAM_CODEC = StreamCodec.composite(
-                ComponentSerialization.TRUSTED_STREAM_CODEC, Panel::heading,
+                ComponentSerialization.TRUSTED_STREAM_CODEC, Panel::kind,
+                ComponentSerialization.TRUSTED_STREAM_CODEC, Panel::title,
                 ComponentSerialization.TRUSTED_STREAM_CODEC, Panel::objective,
                 ComponentSerialization.TRUSTED_STREAM_CODEC.apply(ByteBufCodecs.list()), Panel::open,
                 ComponentSerialization.TRUSTED_STREAM_CODEC.apply(ByteBufCodecs.list()), Panel::done,
                 Panel::new);
-        public static final Panel EMPTY = new Panel(Component.empty(), Component.empty(), List.of(), List.of());
+        public static final Panel EMPTY = new Panel(Component.empty(), Component.empty(), Component.empty(), List.of(), List.of());
 
         @Override
         public Type<Panel> type() {
@@ -133,14 +135,14 @@ public final class Tasks {
         Map<String, Component> open = new LinkedHashMap<>();
         if (Talk.answering(player) && !Firsts.seen(player, FIRST + "answer")) {
             int choices = Talk.open().map(offer -> offer.choices().size()).orElse(1);
-            open.put("answer", choices == 1 ? task("answer.one", Component.keybind(HOTBAR + 1))
-                    : task("answer", Component.keybind(HOTBAR + 1), Component.keybind(HOTBAR + choices)));
+            open.put("answer", choices == 1 ? task("answer.one", key(HOTBAR + 1))
+                    : task("answer", key(HOTBAR + 1), key(HOTBAR + choices)));
         }
         if (Ember.carried(server) && !Firsts.seen(player, FIRST + "charms")) {
-            open.put("charms", task("charms", Component.keybind(INVENTORY_KEY)));
+            open.put("charms", task("charms", key(INVENTORY_KEY)));
         }
         if (!Firsts.seen(player, FIRST + "journal")) {
-            open.put("journal", task("journal", Component.keybind(JOURNAL_KEY)));
+            open.put("journal", task("journal", key(JOURNAL_KEY)));
         }
         if (LastUse.lastUse(player.getMainHandItem()) && !Firsts.seen(player, FIRST + "mend")) {
             open.put("mend", task("mend", Balance.INSTANCE.fire().restBlocks()));
@@ -162,19 +164,22 @@ public final class Tasks {
         Progress progress = Progress.of(server);
         for (Story.Reward reward : Engine.rewards()) {
             if (progress.rewards.contains(reward.key()) && !progress.claimed(reward.key(), player.getUUID())) {
-                open.put("claim/" + reward.key(), task("claim", reward.title(), Component.keybind(JOURNAL_KEY)));
+                open.put("claim/" + reward.key(), task("claim", reward.title(), key(JOURNAL_KEY)));
             }
         }
-        Component heading = Component.empty();
+        Component kind = Component.empty();
+        Component title = Component.empty();
         Component objective = Component.empty();
         Optional<Engine.Active> tracked = Engine.tracked(player);
         if (Caravan.heading(server) && tracked.map(active -> !active.step().kind().equals("caravan")).orElse(true)) {
-            heading = Component.translatable("wayfarer.journal.main").append(" ").append(Component.translatable("wayfarer.caravan.title"));
+            kind = Component.translatable("wayfarer.journal.main");
+            title = Component.translatable("wayfarer.caravan.title");
             objective = Component.translatable("wayfarer.caravan.objective");
             rest(player, "caravan", Clock::rested, open);
         } else if (tracked.isPresent()) {
             Engine.Active active = tracked.get();
-            heading = Component.translatable("wayfarer.journal." + active.quest().kind()).append(" ").append(active.quest().title());
+            kind = Component.translatable("wayfarer.journal." + active.quest().kind());
+            title = Component.literal(active.quest().title());
             objective = Component.literal(Journal.objective(player, active));
             tasks(player, active, open);
         }
@@ -200,7 +205,7 @@ public final class Tasks {
         fading.keySet().removeIf(QUIET::contains);
         fading.values().removeIf(done -> now - done.since() > FADE_TICKS);
         OPEN.put(player.getUUID(), open);
-        return new Panel(heading, objective, List.copyOf(open.values()), fading.values().stream().map(Fading::text).toList());
+        return new Panel(kind, title, objective, List.copyOf(open.values()), fading.values().stream().map(Fading::text).toList());
     }
 
     private static void tasks(ServerPlayer player, Engine.Active active, Map<String, Component> open) {
@@ -224,13 +229,13 @@ public final class Tasks {
             case "stone" -> unless(!active.scratch().getBoolean(Steps.WRITING), task("stone"));
             case "tent" -> unless(inTent || Tents.pitchedNear(level, player.blockPosition(), NEAR), task("tent"));
             case "fire" -> unless(inTent || campfire(level, player.blockPosition()), task("fire", Balance.INSTANCE.tent().fireBlocks()));
-            case "ember" -> Optional.of(task("ember", Component.keybind(Sense.KEY)));
-            case "marks" -> Optional.of(task("marks", Component.keybind(Sense.KEY)));
-            case "sweep" -> Optional.of(task("sweep", Component.keybind(Sense.KEY)));
-            case "search" -> Optional.of(task("search", Component.keybind(Sense.KEY)));
+            case "ember" -> Optional.of(task("ember", key(Sense.KEY)));
+            case "marks" -> Optional.of(task("marks", key(Sense.KEY)));
+            case "sweep" -> Optional.of(task("sweep", key(Sense.KEY)));
+            case "search" -> Optional.of(task("search", key(Sense.KEY)));
             case "horse" -> Optional.of(task("horse"));
             case "map" -> unless(Firsts.seen(player, FIRST + "map") || !ModList.get().isLoaded("journeymap"),
-                    task("map", Component.keybind("key.wayfarer.map")));
+                    task("map", key("key.wayfarer.map")));
             case "pack" -> unless(!pitchedAway(player), task("pack"));
             case "enter" -> unless(inTent, task("enter"));
             case "bed" -> unless(!inTent, task("bed"));
@@ -293,6 +298,10 @@ public final class Tasks {
 
     private static Optional<Component> unless(boolean done, Component text) {
         return done ? Optional.empty() : Optional.of(text);
+    }
+
+    static Component key(String mapping) {
+        return Component.keybind(mapping).withStyle(style -> style.withInsertion(KEY));
     }
 
     private static Component task(String id, Object... args) {

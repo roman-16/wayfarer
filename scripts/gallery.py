@@ -95,11 +95,16 @@ def open_world(at):
         client.ensure("state", client.START_SECONDS, False, "full", state=at)
 
 
+def restore(shot):
+    world = [] if shot.get("outside") else ["/tick unfreeze", "close"]
+    return [*world, "chat on", f"scale {USUAL_SCALE}", "gui on"]
+
+
 def run(shot, steps):
     entries = client.parse(client.batch(steps, SHOT_SECONDS))
     errors = [error for entry in entries for error in entry.get("error", [])]
     if errors:
-        client.batch(["/tick unfreeze", "close", "chat on", f"scale {USUAL_SCALE}", "gui on"], SHOT_SECONDS)
+        client.batch(restore(shot), SHOT_SECONDS)
         sys.exit(f"gallery failed: {shot['id']}: {'; '.join(errors)}")
 
 
@@ -115,7 +120,8 @@ def shoot(shot):
         run(shot, [*prepare, *shot.get("steps", []), "/tick freeze"])
         client.photograph([shot["subject"]], SHOT_SECONDS)
     else:
-        steps = [*prepare, *shot.get("steps", []), "/tick freeze", "settle"]
+        frozen = [] if shot.get("outside") else ["/tick freeze", "settle"]
+        steps = [*prepare, *shot.get("steps", []), *frozen]
         if kind == "screen":
             steps.append("point 0 0")
         for _, name, _, scale in pictures(shot):
@@ -123,9 +129,7 @@ def shoot(shot):
                 steps.append(f"scale {scale}")
             steps.append(f"shot {name}")
         run(shot, steps)
-    client.batch(
-        ["/tick unfreeze", "close", "chat on", f"scale {USUAL_SCALE}", "gui on", *shot.get("after", [])], SHOT_SECONDS
-    )
+    client.batch([*restore(shot), *shot.get("after", [])], SHOT_SECONDS)
 
 
 def keep(shot):
@@ -255,8 +259,8 @@ def main():
         try:
             if shot["at"] != "showroom" or not showroom:
                 open_world(shot["at"])
-                showroom = shot["at"] == "showroom"
             shoot(shot)
+            showroom = shot["at"] == "showroom" and not shot.get("outside")
         except SystemExit:
             print("the rest: just gallery " + " ".join(rest["id"] for rest in ordered[index:]), flush=True)
             raise

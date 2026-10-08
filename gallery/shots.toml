@@ -1335,3 +1335,160 @@ caption = "The witch eye's shrine, from its cover down the shaft into the hall"
 id = "shrines/witch"
 kind = "tour"
 subject = "witch"
+
+[[shots]]
+at = "showroom"
+caption = "The style board: the stamp's ramps and text colours, the display face, the running face with its German letters, tracked labels and key caps"
+id = "interface/board/type"
+kind = "screen"
+steps = ["board type"]
+
+[[shots]]
+at = "showroom"
+caption = "The style board: the compass band, its plates, the task panel, the answers, a notice strip, the conversation panel and the gaze's meter"
+id = "interface/board/hud"
+kind = "screen"
+steps = ["board hud"]
+
+[[shots]]
+at = "showroom"
+caption = "The style board: buttons pointed at and disabled, text fields, sliders, check boxes, tabs, slots and the selection, tooltips, icons and the divider"
+id = "interface/board/widgets"
+kind = "screen"
+steps = ["board widgets"]
+
+[[shots]]
+at = "showroom"
+caption = "The style board: the book, its cover, pages, spine, ribbons with their icons, ink, marks and rings"
+id = "interface/board/book"
+kind = "screen"
+steps = ["board book"]
+
+[[shots]]
+at = "showroom"
+caption = "Options in the stamp"
+id = "interface/vanilla/options"
+kind = "screen"
+steps = ["pause", "press Options..."]
+
+[[shots]]
+at = "showroom"
+caption = "Controls in the stamp"
+id = "interface/vanilla/controls"
+kind = "screen"
+steps = ["pause", "press Options...", "press Controls..."]
+
+[[shots]]
+at = "showroom"
+caption = "Video Settings: Sodium's own screen in the pack's font"
+id = "interface/vanilla/video"
+kind = "screen"
+steps = ["pause", "press Options...", "press Video Settings..."]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "The inventory, recoloured into the stamp: char, iron bevels, labels in bone"
+id = "interface/vanilla/inventory"
+kind = "screen"
+steps = ["key key.inventory"]
+
+[[shots]]
+at = "showroom"
+after = ["/setblock ~2 ~ ~ minecraft:air"]
+caption = "A chest, recoloured into the stamp"
+id = "interface/vanilla/chest"
+kind = "screen"
+steps = ["/setblock ~2 ~ ~ minecraft:chest", "settle", "use ~2 ~ ~"]
+
+[[shots]]
+at = "showroom"
+after = ["/setblock ~2 ~ ~ minecraft:air"]
+caption = "A furnace, recoloured into the stamp"
+id = "interface/vanilla/furnace"
+kind = "screen"
+steps = ["/setblock ~2 ~ ~ minecraft:furnace", "settle", "use ~2 ~ ~"]
+
+[[shots]]
+at = "showroom"
+caption = "Simple Voice Chat's menu, recoloured into the stamp"
+id = "interface/mods/voice-chat"
+kind = "screen"
+steps = ["key key.voice_chat"]
+
+[[shots]]
+at = "showroom"
+after = ["/setblock ~2 ~ ~ minecraft:air"]
+caption = "A Sophisticated Backpacks backpack, recoloured into the stamp"
+id = "interface/mods/backpack"
+kind = "screen"
+steps = [
+  "/setblock ~2 ~ ~ sophisticatedbackpacks:backpack",
+  "settle",
+  "use ~2 ~ ~",
+]
+
+[[shots]]
+at = "showroom"
+caption = "JourneyMap's full map in its Victorian theme"
+id = "interface/mods/map"
+kind = "screen"
+steps = ["key key.wayfarer.map"]
+
+[[shots]]
+at = "showroom"
+after = ["/setblock ~2 ~ ~ minecraft:air"]
+caption = "A book at a lectern, in the stamp's leather and parchment"
+id = "interface/vanilla/book"
+kind = "screen"
+steps = [
+  "/setblock ~2 ~ ~ lectern[has_book=true]{Book:{id:\"minecraft:written_book\",count:1,components:{\"minecraft:written_book_content\":{title:\"A Journal\",author:\"A Wayfarer\",pages:['\"One more winter here. The ember is so small now. I will walk in spring.\"','\"x\"']}}}}",
+  "settle",
+  "use ~2 ~ ~",
+]
+
+[[shots]]
+at = "showroom"
+caption = "The title: the Wayfarer's mark over WAYFARER in gilt letters, the Last Camp at dawn turning behind the stamp's buttons, no splash text and no Realms"
+id = "front-door/title"
+kind = "screen"
+outside = true
+steps = ["leave"]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Loading a world: the last page of the story so far on the journal's parchment over the dimmed panorama, with vanilla's progress line under it"
+id = "front-door/loading"
+kind = "screen"
+outside = true
+steps = ["leave", "loading"]
+
+[[shots]]
+at = "showroom"
+caption = "Loading a new world, or a server joined for the first time: the line that leads into the first scene"
+id = "front-door/loading-first"
+kind = "screen"
+outside = true
+steps = ["leave", "loading new"]
+
+[[shots]]
+at = "showroom"
+caption = "Create New World opens on Survival, Normal difficulty and commands off"
+id = "front-door/create-world"
+kind = "screen"
+outside = true
+steps = ["leave", "press Singleplayer", "press Create New World"]
+
+[[shots]]
+at = "showroom"
+caption = "Create New World's World tab: the pack's land, with vanilla's options where they always are"
+id = "front-door/create-world-land"
+kind = "screen"
+outside = true
+steps = ["leave", "press Singleplayer", "press Create New World", "press World"]
+
+[[shots]]
+at = "showroom"
+caption = "The pause menu: Journal and Map where Advancements and Statistics stood"
+id = "front-door/pause"
+kind = "screen"
+steps = ["pause"]

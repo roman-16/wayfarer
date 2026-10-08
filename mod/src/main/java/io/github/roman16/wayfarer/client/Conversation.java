@@ -1,12 +1,12 @@
 package io.github.roman16.wayfarer.client;
 
-import io.github.roman16.wayfarer.Wayfarer;
+import io.github.roman16.wayfarer.client.stamp.Stamp;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import net.minecraft.ChatFormatting;
+import java.util.Locale;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -16,13 +16,11 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Conversation {
-    private static final ResourceLocation BAND = Wayfarer.id("talk_band");
     private static final int KEPT = 3;
     private static final String ELLIPSIS = "…";
     private static final int ANSWER_GAP = 6;
@@ -32,21 +30,18 @@ public final class Conversation {
     private static final long FADE_TICKS = 10;
     private static final int MAX_WIDTH = 320;
     private static final int SIDE_ROOM = 16;
-    private static final int PAD = 5;
+    private static final int PAD = 8;
     private static final int LINE = 10;
-    private static final int NAME_GAP = 6;
+    private static final int ANSWER_LINE = 12;
+    private static final int NAME_GAP = 5;
     private static final String NAME_SPACE = "  ";
     private static final int ABOVE_MESSAGE = 8;
     private static final int OVERLAY_MESSAGE = 68;
     private static final int OVERLAY_SHIFT = 9;
     private static final int ANSWER_X = 14;
-    private static final int ANSWER_PAD = 3;
+    private static final int ANSWER_PAD = 7;
+    private static final int ANSWER_GAP_ROWS = 2;
     private static final int ANSWER_WIDTH = 160;
-    private static final int INK = 0x3F2A14;
-    private static final int NAME = 0x9A6408;
-    private static final int KEY_COLOR = 0xFFD27A;
-    private static final int ANSWER_COLOR = 0xFFFFFF;
-    private static final int FAINT = 0x70;
     private static final int OPAQUE = 0xFF;
     private static final int LOGGED = 32;
     private static final Deque<Shown> lines = new ArrayDeque<>();
@@ -166,14 +161,16 @@ public final class Conversation {
         int top = bottom - bandHeight;
         bandTop = Math.round(top * scale);
         bandRight = Math.round((left + bandWidth) * scale);
+        graphics.flush();
         graphics.setColor(1, 1, 1, alpha);
-        graphics.blitSprite(BAND, left, top, bandWidth, bandHeight);
+        graphics.blitSprite(Stamp.PANEL_CLEAR, left, top, bandWidth, bandHeight);
+        graphics.flush();
         graphics.setColor(1, 1, 1, 1);
         int shade = Math.max(4, Math.round(OPAQUE * alpha));
         int y = top + PAD;
         for (Row row : rows) {
-            int opacity = row.faint() ? Math.min(shade, FAINT) : shade;
-            graphics.drawString(font, row.text(), left + PAD, y, opacity << 24 | INK, false);
+            int opacity = row.faint() ? Math.min(shade, Stamp.FAINT) : shade;
+            graphics.drawString(font, row.text(), left + PAD, y, Stamp.withAlpha(row.faint() ? Stamp.QUIET : Stamp.BONE, opacity), true);
             y += LINE;
         }
         return top;
@@ -189,9 +186,9 @@ public final class Conversation {
 
     private static Component text(Shown shown) {
         if (shown.by().isEmpty()) {
-            return shown.text().copy().withStyle(ChatFormatting.ITALIC);
+            return shown.text().copy().withColor(Stamp.rgb(Stamp.QUIET));
         }
-        MutableComponent named = Component.literal(shown.by()).withColor(NAME);
+        MutableComponent named = Component.literal(shown.by().toUpperCase(Locale.ROOT)).withColor(Stamp.rgb(Stamp.GOLD));
         return named.append(Component.literal(NAME_SPACE)).append(shown.text());
     }
 
@@ -200,36 +197,35 @@ public final class Conversation {
             return;
         }
         Minecraft minecraft = Minecraft.getInstance();
-        int background = (int) (minecraft.options.textBackgroundOpacity().get() * OPAQUE) << 24;
         int x = width / 2 + ANSWER_X;
-        List<List<FormattedCharSequence>> wrapped = new ArrayList<>();
         int keyWidth = 0;
         for (int index = 0; index < answers.size(); index++) {
-            keyWidth = Math.max(keyWidth, font.width(key(minecraft, index)));
+            keyWidth = Math.max(keyWidth, Stamp.keycapWidth(font, key(minecraft, index).getString()));
         }
-        int textX = x + keyWidth + NAME_GAP;
-        int room = Math.min(ANSWER_WIDTH, width - textX - SIDE_ROOM);
+        int textX = x + ANSWER_PAD + keyWidth + NAME_GAP;
+        int room = Math.min(ANSWER_WIDTH, width - textX - SIDE_ROOM - ANSWER_PAD);
+        List<List<FormattedCharSequence>> wrapped = new ArrayList<>();
         int rows = 0;
         for (String answer : answers) {
             List<FormattedCharSequence> split = font.split(Component.literal(answer), room);
             wrapped.add(split);
             rows += split.size();
         }
-        int tall = rows * LINE + (answers.size() - 1) * ANSWER_PAD;
+        int tall = rows * LINE + answers.size() * (ANSWER_LINE - LINE) + (answers.size() - 1) * ANSWER_GAP_ROWS + ANSWER_PAD * 2;
         int broadest = wrapped.stream().flatMap(List::stream).mapToInt(font::width).max().orElse(0);
-        int y = Math.max(ANSWER_TOP, Math.min(height / 2 - tall / 2, bandTop - ANSWER_GAP - tall));
-        answersTop = Math.round((y - ANSWER_PAD) * scale);
-        answersRight = Math.round((textX + broadest + ANSWER_PAD) * scale);
+        int right = textX + broadest + ANSWER_PAD;
+        int top = Math.max(ANSWER_TOP, Math.min(height / 2 - tall / 2, bandTop - ANSWER_GAP - tall));
+        answersTop = Math.round(top * scale);
+        answersRight = Math.round(right * scale);
+        graphics.blitSprite(Stamp.PANEL_CLEAR, x, top, right - x, tall);
+        int y = top + ANSWER_PAD + 2;
         for (int index = 0; index < answers.size(); index++) {
-            List<FormattedCharSequence> split = wrapped.get(index);
-            int widest = split.stream().mapToInt(font::width).max().orElse(0);
-            graphics.fill(x - ANSWER_PAD, y - ANSWER_PAD + 1, textX + widest + ANSWER_PAD, y + split.size() * LINE + ANSWER_PAD - 2, background);
-            graphics.drawString(font, key(minecraft, index), x, y, KEY_COLOR);
-            for (FormattedCharSequence row : split) {
-                graphics.drawString(font, row, textX, y, ANSWER_COLOR);
+            Stamp.keycap(graphics, font, key(minecraft, index).getString(), x + ANSWER_PAD, y);
+            for (FormattedCharSequence row : wrapped.get(index)) {
+                graphics.drawString(font, row, textX, y, Stamp.BONE, true);
                 y += LINE;
             }
-            y += ANSWER_PAD;
+            y += ANSWER_LINE - LINE + ANSWER_GAP_ROWS;
         }
     }
 

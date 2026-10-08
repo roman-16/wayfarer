@@ -248,7 +248,7 @@ public final class Engine {
                 progress.steps.put(quest.id(), 0);
                 progress.scratch.remove(quest.id());
                 progress.setDirty();
-                Banners.show(Component.translatable("wayfarer.banner.begun", quest.title()));
+                Banners.show(Component.translatable("wayfarer.banner.begun"), Component.literal(quest.title()));
                 Sounds.play(server, QUEST_BEGUN);
                 opened.add(new Active(quest, quest.steps().getFirst(), progress.scratch(quest.id())));
             }
@@ -295,7 +295,7 @@ public final class Engine {
         if (quest.reward() != null) {
             grant(server, quest.reward());
         }
-        Banners.show(Component.translatable("wayfarer.banner.done", quest.title()));
+        Banners.show(Component.translatable("wayfarer.banner.done"), Component.literal(quest.title()));
         Sounds.play(server, QUEST_DONE);
         return Optional.empty();
     }
@@ -351,7 +351,7 @@ public final class Engine {
         if (!progress.rewards.contains(reward.key())) {
             progress.rewards.add(reward.key());
             progress.setDirty();
-            Banners.show(Component.translatable("wayfarer.banner.reward", reward.title(), Component.keybind("key.wayfarer.journal")));
+            Banners.show(Component.translatable("wayfarer.banner.reward", Tasks.key(Tasks.JOURNAL_KEY)), Component.literal(reward.title()));
         }
     }
 

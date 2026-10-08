@@ -1,10 +1,20 @@
 {
   "client": [
     "AccessibilityOptionsScreenMixin",
+    "ConnectScreenAccessor",
+    "ConnectScreenMixin",
     "GameRendererMixin",
+    "GuiGraphicsLabelMixin",
+    "LevelLoadingScreenAccessor",
+    "LogoRendererMixin",
     "MinecraftMixin",
+    "SpriteLoaderMixin",
     "SubtleEffectsEndRemasteredCompatMixin",
-    "ToastComponentMixin"
+    "TextureImageAccessor",
+    "TextureImageMixin",
+    "TitleScreenMixin",
+    "ToastComponentMixin",
+    "WorldOpenFlowsMixin"
   ],
   "compatibilityLevel": "JAVA_21",
   "injectors": {

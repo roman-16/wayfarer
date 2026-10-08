@@ -1,0 +1,25 @@
+{
+  "text": {
+    "colors": {
+      "danger": "#E0503C",
+      "failure": "#E0503C",
+      "info": "#A89C8E",
+      "normal": "#EEE6D6",
+      "success": "#8DBA55",
+      "title": "#EEE6D6",
+      "warning": "#F2B544"
+    },
+    "itemAmountColor": "#EEE6D6",
+    "shadow": true
+  },
+  "tooltipStyle": {
+    "padding": [
+      5,
+      5,
+      5,
+      5
+    ],
+    "sprite": "wayfarer:stamp/tooltip"
+  },
+  "version": 100
+}

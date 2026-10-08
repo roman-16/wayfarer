@@ -6,6 +6,7 @@ import io.github.roman16.wayfarer.HudState;
 import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.NightPayload;
 import io.github.roman16.wayfarer.Wayfarer;
+import io.github.roman16.wayfarer.client.stamp.Tooltips;
 import io.github.roman16.wayfarer.story.Sense;
 import io.github.roman16.wayfarer.story.Tasks;
 import java.util.List;
@@ -26,6 +27,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
@@ -69,6 +71,10 @@ public final class WayfarerClient {
                 PacketDistributor.sendToServer(new Tasks.Did("charms"));
             }
         });
+        NeoForge.EVENT_BUS.addListener(ScreenEvent.Init.Post.class, FrontDoor::init);
+        NeoForge.EVENT_BUS.addListener(ScreenEvent.Render.Pre.class, Recap::render);
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Recap.tick(Minecraft.getInstance()));
+        NeoForge.EVENT_BUS.addListener(RenderTooltipEvent.Color.class, Tooltips::color);
         NeoForge.EVENT_BUS.addListener(RenderGuiLayerEvent.Pre.class, Hud::beforeLayer);
         NeoForge.EVENT_BUS.addListener(CustomizeGuiOverlayEvent.BossEventProgress.class, Hud::bossBar);
         NeoForge.EVENT_BUS.addListener(RenderGuiLayerEvent.Pre.class, event -> {

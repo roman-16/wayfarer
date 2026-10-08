@@ -88,6 +88,7 @@ neoForge {
                 systemProperty "${mod_id}.background", providers.environmentVariable('WAYFARER_BACKGROUND').orElse('false').get()
                 systemProperty "${mod_id}.showroom", showroom.toString()
                 systemProperty "${mod_id}.lean", providers.environmentVariable('WAYFARER_LEAN').orElse('false').get()
+                systemProperty "${mod_id}.seed", providers.environmentVariable('WAYFARER_SEED').orElse('').get()
                 systemProperty "${mod_id}.state", providers.environmentVariable('WAYFARER_STATE').orElse('').get()
                 systemProperty "${mod_id}.state.cache", providers.environmentVariable('WAYFARER_STATE_CACHE').orElse('').get()
                 ['DISPLAY', 'XDG_SESSION_TYPE', '__GLX_VENDOR_LIBRARY_NAME'].each { variable ->

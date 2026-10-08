@@ -6,7 +6,7 @@ What Wayfarer is becoming, decided here before anything is built. Each document 
 
 **Phase 4, Vertical slice.** The prologue and 1.1 at shipping quality in sound, music, the interface and the front door, within the performance budget; then the rest of Act 1 built to that bar, quest by quest as `slice.md` plans it, from `story.md` and `systems.md`. Step 1, the world, is built and waits for the user's walk through it; M26 (how often the other owners' places stand) is open in `systems.md`. Step 2, the prologue (`story.md`, S23), is built; the user's first play on a server stalled at the first evening and crashed at dusk, and those findings are fixed, with I2 to I4 (the rest of the HUD, the journal screen, conversations) open in `interface.md` and M33 (room for the team's tents at the caravan's fire) and M17 (SeedGen on a server) in `systems.md`. Step 3, 1.1 The Pull and the caravan's day, is built and waits for the user's play. Step 4 is the bar: the prologue and 1.1 as they ship, voice aside, played blind by friends.
 
-Next: **the user plays steps 1 to 3** in the exported pack, and meanwhile the bar's build, from what its design sessions settled (`interface.md`, `sound.md`, `production.md` R1 and R3). Then S25, S26, M37 and M38 before step 5. N1 and N2 wait for phase 6; R2, R4 and R5 come before release.
+Next: **the user plays steps 1 to 3** in the exported pack, and meanwhile the bar's build, from what its design sessions settled (`interface.md`, `style.md`, `sound.md`, `production.md` R1 and R3): the stamp stands on every screen and the front door (I6) is built, so the Graphics button and the options (R1, I7) come next. Then S25, S26, M37 and M38 before step 5. N1 and N2 wait for phase 6; R2, R4 and R5 come before release.
 
 ## Phases
 
@@ -31,6 +31,7 @@ Next: **the user plays steps 1 to 3** in the exported pack, and meanwhile the ba
 | `slice.md` | How phase 4 builds Act 1, quest by quest, and each step's state | In progress |
 | `sound.md` | Everything the player hears but the voice: what plays where, and where it comes from | Settled; each quest adds its moments |
 | `story.md` | The story, act by act | Settled |
+| `style.md` | How everything looks: the stamp every screen and the HUD wear, and how the world's blocks, items, creatures, skins and structures are made | Settled |
 | `systems.md` | Every mechanic, why the world has it, and the spike that proves it | Settled |
 | `tooling.md` | How the pack is seen, tried and built, by coding agents: the worlds, the commands, the tools | Settled |
 | `vision.md` | The pillars, the loops, the twist, the ending, the scope | Settled |

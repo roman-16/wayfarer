@@ -9,6 +9,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.client.Conversation;
 import io.github.roman16.wayfarer.client.Hud;
+import io.github.roman16.wayfarer.client.Recap;
 import io.github.roman16.wayfarer.story.StoryDev;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +41,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
+import net.minecraft.client.ParticleStatus;
 import net.minecraft.client.Screenshot;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
@@ -56,6 +58,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -87,6 +90,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
+import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import org.lwjgl.glfw.GLFW;
@@ -98,6 +102,7 @@ public final class Driver {
     private static final String WORLD_SUFFIX = Boolean.getBoolean(Wayfarer.MODID + ".lean") ? "-lean" : "";
     private static final String PLAY_WORLD = "play" + WORLD_SUFFIX;
     private static final String SHOWROOM_WORLD = "showroom" + WORLD_SUFFIX;
+    private static final String PLAY_SEED = System.getProperty(Wayfarer.MODID + ".seed", "");
     private static final String STATE = System.getProperty(Wayfarer.MODID + ".state", "");
     private static final String STATE_CACHE = System.getProperty(Wayfarer.MODID + ".state.cache", "");
     private static final String STATE_WORLD = "state" + WORLD_SUFFIX;
@@ -110,6 +115,9 @@ public final class Driver {
     private static final int FIND_RADIUS = 32;
     private static final int SETTLE_CHUNKS = 3;
     private static final int SETTLE_FRAMES = 2;
+    private static final int PANORAMA_SIZE = 1024;
+    private static final int CLOSE_LAYERS = 8;
+    private static final float[][] PANORAMA_FACES = {{0, 0}, {90, 0}, {180, 0}, {-90, 0}, {0, -90}, {0, 90}};
     private static final double NANOS_PER_MILLI = 1_000_000.0;
     private static final long PERF_NANOS = 1_000_000_000L;
     private static final long STEP_LIMIT_NANOS = 60_000_000_000L;
@@ -122,7 +130,8 @@ public final class Driver {
     private static final Method MOUSE_PRESS = mouse("onPress", long.class, int.class, int.class, int.class);
     private static final String EXPERIMENTAL_WARNING = "selectWorld.backupQuestion.experimental";
     private static final String LOAD_WITHOUT_BACKUP = "selectWorld.backupJoinSkipButton";
-    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "fly", "hud", "inspect", "interact", "key", "person", "place", "sky", "spawn", "state", "story", "workshop");
+    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "distance", "fly", "hud", "inspect", "interact", "key", "panorama", "person", "place", "sky", "spawn",
+            "state", "story", "workshop");
     private static final double INTERACT_REACH = 8;
     private static final int IDLE_FPS = 5;
     private static final int WINDOW_WIDTH = 1280;
@@ -138,10 +147,13 @@ public final class Driver {
     private static final String TALK = "talk: ";
     private static long talked;
     private static boolean chatHidden;
+    private static boolean bare;
     private static final Set<Integer> awaited = new HashSet<>();
     private static boolean leaving;
     private static boolean opened;
     private static boolean running;
+    @Nullable
+    private static String left;
     private static boolean synced = true;
     private static boolean sentinelSent;
     private static int waiting;
@@ -269,6 +281,13 @@ public final class Driver {
     }
 
     @SubscribeEvent
+    public static void onRenderGui(RenderGuiEvent.Pre event) {
+        if (bare) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
     public static void onRenderLayer(RenderGuiLayerEvent.Pre event) {
         if (chatHidden && event.getName().equals(VanillaGuiLayers.CHAT)) {
             event.setCanceled(true);
@@ -290,6 +309,14 @@ public final class Driver {
                 failure = message.getString();
             }
         }
+    }
+
+    public static boolean batching() {
+        return running;
+    }
+
+    public static boolean panoramic() {
+        return bare;
     }
 
     private static void loading(Minecraft minecraft) {
@@ -319,7 +346,7 @@ public final class Driver {
         } catch (IOException exception) {
             throw new UncheckedIOException(exception);
         }
-        begin(enter(minecraft, SHOWROOM ? "showroom" : STATE.isEmpty() ? "play" : "state " + STATE + " " + STATE_CACHE));
+        begin(enter(minecraft, SHOWROOM ? "showroom" : !STATE.isEmpty() ? "state " + STATE + " " + STATE_CACHE : ("play " + PLAY_SEED).strip()));
     }
 
     private static List<String> enter(Minecraft minecraft, String world) {
@@ -338,11 +365,11 @@ public final class Driver {
                 return built ? List.of("settle") : List.of("settle", "story " + words[1] + " " + words[2], "settle");
             }
             case "play" -> {
-                enter(minecraft, PLAY_WORLD, GameType.SURVIVAL, WorldOptions.randomSeed());
+                enter(minecraft, PLAY_WORLD, GameType.SURVIVAL, words.length > 1 ? Long.parseLong(words[1]) : WorldOptions.randomSeed());
                 return List.of("settle");
             }
             default -> {
-                note("error: enter takes showroom, play or state <quest/step> <cache>, not " + world);
+                note("error: enter takes showroom, play [seed] or state <quest/step> <cache>, not " + world);
                 return List.of();
             }
         }
@@ -350,6 +377,7 @@ public final class Driver {
 
     private static void leave(Minecraft minecraft) {
         if (minecraft.level != null) {
+            left = Recap.key(minecraft);
             boolean local = minecraft.isLocalServer();
             minecraft.level.disconnect();
             if (local) {
@@ -608,13 +636,21 @@ public final class Driver {
                 waitingOn = "the loading screen to fade";
             }
             case "beside", "clear", "person", "place", "spawn" -> command(minecraft, "wayfarer workshop " + step);
+            case "board" -> {
+                if (StyleBoard.PAGES.contains(argument)) {
+                    minecraft.setScreen(new StyleBoard(argument));
+                } else {
+                    note("error: board takes one of " + String.join(", ", StyleBoard.PAGES) + ", not " + argument);
+                }
+            }
             case "chat" -> chatHidden = argument.equals("off");
+            case "distance" -> distance(minecraft, Integer.parseInt(argument));
             case "click" -> {
                 String[] at = argument.split(" ");
                 click(minecraft, Double.parseDouble(at[0]), Double.parseDouble(at[1]), at.length > 2 ? at[2] : "left");
             }
             case "close" -> {
-                if (minecraft.screen != null) {
+                for (int layer = 0; layer < CLOSE_LAYERS && minecraft.screen != null && minecraft.level != null; layer++) {
                     minecraft.screen.onClose();
                 }
             }
@@ -640,6 +676,10 @@ public final class Driver {
             case "join" -> join(minecraft, argument);
             case "key" -> key(minecraft, argument);
             case "leave" -> leave(minecraft);
+            case "loading" -> {
+                Recap.begin(argument.equals("new") ? null : left);
+                minecraft.setScreen(new GenericMessageScreen(Component.translatable("multiplayer.downloadingTerrain")));
+            }
             case "listeners" -> Arrays.stream(argument.split(" ")).map(Swapped::listen).forEach(Driver::note);
             case "log" -> {
                 List<String> problems = Problems.drain();
@@ -648,6 +688,8 @@ public final class Driver {
                 }
                 problems.forEach(problem -> note("log: " + problem));
             }
+            case "panorama" -> panorama(minecraft, argument);
+            case "particles" -> minecraft.options.particles().set(ParticleStatus.valueOf(argument.toUpperCase(Locale.ROOT)));
             case "perf" -> perf(minecraft);
             case "pos" -> note("pos: %.1f %.1f %.1f facing %.0f %.0f in %s".formatted(minecraft.player.getX(), minecraft.player.getY(),
                     minecraft.player.getZ(), minecraft.player.getYRot(), minecraft.player.getXRot(), minecraft.level.dimension().location()));
@@ -842,6 +884,83 @@ public final class Driver {
         } catch (IOException exception) {
             note("error: cannot save " + path + ": " + exception.getMessage());
         }
+    }
+
+    private static void distance(Minecraft minecraft, int chunks) {
+        minecraft.options.renderDistance().set(chunks);
+        minecraft.options.broadcastOptions();
+        int[] most = {0};
+        until = () -> {
+            ChunkPos center = minecraft.player.chunkPosition();
+            int have = 0;
+            int wanted = 0;
+            for (int dx = 1 - chunks; dx < chunks; dx++) {
+                for (int dz = 1 - chunks; dz < chunks; dz++) {
+                    if (dx * dx + dz * dz < (chunks - 1) * (chunks - 1)) {
+                        wanted++;
+                        if (minecraft.level.getChunkSource().hasChunk(center.x + dx, center.z + dz)) {
+                            have++;
+                        }
+                    }
+                }
+            }
+            if (have > most[0]) {
+                most[0] = have;
+                progressed = System.nanoTime();
+            }
+            return have == wanted;
+        };
+    }
+
+    private static void panorama(Minecraft minecraft, String name) {
+        Window window = minecraft.getWindow();
+        int width = window.getWidth();
+        int height = window.getHeight();
+        float yaw = minecraft.player.getYRot();
+        window.setWindowed(PANORAMA_SIZE, PANORAMA_SIZE);
+        until = () -> window.getWidth() == PANORAMA_SIZE && window.getHeight() == PANORAMA_SIZE;
+        then = () -> {
+            minecraft.resizeDisplay();
+            minecraft.gameRenderer.setPanoramicMode(true);
+            minecraft.gameRenderer.setRenderBlockOutline(false);
+            bare = true;
+            face(minecraft, name, 0, yaw, () -> {
+                bare = false;
+                minecraft.gameRenderer.setPanoramicMode(false);
+                minecraft.gameRenderer.setRenderBlockOutline(true);
+                minecraft.player.setYRot(yaw);
+                minecraft.player.setXRot(0);
+                window.setWindowed(width, height);
+                until = () -> window.getWidth() == width && window.getHeight() == height;
+                then = minecraft::resizeDisplay;
+            });
+        };
+    }
+
+    private static void face(Minecraft minecraft, String name, int face, float yaw, Runnable done) {
+        LocalPlayer player = minecraft.player;
+        player.setYRot(yaw + PANORAMA_FACES[face][0]);
+        player.setXRot(PANORAMA_FACES[face][1]);
+        player.yRotO = player.getYRot();
+        player.xRotO = player.getXRot();
+        framesFrom = -1;
+        until = () -> rendered(minecraft) && freshFrame();
+        then = () -> {
+            Path path = minecraft.gameDirectory.toPath().resolve("screenshots/panorama").resolve(name).resolve("panorama_" + face + ".png")
+                    .toAbsolutePath().normalize();
+            try (NativeImage image = Screenshot.takeScreenshot(minecraft.getMainRenderTarget())) {
+                Files.createDirectories(path.getParent());
+                image.writeToFile(path);
+                note("screenshot: " + path);
+            } catch (IOException exception) {
+                note("error: cannot save " + path + ": " + exception.getMessage());
+            }
+            if (face + 1 < PANORAMA_FACES.length) {
+                face(minecraft, name, face + 1, yaw, done);
+            } else {
+                done.run();
+            }
+        };
     }
 
     private static void find(Minecraft minecraft, String argument) {

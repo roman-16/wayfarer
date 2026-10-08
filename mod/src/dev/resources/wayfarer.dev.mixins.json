@@ -1,5 +1,7 @@
 {
   "client": [
+    "FogRendererMixin",
+    "PanoramaRendererMixin",
     "ParticularCounterMixin"
   ],
   "compatibilityLevel": "JAVA_21",

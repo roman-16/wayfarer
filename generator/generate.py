@@ -4,8 +4,10 @@ import math
 import shutil
 from pathlib import Path
 
+import fonts
 import png
 import poses
+import stamp
 import tomllib
 from blocks import LAMP, Template, box, cuboid, text
 from camp import FIRE, GRAVE, HEADSTONE, OLD_SIZE, STRANGER, WAKE, camp, grave, old_camp
@@ -349,17 +351,22 @@ def sounds(spec):
         },
     )
 
+
+def credits(spec, faces):
     def line(entry):
         return f"- {entry['credit']}. {entry['licence']}. {entry['page']}"
 
-    music = [line(piece) for _, piece in sorted(spec["music"].items())]
-    effect_lines = [line(effect) for _, effect in sorted(effects.items())]
+    sections = {
+        "Music": [line(piece) for _, piece in sorted(spec["music"].items())],
+        "Sounds": [line(effect) for _, effect in sorted(spec["effects"].items())],
+        "Fonts": [
+            f"- {face['name']}, by {face['author']}. {face['licence']}. {face['url']}"
+            for _, face in sorted(faces.items())
+        ],
+    }
     (ROOT / "pack/CREDITS.md").write_text(
-        "# Credits\n\nMusic in the Wayfarer mod:\n\n"
-        + "\n".join(music)
-        + "\n\nSounds in the Wayfarer mod:\n\n"
-        + "\n".join(effect_lines)
-        + "\n"
+        "# Credits\n"
+        + "".join(f"\n{name} in the Wayfarer mod:\n\n" + "\n".join(lines) + "\n" for name, lines in sections.items())
     )
 
 
@@ -718,6 +725,12 @@ def main():
     creatures(DEV)
     showroom(eyes)
     textures(tomllib.loads((ROOT / "generator/textures.toml").read_text()))
+    style = tomllib.loads((ROOT / "style.toml").read_text())
+    faces = tomllib.loads((ROOT / "generator/fonts.toml").read_text())
+    display = faces["display"]
+    stamp.write(MAIN, style, fonts.glyphs(display, fonts.TrueType((ROOT / "generator" / display["file"]).read_bytes())))
+    write_json(MAIN / "wayfarer/style.json", style)
+    fonts.write(MAIN, faces, ROOT / "generator", write_json)
     skins = tomllib.loads((ROOT / "generator/skins.toml").read_text()) | townsfolk() | roadfolk()
     people(skins)
     poses.write(MAIN)
@@ -730,7 +743,9 @@ def main():
     write_json(DEV / "wayfarer/states.json", tomllib.loads((ROOT / "story/states.toml").read_text()))
     write_json(MAIN / "wayfarer/gear.json", tomllib.loads((ROOT / "story/gear.toml").read_text()))
     write_json(MAIN / "wayfarer/scenes.json", tomllib.loads((ROOT / "story/scenes.toml").read_text())["scenes"])
-    sounds(tomllib.loads((ROOT / "story/sounds.toml").read_text()))
+    music = tomllib.loads((ROOT / "story/sounds.toml").read_text())
+    sounds(music)
+    credits(music, faces)
     shard_names(eyes)
     old_camps()
     books(written, eyes, library(written, eyes))

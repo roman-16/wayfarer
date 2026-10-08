@@ -13,3 +13,5 @@ Every facet of what a player sees, shot in the dev client by `just gallery` from
 | [Creatures](creatures/README.md) | 1 | 4 |
 | [Places](places/README.md) | 20 | 83 |
 | [Shrines](shrines/README.md) | 12 | 144 |
+| [Interface](interface/README.md) | 14 | 42 |
+| [Front door](front-door/README.md) | 6 | 18 |

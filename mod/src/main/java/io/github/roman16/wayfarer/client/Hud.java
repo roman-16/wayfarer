@@ -3,14 +3,15 @@ package io.github.roman16.wayfarer.client;
 import io.github.roman16.wayfarer.CompassPayload;
 import io.github.roman16.wayfarer.GazePayload;
 import io.github.roman16.wayfarer.HudState;
-import io.github.roman16.wayfarer.Wayfarer;
+import io.github.roman16.wayfarer.client.stamp.Inline;
+import io.github.roman16.wayfarer.client.stamp.Stamp;
+import io.github.roman16.wayfarer.story.Banners;
 import io.github.roman16.wayfarer.story.Tasks;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
-import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -19,9 +20,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
@@ -32,51 +31,45 @@ public final class Hud {
     private static final String[] HEAT = {"guttering", "fading", "listening", "glowing", "flaring"};
     private static final String[] NUMERALS = {"", "I", "II", "III"};
     private static final int BAR_CELLS = 8;
-    private static final int TICK_COLOR = 0xFF808080;
-    private static final int CENTER_COLOR = 0xFFFFFFFF;
-    private static final int CARDINAL_COLOR = 0xFFFFFF;
-    private static final int DIRECTION_COLOR = 0xA0A0A0;
-    private static final int EMBER_COLOR = 0xFFD27A;
-    private static final int MARK_COLOR = 0xE0E0E0;
-    private static final int DISTANCE_COLOR = 0xFFFFFF;
-    private static final String LEAD_MARK = "✦";
-    private static final String FIRE_MARK = "♨";
-    private static final String SHRINE_MARK = "⌂";
-    private static final String GRAVE_MARK = "✝";
-    private static final String TENT_MARK = "▲";
-    private static final int GAP = "    ".length();
+    private static final int CELL_WIDTH = 4;
+    private static final int CELL_HEIGHT = 6;
     private static final int HALF_WIDTH = 90;
     private static final float HALF_VIEW_DEGREES = 90;
     private static final float FACING_DEGREES = 8;
     private static final float DIRECTION_STEP = 45;
-    private static final int RIBBON_HEIGHT = 11;
-    private static final int POINTER = 4;
-    private static final int LINE = 12;
-    private static final int TOP = 4;
+    private static final int BAND_SIDE = HALF_WIDTH + 12;
+    private static final int BAND_HEIGHT = 15;
+    private static final int BAND_TEXT = 4;
+    private static final int POINTER_WIDTH = 5;
+    private static final int POINTER_HEIGHT = 3;
+    private static final int PLATE_HEIGHT = 13;
+    private static final int PLATE_PAD = 4;
+    private static final int PLATE_TEXT = 3;
+    private static final int GAP = 2;
+    private static final int TOP = 3;
     private static final int EDGE = 4;
     private static final int BOSS_BAR = 6;
     private static final int EFFECT_ROW = 26;
     private static final int EFFECT_COLUMN = 25;
-    private static final int PANEL_WIDTH = 168;
-    private static final int PANEL_PAD = 4;
-    private static final int PANEL_LINE = 10;
+    private static final int PANEL_WIDTH = 172;
+    private static final int PANEL_PAD = 8;
+    private static final int LABEL_LINE = 11;
+    private static final int TEXT_LINE = 10;
+    private static final int TASK_LINE = 12;
+    private static final int TASK_INDENT = 8;
+    private static final int TITLE_INDENT = Stamp.MARK_WIDTH + 4;
     private static final int SUBTITLE_ROOM = 96;
-    private static final int TEXT_COLOR = 0xFFFFFF;
-    private static final int TASK_COLOR = 0xD0D0D0;
-    private static final int DONE_COLOR = 0x909090;
-    private static final String OPEN_BOX = "☐ ";
-    private static final String DONE_BOX = "☑ ";
-    private static final ResourceLocation BANNER = Wayfarer.id("banner");
-    private static final int BANNER_HEIGHT = 24;
+    private static final int BANNER_HEIGHT = 34;
+    private static final int BANNER_CAP = 9;
     private static final int BANNER_PAD = 10;
-    private static final int BANNER_TEXT = 8;
-    private static final int BANNER_INK = 0xFF3F2A14;
+    private static final int BANNER_LABEL = 6;
+    private static final int BANNER_TITLE = 17;
     private static final long BANNER_MILLIS = 4000;
-    private static final long BANNER_SLIDE_MILLIS = 250;
     private static final int BANNER_DROP = 8;
+    private static final int OPAQUE_TEXT = 4;
     private static int bossBottom;
     @Nullable
-    private static Component banner;
+    private static Banners.Payload banner;
     private static long bannerFrom;
 
     private Hud() {}
@@ -91,6 +84,11 @@ public final class Hud {
         bossBottom = Math.max(bossBottom, event.getY() + BOSS_BAR);
     }
 
+    public static void clearBanners() {
+        HudState.banners.clear();
+        banner = null;
+    }
+
     public static void render(GuiGraphics graphics, DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
         LocalPlayer player = minecraft.player;
@@ -98,26 +96,25 @@ public final class Hud {
             return;
         }
         Font font = minecraft.font;
-        int background = (int) (minecraft.options.textBackgroundOpacity().get() * 255) << 24;
         CompassPayload reading = HudState.compass;
         boolean compass = reading.mode() != CompassPayload.Mode.HIDDEN;
         int y = Math.max(TOP, bossBottom + EDGE);
         int half = 0;
-        if (compass && graphics.guiWidth() - EFFECT_COLUMN * effectColumns(player) < graphics.guiWidth() / 2 + HALF_WIDTH + EDGE * 2 + LINE) {
+        if (compass && graphics.guiWidth() - EFFECT_COLUMN * effectColumns(player) < graphics.guiWidth() / 2 + BAND_SIDE + EDGE * 2 + PLATE_HEIGHT) {
             y = Math.max(y, TOP + effectRows(player) * EFFECT_ROW);
         }
         if (compass) {
-            band(graphics, font, reading, player, y, background);
-            y += RIBBON_HEIGHT + POINTER;
-            if (distances(graphics, font, reading, player, y, background)) {
-                y += LINE;
+            band(graphics, font, reading, player, y);
+            y += BAND_HEIGHT + POINTER_HEIGHT;
+            if (distances(graphics, font, reading, player, y)) {
+                y += PLATE_HEIGHT + GAP;
             }
-            half = HALF_WIDTH + EDGE * 2 + LINE;
+            half = BAND_SIDE + EDGE + PLATE_HEIGHT;
         }
-        Component urgent = urgent(reading, compass);
+        Urgent urgent = urgent(reading, compass);
         if (urgent != null) {
-            half = Math.max(half, line(graphics, font, urgent, y, background));
-            y += LINE;
+            half = Math.max(half, urgent(graphics, font, urgent, y));
+            y += PLATE_HEIGHT + GAP;
         }
         if (!minecraft.getDebugOverlay().showDebugScreen() && (minecraft.screen == null || minecraft.screen instanceof ChatScreen)) {
             int left = graphics.guiWidth() - EDGE - PANEL_WIDTH;
@@ -130,30 +127,75 @@ public final class Hud {
             if (Conversation.bandRight > left) {
                 bottom = Math.min(bottom, Conversation.bandTop - EDGE);
             }
-            panel(graphics, font, HudState.panel, top, bottom, background);
+            panel(graphics, font, HudState.panel, top, bottom);
         }
-        banner(graphics, font, y);
+        banner(graphics, font, y + GAP);
     }
 
+    private record Run(Component text, int color) {}
+
+    private record Urgent(List<Run> runs, float meter, @Nullable Component after) {}
+
     @Nullable
-    private static Component urgent(CompassPayload reading, boolean compass) {
-        Component gaze = gaze(HudState.gaze);
-        if (gaze != null) {
-            return gaze;
+    private static Urgent urgent(CompassPayload reading, boolean compass) {
+        GazePayload gaze = HudState.gaze;
+        if (gaze.watching()) {
+            Component veil = gaze.veil() == 0 ? null : Component.translatable("wayfarer.gaze.veil", NUMERALS[gaze.veil()], gaze.capacitySeconds() / 60);
+            return new Urgent(List.of(new Run(Component.translatable("wayfarer.gaze.title"), Stamp.GAZE)), Mth.clamp(gaze.fill(), 0, 1), veil);
         }
         if (HudState.night.sleepless()) {
-            return night();
+            return new Urgent(List.of(new Run(Component.translatable("wayfarer.night.title"), Stamp.DANGER)), -1, null);
         }
         if (!compass) {
             return null;
         }
-        MutableComponent caption = caption(reading);
-        return caption.getString().isEmpty() ? null : caption;
+        return switch (reading.mode()) {
+            case BARE -> null;
+            case AIR, COLD, DIM, LOST, HIDDEN -> new Urgent(List.of(new Run(Component.translatable(caption(reading.mode())), Stamp.LABEL)), -1, null);
+            case FAR -> new Urgent(List.of(new Run(Component.translatable("wayfarer.compass.ember"), Stamp.LABEL), new Run(Component.literal(" · "), Stamp.DIM),
+                    new Run(Component.translatable("wayfarer.compass." + HEAT[reading.heat() + 2]), heatColor(reading.heat()))), -1, null);
+        };
     }
 
-    public static void clearBanners() {
-        HudState.banners.clear();
-        banner = null;
+    private static String caption(CompassPayload.Mode mode) {
+        return switch (mode) {
+            case AIR -> "wayfarer.compass.air";
+            case COLD -> "wayfarer.compass.cold";
+            case DIM -> "wayfarer.compass.dim";
+            default -> "wayfarer.compass.lost";
+        };
+    }
+
+    private static int urgent(GuiGraphics graphics, Font font, Urgent urgent, int y) {
+        int width = urgent.runs().stream().mapToInt(run -> Stamp.labelWidth(font, run.text().getString())).sum();
+        if (urgent.meter() >= 0) {
+            width += PLATE_PAD + BAR_CELLS * (CELL_WIDTH + 1) - 1;
+        }
+        if (urgent.after() != null) {
+            width += PLATE_PAD + font.width(urgent.after());
+        }
+        int center = graphics.guiWidth() / 2;
+        int left = center - width / 2 - PLATE_PAD;
+        graphics.blitSprite(Stamp.PLATE, left, y, width + PLATE_PAD * 2, PLATE_HEIGHT);
+        int x = left + PLATE_PAD;
+        for (Run run : urgent.runs()) {
+            x = Stamp.label(graphics, font, run.text().getString(), x, y + PLATE_TEXT, run.color(), true) + 1;
+        }
+        if (urgent.meter() >= 0) {
+            x += PLATE_PAD - 1;
+            int filled = Math.round(urgent.meter() * BAR_CELLS);
+            for (int cell = 0; cell < BAR_CELLS; cell++) {
+                int top = y + (PLATE_HEIGHT - CELL_HEIGHT) / 2;
+                boolean on = cell < filled;
+                graphics.fill(x, top, x + CELL_WIDTH, top + CELL_HEIGHT, on ? Stamp.ramp("gaze", 2) : Stamp.ramp("ash", 0));
+                graphics.fill(x, top, x + CELL_WIDTH, top + 1, on ? Stamp.ramp("gaze", 3) : Stamp.ramp("ash", 3));
+                x += CELL_WIDTH + 1;
+            }
+        }
+        if (urgent.after() != null) {
+            graphics.drawString(font, urgent.after(), x + PLATE_PAD - 1, y + PLATE_TEXT, Stamp.QUIET, true);
+        }
+        return width / 2 + PLATE_PAD;
     }
 
     private static void banner(GuiGraphics graphics, Font font, int y) {
@@ -166,59 +208,124 @@ public final class Hud {
             }
         }
         long shown = now - bannerFrom;
-        float slide = Math.min(1, Math.min(shown, BANNER_MILLIS - shown) / (float) BANNER_SLIDE_MILLIS);
+        float slide = Math.min(1, Math.min(shown, BANNER_MILLIS - shown) / (float) Stamp.KINDLE_MILLIS);
         float eased = slide * slide * (3 - 2 * slide);
-        int width = font.width(banner) + BANNER_PAD * 2;
+        List<Inline.Piece> label = Inline.lines(font, banner.label(), Integer.MAX_VALUE).stream().findFirst().orElse(List.of());
+        String title = banner.title().getString();
+        int labelWidth = label.stream().mapToInt(piece -> piece.key() ? Stamp.keycapWidth(font, piece.text()) + 2 : Stamp.labelWidth(font, piece.text())).sum()
+                + Stamp.MARK_WIDTH + 4;
+        int width = Math.max(labelWidth, Stamp.titleWidth(font, title)) + (BANNER_CAP + BANNER_PAD) * 2;
         int x = graphics.guiWidth() / 2 - width / 2;
         int top = y + Math.round((eased - 1) * BANNER_DROP);
+        int alpha = Math.max(OPAQUE_TEXT, Math.round(eased * 255));
         graphics.flush();
         graphics.setColor(1, 1, 1, eased);
-        graphics.blitSprite(BANNER, x, top, width, BANNER_HEIGHT);
+        graphics.blitSprite(Stamp.STRIP, x, top, width, BANNER_HEIGHT);
+        int markLeft = graphics.guiWidth() / 2 - labelWidth / 2;
+        Stamp.mark(graphics, markLeft, top + BANNER_LABEL - 1, false);
+        graphics.flush();
         graphics.setColor(1, 1, 1, 1);
-        int ink = (Math.max(4, Math.round(eased * 255)) << 24) | (BANNER_INK & 0xFFFFFF);
-        graphics.drawString(font, banner, x + BANNER_PAD, top + BANNER_TEXT, ink, false);
+        int cursor = markLeft + Stamp.MARK_WIDTH + 4;
+        for (Inline.Piece piece : label) {
+            if (piece.key()) {
+                cursor = Stamp.keycap(graphics, font, piece.text(), cursor + 1, top + BANNER_LABEL) + 1;
+            } else {
+                cursor = Stamp.label(graphics, font, piece.text(), cursor, top + BANNER_LABEL, Stamp.withAlpha(Stamp.LABEL, alpha), true) + 1;
+            }
+        }
+        Stamp.title(graphics, font, title, graphics.guiWidth() / 2 - Stamp.titleWidth(font, title) / 2, top + BANNER_TITLE, Stamp.withAlpha(Stamp.GOLD, alpha), true);
     }
 
-    private static void panel(GuiGraphics graphics, Font font, Tasks.Panel panel, int top, int bottom, int background) {
-        List<Row> rows = new ArrayList<>();
+    private sealed interface Row permits Label, Title, Text, Task {
+        int height();
+    }
+
+    private record Label(String text) implements Row {
+        @Override
+        public int height() {
+            return LABEL_LINE;
+        }
+    }
+
+    private record Title(String text) implements Row {
+        @Override
+        public int height() {
+            return LABEL_LINE;
+        }
+    }
+
+    private record Text(List<Inline.Piece> line) implements Row {
+        @Override
+        public int height() {
+            return TEXT_LINE;
+        }
+    }
+
+    private record Task(List<Inline.Piece> line, boolean first, boolean done) implements Row {
+        @Override
+        public int height() {
+            return TASK_LINE;
+        }
+    }
+
+    private static void panel(GuiGraphics graphics, Font font, Tasks.Panel panel, int top, int bottom) {
         int width = PANEL_WIDTH - PANEL_PAD * 2;
-        rows(rows, font, panel.heading(), width, EMBER_COLOR);
-        rows(rows, font, panel.objective(), width, TEXT_COLOR);
+        List<Row> rows = new ArrayList<>();
+        if (!panel.kind().getString().isEmpty()) {
+            rows.add(new Label(panel.kind().getString()));
+        }
+        if (!panel.title().getString().isEmpty()) {
+            rows.add(new Title(panel.title().getString()));
+        }
+        Inline.lines(font, panel.objective(), width).forEach(line -> rows.add(new Text(line)));
         for (Component task : panel.open()) {
-            task(rows, font, OPEN_BOX, task, width, TASK_COLOR);
+            task(rows, font, task, width, false);
         }
         for (Component task : panel.done()) {
-            task(rows, font, DONE_BOX, task, width, DONE_COLOR);
+            task(rows, font, task, width, true);
         }
-        int fits = Math.max(0, (bottom - top - PANEL_PAD * 2) / PANEL_LINE);
-        List<Row> shown = rows.subList(0, Math.min(rows.size(), fits));
-        if (shown.isEmpty()) {
+        int room = bottom - top - PANEL_PAD * 2;
+        int used = 0;
+        int shown = 0;
+        while (shown < rows.size() && used + rows.get(shown).height() <= room) {
+            used += rows.get(shown).height();
+            shown++;
+        }
+        if (shown > 0 && rows.get(shown - 1) instanceof Label) {
+            used -= rows.get(--shown).height();
+        }
+        if (shown == 0) {
             return;
         }
         int right = graphics.guiWidth() - EDGE;
         int left = right - PANEL_WIDTH;
-        graphics.fill(left, top, right, top + shown.size() * PANEL_LINE + PANEL_PAD * 2, background);
+        graphics.blitSprite(Stamp.PANEL_CLEAR, left, top, PANEL_WIDTH, used + PANEL_PAD * 2 - 2);
         int y = top + PANEL_PAD;
-        for (Row row : shown) {
-            graphics.drawString(font, row.text(), left + PANEL_PAD + row.indent(), y, row.color());
-            y += PANEL_LINE;
+        int x = left + PANEL_PAD;
+        for (Row row : rows.subList(0, shown)) {
+            switch (row) {
+                case Label label -> Stamp.label(graphics, font, label.text(), x, y, Stamp.LABEL, true);
+                case Title title -> {
+                    Stamp.mark(graphics, x, y, false);
+                    graphics.drawString(font, title.text(), x + TITLE_INDENT, y, Stamp.GOLD, true);
+                }
+                case Text text -> Inline.draw(graphics, font, text.line(), x, y, Stamp.BONE, true);
+                case Task task -> {
+                    if (task.first()) {
+                        Stamp.ring(graphics, x, y + 1, task.done(), task.done() ? Stamp.DIM : Stamp.QUIET);
+                    }
+                    Inline.draw(graphics, font, task.line(), x + TASK_INDENT, y, task.done() ? Stamp.DIM : Stamp.BONE, true);
+                }
+            }
+            y += row.height();
         }
     }
 
-    private record Row(FormattedCharSequence text, int indent, int color) {}
-
-    private static void rows(List<Row> rows, Font font, Component text, int width, int color) {
-        if (text.getString().isEmpty()) {
-            return;
+    private static void task(List<Row> rows, Font font, Component text, int width, boolean done) {
+        List<List<Inline.Piece>> lines = Inline.lines(font, text, width - TASK_INDENT);
+        for (int index = 0; index < lines.size(); index++) {
+            rows.add(new Task(lines.get(index), index == 0, done));
         }
-        font.split(text, width).forEach(line -> rows.add(new Row(line, 0, color)));
-    }
-
-    private static void task(List<Row> rows, Font font, String box, Component text, int width, int color) {
-        int indent = font.width(box);
-        List<FormattedCharSequence> lines = font.split(text, width - indent);
-        rows.add(new Row(FormattedCharSequence.composite(Component.literal(box).getVisualOrderText(), lines.getFirst()), 0, color));
-        lines.stream().skip(1).forEach(line -> rows.add(new Row(line, indent, color)));
     }
 
     private static int effectColumns(LocalPlayer player) {
@@ -233,18 +340,17 @@ public final class Hud {
         return bad ? 2 : good ? 1 : 0;
     }
 
-    private static void band(GuiGraphics graphics, Font font, CompassPayload reading, LocalPlayer player, int y, int background) {
+    private static void band(GuiGraphics graphics, Font font, CompassPayload reading, LocalPlayer player, int y) {
         int center = graphics.guiWidth() / 2;
-        int bottom = y + RIBBON_HEIGHT - 1;
-        graphics.fill(center - HALF_WIDTH - EDGE, y - 1, center + HALF_WIDTH + EDGE, bottom, background);
-        graphics.fill(center - 1, bottom, center + 2, bottom + 1, CENTER_COLOR);
-        graphics.fill(center, bottom + 1, center + 1, bottom + 2, CENTER_COLOR);
+        graphics.blitSprite(Stamp.BAND, center - BAND_SIDE, y, BAND_SIDE * 2, BAND_HEIGHT);
+        Stamp.tinted(graphics, Stamp.compass("pointer"), center - POINTER_WIDTH / 2, y + BAND_HEIGHT - 1, POINTER_WIDTH, POINTER_HEIGHT, Stamp.GOLD);
+        int text = y + BAND_TEXT;
         List<int[]> marked = new ArrayList<>();
         for (CompassPayload.Marker marker : reading.markers()) {
             float relative = bearing(marker.x(), marker.z(), player);
             if (Math.abs(relative) <= HALF_VIEW_DEGREES) {
                 int x = center + offset(relative);
-                int half = font.width(symbol(marker)) / 2 + 1;
+                int half = markWidth(font, marker) / 2 + 1;
                 marked.add(new int[] {x - half, x + half});
             }
         }
@@ -261,38 +367,58 @@ public final class Hud {
                 continue;
             }
             if (label.isEmpty()) {
-                graphics.fill(x, y + 3, x + 1, y + 5, TICK_COLOR);
+                graphics.fill(x, text + 3, x + 1, text + 5, Stamp.DIM);
                 continue;
             }
-            int color = label.length() == 1 ? CARDINAL_COLOR : DIRECTION_COLOR;
-            graphics.drawString(font, label, x - font.width(label) / 2 + 1, y + 1, color);
+            graphics.drawString(font, label, x - font.width(label) / 2 + 1, text, label.length() == 1 ? Stamp.BONE : Stamp.QUIET, true);
         }
         for (CompassPayload.Marker marker : reading.markers()) {
-            int color = marker.kind() == CompassPayload.Kind.GOAL || marker.kind() == CompassPayload.Kind.LEAD ? EMBER_COLOR : MARK_COLOR;
-            mark(graphics, font, symbol(marker), color, bearing(marker.x(), marker.z(), player), center, y);
+            marker(graphics, font, marker, bearing(marker.x(), marker.z(), player), center, text);
         }
-        String hallowed = switch (reading.shelter()) {
-            case FIRE -> FIRE_MARK;
+        ResourceLocation hallowed = switch (reading.shelter()) {
+            case FIRE -> Stamp.compass("fire");
             case NONE -> null;
-            case SHRINE -> SHRINE_MARK;
+            case SHRINE -> Stamp.compass("hall");
         };
         if (hallowed != null) {
-            int left = center + HALF_WIDTH + EDGE + 2;
-            graphics.fill(left, y - 1, left + font.width(hallowed) + EDGE, bottom, background);
-            graphics.drawString(font, hallowed, left + 2, y + 1, reading.shelter() == CompassPayload.Shelter.FIRE ? EMBER_COLOR : MARK_COLOR);
+            int left = center + BAND_SIDE + GAP;
+            graphics.blitSprite(Stamp.PLATE, left, y + 1, PLATE_HEIGHT, PLATE_HEIGHT);
+            int size = reading.shelter() == CompassPayload.Shelter.FIRE ? 5 : 7;
+            Stamp.tinted(graphics, hallowed, left + (PLATE_HEIGHT - size) / 2, y + 4, size, 7,
+                    reading.shelter() == CompassPayload.Shelter.FIRE ? Stamp.GOLD : Stamp.BONE);
         }
     }
 
-    private static String symbol(CompassPayload.Marker marker) {
+    private static int markWidth(Font font, CompassPayload.Marker marker) {
         return switch (marker.kind()) {
-            case GOAL, LEAD -> LEAD_MARK;
-            case GRAVE -> GRAVE_MARK;
-            case TEAMMATE -> marker.name().isEmpty() ? "?" : marker.name().substring(0, 1).toUpperCase(Locale.ROOT);
-            case TENT -> TENT_MARK;
+            case GOAL, LEAD -> Stamp.MARK_WIDTH;
+            case GRAVE -> 5;
+            case TEAMMATE -> font.width(initial(marker));
+            case TENT -> 7;
         };
     }
 
-    private static boolean distances(GuiGraphics graphics, Font font, CompassPayload reading, LocalPlayer player, int y, int background) {
+    private static String initial(CompassPayload.Marker marker) {
+        return marker.name().isEmpty() ? "?" : marker.name().substring(0, 1).toUpperCase(Locale.ROOT);
+    }
+
+    private static void marker(GuiGraphics graphics, Font font, CompassPayload.Marker marker, float relative, int center, int y) {
+        boolean lead = marker.kind() == CompassPayload.Kind.GOAL || marker.kind() == CompassPayload.Kind.LEAD;
+        if (Math.abs(relative) > HALF_VIEW_DEGREES) {
+            int x = center + (relative < 0 ? -HALF_WIDTH - 6 : HALF_WIDTH + 2);
+            Stamp.tinted(graphics, Stamp.compass(relative < 0 ? "left" : "right"), x, y, 4, 7, lead ? Stamp.GOLD : Stamp.QUIET);
+            return;
+        }
+        int x = center + offset(relative);
+        switch (marker.kind()) {
+            case GOAL, LEAD -> Stamp.mark(graphics, x - Stamp.MARK_WIDTH / 2, y, false);
+            case GRAVE -> Stamp.tinted(graphics, Stamp.compass("grave"), x - 2, y + 1, 5, 6, Stamp.BONE);
+            case TEAMMATE -> graphics.drawString(font, initial(marker), x - font.width(initial(marker)) / 2 + 1, y, Stamp.BONE, true);
+            case TENT -> Stamp.tinted(graphics, Stamp.compass("tent"), x - 3, y + 2, 7, 5, Stamp.BONE);
+        }
+    }
+
+    private static boolean distances(GuiGraphics graphics, Font font, CompassPayload reading, LocalPlayer player, int y) {
         int center = graphics.guiWidth() / 2;
         List<int[]> taken = new ArrayList<>();
         for (CompassPayload.Marker marker : reading.markers()) {
@@ -301,24 +427,17 @@ public final class Hud {
                 continue;
             }
             int distance = (int) Math.hypot(marker.x() + 0.5 - player.getX(), marker.z() + 0.5 - player.getZ());
-            String text = blocks(distance);
+            String text = NumberFormat.getIntegerInstance(Locale.ROOT).format(distance);
             int x = center + (Math.abs(relative) <= HALF_VIEW_DEGREES ? offset(relative) : relative < 0 ? -HALF_WIDTH : HALF_WIDTH);
-            int half = font.width(text) / 2 + 2;
+            int half = font.width(text) / 2 + PLATE_PAD;
             if (taken.stream().anyMatch(span -> x + half > span[0] && x - half < span[1])) {
                 continue;
             }
             taken.add(new int[] {x - half, x + half});
-            graphics.fill(x - half, y - 2, x + half, y + font.lineHeight, background);
-            graphics.drawString(font, text, x - font.width(text) / 2 + 1, y, marker.kind() == CompassPayload.Kind.GOAL ? EMBER_COLOR : DISTANCE_COLOR);
+            graphics.blitSprite(Stamp.PLATE, x - half, y, half * 2 + 1, PLATE_HEIGHT);
+            graphics.drawString(font, text, x - font.width(text) / 2 + 1, y + PLATE_TEXT, marker.kind() == CompassPayload.Kind.GOAL ? Stamp.GOLD : Stamp.BONE, true);
         }
         return !taken.isEmpty();
-    }
-
-    private static void mark(GuiGraphics graphics, Font font, String symbol, int color, float relative, int center, int y) {
-        boolean inView = Math.abs(relative) <= HALF_VIEW_DEGREES;
-        String shown = inView ? symbol : relative < 0 ? "◀" : "▶";
-        int x = inView ? center + offset(relative) : center + (relative < 0 ? -HALF_WIDTH : HALF_WIDTH);
-        graphics.drawString(font, shown, x - font.width(shown) / 2 + 1, y + 1, color);
     }
 
     private static int offset(float relative) {
@@ -332,57 +451,7 @@ public final class Hud {
         return Mth.wrapDegrees(bearing - player.getYRot());
     }
 
-    private static MutableComponent caption(CompassPayload reading) {
-        return switch (reading.mode()) {
-            case AIR -> Component.translatable("wayfarer.compass.air").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
-            case BARE -> Component.empty();
-            case COLD -> Component.translatable("wayfarer.compass.cold").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
-            case DIM -> Component.translatable("wayfarer.compass.dim").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
-            case LOST, HIDDEN -> Component.translatable("wayfarer.compass.lost").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
-            case FAR -> Component.translatable("wayfarer.compass.ember").withStyle(ChatFormatting.WHITE)
-                    .append(separator())
-                    .append(Component.translatable("wayfarer.compass." + HEAT[reading.heat() + 2]).withStyle(heatColor(reading.heat())));
-        };
-    }
-
-    private static Component night() {
-        return Component.literal("✕ ").withStyle(ChatFormatting.RED).append(Component.translatable("wayfarer.night.title").withStyle(ChatFormatting.WHITE));
-    }
-
-    private static int line(GuiGraphics graphics, Font font, Component text, int y, int background) {
-        int center = graphics.guiWidth() / 2;
-        int half = font.width(text) / 2 + 4;
-        graphics.fill(center - half, y - 2, center + half, y + font.lineHeight + 1, background);
-        graphics.drawCenteredString(font, text, center, y, TEXT_COLOR);
-        return half;
-    }
-
-    private static Component separator() {
-        return Component.literal(" · ").withStyle(ChatFormatting.DARK_GRAY);
-    }
-
-    private static ChatFormatting heatColor(int heat) {
-        return heat > 0 ? ChatFormatting.GOLD : heat < 0 ? ChatFormatting.BLUE : ChatFormatting.GRAY;
-    }
-
-    private static String blocks(int distance) {
-        return NumberFormat.getIntegerInstance(Locale.ROOT).format(distance);
-    }
-
-    @Nullable
-    private static Component gaze(GazePayload gaze) {
-        if (!gaze.watching()) {
-            return null;
-        }
-        int filled = Mth.clamp(Math.round(gaze.fill() * BAR_CELLS), 0, BAR_CELLS);
-        MutableComponent bar = Component.translatable("wayfarer.gaze.title").withStyle(ChatFormatting.DARK_PURPLE)
-                .append(Component.literal("  "))
-                .append(Component.literal("▮".repeat(filled)).withStyle(ChatFormatting.LIGHT_PURPLE))
-                .append(Component.literal("▯".repeat(BAR_CELLS - filled)).withStyle(ChatFormatting.DARK_GRAY));
-        if (gaze.veil() == 0) {
-            return bar;
-        }
-        return bar.append(Component.literal(" ".repeat(GAP)))
-                .append(Component.translatable("wayfarer.gaze.veil", NUMERALS[gaze.veil()], gaze.capacitySeconds() / 60).withStyle(ChatFormatting.GRAY));
+    private static int heatColor(int heat) {
+        return heat > 0 ? Stamp.GOLD : heat < 0 ? Stamp.ramp("frost", 3) : Stamp.QUIET;
     }
 }
