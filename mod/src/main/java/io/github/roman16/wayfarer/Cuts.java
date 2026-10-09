@@ -2,15 +2,9 @@ package io.github.roman16.wayfarer;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,39 +47,24 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 public final class Cuts {
     private static final TagKey<Block> ROOTLESS = TagKey.create(Registries.BLOCK, Wayfarer.id("rootless"));
     private static final TagKey<Block> STORAGE = TagKey.create(Registries.BLOCK, Wayfarer.id("storage"));
-    private static final Set<ResourceLocation> ITEMS;
-    private static final Set<ResourceLocation> CREATURES;
-    private static final Set<ResourceLocation> ENCHANTMENTS;
-    private static final Set<ResourceLocation> FEATURES;
-
-    static {
-        try (var stream = Cuts.class.getResourceAsStream("/wayfarer/cuts.json")) {
-            if (stream == null) {
-                throw new IllegalStateException("cuts.json is missing from the mod jar; run just generate");
-            }
-            JsonObject json = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
-            ITEMS = ids(json.getAsJsonArray("items"));
-            CREATURES = ids(json.getAsJsonArray("creatures"));
-            ENCHANTMENTS = ids(json.getAsJsonArray("enchantments"));
-            FEATURES = ids(json.getAsJsonArray("features"));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
+    private static final Bundled<Spec> SPEC = Bundled.json("/wayfarer/cuts.json", json -> new Spec(ids(json.getAsJsonArray("creatures")),
+            ids(json.getAsJsonArray("enchantments")), ids(json.getAsJsonArray("features")), ids(json.getAsJsonArray("items"))));
 
     private Cuts() {}
 
+    private record Spec(Set<ResourceLocation> creatures, Set<ResourceLocation> enchantments, Set<ResourceLocation> features, Set<ResourceLocation> items) {}
+
     public static boolean feature(ResourceLocation feature) {
-        return FEATURES.contains(feature);
+        return SPEC.get().features().contains(feature);
     }
 
     public static boolean cut(ItemStack stack) {
-        return ITEMS.contains(BuiltInRegistries.ITEM.getKey(stack.getItem()))
+        return SPEC.get().items().contains(BuiltInRegistries.ITEM.getKey(stack.getItem()))
                 || EnchantmentHelper.getEnchantmentsForCrafting(stack).keySet().stream().anyMatch(Cuts::cut);
     }
 
     private static boolean cut(Holder<Enchantment> enchantment) {
-        return enchantment.unwrapKey().map(key -> ENCHANTMENTS.contains(key.location())).orElse(false);
+        return enchantment.unwrapKey().map(key -> SPEC.get().enchantments().contains(key.location())).orElse(false);
     }
 
     @SubscribeEvent
@@ -128,7 +107,7 @@ public final class Cuts {
 
     @SubscribeEvent
     public static void onJoin(EntityJoinLevelEvent event) {
-        if (event.getEntity() instanceof ExperienceOrb || CREATURES.contains(BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()))) {
+        if (event.getEntity() instanceof ExperienceOrb || SPEC.get().creatures().contains(BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()))) {
             event.setCanceled(true);
         }
     }
@@ -168,7 +147,7 @@ public final class Cuts {
     @SubscribeEvent
     public static void onUseBlock(PlayerInteractEvent.RightClickBlock event) {
         Item item = event.getLevel().getBlockState(event.getPos()).getBlock().asItem();
-        if (event.getEntity() instanceof ServerPlayer player && item != Items.AIR && ITEMS.contains(BuiltInRegistries.ITEM.getKey(item))) {
+        if (event.getEntity() instanceof ServerPlayer player && item != Items.AIR && SPEC.get().items().contains(BuiltInRegistries.ITEM.getKey(item))) {
             event.setCanceled(true);
             tell(player, "wayfarer.cut.cold");
         }
@@ -193,7 +172,7 @@ public final class Cuts {
 
         @Override
         protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> loot, LootContext context) {
-            loot.removeIf(stack -> ITEMS.contains(BuiltInRegistries.ITEM.getKey(stack.getItem())));
+            loot.removeIf(stack -> SPEC.get().items().contains(BuiltInRegistries.ITEM.getKey(stack.getItem())));
             loot.forEach(stack -> EnchantmentHelper.updateEnchantments(stack, enchantments -> enchantments.removeIf(Cuts::cut)));
             loot.removeIf(stack -> stack.is(Items.ENCHANTED_BOOK) && EnchantmentHelper.getEnchantmentsForCrafting(stack).isEmpty());
             return loot;

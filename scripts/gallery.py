@@ -3,6 +3,7 @@ import json
 import shutil
 import subprocess
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import client
@@ -22,6 +23,27 @@ FUZZ = "2%"
 SHOT_SECONDS = 900
 PICTURES = (".jpg", ".png")
 KINDS = {"hud", "screen", "tour", "views", "world"}
+QUIET = {
+    "chat",
+    "close",
+    "forget",
+    "gui",
+    "hud",
+    "inspect",
+    "key",
+    "log",
+    "pause",
+    "point",
+    "pos",
+    "press",
+    "scale",
+    "screen",
+    "settle",
+    "shot",
+}
+KEEPERS = 2
+STILL_TICKS = 128
+RUNNING = {"await", "interact", "story"}
 TOUR_COLUMNS = 3
 NOTE = (
     "Every facet of what a player sees, shot in the dev client by `just gallery` from `shots.toml`. The dev client "
@@ -96,8 +118,46 @@ def open_world(at):
 
 
 def restore(shot):
-    world = [] if shot.get("outside") else ["/tick unfreeze", "close"]
+    if shot.get("outside"):
+        world = []
+    elif shot["at"] == "showroom":
+        world = ["/tick unfreeze", "close"]
+    else:
+        world = ["close", "forget"]
     return [*world, "chat on", f"scale {USUAL_SCALE}", "gui on"]
+
+
+def quiet(shot):
+    steps = [*shot.get("steps", []), *shot.get("after", [])]
+    return (
+        shot["at"] != "showroom"
+        and not shot.get("outside")
+        and shot["kind"] in ("hud", "screen", "world")
+        and all(not step.startswith("/") and step.split(" ", 1)[0] in QUIET for step in steps)
+    )
+
+
+def steady(shot):
+    steps = [*shot.get("steps", []), *shot.get("after", [])]
+    return (
+        shot["at"] != "showroom"
+        and not shot.get("outside")
+        and all(step.split(" ", 1)[0] not in RUNNING and not step.startswith("/tick rate") for step in steps)
+    )
+
+
+def digest():
+    entries = client.parse(client.batch(["digest"], SHOT_SECONDS))
+    return next(entry["digest"][0] for entry in entries if "digest" in entry)
+
+
+def looked(baseline):
+    client.batch(["/wayfarer story marks restore"], SHOT_SECONDS)
+    return digest() == baseline
+
+
+def order(shot, story):
+    return (shot["at"] != "showroom", story.get(shot["at"], -1), not quiet(shot))
 
 
 def run(shot, steps):
@@ -112,15 +172,25 @@ def shoot(shot):
     prepare = ["close", "gui on", "chat " + ("on" if shot.get("chat") else "off"), f"scale {USUAL_SCALE}"]
     kind = shot["kind"]
     if kind == "views":
-        run(shot, [*prepare, "workshop", "clear", *shot.get("steps", []), "/wayfarer workshop unsign", "/tick freeze"])
+        run(
+            shot,
+            [
+                *prepare,
+                "workshop",
+                "clear",
+                *shot.get("steps", []),
+                "/wayfarer workshop unsign",
+                "still",
+            ],
+        )
         _, errors = client.sides(slug(shot), SHOT_SECONDS, shot.get("sides", tuple(client.SIDES)))
         if errors:
             sys.exit(f"gallery failed: {shot['id']}: {'; '.join(errors)}")
     elif kind == "tour":
-        run(shot, [*prepare, *shot.get("steps", []), "/tick freeze"])
+        run(shot, [*prepare, *shot.get("steps", []), "still"])
         client.photograph([shot["subject"]], SHOT_SECONDS)
     else:
-        frozen = [] if shot.get("outside") else ["/tick freeze", "settle"]
+        frozen = [] if shot.get("outside") else ["still", "settle"]
         steps = [*prepare, *shot.get("steps", []), *frozen]
         if kind == "screen":
             steps.append("point 0 0")
@@ -132,12 +202,20 @@ def shoot(shot):
     client.batch([*restore(shot), *shot.get("after", [])], SHOT_SECONDS)
 
 
-def keep(shot):
-    found = {}
-    for picture, name, _, _ in pictures(shot):
+def taken(shot):
+    raw = WORK / "raw"
+    raw.mkdir(parents=True, exist_ok=True)
+    for _, name, _, _ in pictures(shot):
         source = client.SCREENSHOTS / f"{name}.png"
         if not source.exists():
             sys.exit(f"gallery failed: {shot['id']}: the driver wrote no {source.name}")
+        shutil.copyfile(source, raw / source.name)
+
+
+def keep(shot):
+    found = {}
+    for picture, name, _, _ in pictures(shot):
+        source = WORK / "raw" / f"{name}.png"
         target = GALLERY / picture
         fresh = WORK / picture
         fresh.parent.mkdir(parents=True, exist_ok=True)
@@ -252,24 +330,50 @@ def main():
     if not wanted:
         sys.exit(f"gallery failed: no shot is named or lies under {', '.join(arguments.folders)}")
     shutil.rmtree(WORK, ignore_errors=True)
+    story = {state: index for index, state in enumerate(states.steps())}
+    ordered = sorted(wanted, key=lambda shot: order(shot, story))
     found = {}
-    showroom = False
-    ordered = sorted(wanted, key=lambda shot: shot["at"] != "showroom")
-    for index, shot in enumerate(ordered):
-        try:
-            if shot["at"] != "showroom" or not showroom:
-                open_world(shot["at"])
-            shoot(shot)
-            showroom = shot["at"] == "showroom" and not shot.get("outside")
-        except SystemExit:
-            print("the rest: just gallery " + " ".join(rest["id"] for rest in ordered[index:]), flush=True)
-            raise
-        kept = keep(shot)
-        found |= kept
-        counts = {status: list(kept.values()).count(status) for status in ("new", "changed", "the same")}
-        print(
-            f"{shot['id']}: " + ", ".join(f"{count} {status}" for status, count in counts.items() if count), flush=True
-        )
+    pending = []
+
+    def report(wait):
+        while pending and (wait or pending[0][1].done()):
+            shot, kept = pending.pop(0)
+            found.update(kept.result())
+            counts = {status: list(kept.result().values()).count(status) for status in ("new", "changed", "the same")}
+            print(
+                f"{shot['id']}: " + ", ".join(f"{count} {status}" for status, count in counts.items() if count),
+                flush=True,
+            )
+
+    with ThreadPoolExecutor(KEEPERS) as keepers:
+        opened = None
+        baseline = None
+        frozen = False
+        for index, shot in enumerate(ordered):
+            try:
+                if opened != shot["at"] or not (shot["at"] == "showroom" or quiet(shot)):
+                    open_world(shot["at"])
+                    opened = shot["at"]
+                    frozen = False
+                    if steady(shot):
+                        client.batch([f"still {STILL_TICKS}", "settle"], SHOT_SECONDS)
+                    if quiet(shot):
+                        client.batch(["/wayfarer story marks keep"], SHOT_SECONDS)
+                        baseline = digest()
+                shoot(shot)
+                frozen = not shot.get("outside") and shot["at"] != "showroom"
+                taken(shot)
+            except SystemExit:
+                report(True)
+                print("the rest: just gallery " + " ".join(rest["id"] for rest in ordered[index:]), flush=True)
+                raise
+            pending.append((shot, keepers.submit(keep, shot)))
+            report(False)
+            if shot.get("outside") or (shot["at"] != "showroom" and not (quiet(shot) and looked(baseline))):
+                opened = None
+        if frozen:
+            client.batch(["/tick unfreeze"], SHOT_SECONDS)
+        report(True)
     for picture in stray(shots):
         (GALLERY / picture).unlink()
         found[picture] = "deleted"

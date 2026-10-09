@@ -2,6 +2,12 @@
 
 ## The caravan
 
+**Corin, the deserter, standing and sitting**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](the-caravan/corin/front.jpg) | ![Side](the-caravan/corin/side.jpg) | ![Three quarters](the-caravan/corin/three-quarters.jpg) |
+
 **The stranger**, in the showroom
 
 | Front | Side | Three quarters |

@@ -54,6 +54,7 @@ public final class WayfarerClient {
         modBus.addListener(RegisterGuiLayersEvent.class, event -> {
             event.registerBelow(VanillaGuiLayers.SUBTITLE_OVERLAY, Wayfarer.id("hud"), Hud::render);
             event.registerBelow(VanillaGuiLayers.SUBTITLE_OVERLAY, Wayfarer.id("talk"), Conversation::render);
+            event.registerAboveAll(Wayfarer.id("flash"), Flash::render);
         });
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, event -> Conversation.tick(Minecraft.getInstance()));
         modBus.addListener(EntityRenderersEvent.RegisterLayerDefinitions.class,

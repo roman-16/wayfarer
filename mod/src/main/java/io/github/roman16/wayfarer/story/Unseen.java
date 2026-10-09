@@ -16,6 +16,7 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.Tags;
 
 final class Unseen {
     private static final int CELL = 8;
@@ -65,6 +66,10 @@ final class Unseen {
             }
         }
         return false;
+    }
+
+    static boolean snowy(Holder<Biome> biome, BlockPos at) {
+        return biome.is(Tags.Biomes.IS_SNOWY) || biome.is(Tags.Biomes.IS_ICY) || biome.value().coldEnoughToSnow(at);
     }
 
     static final class Heights {

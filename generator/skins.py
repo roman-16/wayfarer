@@ -5,7 +5,23 @@ DARK = 0.24
 LIGHT = 0.78
 
 
-def boxes(arm):
+ILLAGER = {
+    "head": (0, 0, 8, 10, 8),
+    "nose": (24, 0, 2, 4, 2),
+    "body": (16, 20, 8, 12, 6),
+    "robe": (0, 38, 8, 20, 6),
+    "crossed": (44, 22, 4, 8, 4),
+    "middle": (40, 38, 8, 4, 4),
+    "leg": (0, 22, 4, 12, 4),
+    "arm": (40, 46, 4, 12, 4),
+}
+ILLAGERS = {"vindicator"}
+
+
+def boxes(model):
+    if model in ILLAGERS:
+        return ILLAGER
+    arm = 3 if model == "humanoid_slim" else 4
     return {
         "head": (0, 0, 8, 8, 8),
         "hat": (32, 0, 8, 8, 8),
@@ -113,12 +129,11 @@ def lifted(spec):
 
 def skin(name, spec):
     spec = lifted(spec)
-    arm = 3 if spec["model"] == "humanoid_slim" else 4
     palette = spec["palette"]
     pixels = [[(0, 0, 0, 0)] * SIZE for _ in range(SIZE)]
-    for part, (u, v, w, h, d) in boxes(arm).items():
+    for part, (u, v, w, h, d) in boxes(spec["model"]).items():
         for face, (x0, y0, fw, fh) in faces(u, v, w, h, d).items():
-            kind = GRIDS[part]
+            kind = GRIDS.get(part, part)
             rows = grid(spec, part, face) or grid(spec, kind, face)
             if rows is None and face in ("top", "bottom"):
                 rows = edge(spec, kind, face, fw, fh)

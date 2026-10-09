@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Joining;
 import io.github.roman16.wayfarer.TentPitch;
@@ -73,7 +74,7 @@ public final class Caravan {
     private static final String SAVE = "wayfarer_caravan";
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final String TENTS = "nomadictents";
-    private static final JsonArray HOUSEHOLDS = Prologue.json("/wayfarer/story.json").getAsJsonArray("caravan");
+    private static final Bundled<JsonArray> HOUSEHOLDS = Bundled.json("/wayfarer/story.json", story -> story.getAsJsonArray("caravan"));
     private static final int ANGLE_STEP = 15;
     private static final int AROUND = 32;
     private static final int BUSH = 4;
@@ -88,6 +89,10 @@ public final class Caravan {
     private static final int FLAGS = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE;
     private static final int FOUNDATION = 4;
     private static final int GAP = 2;
+    private static final int APART_BLOCKS = 8;
+    private static final int STANDBY = 4;
+    private static final String APART = "apart";
+    private static final String JOINS = "joins";
     private static final int HOLLOW = 8;
     private static final int LOW = 4;
     private static final int NEAR_WATER = 8;
@@ -338,7 +343,7 @@ public final class Caravan {
     static boolean heading(MinecraftServer server) {
         Camp camp = Camp.of(server);
         boolean night = camp.phase == Phase.STANDING
-                && Math.floorMod(server.overworld().getDayTime(), Clock.DAY) >= Clock.ticks(Balance.INSTANCE.clock().evening());
+                && Math.floorMod(server.overworld().getDayTime(), Clock.DAY) >= Clock.ticks(Balance.get().clock().evening());
         return camp.heading && camp.phase != Phase.PACKING && !night;
     }
 
@@ -353,7 +358,7 @@ public final class Caravan {
         ServerLevel level = Engine.overworld(server);
         switch (camp.phase) {
             case GONE -> {
-                if (!camp.heading && camp.ever && Math.floorMod(level.getDayTime(), Clock.DAY) >= Clock.ticks(Balance.INSTANCE.clock().runFrom())) {
+                if (!camp.heading && camp.ever && Math.floorMod(level.getDayTime(), Clock.DAY) >= Clock.ticks(Balance.get().clock().runFrom())) {
                     Talk.notice(Component.translatable("wayfarer.caravan.evening"));
                     headIn(server);
                 }
@@ -390,11 +395,11 @@ public final class Caravan {
 
     private static void morning(MinecraftServer server, long day) {
         List<String> awake = new ArrayList<>();
-        for (JsonElement household : HOUSEHOLDS) {
+        for (JsonElement household : households(server)) {
             if (household.getAsJsonObject().has("people")) {
                 for (JsonElement person : household.getAsJsonObject().getAsJsonArray("people")) {
                     String id = person.getAsJsonObject().get("person").getAsString();
-                    if (Progress.of(server).met(id) && !Story.INSTANCE.person(id).mornings().isEmpty()) {
+                    if (Progress.of(server).met(id) && !Story.get().person(id).mornings().isEmpty()) {
                         awake.add(id);
                     }
                 }
@@ -405,7 +410,7 @@ public final class Caravan {
         }
         RandomSource random = RandomSource.create(day);
         String by = awake.get(random.nextInt(awake.size()));
-        List<String> lines = Story.INSTANCE.person(by).mornings();
+        List<String> lines = Story.get().person(by).mornings();
         Talk.say(Talk.ROAD, null, new Story.Line(by, lines.get(random.nextInt(lines.size()))));
     }
 
@@ -577,7 +582,7 @@ public final class Caravan {
         if (!loaded(level, packing.ticket())) {
             return;
         }
-        for (JsonElement household : HOUSEHOLDS) {
+        for (JsonElement household : households(server)) {
             if (household.getAsJsonObject().has("people")) {
                 for (JsonElement person : household.getAsJsonObject().getAsJsonArray("people")) {
                     People.find(server, person.getAsJsonObject().get("person").getAsString()).ifPresent(Entity::discard);
@@ -800,7 +805,7 @@ public final class Caravan {
         List<BlockPos> seats = new ArrayList<>();
         BlockPos.betweenClosedStream(fire.box).filter(pos -> level.getBlockState(pos).is(Blocks.STRIPPED_SPRUCE_LOG))
                 .forEach(pos -> seats.add(pos.immutable()));
-        List<JsonElement> households = HOUSEHOLDS.asList();
+        List<JsonElement> households = households(level.getServer());
         long together = households.size();
         int slot = 0;
         for (JsonElement entry : households) {
@@ -808,7 +813,8 @@ public final class Caravan {
             String piece = household.get("piece").getAsString();
             StructureTemplate template = level.getStructureManager().get(ResourceLocation.fromNamespaceAndPath(Wayfarer.MODID, "caravan/" + piece)).orElseThrow();
             double angle = camp.facing + 180 + 360.0 * slot++ / together;
-            int radius = 4 + Math.max(template.getSize().getX(), template.getSize().getZ()) / 2 + GAP;
+            int radius = 4 + Math.max(template.getSize().getX(), template.getSize().getZ()) / 2 + GAP
+                    + (household.has(APART) && household.get(APART).getAsBoolean() ? APART_BLOCKS : 0);
             Placed placed = null;
             for (int nudge : NUDGES) {
                 for (int extra = 0; extra <= REACH && placed == null; extra += 2) {
@@ -821,6 +827,16 @@ public final class Caravan {
                 }
             }
             if (placed == null) {
+                if (household.has("people")) {
+                    for (JsonElement person : household.getAsJsonArray("people")) {
+                        BlockPos spot = seats.isEmpty() ? level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                                camp.centre.offset((int) Math.round(Math.cos(Math.toRadians(angle)) * STANDBY), 0, (int) Math.round(Math.sin(Math.toRadians(angle)) * STANDBY)))
+                                : seats.removeFirst().above();
+                        double yaw = Math.toDegrees(Math.atan2(camp.centre.getZ() - spot.getZ(), camp.centre.getX() - spot.getX())) - 90;
+                        People.person(level, person.getAsJsonObject().get("person").getAsString(), Vec3.atBottomCenterOf(spot), (float) yaw, "standing");
+                    }
+                }
+                LOGGER.info("the caravan found no room for its {}, so its people stay by the fire", piece);
                 continue;
             }
             path(level, camp, placed, taken);
@@ -836,6 +852,12 @@ public final class Caravan {
             }
         }
         return null;
+    }
+
+    private static List<JsonElement> households(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        return HOUSEHOLDS.get().asList().stream()
+                .filter(entry -> !entry.getAsJsonObject().has(JOINS) || progress.joined.contains(entry.getAsJsonObject().get(JOINS).getAsString())).toList();
     }
 
     private static Rotation facing(BlockPos centre, BlockPos at) {

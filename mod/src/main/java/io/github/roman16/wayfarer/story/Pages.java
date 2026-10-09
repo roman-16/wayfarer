@@ -26,7 +26,7 @@ public final class Pages {
     private static void read(MinecraftServer server, ItemStack stack) {
         WrittenBookContent content = stack.get(DataComponents.WRITTEN_BOOK_CONTENT);
         if (content != null) {
-            Library.INSTANCE.find(content.title().raw(), content.author()).ifPresent(book -> read(server, book));
+            Library.get().find(content.title().raw(), content.author()).ifPresent(book -> read(server, book));
         }
     }
 

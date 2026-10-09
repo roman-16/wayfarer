@@ -93,7 +93,7 @@ public final class Shrines {
     }
 
     private static Component people(ResourceLocation shrine) {
-        return Library.INSTANCE.people(shrine).<Component>map(book -> Component.literal(book.title())).orElse(eyeName(shrine));
+        return Library.get().people(shrine).<Component>map(book -> Component.literal(book.title())).orElse(eyeName(shrine));
     }
 
     public static void claim(ServerPlayer player, BlockPos pedestal) {
@@ -110,9 +110,7 @@ public final class Shrines {
             return;
         }
         int taken = Journey.claimed(player.server).size();
-        String memory = Library.INSTANCE.memory(taken - 1);
         Talk.notice(Component.translatable("wayfarer.shrine.claimed", player.getDisplayName(), eyeName(shrine), taken));
-        Library.INSTANCE.book(memory).ifPresent(book -> Talk.notice(Component.translatable("wayfarer.shrine.memory", book.title())));
         if (taken == 1) {
             Talk.notice(Component.translatable("wayfarer.shrine.sinks"));
         }
@@ -140,13 +138,9 @@ public final class Shrines {
     }
 
     public static void openBook(ServerPlayer player, ResourceLocation shrine) {
-        List<ResourceLocation> claimed = Journey.claimed(player.server);
-        int index = claimed.contains(shrine) ? claimed.indexOf(shrine) : claimed.size();
         List<Component> pages = new ArrayList<>();
-        Pages.read(player.server, Library.INSTANCE.memory(index));
-        Optional.ofNullable(Library.INSTANCE.people().get(shrine)).ifPresent(book -> Pages.read(player.server, book));
-        Library.INSTANCE.book(Library.INSTANCE.memory(index)).ifPresent(book -> book.pages().forEach(page -> pages.add(Component.literal(page))));
-        Library.INSTANCE.people(shrine).ifPresent(people -> people.pages().forEach(page -> pages.add(Component.literal(page))));
+        Optional.ofNullable(Library.get().people().get(shrine)).ifPresent(book -> Pages.read(player.server, book));
+        Library.get().people(shrine).ifPresent(people -> people.pages().forEach(page -> pages.add(Component.literal(page))));
         PacketDistributor.sendToPlayer(player, new BookPayload(pages));
     }
 

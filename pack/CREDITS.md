@@ -2,6 +2,7 @@
 
 Music in the Wayfarer mod:
 
+- Home Was You, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/home-was-you/
 - Calm fireplace guitar song, by ShggothSlave. CC0 1.0. https://opengameart.org/content/calm-fireplace-guitar-song
 - Heartfelt Battle (loop), by request. CC0 1.0. https://opengameart.org/content/heartfelt-battle-loopable-fantasy-stringspianohorn
 - Edvard Grieg, The Death of Åse (Peer Gynt Suite No. 1, Op. 46), Musopen Symphony. Public domain. https://commons.wikimedia.org/wiki/File:Grieg_-_Peer_Gynt_Suite_No._1,_Op._46_-_II._The_Death_of_Aase_(Musopen_Symphony).flac
@@ -22,9 +23,11 @@ Sounds in the Wayfarer mod:
 - Fire, Campfire, Bonfire, by yaros_nov. CC0 1.0. https://freesound.org/people/yaros_nov/sounds/434026
 - Cinematic Dragon Sound - Dragon Hiss 4, by Soughtaftersounds. CC BY 3.0. https://freesound.org/people/Soughtaftersounds/sounds/239650
 - Growl - Large Creature, Fantasy, by 8bitmyketison. CC0 1.0. https://freesound.org/people/8bitmyketison/sounds/699932
+- Battle_horn_1, by kirmm. CC0 1.0. https://freesound.org/people/kirmm/sounds/392180
 - Dark Horn Blast, by hykenfreak. CC BY 4.0. https://freesound.org/people/hykenfreak/sounds/218072
 - Pencil, Writing, Close, A, by InspectorJ. CC BY 4.0. https://freesound.org/people/InspectorJ/sounds/398271
 - Page Turn, by qubodup. CC0 1.0. https://freesound.org/people/qubodup/sounds/442857
+- Bell 1 reverse, by Mornagar. CC0 1.0. https://freesound.org/people/Mornagar/sounds/160734
 - Magic 3.Glitter+Arrival, by gsb1039. CC0 1.0. https://freesound.org/people/gsb1039/sounds/430893
 - Level Up/Mission Complete (Fantasy), by SilverIllusionist. CC BY 4.0. https://freesound.org/people/SilverIllusionist/sounds/665203
 - Item Received, by spookymodem. CC0 1.0. https://freesound.org/people/spookymodem/sounds/249815

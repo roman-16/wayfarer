@@ -1,7 +1,6 @@
 package io.github.roman16.wayfarer;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.markusbordihn.easynpc.api.pose.ModelPoseAPI;
@@ -11,10 +10,6 @@ import de.markusbordihn.easynpc.data.skin.SkinDataEntry;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelScaleDataCapable;
 import de.markusbordihn.easynpc.handler.SkinHandler;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +53,7 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
 @EventBusSubscriber(modid = Wayfarer.MODID)
@@ -71,7 +67,7 @@ public final class Workshop {
     private static final double ROUNDING = 1e-4;
     private static final int QUIET = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE;
     private static final String STANDING = "standing";
-    private static final JsonObject SKINS = skins();
+    private static final Bundled<JsonObject> SKINS = Bundled.json("/wayfarer/skins.json");
     private static final List<BoundingBox> designs = new ArrayList<>();
     private static final List<BoundingBox> touched = new ArrayList<>();
     private static final List<BlockPos> signs = new ArrayList<>();
@@ -85,6 +81,13 @@ public final class Workshop {
         signs.clear();
         touched.clear();
         cursor = 0;
+    }
+
+    @SubscribeEvent
+    public static void onPotentialSpawns(LevelEvent.PotentialSpawns event) {
+        if (event.getLevel() instanceof ServerLevel level && level.dimension() == WORKSHOP) {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
@@ -191,9 +194,9 @@ public final class Workshop {
             source.sendFailure(Component.literal("workshop failed: there is no wayfarer:workshop world"));
             return 0;
         }
-        JsonObject look = SKINS.getAsJsonObject(skin);
+        JsonObject look = SKINS.get().getAsJsonObject(skin);
         if (look == null) {
-            source.sendFailure(Component.literal("workshop failed: generator/skins.toml has no " + skin + "; it has " + SKINS.keySet()));
+            source.sendFailure(Component.literal("workshop failed: generator/skins.toml has no " + skin + "; it has " + SKINS.get().keySet()));
             return 0;
         }
         Entity body = EntityType.byString(look.get("model").getAsString()).map(type -> type.create(level)).orElse(null);
@@ -366,17 +369,6 @@ public final class Workshop {
 
     private static int standing(ServerLevel level) {
         return level.getMinBuildHeight() + ((FlatLevelSource) level.getChunkSource().getGenerator()).settings().getLayers().size();
-    }
-
-    private static JsonObject skins() {
-        try (var stream = Workshop.class.getResourceAsStream("/wayfarer/skins.json")) {
-            if (stream == null) {
-                throw new IllegalStateException("skins.json is missing; run just generate");
-            }
-            return JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
     }
 
     private enum Kind {

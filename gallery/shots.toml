@@ -380,6 +380,51 @@ steps = [
 ]
 
 [[shots]]
+at = "his_first_camp/the_caravan"
+caption = "Maren's first gift waiting: bread, dried fish and her note"
+id = "journal/quests/under-the-lean-to"
+kind = "screen"
+steps = [
+  "/wayfarer story unclaim his_first_camp/the_gift",
+  "key key.wayfarer.journal",
+  "press Quests",
+  "press Under the Lean-to",
+]
+
+[[shots]]
+at = "the_deserter/the_fireside"
+caption = "His Brother, waiting for Corin's word"
+id = "journal/quests/his-brother"
+kind = "screen"
+steps = [
+  "/wayfarer story next",
+  "await at the end",
+  "key key.wayfarer.journal",
+  "press Quests",
+  "press His Brother",
+]
+
+[[shots]]
+at = "the_deserter/the_fireside"
+caption = "Corin in the journal's People"
+id = "journal/people/corin"
+kind = "screen"
+steps = ["key key.wayfarer.journal", "press People", "press Corin"]
+
+[[shots]]
+at = "his_first_camp/the_caravan"
+caption = "Dream it again on His First Camp's page, standing by a lit campfire"
+id = "journal/quests/dream-again"
+kind = "screen"
+steps = [
+  "/setblock ~2 ~ ~ minecraft:campfire[lit=true]",
+  "settle",
+  "key key.wayfarer.journal",
+  "press Quests",
+  "press His First Camp",
+]
+
+[[shots]]
 at = "ash/the_cellar"
 caption = "The tracked quest, with its story, objective and tasks"
 id = "journal/quests/tracked"
@@ -528,6 +573,88 @@ at = "his_first_camp/the_lake"
 caption = "The morning after the voice spoke: making for his first camp"
 id = "story/his-first-camp/the-lake"
 kind = "world"
+
+[[shots]]
+at = "his_first_camp/his_things"
+caption = "His first camp as the team finds it, what he left glowing under Trail-sight"
+id = "story/his-first-camp/his-things"
+kind = "world"
+
+[[shots]]
+at = "his_first_camp/the_memory"
+caption = "The first memory: his camp fifty summers ago at sunset, and the memory's task"
+id = "story/his-first-camp/the-memory"
+kind = "hud"
+steps = [
+  "/tp @s -60.5 64 3916.5 90 20",
+  "settle",
+  "use -63 63 3916",
+  "await Fifty summers ago",
+  "settle",
+]
+
+[[shots]]
+at = "his_first_camp/the_memory"
+caption = "The refused choice: one more summer, and the answers offered again"
+id = "story/his-first-camp/the-refusal"
+kind = "hud"
+steps = [
+  "/tp @s -60.5 64 3916.5 90 20",
+  "settle",
+  "use -63 63 3916",
+  "await Fifty summers ago",
+  "/wayfarer story memory summer",
+  "await answers:",
+  "key key.hotbar.1",
+  "await answers:",
+]
+
+[[shots]]
+at = "his_first_camp/the_gift"
+caption = "Maren's first gift: the sack under the lean-to, and The Gifts begun"
+id = "story/his-first-camp/the-gift"
+kind = "hud"
+steps = [
+  "/tp @s -62.5 64 3920.5 90 30",
+  "settle",
+  "interact minecraft:interaction",
+  "await A sack",
+]
+
+[[shots]]
+at = "the_deserter/the_way"
+caption = "The morning after his first camp: the ember pulls again, with no mark yet"
+id = "story/the-deserter/the-way"
+kind = "hud"
+
+[[shots]]
+at = "the_deserter/the_ford"
+caption = "The ford: the wounded man on the near bank, the first of the Gazebound wading across"
+id = "story/the-deserter/the-ford"
+kind = "hud"
+steps = ["await come across the ford: 1"]
+
+[[shots]]
+at = "the_deserter/corin"
+caption = "Corin knows the ember's light"
+id = "story/the-deserter/corin"
+kind = "hud"
+steps = ["await I know that light"]
+
+[[shots]]
+at = "the_deserter/the_fireside"
+caption = "At the caravan's fire, Corin hears the stranger is dead"
+id = "story/the-deserter/the-fireside"
+kind = "hud"
+steps = ["await Not good"]
+
+[[shots]]
+at = "showroom"
+caption = "Corin, the deserter, standing and sitting"
+id = "people/the-caravan/corin"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person corin", "person corin sitting"]
 
 [[shots]]
 at = "showroom"
@@ -1065,7 +1192,14 @@ at = "showroom"
 caption = "The stranger's first camp, by a lake under three pines"
 id = "places/his-first-camp"
 kind = "views"
-steps = ["place wayfarer:old_camp/first_camp"]
+steps = ["place wayfarer:first_camp/now"]
+
+[[shots]]
+at = "showroom"
+caption = "The stranger's first camp as it was, fifty summers ago"
+id = "places/his-first-camp-then"
+kind = "views"
+steps = ["place wayfarer:first_camp/then"]
 
 [[shots]]
 at = "showroom"

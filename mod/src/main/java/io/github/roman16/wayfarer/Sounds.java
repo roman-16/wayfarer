@@ -1,12 +1,7 @@
 package io.github.roman16.wayfarer;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -29,7 +24,7 @@ import org.slf4j.Logger;
 
 public final class Sounds {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final Map<String, Sound> SOUNDS = load();
+    private static final Bundled<Map<String, Sound>> SOUNDS = Bundled.json("/wayfarer/sounds.json", Sounds::load);
     private static final Map<String, Function<MinecraftServer, Optional<BlockPos>>> loops = new HashMap<>();
     private static final Map<String, Long> due = new HashMap<>();
     private static final int CHECK_TICKS = 20;
@@ -91,29 +86,21 @@ public final class Sounds {
     }
 
     private static Sound sound(String name) {
-        Sound sound = SOUNDS.get(name);
+        Sound sound = SOUNDS.get().get(name);
         if (sound == null) {
             throw new IllegalArgumentException("story/sounds.toml has no sound " + name);
         }
         return sound;
     }
 
-    private static Map<String, Sound> load() {
-        try (var stream = Sounds.class.getResourceAsStream("/wayfarer/sounds.json")) {
-            if (stream == null) {
-                throw new IllegalStateException("sounds.json is missing from the mod jar; run just generate");
-            }
-            JsonObject json = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
-            return json.entrySet().stream().collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, entry -> {
-                JsonObject spec = entry.getValue().getAsJsonObject();
-                int reach = spec.has("reach") ? spec.get("reach").getAsInt() : 0;
-                SoundEvent event = reach > 0 ? SoundEvent.createFixedRangeEvent(Wayfarer.id(entry.getKey()), reach)
-                        : SoundEvent.createVariableRangeEvent(Wayfarer.id(entry.getKey()));
-                SoundSource slider = SoundSource.valueOf(spec.get("slider").getAsString().toUpperCase(Locale.ROOT));
-                return new Sound(Holder.direct(event), slider, reach, spec.has("loop_ticks") ? spec.get("loop_ticks").getAsInt() : 0);
-            }));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    private static Map<String, Sound> load(JsonObject json) {
+        return json.entrySet().stream().collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, entry -> {
+            JsonObject spec = entry.getValue().getAsJsonObject();
+            int reach = spec.has("reach") ? spec.get("reach").getAsInt() : 0;
+            SoundEvent event = reach > 0 ? SoundEvent.createFixedRangeEvent(Wayfarer.id(entry.getKey()), reach)
+                    : SoundEvent.createVariableRangeEvent(Wayfarer.id(entry.getKey()));
+            SoundSource slider = SoundSource.valueOf(spec.get("slider").getAsString().toUpperCase(Locale.ROOT));
+            return new Sound(Holder.direct(event), slider, reach, spec.has("loop_ticks") ? spec.get("loop_ticks").getAsInt() : 0);
+        }));
     }
 }

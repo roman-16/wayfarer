@@ -31,7 +31,7 @@ public final class Sight {
         if (player == null || !HudState.compass.sight() || still < STILL_TICKS || !player.level().isNight() || !(entity instanceof Enemy)) {
             return false;
         }
-        int reach = Balance.INSTANCE.sight().reachBlocks();
+        int reach = Balance.get().sight().reachBlocks();
         return entity.distanceToSqr(player) <= (double) reach * reach;
     }
 }

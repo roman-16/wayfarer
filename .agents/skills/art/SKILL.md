@@ -17,7 +17,7 @@ Everything a player sees has to look as if it was always in Minecraft: the same 
    $ python3 scripts/client.py run workshop 'spawn wayfarer:worm' 'beside minecraft:zombie' 'views worm'
    ```
 
-4. **Show it to the user.** Every look gets its shots in `gallery/shots.toml`, one for each facet: each side in the workshop, each pose and state, each place in the story it stands, each scale of a screen; `just gallery` shoots them, and the report names the pictures that are new or changed (AGENTS.md, The gallery).
+4. **Show it to the user.** Before a look is final, put its pictures from the workshop or the driver to the user with the `questionnaire` tool, the recommended one first; its gallery shots come with the `finish` skill.
 
 ## The order of work
 
@@ -95,33 +95,15 @@ Everything drawn over the world wears the stamp, `design/style.md`: the pack's H
 - **Materials say what a thing is.** Char for surfaces, iron for rims, caps, slots and keys, leather for strips, bands, buttons, ribbons and covers, parchment only for books and pages. Text is light on char and leather, ink on parchment.
 - **Detail at the interface pixel.** One art pixel is one interface pixel at every scale: more shades, grain, wear and fittings than Minecraft's interface, never finer pixels; ornaments only at ends and corners.
 - **Type.** Running text in m5x7, titles in Alagard (`Stamp.title`), labels in tracked capitals (`Stamp.label`), keys in key caps (`Inline`, from a key the server marks with `Tasks.key`).
-- **Judge it where it lives.** Photograph it on the style board and where the player meets it, over snow at noon and in the dark, under the shader, at interface scales 2, 3 and 4, and give every state its gallery shot.
+- **Judge it where it lives.** Photograph it on the style board and where the player meets it, over snow at noon and in the dark, under the shader, at interface scales 2, 3 and 4.
 - **The front door.** The title's logo is drawn in `generator/stamp.py` from the display face like any sprite; its panorama is a photograph of the world, framed like a structure (a hero to one side, depth and sky on the others, nothing at the lens), taken by `python3 scripts/client.py panorama` and judged on the title at every scale before it is kept.
 - **Vanilla's and the mods' screens** come in through the stamp's own sprites for vanilla's widgets, the recolour of vanilla's six interface greys for every texture that copies them, and, where a mod draws in colours of its own, its config or a texture in its namespace (L6).
 
 ## Checklist
 
-Before calling a look done, in the workshop beside its vanilla relative:
+Before calling a look done, beside its vanilla relative:
 
-- In the world: would a player believe Mojang made it, or that it came with the pack's other mods? On the screen: is it built from the stamp's tokens and components, and could it stand on the style board beside them?
-- Walking up to it at eye height, from every side, does every part of it read as what the story says it is, and does it look good, not only present?
-- Seen many together, could any two be swapped unnoticed? Does where everything stands or lies make sense for what happened there?
+- Would a player believe Mojang made it, or, on the screen, that it stands on the style board with the stamp's components?
+- Up close, from every side, does every part read as what the story says it is, and does it look good, not only present?
+- Seen many together, could any two be swapped unnoticed, and does where each stands make sense for what happened there?
 - Does it read at a glance: an item in its slot, a creature by its outline at night, a structure by its silhouette from far off?
-- Is every colour from a ramp, and every material vanilla's where vanilla has it?
-- Is the grid whole: no mixels, no stretched pixels, no element under a pixel?
-- Is it free of banding, pillow and pancake shading, noise and tiling repeats?
-- Does a structure have its masses, its hero, its depth, its odd widths and its three to five blocks, and does it sit on its land?
-- Is every block what that part is made of?
-- Does every detail have a reason in the lore: who made it, and what happened to it since?
-- Does `gallery/` show every facet of it, shot again since the last change?
-
-## Sources
-
-- Blockbench Wiki, *Minecraft Style Guide*: element count, shapes, UV and mixels, proportions, ramps and palettes, shading faults, item, block and creature textures.
-- Faithful, *32x Texturing Guidelines*: one-pixel lines, vanilla palettes, transition colours, banding, flat areas, noise.
-- Minecraft.net, *Meet the Phantom*, *Meet the Warden*, *Meet the Ravager*: how Mojang simplifies a creature to its idea.
-- Minecraft Wiki, *Texture Update*: Jappa's 1.14 redraw of nearly every texture.
-- Craftdex, *The Architecture of Builds*, and Astroworld's guides on detail and palettes: massing, hierarchy, depth, odd widths, palette roles.
-- Minecraft.net, *Make Your Houses Better*: depth, texture mixing, detail blocks, landscape.
-- CurseForge, *10 Questions with YUNG*: structures designed gameplay-first.
-- Ung0s, *Here's how you do it* (YouTube, `Xu8PG5x6Kvk`): a build in five steps, vibe, shape, colour, texture and grounding.

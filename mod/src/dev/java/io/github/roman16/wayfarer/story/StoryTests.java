@@ -21,15 +21,15 @@ public final class StoryTests {
 
     @GameTest(template = "empty")
     public static void everyTalkHasSomeoneToTalkTo(GameTestHelper helper) {
-        for (Story.Quest quest : Story.INSTANCE.quests()) {
+        for (Story.Quest quest : Story.get().quests()) {
             for (Story.Step step : quest.steps()) {
                 if (step.kind().equals("talk")) {
                     String with = step.with();
-                    check(helper, with != null && Story.INSTANCE.people().containsKey(with), quest.id() + "/" + step.id() + " has nobody to talk to");
+                    check(helper, with != null && Story.get().people().containsKey(with), quest.id() + "/" + step.id() + " has nobody to talk to");
                 }
             }
         }
-        check(helper, "tamsin".equals(Story.INSTANCE.quest("ash").orElseThrow().steps().stream()
+        check(helper, "tamsin".equals(Story.get().quest("ash").orElseThrow().steps().stream()
                 .filter(step -> step.id().equals("the_bell")).findFirst().orElseThrow().with()), "the bell is Tamsin's talk, though Agna speaks first");
         helper.succeed();
     }
@@ -59,9 +59,9 @@ public final class StoryTests {
 
     @GameTest(template = "empty")
     public static void everyStepIsReachedInOrder(GameTestHelper helper) {
-        for (Story.Quest quest : Story.INSTANCE.quests()) {
+        for (Story.Quest quest : Story.get().quests()) {
             for (String after : quest.after()) {
-                check(helper, Story.INSTANCE.quests().indexOf(Story.INSTANCE.quest(after).orElseThrow()) < Story.INSTANCE.quests().indexOf(quest),
+                check(helper, Story.get().quests().indexOf(Story.get().quest(after).orElseThrow()) < Story.get().quests().indexOf(quest),
                         quest.id() + " comes after " + after + ", which the story lists later");
             }
         }

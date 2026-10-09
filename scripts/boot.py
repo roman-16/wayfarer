@@ -225,7 +225,8 @@ def main():
         seconds, log = boot(server, check)
     except Failure as failure:
         sys.exit(str(failure))
-    print(f"the whole pack booted in {seconds:.0f} s; log in {log}")
+    seed = tomllib.loads((ROOT / "story/states.toml").read_text())["seed"]
+    print(f"the whole pack booted in {seconds:.0f} s on seed {seed}; log in {log}")
 
 
 main()

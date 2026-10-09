@@ -1,14 +1,8 @@
 package io.github.roman16.wayfarer;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.serialization.MapCodec;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -26,21 +20,9 @@ public final class NetherSwap extends StructureProcessor {
     public static final NetherSwap INSTANCE = new NetherSwap();
     public static final MapCodec<NetherSwap> CODEC = MapCodec.unit(INSTANCE);
     private static final String ANCIENT_CITY = "ancient_city/";
-    private static final Map<Block, Block> SWAPS = new HashMap<>();
-
-    static {
-        try (var stream = NetherSwap.class.getResourceAsStream("/wayfarer/swaps.json")) {
-            if (stream == null) {
-                throw new IllegalStateException("swaps.json is missing from the mod jar; run just generate");
-            }
-            JsonObject json = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
-            json.entrySet().forEach(entry -> SWAPS.put(
-                    BuiltInRegistries.BLOCK.get(ResourceLocation.parse(entry.getKey())),
-                    BuiltInRegistries.BLOCK.get(ResourceLocation.parse(entry.getValue().getAsString()))));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
+    private static final Bundled<Map<Block, Block>> SWAPS = Bundled.json("/wayfarer/swaps.json", json -> json.entrySet().stream().collect(
+            Collectors.toUnmodifiableMap(entry -> BuiltInRegistries.BLOCK.get(ResourceLocation.parse(entry.getKey())),
+                    entry -> BuiltInRegistries.BLOCK.get(ResourceLocation.parse(entry.getValue().getAsString())))));
 
     private NetherSwap() {}
 
@@ -57,7 +39,7 @@ public final class NetherSwap extends StructureProcessor {
     @Override
     public StructureTemplate.StructureBlockInfo process(LevelReader level, BlockPos offset, BlockPos pos, StructureTemplate.StructureBlockInfo blockInfo,
             StructureTemplate.StructureBlockInfo relativeBlockInfo, StructurePlaceSettings settings, @Nullable StructureTemplate template) {
-        Block swap = SWAPS.get(relativeBlockInfo.state().getBlock());
+        Block swap = SWAPS.get().get(relativeBlockInfo.state().getBlock());
         if (swap == null) {
             return relativeBlockInfo;
         }

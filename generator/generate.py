@@ -16,6 +16,9 @@ from caravan import caravan
 from creatures import creatures
 from diggers import entrance, layout, tunnels
 from entrances import ENTRANCES, Cover
+from first_camp import SIZE as FIRST_CAMP_SIZE
+from first_camp import first_camp
+from first_camp import positions as first_camp_positions
 from halls import HALLS
 from scenes import SCENES
 from skins import skin
@@ -50,7 +53,10 @@ EYE_HEIGHT = 1.62
 SEE_THROUGH = ("_carpet", "candle", "chain", "cobweb", "lantern", "_pane", "rail", "vine", "vines", "_bars", "torch")
 SHOWROOM_WALL_Z = -10
 SHOWROOM_SIGN_OFFSET = 17
-SHOWROOM_OLD_CAMPS = {"first_camp": ("His First Camp", -16), "last_camp": ("His Last Camp", 8)}
+SHOWROOM_OLD_CAMPS = {
+    "first_camp/now": ("His First Camp", -16, FIRST_CAMP_SIZE),
+    "old_camp/last_camp": ("His Last Camp", 8, OLD_SIZE),
+}
 SHOWROOM_OLD_CAMP_Z = 24
 DEMO_DISTANCE = 750
 DEMO_COMPANION = {"name": "Companion", "radius": 24, "seconds": 60}
@@ -172,11 +178,11 @@ def showroom(eyes):
             + f'{{Facing:3b,Fixed:1b,Item:{{id:"{item}",count:1}}}}'
         )
     blank = json.dumps(json.dumps(""))
-    for kind, (title, x) in SHOWROOM_OLD_CAMPS.items():
+    for template, (title, x, width) in SHOWROOM_OLD_CAMPS.items():
         name = json.dumps(json.dumps(title))
         lines += [
-            f"/place template wayfarer:old_camp/{kind} {x} {y - 1} {SHOWROOM_OLD_CAMP_Z}",
-            f"/setblock {x + OLD_SIZE // 2} {y} {SHOWROOM_OLD_CAMP_Z - 2} minecraft:oak_sign[rotation=8]"
+            f"/place template wayfarer:{template} {x} {y - 1} {SHOWROOM_OLD_CAMP_Z}",
+            f"/setblock {x + width // 2} {y} {SHOWROOM_OLD_CAMP_Z - 2} minecraft:oak_sign[rotation=8]"
             + f"{{front_text:{{messages:[{blank},{name},{blank},{blank}]}}}}",
         ]
     for index, eye in enumerate(sorted(eyes)):
@@ -305,6 +311,7 @@ def story(quests, cast, skins, caravan_households):
                 person: spec | ({} if spec.get("road") else {"skin": person}) for person, spec in sorted(cast.items())
             },
             "caravan": caravan_households["households"],
+            "memories": quests["memories"],
             "quests": quests["quests"],
         },
     )
@@ -390,8 +397,6 @@ def people(spec):
 
 def library(spec, eyes):
     entries = {}
-    for memory in spec["memories"]:
-        entries[memory["id"]] = memory | {"author": "The Eye"}
     for entry in spec["found"]:
         entries[entry["id"]] = entry
     for eye, eye_spec in sorted(eyes.items()):
@@ -407,8 +412,14 @@ def library(spec, eyes):
 
 
 def old_camps():
-    for kind in SHOWROOM_OLD_CAMPS:
-        old_camp(kind).save(MAIN / f"data/wayfarer/structure/old_camp/{kind}.nbt")
+    old_camp().save(MAIN / "data/wayfarer/structure/old_camp/last_camp.nbt")
+    for now, name in ((True, "now"), (False, "then")):
+        camp = first_camp(now=now)
+        camp.save(
+            MAIN / f"data/wayfarer/structure/first_camp/{name}.nbt",
+            [FIRST_CAMP_SIZE, max(y for _, y, _ in camp.blocks) + 1, FIRST_CAMP_SIZE],
+        )
+    write_json(MAIN / "wayfarer/first_camp.json", first_camp_positions())
 
 
 def books(spec, eyes, entries):
@@ -479,7 +490,6 @@ def books(spec, eyes, entries):
                 identifier: {"author": entry["author"], "pages": entry["pages"], "title": entry["title"]}
                 for identifier, entry in entries.items()
             },
-            "memories": [memory["id"] for memory in spec["memories"]],
             "people": {f"wayfarer:shrine/{eye}": f"people/{eye}" for eye in sorted(eyes)},
         },
     )
@@ -675,12 +685,12 @@ def removals(spec):
             MAIN / f"data/wayfarer/tags/block/{name}.json",
             {"values": [{"id": block, "required": False} for block in spec[name]]},
         )
-    for recipe in spec["recipes"]:
-        namespace, path = recipe.split(":")
-        write_json(
-            MAIN / f"data/{namespace}/recipe/{path}.json",
-            {"neoforge:conditions": [{"type": "neoforge:false"}]},
-        )
+    for kind, folder in (("loot_tables", "loot_table"), ("recipes", "recipe")):
+        for cut in spec[kind]:
+            namespace, path = cut.split(":")
+            write_json(
+                MAIN / f"data/{namespace}/{folder}/{path}.json", {"neoforge:conditions": [{"type": "neoforge:false"}]}
+            )
 
 
 def main():
@@ -696,6 +706,7 @@ def main():
     spread(balance)
     campfire_spawns(balance)
     removals(tomllib.loads((ROOT / "generator/removals.toml").read_text()))
+    write_json(DEV / "wayfarer/noise.json", tomllib.loads((ROOT / "generator/noise.toml").read_text()))
     owners(tomllib.loads((ROOT / "generator/owners.toml").read_text()), balance)
     write_json(MAIN / "wayfarer/swaps.json", tomllib.loads((ROOT / "generator/nether.toml").read_text())["swaps"])
     camp().save(MAIN / "data/wayfarer/structure/last_camp.nbt")

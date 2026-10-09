@@ -27,7 +27,7 @@ public final class Rowing {
         Vec3 motion = vehicle.getDeltaMovement();
         double blocks = Math.hypot(motion.x, motion.z);
         if (blocks > 0) {
-            player.causeFoodExhaustion((float) (blocks * Balance.INSTANCE.hunger().rowingExhaustionPerBlock()));
+            player.causeFoodExhaustion((float) (blocks * Balance.get().hunger().rowingExhaustionPerBlock()));
         }
     }
 }

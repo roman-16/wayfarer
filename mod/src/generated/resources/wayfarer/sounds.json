@@ -40,6 +40,10 @@
     "reach": 16,
     "slider": "hostile"
   },
+  "gazebound_horn": {
+    "reach": 96,
+    "slider": "hostile"
+  },
   "hard_night": {
     "slider": "hostile"
   },
@@ -48,6 +52,9 @@
   },
   "journal_page": {
     "slider": "master"
+  },
+  "memory_opens": {
+    "slider": "players"
   },
   "quest_begun": {
     "slider": "master"

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -38,7 +39,7 @@ final class Diggers {
     private static final String SITE = "diggers_site";
     private static final String TURN = "diggers_turn";
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final JsonObject PLAN = Prologue.json("/wayfarer/diggers.json");
+    private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/diggers.json");
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_diggers", Comparator.comparingLong(ChunkPos::toLong));
     private static final int ANGLE_STEP = 16;
     private static final int NUDGE = 512;
@@ -100,7 +101,7 @@ final class Diggers {
             BlockPos from = progress.place(Caravan.NAME).or(() -> progress.place(Steps.OWN_CAMP)).orElseGet(level::getSharedSpawnPos);
             Vec3 way = Caravan.way(server);
             Unseen.Heights heights = new Unseen.Heights(level);
-            int ahead = Balance.INSTANCE.diggers().aheadBlocks();
+            int ahead = Balance.get().diggers().aheadBlocks();
             build.searching = CompletableFuture.supplyAsync(() -> sites(heights, from, way, ahead), Util.backgroundExecutor());
             return;
         }
@@ -174,8 +175,8 @@ final class Diggers {
     private static void place(MinecraftServer server, ServerLevel level) {
         Site site = build.site;
         StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(site.turn());
-        JsonObject entrance = PLAN.getAsJsonObject("entrance");
-        JsonObject tunnels = PLAN.getAsJsonObject("tunnels");
+        JsonObject entrance = PLAN.get().getAsJsonObject("entrance");
+        JsonObject tunnels = PLAN.get().getAsJsonObject("tunnels");
         int surface = ground(level, site.centre().getX(), site.centre().getZ());
         BlockPos centre = vector(entrance.getAsJsonArray("centre"));
         BlockPos entranceAt = new BlockPos(site.centre().getX(), surface - centre.getY(), site.centre().getZ())
@@ -220,7 +221,7 @@ final class Diggers {
     }
 
     private static void track(ServerLevel level, BlockPos at) {
-        Clues.display(level, level.getBlockState(at), Vec3.atLowerCornerOf(at), TRACK_SCALE, NAME);
+        Clues.display(level, at, TRACK_SCALE, NAME);
     }
 
     private static int ground(ServerLevel level, int x, int z) {

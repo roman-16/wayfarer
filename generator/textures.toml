@@ -217,3 +217,137 @@ size = [64, 64]
 e = "#000000"
 
 [mule_eyes.variants.mule_eyes]
+
+[notched_spruce_log]
+folder = "block"
+rows = [
+  "abcaadcaadacbcae",
+  "abfeadfeadacbaae",
+  "adeeadfeababbaae",
+  "cdaeabaeaeadbace",
+  "cbaeadaddeaeabca",
+  "cabacbahgecbabca",
+  "eabaceehgacaabca",
+  "eadacaehgaceaeca",
+  "abdfaaehgecececa",
+  "aabfaaeggecbcada",
+  "aaacaeadaeabcada",
+  "abacaeadfaadfaba",
+  "fbaacecdfeadaaea",
+  "fabacaabceabaaaa",
+  "cabcaacdababbcaa",
+  "cabcbacbabaabcae",
+]
+
+[notched_spruce_log.colors]
+a = "#3b2713"
+b = "#311e0b"
+c = "#4d3317"
+d = "#2e1608"
+e = "#2e1c0a"
+f = "#553a1f"
+g = "#866238"
+h = "#795b37"
+
+[notched_spruce_log.variants.notched_spruce_log]
+
+[notched_spruce_log_tally]
+folder = "block"
+rows = [
+  "abcaadcaadacbcae",
+  "abdedddeddacbaae",
+  "adkekdkekbabbaae",
+  "cdkekbkekeadbace",
+  "cjkjkjkjkjaeabca",
+  "cajajbjbjecbabca",
+  "eabaceeacacaabca",
+  "eadacaecaaceaeca",
+  "abdfaaedadcdcdca",
+  "aabfaaekakckckda",
+  "aaacaeakakakckda",
+  "abacaejkjkjkjkja",
+  "fbaacecjfjajajea",
+  "fabacaabceabaaaa",
+  "cabcaacdababbcaa",
+  "cabcbacbabaabcae",
+]
+
+[notched_spruce_log_tally.colors]
+a = "#3b2713"
+b = "#311e0b"
+c = "#4d3317"
+d = "#2e1608"
+e = "#2e1c0a"
+f = "#553a1f"
+j = "#61512d"
+k = "#705934"
+
+[notched_spruce_log_tally.variants.notched_spruce_log_tally]
+
+[hearthstone]
+folder = "block"
+rows = [
+  "ahhhhaahaaaahhha",
+  "hbcbcbbbbbbddcbd",
+  "hcddcccdcccbbbbd",
+  "hbaababbaabbbccd",
+  "abbcccbcbaaaacbd",
+  "habbbbbbbccdcdcd",
+  "abbaaacaacccbbbd",
+  "acddcdccbbcccbbd",
+  "haababbaaabbbbbd",
+  "hbabbbaaabbaaaad",
+  "abcbccddcbcbbccd",
+  "hbbbbaabbbbbaabd",
+  "hcccbabccbbddcdd",
+  "habccbbcccbbcccd",
+  "hccbbbbbbbbbaaad",
+  "addddddddddddddd",
+]
+
+[hearthstone.colors]
+a = "#8f8f8f"
+b = "#7f7f7f"
+c = "#747474"
+d = "#686868"
+e = "#5c5c5c"
+f = "#505050"
+g = "#a3a3a3"
+h = "#a0a0a0"
+k = "#383838"
+
+[hearthstone.variants.hearthstone]
+
+[hearthstone_marked]
+folder = "block"
+rows = [
+  "ahhhhaahaaaahhha",
+  "hbcbcbbbbbbddcbd",
+  "hcddcccdcccbbbbd",
+  "hbaabbccbbcbbccd",
+  "abbcdkkkkkkbacbd",
+  "habkkcgggggkkdcd",
+  "abkbggekkeedgkbd",
+  "akdgdfkkkkeddbkd",
+  "hkgcbdkkkkgccbkg",
+  "hbkccdckkggbbkag",
+  "abckkdffggdkkcgd",
+  "hbbbgkkkkkkcggbd",
+  "hcccbbggggggdcdd",
+  "habccbbcccbbcccd",
+  "hccbbbbbbbbbaaad",
+  "addddddddddddddd",
+]
+
+[hearthstone_marked.colors]
+a = "#8f8f8f"
+b = "#7f7f7f"
+c = "#747474"
+d = "#686868"
+e = "#5c5c5c"
+f = "#505050"
+g = "#a3a3a3"
+h = "#a0a0a0"
+k = "#383838"
+
+[hearthstone_marked.variants.hearthstone_marked]

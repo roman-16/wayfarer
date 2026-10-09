@@ -20,13 +20,7 @@ CLIENT_CONFIGS = {
     "iris.properties": {"enableShaders": "false"},
     "wayfarer-client.toml": {"talk_size": "NORMAL"},
 }
-DISTANT_HORIZONS = {
-    "far": {"client": {"advanced": {"graphics": {"quality": {"lodChunkRenderDistanceRadius": 64}}}}},
-    "near": {
-        "client": {"advanced": {"debugging": {"rendererMode": "DISABLED"}}},
-        "common": {"worldGenerator": {"generatorPlan": "DISABLED"}},
-    },
-}
+FAR_VIEW_CONFIG = {"client": {"advanced": {"graphics": {"quality": {"lodChunkRenderDistanceRadius": 64}}}}}
 CLIENT_OPTIONS = {
     "chatVisibility": "0",
     "fullscreen": "false",
@@ -36,11 +30,13 @@ CLIENT_OPTIONS = {
     "soundCategory_master": "0.0" if os.environ.get("WAYFARER_SILENT") == "true" else "0.5",
 }
 SETTINGS = ("config", "journeymap")
+FAR_VIEW = {"mods/distanthorizons.pw.toml", "mods/distant-horizons-seedgen.pw.toml"}
+STATES = ROOT / "story/states.toml"
 SIDES = {"client": {"both", "client"}, "server": {"both", "server"}}
 DEV_SERVER_PORTS = {"server": 25566, "voice": 24455}
 SERVER_PROPERTIES = {
     "allow-flight": "true",
-    "difficulty": "hard",
+    "difficulty": "normal",
     "enable-command-block": "false",
     "level-type": "minecraft\\:normal",
     "motd": "Wayfarer",
@@ -72,11 +68,18 @@ def source(meta):
     return download_spec["url"]
 
 
-def files(target, side, folders):
+def link(source, target):
+    try:
+        os.link(source, target)
+    except OSError:
+        shutil.copyfile(source, target)
+
+
+def files(target, side, folders, left_out=frozenset()):
     index = tomllib.loads((PACK / "index.toml").read_text())
     for entry in index["files"]:
         folder = entry["file"].split("/")[0]
-        if not entry.get("metafile") or folder not in folders:
+        if not entry.get("metafile") or folder not in folders or entry["file"] in left_out:
             continue
         meta = tomllib.loads((PACK / entry["file"]).read_text())
         if meta["side"] not in SIDES[side]:
@@ -84,21 +87,29 @@ def files(target, side, folders):
         spec = meta["download"]
         cached = download(source(meta), spec["hash-format"], spec["hash"], meta["name"])
         (target / folder).mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(cached, target / folder / meta["filename"])
+        link(cached, target / folder / meta["filename"])
 
 
 def neoforge(target):
     version = tomllib.loads((PACK / "pack.toml").read_text())["versions"]["neoforge"]
-    base = f"https://maven.neoforged.net/releases/net/neoforged/neoforge/{version}/neoforge-{version}-installer.jar"
-    with urllib.request.urlopen(base + ".sha1", timeout=60) as response:
-        sha1 = response.read().decode().split()[0]
-    installer = download(base, "sha1", sha1, f"NeoForge {version} installer")
-    subprocess.run(
-        ["java", "-jar", str(installer), "--install-server", "."],
-        cwd=target,
-        check=True,
-        stdout=subprocess.DEVNULL,
-    )
+    installed = CACHE / f"neoforge-{version}-server"
+    if not (installed / "run.sh").exists():
+        base = f"https://maven.neoforged.net/releases/net/neoforged/neoforge/{version}/neoforge-{version}-installer.jar"
+        with urllib.request.urlopen(base + ".sha1", timeout=60) as response:
+            sha1 = response.read().decode().split()[0]
+        installer = download(base, "sha1", sha1, f"NeoForge {version} installer")
+        partial = installed.with_name(installed.name + ".partial")
+        shutil.rmtree(partial, ignore_errors=True)
+        partial.mkdir(parents=True)
+        subprocess.run(
+            ["java", "-jar", str(installer), "--install-server", "."],
+            cwd=partial,
+            check=True,
+            stdout=subprocess.DEVNULL,
+        )
+        shutil.rmtree(installed, ignore_errors=True)
+        partial.rename(installed)
+    shutil.copytree(installed, target, copy_function=link, dirs_exist_ok=True)
 
 
 def options(target):
@@ -161,11 +172,13 @@ def client(target, mode):
         target,
         "client",
         {"resourcepacks", "shaderpacks"} if mode == "lean" else {"mods", "resourcepacks", "shaderpacks"},
+        frozenset() if mode == "far" else FAR_VIEW,
     )
     settings(target)
     for name, overrides in CLIENT_CONFIGS.items():
         configure(target / "config" / name, overrides)
-    configure(target / "config/DistantHorizons.toml", DISTANT_HORIZONS["far" if mode == "far" else "near"])
+    if mode == "far":
+        configure(target / "config/DistantHorizons.toml", FAR_VIEW_CONFIG)
     options(target)
 
 
@@ -193,7 +206,8 @@ def server(target, jar):
     files(target, "server", {"mods"})
     shutil.copyfile(jar, target / "mods" / jar.name)
     settings(target)
-    properties(target, {})
+    properties(target, {"level-seed": tomllib.loads(STATES.read_text())["seed"]})
+    (target / "user_jvm_args.txt").unlink()
     (target / "user_jvm_args.txt").write_text("-Xms4G\n-Xmx8G\n")
 
 
@@ -201,7 +215,7 @@ def dev_server(target, lean):
     shutil.rmtree(target / "mods", ignore_errors=True)
     (target / "mods").mkdir(parents=True)
     if not lean:
-        files(target, "server", {"mods"})
+        files(target, "server", {"mods"}, FAR_VIEW)
     settings(target)
     voice = target / "config/voicechat/voicechat-server.properties"
     voice.parent.mkdir(parents=True, exist_ok=True)
@@ -211,7 +225,7 @@ def dev_server(target, lean):
         world["level-seed"] = os.environ["WAYFARER_SEED"]
     state = os.environ.get("WAYFARER_STATE")
     if state:
-        seed = tomllib.loads((ROOT / "story/states.toml").read_text())["seed"]
+        seed = tomllib.loads(STATES.read_text())["seed"]
         world = {"level-name": "state-lean" if lean else "state", "level-seed": seed}
     properties(target, {"online-mode": "false", "server-port": DEV_SERVER_PORTS["server"]} | world)
     (target / "eula.txt").write_text("eula=true\n")

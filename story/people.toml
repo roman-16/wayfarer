@@ -5,6 +5,13 @@ name = "Agna"
 remarks = ["Eat something. You look like a ghost.", "If it hurts, show me. If it doesn't, walk."]
 unnamed = "A woman in green"
 
+[corin]
+color = "dark_aqua"
+mornings = ["Go on ahead. I'll keep to the back, where I'm no trouble.", "Mind the ridges today. Grey coats see a long way."]
+name = "Corin"
+remarks = ["Don't ask about the scar.", "I sleep with my boots on. Habit."]
+unnamed = "A wounded man"
+
 [gazebound]
 color = "gray"
 name = "A Gazebound"

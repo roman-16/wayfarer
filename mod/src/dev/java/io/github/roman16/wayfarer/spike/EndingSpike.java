@@ -130,7 +130,7 @@ public final class EndingSpike {
     }
 
     private static int health(MinecraftServer server) {
-        Balance.Dragon balance = Balance.INSTANCE.dragon();
+        Balance.Dragon balance = Balance.get().dragon();
         int players = Math.max(1, server.getPlayerList().getPlayerCount());
         return balance.healthBase() + balance.healthPerShard() * shards + balance.healthPerPlayer() * (players - 1);
     }
@@ -161,12 +161,12 @@ public final class EndingSpike {
         }
         say(server, "ending: %d shards set; the dragon has %d health%s, %d of %d crystals stand, it aims %.1f blocks wide and %s".formatted(shards,
                 health, objective == null ? "" : " (Ender Dragon Fight Remastered told too)", kept, crystals.size(), aimError(),
-                shards <= Balance.INSTANCE.dragon().sightShards() ? "loses a player out of its line" : "follows a player out of its line"));
+                shards <= Balance.get().dragon().sightShards() ? "loses a player out of its line" : "follows a player out of its line"));
         return 1;
     }
 
     private static double aimError() {
-        return Balance.INSTANCE.dragon().blindAimBlocks() * (SHARDS - shards) / (double) SHARDS;
+        return Balance.get().dragon().blindAimBlocks() * (SHARDS - shards) / (double) SHARDS;
     }
 
     private static void size(EnderDragon dragon, int health) {
@@ -247,7 +247,7 @@ public final class EndingSpike {
                 }
             }
             if ((phase == EnderDragonPhase.STRAFE_PLAYER || phase == EnderDragonPhase.CHARGING_PLAYER)
-                    && shards <= Balance.INSTANCE.dragon().sightShards() && server.getTickCount() % 20 == 0) {
+                    && shards <= Balance.get().dragon().sightShards() && server.getTickCount() % 20 == 0) {
                 ServerPlayer target = aimedAt.get(dragon.getUUID());
                 if (target != null && !sees(dragon, target)) {
                     dragon.getPhaseManager().setPhase(EnderDragonPhase.HOLDING_PATTERN);

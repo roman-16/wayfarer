@@ -1,7 +1,9 @@
 package io.github.roman16.wayfarer.story;
 
+import java.util.Arrays;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
@@ -9,6 +11,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -22,7 +25,7 @@ final class Clues {
     private Clues() {}
 
     static List<Entity> marker(ServerLevel level, BlockPos at, String clue) {
-        return List.of(display(level, level.getBlockState(at), Vec3.atLowerCornerOf(at), MARKER_SCALE, clue), box(level, Vec3.atBottomCenterOf(at), clue));
+        return List.of(display(level, at, MARKER_SCALE, clue), box(level, Vec3.atBottomCenterOf(at), clue));
     }
 
     static Entity print(ServerLevel level, BlockPos ground, String clue) {
@@ -31,17 +34,26 @@ final class Clues {
         return spawn(level, tag, new Vec3(ground.getX() + (1 - PRINT_WIDTH) / 2, ground.getY() + 0.01, ground.getZ() + (1 - PRINT_DEPTH) / 2), clue);
     }
 
-    static Entity display(ServerLevel level, BlockState state, Vec3 at, float scale, String clue) {
-        return display(level, state, at, scale, scale, scale, (1 - scale) / 2, clue);
+    static Entity display(ServerLevel level, BlockPos at, float scale, String clue) {
+        BlockState state = level.getBlockState(at);
+        CompoundTag tag = tag(state);
+        tag.put("transformation", transformation(scale, scale, scale, (1 - scale) / 2, (1 - scale) / 2, (1 - scale) / 2));
+        if (state.isSolidRender(level, at)) {
+            tag.put("brightness", brightness(level, at));
+        }
+        return spawn(level, tag, Vec3.atLowerCornerOf(at), clue);
+    }
+
+    private static CompoundTag brightness(ServerLevel level, BlockPos at) {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("block", Arrays.stream(Direction.values()).mapToInt(side -> level.getBrightness(LightLayer.BLOCK, at.relative(side))).max().orElseThrow());
+        tag.putInt("sky", Arrays.stream(Direction.values()).mapToInt(side -> level.getBrightness(LightLayer.SKY, at.relative(side))).max().orElseThrow());
+        return tag;
     }
 
     static Entity item(ServerLevel level, BlockState state, Vec3 at, float x, float y, float z, String clue) {
-        return display(level, state, at, x, y, z, 0, clue);
-    }
-
-    private static Entity display(ServerLevel level, BlockState state, Vec3 at, float x, float y, float z, float lift, String clue) {
         CompoundTag tag = tag(state);
-        tag.put("transformation", transformation(x, y, z, (1 - x) / 2, lift, (1 - z) / 2));
+        tag.put("transformation", transformation(x, y, z, (1 - x) / 2, 0, (1 - z) / 2));
         return spawn(level, tag, at, clue);
     }
 

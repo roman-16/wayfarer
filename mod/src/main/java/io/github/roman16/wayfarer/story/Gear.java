@@ -3,18 +3,14 @@ package io.github.roman16.wayfarer.story;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Firsts;
 import io.github.roman16.wayfarer.GearMaterials;
 import io.github.roman16.wayfarer.Heat;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -48,7 +44,7 @@ public final class Gear {
     private static final String SAID = "said:";
     private static final String KNOWN = "had:";
     private static final int CHECK_TICKS = 20;
-    private static final Data DATA = load();
+    private static final Bundled<Data> DATA = Bundled.json("/wayfarer/gear.json", Gear::load);
 
     private Gear() {}
 
@@ -100,7 +96,7 @@ public final class Gear {
         if (!opened(player.server, progress)) {
             return;
         }
-        if (DATA.rows().stream().anyMatch(row -> appeared(progress, row)) && !Firsts.seen(player, Tasks.FIRST + TASK)) {
+        if (DATA.get().rows().stream().anyMatch(row -> appeared(progress, row)) && !Firsts.seen(player, Tasks.FIRST + TASK)) {
             open.put(TASK, Component.translatable("wayfarer.task.gear", Tasks.key(Tasks.JOURNAL_KEY)));
         }
         Optional<Thing> tracked = Optional.ofNullable(progress.gearTracking.get(player.getUUID())).flatMap(Gear::thing);
@@ -128,7 +124,7 @@ public final class Gear {
         if (!opened(server, progress)) {
             return rows;
         }
-        for (Row row : DATA.rows()) {
+        for (Row row : DATA.get().rows()) {
             if (!appeared(progress, row)) {
                 continue;
             }
@@ -184,7 +180,7 @@ public final class Gear {
         Progress progress = Progress.of(server);
         boolean changed = mark(server, progress);
         long day = Math.floorDiv(Engine.overworld(server).getDayTime(), Clock.DAY);
-        for (Line line : DATA.lines()) {
+        for (Line line : DATA.get().lines()) {
             if (!progress.gearMet.containsKey(line.id()) && line.when().stream().flatMap(key -> located(key).stream())
                     .anyMatch(found -> anyone(server, found.row(), found.thing()))) {
                 progress.gearMet.put(line.id(), day);
@@ -208,7 +204,7 @@ public final class Gear {
 
     private static boolean mark(MinecraftServer server, Progress progress) {
         boolean changed = false;
-        for (Row row : DATA.rows()) {
+        for (Row row : DATA.get().rows()) {
             if (!appeared(progress, row) && appears(server, progress, row.appears())) {
                 changed |= progress.gear.add(ROW + row.id());
             }
@@ -226,16 +222,16 @@ public final class Gear {
 
     private static boolean speak(MinecraftServer server, Progress progress, long day) {
         long time = Math.floorMod(Engine.overworld(server).getDayTime(), Clock.DAY);
-        int circle = Balance.INSTANCE.fire().circleBlocks();
+        int circle = Balance.get().fire().circleBlocks();
         boolean seated = Caravan.standing(server).filter(camp -> server.getPlayerList().getPlayers().stream()
                 .anyMatch(player -> player.level() == Engine.overworld(server) && player.distanceToSqr(camp.getCenter()) <= (double) circle * circle)).isPresent();
-        if (Talk.busy() || !seated || time < Clock.ticks(Balance.INSTANCE.clock().evening())) {
+        if (Talk.busy() || !seated || time < Clock.ticks(Balance.get().clock().evening())) {
             return false;
         }
         if (progress.gearSpoke == day) {
             return false;
         }
-        for (Line line : DATA.lines()) {
+        for (Line line : DATA.get().lines()) {
             Long met = progress.gearMet.get(line.id());
             if (met != null && met < day && !progress.gear.contains(SAID + line.id()) && People.find(server, line.by()).isPresent()) {
                 Talk.say(Talk.ROAD, null, new Story.Line(line.by(), line.text()));
@@ -248,7 +244,7 @@ public final class Gear {
     }
 
     static boolean show(Progress progress, String row) {
-        if (DATA.rows().stream().noneMatch(found -> found.id().equals(row))) {
+        if (DATA.get().rows().stream().noneMatch(found -> found.id().equals(row))) {
             return false;
         }
         progress.gear.add(ROW + row);
@@ -257,7 +253,7 @@ public final class Gear {
     }
 
     static boolean said(Progress progress, String line) {
-        if (DATA.lines().stream().noneMatch(found -> found.id().equals(line))) {
+        if (DATA.get().lines().stream().noneMatch(found -> found.id().equals(line))) {
             return false;
         }
         progress.gear.add(SAID + line);
@@ -282,7 +278,7 @@ public final class Gear {
     }
 
     private static boolean opened(MinecraftServer server, Progress progress) {
-        return appears(server, progress, DATA.opens());
+        return appears(server, progress, DATA.get().opens());
     }
 
     private static boolean appeared(Progress progress, Row row) {
@@ -303,7 +299,7 @@ public final class Gear {
     private record Located(Row row, Thing thing) {}
 
     private static Optional<Located> located(String key) {
-        for (Row row : DATA.rows()) {
+        for (Row row : DATA.get().rows()) {
             for (Thing thing : row.things()) {
                 if (thing.key().equals(key)) {
                     return Optional.of(new Located(row, thing));
@@ -357,33 +353,25 @@ public final class Gear {
         return Stream.of(player.getInventory().items, player.getInventory().armor, player.getInventory().offhand).flatMap(List::stream);
     }
 
-    private static Data load() {
-        try (var stream = Gear.class.getResourceAsStream("/wayfarer/gear.json")) {
-            if (stream == null) {
-                throw new IllegalStateException("gear.json is missing from the mod jar; run just generate");
+    private static Data load(JsonObject json) {
+        List<Row> rows = new ArrayList<>();
+        for (JsonElement element : json.getAsJsonArray("rows")) {
+            JsonObject row = element.getAsJsonObject();
+            String id = row.get("id").getAsString();
+            List<Thing> things = new ArrayList<>();
+            for (JsonElement thingElement : row.getAsJsonArray("things")) {
+                things.add(thing(id, thingElement.getAsJsonObject()));
             }
-            JsonObject json = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
-            List<Row> rows = new ArrayList<>();
-            for (JsonElement element : json.getAsJsonArray("rows")) {
-                JsonObject row = element.getAsJsonObject();
-                String id = row.get("id").getAsString();
-                List<Thing> things = new ArrayList<>();
-                for (JsonElement thingElement : row.getAsJsonArray("things")) {
-                    things.add(thing(id, thingElement.getAsJsonObject()));
-                }
-                rows.add(new Row(id, row.get("title").getAsString(), row.get("who").getAsString(), row.getAsJsonObject("appears"),
-                        row.has("ladder") && row.get("ladder").getAsBoolean(), List.copyOf(things)));
-            }
-            List<Line> lines = new ArrayList<>();
-            for (JsonElement element : json.getAsJsonArray("lines")) {
-                JsonObject line = element.getAsJsonObject();
-                lines.add(new Line(line.get("id").getAsString(), line.get("by").getAsString(), line.get("text").getAsString(),
-                        line.getAsJsonArray("when").asList().stream().map(JsonElement::getAsString).toList()));
-            }
-            return new Data(json.getAsJsonObject("opens"), List.copyOf(rows), List.copyOf(lines));
-        } catch (IOException exception) {
-            throw new UncheckedIOException(exception);
+            rows.add(new Row(id, row.get("title").getAsString(), row.get("who").getAsString(), row.getAsJsonObject("appears"),
+                    row.has("ladder") && row.get("ladder").getAsBoolean(), List.copyOf(things)));
         }
+        List<Line> lines = new ArrayList<>();
+        for (JsonElement element : json.getAsJsonArray("lines")) {
+            JsonObject line = element.getAsJsonObject();
+            lines.add(new Line(line.get("id").getAsString(), line.get("by").getAsString(), line.get("text").getAsString(),
+                    line.getAsJsonArray("when").asList().stream().map(JsonElement::getAsString).toList()));
+        }
+        return new Data(json.getAsJsonObject("opens"), List.copyOf(rows), List.copyOf(lines));
     }
 
     private static Thing thing(String row, JsonObject thing) {

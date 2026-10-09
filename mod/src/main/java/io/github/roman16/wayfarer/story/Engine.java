@@ -40,6 +40,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
@@ -73,7 +74,7 @@ public final class Engine {
     public static List<Active> active(MinecraftServer server) {
         Progress progress = Progress.of(server);
         List<Active> active = new ArrayList<>();
-        for (Story.Quest quest : Story.INSTANCE.quests()) {
+        for (Story.Quest quest : Story.get().quests()) {
             if (progress.open(quest.id())) {
                 active.add(new Active(quest, quest.steps().get(progress.step(quest.id())), progress.scratch(quest.id())));
             }
@@ -185,7 +186,7 @@ public final class Engine {
     }
 
     private static boolean felt(MinecraftServer server, ServerPlayer player, BlockPos goal) {
-        int exact = Balance.INSTANCE.compass().exactBlocks();
+        int exact = Balance.get().compass().exactBlocks();
         return !Caravan.heading(server) && tracked(player).map(Steps::felt).orElse(false)
                 && player.blockPosition().distToCenterSqr(goal.getX(), player.getY(), goal.getZ()) > (double) exact * exact;
     }
@@ -242,7 +243,7 @@ public final class Engine {
     static List<Active> open(MinecraftServer server) {
         Progress progress = Progress.of(server);
         List<Active> opened = new ArrayList<>();
-        for (Story.Quest quest : Story.INSTANCE.quests()) {
+        for (Story.Quest quest : Story.get().quests()) {
             if (!progress.steps.containsKey(quest.id()) && quest.after().stream().allMatch(progress::done)
                     && (quest.found() == null || progress.place(quest.found()).isPresent())) {
                 progress.steps.put(quest.id(), 0);
@@ -262,7 +263,11 @@ public final class Engine {
         if (progress.step(active.quest().id()) != active.quest().steps().indexOf(active.step())) {
             return;
         }
-        Talk.say(active.quest().id(), Steps.anchor(server, active.step()), active.step().done(), fill(progress));
+        Vec3 anchor = Steps.anchor(server, active.step());
+        Talk.say(active.quest().id(), anchor, active.step().done(), fill(progress));
+        if (active.step().spec().has("finds")) {
+            Talk.then(() -> openQuests(server));
+        }
         Optional<Active> next = advance(server, active);
         if (next.isPresent()) {
             Talk.then(() -> Steps.enter(server, next.get()));
@@ -281,6 +286,13 @@ public final class Engine {
         }
         record(server, progress, quest, step, fill(progress));
         People.introduce(server, introduced(step));
+        if (step.spec().has("finds")) {
+            Vec3 anchor = Steps.anchor(server, step);
+            progress.place(step.text("finds"), anchor == null ? overworld(server).getSharedSpawnPos() : BlockPos.containing(anchor));
+        }
+        if (step.spec().has("joins")) {
+            progress.joined.add(step.text("joins"));
+        }
         if (step.reward() != null) {
             grant(server, step.reward());
         }
@@ -325,7 +337,7 @@ public final class Engine {
         Progress progress = Progress.of(server);
         choose(server, questId, stepId, choice);
         Talk.say(questId, player.position(), new Story.Line(speaker, choice.reply()));
-        Story.INSTANCE.quest(questId).ifPresent(quest -> quest.steps().stream().filter(step -> step.id().equals(stepId)).findFirst()
+        Story.get().quest(questId).ifPresent(quest -> quest.steps().stream().filter(step -> step.id().equals(stepId)).findFirst()
                 .ifPresent(step -> Talk.then(() -> Steps.chosen(player, new Active(quest, step, progress.scratch(quest.id())), choice))));
     }
 
@@ -383,7 +395,7 @@ public final class Engine {
             return OwnStone.stone(player);
         }
         if (item.book() != null) {
-            Library.Book book = Library.INSTANCE.book(item.book()).orElseThrow(() -> new IllegalStateException(key + " gives the book " + item.book()
+            Library.Book book = Library.get().book(item.book()).orElseThrow(() -> new IllegalStateException(key + " gives the book " + item.book()
                     + ", which story/books.toml does not have"));
             ItemStack written = new ItemStack(Items.WRITTEN_BOOK);
             written.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(Filterable.passThrough(book.title()), book.author(), 0,
@@ -402,7 +414,7 @@ public final class Engine {
 
     static List<Story.Reward> rewards() {
         List<Story.Reward> rewards = new ArrayList<>();
-        for (Story.Quest quest : Story.INSTANCE.quests()) {
+        for (Story.Quest quest : Story.get().quests()) {
             quest.steps().stream().map(Story.Step::reward).filter(reward -> reward != null).forEach(rewards::add);
             if (quest.reward() != null) {
                 rewards.add(quest.reward());
@@ -427,7 +439,7 @@ public final class Engine {
 
     static boolean most(MinecraftServer server, long count) {
         int online = players(server).size();
-        return online > 0 && count * 100 >= (long) online * Balance.INSTANCE.sleep().playersPercentage();
+        return online > 0 && count * 100 >= (long) online * Balance.get().sleep().playersPercentage();
     }
 
     static ServerLevel overworld(MinecraftServer server) {

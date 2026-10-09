@@ -19,14 +19,14 @@ public final class Spread {
         boolean spread = level.registryAccess().registryOrThrow(Registries.STRUCTURE_SET).holders()
                 .filter(set -> set.value().structures().stream().anyMatch(entry -> structures.contains(entry.structure())))
                 .noneMatch(set -> set.is(UNSPREAD));
-        return spread ? (int) Math.ceil(rings / Balance.INSTANCE.structures().spreadFactor()) : rings;
+        return spread ? (int) Math.ceil(rings / Balance.get().structures().spreadFactor()) : rings;
     }
 
     public static boolean keeps(ResourceLocation feature, RandomSource random) {
-        if (feature == null || !Balance.INSTANCE.structures().spreadFeatures().contains(feature.getNamespace())) {
+        if (feature == null || !Balance.get().structures().spreadFeatures().contains(feature.getNamespace())) {
             return true;
         }
-        double factor = Balance.INSTANCE.structures().spreadFactor();
+        double factor = Balance.get().structures().spreadFactor();
         return random.nextDouble() * factor * factor < 1;
     }
 }

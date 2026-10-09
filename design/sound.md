@@ -6,7 +6,7 @@ Everything the player hears but the voice (`narration.md`): what plays where, an
 
 ### Music for the story's moments
 
-Music plays at points the story chooses, not by place and weather: strings when someone dies, a fight's piece at a hold, something lighter on a good night at the fire. Everyday play, the road, ordinary days and nights, keeps Reactive Music and its own songs.
+Music plays at points the story chooses, not by place and weather: the battle piece at every hold, a piece at every death the player watched, at each act's revelation at the fire, a short theme of its own for each memory, and one on each act's first morning or first flight; outside a hold, an evening has at most two (`story.md`, S25). Everyday play, the road, ordinary days and nights, keeps Reactive Music and its own songs.
 
 **Why:** A loss the player has watched coming lands hardest with music under it, and the road's quiet makes the moments that have music stand out.
 
@@ -39,6 +39,9 @@ Each quest adds its moments here as it is built, along the road's curve (`story.
 | The hold at the cellar door (P3), and every horde night | Heartfelt Battle, looping while it lasts | request, CC0, OpenGameArt |
 | The dawn after the hold (P3) | Edvard Grieg, Morning Mood (Peer Gynt Suite No. 1), once | Musopen Symphony, CC0, Wikimedia Commons |
 | The evening at the caravan's first fire (P3) | Calm fireplace guitar song, once | ShggothSlave, CC0, OpenGameArt |
+| The Gazebound's horn: across the water at the ford before anything shows (1.3), and calling them back after; theirs wherever they come later | Battle_horn_1, one breathy war-horn blast | kirmm, CC0, [Freesound](https://freesound.org/people/kirmm/sounds/392180) |
+| The battle piece at the ford (1.3) | Heartfelt Battle, looping while the hold lasts | request, CC0, OpenGameArt |
+| The first memory, His First Camp (1.2), from waking in it until waking from it | Home Was You, piano, strings and accordion, once | Scott Buckley, CC BY 4.0, [scottbuckley.com.au](https://www.scottbuckley.com.au/library/home-was-you/) |
 | A shard is taken | Glass-metal Resonant Transition 13, glass and metal resonating | newlocknew, CC-BY 4.0, [Freesound](https://freesound.org/people/newlocknew/sounds/711059) |
 | A reward is taken from the journal | Item Received, things stowed into a satchel | spookymodem, CC0, [Freesound](https://freesound.org/people/spookymodem/sounds/249815) |
 | A creature of the gaze crumbles at dawn | Cinematic Dragon Sound - Dragon Hiss 4, its first 0.85 s | Soughtaftersounds, CC BY 3.0, [Freesound](https://freesound.org/people/Soughtaftersounds/sounds/239650) |

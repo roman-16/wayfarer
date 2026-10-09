@@ -61,7 +61,7 @@ public final class Compass {
 
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
-        if (event.getEntity() instanceof ServerPlayer player && player.tickCount % Balance.INSTANCE.compass().refreshTicks() == 0) {
+        if (event.getEntity() instanceof ServerPlayer player && player.tickCount % Balance.get().compass().refreshTicks() == 0) {
             CompassPayload reading = reading(player);
             CompassPayload before = SENT.put(player.getUUID(), reading);
             if (before != null) {
@@ -90,7 +90,7 @@ public final class Compass {
 
     private static CompassPayload reading(ServerPlayer player) {
         List<ResourceLocation> claimed = Journey.claimed(player.server);
-        Balance.Compass balance = Balance.INSTANCE.compass();
+        Balance.Compass balance = Balance.get().compass();
         Bearing bearing = BEARINGS.computeIfAbsent(player.getUUID(), key -> new Bearing());
         BlockPos pos = player.blockPosition();
         boolean shown = player.level().dimension() == Level.OVERWORLD;
@@ -104,7 +104,7 @@ public final class Compass {
             return still(event.named() ? CompassPayload.Mode.COLD : CompassPayload.Mode.BARE, claimed, markers, shelter, false);
         }
         bearing.aim(event.aim());
-        boolean sight = claimed.size() >= Balance.INSTANCE.sight().shards() && !Journey.slain(player.server);
+        boolean sight = claimed.size() >= Balance.get().sight().shards() && !Journey.slain(player.server);
         if (Gaze.airborne(player)) {
             return still(CompassPayload.Mode.AIR, claimed, markers, shelter, sight);
         }

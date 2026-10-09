@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.CompassEvent;
 import io.github.roman16.wayfarer.CompassPayload;
@@ -87,7 +88,7 @@ public final class Scenes {
     private static final String STORY_DONE = "ash";
     private static final String PULL = "the_pull";
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final JsonObject TEXT = Prologue.json("/wayfarer/scenes.json");
+    private static final Bundled<JsonObject> TEXT = Bundled.json("/wayfarer/scenes.json");
     private static final List<String> ROAD = List.of("cart", "herder", "pedlar", "questioning", "ridge", TRAVELLER, "trunk", "wolves");
     private static final List<String> LIVING = List.of("road_01", "road_02", "road_03", "road_04", "road_05", "road_10", "road_11");
     private static final List<String> DEAD = List.of("road_dead_01", "road_dead_02");
@@ -359,7 +360,7 @@ public final class Scenes {
     }
 
     private static JsonObject text(String kind) {
-        return TEXT.getAsJsonObject(kind);
+        return TEXT.get().getAsJsonObject(kind);
     }
 
     private static String clue(String kind, String key) {
@@ -372,7 +373,7 @@ public final class Scenes {
     }
 
     private static long rhythm(RandomSource random) {
-        Balance.Scenes balance = Balance.INSTANCE.scenes();
+        Balance.Scenes balance = Balance.get().scenes();
         return (long) (balance.everySeconds() - balance.jitterSeconds() + random.nextInt(2 * balance.jitterSeconds() + 1)) * TICKS_PER_SECOND;
     }
 
@@ -392,7 +393,7 @@ public final class Scenes {
     }
 
     private static List<List<ServerPlayer>> groups(List<ServerPlayer> players) {
-        int reach = Balance.INSTANCE.scenes().groupBlocks();
+        int reach = Balance.get().scenes().groupBlocks();
         List<List<ServerPlayer>> groups = new ArrayList<>();
         for (ServerPlayer player : players) {
             List<List<ServerPlayer>> joined = groups.stream()
@@ -452,7 +453,7 @@ public final class Scenes {
 
     private static Optional<Spot> spot(ServerLevel level, String kind, ServerPlayer leader, List<ServerPlayer> players) {
         Vec3 heading = headings.get(leader.getUUID());
-        Balance.Scenes balance = Balance.INSTANCE.scenes();
+        Balance.Scenes balance = Balance.get().scenes();
         boolean high = kind.equals("ridge") || kind.equals("wolves");
         int from = high ? balance.farthestBlocks() - balance.nearestBlocks() / 2 : balance.nearestBlocks();
         int radius = radius(level, kind);
@@ -545,13 +546,13 @@ public final class Scenes {
     }
 
     private static boolean crowded(ServerLevel level, BlockPos ground) {
-        int apart = Balance.INSTANCE.scenes().nearestBlocks() / 2;
+        int apart = Balance.get().scenes().nearestBlocks() / 2;
         return Ledger.of(level.getServer()).scenes.stream().anyMatch(scene -> scene.centre.closerThan(ground, apart));
     }
 
     private static boolean inWard(ServerLevel level, BlockPos ground, int radius) {
         BoundingBox around = new BoundingBox(ground.getX() - radius, ground.getY() - radius, ground.getZ() - radius, ground.getX() + radius,
-                ground.getY() + radius, ground.getZ() + radius).inflatedBy(Balance.INSTANCE.scenes().nearestBlocks());
+                ground.getY() + radius, ground.getZ() + radius).inflatedBy(Balance.get().scenes().nearestBlocks());
         return Progress.of(level.getServer()).wards.values().stream().anyMatch(box -> box.intersects(around));
     }
 
@@ -789,7 +790,7 @@ public final class Scenes {
         }
         long now = server.overworld().getGameTime();
         boolean story = scene.kind.equals(CACHE);
-        long gap = (long) Balance.INSTANCE.scenes().voiceGapSeconds() * TICKS_PER_SECOND;
+        long gap = (long) Balance.get().scenes().voiceGapSeconds() * TICKS_PER_SECOND;
         if (text.has("voice") && !Journey.claimed(server).isEmpty() && (story || now - ledger.voiceAt >= gap)) {
             JsonArray voice = text.getAsJsonArray("voice");
             List<String> names = text.has("names") ? text.getAsJsonArray("names").asList().stream().map(JsonElement::getAsString).toList() : List.of();
@@ -807,7 +808,7 @@ public final class Scenes {
 
     private static void question(MinecraftServer server, ServerLevel level, Ledger ledger, Scene scene, List<ServerPlayer> players) {
         JsonObject text = text(scene.kind);
-        int ask = Balance.INSTANCE.scenes().askBlocks();
+        int ask = Balance.get().scenes().askBlocks();
         switch (scene.state) {
             case "" -> {
                 if (scene.seen && !Talk.busy() && players.stream().anyMatch(player -> player.position().closerThan(Vec3.atCenterOf(scene.centre), ask))) {
@@ -818,7 +819,7 @@ public final class Scenes {
                     }
                     List<Story.Choice> choices = text.getAsJsonArray("choices").asList().stream().map(JsonElement::getAsJsonObject)
                             .map(choice -> new Story.Choice(choice.get("id").getAsString(), choice.get("text").getAsString(), choice.get("reply").getAsString(),
-                                    null, null, false))
+                                    null, null, false, null))
                             .toList();
                     Talk.ask(new Talk.Offer(Talk.ROAD, null, choices, Vec3.atCenterOf(scene.centre), (player, choice) -> chosen(player, scene, choice)));
                 }
@@ -883,7 +884,7 @@ public final class Scenes {
         if (ledger.rumour == null) {
             return;
         }
-        int arrive = Balance.INSTANCE.story().arriveBlocks();
+        int arrive = Balance.get().story().arriveBlocks();
         long today = Math.floorDiv(level.getDayTime(), Clock.DAY);
         Vec3 at = Vec3.atCenterOf(ledger.rumour);
         if (today > ledger.rumourDay + 1 || players.stream().anyMatch(player -> player.position().multiply(1, 0, 1).closerThan(at.multiply(1, 0, 1), arrive))) {
@@ -894,7 +895,7 @@ public final class Scenes {
 
     private static void shadow(ServerLevel level, Scene scene, List<ServerPlayer> players) {
         long age = level.getGameTime() - scene.placed;
-        boolean leaving = age > (long) Balance.INSTANCE.scenes().wolvesSeconds() * TICKS_PER_SECOND;
+        boolean leaving = age > (long) Balance.get().scenes().wolvesSeconds() * TICKS_PER_SECOND;
         ServerPlayer leader = level.getServer().getPlayerList().getPlayer(scene.leader);
         if (leader == null) {
             return;
@@ -912,7 +913,7 @@ public final class Scenes {
     }
 
     private static boolean past(ServerPlayer player, Scene scene) {
-        Balance.Scenes balance = Balance.INSTANCE.scenes();
+        Balance.Scenes balance = Balance.get().scenes();
         double distance = player.position().distanceTo(Vec3.atCenterOf(scene.centre));
         return distance >= balance.goneBlocks() && (!ahead(player, scene) || distance >= balance.farthestBlocks() + balance.goneBlocks());
     }

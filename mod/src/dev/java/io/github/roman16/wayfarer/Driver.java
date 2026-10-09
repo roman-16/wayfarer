@@ -9,6 +9,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.client.Conversation;
 import io.github.roman16.wayfarer.client.Hud;
+import io.github.roman16.wayfarer.client.JournalScreen;
 import io.github.roman16.wayfarer.client.Recap;
 import io.github.roman16.wayfarer.story.StoryDev;
 import java.io.IOException;
@@ -20,12 +21,15 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -72,6 +76,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
@@ -311,6 +316,24 @@ public final class Driver {
         }
     }
 
+    private static String digest(Minecraft minecraft) {
+        StringBuilder seen = new StringBuilder();
+        seen.append(HudState.compass).append(HudState.gaze).append(HudState.night).append(HudState.panel).append(List.copyOf(HudState.banners))
+                .append(Hud.showing()).append(JournalScreen.latest());
+        LocalPlayer player = minecraft.player;
+        if (player != null) {
+            seen.append(player.position()).append(player.getYRot()).append(player.getXRot());
+            for (ItemStack stack : player.getInventory().items) {
+                seen.append(BuiltInRegistries.ITEM.getKey(stack.getItem())).append(stack.getCount()).append(stack.getComponentsPatch());
+            }
+        }
+        try {
+            return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(seen.toString().getBytes(StandardCharsets.UTF_8)));
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException(exception);
+        }
+    }
+
     public static boolean batching() {
         return running;
     }
@@ -360,7 +383,7 @@ public final class Driver {
                         .toList();
             }
             case "state" -> {
-                boolean built = minecraft.getLevelSource().levelExists(STATE_WORLD);
+                boolean built = Files.exists(Path.of(words[2]).resolve("level.dat"));
                 enter(minecraft, STATE_WORLD, GameType.SURVIVAL, StoryDev.seed());
                 return built ? List.of("settle") : List.of("settle", "story " + words[1] + " " + words[2], "settle");
             }
@@ -409,7 +432,7 @@ public final class Driver {
             minecraft.createWorldOpenFlows().openWorld(world, () -> minecraft.setScreen(new TitleScreen()));
             return;
         }
-        LevelSettings settings = new LevelSettings(world, mode, false, Difficulty.HARD, true, new GameRules(), WorldDataConfiguration.DEFAULT);
+        LevelSettings settings = new LevelSettings(world, mode, false, Difficulty.NORMAL, true, new GameRules(), WorldDataConfiguration.DEFAULT);
         minecraft.createWorldOpenFlows().createFreshLevel(
                 world, settings, new WorldOptions(seed, true, false), WorldPresets::createNormalWorldDimensions, new TitleScreen());
     }
@@ -644,6 +667,7 @@ public final class Driver {
                 }
             }
             case "chat" -> chatHidden = argument.equals("off");
+            case "digest" -> note("digest: " + digest(minecraft));
             case "distance" -> distance(minecraft, Integer.parseInt(argument));
             case "click" -> {
                 String[] at = argument.split(" ");
@@ -656,6 +680,7 @@ public final class Driver {
             }
             case "far" -> far();
             case "find" -> find(minecraft, argument);
+            case "forget" -> JournalScreen.firstPage();
             case "fly" -> {
                 minecraft.player.getAbilities().flying = argument.equals("on");
                 minecraft.player.onUpdateAbilities();
@@ -717,6 +742,7 @@ public final class Driver {
                 shot(minecraft, argument);
             }
             case "state" -> command(minecraft, "wayfarer state");
+            case "still" -> still(minecraft, argument);
             case "story" -> story(minecraft, argument);
             case "use" -> use(minecraft, argument);
             case "type" -> argument.chars().forEach(character -> {
@@ -772,6 +798,18 @@ public final class Driver {
     private static void command(Minecraft minecraft, String command) {
         synced = false;
         minecraft.player.connection.sendCommand(command);
+    }
+
+    private static void still(Minecraft minecraft, String ticks) {
+        command(minecraft, ticks.isEmpty() ? "wayfarer still" : "wayfarer still " + ticks);
+        waitingOn = "the world to stand still";
+        until = () -> sync(minecraft) && Still.standing(minecraft);
+        then = () -> {
+            note(Still.hold(minecraft));
+            if (!ticks.isEmpty()) {
+                command(minecraft, "wayfarer still");
+            }
+        };
     }
 
     private static void story(Minecraft minecraft, String argument) {

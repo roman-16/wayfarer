@@ -39,9 +39,9 @@ gametest:
 generate:
     python3 generator/generate.py
 
-[doc("Compile the Wayfarer mod and its dev code")]
+[doc("Compile the Wayfarer mod and its dev code, and copy their resources where the running dev client and server read them")]
 compile:
-    cd mod && ./gradlew --console=plain --quiet compileJava compileDevJava
+    cd mod && ./gradlew --console=plain --quiet compileJava compileDevJava processResources processDevResources
 
 [doc("Run the dev server in the foreground: the whole pack with the Wayfarer mod's dev code, in build/devserver; `just devserver lean` loads only the Wayfarer mod and what it needs, in a world of its own")]
 devserver mode="full":
@@ -116,11 +116,12 @@ sources:
     python3 scripts/instance.py client build/client
     python3 scripts/sources.py
 
-[doc("Run the game tests beside the boot test, with the game tests' log in build/gametest.log")]
+[doc("Run the game tests beside the boot test, with the game tests' log in build/gametest.log; returns at once when nothing they load changed since their last pass")]
 test: build
     #!/usr/bin/env bash
     set -uo pipefail
     mkdir --parents build
+    python3 scripts/passed.py check && exit 0
     (cd mod && ./gradlew --console=plain runGameTestServer) > build/gametest.log 2>&1 &
     tests=$!
     just boot-server
@@ -132,7 +133,8 @@ test: build
         grep --extended-regexp --only-matching "[0-9]+ required tests? failed.*|Failed to start the minecraft server" build/gametest.log
         tail --lines 60 build/gametest.log
     fi
-    exit $(( booted || tested ))
+    (( booted || tested )) && exit 1
+    python3 scripts/passed.py record
 
 [doc("Move every mod, tool and dependency to its newest version, then prove the pack still holds")]
 update:

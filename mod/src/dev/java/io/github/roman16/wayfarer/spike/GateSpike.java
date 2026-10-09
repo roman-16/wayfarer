@@ -73,7 +73,7 @@ public final class GateSpike {
     public static void onBreakSpeed(PlayerEvent.BreakSpeed event) {
         BlockPos pos = event.getPosition().orElse(event.getEntity().blockPosition());
         if (lesserPick(event.getEntity(), event.getState(), pos)) {
-            float slowdown = Balance.INSTANCE.toolGate().slowdown();
+            float slowdown = Balance.get().toolGate().slowdown();
             event.setNewSpeed(event.getNewSpeed() * WRONG_TOOL_DIVISOR / (CORRECT_TOOL_DIVISOR * slowdown));
         }
     }

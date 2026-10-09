@@ -38,6 +38,9 @@ final class Steps {
     static final String RESTED = "rested";
     private static final String UNTIL = "until";
     private static final int BLIND_TICKS = 40;
+    private static final String HEARTHSTONE = "hearthstone";
+    private static final String TOWARD = "toward";
+    private static final String LEAVES = "leaves";
 
     private Steps() {}
 
@@ -56,15 +59,18 @@ final class Steps {
         Progress.of(server).setDirty();
         moves(server, step);
         music(server, step);
+        if (step.spec().has(LEAVES)) {
+            step.spec().getAsJsonArray(LEAVES).forEach(person -> People.leave(server, person.getAsString()));
+        }
         switch (step.kind()) {
             case "talk" -> {}
             case "dusk" -> {
-                Balance.Clock clock = Balance.INSTANCE.clock();
+                Balance.Clock clock = Balance.get().clock();
                 active.scratch().putLong(UNTIL, Clock.pass(Engine.overworld(server), clock.dusk(), clock.afternoonSeconds(), clock.night()));
                 Places.build(server, step.text("place"));
             }
             case "hold" -> Hold.start(server, active);
-            case "dawn" -> active.scratch().putLong(UNTIL, Clock.pass(Engine.overworld(server), DAWN, Balance.INSTANCE.clock().dawnSeconds(), Balance.INSTANCE.clock().road()));
+            case "dawn" -> active.scratch().putLong(UNTIL, Clock.pass(Engine.overworld(server), DAWN, Balance.get().clock().dawnSeconds(), Balance.get().clock().road()));
             case "caravan" -> Caravan.headIn(server);
             case "reach" -> Places.build(server, step.text("place"));
             case "sleep" -> active.scratch().putLong(DAY, Math.floorDiv(Engine.overworld(server).getDayTime(), Clock.DAY));
@@ -79,11 +85,12 @@ final class Steps {
     static Optional<String> goal(Engine.Active active) {
         Story.Step step = active.step();
         return switch (step.kind()) {
-            case "reach" -> Optional.of(step.text("place"));
+            case "reach" -> Optional.of(step.spec().has(TOWARD) ? step.text(TOWARD) : step.text("place"));
             case "caravan" -> Optional.of(Caravan.NAME);
             case "rest", "hold" -> Optional.of(step.text("at"));
             case "shard" -> Optional.of(step.text("at"));
             case "clues" -> step.spec().has("place") ? Optional.of(step.text("place")) : Optional.empty();
+            case "memory" -> Optional.of(Story.get().memory(step.text("memory")).place());
             default -> Optional.empty();
         };
     }
@@ -100,7 +107,7 @@ final class Steps {
 
     static void resume(MinecraftServer server, Engine.Active active) {
         music(server, active.step());
-        Balance.Clock clock = Balance.INSTANCE.clock();
+        Balance.Clock clock = Balance.get().clock();
         long until = active.scratch().getLong(UNTIL);
         switch (active.step().kind()) {
             case "dusk" -> {
@@ -127,7 +134,7 @@ final class Steps {
             case "talk" -> {
                 String with = step.with();
                 if (!scratch.getBoolean(STARTED) && !Talk.busy() && with != null
-                        && People.find(server, with).filter(body -> near(server, body, Balance.INSTANCE.talk().startBlocks())).isPresent()) {
+                        && People.find(server, with).filter(body -> near(server, body, Balance.get().talk().startBlocks())).isPresent()) {
                     start(server, active);
                 }
             }
@@ -138,7 +145,7 @@ final class Steps {
             }
             case "walk" -> {
                 BlockPos from = Engine.at(server, step.text("from"));
-                int away = Balance.INSTANCE.prologue().awayBlocks();
+                int away = Balance.get().prologue().awayBlocks();
                 if (Engine.players(server).stream().anyMatch(player -> player.level().dimension() == Level.OVERWORLD
                         && horizontal(player.blockPosition(), from) >= (double) away * away)) {
                     Engine.complete(server, active);
@@ -152,7 +159,7 @@ final class Steps {
             }
             case "reach" -> {
                 Optional<BlockPos> goal = Places.place(server, step.text("place"));
-                int within = Balance.INSTANCE.story().arriveBlocks();
+                int within = Places.arrival(step.text("place"));
                 if (goal.isPresent() && Engine.players(server).stream()
                         .anyMatch(player -> player.level().dimension() == Level.OVERWORLD && player.blockPosition().distSqr(goal.get()) <= (double) within * within)) {
                     Engine.complete(server, active);
@@ -160,7 +167,7 @@ final class Steps {
             }
             case "horse" -> {
                 Optional<BlockPos> fire = Places.place(server, Caravan.NAME);
-                int near = Balance.INSTANCE.story().nearBlocks();
+                int near = Balance.get().story().nearBlocks();
                 if (fire.isPresent()) {
                     Engine.overworld(server).getEntitiesOfClass(AbstractHorse.class, new AABB(fire.get()).inflate(near), AbstractHorse::isTamed).stream()
                             .findFirst().ifPresent(horse -> {
@@ -215,6 +222,11 @@ final class Steps {
                     return true;
                 }
             }
+            case "memory" -> {
+                if (target.getTags().contains(CLUE + HEARTHSTONE)) {
+                    return Memories.touch(player, FirstCamp.world(server, "hearth"), player.getMainHandItem());
+                }
+            }
             case "clues" -> {
                 for (Story.Clue clue : step.clues()) {
                     if (target.getTags().contains(CLUE + clue.id()) && !Engine.found(active.scratch()).contains(clue.id())) {
@@ -239,7 +251,7 @@ final class Steps {
         MinecraftServer server = player.server;
         switch (step.kind()) {
             case "camp" -> {
-                if (Tents.pitchedNear(player.serverLevel(), fire, Balance.INSTANCE.tent().fireBlocks())) {
+                if (Tents.pitchedNear(player.serverLevel(), fire, Balance.get().tent().fireBlocks())) {
                     Progress.of(server).place(OWN_CAMP, fire);
                     CompoundTag rested = active.scratch().getCompound(RESTED);
                     rested.putBoolean(player.getStringUUID(), true);
@@ -252,7 +264,7 @@ final class Steps {
             }
             case "rest" -> {
                 Optional<BlockPos> at = Places.place(server, step.text("at"));
-                int within = Balance.INSTANCE.story().nearBlocks();
+                int within = Balance.get().story().nearBlocks();
                 if (at.isPresent() && horizontal(fire, at.get()) <= (double) within * within) {
                     Engine.complete(server, active);
                 }

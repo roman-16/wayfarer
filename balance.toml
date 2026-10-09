@@ -14,6 +14,13 @@ exact_blocks = 256
 refresh_ticks = 20
 trail_blocks = 20
 
+[crossing]
+first_wave = 2
+retreat_seconds = 32
+wave_growth = 1
+wave_seconds = 128
+waves = 3
+
 [daylight]
 crumble_seconds = 60
 
@@ -40,6 +47,16 @@ lake_blocks = 512
 charges = 1
 reach_blocks = 16
 
+[ford]
+ahead_blocks = 1024
+creek_reach_blocks = 64
+notice_blocks = 64
+outpost_blocks = 48
+search_blocks = 2048
+side_blocks = 512
+widest_river_blocks = 32
+width_blocks = 8
+
 [gate]
 reach_blocks = 48
 
@@ -48,6 +65,11 @@ capacity_seconds = [180, 300, 480, 720]
 drain_factor = 4
 hunt_interval_seconds = 10
 hunt_phantoms = 2
+
+[graphics]
+far_view_chunks = [64, 128, 256, 512]
+profiles = ["LOW", "MEDIUM", "HIGH", "ULTRA"]
+render_chunks = [8, 10, 12, 16]
 
 [hold]
 blow_ticks = 32
@@ -69,6 +91,12 @@ away_blocks = 256
 [shrines]
 tier_one_leg_blocks = 5000
 tier_two_leg_blocks = 8000
+
+[memory]
+arrival_blocks = 4
+fade_ticks = 16
+fire_blocks = 4
+together_blocks = 32
 
 [ore]
 coal = 0.5

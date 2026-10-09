@@ -120,7 +120,7 @@ public final class Waystone {
         }
         Vec3 from = leaving.remove(player.getUUID());
         if (from != null) {
-            int cost = (int) Math.round(from.distanceTo(player.position()) / Balance.INSTANCE.waystones().blocksPerFood());
+            int cost = (int) Math.round(from.distanceTo(player.position()) / Balance.get().waystones().blocksPerFood());
             player.getFoodData().setFoodLevel(Math.max(0, player.getFoodData().getFoodLevel() - cost));
             player.getFoodData().setSaturation(0);
             if (cost > 0) {

@@ -8,6 +8,14 @@
 | --- | --- | --- | --- |
 | ![Front](his-first-camp/front.jpg) | ![Side](his-first-camp/side.jpg) | ![Above](his-first-camp/above.jpg) | ![Three quarters](his-first-camp/three-quarters.jpg) |
 
+## His first camp then
+
+**The stranger's first camp as it was, fifty summers ago**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](his-first-camp-then/front.jpg) | ![Side](his-first-camp-then/side.jpg) | ![Above](his-first-camp-then/above.jpg) | ![Three quarters](his-first-camp-then/three-quarters.jpg) |
+
 ## His last camp
 
 **The stranger's last camp, as the player finds it later**, in the showroom

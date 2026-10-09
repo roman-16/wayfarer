@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Burning;
 import io.github.roman16.wayfarer.TollbridgeBell;
 import io.github.roman16.wayfarer.Wayfarer;
@@ -65,9 +66,7 @@ public final class Tollbridge {
     static final String DEAD = Wayfarer.MODID + "_dead";
     private static final String SITE = "tollbridge_site";
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final JsonObject PLAN = Prologue.json("/wayfarer/tollbridge.json");
-    private static final JsonObject PIECES = PLAN.getAsJsonObject("pieces");
-    private static final JsonObject TOWER = PLAN.getAsJsonObject("tower");
+    private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/tollbridge.json");
     private static final String TOWER_PIECE = "bell_tower";
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_tollbridge", Comparator.comparingLong(ChunkPos::toLong));
     private static final Direction[] AROUND = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
@@ -109,7 +108,7 @@ public final class Tollbridge {
 
     public static Optional<BlockPos> burning(MinecraftServer server) {
         Progress progress = Progress.of(server);
-        int morning = Story.INSTANCE.quest(QUEST).map(quest -> quest.steps().stream().map(Story.Step::id).toList().indexOf(BURNS_UNTIL)).orElse(0);
+        int morning = Story.get().quest(QUEST).map(quest -> quest.steps().stream().map(Story.Step::id).toList().indexOf(BURNS_UNTIL)).orElse(0);
         return progress.place(NAME).filter(at -> !progress.done(QUEST) && progress.steps.getOrDefault(QUEST, 0) < morning);
     }
 
@@ -203,7 +202,7 @@ public final class Tollbridge {
     }
 
     private static int radius() {
-        return Balance.INSTANCE.tollbridge().radiusBlocks();
+        return Balance.get().tollbridge().radiusBlocks();
     }
 
     private static void search(MinecraftServer server, ServerLevel level) {
@@ -222,7 +221,7 @@ public final class Tollbridge {
             build.heights = new Unseen.Heights(level);
             Unseen.Heights heights = build.heights;
             Neighbours neighbours = new Neighbours(level);
-            int ahead = Balance.INSTANCE.tollbridge().aheadBlocks();
+            int ahead = Balance.get().tollbridge().aheadBlocks();
             build.searching = CompletableFuture.supplyAsync(() -> sites(heights, neighbours, camp, heading, ahead), Util.backgroundExecutor());
             return;
         }
@@ -231,7 +230,7 @@ public final class Tollbridge {
         }
         build.sites = build.searching.join();
         if (build.sites.stream().allMatch(Site::crowded)) {
-            LOGGER.warn("every site for Tollbridge has another place within {} blocks; it stands at the least crowded", Balance.INSTANCE.tollbridge().clearBlocks());
+            LOGGER.warn("every site for Tollbridge has another place within {} blocks; it stands at the least crowded", Balance.get().tollbridge().clearBlocks());
         }
         build.stage = Stage.WAITING;
     }
@@ -303,7 +302,7 @@ public final class Tollbridge {
             this.sampler = level.getChunkSource().randomState().sampler();
             this.sets = state.possibleStructureSets().stream()
                     .filter(set -> set.value().structures().stream().anyMatch(entry -> standing(entry.structure()))).toList();
-            this.reach = Math.ceilDiv(radius() + Balance.INSTANCE.tollbridge().clearBlocks(), CHUNK);
+            this.reach = Math.ceilDiv(radius() + Balance.get().tollbridge().clearBlocks(), CHUNK);
         }
 
         private boolean near(Unseen.Heights heights, int x, int z) {
@@ -339,7 +338,7 @@ public final class Tollbridge {
 
     private static void await(MinecraftServer server, ServerLevel level) {
         build.waited++;
-        boolean late = build.waited >= Balance.INSTANCE.tollbridge().waitSeconds();
+        boolean late = build.waited >= Balance.get().tollbridge().waitSeconds();
         int view = server.getPlayerList().getViewDistance();
         for (Site site : build.sites) {
             if (late || Unseen.hidden(build.heights, Unseen.viewers(level), targets(site), view, false)) {
@@ -385,7 +384,7 @@ public final class Tollbridge {
         Town town = plan(server, level, build.site);
         long homes = town.lots.stream().filter(lot -> !lot.paths().isEmpty()).count();
         List<Site> others = build.sites.stream().filter(site -> site != build.site).toList();
-        if (homes >= Balance.INSTANCE.tollbridge().leastBuildings() || others.isEmpty()) {
+        if (homes >= Balance.get().tollbridge().leastBuildings() || others.isEmpty()) {
             build.town = town;
             build.stage = Stage.GROUND;
             return;
@@ -563,8 +562,8 @@ public final class Tollbridge {
             span++;
             at = at.relative(way);
         }
-        int length = PIECES.getAsJsonObject("bridge").getAsJsonArray("size").get(2).getAsInt();
-        int width = PIECES.getAsJsonObject("bridge").getAsJsonArray("size").get(0).getAsInt();
+        int length = spec("bridge").getAsJsonArray("size").get(2).getAsInt();
+        int width = spec("bridge").getAsJsonArray("size").get(0).getAsInt();
         if (span == 0 || span > BRIDGE_SPAN || outside(town, at.relative(way, 2), 0)) {
             return null;
         }
@@ -629,14 +628,14 @@ public final class Tollbridge {
 
     private static Stream<String> kinds(BlockPos at, Town town) {
         int distance = at.distManhattan(town.centre.atY(at.getY()));
-        return PLAN.getAsJsonArray("lots").asList().stream().map(JsonElement::getAsString).filter(kind -> {
-            String ring = PLAN.getAsJsonObject("kinds").getAsJsonObject(kind).get("ring").getAsString();
+        return PLAN.get().getAsJsonArray("lots").asList().stream().map(JsonElement::getAsString).filter(kind -> {
+            String ring = PLAN.get().getAsJsonObject("kinds").getAsJsonObject(kind).get("ring").getAsString();
             return ring.equals("any") || ring.equals("inner") && distance < INNER || ring.equals("outer") && distance > OUTER;
         });
     }
 
     private static List<String> pieces(String kind) {
-        return PLAN.getAsJsonObject("kinds").getAsJsonObject(kind).getAsJsonArray("pieces").asList().stream().map(JsonElement::getAsString).toList();
+        return PLAN.get().getAsJsonObject("kinds").getAsJsonObject(kind).getAsJsonArray("pieces").asList().stream().map(JsonElement::getAsString).toList();
     }
 
     private static int area(String piece) {
@@ -725,7 +724,7 @@ public final class Tollbridge {
     }
 
     private static BlockPos door(ServerLevel level, String piece, int minX, int minZ, Rotation rotation) {
-        JsonArray at = piece.equals(TOWER_PIECE) ? TOWER.getAsJsonArray("door") : PIECES.getAsJsonObject(piece).getAsJsonArray("door");
+        JsonArray at = piece.equals(TOWER_PIECE) ? tower().getAsJsonArray("door") : spec(piece).getAsJsonArray("door");
         StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(rotation);
         BlockPos origin = origin(level, piece, settings, minX, 0, minZ);
         return StructureTemplate.calculateRelativePosition(settings, new BlockPos(at.get(0).getAsInt(), 0, at.get(1).getAsInt())).offset(origin);
@@ -749,11 +748,11 @@ public final class Tollbridge {
     }
 
     private static JsonArray size(String piece) {
-        return piece.equals(TOWER_PIECE) ? TOWER.getAsJsonArray("size") : PIECES.getAsJsonObject(piece).getAsJsonArray("size");
+        return piece.equals(TOWER_PIECE) ? tower().getAsJsonArray("size") : spec(piece).getAsJsonArray("size");
     }
 
     private static int margin(String piece) {
-        return piece.equals(TOWER_PIECE) ? TOWER.get("margin").getAsInt() : PIECES.getAsJsonObject(piece).get("margin").getAsInt();
+        return piece.equals(TOWER_PIECE) ? tower().get("margin").getAsInt() : spec(piece).get("margin").getAsInt();
     }
 
     private static int width(String piece) {
@@ -797,7 +796,7 @@ public final class Tollbridge {
 
     private static void ground(ServerLevel level) {
         Town town = build.town;
-        JsonObject materials = PLAN.getAsJsonObject("materials");
+        JsonObject materials = PLAN.get().getAsJsonObject("materials");
         int reach = town.radius + SAMPLE;
         int from = town.centre.getZ() - reach;
         for (int done = 0; done < ROWS_PER_TICK && build.row <= reach * 2; done++, build.row++) {
@@ -885,7 +884,7 @@ public final class Tollbridge {
         if (build.piece < town.lots.size()) {
             Lot lot = town.lots.get(build.piece++);
             build.placed.add(place(level, lot));
-            JsonArray street = PLAN.getAsJsonObject("materials").getAsJsonArray("street");
+            JsonArray street = PLAN.get().getAsJsonObject("materials").getAsJsonArray("street");
             for (long path : lot.paths()) {
                 BlockPos column = BlockPos.of(path);
                 clear(level, column.getX(), column.getZ());
@@ -912,7 +911,7 @@ public final class Tollbridge {
             }
         }
         heights.sort(Integer::compare);
-        int ground = lot.piece().equals(TOWER_PIECE) ? TOWER.get("ground").getAsInt() : 0;
+        int ground = lot.piece().equals(TOWER_PIECE) ? tower().get("ground").getAsInt() : 0;
         int floor = lot.base() != null ? lot.base() + 1 : heights.get(heights.size() / 2);
         int base = lot.base() != null ? lot.base() : floor - ground;
         int top = base + template.getSize().getY();
@@ -965,11 +964,11 @@ public final class Tollbridge {
     }
 
     private static void smoke(ServerLevel level, Town town) {
-        List<Placed> hearths = new ArrayList<>(build.placed.stream().filter(placed -> PIECES.has(placed.lot().piece())
-                && PIECES.getAsJsonObject(placed.lot().piece()).has("hearth")).toList());
-        for (int fire = 0; fire < PLAN.get("smoke").getAsInt() && !hearths.isEmpty(); fire++) {
+        List<Placed> hearths = new ArrayList<>(build.placed.stream().filter(placed -> PLAN.get().getAsJsonObject("pieces").has(placed.lot().piece())
+                && spec(placed.lot().piece()).has("hearth")).toList());
+        for (int fire = 0; fire < PLAN.get().get("smoke").getAsInt() && !hearths.isEmpty(); fire++) {
             Placed placed = hearths.remove(town.random.nextInt(hearths.size()));
-            JsonArray hearth = PIECES.getAsJsonObject(placed.lot().piece()).getAsJsonArray("hearth");
+            JsonArray hearth = spec(placed.lot().piece()).getAsJsonArray("hearth");
             BlockPos at = world(placed, hearth.get(0).getAsInt(), hearth.get(1).getAsInt(), hearth.get(2).getAsInt());
             BlockState state = level.getBlockState(at);
             if (state.getBlock() instanceof CampfireBlock) {
@@ -992,21 +991,21 @@ public final class Tollbridge {
         Progress progress = Progress.of(server);
         Placed tower = build.placed.getFirst();
         Rotation turn = tower.lot().rotation();
-        JsonArray bell = TOWER.getAsJsonArray("bell");
+        JsonArray bell = tower().getAsJsonArray("bell");
         BlockPos bellAt = surface(level, world(tower, bell.get(0).getAsInt(), 0, bell.get(1).getAsInt())).above();
-        Direction facing = turn.rotate(Direction.byName(TOWER.get("bell_facing").getAsString()));
+        Direction facing = turn.rotate(Direction.byName(tower().get("bell_facing").getAsString()));
         level.setBlock(bellAt, Wayfarer.TOLLBRIDGE_BELL.get().defaultBlockState().setValue(TollbridgeBell.FACING, facing).setValue(TollbridgeBell.FALLEN, true), FLAGS);
         progress.place(BELL, bellAt);
-        JsonArray seat = TOWER.getAsJsonArray("bell_seat");
+        JsonArray seat = tower().getAsJsonArray("bell_seat");
         BlockPos seatAt = surface(level, world(tower, seat.get(0).getAsInt(), 0, seat.get(1).getAsInt())).above();
         progress.place("seat_" + BELL, seatAt);
         progress.yaws.put("seat_" + BELL, (float) yaw(seatAt, bellAt));
-        BlockPos fire = world(tower, TOWER.getAsJsonArray("fire"));
+        BlockPos fire = world(tower, tower().getAsJsonArray("fire"));
         progress.place(CELLAR, fire);
         BoundingBox ward = template(level, TOWER_PIECE).getBoundingBox(tower.settings(), tower.origin());
         progress.ward(NAME, new BoundingBox(Math.min(ward.minX(), bellAt.getX()), Math.min(ward.minY(), bellAt.getY()), Math.min(ward.minZ(), bellAt.getZ()),
                 Math.max(ward.maxX(), bellAt.getX()), Math.max(ward.maxY(), bellAt.getY()), Math.max(ward.maxZ(), bellAt.getZ())));
-        TOWER.getAsJsonObject("seats").entrySet().forEach(entry -> {
+        tower().getAsJsonObject("seats").entrySet().forEach(entry -> {
             BlockPos at = world(tower, entry.getValue().getAsJsonArray());
             progress.place("seat_" + entry.getKey(), at);
             progress.yaws.put("seat_" + entry.getKey(), (float) yaw(at, fire));
@@ -1014,8 +1013,8 @@ public final class Tollbridge {
         survivors(server);
         dead(level, town);
         build.placed.stream().filter(placed -> placed.lot().piece().equals("inn")).findFirst()
-                .ifPresent(inn -> Clues.marker(level, world(inn, PLAN.getAsJsonArray("strongbox")), "strongbox"));
-        Clues.marker(level, world(tower, TOWER.getAsJsonArray("clue")), "cellar");
+                .ifPresent(inn -> Clues.marker(level, world(inn, PLAN.get().getAsJsonArray("strongbox")), "strongbox"));
+        Clues.marker(level, world(tower, tower().getAsJsonArray("clue")), "cellar");
         tracks(level, town);
         progress.place(NAME, surface(level, town.centre));
         progress.places.remove(SITE);
@@ -1031,12 +1030,12 @@ public final class Tollbridge {
 
     static void survivors(MinecraftServer server) {
         ServerLevel level = Engine.overworld(server);
-        TOWER.getAsJsonObject("seats").entrySet().forEach(entry -> Places.seat(server, entry.getKey())
+        tower().getAsJsonObject("seats").entrySet().forEach(entry -> Places.seat(server, entry.getKey())
                 .ifPresent(seat -> People.person(level, entry.getKey(), seat.at(), seat.yaw(), entry.getValue().getAsJsonArray().get(3).getAsString())));
     }
 
     private static void dead(ServerLevel level, Town town) {
-        JsonObject dead = PLAN.getAsJsonObject("dead");
+        JsonObject dead = PLAN.get().getAsJsonObject("dead");
         List<String> skins = new ArrayList<>(dead.getAsJsonArray("others").asList().stream().map(JsonElement::getAsString).toList());
         List<BlockPos> laid = new ArrayList<>();
         if (town.well != null) {
@@ -1096,8 +1095,8 @@ public final class Tollbridge {
     }
 
     private static void lay(ServerLevel level, Town town, BlockPos at, String skin, @Nullable String clue, List<BlockPos> laid) {
-        JsonArray poses = PLAN.getAsJsonArray("dead_poses");
-        String pose = clue != null ? PLAN.get("found_pose").getAsString() : poses.get(town.random.nextInt(poses.size())).getAsString();
+        JsonArray poses = PLAN.get().getAsJsonArray("dead_poses");
+        String pose = clue != null ? PLAN.get().get("found_pose").getAsString() : poses.get(town.random.nextInt(poses.size())).getAsString();
         Entity body = People.spawn(level, skin, Vec3.atBottomCenterOf(at), town.random.nextFloat() * 360, pose, DEAD);
         if (clue != null) {
             body.addTag(Steps.CLUE + clue);
@@ -1127,5 +1126,13 @@ public final class Tollbridge {
 
     private static double yaw(BlockPos from, BlockPos to) {
         return Math.toDegrees(Math.atan2(to.getZ() - from.getZ(), to.getX() - from.getX())) - 90;
+    }
+
+    private static JsonObject tower() {
+        return PLAN.get().getAsJsonObject("tower");
+    }
+
+    private static JsonObject spec(String name) {
+        return PLAN.get().getAsJsonObject("pieces").getAsJsonObject(name);
     }
 }

@@ -82,13 +82,10 @@ def recipes():
 
 def story_books():
     story = tomllib.loads((ROOT / "story/books.toml").read_text())
-    return [*story["memories"], *story["found"]] + [
-        book for collection in story["collections"] for book in collection["books"]
-    ]
+    return [*story["found"]] + [book for collection in story["collections"] for book in collection["books"]]
 
 
 def books():
-    story = tomllib.loads((ROOT / "story/books.toml").read_text())
     entries = story_books()
     titles = [entry["title"] for entry in entries] + [spec["people"] for spec in shrine_eyes().values()]
     for title in titles:
@@ -101,9 +98,6 @@ def books():
         for page in entry["pages"]:
             if len(page) > PAGE_LIMIT:
                 yield f"story/books.toml: a page of {entry['title']!r} is {len(page)} characters; a book page holds about {PAGE_LIMIT}"
-    eyes = tomllib.loads((ROOT / "generator/eyes.toml").read_text())
-    if len(story["memories"]) != len(eyes["eyes"]):
-        yield f"story/books.toml has {len(story['memories'])} memories for {len(eyes['eyes'])} shards"
 
 
 KINDS = {
@@ -115,14 +109,32 @@ KINDS = {
     "dusk",
     "hold",
     "horse",
+    "memory",
     "reach",
     "rest",
     "shard",
     "sleep",
     "talk",
+    "wait",
     "walk",
 }
-PLACES = {"bell", "cache", "caravan", "cellar", "diggers", "diggers_hall", "first_camp", "last_camp", "tollbridge"}
+MEMORY_KINDS = {"cook", "gather", "lay", "light", "notch", "talk"}
+PLACES = {
+    "bell",
+    "brother",
+    "cache",
+    "caravan",
+    "cellar",
+    "diggers",
+    "diggers_hall",
+    "first_camp",
+    "ford",
+    "ford_far",
+    "last_camp",
+    "maren",
+    "marsh_hall",
+    "tollbridge",
+}
 KNOWN = {"feeling"}
 TASKS = {
     "bed",
@@ -143,7 +155,15 @@ TASKS = {
 
 
 def story():
-    quests = tomllib.loads((ROOT / "story/quests.toml").read_text())["quests"]
+    spec = tomllib.loads((ROOT / "story/quests.toml").read_text())
+    quests = spec["quests"]
+    memories = {memory["id"]: memory for memory in spec["memories"]}
+    for memory in memories.values():
+        if memory["place"] not in PLACES:
+            yield f"story/quests.toml: the memory {memory['id']} happens at {memory['place']}; the story builds {', '.join(sorted(PLACES))}"
+        for step in memory["steps"]:
+            if step["kind"] not in MEMORY_KINDS:
+                yield f"story/quests.toml: the memory {memory['id']} has a {step['kind']} step; a memory knows {', '.join(sorted(MEMORY_KINDS))}"
     people = set(tomllib.loads((ROOT / "story/people.toml").read_text()))
     lang = json.loads((MOD / "main/resources/assets/wayfarer/lang/en_us.json").read_text())
     sounds = tomllib.loads((ROOT / "story/sounds.toml").read_text())
@@ -179,6 +199,10 @@ def story():
             where = f"story/quests.toml: {quest['id']}/{step['id']}"
             if step["kind"] not in KINDS:
                 yield f"{where} is a {step['kind']} step; the engine knows {', '.join(sorted(KINDS))}"
+            if step["kind"] == "memory" and step["memory"] not in memories:
+                yield f"{where} dreams the memory {step['memory']}, which story/quests.toml does not hold"
+            if "finds" in step and step["finds"] not in PLACES:
+                yield f"{where} finds {step['finds']}; the story builds {', '.join(sorted(PLACES))}"
             said = step.get("lines", []) + step.get("done", []) + step.get("burial", [])
             named = [line["by"] for line in said if "by" in line]
             named += [step[key] for key in ("whom", "with") if key in step]
@@ -188,6 +212,8 @@ def story():
                 + list(step.get("moves", {}))
                 + list(step.get("remarks", {}))
                 + step.get("keep", [])
+                + step.get("leaves", [])
+                + ([step["joins"]] if "joins" in step else [])
             )
             for person in named:
                 if person not in people:
@@ -210,7 +236,7 @@ def story():
             for word in step.get("words", {}):
                 if f"wayfarer.word.{word}" not in lang:
                     yield f"{where} teaches the word {word}; add wayfarer.word.{word} to the language file"
-            places = [step[key] for key in ("from", "place", "at") if key in step]
+            places = [step[key] for key in ("from", "place", "at", "toward") if key in step]
             places += [move["place"] for move in step.get("moves", {}).values()]
             for place in places:
                 if place not in PLACES:

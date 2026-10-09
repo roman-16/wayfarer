@@ -39,7 +39,7 @@ public final class FireRepair extends CustomRecipe {
     public boolean matches(CraftingInput input, Level level) {
         Player player = crafter != null ? crafter : CommonHooks.getCraftingPlayer();
         if (!(level instanceof ServerLevel server) || player == null
-                || Fire.nearest(server, player.position(), Balance.INSTANCE.fire().restBlocks()).isEmpty()) {
+                || Fire.nearest(server, player.position(), Balance.get().fire().restBlocks()).isEmpty()) {
             return false;
         }
         Parts parts = parts(input);

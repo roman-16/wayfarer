@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer.story;
 
+import io.github.roman16.wayfarer.Balance;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
@@ -23,12 +24,17 @@ public final class Places {
             case Tollbridge.NAME -> Tollbridge.begin(server);
             case Diggers.NAME, Diggers.HALL -> Diggers.begin(server);
             case FirstCamp.NAME -> FirstCamp.find(server);
+            case Ford.NAME, Ford.HALL -> Ford.find(server);
             default -> throw new IllegalArgumentException("the story has no way to build " + name);
         }
     }
 
     static boolean ready(MinecraftServer server, String name) {
-        return Progress.of(server).place(name).isPresent();
+        return name.equals(FirstCamp.NAME) ? FirstCamp.built(server) : Progress.of(server).place(name).isPresent();
+    }
+
+    static int arrival(String name) {
+        return name.equals(Ford.NAME) ? Balance.get().ford().noticeBlocks() : Balance.get().story().arriveBlocks();
     }
 
     static Optional<BlockPos> place(MinecraftServer server, String name) {
@@ -46,6 +52,8 @@ public final class Places {
             Tollbridge.tick(event.getServer());
             Caravan.tick(event.getServer());
             Diggers.tick(event.getServer());
+            FirstCamp.tick(event.getServer());
+            Ford.tick(event.getServer());
         }
     }
 
@@ -54,5 +62,6 @@ public final class Places {
         Tollbridge.reset();
         Caravan.reset();
         Diggers.reset();
+        Ford.reset();
     }
 }

@@ -2,11 +2,6 @@ package io.github.roman16.wayfarer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -25,41 +20,37 @@ import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 
 public final class Owners {
-    private static final Set<ResourceLocation> CUT;
-    private static final Map<ResourceLocation, String> KIND = new HashMap<>();
-    private static final Map<String, JsonObject> SPACING = new LinkedHashMap<>();
-
-    static {
-        try (var stream = Owners.class.getResourceAsStream("/wayfarer/owners.json")) {
-            if (stream == null) {
-                throw new IllegalStateException("owners.json is missing from the mod jar; run just generate");
-            }
-            JsonObject json = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
-            CUT = json.getAsJsonArray("cut").asList().stream().map(JsonElement::getAsString).map(ResourceLocation::parse)
-                    .collect(Collectors.toUnmodifiableSet());
-            json.getAsJsonObject("kinds").entrySet().forEach(kind -> {
-                SPACING.put(kind.getKey(), kind.getValue().getAsJsonObject());
-                kind.getValue().getAsJsonObject().getAsJsonArray("structures")
-                        .forEach(structure -> KIND.put(ResourceLocation.parse(structure.getAsString()), kind.getKey()));
-            });
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
+    private static final Bundled<Spec> SPEC = Bundled.json("/wayfarer/owners.json", Owners::spec);
 
     private Owners() {}
+
+    private record Spec(Set<ResourceLocation> cut, Map<ResourceLocation, String> kind, Map<String, JsonObject> spacing) {}
+
+    private static Spec spec(JsonObject json) {
+        Map<ResourceLocation, String> kinds = new HashMap<>();
+        Map<String, JsonObject> spacing = new LinkedHashMap<>();
+        json.getAsJsonObject("kinds").entrySet().forEach(kind -> {
+            spacing.put(kind.getKey(), kind.getValue().getAsJsonObject());
+            kind.getValue().getAsJsonObject().getAsJsonArray("structures")
+                    .forEach(structure -> kinds.put(ResourceLocation.parse(structure.getAsString()), kind.getKey()));
+        });
+        Set<ResourceLocation> cut = json.getAsJsonArray("cut").asList().stream().map(JsonElement::getAsString).map(ResourceLocation::parse)
+                .collect(Collectors.toUnmodifiableSet());
+        return new Spec(cut, Map.copyOf(kinds), spacing);
+    }
 
     public static List<Holder<StructureSet>> arrange(List<Holder<StructureSet>> sets) {
         Map<String, List<StructureSet.StructureSelectionEntry>> gathered = new LinkedHashMap<>();
         List<Holder<StructureSet>> arranged = new ArrayList<>();
+        Spec spec = SPEC.get();
         for (Holder<StructureSet> set : sets) {
             List<StructureSet.StructureSelectionEntry> kept = new ArrayList<>();
             for (StructureSet.StructureSelectionEntry entry : set.value().structures()) {
                 Optional<ResourceLocation> id = id(entry.structure());
-                String kind = id.map(KIND::get).orElse(null);
+                String kind = id.map(spec.kind()::get).orElse(null);
                 if (kind != null) {
                     gathered.computeIfAbsent(kind, key -> new ArrayList<>()).add(entry);
-                } else if (id.map(CUT::contains).orElse(false)) {
+                } else if (id.map(spec.cut()::contains).orElse(false)) {
                     continue;
                 } else {
                     kept.add(entry);
@@ -71,7 +62,7 @@ public final class Owners {
                 arranged.add(Holder.direct(new StructureSet(List.copyOf(kept), set.value().placement())));
             }
         }
-        gathered.forEach((kind, entries) -> arranged.add(Holder.direct(new StructureSet(List.copyOf(entries), placement(SPACING.get(kind))))));
+        gathered.forEach((kind, entries) -> arranged.add(Holder.direct(new StructureSet(List.copyOf(entries), placement(spec.spacing().get(kind))))));
         return List.copyOf(arranged);
     }
 

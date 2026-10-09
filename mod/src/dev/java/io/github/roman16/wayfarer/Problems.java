@@ -4,6 +4,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Appender;
@@ -14,6 +15,8 @@ import org.apache.logging.log4j.core.config.Property;
 
 final class Problems {
     private static final int KEPT = 64;
+    private static final Bundled<List<Pattern>> NOISE = Bundled.json("/wayfarer/noise.json", json -> json.getAsJsonArray("noise").asList().stream()
+            .map(entry -> Pattern.compile(entry.getAsJsonObject().get("match").getAsString())).toList());
     private static final Deque<String> recent = new ArrayDeque<>();
     private static int dropped;
 
@@ -36,6 +39,10 @@ final class Problems {
         String line = "%s %s: %s".formatted(event.getLevel(), event.getLoggerName(), event.getMessage().getFormattedMessage());
         if (event.getThrown() != null) {
             line += " (" + event.getThrown() + ")";
+        }
+        String said = line;
+        if (NOISE.get().stream().anyMatch(noise -> noise.matcher(said).find())) {
+            return;
         }
         if (recent.size() == KEPT) {
             recent.removeFirst();

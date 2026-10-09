@@ -99,6 +99,15 @@
     ],
     "subtitle": "subtitles.wayfarer.gaze_rises"
   },
+  "gazebound_horn": {
+    "sounds": [
+      {
+        "attenuation_distance": 96,
+        "name": "wayfarer:effects/gazebound_horn"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.gazebound_horn"
+  },
   "hard_night": {
     "sounds": [
       {
@@ -122,6 +131,14 @@
       }
     ],
     "subtitle": "subtitles.wayfarer.journal_page"
+  },
+  "memory_opens": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/memory_opens"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.memory_opens"
   },
   "quest_begun": {
     "sounds": [
@@ -154,6 +171,14 @@
       }
     ],
     "subtitle": "subtitles.wayfarer.shard_taken"
+  },
+  "story_music.first_camp": {
+    "sounds": [
+      {
+        "name": "wayfarer:music/first_camp",
+        "stream": true
+      }
+    ]
   },
   "story_music.first_fire": {
     "sounds": [

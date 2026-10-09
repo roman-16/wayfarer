@@ -39,9 +39,8 @@ public final class WorldSetup {
         if (state.done) {
             return;
         }
-        server.getGameRules().getRule(GameRules.RULE_PLAYERS_SLEEPING_PERCENTAGE).set(Balance.INSTANCE.sleep().playersPercentage(), server);
+        server.getGameRules().getRule(GameRules.RULE_PLAYERS_SLEEPING_PERCENTAGE).set(Balance.get().sleep().playersPercentage(), server);
         server.getGameRules().getRule(GameRules.RULE_ANNOUNCE_ADVANCEMENTS).set(false, server);
-        server.setDifficulty(net.minecraft.world.Difficulty.HARD, true);
         stopSeasons(server);
         placeLastCamp(server.overworld());
         state.done = true;

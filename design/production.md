@@ -12,7 +12,7 @@ Unreleased and in development: nothing is published yet, and a world made with o
 
 - The pack is never cut back so that weaker machines can run it. A reasonably high-end PC should run it at about 90 fps, as a guide and not a gate, and there is no fixed budget: what a player finds too slow is fixed when it comes up.
 - There are two modes: no shader, or Complementary Reimagined with Euphoria Patches, the one shader the pack ships and its looks are judged under. It works with Distant Horizons, scales down to weaker PCs through its profiles, is the most used and best kept of its kind, and looks the way the pack wants. Bliss, Photon, Solas and MakeUp Ultra Fast leave the pack.
-- Video Settings opens with a "Graphics" button that steps through four settings, High on first launch, and a "Shaders: On/Off" button beside it. Each step sets the shader's profile, the draw distance and Distant Horizons' far view together; changing any of them by hand makes the button read "Graphics: Custom", and pressing it again picks a step and sets them all. The Wayfarer mod sets Iris's profile, Distant Horizons and the video settings itself.
+- Video Settings, Sodium's screen, has a Wayfarer page with a Graphics group: a Preset that steps through four settings, High on first launch, and Shaders on or off. Each step sets the shader's profile, the draw distance and Distant Horizons' far view together; changing any of them by hand makes the Preset read Custom, and pressing it again picks a step and sets them all. The Wayfarer mod sets Iris's profile, Distant Horizons and the video settings itself. The page is Sodium's own look, the one screen outside the stamp.
 
   | | Low | Medium | High | Ultra |
   |---|---|---|---|---|
@@ -21,11 +21,12 @@ Unreleased and in development: nothing is published yet, and a world made with o
   | Far view | 64 chunks, about 1 km | 128, about 2 km | 256, about 4 km | 512, about 8 km |
 
   ```text
-  Options › Video Settings
-    [ Graphics: High ]  [ Shaders: On ]
+  Options › Video Settings › Wayfarer › Graphics
+    Preset    High
+    Shaders   [x]
   ```
 
-**Why:** The pack is made for the friends who play it, on the machines they have, and limiting it for weaker ones would cost the atmosphere it is built for. One shader means every look is judged once, and one button with four steps lets a newcomer pick how hard their machine works without knowing Iris, Distant Horizons and a dozen video settings.
+**Why:** The pack is made for the friends who play it, on the machines they have, and limiting it for weaker ones would cost the atmosphere it is built for. One shader means every look is judged once, and one Preset with four steps lets a newcomer pick how hard their machine works without knowing Iris, Distant Horizons and a dozen video settings. It lives where players already look for graphics, in Sodium's Video Settings, and is named Preset because Sodium already has a Graphics option (Fast or Fancy).
 
 
 ### R3 Blind players and the play record

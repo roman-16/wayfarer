@@ -22,7 +22,7 @@ public final class Ores {
 
     private static double share(OreConfiguration config) {
         for (OreConfiguration.TargetBlockState target : config.targetStates) {
-            for (Map.Entry<String, Double> ore : Balance.INSTANCE.ore().shares().entrySet()) {
+            for (Map.Entry<String, Double> ore : Balance.get().ore().shares().entrySet()) {
                 if (target.state.is(TagKey.create(Registries.BLOCK, ResourceLocation.fromNamespaceAndPath("c", "ores/" + ore.getKey())))) {
                     return ore.getValue();
                 }

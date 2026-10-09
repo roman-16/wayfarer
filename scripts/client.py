@@ -45,6 +45,7 @@ ASPECT = 1280 / 720
 FRAMING = 1.1
 NOTE = re.compile(r"([a-z]+): (.*)")
 STATE = "state: "
+KEPT = "story: kept "
 FAILED_AT_ONCE = "` failed at once: "
 SIDES = {"front": (0, 0, 1), "side": (1, 0, 0), "above": (0, 1, 0.001), "three-quarters": (0.6, 1.0, 0.6)}
 SCREENSHOTS = CLIENT / "screenshots"
@@ -150,10 +151,10 @@ def launch(world, timeout, visible, mode, state, rebuild, seed):
     before = crashes(CRASHES)
     command = ["just", "showroom" if world == "showroom" else "play", mode]
     environment = screen(visible) | {"WAYFARER_DRIVEN": "true", "WAYFARER_SEED": "" if seed is None else str(seed)}
-    cached = False
+    start = None
     if state:
         cache = states.folder("client", mode, state)
-        cached = states.prepare(cache, CLIENT / "saves" / ("state-lean" if mode == "lean" else "state"), rebuild)
+        start = states.prepare(cache, CLIENT / "saves" / ("state-lean" if mode == "lean" else "state"), rebuild)
         environment |= {"WAYFARER_STATE": state, "WAYFARER_STATE_CACHE": str(cache)}
     started = time.monotonic()
     with LAUNCH_LOG.open("w") as log:
@@ -182,16 +183,24 @@ def launch(world, timeout, visible, mode, state, rebuild, seed):
         shut(STOP_SECONDS)
         sys.exit(f"the client could not open its world: {blocked[0].removeprefix('blocked: ')}")
     hotswap.remember(SNAPSHOT)
-    LAUNCHED.write_text(json.dumps(wanted(mode, visible)))
-    say(world, state, cached, f"launched in {time.monotonic() - started:.0f} s", visible, mode, report)
+    record(states.digests(), mode, visible)
+    say(world, state, start, f"launched in {time.monotonic() - started:.0f} s", visible, mode, report)
 
 
-def say(world, state, cached, took, visible, mode, report):
+def built(state, start, report):
+    if start == state:
+        return "from the cache,"
+    kept = report.count(KEPT)
+    keeping = f", keeping {kept} earlier step{'s' * (kept != 1)}" if kept else ""
+    return (f"built from {start}" if start else "built") + keeping + ","
+
+
+def say(world, state, start, took, visible, mode, report):
     errors = [line for line in report.splitlines() if line.startswith("error:")]
     where = {
         "play": "a fresh natural world",
         "showroom": "the showroom",
-        "state": f"state {state}, " + ("from the cache," if cached else "built,"),
+        "state": f"state {state}, " + built(state, start, report),
     }[world]
     screen = ("on the user's screen" if visible else "on a hidden screen") + {
         "far": ", with Distant Horizons' far view",
@@ -207,14 +216,21 @@ def say(world, state, cached, took, visible, mode, report):
     print("\n".join(errors))
 
 
-def wanted(mode, visible):
-    return {"inputs": states.inputs(), "mode": mode, "visible": visible}
+def record(digests, mode, visible):
+    LAUNCHED.write_text(json.dumps({"digests": digests, "mode": mode, "visible": visible}))
 
 
 def current():
     if not alive() or not LAUNCHED.exists() or not WORLD.exists():
         return None, None
     return json.loads(LAUNCHED.read_text()), json.loads(WORLD.read_text())
+
+
+def relaunching(launched, digests, mode, visible):
+    if launched is None:
+        return ["none runs"]
+    reasons = [] if (launched["mode"], launched["visible"]) == (mode, visible) else ["the screen or mode is another"]
+    return reasons + states.changed(launched["digests"], digests, states.LAUNCH)
 
 
 def swap_in():
@@ -231,29 +247,38 @@ def swapped():
     result = swap_in()
     if any(result[key] for key in ("swapped", "listeners", "needs a restart")):
         print(json.dumps(result))
-    return not result["needs a restart"]
+    return [f"{', '.join(result['needs a restart'])} needs a restart"] if result["needs a restart"] else []
 
 
 def ensure(world, timeout, visible, mode, state=None, rebuild=False, anew=False, seed=None):
     launched, opened = current()
-    if launched == wanted(mode, visible) and swapped():
-        if world == "showroom" and opened["world"] == "showroom" and not anew:
-            print("the client is running in the showroom")
-            return
-        switch(world, timeout, visible, mode, state, rebuild, seed)
+    digests = states.digests()
+    reasons = relaunching(launched, digests, mode, visible) or swapped()
+    if reasons:
+        if alive():
+            print("relaunching: " + "; ".join(reasons))
+            shut(STOP_SECONDS)
+        launch(world, timeout, visible, mode, state, rebuild, seed)
         return
-    if alive():
-        shut(STOP_SECONDS)
-    launch(world, timeout, visible, mode, state, rebuild, seed)
+    reloaded = ""
+    if states.changed(launched["digests"], digests, ("assets",)):
+        batch(["assets"], timeout)
+        reloaded = "textures, models, fonts, sounds and lang reloaded, "
+    data = states.changed(launched["digests"], digests, ("data",))
+    record(digests, mode, visible)
+    if world == "showroom" and opened["world"] == "showroom" and not anew and not data:
+        print("the client is running in the showroom" + (f" ({reloaded.removesuffix(', ')})" if reloaded else ""))
+        return
+    switch(world, timeout, visible, mode, state, rebuild, seed, reloaded)
 
 
-def switch(world, timeout, visible, mode, state, rebuild, seed):
+def switch(world, timeout, visible, mode, state, rebuild, seed, reloaded=""):
     started = time.monotonic()
     batch(["leave"], timeout)
-    cached = False
+    start = None
     if state:
         cache = states.folder("client", mode, state)
-        cached = states.prepare(cache, CLIENT / "saves" / ("state-lean" if mode == "lean" else "state"), rebuild)
+        start = states.prepare(cache, CLIENT / "saves" / ("state-lean" if mode == "lean" else "state"), rebuild)
         target = f"state {state} {cache}"
     else:
         subprocess.run(
@@ -261,7 +286,7 @@ def switch(world, timeout, visible, mode, state, rebuild, seed):
         )
         target = world if seed is None else f"{world} {seed}"
     report = batch([f"enter {target}"], timeout)
-    say(world, state, cached, f"opened in {time.monotonic() - started:.0f} s", visible, mode, report)
+    say(world, state, start, f"{reloaded}opened in {time.monotonic() - started:.0f} s", visible, mode, report)
 
 
 def start(arguments):

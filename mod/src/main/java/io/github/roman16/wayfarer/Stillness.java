@@ -23,7 +23,7 @@ public final class Stillness {
     private Stillness() {}
 
     public static int stage(long days) {
-        Balance.Stillness balance = Balance.INSTANCE.stillness();
+        Balance.Stillness balance = Balance.get().stillness();
         return days >= balance.hordeDays() ? FOUND : days >= balance.dimmingDays() ? DIMMING : MOVING;
     }
 
@@ -49,7 +49,7 @@ public final class Stillness {
             return;
         }
         double away = Math.hypot(player.getX() - anchor.getInt(X), player.getZ() - anchor.getInt(Z));
-        if (!anchor.contains(DAY) || away > Balance.INSTANCE.stillness().radiusBlocks()) {
+        if (!anchor.contains(DAY) || away > Balance.get().stillness().radiusBlocks()) {
             CompoundTag next = new CompoundTag();
             next.putInt(X, player.getBlockX());
             next.putInt(Z, player.getBlockZ());

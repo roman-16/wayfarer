@@ -58,7 +58,7 @@ public final class Joining {
                 .min(Comparator.comparingLong(other -> since.getOrDefault(other.getUUID(), Long.MAX_VALUE))).orElse(null);
         since.put(player.getUUID(), joins++);
         Place at = null;
-        int away = Balance.INSTANCE.join().awayBlocks();
+        int away = Balance.get().join().awayBlocks();
         if (anchor != null) {
             Place beside = beside(anchor);
             boolean far = !player.level().dimension().equals(beside.dimension) || player.blockPosition().distSqr(beside.pos) > (double) away * away;

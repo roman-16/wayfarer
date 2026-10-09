@@ -52,7 +52,7 @@ public final class Daylight {
                 || Nights.night(level)) {
             return;
         }
-        double chance = crumbleChance(CHECK_TICKS / TICKS_PER_SECOND, Balance.INSTANCE.daylight().crumbleSeconds());
+        double chance = crumbleChance(CHECK_TICKS / TICKS_PER_SECOND, Balance.get().daylight().crumbleSeconds());
         for (Mob mob : level.getEntities(EntityTypeTest.forClass(Mob.class), Daylight::exposed)) {
             if (level.random.nextDouble() < chance) {
                 crumble(level, mob);

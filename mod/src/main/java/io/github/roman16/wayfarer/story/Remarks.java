@@ -28,7 +28,7 @@ final class Remarks {
         String key = person + "\n" + lines.getFirst();
         int next = (said.getOrDefault(key, -1) + 1) % lines.size();
         said.put(key, next);
-        int reach = Balance.INSTANCE.talk().reachBlocks();
+        int reach = Balance.get().talk().reachBlocks();
         Talk.tell(player.server.getPlayerList().getPlayers().stream()
                 .filter(listener -> listener.level() == body.level() && listener.distanceToSqr(body) <= (double) reach * reach).toList(),
                 People.label(player.server, person), Component.literal(lines.get(next)));
@@ -45,6 +45,6 @@ final class Remarks {
                 }
             }
         }
-        return Story.INSTANCE.person(person).remarks();
+        return Story.get().person(person).remarks();
     }
 }

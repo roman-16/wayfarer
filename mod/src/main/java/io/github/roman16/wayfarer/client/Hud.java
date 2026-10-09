@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import net.minecraft.Util;
 import net.minecraft.client.DeltaTracker;
@@ -82,6 +83,10 @@ public final class Hud {
 
     public static void bossBar(CustomizeGuiOverlayEvent.BossEventProgress event) {
         bossBottom = Math.max(bossBottom, event.getY() + BOSS_BAR);
+    }
+
+    public static Optional<Banners.Payload> showing() {
+        return Optional.ofNullable(banner).filter(shown -> Util.getMillis() - bannerFrom <= BANNER_MILLIS);
     }
 
     public static void clearBanners() {

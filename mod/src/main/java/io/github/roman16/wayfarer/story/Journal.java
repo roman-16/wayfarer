@@ -68,6 +68,16 @@ public final class Journal {
         }
     }
 
+    public record Dream(String memory) implements CustomPacketPayload {
+        public static final Type<Dream> TYPE = new Type<>(Wayfarer.id("dream"));
+        public static final StreamCodec<ByteBuf, Dream> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(Dream::new, Dream::memory);
+
+        @Override
+        public Type<Dream> type() {
+            return TYPE;
+        }
+    }
+
     public static void syncAll(MinecraftServer server) {
         server.getPlayerList().getPlayers().forEach(Journal::sync);
     }
@@ -81,7 +91,7 @@ public final class Journal {
         Progress progress = Progress.of(server);
         JsonObject view = new JsonObject();
         JsonArray quests = new JsonArray();
-        for (Story.Quest quest : Story.INSTANCE.quests()) {
+        for (Story.Quest quest : Story.get().quests()) {
             if (!progress.steps.containsKey(quest.id())) {
                 continue;
             }
@@ -95,6 +105,7 @@ public final class Journal {
             JsonArray told = new JsonArray();
             progress.told.getOrDefault(quest.id(), List.of()).forEach(told::add);
             entry.add("story", told);
+            Memories.dreamt(progress, quest).ifPresent(memory -> entry.addProperty("memory", memory));
             if (!done) {
                 Story.Step step = quest.steps().get(progress.step(quest.id()));
                 entry.addProperty("objective", objective(player, new Engine.Active(quest, step, progress.scratch(quest.id()))));
@@ -125,7 +136,7 @@ public final class Journal {
         progress.told.forEach((quest, lines) -> {
             JsonObject chapter = new JsonObject();
             chapter.addProperty("key", quest);
-            chapter.addProperty("title", Story.INSTANCE.quest(quest).map(Story.Quest::title).orElse(quest));
+            chapter.addProperty("title", Story.get().quest(quest).map(Story.Quest::title).orElse(quest));
             JsonArray text = new JsonArray();
             lines.forEach(text::add);
             chapter.add("lines", text);
@@ -136,7 +147,7 @@ public final class Journal {
         progress.fire.forEach((key, heard) -> {
             JsonObject talk = new JsonObject();
             talk.addProperty("key", key);
-            talk.addProperty("title", Story.INSTANCE.quest(key).map(Story.Quest::title).orElse(""));
+            talk.addProperty("title", Story.get().quest(key).map(Story.Quest::title).orElse(""));
             JsonArray lines = new JsonArray();
             heard.forEach(line -> {
                 JsonObject said = new JsonObject();
@@ -149,7 +160,7 @@ public final class Journal {
         });
         view.add("fire", fire);
         JsonArray pages = new JsonArray();
-        progress.pages.forEach(id -> Library.INSTANCE.book(id).ifPresent(book -> {
+        progress.pages.forEach(id -> Library.get().book(id).ifPresent(book -> {
             JsonObject entry = new JsonObject();
             entry.addProperty("key", id);
             entry.addProperty("title", book.title());
@@ -161,7 +172,7 @@ public final class Journal {
         }));
         view.add("pages", pages);
         view.add("gear", Gear.view(player));
-        view.add("people", entries(progress.people, person -> Story.INSTANCE.person(person).name()));
+        view.add("people", entries(progress.people, person -> Story.get().person(person).name()));
         view.add("words", entries(progress.words, word -> word));
         JsonArray places = new JsonArray();
         PLACES.forEach((name, key) -> progress.place(name).ifPresent(pos -> places.add(place(key, pos))));
@@ -188,7 +199,7 @@ public final class Journal {
         if (step.kind().equals("walk")) {
             BlockPos from = Engine.at(player.server, step.text("from"));
             double walked = Math.sqrt(Math.pow(player.getX() - from.getX(), 2) + Math.pow(player.getZ() - from.getZ(), 2));
-            int left = Math.max(0, Balance.INSTANCE.prologue().awayBlocks() - (int) walked);
+            int left = Math.max(0, Balance.get().prologue().awayBlocks() - (int) walked);
             objective = objective.replace("{left}", String.valueOf(Math.ceilDiv(left, COUNT_BLOCKS) * COUNT_BLOCKS));
         }
         return objective;

@@ -3,6 +3,10 @@
     "model": "easy_npc:humanoid_slim",
     "scale": 1.0
   },
+  "corin": {
+    "model": "easy_npc:vindicator",
+    "scale": 1.0
+  },
   "hob": {
     "model": "easy_npc:humanoid",
     "scale": 1.0

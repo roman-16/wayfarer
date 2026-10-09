@@ -10,6 +10,9 @@ description = '''
 The rules of the Wayfarer modpack: the ember compass, the eye shrines, the Dragon's Gaze and the road that never lets you settle.
 '''
 
+[modproperties.${mod_id}]
+"sodium:config_api_user" = "io.github.roman16.wayfarer.client.VideoSettings"
+
 [[mixins]]
 config = "${mod_id}.mixins.json"
 
@@ -84,6 +87,13 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
+modId = "farmersdelight"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
 modId = "hordes"
 type = "optional"
 versionRange = "*"
@@ -92,6 +102,13 @@ side = "BOTH"
 
 [[dependencies.${mod_id}]]
 modId = "mr_trek"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "parcool"
 type = "optional"
 versionRange = "*"
 ordering = "AFTER"

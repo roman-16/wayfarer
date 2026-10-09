@@ -10,5 +10,11 @@ piece = "healer_tent"
 people = [{ at = "fire", person = "agna", pose = "sitting_crossed" }, { at = "fire", person = "pip", pose = "sitting_crossed" }]
 
 [[households]]
+apart = true
+joins = "corin"
+people = [{ at = "piece", person = "corin", pose = "sitting" }]
+piece = "tent"
+
+[[households]]
 piece = "forge_wagon"
 people = [{ at = "fire", person = "hob", pose = "sitting" }]

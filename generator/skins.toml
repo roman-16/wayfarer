@@ -157,6 +157,231 @@ p = ["#56391f", "#6a482a", "#7a5634"]
 s = ["#b07a5c", "#c48c6c", "#d09a7a"]
 w = "#dcd6cc"
 
+[corin]
+model = "vindicator"
+scale = 1.0
+arm = [
+  "GGGG",
+  "GGGG",
+  "GdGG",
+  "GGGG",
+  "GGGG",
+  "GGGd",
+  "GGGG",
+  "BBBB",
+  "BRBB",
+  "BBBB",
+  "ssss",
+  "SSSS",
+]
+body_back = [
+  "WWWWWWWW",
+  "WWWWWWWW",
+  "WWWWWWWW",
+  "WWWWWWWW",
+  "WWWWWWWW",
+  "WWWWWWWW",
+  "WWWWWWWW",
+  "WWWWWWWW",
+  "WWWWWWWW",
+  "LLLLLLLL",
+  "TTTTTTTT",
+  "TTTTTTTT",
+]
+body_front = [
+  "WWssssWW",
+  "WWsxxsWW",
+  "WWWssWWW",
+  "WWWWWWWW",
+  "WWWWWWWW",
+  "WWWWWRWW",
+  "WWWWRRWW",
+  "WWWWWRWW",
+  "WWWWWWWW",
+  "LLLLyLLL",
+  "TTTTTTTT",
+  "TTTTTTTT",
+]
+body_side = [
+  "WWWWWW",
+  "WWWWWW",
+  "WWWWWW",
+  "WWWWWW",
+  "WWWWWW",
+  "WWWWWW",
+  "WWWWWW",
+  "WWWWWW",
+  "WWWWWW",
+  "LLLLLL",
+  "TTTTTT",
+  "TTTTTT",
+]
+crossed = ["GGGG", "GGGG", "GdGG", "GGGG", "GGGG", "GGGd", "BBBB", "BRBB"]
+head_back = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhshhhhs",
+  "ssssssss",
+  "SsssssSs",
+  "SSssssSS",
+  "SSSSSSSS",
+]
+head_bottom = [
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+]
+head_front = [
+  "hhhhhhhh",
+  "hhsshhsh",
+  "ssssssss",
+  "sSssssSs",
+  "eeassaee",
+  "keessEek",
+  "swissiws",
+  "SssSSssS",
+  "Ssmmmmss",
+  "SSmmmmSS",
+]
+head_side = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhss",
+  "hhhhssss",
+  "hhhsssss",
+  "hhSsssss",
+  "hSSsssss",
+  "SSSSssss",
+  "SSSSSsss",
+  "SSSSSSss",
+]
+head_top = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+]
+leg = [
+  "TTTT",
+  "TTTT",
+  "TTTT",
+  "TTTT",
+  "TTTT",
+  "TTTT",
+  "TTTT",
+  "TTTT",
+  "TTTT",
+  "KKKK",
+  "KKKK",
+  "KKKK",
+]
+middle_back = ["GGGGGGGG", "GGGGGGGG", "GGdGGGGG", "GGGGGGGG"]
+middle_front = ["GGBBBBGG", "GGBRBBGG", "sSBBBBSs", "SSGGGGSS"]
+middle_side = ["GGGG", "GGGG", "GGGG", "GGGG"]
+nose = ["nn", "nn", "NN", "NN"]
+robe_back = [
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGdGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "LLLLLLLL",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GG.GGGGG",
+  "G....G.G",
+  "........",
+  "........",
+  "........",
+  "........",
+  "........",
+  "........",
+  "........",
+]
+robe_front = [
+  "G......G",
+  "GG....GG",
+  "GGG..GGG",
+  "GGGd.GGG",
+  "GGGddGGG",
+  "GGGddGRG",
+  "GGGddRRG",
+  "GGGddGRG",
+  "LLLLyLLL",
+  "GGGddGGG",
+  "GGGddGGG",
+  "G.GddG.G",
+  "..G..G..",
+  "........",
+  "........",
+  "........",
+  "........",
+  "........",
+  "........",
+  "........",
+]
+robe_side = [
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "LLLLLL",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "G.G.GG",
+  "......",
+  "......",
+  "......",
+  "......",
+  "......",
+  "......",
+  "......",
+]
+
+[corin.palette]
+B = ["#a89f8c", "#b8af9a", "#c4bba6"]
+E = "#252525"
+G = ["#4a4d4f", "#55595b", "#62666a"]
+K = ["#1e1a17", "#231e1b", "#29231f"]
+L = "#3a2a1c"
+N = "#454b4b"
+R = ["#5a1414", "#661818", "#701c1c"]
+S = ["#737979", "#7c8282", "#848989"]
+T = ["#2e2620", "#342b24", "#3a3028"]
+W = ["#8a8270", "#958d7a", "#a09884"]
+a = "#848989"
+d = "#3d4042"
+e = "#393939"
+h = ["#211c1a", "#2a2421", "#332c28"]
+i = "#325566"
+k = "#2c2c2c"
+m = "#5c6262"
+n = "#505656"
+s = ["#8e9393", "#939999", "#959b9b"]
+w = "#e8e8e0"
+x = "#b8c2c2"
+y = "#8c8a80"
+
 [hob]
 raised = { arm = "O", body = "Aak", head = "Hgh", leg = "Bab" }
 model = "humanoid"

@@ -12,6 +12,7 @@ import io.github.roman16.wayfarer.client.stamp.Stamp;
 import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Gear;
 import io.github.roman16.wayfarer.story.Journal;
+import io.github.roman16.wayfarer.story.Memories;
 import io.github.roman16.wayfarer.story.Tasks;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -113,9 +114,17 @@ public final class JournalScreen extends Screen {
 
     public static void forget() {
         latest = "{}";
+        firstPage();
+    }
+
+    public static void firstPage() {
         open = Tab.QUESTS;
         CHOSEN_ENTRY.clear();
         CHOSEN_THING.clear();
+    }
+
+    public static String latest() {
+        return latest;
     }
 
     public static JsonArray places() {
@@ -220,12 +229,23 @@ public final class JournalScreen extends Screen {
             String quest = chosen.data().get("id").getAsString();
             action("wayfarer.journal.track", () -> PacketDistributor.sendToServer(new Journal.Track(quest)));
         }
+        if (chosen != null && chosen.data().has("memory") && (chosen.kind() == Kind.QUEST || chosen.kind() == Kind.DONE)) {
+            String memory = chosen.data().get("memory").getAsString();
+            action("wayfarer.journal.dream_again", byFire(), () -> {
+                PacketDistributor.sendToServer(new Journal.Dream(memory));
+                onClose();
+            });
+        }
         if (chosen != null && chosen.kind() == Kind.CARAVAN) {
             action("wayfarer.journal.head_in", () -> {
                 PacketDistributor.sendToServer(new Caravan.HeadIn());
                 onClose();
             });
         }
+    }
+
+    private boolean byFire() {
+        return minecraft != null && minecraft.player != null && Memories.fire(minecraft.player.level(), minecraft.player.blockPosition()).isPresent();
     }
 
     private void action(String label, Runnable run) {
@@ -441,6 +461,10 @@ public final class JournalScreen extends Screen {
                         add(lines, Component.translatable("wayfarer.journal.found"), 0, TITLE_INK, width);
                         clues.forEach(clue -> add(lines, Component.literal("- " + clue.getAsString()), PAD, INK, width));
                     }
+                }
+                if (data.has("memory") && !byFire()) {
+                    lines.add(Line.BLANK);
+                    add(lines, Component.translatable("wayfarer.journal.dream_again.fire"), 0, QUIET_INK, width);
                 }
             }
             case CARAVAN -> add(lines, Component.translatable("wayfarer.caravan.objective"), 0, INK, width);

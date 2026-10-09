@@ -132,6 +132,10 @@ public final class Tasks {
         if (!Engine.running(server)) {
             return Panel.EMPTY;
         }
+        Optional<Panel> memory = Memories.panel(player);
+        if (memory.isPresent()) {
+            return memory.get();
+        }
         Map<String, Component> open = new LinkedHashMap<>();
         if (Talk.answering(player) && !Firsts.seen(player, FIRST + "answer")) {
             int choices = Talk.open().map(offer -> offer.choices().size()).orElse(1);
@@ -145,7 +149,7 @@ public final class Tasks {
             open.put("journal", task("journal", key(JOURNAL_KEY)));
         }
         if (LastUse.lastUse(player.getMainHandItem()) && !Firsts.seen(player, FIRST + "mend")) {
-            open.put("mend", task("mend", Balance.INSTANCE.fire().restBlocks()));
+            open.put("mend", task("mend", Balance.get().fire().restBlocks()));
         }
         Engine.marked(player).ifPresent(goal -> compass(player, goal, open));
         if (!Stones.mine(player).isEmpty()) {
@@ -228,7 +232,7 @@ public final class Tasks {
             case "bury" -> unless(active.scratch().contains(Steps.BURIED), task("bury"));
             case "stone" -> unless(!active.scratch().getBoolean(Steps.WRITING), task("stone"));
             case "tent" -> unless(inTent || Tents.pitchedNear(level, player.blockPosition(), NEAR), task("tent"));
-            case "fire" -> unless(inTent || campfire(level, player.blockPosition()), task("fire", Balance.INSTANCE.tent().fireBlocks()));
+            case "fire" -> unless(inTent || campfire(level, player.blockPosition()), task("fire", Balance.get().tent().fireBlocks()));
             case "ember" -> Optional.of(task("ember", key(Sense.KEY)));
             case "marks" -> Optional.of(task("marks", key(Sense.KEY)));
             case "sweep" -> Optional.of(task("sweep", key(Sense.KEY)));
@@ -256,7 +260,7 @@ public final class Tasks {
             return;
         }
         double from = COMPASS_FROM.computeIfAbsent(player.getUUID(), key -> distance);
-        if (distance <= from - FOLLOWED || distance <= Balance.INSTANCE.story().arriveBlocks()) {
+        if (distance <= from - FOLLOWED || distance <= Balance.get().story().arriveBlocks()) {
             Firsts.first(player, FIRST + "compass");
             COMPASS_FROM.remove(player.getUUID());
             return;
@@ -265,7 +269,7 @@ public final class Tasks {
     }
 
     private static boolean campfire(ServerLevel level, BlockPos near) {
-        return Fire.nearest(level, near.getCenter(), NEAR).filter(fire -> Tents.pitchedNear(level, fire, Balance.INSTANCE.tent().fireBlocks())).isPresent();
+        return Fire.nearest(level, near.getCenter(), NEAR).filter(fire -> Tents.pitchedNear(level, fire, Balance.get().tent().fireBlocks())).isPresent();
     }
 
     private static Predicate<ServerPlayer> rested(Engine.Active active) {

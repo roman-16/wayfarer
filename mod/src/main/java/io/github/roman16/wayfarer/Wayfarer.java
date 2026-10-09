@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.github.roman16.wayfarer.client.Books;
 import io.github.roman16.wayfarer.client.Conversation;
+import io.github.roman16.wayfarer.client.Flash;
 import io.github.roman16.wayfarer.client.JournalScreen;
 import io.github.roman16.wayfarer.client.MusicPlayer;
 import io.github.roman16.wayfarer.story.Banners;
@@ -13,6 +14,7 @@ import io.github.roman16.wayfarer.story.Fallen;
 import io.github.roman16.wayfarer.story.Gear;
 import io.github.roman16.wayfarer.story.Hold;
 import io.github.roman16.wayfarer.story.Journal;
+import io.github.roman16.wayfarer.story.Memories;
 import io.github.roman16.wayfarer.story.Pages;
 import io.github.roman16.wayfarer.story.People;
 import io.github.roman16.wayfarer.story.Places;
@@ -43,17 +45,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.material.MapColor;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -117,6 +122,21 @@ public final class Wayfarer {
     public static final DeferredHolder<StructurePieceType, StructurePieceType> SHAFT_PIECE =
             PIECES.register("shaft", () -> ShaftPiece::new);
 
+    public static final DeferredBlock<Hearthstone> HEARTHSTONE = BLOCKS.registerBlock("hearthstone", Hearthstone::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE)
+                    .strength(-1, 3_600_000)
+                    .sound(SoundType.STONE));
+
+    public static final DeferredBlock<NotchedLog> NOTCHED_SPRUCE_LOG = BLOCKS.registerBlock("notched_spruce_log", NotchedLog::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.PODZOL)
+                    .instrument(NoteBlockInstrument.BASS)
+                    .strength(2)
+                    .sound(SoundType.WOOD)
+                    .ignitedByLava()
+                    .noLootTable());
+
     public static final DeferredBlock<ShrinePedestalBlock> SHRINE_PEDESTAL = BLOCKS.registerBlock("shrine_pedestal", ShrinePedestalBlock::new,
             BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
@@ -174,10 +194,14 @@ public final class Wayfarer {
         STRUCTURES.register(modBus);
         modBus.addListener(Wayfarer::registerPayloads);
         modBus.addListener(Ember::setup);
+        if (ModList.get().isLoaded("toughasnails")) {
+            modBus.addListener(Heat::setup);
+        }
         modBus.addListener(Shards::setup);
         NeoForge.EVENT_BUS.register(Caravan.class);
         NeoForge.EVENT_BUS.register(Clock.class);
         NeoForge.EVENT_BUS.register(Compass.class);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, ServerAboutToStartEvent.class, event -> Bundled.forget());
         NeoForge.EVENT_BUS.register(Cuts.class);
         NeoForge.EVENT_BUS.register(Daylight.class);
         NeoForge.EVENT_BUS.register(Ember.class);
@@ -191,6 +215,7 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Hold.class);
         NeoForge.EVENT_BUS.register(Joining.class);
         NeoForge.EVENT_BUS.register(LastUse.class);
+        NeoForge.EVENT_BUS.register(Memories.class);
         NeoForge.EVENT_BUS.register(Music.class);
         NeoForge.EVENT_BUS.register(Nights.class);
         NeoForge.EVENT_BUS.register(Pages.class);
@@ -246,6 +271,7 @@ public final class Wayfarer {
         registrar.playToClient(Journal.View.TYPE, Journal.View.STREAM_CODEC, (payload, context) -> JournalScreen.show(payload.json()));
         registrar.playToServer(Journal.Claim.TYPE, Journal.Claim.STREAM_CODEC,
                 (payload, context) -> Engine.claim((ServerPlayer) context.player(), payload.reward()));
+        registrar.playToServer(Journal.Dream.TYPE, Journal.Dream.STREAM_CODEC, (payload, context) -> Memories.again((ServerPlayer) context.player(), payload.memory()));
         registrar.playToServer(Journal.Seen.TYPE, Journal.Seen.STREAM_CODEC, (payload, context) -> Engine.seen((ServerPlayer) context.player(), payload.entry()));
         registrar.playToServer(Journal.Track.TYPE, Journal.Track.STREAM_CODEC, (payload, context) -> {
             Engine.track((ServerPlayer) context.player(), payload.quest());
@@ -258,6 +284,7 @@ public final class Wayfarer {
         registrar.playToClient(CompassPayload.TYPE, CompassPayload.STREAM_CODEC, (payload, context) -> HudState.compass = payload);
         registrar.playToClient(GazePayload.TYPE, GazePayload.STREAM_CODEC, (payload, context) -> HudState.gaze = payload);
         registrar.playToClient(NightPayload.TYPE, NightPayload.STREAM_CODEC, (payload, context) -> HudState.night = payload);
+        registrar.playToClient(Memories.Flash.TYPE, Memories.Flash.STREAM_CODEC, (payload, context) -> Flash.show(payload));
         registrar.playToClient(Music.Play.TYPE, Music.Play.STREAM_CODEC, (payload, context) -> MusicPlayer.play(payload));
     }
 }

@@ -230,7 +230,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 - By day, danger is shade, storms, people and the land: dense forests and caves keep the gaze's creatures alive in daylight, a thunderstorm darkens the sky enough for them to walk, the Gazebound are people and the sun means nothing to them, predators hunt, and the cold, the heat and the water are the land's gates.
 - A quest gets no exception from the stillness rule, which already allows two nights in one place; a quest that keeps the player longer happens on a living people's hallowed land (S6), where the gaze cannot see them.
 - No night event comes from a calendar. A night the story already holds (a hold, a scripted hard night) takes no other with it, and every horde ends when the sun rises. While the story holds a night, no bed takes anyone, and the refusal says why: "Not tonight. The sky over the ridge is red."
-- The gaze finds the caravan when a quest calls for it (The Bell, The Hollow, The Empty Grave), when the caravan has slept three nights in one place, or by a chance each night that grows with the player's shine, and more while Tamsin's bell is with the caravan. When the camp goes up that evening the ember warns: "The ember is uneasy tonight." The red moon comes only when the story wants it, once or twice an act.
+- The gaze finds the caravan when a quest calls for it (The Bell, The Hollow, The Empty Grave), when the caravan has slept three nights in one place, or by a chance each night that grows with the player's shine, and more while Tamsin's bell is with the caravan. When the camp goes up that evening the ember warns: "The ember is uneasy tonight." The red moon comes only when the story wants it, once an act, on its climax (`story.md`, S25).
 
 **Why:** A clock the story drives lets every night land where the people are and every hard night land as a set piece, and easing out keeps the sky moving so time never visibly stops. Counting days in nights slept cannot be cheated, and daylight that is safe only in the open keeps the forest, the storm and the Gazebound dangerous on a long day's road.
 
@@ -272,7 +272,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 - A memory happens in a small dream world of its own, as the tents' insides do, and the player is taken in and brought back to the same spot. While they dream they are gone from the real world, so nothing can hurt them.
 - The dream rebuilds the place from the world's own seed, exactly as the world first made it: the same hills, rivers and hall, and nothing the players built or broke since, since that is the past. The memory then changes only what it needs, the hall whole and newer, the shard lit on its pedestal, the Frost Walkers on the stair, the grass halls young, and places again what the pack sets down by code, such as the Last Camp; whatever the memory needs no change to stays as the world made it.
-- Everyone within about 32 blocks of the stone dreams it together, every one of them as Wend. A player who was not there can dream it again later from the journal, at a fire.
+- Everyone within about 32 blocks of the stone dreams it together, every one of them as Wend. A player who was not there can dream it again later from the journal, at a fire: once a memory has been dreamt, its quest's page (under Quests, later under Done) carries a Dream it again button beside Track. It works while the player stands within 4 blocks of a lit campfire, the caravan's included; anywhere else it is greyed and the page says to sit by a fire. Pressing it closes the journal, the ember flares, and the player, with anyone within 32 blocks of them, dreams it from its beginning at the place as it was, standing round its stone, and wakes at the fire where they stood. Dreaming it again changes nothing in the quest and adds nothing to At the Fire; alone, it is the one player.
 
   ```text
   Kai touches the calling stone. The ember flares, in all of you.
@@ -281,9 +281,9 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 - Falling in a memory wakes the player into it again, from its beginning or its last step, and costs nothing in the real world; Wend lived through it.
 
-**Why:** Rebuilt from the seed, the dream is recognisably the place the players stand in, down to the last hill, without copying the present and without tracking which blocks players changed; a world apart leaves the real one untouched for friends who stay in it (D11). Dreaming together keeps nobody watching, and replaying from the journal means nobody misses Wend's life for being away.
+**Why:** Rebuilt from the seed, the dream is recognisably the place the players stand in, down to the last hill, without copying the present and without tracking which blocks players changed; a world apart leaves the real one untouched for friends who stay in it (D11). Dreaming together keeps nobody watching, and replaying from the journal means nobody misses Wend's life for being away; the button sits on the quest's own page, where its story already is, and any lit campfire counts, so a player alone on the road dreams it again at their own camp.
 
-**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/DreamSpike.java`, dev code that never ships): touching a hall's pedestal makes a dream world with the overworld's own generator and seed and takes everyone within 32 blocks into it, at the same spot; the hall comes back as the world made it, its pillar of planks and torch, which a player had put there, gone, and the memory makes it newer, 805 mossy, cracked and cobwebbed blocks made clean, and walks a Frost Walker to the stair, where she kneels. A pretend player killed in the dream wakes at its beginning with full health and nothing lost, and at the end everyone wakes where they stood and the dream world is let go and deleted. What it showed:
+**The spike worked**, and the memories now run in `mod/src/main/java/io/github/roman16/wayfarer/story/Memories.java`: touching a hall's pedestal makes a dream world with the overworld's own generator and seed and takes everyone within 32 blocks into it, at the same spot; the hall comes back as the world made it, its pillar of planks and torch, which a player had put there, gone, and the memory makes it newer, 805 mossy, cracked and cobwebbed blocks made clean, and walks a Frost Walker to the stair, where she kneels. A pretend player killed in the dream wakes at its beginning with full health and nothing lost, and at the end everyone wakes where they stood and the dream world is let go and deleted. What it showed:
 
 | Finding | For the engine |
 |---|---|
@@ -858,6 +858,70 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 **Why:** The ember is the thing the whole story turns on, and a player who cannot see it has nothing to hold; the shards already sit in their slots, so the ember belongs beside them.
 
+### M37 The fights: owner by owner, act by act, always with a tell
+
+- **Who the team meets where.** Every foe belongs to someone, as every place does (D17), and each act brings its land's and its story's foes; nothing shows up before its act, so the world visibly changes with each:
+
+  | Who | Act 1, on foot | Act 2, the sea | Act 3, the sky |
+  |---|---|---|---|
+  | The gaze's creatures: night, shade and storms; they dig up at dusk and crumble at dawn | Zombies, skeletons, spiders, creepers | Also drowned at sea, husks in the desert | Also strays in the snow, phantoms in the air |
+  | The land's beasts: by day, on their own ground | Wolves, bears, boars | Alligators, scorpions, lions, sharks, piranhas | Polar bears, and the cold itself |
+  | The Gazebound: people, at any hour | Road patrols: pillagers and vindicators | Raiders with an evoker and its vexes; their outposts | The heir's army: ravagers, evokers, illusioners, iceologers |
+  | The gaze's own beasts: one each, at a story moment | | The sea's beast (M22), the worm (2.6), the horse that never sleeps (W9) | The phantom nest (W12), the dragon (M14) |
+  | The deep | The Warden in the Ancient Cities, best crept past (W4) | | |
+
+- **Nothing hurts without a tell,** heard first and seen second. The gaze's creatures make their digging sound as they come up; the Gazebound shout a line before they charge ("There! The ember!"), and their banners show from afar; beasts growl at the edge of their ground and attack only if pushed, hunters at night aside; a named beast's tell is long, the worm's tremor and rising dust, the sea beast's knock on the hull; a hold's next wave is announced on the band (`interface.md`, I4).
+- **A fight asks for the team, the ground and the gear,** not only damage. Everyday fights reward the fire's circle, the tent, a shield and a bow; each act's foes ask for that act's gear (M18): a shield and a bow on foot, a ship's cannons at sea, rolling and parrying for the duel, flying past phantoms. Getting past a fight, creeping by or walking on, is always an answer and never a loss, save at the ford (1.3), where the patrol has seen the ember and follows a team that walks off (`story.md`, S28). Each named fight has one idea beyond swinging:
+
+  | Fight | What it asks |
+  |---|---|
+  | P3 The cellar door | Keep the door standing and the survivors alive; the waves walk in to it and beat on it until it cracks |
+  | 1.3 The ford | Keep Corin alive while the Gazebound cross; the water slows them, so the fight is at the crossing |
+  | 1.10 The Bell, under the red moon | The bell draws the gaze to the caravan; hold the camp, then decide whether to melt it |
+  | 2.2 The Crossing | The sea's beast rams the hull: a boat breaks where a ship holds, and the ship's cannons drive it off |
+  | 2.6 The Worm | Learn the Sand Singers' song: the worm comes up to it, and the eye that sees is where it can be hurt; or leave it alive |
+  | 2.10 The Hollow, under the red moon | It cannot be won, only survived; who lives was decided by each person's side quest |
+  | 3.4 The Ward's champion | A duel in a ring, parried and rolled; the team watches and cannot step in |
+  | 3.7 The Empty Grave, under the red moon | The dead rise among the graves until dawn |
+  | 3.8 The Rider | A chase, on horseback or in the air |
+  | F1 The Gate | Hold the frame against the heir's band, until Maren turns on them |
+  | The dragon, in Blind it | It is as blind as the shards set make it (M14) |
+
+- **Scaling.** Everyday foes grow only with the shine (M9). Named fights scale with the size of the team online, their health and their waves per player, as the dragon's health does, never with the shine, so a team of one can win each, and a retry (D6) comes back the same.
+
+**Why:** Valheim makes each biome's creatures its own and lets the next tier appear only once its boss falls, so the world itself says how far the player has come; giving every foe an owner and an act does that for the road. Mike Stout's rule that every enemy asks the player a question, and telegraphs its attack long enough to answer it, keeps the pack's harder nights fair, and The Witcher 3's contracts show a beast read before it is fought. Named fights that scale with the team and not the shine stay winnable for a player who took every shard, and the same on every retry.
+
+It raises, for its build: keeping each act's foes out of the world until their act, from biome spawns to the ravagers of vanilla's raids.
+
+### M38 Deeds: rare feats, hidden until earned
+
+- Every advancement, vanilla's and every mod's, is off (D7). The pack keeps sixteen deeds of its own, each for something rare, with its number in `balance.toml`; their lines are finished with the `lore` skill when built:
+
+  | Deed | Earned when | Its line |
+  |---|---|---|
+  | The Long Road | 65,536 blocks walked | "I have walked far enough to cross the world and back. My boots have stopped complaining." |
+  | Many Fires | Slept by 64 different fires, each 256 blocks from the others | "Sixty-four fires, and not one of them home." |
+  | Every Village | Walked into 16 villages | "Sixteen villages. In every one, somebody asked me to stay." |
+  | The Edge of the Map | Sailed out on the Last Sea until the ember went cold | "There is nothing past the fog. I went to see." |
+  | Held | Came through 8 hard nights that no quest called | "Eight nights the gaze found us, and eight mornings we were still there." |
+  | Known on the Road | Met 32 of the road's scenes | "The road has started to recognise me." |
+  | Old Friends | Met the herder in every one of his variants | "His dogs come running now." |
+  | The Dice | Won 8 games of dice in the taverns | "The peoples' dice like me. The peoples don't." |
+  | Untouched | Won the champion's duel without being hit | "He never touched me." |
+  | Hands Clean | Went a whole act without killing a person | "Not one of them by my hand, this whole season." |
+  | Deep Quiet | Crossed an Ancient City without waking its guard | "I walked through their city, and the guard never woke." |
+  | The Slow Way | Reached the frame without folding to a waystone | "Every step of it, walked." |
+  | Light Pockets | Reached the frame with four shards or fewer | "I came to the gate nearly empty-handed, and lighter for it." |
+  | All Twelve | Reached the frame with all twelve | "All twelve. It can see so much now." |
+  | Nobody Left Behind | The Hollow took no one from the caravan | "It took the wagons. It didn't take one of us." |
+  | Alone | Reached the frame with nobody left in the caravan | "There is nobody left to follow my marks." |
+
+- No deed is listed before it is earned. When one is, a banner like the quests' slides in under the compass, "A deed: The Long Road", with a sound of its own (`sound.md`), and the deed stands on the journal's Deeds ribbon with its line and the day it was earned; the ribbon appears with the first deed.
+- What a body does is its player's own: walking, sleeping, the duel, the dice, the city crept through. What the story decides goes to everyone on the team: the frame with four shards or all twelve, the Hollow, Alone, a whole act's clean hands (D11).
+- A deed gives nothing but its line and its place in the journal.
+
+**Why:** Lucas Blair's research on achievements finds that goals announced ahead push players to chase them and change how they play, while unexpected ones reward play that already happened; a deed hidden until earned is a surprise, never a chore, and one that gives nothing is not worth grinding, which the pack takes away everywhere else (D7).
+
 ## Open
 
 ### M26 How often the other owners' places stand
@@ -867,14 +931,6 @@ M13 spaces the Gazebound's, the settled world's towns and villages, the ruins an
 ### M33 Room for the team's tents at the caravan's fire
 
 The prologue ends with "Sleep in your tent by their fire", and a tent sleeps only with a lit campfire within 4 blocks of it (M12). In the walkthrough the caravan's households filled the ground around its fire, and most spots within a few blocks of it had no room for a small yurt, so the team pitched further out with a campfire of their own, which the task panel teaches. To decide: whether the camp keeps pitches free for the team's tents beside its fire, how many and how big, or whether a tent near the camp counts the caravan's fire from further away.
-
-### M37 The fights
-
-Fights are scattered over M9, M10, M14 and M22 and Improved Mobs, with Better Combat and Combat Roll in the pack, and no roster says what the team meets where. To decide: which monsters, beasts and Gazebound the team meets in each act and land; how each warns before it strikes; what each asks of the team and its gear (M18); how the named fights differ (the cellar's hold, the ford, the champion, the worm, the sea's beast, the dragon); and how Improved Mobs and the shine (M9) scale them.
-
-### M38 Achievements for rare feats
-
-The user's direction: every advancement, vanilla's and every mod's, is switched off, and the pack writes its own achievements, earned only by something rare, such as visiting sixteen villages or walking 64,000 blocks (examples, not the list). To decide: the list and its numbers; how one shows when earned (a banner like I2's, a page in the journal) and where the earned ones are kept; whether a team earns them together or each player alone; whether they give anything or only say it was done; and each one's line in the lore's voice.
 
 ### M17 Distant Horizons SeedGen
 

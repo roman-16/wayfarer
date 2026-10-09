@@ -1,7 +1,6 @@
 package io.github.roman16.wayfarer.story;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import de.markusbordihn.easynpc.api.pose.ModelPoseAPI;
 import de.markusbordihn.easynpc.data.display.DisplayAttributeType;
 import de.markusbordihn.easynpc.data.display.NameVisibilityType;
@@ -12,15 +11,17 @@ import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import de.markusbordihn.easynpc.entity.easynpc.data.DisplayAttributeDataCapable;
 import de.markusbordihn.easynpc.entity.easynpc.data.ModelScaleDataCapable;
 import de.markusbordihn.easynpc.handler.SkinHandler;
+import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Wayfarer;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -28,19 +29,31 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class People {
     public static final String TAG = Wayfarer.MODID + "_person";
     private static final String STANDING = "standing";
-    private static final JsonObject SKINS = skins();
+    private static final String HUMANOID = "humanoid";
+    private static final Bundled<JsonObject> SKINS = Bundled.json("/wayfarer/skins.json");
+    private static final Map<String, Long> leaving = new HashMap<>();
+    private static final Map<String, Vec3> walking = new HashMap<>();
+    private static final double STRIDE = 0.12;
+    private static final int AWAY_BLOCKS = 32;
+    private static final int GONE_BLOCKS = 48;
+    private static final int LEAVE_SECONDS = 64;
+    private static final int TICKS_PER_SECOND = 20;
 
     private People() {}
 
     public static Entity spawn(ServerLevel level, String skin, Vec3 at, float yaw, String pose, String... tags) {
-        JsonObject look = SKINS.getAsJsonObject(skin);
+        JsonObject look = SKINS.get().getAsJsonObject(skin);
         if (look == null) {
             throw new IllegalArgumentException("generator/skins.toml has no skin " + skin);
         }
@@ -97,7 +110,7 @@ public final class People {
     }
 
     public static String label(MinecraftServer server, String person) {
-        Story.Person spec = Story.INSTANCE.person(person);
+        Story.Person spec = Story.get().person(person);
         return spec.unnamed() == null || Progress.of(server).named(person) ? spec.name() : spec.unnamed();
     }
 
@@ -116,7 +129,9 @@ public final class People {
             if (pose.equals(STANDING)) {
                 ModelPoseAPI.resetPose(npc);
             } else {
-                ModelPoseAPI.setPose(npc, ResourceLocation.fromNamespaceAndPath("easy_npc", "pose/humanoid/" + pose));
+                String model = BuiltInRegistries.ENTITY_TYPE.getKey(body.getType()).getPath();
+                String folder = model.startsWith(HUMANOID) ? HUMANOID : model.replace("_", "");
+                ModelPoseAPI.setPose(npc, ResourceLocation.fromNamespaceAndPath("easy_npc", "pose/" + folder + "/" + pose));
             }
         }
     }
@@ -132,6 +147,77 @@ public final class People {
                 event.setCanceled(true);
             }
         });
+    }
+
+    static void walk(MinecraftServer server, String person, Vec3 to) {
+        find(server, person).ifPresent(body -> pose(body, STANDING));
+        walking.put(person, to);
+    }
+
+    static boolean walking(String person) {
+        return walking.containsKey(person);
+    }
+
+    static void leave(MinecraftServer server, String person) {
+        find(server, person).ifPresent(body -> {
+            Vec3 from = Engine.players(server).stream().filter(player -> player.level() == body.level())
+                    .min(Comparator.comparingDouble(player -> player.distanceToSqr(body))).map(Entity::position).orElse(body.position());
+            Vec3 away = body.position().subtract(from).multiply(1, 0, 1);
+            walk(server, person, body.position().add((away.lengthSqr() < 1 ? new Vec3(1, 0, 0) : away.normalize()).scale(AWAY_BLOCKS)));
+            leaving.put(person, body.level().getGameTime() + (long) LEAVE_SECONDS * TICKS_PER_SECOND);
+        });
+    }
+
+    private static void step(MinecraftServer server) {
+        for (Map.Entry<String, Vec3> entry : List.copyOf(walking.entrySet())) {
+            Optional<Entity> found = find(server, entry.getKey());
+            if (found.isEmpty()) {
+                walking.remove(entry.getKey());
+                continue;
+            }
+            Entity body = found.get();
+            Vec3 left = entry.getValue().subtract(body.position()).multiply(1, 0, 1);
+            if (left.length() <= STRIDE) {
+                walking.remove(entry.getKey());
+                continue;
+            }
+            Vec3 next = body.position().add(left.normalize().scale(STRIDE));
+            int floor = floor(body.level(), BlockPos.containing(next));
+            float yaw = (float) Math.toDegrees(Math.atan2(-left.x, left.z));
+            body.moveTo(next.x, floor, next.z, yaw, 0);
+            body.setYHeadRot(yaw);
+            body.setYBodyRot(yaw);
+        }
+    }
+
+    private static int floor(Level level, BlockPos at) {
+        BlockPos.MutableBlockPos feet = new BlockPos.MutableBlockPos(at.getX(), level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at.getX(), at.getZ()), at.getZ());
+        while (feet.getY() > level.getMinBuildHeight() && (!level.getFluidState(feet.below()).isEmpty() || level.getBlockState(feet.below()).canBeReplaced())) {
+            feet.move(0, -1, 0);
+        }
+        return feet.getY();
+    }
+
+    @SubscribeEvent
+    public static void onServerTick(ServerTickEvent.Post event) {
+        MinecraftServer server = event.getServer();
+        step(server);
+        for (Map.Entry<String, Long> entry : List.copyOf(leaving.entrySet())) {
+            Optional<Entity> body = find(server, entry.getKey());
+            if (body.isEmpty()) {
+                leaving.remove(entry.getKey());
+            } else if (body.get().level().getGameTime() >= entry.getValue() || Engine.players(server).stream()
+                    .noneMatch(player -> player.level() == body.get().level() && player.distanceToSqr(body.get()) <= (double) GONE_BLOCKS * GONE_BLOCKS)) {
+                body.get().discard();
+                leaving.remove(entry.getKey());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        leaving.clear();
+        walking.clear();
     }
 
     public static Optional<Entity> find(MinecraftServer server, String person) {
@@ -150,16 +236,5 @@ public final class People {
 
     public static Optional<String> who(Entity body) {
         return body.getTags().stream().filter(tag -> tag.startsWith(TAG + "_")).map(tag -> tag.substring(TAG.length() + 1)).findFirst();
-    }
-
-    private static JsonObject skins() {
-        try (var stream = People.class.getResourceAsStream("/wayfarer/skins.json")) {
-            if (stream == null) {
-                throw new IllegalStateException("skins.json is missing from the mod jar; run just generate");
-            }
-            return JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
     }
 }

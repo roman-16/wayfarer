@@ -136,7 +136,7 @@ public final class TentPitch {
     }
 
     public static void bringBack(MinecraftServer server, Joining.Place camp) {
-        int away = Balance.INSTANCE.join().awayBlocks();
+        int away = Balance.get().join().awayBlocks();
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             List<Joining.Pitched> far = mine(player).stream().filter(tent -> !tent.place().dimension().equals(camp.dimension())
                     || tent.place().pos().distSqr(camp.pos()) > (double) away * away).toList();
@@ -155,7 +155,7 @@ public final class TentPitch {
         }
         Optional<BlockPos> fire = Optional.empty();
         if (level.getBlockEntity(INSIDE_DOOR) instanceof TentDoorBlockEntity inside && inside.getSpawnDimension() != null) {
-            int reach = Balance.INSTANCE.tent().fireBlocks();
+            int reach = Balance.get().tent().fireBlocks();
             BlockPos outside = BlockPos.containing(inside.getSpawnpoint());
             for (int x = (outside.getX() - reach) >> 4; x <= (outside.getX() + reach) >> 4; x++) {
                 for (int z = (outside.getZ() - reach) >> 4; z <= (outside.getZ() + reach) >> 4; z++) {
@@ -174,7 +174,7 @@ public final class TentPitch {
     }
 
     static void recall(ServerPlayer player, List<Joining.Pitched> tents) {
-        int away = Balance.INSTANCE.join().awayBlocks();
+        int away = Balance.get().join().awayBlocks();
         recall(player, tents.stream().filter(tent -> tent.owner().equals(player.getUUID())).filter(tent -> !tent.place().dimension().equals(player.level().dimension())
                 || tent.place().pos().distSqr(player.blockPosition()) > (double) away * away).toList(), tents);
     }

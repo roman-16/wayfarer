@@ -46,7 +46,7 @@ public final class Talk {
 
     private sealed interface Speech permits Said, Notice, Then, Ask {}
 
-    private record Said(String fire, @Nullable Vec3 at, Story.Line line, String text) implements Speech {}
+    private record Said(@Nullable String fire, @Nullable Vec3 at, Story.Line line, String text) implements Speech {}
 
     private record Notice(Component line) implements Speech {}
 
@@ -54,7 +54,7 @@ public final class Talk {
 
     private record Ask(Offer offer) implements Speech {}
 
-    public record Offer(String fire, @Nullable String speaker, List<Story.Choice> choices, @Nullable Vec3 at, Answer answer) {}
+    public record Offer(@Nullable String fire, @Nullable String speaker, List<Story.Choice> choices, @Nullable Vec3 at, Answer answer) {}
 
     public interface Answer {
         void chosen(ServerPlayer player, Story.Choice choice);
@@ -94,13 +94,13 @@ public final class Talk {
         }
     }
 
-    public static void say(String fire, @Nullable Vec3 at, List<Story.Line> lines, Placeholders placeholders) {
+    public static void say(@Nullable String fire, @Nullable Vec3 at, List<Story.Line> lines, Placeholders placeholders) {
         for (Story.Line line : lines) {
             queue.add(new Said(fire, at, line, placeholders.fill(line.text())));
         }
     }
 
-    public static void say(String fire, @Nullable Vec3 at, Story.Line line) {
+    public static void say(@Nullable String fire, @Nullable Vec3 at, Story.Line line) {
         say(fire, at, List.of(line), Placeholders.NONE);
     }
 
@@ -145,8 +145,10 @@ public final class Talk {
 
     private static void heard(MinecraftServer server, Said said) {
         Story.Line line = said.line();
-        Progress.of(server).hear(said.fire(), line.by() == null ? "" : People.label(server, line.by()), said.text());
-        Journal.syncAll(server);
+        if (said.fire() != null) {
+            Progress.of(server).hear(said.fire(), line.by() == null ? "" : People.label(server, line.by()), said.text());
+            Journal.syncAll(server);
+        }
         People.introduce(server, line.names());
         if (line.sound() != null) {
             Sounds.play(server, line.sound());
@@ -157,7 +159,7 @@ public final class Talk {
     }
 
     private static int reading(String text) {
-        Balance.Talk talk = Balance.INSTANCE.talk();
+        Balance.Talk talk = Balance.get().talk();
         return Math.max(talk.leastSeconds(), Math.ceilDiv(text.length(), talk.charactersPerSecond())) * TICKS_PER_SECOND;
     }
 
@@ -165,7 +167,7 @@ public final class Talk {
         if (by == null) {
             return text.copy().withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC);
         }
-        return Component.literal("<" + People.label(server, by) + "> ").withStyle(Story.INSTANCE.person(by).color())
+        return Component.literal("<" + People.label(server, by) + "> ").withStyle(Story.get().person(by).color())
                 .append(text.copy().withStyle(ChatFormatting.WHITE));
     }
 
@@ -212,7 +214,9 @@ public final class Talk {
         Story.Choice picked = answered.choices().get(index);
         offer = null;
         offer(player.server);
-        Progress.of(player.server).hear(answered.fire(), player.getDisplayName().getString(), picked.text());
+        if (answered.fire() != null) {
+            Progress.of(player.server).hear(answered.fire(), player.getDisplayName().getString(), picked.text());
+        }
         next = clock + reading(picked.text());
         Tasks.did(player, "answer");
         Sounds.play(player.server, ANSWER_CHOSEN);
@@ -240,7 +244,7 @@ public final class Talk {
             if (body.isPresent()) {
                 return body.map(Entity::position);
             }
-            if (Story.INSTANCE.person(by).voice()) {
+            if (Story.get().person(by).voice()) {
                 return Optional.empty();
             }
         }
@@ -258,8 +262,8 @@ public final class Talk {
     }
 
     private static boolean near(ServerPlayer player, @Nullable Vec3 at) {
-        int reach = Balance.INSTANCE.talk().reachBlocks();
-        return at == null || player.level().dimension() == Level.OVERWORLD && at.distanceToSqr(player.position()) <= (double) reach * reach;
+        int reach = Balance.get().talk().reachBlocks();
+        return at == null || (player.level().dimension() == Level.OVERWORLD || Memories.dreaming(player)) && at.distanceToSqr(player.position()) <= (double) reach * reach;
     }
 
     public interface Placeholders {

@@ -3,11 +3,7 @@ package io.github.roman16.wayfarer.story;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
+import io.github.roman16.wayfarer.Bundled;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +13,8 @@ import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.resources.ResourceLocation;
 
-public record Story(List<Quest> quests, Map<String, Person> people) {
-    public static final Story INSTANCE = load();
+public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String, Person> people) {
+    private static final Bundled<Story> STORY = Bundled.json("/wayfarer/story.json", Story::load);
 
     public record Person(String id, String name, @Nullable String unnamed, ChatFormatting color, List<String> mornings, List<String> remarks, boolean voice) {}
 
@@ -28,7 +24,7 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
         }
     }
 
-    public record Choice(String id, String text, String reply, @Nullable String story, @Nullable String stone, boolean write) {}
+    public record Choice(String id, String text, String reply, @Nullable String story, @Nullable String stone, boolean write, @Nullable String refused) {}
 
     public record Item(@Nullable ResourceLocation id, @Nullable ResourceLocation tag, int count, @Nullable String name, @Nullable String book, boolean own) {}
 
@@ -72,11 +68,21 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
         }
     }
 
+    public record Memory(String id, String title, String place, List<Item> kit, @Nullable String music, List<Step> steps) {}
+
     public record Quest(String id, String kind, String act, List<String> after, @Nullable String found, String title, String summary, @Nullable Reward reward,
             List<Step> steps) {}
 
     public Optional<Quest> quest(String id) {
         return quests.stream().filter(quest -> quest.id().equals(id)).findFirst();
+    }
+
+    public Memory memory(String id) {
+        Memory memory = memories.get(id);
+        if (memory == null) {
+            throw new IllegalArgumentException("story.json names the memory " + id + ", which story/quests.toml does not hold");
+        }
+        return memory;
     }
 
     public Person person(String id) {
@@ -87,24 +93,22 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
         return person;
     }
 
-    private static Story load() {
-        try (var stream = Story.class.getResourceAsStream("/wayfarer/story.json")) {
-            if (stream == null) {
-                throw new IllegalStateException("story.json is missing from the mod jar; run just generate");
-            }
-            JsonObject json = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8)).getAsJsonObject();
-            Map<String, Person> people = new LinkedHashMap<>();
-            json.getAsJsonObject("people").entrySet().forEach(entry -> {
-                JsonObject person = entry.getValue().getAsJsonObject();
-                people.put(entry.getKey(), new Person(entry.getKey(), person.get("name").getAsString(),
-                        person.has("unnamed") ? person.get("unnamed").getAsString() : null, ChatFormatting.getByName(person.get("color").getAsString()),
-                        strings(person, "mornings"), strings(person, "remarks"), person.has("voice") && person.get("voice").getAsBoolean()));
-            });
-            List<Quest> quests = json.getAsJsonArray("quests").asList().stream().map(JsonElement::getAsJsonObject).map(Story::quest).toList();
-            return new Story(quests, Map.copyOf(people));
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+    public static Story get() {
+        return STORY.get();
+    }
+
+    private static Story load(JsonObject json) {
+        Map<String, Person> people = new LinkedHashMap<>();
+        json.getAsJsonObject("people").entrySet().forEach(entry -> {
+            JsonObject person = entry.getValue().getAsJsonObject();
+            people.put(entry.getKey(), new Person(entry.getKey(), person.get("name").getAsString(),
+                    person.has("unnamed") ? person.get("unnamed").getAsString() : null, ChatFormatting.getByName(person.get("color").getAsString()),
+                    strings(person, "mornings"), strings(person, "remarks"), person.has("voice") && person.get("voice").getAsBoolean()));
+        });
+        List<Quest> quests = json.getAsJsonArray("quests").asList().stream().map(JsonElement::getAsJsonObject).map(Story::quest).toList();
+        Map<String, Memory> memories = new LinkedHashMap<>();
+        list(json, "memories", Story::memory).forEach(memory -> memories.put(memory.id(), memory));
+        return new Story(quests, Map.copyOf(memories), Map.copyOf(people));
     }
 
     private static Quest quest(JsonObject quest) {
@@ -113,6 +117,13 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
         return new Quest(id, quest.get("kind").getAsString(), quest.get("act").getAsString(), strings(quest, "after"),
                 quest.has("found") ? quest.get("found").getAsString() : null, quest.get("title").getAsString(), quest.get("summary").getAsString(),
                 reward(id, quest), steps);
+    }
+
+    private static Memory memory(JsonObject memory) {
+        String id = memory.get("id").getAsString();
+        return new Memory(id, memory.get("title").getAsString(), memory.get("place").getAsString(), list(memory, "kit", Story::item),
+                memory.has("music") ? memory.get("music").getAsString() : null,
+                memory.getAsJsonArray("steps").asList().stream().map(JsonElement::getAsJsonObject).map(step -> step("memory/" + id, step)).toList());
     }
 
     private static Step step(String quest, JsonObject step) {
@@ -130,7 +141,7 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
     private static Choice choice(JsonObject choice) {
         return new Choice(choice.get("id").getAsString(), choice.get("text").getAsString(), choice.get("reply").getAsString(),
                 choice.has("story") ? choice.get("story").getAsString() : null, choice.has("stone") ? choice.get("stone").getAsString() : null,
-                choice.has("write") && choice.get("write").getAsBoolean());
+                choice.has("write") && choice.get("write").getAsBoolean(), choice.has("refused") ? choice.get("refused").getAsString() : null);
     }
 
     private static Clue clue(JsonObject clue) {
@@ -143,11 +154,15 @@ public record Story(List<Quest> quests, Map<String, Person> people) {
             return null;
         }
         JsonObject reward = owner.getAsJsonObject("reward");
-        List<Item> items = list(reward, "items", item -> new Item(item.has("id") ? ResourceLocation.parse(item.get("id").getAsString()) : null,
+        List<Item> items = list(reward, "items", Story::item);
+        return new Reward(key, reward.get("title").getAsString(), reward.get("text").getAsString(), reward.get("claimed").getAsString(), items);
+    }
+
+    private static Item item(JsonObject item) {
+        return new Item(item.has("id") ? ResourceLocation.parse(item.get("id").getAsString()) : null,
                 item.has("tag") ? ResourceLocation.parse(item.get("tag").getAsString()) : null, item.has("count") ? item.get("count").getAsInt() : 1,
                 item.has("name") ? item.get("name").getAsString() : null, item.has("book") ? item.get("book").getAsString() : null,
-                item.has("own") && item.get("own").getAsBoolean()));
-        return new Reward(key, reward.get("title").getAsString(), reward.get("text").getAsString(), reward.get("claimed").getAsString(), items);
+                item.has("own") && item.get("own").getAsBoolean());
     }
 
     private static <T> List<T> list(JsonObject owner, String key, Function<JsonObject, T> read) {

@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "marked=false": {"model": "wayfarer:block/hearthstone"},
+    "marked=true": {"model": "wayfarer:block/hearthstone_marked"}
+  }
+}

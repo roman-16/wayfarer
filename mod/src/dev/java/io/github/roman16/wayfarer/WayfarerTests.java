@@ -79,7 +79,7 @@ public final class WayfarerTests {
                 kept++;
             }
         }
-        double factor = Balance.INSTANCE.structures().spreadFactor();
+        double factor = Balance.get().structures().spreadFactor();
         double expected = tries / (factor * factor);
         check(helper, Math.abs(kept - expected) < expected * 0.15, "a decoration is as much rarer as a spread structure");
         check(helper, Spread.keeps(ResourceLocation.withDefaultNamespace("ore_iron"), random), "an ore is left alone");
@@ -127,7 +127,7 @@ public final class WayfarerTests {
             drained = Gaze.step(drained, false, false, capacity);
             ground++;
         }
-        check(helper, ground == seconds * 20 * Balance.INSTANCE.gaze().drainFactor(), "a minute in the air needs four on the ground");
+        check(helper, ground == seconds * 20 * Balance.get().gaze().drainFactor(), "a minute in the air needs four on the ground");
         check(helper, Gaze.step(0, true, true, capacity) == capacity, "at night the gaze finds you at once");
         check(helper, Gaze.capacity(3) > Gaze.capacity(0), "a veil lengthens the flight");
         helper.succeed();
@@ -165,7 +165,7 @@ public final class WayfarerTests {
         check(helper, Fire.fears(EntityType.ZOMBIE.create(level)) && Fire.fears(EntityType.SKELETON.create(level)), "the gaze's creatures fear fire");
         check(helper, !Fire.fears(EntityType.PILLAGER.create(level)) && !Fire.fears(EntityType.WARDEN.create(level)), "people and the silence do not");
         BlockPos fire = new BlockPos(0, 0, 0);
-        int radius = Balance.INSTANCE.fire().circleBlocks();
+        int radius = Balance.get().fire().circleBlocks();
         check(helper, Fire.inside(fire, new Vec3(radius - 1, 0.5, 0.5), radius) && !Fire.inside(fire, new Vec3(radius + 1, 0.5, 0.5), radius), "the circle has its radius");
         check(helper, Fire.untilTomorrowsDusk(11000) == 25000, "resting at evening lasts to tomorrow's dusk");
         check(helper, Fire.untilTomorrowsDusk(15000) == 21000, "resting at night lasts to tomorrow's dusk");
@@ -174,7 +174,7 @@ public final class WayfarerTests {
 
     @GameTest(template = "empty")
     public static void stillnessDimsTheEmber(GameTestHelper helper) {
-        Balance.Stillness balance = Balance.INSTANCE.stillness();
+        Balance.Stillness balance = Balance.get().stillness();
         check(helper, Stillness.stage(0) == Stillness.MOVING, "the first day is free");
         check(helper, Stillness.stage(balance.dimmingDays()) == Stillness.DIMMING, "then the ember dims");
         check(helper, Stillness.stage(balance.hordeDays()) == Stillness.FOUND, "then the gaze finds you");

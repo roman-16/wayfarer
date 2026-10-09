@@ -84,12 +84,12 @@ public final class SeaSpike {
     }
 
     private static int oneIn(MinecraftServer server) {
-        Balance.Sea sea = Balance.INSTANCE.sea();
+        Balance.Sea sea = Balance.get().sea();
         return Math.max(sea.beastOneInLeast(), sea.beastOneIn() - Shine.of(server) / sea.shinePerStep());
     }
 
     static boolean open(ServerLevel level, BlockPos at) {
-        int reach = Balance.INSTANCE.sea().openWaterBlocks();
+        int reach = Balance.get().sea().openWaterBlocks();
         for (int dx = -reach; dx <= reach; dx += SAMPLE_STEP) {
             for (int dz = -reach; dz <= reach; dz += SAMPLE_STEP) {
                 int x = at.getX() + dx;
@@ -133,7 +133,7 @@ public final class SeaSpike {
     public static void onServerTick(ServerTickEvent.Post event) {
         MinecraftServer server = event.getServer();
         ServerLevel level = server.overworld();
-        Balance.Sea sea = Balance.INSTANCE.sea();
+        Balance.Sea sea = Balance.get().sea();
         if (server.getTickCount() % (sea.checkSeconds() * TICKS_PER_SECOND) == 0) {
             for (ServerPlayer player : level.players()) {
                 if (afloat(player) && calling(level) && beasts(level, player).isEmpty() && open(level, player.blockPosition())

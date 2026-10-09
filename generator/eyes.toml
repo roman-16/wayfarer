@@ -86,9 +86,9 @@ story = true
 biomes = ["#c:is_forest", "#minecraft:is_forest"]
 people = "The Diggers"
 lore = [
-  "The Diggers went down because down was the only way the gaze did not follow. Their tunnels run under half the world.",
-  "They lost the shard three times, and found it three times, and in the end they built it a hall so it would stop wandering.",
-  "If it wanders again, let it wander with you.",
+  "We dug down because the eye in the sky cannot see through stone. The shard hums on its stone in this hall, and while it hums, the ground above us stays dark to that eye.",
+  "Our children grew up under lamps and never missed the sun. But the seams near the hall ran out, and the young ones wanted to follow the ore down, past the shard's ground.",
+  "We go down with them tonight. If you are reading this, we did not come back up. Take the shard if you must, and walk softly in the deep.",
 ]
 
 

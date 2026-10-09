@@ -50,7 +50,7 @@ public final class Clock {
     }
 
     public static void road(ServerLevel level) {
-        ease(level, Balance.INSTANCE.clock().road());
+        ease(level, Balance.get().clock().road());
         caravan = null;
     }
 
@@ -115,15 +115,15 @@ public final class Clock {
     }
 
     public static boolean morning(ServerLevel level) {
-        return storied(level.getServer()) && Math.floorMod(level.getDayTime(), DAY) < ticks(Balance.INSTANCE.clock().runFrom());
+        return storied(level.getServer()) && Math.floorMod(level.getDayTime(), DAY) < ticks(Balance.get().clock().runFrom());
     }
 
     public static boolean atCaravan(ServerPlayer player) {
-        return caravan != null && near(player, player.serverLevel(), Balance.INSTANCE.fire().circleBlocks());
+        return caravan != null && near(player, player.serverLevel(), Balance.get().fire().circleBlocks());
     }
 
     public static boolean afternoon(ServerLevel level) {
-        return mode == Mode.EASE && caravan != null && Math.floorMod(level.getDayTime(), DAY) < ticks(Balance.INSTANCE.clock().runFrom());
+        return mode == Mode.EASE && caravan != null && Math.floorMod(level.getDayTime(), DAY) < ticks(Balance.get().clock().runFrom());
     }
 
     public static boolean nightfall() {
@@ -184,12 +184,12 @@ public final class Clock {
     }
 
     private static void evening(MinecraftServer server, ServerLevel level, long now) {
-        Balance.Clock clock = Balance.INSTANCE.clock();
+        Balance.Clock clock = Balance.get().clock();
         List<ServerPlayer> players = server.getPlayerList().getPlayers().stream().filter(player -> !player.isSpectator()).toList();
         if (players.isEmpty()) {
             return;
         }
-        int share = Balance.INSTANCE.sleep().playersPercentage();
+        int share = Balance.get().sleep().playersPercentage();
         if (Math.floorMod(now, DAY) >= ticks(clock.runFrom())) {
             int reach = clock.caravanBlocks();
             long near = players.stream().filter(player -> near(player, level, reach)).count();
@@ -206,7 +206,7 @@ public final class Clock {
 
     @SubscribeEvent
     public static void onRest(RestEvent event) {
-        if (mode == Mode.EASE && caravan != null && event.fire().closerThan(caravan, Balance.INSTANCE.fire().restBlocks())) {
+        if (mode == Mode.EASE && caravan != null && event.fire().closerThan(caravan, Balance.get().fire().restBlocks())) {
             rested.add(event.player().getUUID());
         }
     }
@@ -218,7 +218,7 @@ public final class Clock {
     private static void begin(ServerLevel level, long now, int seconds) {
         mode = Mode.EVENING;
         from = now;
-        target = Math.floorDiv(now, DAY) * DAY + ticks(Balance.INSTANCE.clock().evening());
+        target = Math.floorDiv(now, DAY) * DAY + ticks(Balance.get().clock().evening());
         long out = monsterHour(level, now, target);
         long gap = target - from;
         pace = out <= now ? 1 : gap / (double) (TICKS_PER_SECOND * seconds) * Math.log(gap / (double) (target - out));

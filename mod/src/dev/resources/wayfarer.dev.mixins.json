@@ -1,14 +1,23 @@
 {
   "client": [
     "FogRendererMixin",
+    "GuiMixin",
+    "LevelRendererMixin",
+    "LightStaminaHudMixin",
     "PanoramaRendererMixin",
-    "ParticularCounterMixin"
+    "ParticleEngineAccessor",
+    "ParticularCounterMixin",
+    "TextureAtlasAccessor",
+    "TextureManagerAccessor"
   ],
   "compatibilityLevel": "JAVA_21",
   "injectors": {
     "defaultRequire": 1
   },
   "minVersion": "0.8",
+  "mixins": [
+    "EventHooksMixin"
+  ],
   "package": "io.github.roman16.wayfarer.mixin.dev",
   "required": true
 }

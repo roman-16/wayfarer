@@ -29,7 +29,7 @@ This writes two files to `dist/`:
 | File | Use |
 |---|---|
 | `Wayfarer-<version>.zip` | In Prism Launcher: **Add Instance → Import**, pick the zip |
-| `Wayfarer-<version>-server.zip` | Unpack on the server and run `run.sh --nogui` (or `run.bat`). The pack sets `difficulty=hard` |
+| `Wayfarer-<version>-server.zip` | Unpack on the server and run `run.sh --nogui` (or `run.bat`). The pack sets `difficulty=normal` |
 
 To look at the pack without installing it anywhere:
 
@@ -83,7 +83,7 @@ Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftE
 
 | Path | Holds |
 |---|---|
-| `balance.toml` | Every balancing number: compass, daylight, difficulty, fire, gate, gaze, hunger, leads, nights, sight, stillness, unlocks, shrine legs and stronghold distances, structure spread |
+| `balance.toml` | Every balancing number: compass, daylight, difficulty, fire, gate, gaze, the graphics presets, hunger, leads, nights, sight, stillness, unlocks, shrine legs and stronghold distances, structure spread |
 | `design/` | What the pack is becoming, decided before it is built (`README.md` names the phase and what comes next), the lore everything else is written from (`lore.md`) and the narration cast (`narration.md`) |
 | `gallery/` | Pictures of every facet of what a player sees, each under its caption, listed in `shots.toml` |
 | `generator/` | The structure generator (the twelve halls, their surface covers, the Last Camp and the stranger's old camps), the twelve eyes, their peoples' places and each tier's shrine spacing (`eyes.toml`), the recipe and structure removals, the Nether audit list and the features accepted as natural |

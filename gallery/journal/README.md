@@ -110,6 +110,34 @@
 | --- | --- | --- |
 | ![Scale 2](quests/reward-waiting-2.png) | ![Scale 3](quests/reward-waiting-3.png) | ![Scale 4](quests/reward-waiting-4.png) |
 
+**Maren's first gift waiting: bread, dried fish and her note**, in the story at `his_first_camp/the_caravan`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](quests/under-the-lean-to-2.png) | ![Scale 3](quests/under-the-lean-to-3.png) | ![Scale 4](quests/under-the-lean-to-4.png) |
+
+**His Brother, waiting for Corin's word**, in the story at `the_deserter/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](quests/his-brother-2.png) | ![Scale 3](quests/his-brother-3.png) | ![Scale 4](quests/his-brother-4.png) |
+
+## People
+
+**Corin in the journal's People**, in the story at `the_deserter/the_fireside`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](people/corin-2.png) | ![Scale 3](people/corin-3.png) | ![Scale 4](people/corin-4.png) |
+
+## Quests
+
+**Dream it again on His First Camp's page, standing by a lit campfire**, in the story at `his_first_camp/the_caravan`
+
+| Scale 2 | Scale 3 | Scale 4 |
+| --- | --- | --- |
+| ![Scale 2](quests/dream-again-2.png) | ![Scale 3](quests/dream-again-3.png) | ![Scale 4](quests/dream-again-4.png) |
+
 **The tracked quest, with its story, objective and tasks**, in the story at `ash/the_cellar`
 
 | Scale 2 | Scale 3 | Scale 4 |

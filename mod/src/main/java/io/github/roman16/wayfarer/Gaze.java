@@ -40,7 +40,7 @@ public final class Gaze {
     }
 
     public static int capacity(int veil) {
-        Balance.Gaze balance = Balance.INSTANCE.gaze();
+        Balance.Gaze balance = Balance.get().gaze();
         return balance.capacitySeconds().get(veil) * TICKS_PER_SECOND * balance.drainFactor();
     }
 
@@ -51,7 +51,7 @@ public final class Gaze {
         if (night) {
             return capacity;
         }
-        return Math.min(capacity, filled + Balance.INSTANCE.gaze().drainFactor());
+        return Math.min(capacity, filled + Balance.get().gaze().drainFactor());
     }
 
     public static int veil(ServerPlayer player) {
@@ -99,7 +99,7 @@ public final class Gaze {
         int capacity = capacity(veil);
         int filled = step(player.getData(Wayfarer.GAZE), airborne, player.level().isNight(), capacity);
         player.setData(Wayfarer.GAZE, filled);
-        Balance.Gaze balance = Balance.INSTANCE.gaze();
+        Balance.Gaze balance = Balance.get().gaze();
         if (airborne && filled >= capacity && player.tickCount % (balance.huntIntervalSeconds() * TICKS_PER_SECOND) == 0) {
             hunt(player, balance.huntPhantoms());
         }

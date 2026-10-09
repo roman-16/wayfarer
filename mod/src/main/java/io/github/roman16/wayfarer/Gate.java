@@ -81,7 +81,7 @@ public final class Gate {
     }
 
     public static boolean guarded(ServerLevel level, BlockPos frame) {
-        return !level.getEntitiesOfClass(Raider.class, new AABB(frame).inflate(Balance.INSTANCE.gate().reachBlocks()), Raider::isAlive).isEmpty();
+        return !level.getEntitiesOfClass(Raider.class, new AABB(frame).inflate(Balance.get().gate().reachBlocks()), Raider::isAlive).isEmpty();
     }
 
     private static void ward(ServerPlayer player) {

@@ -11,7 +11,7 @@ import tomllib
 ROOT = Path(__file__).resolve().parent.parent
 SOUNDS = ROOT / "mod/src/main/resources/assets/wayfarer/sounds"
 DOWNLOADS = Path(tempfile.gettempdir()) / "wayfarer-sounds"
-AGENT = {"User-Agent": "Mozilla/5.0"}
+AGENT = {"User-Agent": "roman-16/wayfarer"}
 LEVEL_UP_LUFS = -17
 TARGETS = {"frequent": LEVEL_UP_LUFS - 6, "loop": -30, "music": -18, "rare": LEVEL_UP_LUFS}
 TRUE_PEAK = -1.5
@@ -23,9 +23,11 @@ QUALITY = 5
 
 def page_audio(page):
     html = urllib.request.urlopen(urllib.request.Request(page + "/", headers=AGENT)).read().decode()
-    found = re.search(r'og:audio" content="([^"]+)"', html)
+    found = re.search(r'og:audio" content="([^"]+)"', html) or re.search(
+        r'href="(https://[^"]+\.(?:mp3|ogg|flac))"', html
+    )
     if not found:
-        raise SystemExit(f"sounds failed: {page} names no preview")
+        raise SystemExit(f"sounds failed: {page} names no preview and links no audio file")
     preview = re.sub(r"^https://freesound\.org", "", found.group(1))
     return preview.replace("-lq.mp3", "-hq.ogg")
 

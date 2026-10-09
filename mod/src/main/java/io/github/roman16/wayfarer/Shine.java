@@ -53,23 +53,23 @@ public final class Shine {
         if (Journey.slain(server)) {
             return 0;
         }
-        Balance.Shine balance = Balance.INSTANCE.shine();
+        Balance.Shine balance = Balance.get().shine();
         int act = Math.min(act(server), balance.act().size()) - 1;
         return balance.act().get(act) + Journey.claimed(server).size() * balance.perShard();
     }
 
     private static int act(MinecraftServer server) {
         Progress progress = Progress.of(server);
-        return Story.INSTANCE.quests().stream().filter(quest -> progress.step(quest.id()) >= 0)
+        return Story.get().quests().stream().filter(quest -> progress.step(quest.id()) >= 0)
                 .mapToInt(quest -> quest.act().chars().allMatch(Character::isDigit) ? Integer.parseInt(quest.act()) : 1).max().orElse(1);
     }
 
     private static int notice(MinecraftServer server) {
-        return (int) (of(server) * Balance.INSTANCE.shine().noticeBlocksPerShine());
+        return (int) (of(server) * Balance.get().shine().noticeBlocksPerShine());
     }
 
     private static int tries(MinecraftServer server) {
-        return of(server) / Balance.INSTANCE.shine().spawnShine();
+        return of(server) / Balance.get().shine().spawnShine();
     }
 
     private static void difficulty(ServerPlayer player, int shine) {
@@ -120,7 +120,7 @@ public final class Shine {
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
         MinecraftServer server = event.getServer();
-        Balance.Shine balance = Balance.INSTANCE.shine();
+        Balance.Shine balance = Balance.get().shine();
         if (server.getTickCount() % (balance.spawnEverySeconds() * TICKS_PER_SECOND) != 0 || !server.getGameRules().getBoolean(Wayfarer.STORY)) {
             return;
         }
@@ -156,7 +156,7 @@ public final class Shine {
             return;
         }
         BlockPos pos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
-        if (Fire.nearest(level, pos.getCenter(), Balance.INSTANCE.fire().circleBlocks()).isPresent()) {
+        if (Fire.nearest(level, pos.getCenter(), Balance.get().fire().circleBlocks()).isPresent()) {
             return;
         }
         Optional<MobSpawnSettings.SpawnerData> picked = level.getBiome(pos).value().getMobSettings().getMobs(MobCategory.MONSTER).getRandom(random);

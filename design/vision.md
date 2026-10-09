@@ -25,7 +25,7 @@ What every decision here and in later phases has to respect.
 2. **Sparse world, dense road.** Vast land and rare, wide places are the pack's look, so variety travels with the player: encounters on the road, terrain that is an obstacle, nights and weather, a voice that walks along.
 3. **A gate sends you somewhere.** Whatever opens a way comes from another place on the map, never from grinding in one spot, which the ember's stillness rule punishes anyway.
 4. **Story and play decide each other.** Every mechanic needs a reason in the lore, and every story beat needs something to do.
-5. **One to four players.** A team shares one ember, and singleplayer behaves like a server. Every twist and quest works for a team.
+5. **One to four players, and alone as often as not.** About half the players play alone, so everything is built for one player first and works the same for a team of up to four: a team shares one ember, singleplayer behaves like a server, and every quest, fight, vote and twist works for one as well as for four.
 6. **What ships is a toolbox.** The ember, nights, stillness, fire, tents, the compass, the shrines and the generator each get a verdict in phase 3; none is kept for having been built.
 7. **Fun is found in play.** Act 1 is built and played before the other acts are written in detail.
 8. **Minecraft is the base plate.** The pack is designed the way The Witcher, GTA or Cyberpunk would design it, not the way vanilla plays: anything missing is added with a mod found or written, a mod that does not fit is changed or removed, and anything in the way is taken out of vanilla or the mods, from caves to the endless world. What vanilla cannot do only says what a thing costs to build, never whether it is in.
@@ -60,7 +60,7 @@ A typical day starts and ends at the caravan (D14), but it is the typical day, n
 
 The evening at the caravan is talk, the people's stories, whatever the camp needs, and then sleep. The team shares one sky, so "most of the team" is the same two thirds that sleep needs, and a quest that keeps the player out for a night sets the clock itself. Quests change the shape whenever they need to. One keeps the player at a place for a while, never long, because a Wayfarer still has to walk on; another keeps them out for a night in the wild.
 
-Hard nights come with the story and the caravan, never with the calendar. A Sleepless Night is the gaze finding the caravan: its horde comes to the caravan's fire and the player holds it, when a quest calls for it, when the caravan stays too long in one place, or when the player shines bright enough to be found (M6). On a hard night the clock does not ease out at 22:00 but runs on to dawn, so the night has to be survived. The red moon is a turn the story uses, once or twice an act.
+Hard nights come with the story and the caravan, never with the calendar. A Sleepless Night is the gaze finding the caravan: its horde comes to the caravan's fire and the player holds it, when a quest calls for it, when the caravan stays too long in one place, or when the player shines bright enough to be found (M6). On a hard night the clock does not ease out at 22:00 but runs on to dawn, so the night has to be survived. The red moon is a turn the story uses, once an act, on its worst night (`story.md`, S25).
 
 | Loop | What the player does |
 |---|---|
@@ -253,7 +253,7 @@ A system, place, creature or item, from vanilla or from a mod, goes or changes w
 | Map Atlases | Cut | JourneyMap's world map in the journal (`systems.md`, M2) |
 | Nature's Compass | Cut | Leads, people and the land |
 | Just Enough Resources | Cut; JEI's recipes stay | People, books and leads |
-| Advancements, vanilla's and every mod's, with their pop-ups | Cut | The pack's own achievements, only for rare feats (`systems.md`, M38) |
+| Advancements, vanilla's and every mod's, with their pop-ups | Cut | The pack's own deeds, only for rare feats, hidden until earned (`systems.md`, M38) |
 | The best gear | Made by the peoples' smiths, overnight; everyday tools at the player's own bench (`systems.md`, M18) | |
 | The endless world | It ends in the Last Sea | |
 | Lit Nether portals built into structures: Trek's pillager mansion and portal sword | Cut, as "There is no Nether" demands | |

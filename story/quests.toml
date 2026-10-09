@@ -567,10 +567,288 @@ summary = "The voice wants to see the camp he made when he first set out, by a l
 title = "His First Camp"
 
 [[quests.steps]]
+done = [
+  { text = "Three pines over still water. Under them, a ring of stones gone green, and the bones of a lean-to." },
+  { by = "stranger", text = "Three pines. They were smaller." },
+]
 id = "the_lake"
 kind = "reach"
-objective = "Find his first camp, by a lake."
+objective = "Find his first camp, by a lake under three pines."
 place = "first_camp"
+story = ["He led me to a lake under three pines, where he made his first camp."]
+
+[[quests.steps]]
+done = [
+  { by = "stranger", text = "That stone. Touch it. I want to see it the way it was." },
+]
+id = "his_things"
+kind = "clues"
+lines = [
+  { text = "Whoever sat here, sat here often. Hold up the ember: it shows what he left." },
+]
+needed = 3
+objective = "Look at what he left, with the ember held up: {found}/{needed}."
+place = "first_camp"
+tasks = ["search"]
+
+[[quests.steps.clues]]
+id = "notches"
+text = "Notches cut into the middle pine, one above the next, the oldest grown over with bark. Somebody came back here, summer after summer."
+
+[[quests.steps.clues]]
+id = "stake"
+text = "A stake at the water's edge, a rotten line still knotted round it. Somebody fished here."
+
+[[quests.steps.clues]]
+id = "hearthstone"
+text = "A flat hearthstone in the ring, black with old fires. Cut into it, long after the soot, is an open eye."
+
+[[quests.steps]]
+done = [
+  { text = "You stand at the hearthstone again. The eye is cut into it, as before." },
+  { by = "stranger", text = "I was happy here." },
+  { by = "stranger", text = "...Wait. That sack wasn't there." },
+]
+id = "the_memory"
+kind = "memory"
+memory = "first_camp"
+objective = "Touch the hearthstone: right-click it."
+people.stranger = "He was young once, and happy. At his first camp I made camp as him, and I wanted to stay. He walked on."
+story = ["When I touched the hearthstone, the ember flared, and I was him, young, making camp under three young pines. I wanted to stay one more summer. He didn't."]
+
+[[quests.steps]]
+done = [
+  { text = "The note: \"For whoever carries his light now. Eat. - M.\"" },
+  { by = "stranger", text = "...Someone's been here. Someone who knows my camps." },
+]
+finds = "maren"
+id = "the_gift"
+kind = "clues"
+needed = 1
+objective = "Look in the sack under the lean-to: right-click it."
+place = "first_camp"
+story = ["Under his lean-to someone had left bread, dried fish and a note signed M. Somebody knew I'd come."]
+
+[[quests.steps.clues]]
+id = "sack"
+text = "A sack, dry, as if it was set down days ago. Inside: bread, dried fish, and a folded note."
+
+[quests.steps.reward]
+claimed = "You pack the bread and the fish, and keep the note."
+items = [{ count = 4, id = "minecraft:bread" }, { count = 4, id = "minecraft:cooked_cod", name = "Dried Fish" }, { book = "maren/note" }]
+text = "bread, dried fish, and a note signed M."
+title = "Under the Lean-to"
+
+[[quests.steps]]
+id = "the_caravan"
+kind = "caravan"
+lines = [
+  { by = "stranger", text = "Back to the caravan. I've seen what I wanted to see." },
+]
+objective = "Make for their smoke."
+tasks = ["rest"]
+
+[[quests]]
+act = "1"
+after = ["the_pull"]
+found = "maren"
+id = "the_gifts"
+kind = "side"
+summary = "Someone left food under his lean-to, with a note signed M. They know his camps, and they know someone carries his light now."
+title = "The Gifts"
+
+[[quests.steps]]
+id = "the_road"
+kind = "wait"
+objective = "Watch the road for whatever M. leaves next."
+story = ["Someone signing themselves M. leaves food where he used to camp. They knew I would come."]
+
+[[quests]]
+act = "1"
+after = ["his_first_camp"]
+id = "the_deserter"
+kind = "main"
+summary = "The ember pulls again, as it pulled to the old tunnels. Hold it up, turn until it flares, and walk that way."
+title = "The Deserter"
+
+[[quests.steps]]
+done = [
+  { text = "A horn sounds across the water, low and long." },
+]
+id = "the_way"
+kind = "reach"
+known = "feeling"
+lines = [
+  { text = "The ember tugs at your hand again: steady, patient, towards something a long way off." },
+]
+objective = "Follow the pull: walk where the ember flares."
+place = "ford"
+story = ["The morning after his first camp, the ember pulled again, towards something far ahead."]
+tasks = ["sweep"]
+toward = "marsh_hall"
+
+[[quests.steps]]
+at = "ford"
+done = [
+  { text = "Across the water a horn calls twice. The last of the men in grey turn and climb back towards the hill." },
+]
+failed = "The wounded man goes down in the shallows, and doesn't get up."
+foes = ["minecraft:pillager", "minecraft:vindicator", "minecraft:pillager"]
+from = "ford_far"
+id = "the_ford"
+keep = ["corin"]
+kind = "hold"
+lines = [
+  { text = "A man stumbles out of the far trees and into the ford, holding his side. He leaves red in the water." },
+  { by = "gazebound", text = "There! The ember! Take them both!" },
+  { by = "corin", text = "Fight or run. Don't just stand there." },
+]
+music = "hold"
+objective = "Keep the wounded man alive while they come across the ford."
+remarks.corin = ["Keep them in the water. They're slow in the water.", "I can't stand. Don't let them reach me."]
+retry = "Try the ford again"
+story = ["At a river ford, men in grey came across the water after a wounded man, and after the ember. We held the bank."]
+wave = "They come across the ford: {wave} of {waves}"
+
+[[quests.steps]]
+choices = [
+  { id = "come", reply = "Thank you. I mean it. I'll keep up, or I'll keep quiet.", text = "Come with us. You won't get far alone." },
+  { id = "keep_up", reply = "I've kept up with worse than you. Lead on.", text = "Keep up, then." },
+]
+id = "corin"
+joins = "corin"
+kind = "talk"
+lines = [
+  { by = "corin", text = "They'll be back with more. They always come back with more." },
+  { by = "corin", text = "Let me see your hand. ...That light." },
+  { by = "corin", text = "I know that light. I'd know it anywhere." },
+  { by = "corin", names = ["corin"], text = "Corin. Don't thank me. I brought them." },
+  { by = "corin", names = ["gazebound"], text = "They're Gazebound. My own company, until last night." },
+  { by = "corin", text = "Their heir wants that coal more than he wants me. And he wants me badly." },
+  { text = "He pulls his shirt open. Over his heart runs an old white scar, like the one on the old man by the fire." },
+  { by = "corin", text = "We all carry one. They let the night look into you. If you live, it never looks again." },
+  { by = "corin", text = "The man who carried that light before you. I served under him, six winters." },
+  { by = "corin", text = "Don't ask me his name. Not yet." },
+  { by = "corin", text = "Where are you walking? Can a man with one good leg walk with you?" },
+]
+objective = "Talk to the wounded man by the ford."
+people.corin = "A deserter from the men in grey, with their scar over his heart. He served under the stranger for six winters, and won't say his name. We held the ford for him."
+story = ["The man was Corin, a deserter. He knew the ember's light, and the man who carried it before me, and he wouldn't say his name. He walks with us now."]
+with = "corin"
+words.gazebound = "Men in grey who hunt whoever carries an ember. Every one of them has a scar over the heart, as the stranger had. Corin was one of them."
+words.heir = "Whoever leads the Gazebound. Corin says he wants the ember more than anything, and Corin ran from him."
+
+[[quests.steps]]
+id = "the_caravan"
+kind = "caravan"
+leaves = ["corin"]
+lines = [
+  { by = "corin", text = "Go on ahead. I'll follow your smoke. I'm good at following smoke." },
+]
+objective = "Make for their smoke."
+tasks = ["rest"]
+
+[[quests.steps]]
+finds = "brother"
+id = "the_fireside"
+kind = "talk"
+lines = [
+  { by = "tamsin", text = "You brought one of the men in grey to our fire." },
+  { by = "corin", text = "Not one of them. Not any more." },
+  { by = "corin", text = "The man who had that ember before you. Where is he?" },
+  { text = "You tell him about the old man's fire, and the grave beside it." },
+  { by = "corin", text = "He's dead, then. Good." },
+  { by = "corin", text = "...No. Not good." },
+  { by = "corin", text = "My brother's still up at that outpost above the ford. He took the scar the same night I did." },
+  { by = "corin", text = "Not now. When you're stronger. I'll tell you when." },
+]
+objective = "Talk to Corin, by his tent at the edge of the camp."
+people.corin = "Corin heard the stranger is dead, and said good, and then said no. His brother is still with the Gazebound."
+story = ["At the caravan's fire Corin heard the stranger was dead. He said good, and then he said no. His brother is still with the Gazebound, at the outpost above the ford."]
+with = "corin"
+
+[[quests]]
+act = "1"
+after = ["his_first_camp"]
+found = "brother"
+id = "his_brother"
+kind = "side"
+summary = "Corin's brother serves the Gazebound at the outpost above the ford. Corin will say when the team is strong enough to fetch him."
+title = "His Brother"
+
+[[quests.steps]]
+id = "not_yet"
+kind = "wait"
+objective = "Wait for Corin's word: he'll say when you're ready."
+story = ["Corin's brother took the Gazebound's scar the same night Corin did, and still serves at the outpost above the ford. Corin will say when."]
+
+[[memories]]
+id = "first_camp"
+kit = [{ id = "minecraft:iron_axe" }, { id = "minecraft:fishing_rod" }, { id = "minecraft:flint_and_steel" }]
+music = "first_camp"
+place = "first_camp"
+title = "His First Camp"
+
+[[memories.steps]]
+count = 4
+id = "wood"
+kind = "gather"
+lines = [
+  { text = "Fifty summers ago. The pines are young, the hearthstone is clean, and the hands are yours, but younger." },
+  { text = "You say it aloud, to nobody: \"Three pines, a lake, and nobody. This'll do.\"" },
+]
+objective = "Take wood from the fallen pine: break its logs with the axe."
+tag = "minecraft:logs"
+
+[[memories.steps]]
+count = 4
+id = "fire"
+kind = "lay"
+objective = "Lay the wood on the hearthstone: right-click it with the logs."
+
+[[memories.steps]]
+id = "light"
+kind = "light"
+objective = "Light it: flint and steel on the wood."
+
+[[memories.steps]]
+count = 1
+id = "fish"
+kind = "gather"
+lines = [
+  { text = "The fire takes. Out on the water, something moves under the still." },
+]
+objective = "Catch a fish in the water with the rod."
+tag = "c:foods/raw_fish"
+
+[[memories.steps]]
+id = "cook"
+kind = "cook"
+objective = "Cook it on the fire: right-click the fire with the fish."
+
+[[memories.steps]]
+choices = [
+  { id = "stay", refused = "You can't. He didn't.", reply = "", text = "Stay. Just one more summer." },
+  { id = "walk", reply = "At first light you kick out the fire and shoulder your pack.", text = "Walk on in the morning." },
+]
+id = "summer"
+kind = "talk"
+lines = [
+  { text = "The fish spits on the fire. A loon calls across the water, and nothing answers it." },
+  { text = "You could stay. Nobody would know." },
+]
+objective = "Choose: press its number."
+
+[[memories.steps]]
+done = [
+  { text = "One notch, for this summer. You walk on, whistling." },
+]
+id = "notch"
+kind = "notch"
+lines = [
+  { text = "Before you go, you look back at the middle pine." },
+]
+objective = "Cut a notch in the middle pine: right-click its trunk with the axe."
 
 [[quests]]
 act = "1"

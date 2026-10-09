@@ -101,7 +101,7 @@ public final class Fire {
     }
 
     public static List<ServerPlayer> around(ServerPlayer player, BlockPos fire) {
-        int radius = Balance.INSTANCE.fire().circleBlocks();
+        int radius = Balance.get().fire().circleBlocks();
         List<ServerPlayer> listeners = new ArrayList<>();
         for (ServerPlayer member : player.server.getPlayerList().getPlayers()) {
             if (member == player || member.level() == player.level() && inside(fire, member.position(), radius)) {
@@ -116,7 +116,7 @@ public final class Fire {
         if (!(event.getLevel() instanceof ServerLevel level) || level.getGameTime() % SCAN_TICKS != 0 || Tents.isTent(level.dimension())) {
             return;
         }
-        int radius = Balance.INSTANCE.fire().circleBlocks();
+        int radius = Balance.get().fire().circleBlocks();
         Set<BlockPos> holding = new HashSet<>();
         for (ServerPlayer player : level.players()) {
             Optional<BlockPos> fire = Nights.fearless(player) || Hold.active(player.server) ? Optional.empty() : nearest(level, player.position(), radius);
@@ -165,7 +165,7 @@ public final class Fire {
         }
         Optional<BlockPos> fire = Tents.isTent(player.level().dimension()) || Gaze.airborne(player) || player.isSpectator()
                 ? Optional.empty()
-                : nearest(player.serverLevel(), player.position(), Balance.INSTANCE.fire().restBlocks());
+                : nearest(player.serverLevel(), player.position(), Balance.get().fire().restBlocks());
         if (fire.isEmpty()) {
             RESTING.remove(player.getUUID());
             return;

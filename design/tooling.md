@@ -84,11 +84,11 @@ What an agent has to build and look with, beyond T1 and T2:
 
 - **Searches skip what is generated.** An ignore file keeps `build/`, `mod/build`, `mod/run`, `.devbox` and `dist` out of every search by default, so an agent's context is not spent on built files; `build/sources` is searched on purpose.
 - **Every failure says how to fix it,** as `scripts/audit.py` already does.
-- **Project skills.** Each system gets a skill of its own when it is built: how the Wayfarer mod is laid out and tested, how the generator builds structures, how the workshop loop runs.
+- **Project skills, one per activity:** a look (`art`), words (`lore`), sounds (`sound`), a design session (`design`), finishing the work before a commit (`finish`) and the user's own play (`playtest`).
 - **A virtual screen.** The dev client runs on a virtual screen by default, as HeadlessMC does, so an agent never takes over the user's display and can run beside them, even two at once; `--visible` puts it on the user's screen. It draws in software, and with the test settings below it runs about as fast as the graphics card does with the pack's full look.
 - **Test settings.** Every local dev client, the showroom, a fresh world and every tour, runs without shaders, without Distant Horizons and at 8 chunks, laid over the pack's configs only in the dev client's folder; the shipped pack keeps its shaders, its far view and 12 chunks, and they are judged in the exported pack.
 
-The gates stay local: `just lint` and `just test` run on the machine, not on GitHub.
+The gates stay local: `just lint` and `just test` run on the machine, not on GitHub, in the `finish` skill and before a commit, never after each change.
 
 The tasks and tools are named for what they open or do, and only what the repository uses stays:
 

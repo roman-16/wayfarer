@@ -12,7 +12,7 @@ public abstract class MobCategoryCapMixin {
     @Inject(method = "getMaxInstancesPerChunk", at = @At("HEAD"), cancellable = true)
     private void wayfarer$creatureCap(CallbackInfoReturnable<Integer> result) {
         if ((Object) this == MobCategory.CREATURE) {
-            result.setReturnValue(Balance.INSTANCE.spawns().creatureCap());
+            result.setReturnValue(Balance.get().spawns().creatureCap());
         }
     }
 }

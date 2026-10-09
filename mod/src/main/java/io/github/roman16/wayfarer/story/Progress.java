@@ -41,6 +41,7 @@ public final class Progress extends SavedData {
     final Map<String, UUID> bodies = new LinkedHashMap<>();
     final Map<String, BoundingBox> wards = new LinkedHashMap<>();
     final Set<String> gifts = new LinkedHashSet<>();
+    final Set<String> joined = new LinkedHashSet<>();
     final Set<String> named = new LinkedHashSet<>();
     final Map<UUID, Set<String>> seen = new LinkedHashMap<>();
     final Map<UUID, String> tracking = new LinkedHashMap<>();
@@ -70,7 +71,7 @@ public final class Progress extends SavedData {
     }
 
     public boolean done(String quest) {
-        return Story.INSTANCE.quest(quest).map(found -> steps.getOrDefault(quest, -1) >= found.steps().size()).orElse(false);
+        return Story.get().quest(quest).map(found -> steps.getOrDefault(quest, -1) >= found.steps().size()).orElse(false);
     }
 
     public int step(String quest) {
@@ -160,6 +161,7 @@ public final class Progress extends SavedData {
             progress.wards.put(key, new BoundingBox(box[0], box[1], box[2], box[3], box[4], box[5]));
         });
         progress.gifts.addAll(strings(tag.getList("gifts", Tag.TAG_STRING)));
+        progress.joined.addAll(strings(tag.getList("joined", Tag.TAG_STRING)));
         progress.named.addAll(strings(tag.getList("named", Tag.TAG_STRING)));
         progress.stone = tag.getString("stone");
         CompoundTag seen = tag.getCompound("seen");
@@ -228,6 +230,7 @@ public final class Progress extends SavedData {
         this.wards.forEach((name, box) -> wards.putIntArray(name, new int[] {box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ()}));
         tag.put("wards", wards);
         tag.put("gifts", list(List.copyOf(gifts)));
+        tag.put("joined", list(List.copyOf(joined)));
         tag.put("named", list(List.copyOf(named)));
         CompoundTag seen = new CompoundTag();
         this.seen.forEach((player, keys) -> seen.put(player.toString(), list(List.copyOf(keys))));

@@ -40,8 +40,8 @@ public final class Rules {
             return;
         }
         Entity vehicle = event.getEntityBeingMounted();
-        int needed = vehicle.getType().is(Gaze.AIRCRAFT) ? Balance.INSTANCE.unlocks().aircraftEyes()
-                : vehicle.getType().is(SAILING_SHIPS) ? Balance.INSTANCE.unlocks().sailingShipEyes()
+        int needed = vehicle.getType().is(Gaze.AIRCRAFT) ? Balance.get().unlocks().aircraftEyes()
+                : vehicle.getType().is(SAILING_SHIPS) ? Balance.get().unlocks().sailingShipEyes()
                 : 0;
         if (claimed(player) >= needed) {
             return;
@@ -53,7 +53,7 @@ public final class Rules {
 
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
-        int needed = Balance.INSTANCE.unlocks().aircraftEyes();
+        int needed = Balance.get().unlocks().aircraftEyes();
         if (event.getEntity() instanceof ServerPlayer player && player.isFallFlying() && claimed(player) < needed) {
             player.stopFallFlying();
             player.displayClientMessage(Component.translatable("wayfarer.unlock.aircraft", needed).withStyle(ChatFormatting.GRAY), true);

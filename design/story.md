@@ -364,13 +364,13 @@ Act 1, on foot, the near ring:
 |---|---|---|---|---|---|
 | 1.1 | The Pull | The Diggers' tunnels, an old mineshaft | Reach | | The first shard sinks into the ember, and the dead stranger speaks: the voice's first words (S4) finish his dying charge, "Bring them to a frame, and we put its eye out for good" (S22). Trail-sight |
 | 1.2 | His First Camp | Wend's first camp, a lead from the voice | Investigate, then a memory | | The player plays him young and happy, but a Gazebound mark is cut into the hearthstone, much later |
-| 1.3 | The Deserter | A ford near a Gazebound outpost | Hold | Strength | The player saves a man the Gazebound are hunting: Corin, who looks at the ember and says "That's Wend's light. I'd know it", and names the Grass King's heir for the first time |
+| 1.3 | The Deserter | A ford near a Gazebound outpost | Hold | Strength | The player saves a man the Gazebound are hunting: Corin, who looks at the ember and says "I know that light. I'd know it anywhere", knew the man who carried it but will not say his name, and names the Grass King's heir for the first time (S28) |
 | 1.4 | The Marsh Mothers | The swamp's witch hut | Talk, then Reach where nothing is reflected | Trust | The witches curse the stranger's name, and one flinches from the player: "Something looks out of you." True-sight |
 | 1.5 | The Hooded Traveller | The caravan's fire, by count after the second hall | Talk | | A hooded Gazebound sits down, leaves bread and knows the stranger's smoke. The voice: "Eat it. Don't follow her" |
 | 1.6 | The Last Frost Walker | The snow, a winter house of the Frost Walkers | Track | Land: the cold, until the Frost Walkers' snowshoes | The player tracks a lone hunter, Nell, the last of her people, who joins to find who emptied their hall |
 | 1.7 | The Theft | The Frost Walkers' hall | Investigate, then a memory | | The hall is empty, and the player plays the theft: the thief was the man whose voice they trust |
 | 1.8 | Under the Ice | A frozen lake a day east | Reach | Land | The shard lies where he buried it. Decision: give it to Nell to bury with her dead, or keep it. Dark-sight |
-| 1.9 | The Keeper's Apprentice | A burnt library, a ruin, by count after the third hall | Investigate | Knowledge | Ilse, alone in the ashes, reads the Keepers' records: a frame takes whatever of the Eye it is brought. The voice: "All twelve, or none of this matters", its first crack |
+| 1.9 | The Keeper's Apprentice | A burnt library, a ruin, by count after the third hall | Investigate | Knowledge | Ilse, alone in the ashes, reads the Keepers' records: how the Eye was broken and the oath sworn (S26), and that a frame takes whatever of the Eye it is brought. The voice: "All twelve, or none of this matters", its first crack |
 | 1.10 | The Bell | The First Village's ruins | Investigate, then a memory, then Hold | | The player plays him hiding a shard in a young town's bell: the shard is in Tamsin's bell, which is why her town burned, and that night the gaze comes for it. Decision: melt the bell, or keep it. Warmth |
 | 1.11 | The Name | The caravan's fire, by count after the fourth hall | Talk | | Maren comes back and says his name: Wend, a Gazebound captain. Corin confirms it, and the road to the sea opens |
 
@@ -493,6 +493,8 @@ Mother Agna, over a body on the road: "Look. They never take anything. They only
 - The first Wayfarers were the survivors of the Ancient Cities, the first great civilisation.
 - The Eye sat in the portal between worlds, and through it the dragon watched everything that stood still and sent its creatures there; that is how the Cities fell. The survivors tore the Eye out of the portal, and the dragon went blind.
 - The Eye cannot be destroyed: fire, sea and hammer only broke it. Whole, it could be set again in any frame, so they broke it into twelve shards and sent each to one of twelve peoples at the far ends of the world. The Twelve Peoples hid the shards in halls, and the Wayfarers walked, keeping the ember.
+
+The player learns it from Ilse at 1.9, from the Keepers' book she carries (S26).
 
 **Why:** The breaking is the oldest thing the player learns and the root of every rule, so it has to answer why the Eye was not simply destroyed: it could not be.
 
@@ -702,12 +704,138 @@ What 1.1 and the caravan's day ask of the systems, at their minimum:
 
 **Why:** The first hall is the pack's first dungeon, so its distance and its side must be dependable, as every Skyrim player is pointed at Bleak Falls Barrow on the way to Riverwood; put down ahead, it also keeps the walk on new land, which is what the ember lives on. Tunnels that fork make the ember's feeling the guide instead of a stair, and a mark someone left before teaches by example, as Bleak Falls Barrow's dead bandits do. The voice's first long talk at the fire gives the night its story and the next quest its lead, and a settled Wayfarer's stone comes to the player at the moment they learn what settling costs.
 
+### S25 The road's curve: one peak an evening, the act's end biggest
+
+The road is about 15 evenings of two hours, about 30 hours of main road, with the side quests on top as longer or extra evenings (D8). It has the same shape at every scale:
+
+- **An evening** opens at the caravan, rises to one peak, a fight, a revelation or a hard decision, and closes at the fire. The next evening's peak is of another kind: after a fight comes a revelation or a decision.
+- **An act** rises to its last evening, which holds both its biggest fight and its revelation. The evening after an act ends opens the quietest: new land, a new way to travel, and time to try it.
+- **Side quests fill the valleys:** beside a main quest that fights, the evening offers one that talks or searches, and the other way round.
+- **A red moon comes once an act, on its climax:** the Bell, the Hollow, the Empty Grave, and the frame in the finale, so a red sky always means the act's worst night. Every other hard night is a hold its quest calls or the caravan's own (M6), and an evening has at most one.
+- **A story piece plays** at every hold (the battle piece), at every death the player watched, at each act's revelation at the fire, as each memory's own short theme, and on each act's first morning or first flight; outside a hold, an evening has at most two (`sound.md`).
+
+The typical road (the later halls of each act come in any order, and the by-count beats follow the count):
+
+| # | Season | Main quests | Side quests on offer | The evening's peak | The night | Story music |
+|---|---|---|---|---|---|---|
+| 1 | Late summer | P1 The Last Fire, P2 The First Day, P3 Ash | | Fight: the cellar door | The hold at Ash | The Death of Åse, the ember waking, the battle piece, Morning Mood |
+| 2 | Late summer | 1.1 The Pull, 1.2 His First Camp | W5 The Cache, C8 The Road | Revelation: the voice speaks | The caravan's fire | The shard ringing; the first memory's theme |
+| 3 | Late summer | 1.3 The Deserter, 1.4 The Marsh Mothers, 1.5 The Hooded Traveller | T1 The Witches' Debt, W11 The Dice | Fight: the ford | The caravan, uneasy | The battle piece at the ford |
+| 4 | Late summer, the leaves turning | 1.6 The Last Frost Walker, 1.7 The Theft, 1.8 Under the Ice | C1 The Missing, W7 Maren's Gifts | Revelation: the thief was the man whose voice the player trusts; then Nell's shard | The caravan | The theft's theme |
+| 5 | Early autumn | 1.9 The Keeper's Apprentice, 1.10 The Bell, 1.11 The Name | C7 The Lost Ore, W8 Captains' Pages | Fight, then the act's revelation: Wend | Red moon: the gaze comes for the bell | The bell's theme, the battle piece, the Name at the fire |
+| 6 | Mid autumn | 2.1 Ships for Everyone, 2.2 The Crossing | C2 His Brother, C3 The Burial | Fight: the thing below, in the first autumn storm | A night held on the water | Act 2's first morning, the battle piece at sea |
+| 7 | Mid autumn | 2.3 The Tide Folk, 2.7 Your Eyes | T2 Night Fishing, C5 The Seal | Decision: two shards on one pedestal | The hallowed bay, safe | |
+| 8 | Mid autumn | 2.4 The Dry City, 2.6 The Worm | T3 The Raiders, W9 The Horse That Never Sleeps | Fight: the worm's lair, then whether it lives | The caravan | The battle piece in the lair |
+| 9 | Late autumn | 2.5 His Last Camp, 2.8 The Locks That Never Sleep | C6 The Fever, W6 The Settled Wayfarer, W2 The Scar of the Searched | Revelation: Maren's hand, and the Eye first sees through stone | The caravan | The last camp's theme |
+| 10 | Late autumn | 2.9 Maren's Warning, 2.10 The Hollow | W1 The Burning, W3 The Quarrel, C4 Bram's Son | Fight, then loss, then the first reveal | Red moon: the breaking | The battle piece; a death piece for the nine wagons at dawn |
+| 11 | Early winter | 3.1 The Morning After, 3.2 Wings, 3.3 The Dreaming | W4 The First Gate | Loss, then the first flight | What is left of the caravan | A grief piece at the graves; Act 3's first flight |
+| 12 | Early winter | 3.4 The Ward, 3.5 The Mansion | T4 Through the Lines, W12 The Phantom Nest | Decision: the shard or the children | The walls, if they held | The battle piece at the gate |
+| 13 | Mid winter | 3.6 The Scribes' Books, 3.7 The Empty Grave | W10 The Pilgrims | Fight: the dead wake | Red moon: the graveyard | The Scribes' memory theme, the battle piece |
+| 14 | Mid winter | 3.8 The Rider, 3.9 The Keepers' Door | | Revelation: "The thirteenth." | The Keepers' stronghold | The second reveal |
+| 15 | Late winter | F1 The Gate, F2 The Doors, F3 After | | Every door | Red moon over the frame | The gate's memory, each door's own piece |
+
+**Why:** Jesse Schell's interest curve asks for a hook, rising interest with rests between the peaks, a finale bigger than all of it, and the same shape at every scale; Left 4 Dead's director builds, peaks and then deliberately lets the players breathe; The Witcher 3 and Red Dead Redemption 2 end each chapter on its biggest beat and open the next somewhere quiet and new. One peak an evening, of a kind the last evening did not have, keeps a group's weekly session from feeling like the one before, and a red moon kept for each act's worst night stays an omen instead of weather.
+
+### S26 The shards' books: none; the halls keep their own
+
+- Taking a shard gives no book. Its moment is the shard sinking into the ember, its ring, the voice and its gift:
+
+  ```text
+  The shard sinks into the ember.
+  Trail-sight: old tracks always glow
+  ```
+
+- What the old account told lives where the story reaches it: the deep cities' pride, their gate and the silence in the archivist's books in the Ancient Cities, the gate's ring and Wend at the Keepers' door in the Keepers' books in the strongholds, the Grass King in the Gazebound's books. The breaking, the oath and the ember (S20) are Ilse's to tell at 1.9 The Keeper's Apprentice, from a Keepers' book she carries, The Breaking, which then stands in the journal's Pages.
+- A memory is only ever Wend's life, played where it happened (S13).
+- Each hall's lectern holds its people's own book, written to whoever finds their hall, and it tells that hall's fate (S6): it is written with the hall's quest. Where the people are gone and someone else was there, the lectern holds what they left, such as the Frost Walkers' last account of the theft.
+
+**Why:** Twelve books handed out at the pedestal were the old pack's whole story, the very "story at the end of the walk" this design leaves behind (ground truth 1), and by count they told Wend, the voice and the thirteenth out of place, ahead of the quests that reveal them, and never reached a team that left a shard with its people. The breaking still needs telling, and Ilse, alone in the Keepers' ashes with their records, is the one person who would know it.
+
+### S27 1.2 His First Camp in detail
+
+The second day of Act 1 step by step, as the slice builds it (`slice.md`, step 5), shown for a player alone; a team plays it the same, and where it differs it says so. Every line is a placeholder for the `lore` skill.
+
+**The morning** runs as every morning (S24): the camp packs up, Tamsin: "Go on. We'll follow your marks." The compass marks his first camp with its distance, since the voice named it (D6), and the road brings its scenes; W5 The Cache may wait on the way.
+
+**1.2 His First Camp** (Wend's first camp; Investigate, then a memory):
+
+1. About 256 blocks out, the camp goes up out of sight, by a lake under three pines as he said, on land where no snow lies, since it was his summer camp: a ring of stones gone green, a flat hearthstone, a rotted lean-to of poles against the middle pine, a stake at the water's edge with a rotten line still knotted round it, and notches cut into the pine, one for every summer he came back. The voice: "Three pines. They were smaller."
+2. Held up, the ember shows what he left: the notches, the stake, the hearthstone. Cut into the hearthstone, much later than the rest, is the Gazebound's open eye.
+3. Right-clicking the hearthstone makes the ember flare: the player wakes in the place as it was fifty summers ago, on a late-summer evening, as young Wend with his pack (M8). In a team, everyone within about 32 blocks wakes there too, each as Wend; anyone farther away dreams it later from the journal, at a fire. The first memory's theme plays (S25).
+   - **Make camp.** The task panel walks him through it: dry wood from the fallen pine, a fish from the lake with his rod, the fire lit on the clean hearthstone. He says it aloud to nobody, in the narrator's words on the band, since nobody has named him yet: "Three pines, a lake, and nobody. This'll do."
+   - **The refused choice.** At dawn the answers offer "Stay. Just one more summer." It is refused: "You can't. He didn't." He cuts the first notch in the pine and walks on, whistling.
+4. The player wakes at the hearthstone, and the eye is cut into it again. The voice is quiet, then: "I was happy here." The journal: "He was young here, and happy."
+5. **W7 Maren's Gifts, the first** (Investigate). Under the lean-to lies a bundle left only days ago: bread, dried fish and a note, "For whoever carries his light now. Eat. — M." The voice: "...Someone's been here." [Side] Maren's Gifts opens; her later gifts wait along the road.
+6. Make for the caravan, as every evening.
+
+```text
+Camp     Three pines over a lake. A ring of stones gone green, a hearthstone with an eye cut into it.
+         <The stranger> Three pines. They were smaller.
+Memory   Fifty summers ago. Your hands are young. The hearthstone is clean.
+         [Memory] His First Camp - wood from the fallen pine, a fish from the lake, the fire
+         You say it aloud, to nobody: "Three pines, a lake, and nobody. This'll do."
+         Dawn.   Stay. Just one more summer.   (You can't. He didn't.)
+         You cut the first notch in the pine and walk on, whistling.
+Now      The eye on the hearthstone again.
+         <The stranger> I was happy here.
+         Under the lean-to: bread, dried fish, a note. "For whoever carries his light now. Eat. - M."
+```
+
+What 1.2 asks of the systems, at their minimum:
+
+| System | For 1.2 |
+|---|---|
+| The memories (M8) | The dream rebuilt from the seed, the place changed as it was, a memory's tasks and a refused choice, waking where the player stood, dreaming it again from the journal |
+| The camps (`Camps`) | Wend's first camp, now and as it was, put down ahead by the quest |
+| The quest engine (M1) | A told goal put down ahead, a side quest opened by something found |
+| The journal (M2) | The memory's entries, Maren's note in Pages |
+| Music (S25) | The first memory's theme, chosen with the `sound` skill |
+
+**Why:** The first memory makes camp, the thing the player has done every evening since the prologue, so it teaches how a memory works through something already known, and shows Wend happy and still keeping the oath before Act 1 shows what he became. A refused "one more summer" lets the player feel the oath from inside it. The open eye on his clean hearthstone, and Maren's bread under his lean-to, put the Gazebound in his past and on the player's trail before either is explained.
+
+### S28 1.3 The Deserter in detail
+
+The third day of Act 1 step by step, as the slice builds it (`slice.md`, step 6), shown for a player alone; a team plays it the same, and where it differs it says so. Every line is a placeholder for the `lore` skill.
+
+**The morning** runs as every morning (S24): the camp packs up, Tamsin: "Go on. We'll follow your marks." The ember pulls again, towards the next hall, the swamp's (1.4), by feeling (D6).
+
+**1.3 The Deserter** (a ford below a Gazebound outpost; Hold; Strength):
+
+1. About 1,024 blocks out, the quest puts the ford down out of sight where the way first crosses a river on land where no snow lies, since the cold is 1.6's gate: a knee-deep crossing of gravel, about 8 blocks wide, and on the high ground across it a Gazebound outpost. It looks on up to 2,048 blocks along the way and up to 512 either side of it; with no river there, it cuts a stream across the way at about 1,024 blocks, a knee-deep creek about 8 wide with gravel banks, running far enough either side to read as one the land always had.
+2. Within about 64 blocks of it a horn sounds across the water, heard before anything is seen (M37). A man in grey bursts out of the far trees, wades the ford bleeding and falls on the near bank, and banners show at the treeline behind him: "There! The ember!" [Main] The Deserter opens: keep the wounded man alive.
+3. **The hold**, by day, with the battle piece (S25): three waves of Gazebound, crossbows and axes, wade the ford, each announced on the band. The water slows them, so the bank above the crossing is where the team holds, and they go for the wounded man first. The waves grow with the size of the team online, never with the shine (M37), so one player holds it as four do; better gear makes it easier (the Strength gate, D4). If he falls, the step fails and offers "Try the ford again", as Ash does: the waves gone, the man back on the bank. Walking off is no escape: the patrol has seen the ember, so it wades across and comes after the team on open ground, where the water no longer slows it.
+4. A horn from the outpost calls the last of them back up the hill. The man, an Illager born to the Grass Kingdom's outcasts, who looks like the men who chased him, looks at the ember: "I know that light. I'd know it anywhere." He gives his name, Corin, and names the Grass King's heir for the first time: "He wants that coal more than he wants me." He knew the man who carried it before, six winters under him, but will not say his name (Maren says it at 1.11, and Corin confirms it). He opens his shirt on the scar over his heart, the same scar the stranger had (S23), and says what it is: "They let the night look into you. If you live, it never looks again." He asks to come along.
+5. Make for the caravan. Corin is there that evening, his small tent at the edge, apart (M5). At the fire he hears the stranger is dead: "Good. ...No. Not good." He says his brother is still up in that outpost, and C2 His Brother opens and waits in the journal until the team is ready for it.
+
+```text
+Ford     A horn across the water. A man stumbles out of the trees and into the ford.
+         <A Gazebound> There! The ember!
+         [Main] The Deserter - keep him alive
+         They come across: 1 of 3
+After    <A man in grey> I know that light. I'd know it anywhere.
+         <Corin> Corin. Don't thank me, I brought them.
+         <Corin> I served under him six winters. Don't ask me his name. Not yet.
+Fire     <Corin> He's dead, then. Good. ...No. Not good.
+         [Side] His Brother - the outpost above the ford
+```
+
+The journal, People, Corin: "A deserter from the Gazebound, with their scar. He served under the stranger for six winters and won't say his name. We held the ford for him."
+
+What 1.3 asks of the systems, at their minimum:
+
+| System | For 1.3 |
+|---|---|
+| The quest engine (M1) | A place put down ahead at a river, a quest that opens when the team comes near, a side quest a person asks for |
+| Holds (M10) | Waves of Gazebound that cross from the far bank, a person to keep alive, a retry, and the fight following a team that walks off |
+| The fights (M37) | The Gazebound's tell, the horn and the shout; waves sized to the team online |
+| The caravan (M5) | A household that joins: Corin's small tent at the edge |
+| Conversations (M3) | A man named only once he says it, and a name he keeps back |
+| Music (S25) | The battle piece at the ford |
+
+**Why:** A crossing is the oldest choke point there is, where an enemy that cannot charge through water is held from the bank, as Mount & Blade's players and the Scots at their fords did, so the fight's one idea comes from the land, and by day against people it reads unlike Ash's night of the gaze's creatures. The patrol seeing the ember is why this one fight cannot be walked past: it is the day the Gazebound learn the team carries it. Corin keeping the name back leaves Maren's reveal at 1.11 whole while telling the player that the stranger was someone's captain.
+
+It raises, for its build: what holds the Gazebound to the crossing rather than the water beside it.
+
 ## Open
 
-### S25 The road's curve
-
-One chart of the 25 to 30 hours, evening by evening: each evening's quests and activities, how tense it runs (quiet, uneasy, a fight, a revelation), its hard nights and red moons, its season, and the moments that get music (`sound.md`), so that no two evenings in a row feel alike and the big moments stand apart.
-
-### S26 The shards' books
-
-Each shard taken still gives a book from the old pack, the first civilisation's account of its fall, named as a memory: "The shard remembers: The First Memory. It is copied into your journal." The memories are Wend's life now (M8), first met at 1.2, so the line names a memory the story has not shown, at the first shard. To decide: whether the shards' books stay, whose words they are, what they are called and what the line says.
+Nothing is open.

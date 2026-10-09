@@ -1,9 +1,13 @@
 package io.github.roman16.wayfarer.story;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Clock;
+import io.github.roman16.wayfarer.Ember;
+import io.github.roman16.wayfarer.Firsts;
 import io.github.roman16.wayfarer.Joining;
 import io.github.roman16.wayfarer.Journey;
 import io.github.roman16.wayfarer.Shards;
@@ -15,10 +19,14 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
@@ -49,7 +57,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 @EventBusSubscriber(modid = Wayfarer.MODID)
 public final class StoryDev {
-    private static final JsonObject STATES = Prologue.json("/wayfarer/states.json");
+    private static final Bundled<JsonObject> STATES = Bundled.json("/wayfarer/states.json");
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_story", Comparator.comparingLong(ChunkPos::toLong));
     private static final int OWNER = 4;
     private static final int LOAD_RADIUS = 2;
@@ -61,8 +69,15 @@ public final class StoryDev {
     private static final int STAND_FAR = 4;
     private static final int RING_STEPS = 8;
     private static final int HEIGHT = 4;
+    private static final String ANSWER = "answer";
+    private static final String CHARMS = "charms";
+    private static final String COMPASS = "compass";
+    private static final String GEAR = "gear";
+    private static final String JOURNAL = "journal";
+    private static final String MAP = "map";
     @Nullable
     private static Run run;
+    private static Map<UUID, Set<String>> marks = Map.of();
 
     private StoryDev() {}
 
@@ -91,7 +106,7 @@ public final class StoryDev {
     }
 
     public static long seed() {
-        return STATES.get("seed").getAsLong();
+        return STATES.get().get("seed").getAsLong();
     }
 
     @SubscribeEvent
@@ -110,7 +125,21 @@ public final class StoryDev {
                         .then(Commands.literal("said").then(Commands.argument("line", StringArgumentType.word())
                                 .executes(context -> said(context.getSource(), StringArgumentType.getString(context, "line")))))
                         .then(Commands.literal("unclaim").then(Commands.argument("reward", StringArgumentType.greedyString())
-                                .executes(context -> unclaim(context.getSource(), StringArgumentType.getString(context, "reward")))))));
+                                .executes(context -> unclaim(context.getSource(), StringArgumentType.getString(context, "reward")))))
+                        .then(Commands.literal("marks")
+                                .then(Commands.literal("keep").executes(context -> keepMarks(context.getSource())))
+                                .then(Commands.literal("restore").executes(context -> restoreMarks(context.getSource()))))
+                        .then(Commands.literal("memory").then(Commands.argument("step", StringArgumentType.word())
+                                .executes(context -> memory(context.getSource(), StringArgumentType.getString(context, "step")))))));
+    }
+
+    private static int memory(CommandSourceStack source, String step) {
+        if (!Memories.jump(source.getServer(), step)) {
+            source.sendFailure(Component.literal("story failed: no memory is dreamed that has a step " + step));
+            return 0;
+        }
+        source.sendSuccess(() -> Component.literal("story: the memory stands at " + step), false);
+        return 1;
     }
 
     private static int gear(CommandSourceStack source, String row) {
@@ -119,6 +148,7 @@ public final class StoryDev {
             return 0;
         }
         Journal.syncAll(source.getServer());
+        source.getServer().getPlayerList().getPlayers().forEach(Tasks::refresh);
         source.sendSuccess(() -> Component.literal("story: the gear row " + row + " shows"), false);
         return 1;
     }
@@ -129,8 +159,31 @@ public final class StoryDev {
             return 0;
         }
         Journal.syncAll(source.getServer());
+        source.getServer().getPlayerList().getPlayers().forEach(Tasks::refresh);
         source.sendSuccess(() -> Component.literal("story: " + line + " was said"), false);
         return 1;
+    }
+
+    private static int keepMarks(CommandSourceStack source) {
+        marks = copy(Progress.of(source.getServer()).seen);
+        source.sendSuccess(() -> Component.literal("story: the journal's marks are kept"), false);
+        return 1;
+    }
+
+    private static int restoreMarks(CommandSourceStack source) {
+        Progress progress = Progress.of(source.getServer());
+        progress.seen.clear();
+        progress.seen.putAll(copy(marks));
+        progress.setDirty();
+        Journal.syncAll(source.getServer());
+        source.sendSuccess(() -> Component.literal("story: the journal's marks stand as kept"), false);
+        return 1;
+    }
+
+    private static Map<UUID, Set<String>> copy(Map<UUID, Set<String>> seen) {
+        Map<UUID, Set<String>> copied = new LinkedHashMap<>();
+        seen.forEach((player, entries) -> copied.put(player, new LinkedHashSet<>(entries)));
+        return copied;
     }
 
     private static int unclaim(CommandSourceStack source, String reward) {
@@ -144,6 +197,7 @@ public final class StoryDev {
         progress.claims.get(reward).remove(player.getUUID());
         progress.setDirty();
         Journal.sync(player);
+        Tasks.refresh(player);
         source.sendSuccess(() -> Component.literal("story: " + reward + " waits again"), false);
         return 1;
     }
@@ -204,7 +258,7 @@ public final class StoryDev {
 
     private static Optional<String> wrong(MinecraftServer server, String target) {
         String[] parts = target.split("/", 2);
-        Optional<Story.Quest> quest = Story.INSTANCE.quest(parts[0]);
+        Optional<Story.Quest> quest = Story.get().quest(parts[0]);
         int index = quest.map(found -> found.steps().stream().map(Story.Step::id).toList().indexOf(parts.length > 1 ? parts[1] : "")).orElse(-1);
         if (index < 0) {
             return Optional.of("there is no step " + target + "; a step is named quest/step, as ash/the_door is");
@@ -240,6 +294,10 @@ public final class StoryDev {
                 arrive(server, active);
                 return;
             }
+            if (run.save != null) {
+                keep(server, active);
+            }
+            learn(server, active);
             if (!play(server, active)) {
                 return;
             }
@@ -252,7 +310,7 @@ public final class StoryDev {
         Story.Step step = active.step();
         ServerLevel level = Engine.overworld(server);
         Progress progress = Progress.of(server);
-        Balance.Clock clock = Balance.INSTANCE.clock();
+        Balance.Clock clock = Balance.get().clock();
         if (!active.key().equals(run.moved)) {
             Steps.moves(server, step);
             run.moved = active.key();
@@ -306,7 +364,13 @@ public final class StoryDev {
                 server.getPlayerList().getPlayers().forEach(player -> player.setData(Wayfarer.LAST_FIRE, GlobalPos.of(Level.OVERWORLD, fire)));
                 run.here = fire;
             }
-            case "hold" -> Hold.stop();
+            case "hold" -> {
+                Hold.stop();
+                if (step.spec().has("from")) {
+                    Ford.lay(server);
+                    run.here = Engine.at(server, step.text("at"));
+                }
+            }
             case "dawn", "sleep" -> Clock.jump(level, Steps.DAWN, clock.road());
             case "caravan" -> {
                 if (!Caravan.campedToday(server)) {
@@ -320,11 +384,43 @@ public final class StoryDev {
             default -> {}
         }
         hear(server, active);
-        if (Engine.advance(server, active).isEmpty()) {
+        boolean ended = Engine.advance(server, active).isEmpty();
+        if (ended || step.spec().has("finds")) {
             Engine.open(server);
+        }
+        if (ended && level.getDayTime() % Clock.DAY > Clock.DAY / 4) {
+            Clock.jump(level, Steps.DAWN, clock.road());
         }
         Talk.reset();
         return true;
+    }
+
+    private static void learn(MinecraftServer server, Engine.Active active) {
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+            asked(server, player, active.step()).forEach(control -> Firsts.first(player, Tasks.FIRST + control));
+        }
+    }
+
+    private static Set<String> asked(MinecraftServer server, ServerPlayer player, Story.Step step) {
+        Set<String> asked = new TreeSet<>(Set.of(JOURNAL));
+        Map<String, Component> gear = new LinkedHashMap<>();
+        Gear.tasks(player, gear);
+        if (gear.containsKey(GEAR)) {
+            asked.add(GEAR);
+        }
+        if (Ember.carried(server)) {
+            asked.add(CHARMS);
+        }
+        if (step.kind().equals("talk") && !step.choices().isEmpty()) {
+            asked.add(ANSWER);
+        }
+        if (Engine.marked(player).isPresent()) {
+            asked.add(COMPASS);
+        }
+        if (step.spec().has("tasks") && step.spec().getAsJsonArray("tasks").contains(new JsonPrimitive(MAP))) {
+            asked.add(MAP);
+        }
+        return asked;
     }
 
     private static void hear(MinecraftServer server, Engine.Active active) {
@@ -350,10 +446,32 @@ public final class StoryDev {
     }
 
     private static void arrive(MinecraftServer server, Engine.Active active) {
+        stand(server, active);
+        if (run.save != null) {
+            save(server, run.save);
+        }
+        Engine.active(server).stream().filter(open -> !Steps.entered(open)).forEach(open -> Steps.enter(server, open));
+        say("story: at " + active.key() + ", after " + steps(run.played));
+        finish(server);
+    }
+
+    private static void keep(MinecraftServer server, Engine.Active active) {
+        Path folder = run.save.getParent().getParent().resolve(active.key());
+        if (Files.exists(folder.resolve("level.dat"))) {
+            return;
+        }
+        stand(server, active);
+        save(server, folder);
+        server.getPlayerList().getPlayers().forEach(player -> player.setGameMode(GameType.SPECTATOR));
+        say("story: kept " + active.key());
+    }
+
+    private static void stand(MinecraftServer server, Engine.Active active) {
         Story.Step step = active.step();
         ServerLevel level = Engine.overworld(server);
         if (!active.key().equals(run.moved)) {
             Steps.moves(server, step);
+            run.moved = active.key();
         }
         BlockPos subject = switch (step.kind()) {
             case "talk" -> body(server, step.with()).orElse(run.here);
@@ -369,12 +487,6 @@ public final class StoryDev {
         }
         Joining.leave(server, new Joining.Place(Level.OVERWORLD, feet));
         restore(server);
-        if (run.save != null) {
-            save(server, run.save);
-        }
-        Engine.active(server).stream().filter(open -> !Steps.entered(open)).forEach(open -> Steps.enter(server, open));
-        say("story: at " + active.key() + ", after " + steps(run.played));
-        finish(server);
     }
 
     private static void restore(MinecraftServer server) {
@@ -418,7 +530,8 @@ public final class StoryDev {
             case Tollbridge.NAME -> Tollbridge.tick(server);
             case Caravan.NAME -> Caravan.tick(server);
             case Diggers.NAME, Diggers.HALL -> Diggers.tick(server);
-            case FirstCamp.NAME -> {}
+            case FirstCamp.NAME -> FirstCamp.tick(server);
+            case Ford.NAME, Ford.HALL -> Ford.tick(server);
             default -> throw new IllegalStateException("the story has no way to build " + place);
         }
     }
@@ -452,8 +565,8 @@ public final class StoryDev {
 
     private static BlockPos road(ServerLevel level, BlockPos from) {
         Unseen.Heights heights = new Unseen.Heights(level);
-        int away = Balance.INSTANCE.prologue().awayBlocks() + ROAD_BEYOND;
-        int beyond = away + Balance.INSTANCE.tollbridge().aheadBlocks() + ROAD_BEYOND;
+        int away = Balance.get().prologue().awayBlocks() + ROAD_BEYOND;
+        int beyond = away + Balance.get().tollbridge().aheadBlocks() + ROAD_BEYOND;
         BlockPos best = null;
         int driest = -1;
         for (int heading : HEADINGS) {

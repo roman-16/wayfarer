@@ -17,7 +17,7 @@ public abstract class PlayerMixin {
         if (player instanceof ServerPlayer server && Journey.slain(server.server)) {
             return exhaustion;
         }
-        Balance.Hunger hunger = Balance.INSTANCE.hunger();
+        Balance.Hunger hunger = Balance.get().hunger();
         return exhaustion * (player.hasEffect(Wayfarer.WARM) ? hunger.warmExhaustionFactor() : hunger.exhaustionFactor());
     }
 }

@@ -69,7 +69,7 @@ public final class Sense {
     }
 
     private static void glow(ServerPlayer player, boolean held) {
-        Balance.Sense sense = Balance.INSTANCE.sense();
+        Balance.Sense sense = Balance.get().sense();
         List<Entity> near = player.serverLevel().getEntities((Entity) null, new AABB(player.blockPosition()).inflate(sense.reachBlocks()),
                 entity -> entity.getTags().stream().anyMatch(tag -> tag.startsWith(Steps.CLUE)) && !entity.getTags().contains(Steps.CLUE_BOX));
         near.forEach(entity -> glow(player, entity, true));

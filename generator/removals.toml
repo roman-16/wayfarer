@@ -130,10 +130,19 @@ items = [
   "wildernature:provision_request",
 ]
 
+loot_tables = [
+  "endrem:minecraft/chests/bastion_treasure",
+  "endrem:minecraft/chests/nether_bridge",
+  "endrem:minecraft/entities/elder_guardian",
+  "endrem:minecraft/entities/wither",
+  "parcool:grant_parcool_guide",
+]
+
 recipes = [
   "endrem:exotic_eye",
   "endrem:undead_eye",
   "endrem:witch_eye",
+  "farmersdelight:integration/silentgear/cutting/netherwood",
   "minecraft:crossbow",
   "minecraft:diamond_axe",
   "minecraft:diamond_boots",
@@ -174,7 +183,18 @@ recipes = [
   "minecraft:netherite_sword_smithing",
   "minecraft:repair_item",
   "minecraft:shield",
+  "parcool:parcool_guide",
   "silentgear:quick_repair",
+  "silentgear:sapling/netherwood",
+  "silentgear:woodcutting/netherwood_door",
+  "silentgear:woodcutting/netherwood_fence",
+  "silentgear:woodcutting/netherwood_fence_gate",
+  "silentgear:woodcutting/netherwood_planks",
+  "silentgear:woodcutting/netherwood_slab",
+  "silentgear:woodcutting/netherwood_stairs",
+  "silentgear:woodcutting/netherwood_trapdoor",
+  "silentgear:woodcutting/stripped_netherwood_log",
+  "silentgear:woodcutting/template_board",
   "simplyswords:diamond_chakram",
   "simplyswords:diamond_claymore",
   "simplyswords:diamond_cutlass",

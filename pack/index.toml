@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "31c4155ac8c2cd4495321283c657b9262b9687158eb655e9d03627e4477dc516"
+hash = "c645f2ab77b8c7b578095edef517433bbcfa3fa54b1e506c8334433193666f38"
 
 [[files]]
 file = "config/DistantHorizons.toml"
@@ -82,7 +82,7 @@ hash = "c831e807fc43a09432d4ec6b5a0094e2d5bbf357a2f1e8de98c0cd2298555cb4"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
-hash = "4528e9698142f2dfd44ff10f447c185229ea69a522dba1f567fc4b36b545e667"
+hash = "17ea89084ea8e42cd2a6582cea20ec0ecf4b40ca2456d41ab6cf4340425c3732"
 
 [[files]]
 file = "config/dynamic_fps.json"
@@ -111,6 +111,10 @@ hash = "4ff0c1634c0549f0a91dfcc1f53ca780cadb6655302e195fb6ec2278d57b3948"
 [[files]]
 file = "config/improvedmobs/common.toml"
 hash = "054c496cf8ac08e4be1e2c140fefbbe8b76f011de59190402d7b4fbd52e292ff"
+
+[[files]]
+file = "config/improvedmobs/equipment.json"
+hash = "6b8f9999c9beb54dce5da896ecbb23539e0b87fc70dea85f036360c962608e01"
 
 [[files]]
 file = "config/inventorysorter-client.toml"
@@ -167,6 +171,10 @@ hash = "40e24b452620a8521f8c4151e0b233870489b3e5795b182e615a44d8adc156b3"
 [[files]]
 file = "config/silentgear-common.toml"
 hash = "2416be04d3f29cde1e428e3f34deed8c59ee527253d0b25b11a0dcc8de22c760"
+
+[[files]]
+file = "config/sodium-options.json"
+hash = "d8c6c5843af8a5ebd1f2ef3f853ba4045a1dde73a0648765e4d0b254122a3790"
 
 [[files]]
 file = "config/solonion-client.json"
@@ -1044,26 +1052,6 @@ hash = "6a1556a0e4fcb411b33efafc3382b4abd9a6e671f140dc0d42e9aad2808e24f3"
 metafile = true
 
 [[files]]
-file = "shaderpacks/bliss-shader.pw.toml"
-hash = "8ffd81a5e0b4c3bc2daf0d86714ef56df4beb1ed87a5c41c4e9bbb94a7006bc1"
-metafile = true
-
-[[files]]
 file = "shaderpacks/complementary-reimagined.pw.toml"
 hash = "75d1d2488a0c332a9a58af7e57f980a1b006c02b3a1c580fbd50443088e4eab0"
-metafile = true
-
-[[files]]
-file = "shaderpacks/makeup-ultra-fast-shaders.pw.toml"
-hash = "75c4e8668f661174ae0161fa3262c043b4ff74ba9bdd5b0b72404badb6db33dd"
-metafile = true
-
-[[files]]
-file = "shaderpacks/photon-shader.pw.toml"
-hash = "e9112a2da03f65451c8c949331d71b92546bbd75ff78eac554d27f6c41e1ba29"
-metafile = true
-
-[[files]]
-file = "shaderpacks/solas-shader.pw.toml"
-hash = "ca905561def034cbfa51127dd55967fbb552a7eb2a7fc2481d16676c6aa59083"
 metafile = true

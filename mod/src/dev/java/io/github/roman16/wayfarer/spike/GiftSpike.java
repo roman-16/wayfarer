@@ -89,7 +89,7 @@ public final class GiftSpike {
     private static int giveFlare(ServerPlayer player) {
         boolean on = !charges.containsKey(player.getUUID());
         if (on) {
-            charges.put(player.getUUID(), Balance.INSTANCE.flare().charges());
+            charges.put(player.getUUID(), Balance.get().flare().charges());
         } else {
             charges.remove(player.getUUID());
         }
@@ -159,7 +159,7 @@ public final class GiftSpike {
         }
         charges.put(player.getUUID(), left - 1);
         ServerLevel level = player.serverLevel();
-        int reach = Balance.INSTANCE.flare().reachBlocks();
+        int reach = Balance.get().flare().reachBlocks();
         List<Mob> crumbled = level.getEntities(EntityTypeTest.forClass(Mob.class), new AABB(player.blockPosition()).inflate(reach),
                 mob -> Fire.fears(mob) && mob.distanceToSqr(player) <= reach * reach);
         level.sendParticles(ParticleTypes.FLASH, player.getX(), player.getY(1), player.getZ(), 1, 0, 0, 0, 0);
@@ -177,7 +177,7 @@ public final class GiftSpike {
     @SubscribeEvent
     public static void onEffectAdded(MobEffectEvent.Added event) {
         if (event.getEntity() instanceof ServerPlayer player && event.getEffectInstance().is(Wayfarer.WARM) && charges.containsKey(player.getUUID())) {
-            int full = Balance.INSTANCE.flare().charges();
+            int full = Balance.get().flare().charges();
             if (charges.put(player.getUUID(), full) < full) {
                 say(player.server, "flare: %s rested at a fire, and the ember is full again".formatted(player.getScoreboardName()));
             }

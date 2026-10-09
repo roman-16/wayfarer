@@ -74,7 +74,7 @@ public final class Shards {
     }
 
     private static Optional<String> gift(String eye) {
-        return Story.INSTANCE.quests().stream().flatMap(quest -> quest.steps().stream())
+        return Story.get().quests().stream().flatMap(quest -> quest.steps().stream())
                 .filter(step -> step.kind().equals("shard") && step.text("eye").equals(eye) && step.spec().has("gift"))
                 .map(step -> step.text("gift")).findFirst();
     }

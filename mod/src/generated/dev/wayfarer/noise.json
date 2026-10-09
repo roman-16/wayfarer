@@ -1,0 +1,134 @@
+{
+  "noise": [
+    {
+      "match": "Couldn't load advancements: ",
+      "mod": "Minecraft",
+      "why": "Advancements whose parents fail to load, all of them hidden in the pack"
+    },
+    {
+      "match": "Couldn't find template pool reference: ctov:village/",
+      "mod": "ChoiceTheorem's Overhauled Village",
+      "why": "Its villages name optional pools for mods the pack leaves out"
+    },
+    {
+      "match": "Configuration file .* is not correct\\. Correcting|Incorrect key \\[.*\\] was corrected from null",
+      "mod": "NeoForge",
+      "why": "The pack ships only the keys it changes, and each mod fills in the rest"
+    },
+    {
+      "match": "Detected minecraft:axolotl that was registered with AXOLOTLS mob category",
+      "mod": "NeoForge",
+      "why": "A biome mod spawns axolotls under another mob category, and NeoForge puts them back"
+    },
+    {
+      "match": "duplicate items were found in .* creative tab",
+      "mod": "JEI",
+      "why": "Mods list some items twice in their creative tabs"
+    },
+    {
+      "match": "Failed to find target item before for items: \\[\\d+ supplementaries:silentgear/way_sign_netherwood\\]",
+      "mod": "Supplementaries",
+      "why": "Its Silent Gear way sign follows netherwood, which the pack cuts"
+    },
+    {
+      "match": "Failed to load function spawnanimations:internal/entity/ehs/pehkui/",
+      "mod": "Spawn Animations",
+      "why": "Its functions for Pehkui, which the pack leaves out"
+    },
+    {
+      "match": "Failure adding generated resources from spelunkery:overrides/",
+      "mod": "Spelunkery",
+      "why": "Its generated loot and feature overrides name blocks its own data no longer has"
+    },
+    {
+      "match": "\\[EMF\\]: (Failure parsing ASM|ASM animation was invalid)",
+      "mod": "Entity Model Features",
+      "why": "Fresh Animations' player models use animation lines it does not read"
+    },
+    {
+      "match": "Found 0 weight, make sure this is intentional!",
+      "mod": "Minecraft",
+      "why": "A mod's data gives a weighted entry no weight"
+    },
+    {
+      "match": "Missing subtitle translation.*for sound event: (?!wayfarer:)",
+      "mod": "Sounds",
+      "why": "Other mods' sound events without subtitles; the pack's own all have them"
+    },
+    {
+      "match": "@Mixin target dev\\.ryanhcode\\.sable|dev/ryanhcode/sable",
+      "mod": "A mod's Sable support",
+      "why": "Mixins for Sable, which the pack leaves out"
+    },
+    {
+      "match": "Parsing error loading custom advancement nomadictents:recipes/",
+      "mod": "Nomadic Tents",
+      "why": "Its recipe advancements require criteria they do not list, and the pack hides advancements"
+    },
+    {
+      "match": "Skipping Entity with id campsite_structures:camper",
+      "mod": "Campsite Structures",
+      "why": "Its camps name a camper the mod does not register in the pack"
+    },
+    {
+      "match": "TagConventionLogWarning",
+      "mod": "NeoForge",
+      "why": "Mods use tags that predate NeoForge's common conventions"
+    },
+    {
+      "match": "Unknown recipe category: silentgear:",
+      "mod": "Silent Gear",
+      "why": "Its pressing recipes have no recipe book category"
+    },
+    {
+      "match": "ModernFix: (Initial datapack load took|Game took|Time from main menu to in-game|Total time to load game|Failed to initialize Linux Narrator)",
+      "mod": "ModernFix",
+      "why": "Its own timings, and the narrator library the machine does not have"
+    },
+    {
+      "match": "Missing sound for event: (minecraft:item\\.goat_horn\\.play|minecraft:entity\\.goat\\.screaming\\.horn_break|supplementaries:|sounds:)",
+      "mod": "Sounds and Supplementaries",
+      "why": "Sound events their packs register without sounds"
+    },
+    {
+      "match": "could not find (uniform|sampler) named",
+      "mod": "JourneyMap, Moonlight and others",
+      "why": "Their shaders leave out uniforms the game offers"
+    },
+    {
+      "match": "Method overwrite conflict for containerTick",
+      "mod": "Moonlight and Supplementaries",
+      "why": "Both patch the cartography table, the same way"
+    },
+    {
+      "match": "is using a deprecated annotation",
+      "mod": "Waystones",
+      "why": "Its JourneyMap plugin uses an annotation JourneyMap still reads"
+    },
+    {
+      "match": "Missing entity animation friendsandfoes:",
+      "mod": "Friends and Foes",
+      "why": "Animations for creatures the pack does not let spawn"
+    },
+    {
+      "match": "Sodium-VertexConsumerTracker|C2ME HookCompatibility",
+      "mod": "Sodium and C2ME",
+      "why": "Notes that other mods skip their fastest paths"
+    },
+    {
+      "match": "took [0-9.]+ s to run a deferred task",
+      "mod": "NeoForge",
+      "why": "A mod's startup work, timed"
+    },
+    {
+      "match": "Invalid frame index on sprite corgilib:|limits mip level from|Unable to load model: .silentgear:item/trident_icon",
+      "mod": "CorgiLib, Sophisticated Core and Silent Gear",
+      "why": "Textures and a model those mods ship slightly wrong"
+    },
+    {
+      "match": "Incorrect key .* was corrected from (.*) to its default, \\1\\.",
+      "mod": "NeoForge",
+      "why": "A config value written back unchanged"
+    }
+  ]
+}

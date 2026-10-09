@@ -21,6 +21,7 @@ STOP_SECONDS = 120
 STATE = "state: "
 STORY = "story: "
 STORY_AT = STORY + "at "
+KEPT = STORY + "kept "
 WALKER = "Wayfarer"
 
 
@@ -36,31 +37,50 @@ def start(arguments):
     if server.alive():
         launched = json.loads(LAUNCHED.read_text()) if LAUNCHED.exists() else None
         world = arguments.state or arguments.fresh or arguments.seed is not None
-        if not world and launched == {"inputs": states.inputs(), "mode": mode} and swapped(server):
+        reasons = restarting(launched, mode) or swapped(server)
+        if not world and not reasons:
             print("the dev server is running")
             return
+        if reasons:
+            print("restarting: " + "; ".join(reasons))
         server.stop(STOP_SECONDS)
     if arguments.fresh or arguments.seed is not None:
         shutil.rmtree(DEV_SERVER / ("world-lean" if arguments.lean else "world"), ignore_errors=True)
     if arguments.seed is not None:
         os.environ["WAYFARER_SEED"] = str(arguments.seed)
-    cached = False
+    start = None
     if arguments.state:
         cache = states.folder("server", mode, arguments.state)
-        cached = states.prepare(cache, DEV_SERVER / ("state-lean" if arguments.lean else "state"), arguments.rebuild)
+        start = states.prepare(cache, DEV_SERVER / ("state-lean" if arguments.lean else "state"), arguments.rebuild)
         os.environ["WAYFARER_STATE"] = arguments.state
     os.environ |= {"WAYFARER_BACKGROUND": "true", "WAYFARER_DRIVEN": "true"}
     started = time.monotonic()
     server.start(arguments.timeout)
     hotswap.remember(SNAPSHOT)
-    LAUNCHED.write_text(json.dumps({"inputs": states.inputs(), "mode": mode}))
-    if arguments.state and not cached:
+    LAUNCHED.write_text(json.dumps({"digests": states.digests(), "mode": mode}))
+    replies = []
+    if arguments.state and start != arguments.state:
         server.run(f"wayfarer pretend join {WALKER}", STEP_SECONDS)
-        story(server, f"{arguments.state} {cache}", STEP_SECONDS)
+        replies = story(server, f"{arguments.state} {cache}", STEP_SECONDS)
         server.run(f"wayfarer pretend leave {WALKER}", STEP_SECONDS)
     lean = ", with only the Wayfarer mod," if arguments.lean else ""
-    at = f" in state {arguments.state}" + (", from the cache," if cached else ", built,") if arguments.state else ""
+    at = f" in state {arguments.state}, " + built(arguments.state, start, replies) if arguments.state else ""
     print(f"the dev server is running{lean}{at} after {time.monotonic() - started:.0f} s; log in {server.log}")
+
+
+def restarting(launched, mode):
+    if launched is None:
+        return ["it was started by hand"]
+    reasons = [] if launched["mode"] == mode else ["the mode is another"]
+    return reasons + states.changed(launched["digests"], states.digests(), (*states.LAUNCH, "data"))
+
+
+def built(state, start, replies):
+    if start == state:
+        return "from the cache,"
+    kept = sum(said.startswith(KEPT) for said in replies)
+    keeping = f", keeping {kept} earlier step{'s' * (kept != 1)}" if kept else ""
+    return (f"built from {start}" if start else "built") + keeping + ","
 
 
 def awaited(server, text, offset, timeout, taken):
@@ -137,7 +157,7 @@ def swapped(server):
     result = swap_in(server)
     if any(result[key] for key in ("swapped", "listeners", "needs a restart")):
         print(json.dumps(result))
-    return not result["needs a restart"]
+    return [f"{', '.join(result['needs a restart'])} needs a restart"] if result["needs a restart"] else []
 
 
 def swap(arguments):

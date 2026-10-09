@@ -131,6 +131,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Who is Maren? | A Gazebound evoker Wend raised from a child; it was her hand that held out the bread the night he gave in. She follows the smoke of my fire, visits it as a guest, names Wend, and at the frame opens his letter and turns on her own band |
 | Who left the Cache? | A Wayfarer nobody can name, who signed their journal only with the circle mark. They found a place they loved, built a cabin for one winter and stayed; the ember grew small, and one winter it went out. Their stone of one's own waited, wrapped in cloth, for someone who walks |
 | Why can no one hurt Maren at a fire? | She comes as a guest and leaves in smoke before anything can happen; nothing fights at a fire shared freely |
+| Who is Corin? | A Gazebound deserter, an Illager born to the Grass Kingdom's outcasts, with their scar over his heart. He served under the stranger for six winters and will not say his name; the heir hunts him, and his brother still serves at the outpost above the ford where the caravan found him |
 | Who is the Grass King's heir? | The leader of the Gazebound, of the Grass King's line. He wants a world that is seen, with no crime and no war, as his ancestor's kingdom had for one summer, at the price of everyone being watched |
 | Who was the Grass King? | The king of the grasslands, one of the Twelve Peoples. He kept his people's shard in his crown instead of hiding it, and for one summer he saw everything that stood still in his kingdom. His own people tore it from his crown and sealed it, and drove out his heirs and everyone who followed them |
 
@@ -144,6 +145,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Who are the settled? | The villages, towns and capitals: the people who forgot the oath. The gaze burns them, one by one |
 | What do the settled remember? | Wayfarers only as a story told to children: walkers who carried fire and never stayed. They have no name for what burns their towns; they say "they", or "the night" |
 | Who are the Gazebound? | An Illager cult under the Grass King's heir that serves the gaze to use it: they believe its sight will run through them once the Eye is set. Their outposts, camps, forts and mansions stand across the world |
+| What is the Gazebound's mark? | An open eye: the eye they serve, on their banners and cut wherever they have been |
 | What do the Gazebound ask on the road? | After a light: "Seen anyone with a coal in their hand that glows? A fire that walks?" They are looking for whoever carries an ember |
 | Where do the Illagers come from? | They are the Grass Kingdom's outcasts and their children |
 | Why do monsters leave the Gazebound alone? | At their oath, every Gazebound lets the gaze's creatures open their chest just far enough to look. Not all survive it; those who do carry the scar over the heart, and the gaze never searches a heart twice. They call it a blessing |
