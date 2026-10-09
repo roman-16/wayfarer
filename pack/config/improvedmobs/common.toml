@@ -1,2 +1,5 @@
 [general]
 	"Difficulty Increase" = ["0.0;difficulty"]
+
+[features]
+	"Entity Configs" = ["#improvedmobs:non_hostile_mobs", "easy_npc"]

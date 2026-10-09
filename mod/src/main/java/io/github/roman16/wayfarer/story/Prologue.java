@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -46,14 +45,6 @@ public final class Prologue {
         StructureTemplate grave = level.getStructureManager().getOrCreate(Wayfarer.id("last_camp/grave"));
         grave.placeInWorld(level, origin, origin, new StructurePlaceSettings(), level.random, Block.UPDATE_CLIENTS);
         return origin.offset(vector(CAMP.get().getAsJsonArray("sign")));
-    }
-
-    static String words(ServerLevel level, BlockPos sign) {
-        if (!(level.getBlockEntity(sign) instanceof SignBlockEntity stone)) {
-            return "";
-        }
-        return String.join(" ", Arrays.stream(stone.getFrontText().getMessages(false)).map(Component::getString).map(String::strip)
-                .filter(line -> !line.isEmpty()).toList());
     }
 
     public static void engrave(ServerLevel level, BlockPos sign, String words) {

@@ -29,9 +29,12 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 public final class Sense {
     public static final String KEY = "key.wayfarer.ember_sense";
     public static final int AMBER = 0xFFB040;
+    public static final int TRUE = 0xDCE6F0;
     private static final String CLUES_GLOW = "clues_glow";
     private static final String TEAM = Wayfarer.MODID + "_sense";
     private static final String TRAIL_SIGHT = "trail_sight";
+    private static final String TRUE_SIGHT = "true_sight";
+    private static final String VEILS = Wayfarer.MODID + "_true";
     private static final int GLOWING = 1 << 6;
     private static final int TICKS_PER_SECOND = 20;
     private static final Field FLAGS = flags();
@@ -71,7 +74,8 @@ public final class Sense {
     private static void glow(ServerPlayer player, boolean held) {
         Balance.Sense sense = Balance.get().sense();
         List<Entity> near = player.serverLevel().getEntities((Entity) null, new AABB(player.blockPosition()).inflate(sense.reachBlocks()),
-                entity -> entity.getTags().stream().anyMatch(tag -> tag.startsWith(Steps.CLUE)) && !entity.getTags().contains(Steps.CLUE_BOX));
+                entity -> entity.getTags().stream().anyMatch(tag -> tag.startsWith(Steps.CLUE)) && !entity.getTags().contains(Steps.CLUE_BOX)
+                        && !Steps.hidden(player.server, entity));
         near.forEach(entity -> glow(player, entity, true));
         if (held && !near.isEmpty()) {
             Sounds.play(player, CLUES_GLOW);
@@ -104,6 +108,22 @@ public final class Sense {
                 }
             }
         }
+        if (server.getTickCount() % TICKS_PER_SECOND == 0 && Engine.running(server) && Progress.of(server).gift(TRUE_SIGHT)) {
+            server.getPlayerList().getPlayers().forEach(Sense::see);
+        }
+    }
+
+    private static void see(ServerPlayer player) {
+        List<Entity> veils = player.serverLevel().getEntities((Entity) null, new AABB(player.blockPosition()).inflate(Balance.get().sense().reachBlocks()),
+                entity -> entity.getTags().contains(Clues.VEIL));
+        if (veils.isEmpty()) {
+            return;
+        }
+        veils.forEach(entity -> glow(player, entity, true));
+        PlayerTeam team = new PlayerTeam(new Scoreboard(), VEILS);
+        team.setColor(ChatFormatting.WHITE);
+        veils.forEach(entity -> team.getPlayers().add(entity.getStringUUID()));
+        player.connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
     }
 
     private static PlayerTeam team(List<Entity> glowing) {

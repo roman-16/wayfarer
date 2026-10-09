@@ -1,11 +1,11 @@
-[tiers.1]
-spacing = 129
+[acts.2]
+spacing = 125
 
-[tiers.2]
-spacing = 282
+[acts.3]
+spacing = 189
 
 [eyes.black]
-tier = 1
+act = 2
 biomes = [
   "#c:is_beach",
   "#c:is_stony_shores",
@@ -21,7 +21,8 @@ lore = [
 
 
 [eyes.cold]
-tier = 1
+act = 1
+story = true
 biomes = ["#c:is_snowy", "#c:is_icy"]
 people = "The Frost Walkers"
 lore = [
@@ -32,7 +33,7 @@ lore = [
 
 
 [eyes.corrupted]
-tier = 2
+act = 3
 biomes = ["#c:is_savanna", "#minecraft:is_savanna"]
 people = "The Grass Kingdom"
 lore = [
@@ -43,7 +44,7 @@ lore = [
 
 
 [eyes.cryptic]
-tier = 2
+act = 3
 biomes = ["#c:is_mountain", "#minecraft:is_mountain"]
 people = "The Scribes of the Peaks"
 lore = [
@@ -54,7 +55,8 @@ lore = [
 
 
 [eyes.evil]
-tier = 2
+act = 1
+story = true
 biomes = [
   "#c:is_plains",
   "minecraft:meadow",
@@ -70,7 +72,7 @@ lore = [
 
 
 [eyes.exotic]
-tier = 2
+act = 2
 biomes = ["#c:is_badlands", "#minecraft:is_badlands"]
 people = "The Drowned City"
 lore = [
@@ -81,7 +83,7 @@ lore = [
 
 
 [eyes.lost]
-tier = 1
+act = 1
 story = true
 biomes = ["#c:is_forest", "#minecraft:is_forest"]
 people = "The Diggers"
@@ -93,7 +95,7 @@ lore = [
 
 
 [eyes.magical]
-tier = 2
+act = 3
 biomes = ["#c:is_dark_forest", "minecraft:dark_forest"]
 people = "The Shadow Circle"
 lore = [
@@ -104,7 +106,7 @@ lore = [
 
 
 [eyes.old]
-tier = 1
+act = 2
 biomes = ["#c:is_desert", "minecraft:desert"]
 people = "The Sand Singers"
 lore = [
@@ -115,7 +117,7 @@ lore = [
 
 
 [eyes.rogue]
-tier = 1
+act = 2
 biomes = ["#c:is_jungle", "#minecraft:is_jungle"]
 people = "The Jungle Folk"
 lore = [
@@ -126,7 +128,7 @@ lore = [
 
 
 [eyes.undead]
-tier = 2
+act = 3
 biomes = [
   "minecraft:old_growth_pine_taiga",
   "minecraft:old_growth_spruce_taiga",
@@ -141,11 +143,13 @@ lore = [
 
 
 [eyes.witch]
-tier = 1
+act = 1
+story = true
 biomes = ["#c:is_swamp", "minecraft:mangrove_swamp", "minecraft:swamp"]
 people = "The Marsh Mothers"
 lore = [
-  "The Marsh Mothers brewed with everything the swamp gave them, and the witch shard gave them sight.",
-  "They saw the dragon seeing them, and they stopped brewing, and they sank the shard into the mud where no reflection lives.",
-  "The witches in their huts still remember us. They do not remember why.",
+  "We brewed with all the swamp gave us, and the shard gave our water its sight. A cup from our pool showed the sick what ailed them, and the lost where they were.",
+  "Then the water showed us something looking back. Far off, past every sky, an eye was searching, and the clearer our water saw, the nearer it came.",
+  "So we sank the shard in the mud, where no reflection lives, and went down the long stair only when a fever would not break. Our daughters keep the hut over the stair.",
+  "If you came by the water, you came the hard way. The stair is ours, and it shows itself to eyes that see true. Leave our daughters their cups.",
 ]

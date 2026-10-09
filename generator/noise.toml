@@ -29,6 +29,11 @@ mod = "Supplementaries"
 why = "Its Silent Gear way sign follows netherwood, which the pack cuts"
 
 [[noise]]
+match = 'Failed to load item light source "supplementaries:dynamiclights/'
+mod = "LambDynamicLights"
+why = "Supplementaries ships its held light for candle holders in older formats and for mods the pack leaves out, and LambDynamicLights skips them"
+
+[[noise]]
 match = 'Failed to load function spawnanimations:internal/entity/ehs/pehkui/'
 mod = "Spawn Animations"
 why = "Its functions for Pehkui, which the pack leaves out"

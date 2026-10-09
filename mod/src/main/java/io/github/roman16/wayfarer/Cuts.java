@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
@@ -36,6 +37,7 @@ import net.neoforged.neoforge.common.loot.LootModifier;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.BabyEntitySpawnEvent;
+import net.neoforged.neoforge.event.entity.living.LivingConversionEvent;
 import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -105,9 +107,20 @@ public final class Cuts {
         });
     }
 
+    public static boolean creature(EntityType<?> type) {
+        return SPEC.get().creatures().contains(BuiltInRegistries.ENTITY_TYPE.getKey(type));
+    }
+
     @SubscribeEvent
     public static void onJoin(EntityJoinLevelEvent event) {
-        if (event.getEntity() instanceof ExperienceOrb || SPEC.get().creatures().contains(BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()))) {
+        if (event.getEntity() instanceof ExperienceOrb || creature(event.getEntity().getType())) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onConvert(LivingConversionEvent.Pre event) {
+        if (creature(event.getOutcome())) {
             event.setCanceled(true);
         }
     }

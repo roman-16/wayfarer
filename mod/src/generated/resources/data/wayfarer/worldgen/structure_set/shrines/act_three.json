@@ -1,9 +1,11 @@
 {
   "placement": {
-    "salt": 556518346,
-    "separation": 211,
-    "spacing": 282,
-    "type": "minecraft:random_spread"
+    "from_blocks": 24576,
+    "salt": 1659910484,
+    "separation": 141,
+    "spacing": 189,
+    "to_blocks": 39096,
+    "type": "wayfarer:band"
   },
   "structures": [
     {
@@ -12,14 +14,6 @@
     },
     {
       "structure": "wayfarer:shrine/cryptic",
-      "weight": 1
-    },
-    {
-      "structure": "wayfarer:shrine/evil",
-      "weight": 1
-    },
-    {
-      "structure": "wayfarer:shrine/exotic",
       "weight": 1
     },
     {

@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -42,7 +41,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 public final class Fire {
     private static final int SCAN_TICKS = 10;
-    private static final int REST_CHECK_TICKS = 20;
+    public static final int REST_CHECK_TICKS = 20;
     private static final int FLEE_MARGIN = 6;
     private static final double FLEE_SPEED = 1.2;
     private static final long TICKS_PER_DAY = 24000;
@@ -183,7 +182,7 @@ public final class Fire {
         NeoForge.EVENT_BUS.post(new RestEvent(player, fire));
         if (Journey.awake(player.server) && !Journey.slain(player.server) && !player.hasEffect(Wayfarer.WARM) && !Talk.busy()) {
             player.addEffect(new MobEffectInstance(Wayfarer.WARM, untilTomorrowsDusk(player.server.overworld().getDayTime()), 0, true, false, true));
-            player.displayClientMessage(Component.translatable("wayfarer.fire.warm").withStyle(ChatFormatting.GOLD), false);
+            Talk.tell(player, Component.translatable("wayfarer.fire.warm"));
             Firsts.first(player, "warm");
             AdvancementHolder advancement = player.server.getAdvancements().get(WARMED);
             if (advancement != null) {

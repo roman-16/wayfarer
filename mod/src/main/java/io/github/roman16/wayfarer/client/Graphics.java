@@ -15,6 +15,7 @@ public enum Graphics {
 
     private static final List<Graphics> STEPS = List.of(LOW, MEDIUM, HIGH, ULTRA);
     private static final String FAR_VIEW = "distanthorizons";
+    private static final String OFF = "off";
     private static final String SHADERS = "iris";
 
     static Graphics current() {
@@ -41,6 +42,18 @@ public enum Graphics {
         if (ModList.get().isLoaded(SHADERS)) {
             ShaderProfile.choose(steps.profiles().get(step.ordinal()));
         }
+    }
+
+    static String heldLight() {
+        if (shaded()) {
+            return OFF;
+        }
+        Graphics step = current();
+        return Balance.get().graphics().heldLight().get((step == CUSTOM ? HIGH : step).ordinal());
+    }
+
+    static boolean shaded() {
+        return ModList.get().isLoaded(SHADERS) && ShaderProfile.drawing();
     }
 
     static boolean shaders() {

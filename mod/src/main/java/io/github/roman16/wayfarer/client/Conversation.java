@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer.client;
 
+import io.github.roman16.wayfarer.Wayfarer;
 import io.github.roman16.wayfarer.client.stamp.Stamp;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.ArrayDeque;
@@ -12,10 +13,12 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -44,6 +47,7 @@ public final class Conversation {
     private static final int ANSWER_WIDTH = 160;
     private static final int OPAQUE = 0xFF;
     private static final int LOGGED = 32;
+    private static final String TICK_SOUND = "band_tick";
     private static final Deque<Shown> lines = new ArrayDeque<>();
     private static final Deque<Logged> log = new ArrayDeque<>();
     private static List<String> answers = List.of();
@@ -61,11 +65,19 @@ public final class Conversation {
     public record Logged(long seq, String text) {}
 
     public static void hear(Talk.Subtitle subtitle) {
+        if (quiet()) {
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvent.createVariableRangeEvent(Wayfarer.id(TICK_SOUND)), 1, 1));
+        }
         lines.addLast(new Shown(subtitle.by(), subtitle.text(), clock, subtitle.ticks()));
         while (lines.size() > KEPT) {
             lines.removeFirst();
         }
         note(subtitle.by().isEmpty() ? subtitle.text().getString() : "<" + subtitle.by() + "> " + subtitle.text().getString());
+    }
+
+    private static boolean quiet() {
+        Shown last = lines.peekLast();
+        return answers.isEmpty() && (last == null || clock > last.from() + last.ticks() + LINGER_TICKS);
     }
 
     public static void ask(Talk.Answers offered) {
@@ -123,7 +135,7 @@ public final class Conversation {
         if (minecraft.options.hideGui || minecraft.player == null) {
             return;
         }
-        float scale = TalkSize.scale((int) minecraft.getWindow().getGuiScale());
+        float scale = HudSize.scale();
         graphics.pose().pushPose();
         graphics.pose().scale(scale, scale, 1);
         int width = Math.round(graphics.guiWidth() / scale);

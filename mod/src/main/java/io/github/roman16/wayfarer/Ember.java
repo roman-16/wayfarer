@@ -60,6 +60,9 @@ public final class Ember {
         CuriosApi.getCuriosInventory(player).flatMap(curios -> curios.getStacksHandler(SLOT)).ifPresent(handler -> {
             var stacks = handler.getStacks();
             if (!ItemStack.isSameItemSameComponents(stacks.getStackInSlot(0), ember)) {
+                if (stacks.getStackInSlot(0).isEmpty()) {
+                    Notices.given(player, List.of(ember));
+                }
                 stacks.setStackInSlot(0, ember);
             }
         });

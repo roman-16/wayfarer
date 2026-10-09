@@ -7,11 +7,14 @@ import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -37,24 +40,33 @@ public final class Talk {
     private static final int TICKS_PER_SECOND = 20;
     private static final Deque<Speech> queue = new ArrayDeque<>();
     private static final Set<UUID> answering = new HashSet<>();
+    private static final Map<UUID, Integer> votes = new HashMap<>();
     private static long clock;
     private static long next;
+    @Nullable
+    private static String speaking;
     @Nullable
     private static Offer offer;
 
     private Talk() {}
 
-    private sealed interface Speech permits Said, Notice, Then, Ask {}
+    private sealed interface Speech permits Said, Notice, Pause, Then, Ask {}
 
     private record Said(@Nullable String fire, @Nullable Vec3 at, Story.Line line, String text) implements Speech {}
 
     private record Notice(Component line) implements Speech {}
 
+    private record Pause() implements Speech {}
+
     private record Then(Runnable run) implements Speech {}
 
     private record Ask(Offer offer) implements Speech {}
 
-    public record Offer(@Nullable String fire, @Nullable String speaker, List<Story.Choice> choices, @Nullable Vec3 at, Answer answer) {}
+    public record Offer(@Nullable String fire, @Nullable String speaker, List<Story.Choice> choices, @Nullable Vec3 at, Answer answer, boolean vote) {
+        public Offer(@Nullable String fire, @Nullable String speaker, List<Story.Choice> choices, @Nullable Vec3 at, Answer answer) {
+            this(fire, speaker, choices, at, answer, false);
+        }
+    }
 
     public interface Answer {
         void chosen(ServerPlayer player, Story.Choice choice);
@@ -96,6 +108,9 @@ public final class Talk {
 
     public static void say(@Nullable String fire, @Nullable Vec3 at, List<Story.Line> lines, Placeholders placeholders) {
         for (Story.Line line : lines) {
+            if (line.pause()) {
+                queue.add(new Pause());
+            }
             queue.add(new Said(fire, at, line, placeholders.fill(line.text())));
         }
     }
@@ -125,6 +140,10 @@ public final class Talk {
         listeners.forEach(listener -> PacketDistributor.sendToPlayer(listener, subtitle));
     }
 
+    public static Optional<String> speaker() {
+        return clock < next ? Optional.ofNullable(speaking) : Optional.empty();
+    }
+
     public static boolean busy() {
         return !queue.isEmpty() || offer != null;
     }
@@ -140,6 +159,7 @@ public final class Talk {
     public static void reset() {
         queue.clear();
         offer = null;
+        votes.clear();
         next = clock;
     }
 
@@ -155,6 +175,9 @@ public final class Talk {
         }
         if (line.music() != null) {
             Music.play(server, line.music(), false);
+        }
+        if (line.vanishes() != null) {
+            Visit.vanish(server, line.vanishes(), line.left());
         }
     }
 
@@ -178,7 +201,7 @@ public final class Talk {
             return;
         }
         clock++;
-        while (offer == null && !queue.isEmpty() && clock >= next) {
+        while (offer == null && !queue.isEmpty() && clock >= next && listened(server, queue.peek())) {
             Speech speech = queue.poll();
             switch (speech) {
                 case Said said -> {
@@ -187,12 +210,15 @@ public final class Talk {
                     Component text = Component.literal(said.text());
                     deliver(server, new Subtitle(by, text, reading(said.text())), at.orElse(null), at.isPresent() ? line(server, said.line().by(), text) : null);
                     heard(server, said);
+                    speaking = said.line().by();
                     next = clock + reading(said.text());
                 }
                 case Notice notice -> {
+                    speaking = null;
                     deliver(server, new Subtitle("", notice.line(), reading(notice.line().getString())), null, null);
                     next = clock + reading(notice.line().getString());
                 }
+                case Pause pause -> next = clock + (long) Balance.get().talk().pauseSeconds() * TICKS_PER_SECOND;
                 case Then then -> then.run().run();
                 case Ask ask -> offer = ask.offer();
             }
@@ -212,6 +238,18 @@ public final class Talk {
         }
         Offer answered = offer;
         Story.Choice picked = answered.choices().get(index);
+        if (answered.vote()) {
+            votes.put(player.getUUID(), index);
+            long agreed = votes.values().stream().filter(vote -> vote == index).count();
+            if (!Engine.most(player.server, agreed)) {
+                Component chose = Component.translatable("wayfarer.talk.chose", player.getDisplayName(), picked.text());
+                deliver(player.server, new Subtitle("", chose, reading(chose.getString())), answered.at(), null);
+                answering.clear();
+                offer(player.server);
+                return;
+            }
+            votes.clear();
+        }
         offer = null;
         offer(player.server);
         if (answered.fire() != null) {
@@ -230,23 +268,39 @@ public final class Talk {
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             boolean shown = offer != null && near(player, offer.at());
             if (shown && answering.add(player.getUUID())) {
-                PacketDistributor.sendToPlayer(player, new Answers(offer.choices().stream().map(Story.Choice::text).toList()));
+                PacketDistributor.sendToPlayer(player, new Answers(answers(server, offer)));
             } else if (!shown && answering.remove(player.getUUID())) {
                 PacketDistributor.sendToPlayer(player, new Answers(List.of()));
             }
         }
     }
 
+    private static List<String> answers(MinecraftServer server, Offer shown) {
+        List<String> texts = shown.choices().stream().map(Story.Choice::text).toList();
+        int online = Engine.players(server).size();
+        if (!shown.vote() || online < 2) {
+            return texts;
+        }
+        return IntStream.range(0, texts.size())
+                .mapToObj(index -> texts.get(index) + " " + votes.values().stream().filter(vote -> vote == index).count() + "/" + online).toList();
+    }
+
+    private static boolean listened(MinecraftServer server, Speech speech) {
+        if (!(speech instanceof Said said)) {
+            return true;
+        }
+        Optional<Vec3> at = where(server, said);
+        return at.isEmpty() || server.getPlayerList().getPlayers().stream().anyMatch(player -> near(player, at.get()));
+    }
+
     private static Optional<Vec3> where(MinecraftServer server, Said said) {
         String by = said.line().by();
-        if (by != null) {
-            Optional<Entity> body = People.find(server, by);
-            if (body.isPresent()) {
-                return body.map(Entity::position);
-            }
-            if (Story.get().person(by).voice()) {
-                return Optional.empty();
-            }
+        if (by == null || Story.get().person(by).voice()) {
+            return Optional.empty();
+        }
+        Optional<Entity> body = People.find(server, by);
+        if (body.isPresent()) {
+            return body.map(Entity::position);
         }
         return Optional.ofNullable(said.at());
     }

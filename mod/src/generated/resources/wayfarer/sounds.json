@@ -2,6 +2,9 @@
   "answer_chosen": {
     "slider": "master"
   },
+  "band_tick": {
+    "slider": "master"
+  },
   "camp": {
     "loop_ticks": 300,
     "reach": 64,
@@ -68,6 +71,9 @@
   "shard_taken": {
     "slider": "players"
   },
+  "smoke_gust": {
+    "slider": "ambient"
+  },
   "task_ticked": {
     "slider": "master"
   },
@@ -83,5 +89,8 @@
     "loop_ticks": 554,
     "reach": 128,
     "slider": "ambient"
+  },
+  "true_sight": {
+    "slider": "players"
   }
 }

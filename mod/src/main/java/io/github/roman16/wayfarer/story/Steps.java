@@ -2,8 +2,10 @@ package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
+import io.github.roman16.wayfarer.Fire;
 import io.github.roman16.wayfarer.Journey;
 import io.github.roman16.wayfarer.Music;
+import io.github.roman16.wayfarer.Shrines;
 import io.github.roman16.wayfarer.Tents;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.List;
@@ -12,14 +14,12 @@ import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -30,19 +30,29 @@ final class Steps {
     static final String DAWN = "06:00";
     private static final String ENTERED = "entered";
     private static final String STARTED = "started";
+    private static final String DECLINED = "declined";
+    private static final String PEDESTAL = "pedestal";
     private static final String DAY = "day";
     static final String BURIED = "buried";
-    static final String WRITING = "writing";
     private static final String BURIAL = "burial";
     static final String MUSIC = "music";
     static final String RESTED = "rested";
+    static final String RESTED_AT = "rested_at";
+    static final String RESTED_TICKS = "rested_ticks";
     private static final String UNTIL = "until";
     private static final int BLIND_TICKS = 40;
+    private static final int TICKS_PER_SECOND = 20;
     private static final String HEARTHSTONE = "hearthstone";
     private static final String TOWARD = "toward";
     private static final String LEAVES = "leaves";
+    private static final String ASKING = "asking";
+    private static final String CALLS = "calls";
 
     private Steps() {}
+
+    static boolean started(Engine.Active active) {
+        return active.scratch().getBoolean(STARTED);
+    }
 
     static boolean entered(Engine.Active active) {
         return active.scratch().getBoolean(ENTERED);
@@ -76,8 +86,11 @@ final class Steps {
             case "sleep" -> active.scratch().putLong(DAY, Math.floorDiv(Engine.overworld(server).getDayTime(), Clock.DAY));
             default -> {}
         }
-        if (!step.kind().equals("talk")) {
+        if (!step.kind().equals("talk") && !step.kind().equals("visit")) {
             Talk.say(active.quest().id(), null, step.lines(), Engine.fill(Progress.of(server)));
+        }
+        if (step.kind().equals("caravan")) {
+            Engine.road(server, active);
         }
         Journal.syncAll(server);
     }
@@ -86,7 +99,7 @@ final class Steps {
         Story.Step step = active.step();
         return switch (step.kind()) {
             case "reach" -> Optional.of(step.spec().has(TOWARD) ? step.text(TOWARD) : step.text("place"));
-            case "caravan" -> Optional.of(Caravan.NAME);
+            case "caravan", "visit" -> Optional.of(Caravan.NAME);
             case "rest", "hold" -> Optional.of(step.text("at"));
             case "shard" -> Optional.of(step.text("at"));
             case "clues" -> step.spec().has("place") ? Optional.of(step.text("place")) : Optional.empty();
@@ -119,7 +132,6 @@ final class Steps {
             case "reach" -> Places.build(server, active.step().text("place"));
             case "bury" -> {
                 if (active.scratch().contains(BURIED)) {
-                    active.scratch().remove(WRITING);
                     ask(active);
                 }
             }
@@ -133,14 +145,10 @@ final class Steps {
         switch (step.kind()) {
             case "talk" -> {
                 String with = step.with();
-                if (!scratch.getBoolean(STARTED) && !Talk.busy() && with != null
-                        && People.find(server, with).filter(body -> near(server, body, Balance.get().talk().startBlocks())).isPresent()) {
+                if (!scratch.getBoolean(STARTED) && !scratch.getBoolean(DECLINED) && !Talk.busy() && with != null && Engine.pursued(server, active.quest())
+                        && People.find(server, with).filter(body -> seen(server, body, step.spec().has(CALLS) ? step.number(CALLS)
+                                : Balance.get().talk().startBlocks())).isPresent()) {
                     start(server, active);
-                }
-            }
-            case "bury" -> {
-                if (scratch.getBoolean(WRITING)) {
-                    watchStone(server, active);
                 }
             }
             case "walk" -> {
@@ -152,7 +160,7 @@ final class Steps {
                 }
             }
             case "dusk" -> {
-                if (Clock.passed() && Places.ready(server, step.text("place")) && !Talk.busy()) {
+                if (Clock.passed() && Places.ready(server, step.text("place")) && !Talk.busy() && Engine.players(server).stream().anyMatch(Fire::resting)) {
                     Journey.of(server).wake();
                     Engine.complete(server, active);
                 }
@@ -187,13 +195,14 @@ final class Steps {
                 }
             }
             case "hold" -> Hold.tick(server, active);
+            case "visit" -> Visit.tick(server, active);
             case "dawn" -> {
                 if (Clock.passed() && !Talk.busy()) {
                     Engine.complete(server, active);
                 }
             }
             case "caravan" -> {
-                if (Places.ready(server, Caravan.NAME) && Clock.evening(Engine.overworld(server))) {
+                if (Places.ready(server, Caravan.NAME) && Clock.evening()) {
                     Engine.complete(server, active);
                 }
             }
@@ -211,7 +220,9 @@ final class Steps {
         MinecraftServer server = player.server;
         switch (step.kind()) {
             case "talk" -> {
-                if (!active.scratch().getBoolean(STARTED) && !Talk.busy() && People.who(target).filter(person -> person.equals(step.with())).isPresent()) {
+                if (!active.scratch().getBoolean(STARTED) && !Talk.busy() && People.who(target).filter(person -> person.equals(step.with())
+                        || active.scratch().getBoolean(DECLINED) && step.lines().stream().anyMatch(line -> person.equals(line.by()))).isPresent()) {
+                    Engine.track(player, active.quest().id());
                     start(server, active);
                     return true;
                 }
@@ -229,9 +240,11 @@ final class Steps {
             }
             case "clues" -> {
                 for (Story.Clue clue : step.clues()) {
-                    if (target.getTags().contains(CLUE + clue.id()) && !Engine.found(active.scratch()).contains(clue.id())) {
+                    if (target.getTags().contains(CLUE + clue.id()) && !Engine.found(active.scratch()).contains(clue.id()) && !waiting(active, clue)) {
                         Engine.find(active.scratch(), clue.id());
                         Progress.of(server).setDirty();
+                        Tasks.did(player, "look");
+                        Clues.found(player.serverLevel(), target, clue.id());
                         Talk.say(active.quest().id(), target.position(), new Story.Line(null, clue.text()));
                         if (Engine.found(active.scratch()).size() >= step.number("needed")) {
                             Talk.then(() -> Engine.complete(server, active));
@@ -265,7 +278,17 @@ final class Steps {
             case "rest" -> {
                 Optional<BlockPos> at = Places.place(server, step.text("at"));
                 int within = Balance.get().story().nearBlocks();
-                if (at.isPresent() && horizontal(fire, at.get()) <= (double) within * within) {
+                long now = player.serverLevel().getGameTime();
+                if (at.isEmpty() || horizontal(fire, at.get()) > (double) within * within) {
+                    return;
+                }
+                long last = active.scratch().getLong(RESTED_AT);
+                long gained = last == 0 ? Fire.REST_CHECK_TICKS : Math.min(now - last, Fire.REST_CHECK_TICKS);
+                active.scratch().putLong(RESTED_AT, now);
+                int rested = (int) Math.min(active.scratch().getInt(RESTED_TICKS) + gained, (long) Balance.get().story().restSeconds() * TICKS_PER_SECOND);
+                active.scratch().putInt(RESTED_TICKS, rested);
+                Progress.of(server).setDirty();
+                if (rested >= Balance.get().story().restSeconds() * TICKS_PER_SECOND && !Talk.busy()) {
                     Engine.complete(server, active);
                 }
             }
@@ -273,20 +296,24 @@ final class Steps {
         }
     }
 
-    private static void start(MinecraftServer server, Engine.Active active) {
+    static void start(MinecraftServer server, Engine.Active active) {
         Story.Step step = active.step();
         active.scratch().putBoolean(STARTED, true);
         Progress.of(server).setDirty();
         if (step.spec().has("place")) {
             Places.build(server, step.text("place"));
         }
-        Talk.say(active.quest().id(), anchor(server, step), step.lines(), Engine.fill(Progress.of(server)));
+        List<Story.Line> lines = active.scratch().getBoolean(DECLINED) ? List.of(step.lines().getLast()) : step.lines();
+        active.scratch().remove(DECLINED);
+        Talk.say(active.quest().id(), anchor(server, step), lines, Engine.fill(Progress.of(server)));
         if (step.choices().isEmpty()) {
             Talk.then(() -> Engine.complete(server, active));
         } else {
             String asker = step.lines().stream().map(Story.Line::by).filter(by -> by != null).reduce((first, second) -> second).orElse(null);
             Vec3 at = asker == null ? null : People.find(server, asker).map(Entity::position).orElse(null);
-            Talk.ask(new Talk.Offer(active.quest().id(), asker, step.choices(), at, (player, choice) -> Engine.chosen(player, active.quest().id(), step.id(), asker, choice)));
+            Progress progress = Progress.of(server);
+            List<Story.Choice> offered = step.choices().stream().filter(choice -> choice.needs() == null || progress.steps.containsKey(choice.needs())).toList();
+            Talk.ask(new Talk.Offer(active.quest().id(), asker, offered, at, (player, choice) -> Engine.chosen(player, active.quest().id(), step.id(), asker, choice)));
         }
     }
 
@@ -309,47 +336,35 @@ final class Steps {
     }
 
     static void chosen(ServerPlayer player, Engine.Active active, Story.Choice choice) {
-        if (active.step().kind().equals("bury")) {
-            inscribe(player, active, choice);
-        } else {
-            Engine.complete(player.server, active);
-        }
-    }
-
-    private static void inscribe(ServerPlayer player, Engine.Active active, Story.Choice choice) {
         MinecraftServer server = player.server;
-        BlockPos sign = BlockPos.of(active.scratch().getLong(BURIED));
-        if (!choice.write()) {
-            String words = choice.stone() == null ? "" : choice.stone();
-            Prologue.engrave(Engine.overworld(server), sign, words);
-            engraved(server, active, words);
+        if (active.step().kind().equals("bury")) {
+            inscribe(server, active, choice);
+        } else if (choice.again()) {
+            active.scratch().remove(STARTED);
+            active.scratch().putBoolean(DECLINED, true);
+            Progress.of(server).setDirty();
+        } else if (choice.takes()) {
+            Shrines.claim(player, BlockPos.of(active.scratch().getLong(PEDESTAL)));
+        } else {
+            Engine.complete(server, active);
+        }
+    }
+
+    static void ask(MinecraftServer server, Engine.Active active, BlockPos pedestal) {
+        if (active.scratch().contains(PEDESTAL) && Talk.busy()) {
             return;
         }
-        ServerPlayer writer = server.getPlayerList().getPlayer(player.getUUID());
-        if (writer == null || !(writer.serverLevel().getBlockEntity(sign) instanceof SignBlockEntity stone)) {
-            ask(active);
-            return;
-        }
-        stone.setAllowedPlayerEditor(writer.getUUID());
-        active.scratch().putBoolean(WRITING, true);
+        Story.Step step = active.step();
+        active.scratch().putLong(PEDESTAL, pedestal.asLong());
         Progress.of(server).setDirty();
-        writer.openTextEdit(stone, true);
-        Journal.syncAll(server);
+        Talk.say(active.quest().id(), Vec3.atCenterOf(pedestal), step.lines(ASKING), Engine.fill(Progress.of(server)));
+        Talk.ask(new Talk.Offer(active.quest().id(), null, step.choices(), Vec3.atCenterOf(pedestal),
+                (player, choice) -> Engine.chosen(player, active.quest().id(), step.id(), null, choice), true));
     }
 
-    private static void watchStone(MinecraftServer server, Engine.Active active) {
-        BlockPos sign = BlockPos.of(active.scratch().getLong(BURIED));
-        ServerLevel level = Engine.overworld(server);
-        if (level.getBlockEntity(sign) instanceof SignBlockEntity entity && entity.getPlayerWhoMayEdit() != null) {
-            return;
-        }
-        active.scratch().remove(WRITING);
-        String words = Prologue.words(level, sign);
-        Prologue.engrave(level, sign, words);
-        engraved(server, active, words);
-    }
-
-    private static void engraved(MinecraftServer server, Engine.Active active, String words) {
+    private static void inscribe(MinecraftServer server, Engine.Active active, Story.Choice choice) {
+        String words = choice.stone() == null ? "" : choice.stone();
+        Prologue.engrave(Engine.overworld(server), BlockPos.of(active.scratch().getLong(BURIED)), words);
         Progress progress = Progress.of(server);
         progress.stone = words;
         progress.setDirty();
@@ -395,8 +410,18 @@ final class Steps {
     }
 
 
-    private static boolean near(MinecraftServer server, Entity body, int blocks) {
-        return Engine.players(server).stream().anyMatch(player -> player.level() == body.level() && player.distanceToSqr(body) <= (double) blocks * blocks);
+    private static boolean seen(MinecraftServer server, Entity body, int blocks) {
+        return Engine.players(server).stream().anyMatch(player -> player.level() == body.level() && player.distanceToSqr(body) <= (double) blocks * blocks
+                && player.hasLineOfSight(body));
+    }
+
+    static boolean hidden(MinecraftServer server, Entity entity) {
+        return Engine.active(server).stream().filter(active -> active.step().kind().equals("clues"))
+                .anyMatch(active -> active.step().clues().stream().anyMatch(clue -> entity.getTags().contains(CLUE + clue.id()) && waiting(active, clue)));
+    }
+
+    private static boolean waiting(Engine.Active active, Story.Clue clue) {
+        return clue.last() && Engine.found(active.scratch()).size() < active.step().number("needed") - 1;
     }
 
     static double horizontal(BlockPos a, BlockPos b) {

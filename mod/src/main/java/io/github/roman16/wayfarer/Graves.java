@@ -1,16 +1,22 @@
 package io.github.roman16.wayfarer;
 
+import de.maxhenkel.gravestone.GraveUtils;
+import de.maxhenkel.gravestone.tileentity.GraveStoneTileEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -50,10 +56,28 @@ public final class Graves {
         player.setData(Wayfarer.GRAVE_CURIOS, loadout);
     }
 
+    public static boolean grave(BlockState state) {
+        return BuiltInRegistries.BLOCK.getKey(state.getBlock()).equals(GRAVESTONE);
+    }
+
+    @SubscribeEvent
+    public static void onUse(PlayerInteractEvent.RightClickBlock event) {
+        if (!grave(event.getLevel().getBlockState(event.getPos()))) {
+            return;
+        }
+        event.setCanceled(true);
+        event.setCancellationResult(InteractionResult.SUCCESS);
+        if (event.getEntity() instanceof ServerPlayer player && event.getLevel().getBlockEntity(event.getPos()) instanceof GraveStoneTileEntity grave
+                && player.getUUID().equals(grave.getDeath().getPlayerUUID()) && GraveUtils.canBreakGrave(player.level(), player, event.getPos())
+                && player.gameMode.destroyBlock(event.getPos())) {
+            Notices.written(player, new ItemStack(BuiltInRegistries.ITEM.get(GRAVESTONE)), Component.translatable("wayfarer.notice.things"));
+        }
+    }
+
     @SubscribeEvent
     public static void onBreak(BlockEvent.BreakEvent event) {
         if (event.getPlayer() instanceof ServerPlayer player
-                && BuiltInRegistries.BLOCK.getKey(event.getState().getBlock()).equals(GRAVESTONE)
+                && grave(event.getState())
                 && !player.getData(Wayfarer.GRAVE_CURIOS).isEmpty()) {
             player.server.execute(() -> restore(player));
         }

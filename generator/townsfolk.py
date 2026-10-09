@@ -298,3 +298,7 @@ def townsfolk():
 
 def roadfolk():
     return folk("road", ROAD, "living") | folk("road_dead", ROAD_DEAD, "opened")
+
+
+def riverfolk():
+    return {"fisher": person("river/fisher", "man", "living")}

@@ -14,13 +14,31 @@ ILLAGER = {
     "middle": (40, 38, 8, 4, 4),
     "leg": (0, 22, 4, 12, 4),
     "arm": (40, 46, 4, 12, 4),
+    "hat": (32, 0, 8, 12, 8),
 }
-ILLAGERS = {"vindicator"}
+ILLAGERS = {"illusioner", "vindicator"}
+WITCH = {
+    "head": (0, 0, 8, 10, 8),
+    "nose": (24, 0, 2, 4, 2),
+    "mole": (0, 0, 1, 1, 1),
+    "body": (16, 20, 8, 12, 6),
+    "robe": (0, 38, 8, 20, 6),
+    "crossed": (44, 22, 4, 8, 4),
+    "middle": (40, 38, 8, 4, 4),
+    "leg": (0, 22, 4, 12, 4),
+    "brim": (0, 64, 10, 2, 10),
+    "crown": (0, 76, 7, 4, 7),
+    "peak": (0, 87, 4, 4, 4),
+    "tip": (0, 95, 1, 2, 1),
+}
+HEIGHTS = {"witch": 128}
 
 
 def boxes(model):
     if model in ILLAGERS:
         return ILLAGER
+    if model == "witch":
+        return WITCH
     arm = 3 if model == "humanoid_slim" else 4
     return {
         "head": (0, 0, 8, 8, 8),
@@ -130,7 +148,7 @@ def lifted(spec):
 def skin(name, spec):
     spec = lifted(spec)
     palette = spec["palette"]
-    pixels = [[(0, 0, 0, 0)] * SIZE for _ in range(SIZE)]
+    pixels = [[(0, 0, 0, 0)] * SIZE for _ in range(HEIGHTS.get(spec["model"], SIZE))]
     for part, (u, v, w, h, d) in boxes(spec["model"]).items():
         for face, (x0, y0, fw, fh) in faces(u, v, w, h, d).items():
             kind = GRIDS.get(part, part)

@@ -6,6 +6,7 @@ import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.Heat;
 import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.NotchedLog;
+import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
@@ -274,7 +275,9 @@ public final class Memories {
         dream.arrivals.put(player.getUUID(), new Vec3(arrival.x, feet.getY(), arrival.z));
         player.teleportTo(dream.level, arrival.x, feet.getY(), arrival.z, from.yRot(), from.xRot());
         player.getInventory().clearContent();
-        dream.memory.kit().forEach(item -> player.getInventory().add(Engine.stack(player, dream.memory.id(), item)));
+        List<ItemStack> kit = dream.memory.kit().stream().map(item -> Engine.stack(player, dream.memory.id(), item)).toList();
+        Notices.given(player, kit);
+        kit.forEach(stack -> player.getInventory().add(stack.copy()));
         player.setHealth(player.getMaxHealth());
         player.getFoodData().setFoodLevel(20);
         if (ModList.get().isLoaded("toughasnails")) {

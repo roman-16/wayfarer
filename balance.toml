@@ -1,10 +1,10 @@
 [clock]
-afternoon_seconds = 30
+afternoon_seconds = 32
 caravan_blocks = 256
 dawn_seconds = 30
 dusk = "19:00"
-dusk_run_seconds = 75
-evening = "22:00"
+dusk_run_seconds = 64
+evening = "20:00"
 night = "00:00"
 road = "17:30"
 run_from = "17:00"
@@ -35,7 +35,7 @@ health_per_shard = 32
 sight_shards = 6
 
 [fire]
-circle_blocks = 12
+circle_blocks = 32
 line_seconds = 3
 rest_blocks = 4
 
@@ -68,15 +68,17 @@ hunt_phantoms = 2
 
 [graphics]
 far_view_chunks = [64, 128, 256, 512]
+held_light = ["fastest", "fast", "fancy", "fancy"]
 profiles = ["LOW", "MEDIUM", "HIGH", "ULTRA"]
 render_chunks = [8, 10, 12, 16]
 
 [hold]
 blow_ticks = 32
+calm_seconds = 30
 door_strength = 128
-first_wave = 8
+first_wave = 2
 keep_health = 32
-wave_growth = 4
+wave_growth = 1
 wave_seconds = 64
 waves = 4
 
@@ -88,9 +90,24 @@ warm_exhaustion_factor = 1.0
 [join]
 away_blocks = 256
 
+[loot]
+kept_share = 0.5
+
 [shrines]
-tier_one_leg_blocks = 5000
-tier_two_leg_blocks = 8000
+act_three_from_blocks = 24576
+act_three_leg_blocks = 12288
+act_two_leg_blocks = 8192
+
+[marsh]
+ahead_blocks = 2048
+bog_blocks = 3072
+bog_radius_blocks = 64
+cellar_blocks = 2
+hall_blocks = 8
+notice_blocks = 16
+search_blocks = 4096
+shunned_seconds = 60
+side_blocks = 1024
 
 [memory]
 arrival_blocks = 4
@@ -161,6 +178,7 @@ radius_blocks = 256
 [strongholds]
 count = 12
 jitter_blocks = 1000
+land_search_blocks = 8192
 radius_blocks = 35000
 
 [structures]
@@ -185,22 +203,144 @@ village = 768
 [story]
 arrive_blocks = 32
 near_blocks = 8
+rest_seconds = 30
+visit_blocks = 24
 
 [talk]
 characters_per_second = 8
 least_seconds = 4
+pause_seconds = 16
 reach_blocks = 32
 start_blocks = 8
 
 [tent]
-fire_blocks = 4
+fire_blocks = 8
 
 [tollbridge]
-ahead_blocks = 160
+ahead_blocks = 256
 clear_blocks = 64
 least_buildings = 16
 radius_blocks = 64
 wait_seconds = 32
+
+[tollbridge.loot.baker]
+rolls = [1, 2]
+
+[tollbridge.loot.baker.items]
+"minecraft:bread" = [2, 4]
+"minecraft:egg" = [1, 2]
+"minecraft:sugar" = [1, 2]
+"minecraft:wheat" = [2, 8]
+
+[tollbridge.loot.cellar]
+rolls = [1, 2]
+
+[tollbridge.loot.cellar.items]
+"minecraft:apple" = [1, 4]
+"minecraft:bread" = [1, 4]
+"minecraft:carrot" = [2, 4]
+"minecraft:potato" = [2, 4]
+
+[tollbridge.loot.cooper]
+rolls = [1, 2]
+
+[tollbridge.loot.cooper.items]
+"minecraft:apple" = [1, 4]
+"minecraft:beetroot" = [2, 4]
+"minecraft:carrot" = [2, 4]
+"minecraft:coal" = [1, 4]
+"minecraft:potato" = [2, 4]
+"minecraft:string" = [1, 2]
+
+[tollbridge.loot.hall]
+rolls = [1, 1]
+
+[tollbridge.loot.hall.items]
+"minecraft:bread" = [1, 4]
+"minecraft:candle" = [1, 2]
+"minecraft:paper" = [1, 4]
+"minecraft:torch" = [2, 4]
+
+[tollbridge.loot.home]
+rolls = [1, 2]
+
+[tollbridge.loot.home.items]
+"minecraft:bread" = [1, 2]
+"minecraft:carrot" = [1, 4]
+"minecraft:potato" = [1, 4]
+"minecraft:stick" = [2, 4]
+"minecraft:string" = [1, 2]
+"minecraft:torch" = [1, 4]
+"minecraft:wheat_seeds" = [2, 4]
+"minecraft:white_wool" = [1, 2]
+
+[tollbridge.loot.inn]
+rolls = [1, 2]
+
+[tollbridge.loot.inn.items]
+"minecraft:apple" = [1, 4]
+"minecraft:bread" = [2, 4]
+"minecraft:cooked_mutton" = [1, 2]
+"minecraft:glass_bottle" = [1, 2]
+
+[tollbridge.loot.shed]
+rolls = [1, 2]
+
+[tollbridge.loot.shed.items]
+"minecraft:coal" = [1, 2]
+"minecraft:flint" = [1, 2]
+"minecraft:oak_log" = [2, 4]
+"minecraft:stick" = [2, 8]
+
+[tollbridge.loot.smithy]
+rolls = [1, 2]
+
+[tollbridge.loot.smithy.items]
+"minecraft:coal" = [2, 8]
+"minecraft:flint" = [1, 4]
+"minecraft:iron_ingot" = [1, 1]
+"minecraft:iron_nugget" = [2, 8]
+
+[tollbridge.loot.stall]
+rolls = [1, 2]
+
+[tollbridge.loot.stall.items]
+"minecraft:apple" = [1, 4]
+"minecraft:beetroot" = [1, 4]
+"minecraft:bread" = [1, 2]
+"minecraft:carrot" = [1, 4]
+"minecraft:potato" = [1, 4]
+
+[tollbridge.loot.strongbox]
+rolls = [1, 1]
+
+[tollbridge.loot.strongbox.items]
+"minecraft:emerald" = [8, 16]
+
+[tollbridge.loot.toll]
+rolls = [1, 1]
+
+[tollbridge.loot.toll.items]
+"minecraft:emerald" = [1, 4]
+"minecraft:paper" = [1, 2]
+
+[tollbridge.loot.weaver]
+rolls = [1, 2]
+
+[tollbridge.loot.weaver.items]
+"minecraft:brown_wool" = [1, 4]
+"minecraft:leather" = [1, 2]
+"minecraft:string" = [2, 4]
+"minecraft:white_wool" = [2, 4]
+
+[tollbridge.loot.yard]
+rolls = [1, 1]
+
+[tollbridge.loot.yard.items]
+"minecraft:bone_meal" = [1, 4]
+"minecraft:carrot" = [1, 2]
+"minecraft:wheat" = [2, 4]
+"minecraft:wheat_seeds" = [2, 4]
 
 [tool_gate]
 slowdown = 8
@@ -211,3 +351,19 @@ sailing_ship_eyes = 4
 
 [waystones]
 blocks_per_food = 256
+
+[weather]
+rain_most_seconds = 576
+
+[world]
+coast_blocks = 4096
+highest = 2.0
+home_blocks = 9216
+last_sea_past_ring_blocks = 4096
+last_sea_sink = 2.5
+lift = 0.625
+outer_sink = 0.25
+sea_blocks = 3072
+sea_floor = -0.5
+sea_sink = 1.25
+shore_blocks = 1024

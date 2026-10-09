@@ -7,6 +7,38 @@ import png
 CLEAR = (0, 0, 0, 0)
 SPRITES = "assets/wayfarer/textures/gui/sprites/stamp"
 VANILLA = "assets/minecraft/textures/gui/sprites"
+JEI = "assets/jei/textures/gui/sprites"
+COMBAT_ROLL = "assets/combat_roll/textures/hud"
+ROLL_ARROW = [
+    "....##.......",
+    "....###......",
+    ".....###.....",
+    "......###....",
+    "##.....###...",
+    "###.....###..",
+    ".###.....###.",
+    "..###.....###",
+    ".###.....###.",
+    "###.....###..",
+    "##.....###...",
+    "......###....",
+    ".....###.....",
+]
+MOUSE = [
+    ".########.",
+    "#LLLLMRRR#",
+    "#LLLLMRRR#",
+    "#LLLLMRRR#",
+    "##########",
+    "S........#",
+    "S........#",
+    "#........#",
+    "#........#",
+    "#........#",
+    "#........#",
+    ".########.",
+]
+MOUSE_BUTTONS = {(0, 0): "L", (16, 0): "R", (32, 0): "M", (0, 16): "S", (16, 16): "S"}
 MARK = ["..#..", ".###.", "#.#.#", "#.#.#", "#.#.#", ".###.", "..#.."]
 RING = [".###.", "#...#", "#...#", "#...#", ".###."]
 DISC = [".###.", "#####", "#####", "#####", ".###."]
@@ -28,7 +60,7 @@ OPEN_LOCK = ["..###..", ".#...#.", ".#.....", "#######", "##...##", "###.###", "
 MARKS = {
     "fire": ["..#..", "..##.", ".###.", ".####", "#####", "##.##", ".###."],
     "grave": [".###.", "#####", "##.##", "#...#", "##.##", "#####"],
-    "hall": ["...#...", "..###..", ".#####.", "##...##", "##.#.##", "##.#.##", "#######"],
+    "hall": ["..#..", ".###.", "#####", "#...#", "#.#.#", "#.#.#", "#####"],
     "left": ["...#", "..##", ".###", "####", ".###", "..##", "...#"],
     "pointer": ["#####", ".###.", "..#.."],
     "right": ["#...", "##..", "###.", "####", "###.", "##..", "#..."],
@@ -622,6 +654,31 @@ def scroller(tokens, name, background):
     return canvas, {"border": 2, "height": 32, "type": "nine_slice", "width": 6}
 
 
+def page_scroller(tokens, name, background):
+    width, height = 4, 32
+    canvas = Canvas(width, height)
+    if background:
+        for y in range(height):
+            canvas.set(1, y, tokens("paper", 1))
+            canvas.set(2, y, tokens("paper", 2))
+        return canvas, {"border": 1, "height": height, "type": "nine_slice", "width": width}
+    canvas.grain(name, 1, 1, width - 1, height - 1, tokens, "leather", 3)
+    for y in range(height):
+        canvas.set(0, y, tokens("leather", 1))
+        canvas.set(width - 1, y, tokens("leather", 1))
+    for x in range(width):
+        canvas.set(x, 0, tokens("leather", 1))
+        canvas.set(x, height - 1, tokens("leather", 0))
+    for y in range(1, height - 1):
+        canvas.set(1, y, tokens("leather", 4))
+    return canvas, {
+        "border": {"bottom": 2, "left": 1, "right": 1, "top": 2},
+        "height": height,
+        "type": "nine_slice",
+        "width": width,
+    }
+
+
 def toast(tokens, name):
     canvas, _ = panel(tokens, name, 160, 32)
     return canvas, None
@@ -768,6 +825,70 @@ def logo(tokens, glyphs):
     return canvas
 
 
+def jei(tokens):
+    nine = {"border": 2, "height": 18, "type": "nine_slice", "width": 18}
+    sprites = {
+        name: panel(tokens, f"jei-{name}")
+        for name in (
+            "bookmark_list_background_v2",
+            "gui_background_v2",
+            "ingredient_list_background_v2",
+            "interactive_ingredient_tooltip_background",
+            "recipe_preview_background_v2",
+            "single_recipe_background_v2",
+        )
+    }
+    sprites |= {name: panel(tokens, f"jei-{name}", 28, 28) for name in ("catalyst_tab_v2", "recipe_options_tab_v2")}
+    sprites |= {
+        name: (inset(tokens, f"jei-{name}", 18, 18), nine)
+        for name in (
+            "bookmark_list_slot_background_v2",
+            "ingredient_list_slot_background_v2",
+            "recipe_catalyst_slot_background_v2",
+        )
+    }
+    sprites["slot"] = (inset(tokens, "jei-slot", 18, 18), None)
+    sprites["output_slot"] = (inset(tokens, "jei-output-slot", 26, 26), None)
+    sprites["button_enabled_v2"] = button(tokens, "jei-button", "normal")
+    sprites["button_disabled_v2"] = button(tokens, "jei-button-disabled", "disabled")
+    for name in ("button_highlight_v2", "button_pressed_highlight_v2", "button_pressed_v2"):
+        sprites[name] = button(tokens, f"jei-{name}", "highlighted")
+    sprites["search_background_v2"] = text_field(tokens, "jei-search", False)
+    sprites["scrollbar_background_v2"] = scroller(tokens, "jei-scrollbar", True)
+    sprites["scrollbar_marker_v2"] = scroller(tokens, "jei-scrollbar-marker", False)
+    sprites["tab_selected"] = tab(tokens, "jei-tab-selected", True, False)
+    sprites["tab_unselected"] = tab(tokens, "jei-tab", False, False)
+    return sprites
+
+
+def roll_widgets(tokens):
+    canvas = Canvas(256, 256)
+    cap, _ = keycap(tokens, "roll-key")
+    for y in range(12):
+        for x in range(3):
+            canvas.set(x, 32 + y, cap.get(x, y))
+            canvas.set(13 + x, 32 + y, cap.get(9 + x, y))
+        for x in range(16):
+            canvas.set(16 + x, 32 + y, cap.get(3 + x % 6, y))
+    outline = tokens.text["bone"]
+    lit = tokens("ember", 3)
+    for (left, top), pressed in MOUSE_BUTTONS.items():
+        for y, row in enumerate(MOUSE):
+            for x, cell in enumerate(row):
+                if cell == "#" or cell == "S" and pressed != "S":
+                    canvas.set(left + x, top + y, outline)
+                elif cell == pressed:
+                    canvas.set(left + x, top + y, lit)
+    return canvas
+
+
+def combat_roll(main, tokens):
+    arrow, _ = glyph(ROLL_ARROW, WHITE)
+    background = inset(tokens, "roll-background", 15, 15)
+    for name, canvas in (("arrow", arrow), ("arrow_background", background), ("widgets", roll_widgets(tokens))):
+        png.write(main / COMBAT_ROLL / f"{name}.png", canvas.pixels)
+
+
 def jade(main, spec):
     text = spec["text"]
     palette = {
@@ -802,6 +923,8 @@ def write(main, spec, glyphs):
         "mark_ink": glyph(MARK, tokens.text["ink_red"]),
         "page_left": page(tokens, "page_left", "left"),
         "page_right": page(tokens, "page_right", "right"),
+        "page_scroller": page_scroller(tokens, "page_scroller", False),
+        "page_scroller_track": page_scroller(tokens, "page_scroller_track", True),
         "panel": panel(tokens, "panel"),
         "panel_clear": panel(tokens, "panel_clear", alpha=tokens.alpha["clear"]),
         "ribbon": ribbon(tokens, "ribbon", False),
@@ -858,9 +981,10 @@ def write(main, spec, glyphs):
     for kind in ("advancement", "recipe", "system", "tutorial"):
         vanilla[f"toast/{kind}"] = toast(tokens, f"toast-{kind}")
     jade(main, spec)
+    combat_roll(main, tokens)
     png.write(main / "assets/minecraft/textures/gui/book.png", book_screen(tokens).pixels)
     png.write(main / "assets/wayfarer/textures/gui/title/logo.png", logo(tokens, glyphs).pixels)
-    for folder, sprites in ((SPRITES, own), (VANILLA, vanilla)):
+    for folder, sprites in ((SPRITES, own), (VANILLA, vanilla), (JEI, jei(tokens))):
         for name, (canvas, scaling) in sprites.items():
             target = main / folder / f"{name}.png"
             png.write(target, canvas.pixels)

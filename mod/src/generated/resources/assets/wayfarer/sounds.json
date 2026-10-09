@@ -7,6 +7,14 @@
     ],
     "subtitle": "subtitles.wayfarer.answer_chosen"
   },
+  "band_tick": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/band_tick"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.band_tick"
+  },
   "camp": {
     "sounds": [
       {
@@ -172,6 +180,14 @@
     ],
     "subtitle": "subtitles.wayfarer.shard_taken"
   },
+  "smoke_gust": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/smoke_gust"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.smoke_gust"
+  },
   "story_music.first_camp": {
     "sounds": [
       {
@@ -254,5 +270,13 @@
       }
     ],
     "subtitle": "subtitles.wayfarer.town_burning"
+  },
+  "true_sight": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/true_sight"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.true_sight"
   }
 }

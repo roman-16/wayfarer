@@ -49,9 +49,10 @@ final class FirstCamp {
         if (progress.place(SPOT).isPresent()) {
             return;
         }
-        BlockPos from = progress.place(Caravan.NAME).orElseGet(level::getSharedSpawnPos);
-        Vec3 way = Caravan.way(server);
         Balance.FirstCamp balance = Balance.get().firstCamp();
+        Home.Aim aim = Home.aim(progress.place(Caravan.NAME).orElseGet(level::getSharedSpawnPos), Caravan.way(server), balance.aheadBlocks());
+        BlockPos from = aim.from();
+        Vec3 way = aim.way();
         int aheadX = from.getX() + (int) Math.round(way.x * balance.aheadBlocks());
         int aheadZ = from.getZ() + (int) Math.round(way.z * balance.aheadBlocks());
         Unseen.Heights heights = new Unseen.Heights(level);

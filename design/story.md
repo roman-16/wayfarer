@@ -19,8 +19,8 @@ The story act by act: its parts, its people, the shards and every quest, each wi
 | Part | Where | The caravan | Opens with | Closes with |
 |---|---|---|---|---|
 | Prologue: The Oath | The Last Camp | Takes the player in | The player wakes at the dying stranger's fire | The ember wakes, and the caravan takes the player as its scout |
-| Act 1: On foot | The near ring, four of the twelve halls | Grows: people join, and their stories begin | The ember's first pull | Maren names the stranger: Wend, a Gazebound captain |
-| Act 2: The sea | Across the water, four halls | Crosses the sea with the player | Ships | The first reveal: the voice is the dragon, and the caravan is broken for having trusted it |
+| Act 1: On foot | The home land round the Last Camp, four of the twelve halls (`systems.md`, M39) | Grows: people join, and their stories begin | The ember's first pull | Maren names the stranger: Wend, a Gazebound captain |
+| Act 2: The sea | Across the sea round the home land, four halls | Crosses the sea with the player | Ships | The first reveal: the voice is the dragon, and the caravan is broken for having trusted it |
 | Act 3: The sky | The far ring of frames, four halls, out to the Last Sea | What survived of it, or nobody | Flight | The second reveal: the player is the thirteenth shard |
 | Finale: The frame | The nearest frame | Whoever is left | The shards the player carries | The four doors |
 
@@ -94,7 +94,7 @@ Kai steps forward. The light takes him, and the Eye closes.
 
 ### S6 The twelve shards: Wend's trail through twelve halls
 
-- Four peoples still live: the swamp's witches, the Tide Folk, the Sand Singers and the Grass Kingdom. Six decisions cover seven shards, two in each act, and Wend's deeds grow darker act by act without ever being only bad.
+- Four peoples still live: the swamp's witches, the Tide Folk, the Sand Singers and the Grass Kingdom. Six decisions cover seven shards, two in each act, and the Marsh Mothers' shard becomes a seventh only for a team that learned its cost before taking it (S29). Wend's deeds grow darker act by act without ever being only bad.
 - A shard in its hall hallows the land around it, so the gaze cannot see there. The four living peoples live on such land, which is why they survive and why taking their shard can kill them; a shard outside a hall shines, as it did in Tamsin's bell.
 - A shard's gift is a power of the Eye that opens what only the Eye passes (D4). Since a shard can be left behind, a gift opens side ways and shortcuts, never the only way forward.
 
@@ -103,7 +103,7 @@ Act 1, the near ring, on foot:
 | Hall | People now | What is in the hall | Wend's hand | Gift | Decision |
 |---|---|---|---|---|---|
 | The Diggers' (forest) | Gone: they dug on past the ground their shard hallowed, into the dark where the gaze's creatures wait out the day | The shard, deep at the end of their tunnels: the first hall | His Wayfarer's sign on the way down: young, he looked in on the hall every few winters and left the shard where it lay | Trail-sight: tracks glow | |
-| The Marsh Mothers' (swamp) | Their heirs, the swamp's witches, who no longer remember why they keep the hut | Sunk where no reflection lives; the witches' trust opens the way | He bargained with the witches, and they still curse his name | True-sight: illusions and disguises show through | |
+| The Marsh Mothers' (swamp) | Their heirs, the swamp's witches, who no longer remember why they keep the hut: it stands over the Marsh Mothers' stair | Sunk under a black pool where no reflection lives; the witches' trust opens the way | As the Gazebound's finder he bought their black water's sight, where the halls lay, for his word that no Gazebound would come into the swamp, and broke it; they still curse his name | True-sight: illusions and disguises show through | Only for a team that healed with them first (T1): take it, and their pool and their healing go plain; leave it, and they trust the player fully |
 | The Frost Walkers' (snow) | Gone; Nell is the last | Empty: Wend took it twenty winters ago, and her people died trying to stop him. It lies in the ice where he hid it | The theft, and the dead | Dark-sight: the dark shows | Nell wants it to bury with her dead. Give it to her and she leaves the caravan in peace, and may come back at the frame; take it and she stays, but hates the player, which counts at the breaking |
 | The First Village's (plains) | Gone: a village that forgot the oath and was seen | Empty: its shard was cast into the bell of the caravan's own town, which is why the town shone and the gaze burned it (S18) | He hid it there to keep it from the Gazebound, not knowing the town would grow | Warmth: the ember warms the player like a fire | Melt Tamsin's bell: the shard and its warmth, and the gaze finds the caravan less often, but the bell is all that is left of the town, and Tamsin and the townsfolk never forgive it; some families leave. Leave it: its toll keeps the gaze's lesser creatures from the camp and the townsfolk trust the player, but the gaze finds the caravan more often |
 
@@ -365,8 +365,8 @@ Act 1, on foot, the near ring:
 | 1.1 | The Pull | The Diggers' tunnels, an old mineshaft | Reach | | The first shard sinks into the ember, and the dead stranger speaks: the voice's first words (S4) finish his dying charge, "Bring them to a frame, and we put its eye out for good" (S22). Trail-sight |
 | 1.2 | His First Camp | Wend's first camp, a lead from the voice | Investigate, then a memory | | The player plays him young and happy, but a Gazebound mark is cut into the hearthstone, much later |
 | 1.3 | The Deserter | A ford near a Gazebound outpost | Hold | Strength | The player saves a man the Gazebound are hunting: Corin, who looks at the ember and says "I know that light. I'd know it anywhere", knew the man who carried it but will not say his name, and names the Grass King's heir for the first time (S28) |
-| 1.4 | The Marsh Mothers | The swamp's witch hut | Talk, then Reach where nothing is reflected | Trust | The witches curse the stranger's name, and one flinches from the player: "Something looks out of you." True-sight |
-| 1.5 | The Hooded Traveller | The caravan's fire, by count after the second hall | Talk | | A hooded Gazebound sits down, leaves bread and knows the stranger's smoke. The voice: "Eat it. Don't follow her" |
+| 1.4 | The Marsh Mothers | The swamp's witch hut, put down ahead by the quest | Talk, then Reach where nothing is reflected | Trust | The witches curse the stranger's name, and one flinches from the player: "Something looks out of you." True-sight (S29) |
+| 1.5 | The Hooded Traveller | The caravan's fire, by count after the second hall | Talk | | A hooded Gazebound sits down, leaves bread and knows the stranger's smoke, and keeps her name back in his words. The voice: "Eat it. Don't follow her"; whether the team ate it comes back at 2.5 (S30) |
 | 1.6 | The Last Frost Walker | The snow, a winter house of the Frost Walkers | Track | Land: the cold, until the Frost Walkers' snowshoes | The player tracks a lone hunter, Nell, the last of her people, who joins to find who emptied their hall |
 | 1.7 | The Theft | The Frost Walkers' hall | Investigate, then a memory | | The hall is empty, and the player plays the theft: the thief was the man whose voice they trust |
 | 1.8 | Under the Ice | A frozen lake a day east | Reach | Land | The shard lies where he buried it. Decision: give it to Nell to bury with her dead, or keep it. Dark-sight |
@@ -382,7 +382,7 @@ Act 2, the sea:
 | 2.2 | The Crossing | The open sea | Sail, then Hold a night on the water | Travel | On open water the ember shines like a beacon; something comes up from below, and a boat is lost unless the player holds it |
 | 2.3 | The Tide Folk | The far shore, their bay | Talk | Trust | Their guardians bow to the player, and nobody knows why. Two shards lie on one pedestal and hallow the bay. Decision: take both, one, or none. Deep-sight, Stare |
 | 2.4 | The Dry City | The badlands, the Drowned City's hall | Survive the badlands' heat | Land: the heat, until the Sand Singers' shade | The hall is empty, and the calling stone shows its last people carrying the shard to the sea: it is the second on the Tide Folk's pedestal |
-| 2.5 | His Last Camp | Wend's last camp, a lead from the voice | Investigate, then a memory | | The player plays the night he gave in: the Gazebound's bread, the hall, the end of walking. The hand that held out the bread was a child's, Maren's |
+| 2.5 | His Last Camp | Wend's last camp, a lead from the voice | Investigate, then a memory | | The player plays the night he gave in: the Gazebound's bread, the hall, the end of walking. The hand that held out the bread was a child's, Maren's, and the memory remembers what the team did with her bread at 1.5 (S30) |
 | 2.6 | The Worm | The desert, the Sand Singers' hall | Hunt: their songs, what it hates, its lair; then a memory of Wend fleeing it | Strength, Knowledge | The worm swallowed the shard and sees, and it keeps the raiders off the Sand Singers. Decision: kill it, or leave it. Far-sight |
 | 2.7 | Your Eyes | The caravan's fire, by count after the second hall | Talk | | Corin: "Your eyes. Did you know they do that?" Agna stops laughing |
 | 2.8 | The Locks That Never Sleep | The jungle, the Jungle Folk's temple | Solve the locks, in a race | Knowledge | The Grass King's heir is already inside with Wend's maps and, face to face, offers his world: "a world where nobody needs a tent". Through the temple walls the player sees him: the Eye in them first sees through stone |
@@ -438,7 +438,7 @@ The living peoples:
 
 | # | Quest | Act | Place | Activity | Turn |
 |---|---|---|---|---|---|
-| T1 | The Witches' Debt | 1 | The swamp | Earn | Their brews heal only because of the shard's sight, so taking it would cost the people they heal |
+| T1 | The Witches' Debt | 1 | The swamp | Investigate, then Earn | Their brews heal only because of the shard's sight, so a team that heals with them knows what taking it costs, and may leave it (S29) |
 | T2 | Night Fishing | 2 | The Tide Folk's bay | Sail, then Hold | If the player took their shards, their boats are seen and this is a rescue; if not, a night's fishing among friends |
 | T3 | The Raiders | 2 | The desert | Hold | If the worm was killed, raiders come for the Sand Singers; if not, they sing the player the worm's song |
 | T4 | Through the Lines | 3 | The heir's camp outside the Grass Kingdom | Sneak | The player carries the kingdom's message through the heir's army, and finds that his sister lives inside the walls |
@@ -549,7 +549,7 @@ The prologue step by step, as the slice builds it (`slice.md`, step 2). Every li
 
 1. The world's first player wakes at dawn on the ground by the Last Camp's lit fire, remembering nothing before it. The stranger sits across the flames, propped against a log, grey and short of breath, with a scar over his heart: the Gazebound's mark (S18), which Corin explains in 1.3.
 2. He speaks first, in chat, with answers to click (M3). He says plainly that he is dying and why: he is old, and finding the player and bringing them to his fire took the last of him. He knows the player's face and will not say why. He presses a cold coal into their hand and names it, "That's an ember", and only then does the compass name it. He gives three rules, each with its reason in his words, walk, never stay, sleep only in a tent by a fire, and dies with his charge cut off (S22), slumping where he sits.
-3. The narrator says that he is dead and gives the reason to bury him. The player buries him: a right-click on him, the screen dims, and a grave stands by the camp with a blank stone. Whoever buried him chooses its words from numbered answers, a few ready words, their own (only then the stone's writing screen opens, with a task saying what to do there) or none, and the journal keeps them.
+3. After his death the story holds a silence of about sixteen seconds, the fire and the music only, then the narrator says that he is dead and gives the reason to bury him; the task to bury him shows once that is said. The player buries him: a right-click on him, the screen dims, and a grave stands by the camp with a blank stone. Whoever buried him chooses its words from numbered answers, a few ready words, their own (only then the stone's writing screen opens, with a task saying what to do there) or none, and the journal keeps them.
 4. His pack is the first reward, waiting in the journal for each player to claim: a backpack, a tent, a bed of any colour and a little food. Nothing else comes with a new world. Silent Gear's blueprints come later, as Hob's patterns at the caravan's first fire (M18).
 
 The Last Camp is his fire, burning, his tent and his things, with no grave until the player buries him and no letter, since he says it himself. It stays as it is for good: the last memory is played there (S13).
@@ -562,22 +562,24 @@ An old man sits across the flames, propped against a log. His face is grey, and 
 <The stranger> Never stay long in one place. Stay, and something finds you.
 <The stranger> Don't let it... the shards. I took them. Don't let it have...
 The fire pops. The old man is dead.
-What do you write on his stone?  [He gave me fire.] [Here lies a stranger.] [Write my own words.] [Leave it bare.]
-Journal: I buried him by his fire. On his stone I wrote: "He gave me fire."
+What do you write on his stone?  [Here rests a good man, who gave all he had.] [Rest well, old friend.] [Gone, but never forgotten.] [Leave it bare.]
+Journal: I buried him by his fire. On his stone I wrote: "Rest well, old friend."
 ```
 
 **P2 The First Day** (wherever the player makes camp; Build):
 
-1. "Not here": the player walks at least 512 blocks from the Last Camp, any way they like.
+1. "Not here": the player walks at least 512 blocks from the Last Camp, any way they like, and for a reason of their own, which the narrator gives in their thoughts: he knew their face and they don't; all he left is a cold coal and three rules, and the coal wakes on new ground, so maybe it remembers what they can't. The objective names what the walk is for, new ground for the ember, and the journal keeps it as "I" ("He knew who I was, and the ember is all I have of that, so I took it somewhere new"). When they are far enough the land is new to them, and the coal is a little less cold.
 2. They make their first camp: the tent pitched, a campfire crafted from logs, sticks and coal or charcoal and lit within 4 blocks of it, and a rest by the fire, which counts the moment a player stands near it. In a team, two thirds of the team have done so.
-3. Once the camp is made, the afternoon passes at the fire in half a minute (M20) and dusk falls.
+3. Once the camp is made, the afternoon passes at the fire in half a minute (M20) and dusk falls. Its lines wait until a player sits by their fire, so one who went into the tent is asked to come out to it, and "You sit by your fire" is always true.
 4. The ember wakes: it has seen new land (S19). It leans in the player's palm towards the smoke, which ties it to the compass that has stood at the top of the screen from the start, and the ember sense wakes with it.
 5. Smoke and a red glow rise over the land ahead, and P3 opens. The player sees the town, so the compass shows its exact mark.
 
 The sun eases as on every day out (M6), and the road's rules teach themselves when tried, through the first-time hints: a sapling that withers, a chest that will not stand.
 
 ```text
-[Main] The First Day - not here. Make camp before dark: a tent, a fire.
+He knew your face. You don't. All he left you is a cold coal and three rules.
+It wakes on new ground, he said. Maybe it remembers what you can't.
+[Main] The First Day - find new ground for the ember: 512 blocks to go.
 You sit by your fire. The shadows stretch. The ember in your hand grows warm, then glows.
 Over the ridge ahead, smoke. Under it, the sky is red.
 [Main] Ash - the smoke over the ridge   Compass ◆ 320 blocks
@@ -585,12 +587,12 @@ Over the ridge ahead, smoke. Under it, the sky is red.
 
 **P3 Ash** (the burnt town; Investigate, then Hold; the gate is Strength):
 
-1. The quest puts the town down at dusk past the player's camp, on the way they walked, out of sight behind the land and close enough that its smoke shows over it, already burning, with fires that do not spread. It is a town that grew too big: about a hundred blocks across and about thirty buildings round the bell tower's square, from the inn, the smithy and the market to houses of every size. It grows on its land the way a village does: streets leave the square and bend with the ground, every building stands on its own footing beside its street with its door towards it, and a path joins each door to the street. Its site keeps 64 blocks clear of any other place and prefers land beside a river, and where it finds one the town stands on both banks with the toll bridge across; elsewhere it stands without. About thirty-two dead lie in it, each with a face of their own: most indoors, where they hid, some at the doors they tried to get out of, fewer in the streets where they fled. It stays afterwards as a ruin of the settled world: Tamsin's town.
-2. The player investigates by night with the ember sense (M10): bodies with their shirts torn open over the heart, purses still on their belts, emeralds in an open strongbox, each a line in the journal.
-3. The survivors, Tamsin, Pip, Agna and Hob, hide in the cellar of the stone bell tower, and each gives their name there, since the player knows none of them. Resting at their fire makes it where the player wakes if they fall that night, and Hob hands them a blade from his forge.
+1. The quest puts the town down at dusk 256 to 384 blocks past the player's camp (`balance.toml` `[tollbridge]`), on the way they walked, out of sight behind the land and close enough that its smoke shows over it, already burning, with fires that do not spread. It is a town that grew too big: about a hundred blocks across and about thirty buildings round the bell tower's square, from the inn, the smithy and the market to houses of every size. It grows on its land the way a village does: streets leave the square and bend with the ground, every building stands on its own footing beside its street with its door towards it, and a path joins each door to the street. Its site keeps 64 blocks clear of any other place and prefers land beside a river, and where it finds one the town stands on both banks with the toll bridge across; elsewhere it stands without. About thirty-two dead lie in it, each with a face of their own: most indoors, where they hid, some at the doors they tried to get out of, fewer in the streets where they fled. It stays afterwards as a ruin of the settled world: Tamsin's town.
+2. The player investigates by night with the ember sense (M10): bodies with their shirts torn open over the heart, purses still on their belts, emeralds in an open strongbox, each a line in the journal. The task panel says to hold up the ember and then to right-click a glowing sign to look closer. The cellar door is always the last sign: it glows, whole, only once three of the town's four are found, and finding it ends the search. The town's barrels hold what it left, since its killers took nothing: food and seeds in the houses, the market and the inn, coal, flint and a little iron at the smithy, wool at the weaver's, the emeralds in the strongbox and a few at the toll house, each player finding their own share (Lootr), with hay stacked in the barns (`balance.toml` `[tollbridge.loot]`).
+3. The survivors, Tamsin, Pip, Agna and Hob, hide in the cellar of the stone bell tower, and each gives their name there, since the player knows none of them; their talk begins once the player comes down to their fire, not at the door. Resting at their fire makes it where the player wakes if they fall that night, and Hob hands them a blade from his forge. The rest takes half a minute at the fire, counted in the task panel, and the blade waits in the journal once it is done.
 4. The gaze's creatures come back, drawn by the ember that has just woken: the player shines (S12) before anyone knows what that means.
-5. The hold: four waves at the cellar door, with the survivors as their target. Each wave makes for the bell tower's door and beats on it; left to them, the door cracks and gives way, and they come down the stairs into the cellar. If one falls, the step is tried again from the cellar, with the failed try's waves gone (D6). The night eases towards midnight while the hold lasts; after the last wave it passes to dawn in half a minute, and what is left crumbles in the sun.
-6. In the morning the survivors beg the one with the ember to lead them. Tamsin sits by the fallen bell and asks what to do with it; she takes it whatever the player says, and remembers what they said, which comes back in The Bell (1.10).
+5. The hold: four waves at the cellar door, with the survivors as their target. Hob shuts the door as it begins, and the first wave comes half a minute after "Outside, something scrapes at the stones". The waves are small, 2, 3, 4 and 5 creatures for each player of the team (`balance.toml` `[hold]`), and they are the whole fight: while the hold lasts nothing else spawns within its reach, and what already stood in the town when it began joins the first wave. Each creature of a hold is outlined in dark red through walls for the whole team until it falls, and a wave ends only once its creatures are dead, or after its time; while no one of the team stands alive at the town, the hold waits for them. A grave stands on open ground beside where a player fell, and right-clicking it gives their things back. Each wave makes for the bell tower's door and beats on it; left to them, the door cracks and gives way, and they come down the stairs into the cellar. If one falls, the step is tried again from the cellar, with the failed try's waves gone (D6). The night eases towards midnight while the hold lasts; after the last wave it passes to dawn in half a minute, and what is left crumbles in the sun.
+6. In the morning the survivors come up out of the cellar and beg the one with the ember to lead them; the talk begins once the player stands with them by the bell. Tamsin sits by the fallen bell and asks what to do with it; she takes it whatever the player says, and remembers what they said, which comes back in The Bell (1.10).
 7. Make for the caravan: the survivors' first camp goes up out of sight ahead, at its smallest, the fire, Tamsin's tent and the bell's cart, the healers' tent and Hob's wagon (M5). The player walks in by daylight, the afternoon passes at the fire, everyone has a word, Agna binds a cut on the player's arm and finds their heart slow, and Tamsin makes them the caravan's scout. They sleep in their tent by its fire, and the next morning Act 1 opens with the ember's first pull (1.1).
 
 ```text
@@ -620,7 +622,7 @@ What the prologue asks of the systems, at their minimum:
 | Joining later (M7) | As above |
 | The generator | The Last Camp with the stranger and no grave, and the burnt town |
 
-**Why:** Red Dead Redemption 2 and The Witcher 3 teach each rule inside the story at the moment it is needed, so the stranger gives the first rules in his own words and the first day plays them, and an ember that wakes on new sights gives "never stay" its reason in play. A stone the player writes and a bell choice that comes back make the first hour theirs and teach that the world remembers, while finding the bodies by night with the ember sense brings the horror and the new power together, and a horde that comes back for the ember plants the shine before anyone names it.
+**Why:** Red Dead Redemption 2 and The Witcher 3 teach each rule inside the story at the moment it is needed, so the stranger gives the first rules in his own words and the first day plays them, and an ember that wakes on new sights gives "never stay" its reason in play. A stone the player words and a bell choice that comes back make the first hour theirs and teach that the world remembers, while finding the bodies by night with the ember sense brings the horror and the new power together, and a horde that comes back for the ember plants the shine before anyone names it. The first playtest walked only because it was told to, so the first day gives the walk the player's own reason in their own thoughts; it met the town too close, the door's talk before the cellar, the blade and the attack on top of the talk, a hold too big that ended while its creatures stood at the door and a grave on a roof no one could reach, and each of those is set right above.
 
 ### S24 1.1 The Pull in detail
 
@@ -651,9 +653,9 @@ The gear teaches itself when tried, through the first-time hints, as the prologu
 
 **1.1 The Pull** (the Diggers' tunnels; Reach):
 
-1. At dawn the quest puts the Diggers' tunnels down ahead, as it put Tollbridge down: under the nearest forest about 2,048 blocks on from the caravan's camp, the way the team has been walking, with the entrance set up out of sight (M5). The first hall always lies on new land, at a distance that fits one day. The generator no longer places the Diggers' hall; the other eleven halls stand where the world makes them. The tunnels stay for good, a place of the Twelve Peoples.
+1. At dawn the quest puts the Diggers' tunnels down ahead, as it put Tollbridge down: under the nearest forest about 2,048 blocks on from the caravan's camp, the way the team has been walking, with the entrance set up out of sight (M5). The first hall always lies on new land, at a distance that fits one day. The generator no longer places the Diggers' hall, nor any of Act 1's: their quests put them down on the home land (1.4 the Marsh Mothers', S29; 1.7 the Frost Walkers'; 1.10 the First Village's ruins), and Act 2's and Act 3's halls grow in their bands beyond the sea (`systems.md`, M40). The tunnels stay for good, a place of the Twelve Peoples.
 2. The team walks by feeling, about fifteen minutes.
-3. The tunnels are the Diggers' old workings, about ten minutes deep. A timbered entrance in a hillside under the trees leads into a network of old tunnels: rails, side drifts, a rotted ladder, a drift under water, a collapse dug through or passed by an old side tunnel, a chasm crossed on planks. Nothing is lit; the ember's feeling guides at every fork, and the gaze's creatures wait out the day down here, so torches and a blade matter. Beside the way, again and again, the same mark is scratched: someone came this way before. The tunnels can be dug through, but the old ways are quicker; the hall itself is warded (M11), so the way in is its door.
+3. The tunnels are the Diggers' old workings, about ten minutes deep. A timbered entrance in a hillside under the trees leads into a network of old tunnels: rails, side drifts, a rotted ladder, a drift under water, a collapse dug through or passed by an old side tunnel, a chasm crossed on planks. Nothing is lit; the ember's feeling guides at every fork, and the gaze's creatures wait out the day down here, so torches and a blade matter. Beside the way, again and again, the same mark is scratched: someone came this way before. The Diggers stood as tall as anyone, so every old way has a man's headroom, timbers at the top of the cut and fallen beams along the walls, and the generator refuses a way that does not. The tunnels can be dug through, but the old ways are quicker; the hall itself is warded (M11), so the way in is its door.
 4. In the hall the calling stone hums with the shard on it, and the mark is cut beside it. The shard sinks into the ember, and the voice speaks for the first time and finishes the stranger's charge (S22). Trail-sight comes with it, for every player (M11), and the team shines its first step (M9).
 5. Make for the caravan: its camp goes up out of sight ahead, on the main quest's way (M5, M19), and the evening runs as every evening does (M6, M20). On the way the voice makes its first short remarks (M4).
 6. At the caravan Tamsin sees a change, and Pip asks for a horse (C8). Once most of the team sits at the fire, the voice gives its first long talk as the night's story, heard only by the players: who it says it is, the ember, and the lead to Wend's first camp, which opens 1.2 with its exact mark. Sleep waits until it is over (M12).
@@ -718,9 +720,9 @@ The typical road (the later halls of each act come in any order, and the by-coun
 
 | # | Season | Main quests | Side quests on offer | The evening's peak | The night | Story music |
 |---|---|---|---|---|---|---|
-| 1 | Late summer | P1 The Last Fire, P2 The First Day, P3 Ash | | Fight: the cellar door | The hold at Ash | The Death of Åse, the ember waking, the battle piece, Morning Mood |
+| 1 | Late summer | P1 The Last Fire, P2 The First Day, P3 Ash | | Fight: the cellar door | The hold at Ash | What We Don't Say, the ember waking, the battle piece, BETTER LIFE |
 | 2 | Late summer | 1.1 The Pull, 1.2 His First Camp | W5 The Cache, C8 The Road | Revelation: the voice speaks | The caravan's fire | The shard ringing; the first memory's theme |
-| 3 | Late summer | 1.3 The Deserter, 1.4 The Marsh Mothers, 1.5 The Hooded Traveller | T1 The Witches' Debt, W11 The Dice | Fight: the ford | The caravan, uneasy | The battle piece at the ford |
+| 3 | Late summer | 1.3 The Deserter, 1.4 The Marsh Mothers, 1.5 The Hooded Traveller | T1 The Witches' Debt, W11 The Dice | Fight: the ford; for a team that healed with the witches, whether to take their shard | The caravan, uneasy | The battle piece at the ford |
 | 4 | Late summer, the leaves turning | 1.6 The Last Frost Walker, 1.7 The Theft, 1.8 Under the Ice | C1 The Missing, W7 Maren's Gifts | Revelation: the thief was the man whose voice the player trusts; then Nell's shard | The caravan | The theft's theme |
 | 5 | Early autumn | 1.9 The Keeper's Apprentice, 1.10 The Bell, 1.11 The Name | C7 The Lost Ore, W8 Captains' Pages | Fight, then the act's revelation: Wend | Red moon: the gaze comes for the bell | The bell's theme, the battle piece, the Name at the fire |
 | 6 | Mid autumn | 2.1 Ships for Everyone, 2.2 The Crossing | C2 His Brother, C3 The Burial | Fight: the thing below, in the first autumn storm | A night held on the water | Act 2's first morning, the battle piece at sea |
@@ -797,7 +799,7 @@ What 1.2 asks of the systems, at their minimum:
 
 The third day of Act 1 step by step, as the slice builds it (`slice.md`, step 6), shown for a player alone; a team plays it the same, and where it differs it says so. Every line is a placeholder for the `lore` skill.
 
-**The morning** runs as every morning (S24): the camp packs up, Tamsin: "Go on. We'll follow your marks." The ember pulls again, towards the next hall, the swamp's (1.4), by feeling (D6).
+**The morning** runs as every morning (S24): the camp packs up, Tamsin: "Go on. We'll follow your marks." The ember pulls again, towards the next hall, the swamp's (1.4), which the quest puts down ahead (S29), by feeling (D6).
 
 **1.3 The Deserter** (a ford below a Gazebound outpost; Hold; Strength):
 
@@ -835,6 +837,170 @@ What 1.3 asks of the systems, at their minimum:
 **Why:** A crossing is the oldest choke point there is, where an enemy that cannot charge through water is held from the bank, as Mount & Blade's players and the Scots at their fords did, so the fight's one idea comes from the land, and by day against people it reads unlike Ash's night of the gaze's creatures. The patrol seeing the ember is why this one fight cannot be walked past: it is the day the Gazebound learn the team carries it. Corin keeping the name back leaves Maren's reveal at 1.11 whole while telling the player that the stranger was someone's captain.
 
 It raises, for its build: what holds the Gazebound to the crossing rather than the water beside it.
+
+### S29 1.4 The Marsh Mothers in detail
+
+The fourth day of Act 1 step by step, as the slice builds it (`slice.md`, step 7), shown for a player alone; a team plays it the same, and where it differs it says so. Every line is a placeholder for the `lore` skill.
+
+**The morning** runs as every morning (S24): the camp packs up, Corin's small tent with it. The ember pulls on towards the swamp's hall, by feeling (D6), and the main quest opens as the pull; its title is written with the `lore` skill, since nobody has named the Marsh Mothers yet.
+
+**Where the hall is.** At 1.3's morning, when the pull opens, the quest picks the hall's place, as 1.1 picks the Diggers' tunnels': the nearest swamp where no snow lies, 2,048 to 4,096 blocks along the way and up to 1,024 to either side. With no swamp there, it makes one at about 3,072 blocks along, as 1.3 cuts its creek: a bog about 128 across of mud, still water, mangroves and lily pads, its ground and water turned to the swamp's colours. The hall, its black pool and the witches' hut go up there out of sight when the team comes near, and stay for good, a place of the Twelve Peoples. The world makes no Marsh Mothers' halls of its own, so there is exactly one. A player alone walks about 2,000 to 3,000 blocks from the caravan, a day like 1.1's. Measured from the ford on three seeds, the nearest hall the world made lay 8,750 to 18,800 blocks away, and the nearest swamp of any kind 2,030 (a frozen ice marsh) to 5,900.
+
+**1.4 The Marsh Mothers** (the swamp's witch hut; Talk, then Reach; Trust):
+
+1. Within 256 blocks the ember knows its mark: a black pool under the mangroves, its water so dark it shows no face. At its edge stands a hut on stilts with smoke at its chimney, and three witches on the porch, the Marsh Mothers' heirs, Easy NPC people in the witch's look.
+2. **The talk.** At 16 blocks the eldest calls out, and the talk starts on its own. They know the ember: the man who carried it sat on their porch and swore by it, and his word was worth nothing (lore, Wend's bargain). They curse his name. The eldest names who kept the hall before them, the Marsh Mothers, and says nothing of what lies below.
+3. **The trust, at its minimum.** The youngest asks to look into the player's eyes. Letting her look, she flinches as if burnt: "Something looks out of you." Frightened rather than won over, the eldest lets them go down: "Not his, then. Whatever you are. Go down where the water shows no face." She gives each player a brew for the water, 3 minutes of breathing under water. Keeping back, she says "Then take his light and go", and clicking her asks again. In a team the first answer decides, as in any talk.
+4. **The drowned way** (Reach). About 16 blocks down through black water, then about 32 along a tunnel choked with roots, with one pocket of air on the way. It is dark, and the ember held up shows the way between the roots. With the brew it is an easy swim; without it, a tight one. The hall is warded, as every hall is (M11), so the water is the only way in.
+5. **The hall.** A dry room sunk in the mud: the Marsh Mothers' cauldrons, their lectern with their own book (S26), and the shard humming on the calling stone. A team that did T1 first chooses here (below); otherwise the shard is taken as at the first hall. It sinks into the ember, and True-sight comes, for every player (M11). The voice: "Two. They'd have sat on it forever, brewing over it."
+6. **True-sight shows at once.** A wall that was mud shows faint as smoke: the Marsh Mothers' own stair, going up. It comes up through the witches' floor, and the eldest stares at the hole: "All these years we kept the door, and never knew it." That is why they keep the hut. Once the shard is gone the black pool is plain water, and their brews no longer heal.
+7. Make for the caravan, as every evening.
+
+**Forcing the way.** Going down without their leave works, but the witches turn on the team: they throw something foul (slowness and weakness for a minute), bar their door, and their trust is gone for good, which counts against Keep the oath (S8), and T1 closes.
+
+**T1 The Witches' Debt** (the swamp; Investigate, then Earn) opens with the talk. A fisher from a village downriver lies fevered on their porch, and the witches have nothing left to brew with. Held up, the ember shows what the brew needs round the pool: a blue orchid, frogspawn and a bottle of the black water. The witches brew at their cauldron and he sits up, and held up again, the ember shows the brew glowing as the pool glows: whatever heals is down there. The eldest: "That's his debt paid. Yours is your own." Their trust is full.
+
+**The choice, for a team that knows.** With T1 done before the shard, the calling stone asks, and two thirds of the team decide, as in every hard decision (M3):
+
+| | What it gives | What it costs |
+|---|---|---|
+| Take it | True-sight, the stair and a step of shine (M9) | The black pool turns plain and their healing with it, and their trust falls back to the minimum |
+| Leave it | Their full trust, which counts towards Keep the oath, and two of their healing brews for each player. The voice: "Soft. That's one fewer at the gate." | No gift and no shine; no stair shows, so the team swims back out |
+
+Without T1 the shard is taken with no choice, the pool turns plain, and T1 closes: there is nothing left to brew with.
+
+```text
+Swamp    The ember's mark sits in a black pool. Smoke rises from a hut on stilts at its edge.
+         <An old woman> That's far enough. We know that light.
+         <An old woman> He sat where you're standing and swore by it. It was worth nothing.
+         <A young woman> Let me look at you.   1 Let her look   2 Keep back
+         She flinches as if burnt. "Something looks out of you."
+         <An old woman> Not his, then. Whatever you are. Go down where the water shows no face.
+         [Side] The Witches' Debt - a fevered fisher on their porch
+Pool     You drink and go under. Held up, the ember shows a way between the roots.
+Hall     The shard sinks into the ember.
+         <The stranger> Two. They'd have sat on it forever, brewing over it.
+         A wall of mud goes faint as smoke: a stair, going up.
+Hut      You come up through the witches' floor.
+         <An old woman> All these years we kept the door, and never knew it.
+```
+
+The journal: People, the witches: "They keep a hut over a black pool and curse the man who carried this ember. The youngest looked into me and flinched." Pages: the Marsh Mothers' own book from their lectern. The brews are items; True-sight stands with the gifts.
+
+**Sound.** No story piece plays, since evening 3's is the ford's (S25). The calling stone hums and the shard rings as at every hall, and an illusion showing through True-sight gets a sound of its own, chosen by ear with the `sound` skill.
+
+What 1.4 asks of the systems, at their minimum:
+
+| System | For 1.4 |
+|---|---|
+| The quest engine (M1) | A hall put down ahead in a swamp, or a bog made for it; a choice that comes only to a team that knows |
+| Trust (M10, M11) | A number per people, at its minimum: none, enough to go down, or full; forcing the way loses it for good |
+| The halls (M11, M15) | The Marsh Mothers' hall under its black pool, warded, with the drowned way and the stair; the world no longer makes these halls |
+| Gifts (M11) | True-sight: illusions show as faint outlines, the stair first |
+| Conversations (M3) | The witches' talk, the look, two thirds at the calling stone |
+| People (D12) | The three witches and the fisher, as Easy NPC people; witches only ever as people (M13) |
+| Sound (`sound.md`) | An illusion showing through |
+
+**Why:** A quest put down ahead keeps 1.4 a day's walk on every seed, where the world's own halls lay a journey of hours away. The witches trust the player for what looks out of them, which makes their fear the twist's first spoken clue (D5), and their stair under the hut gives their keeping a reason they forgot. A choice that comes only to a team that learned the cost first rewards curiosity, as The Witcher 3 lets Geralt free the tree's spirit well only if he found it before meeting the Crones, and shows before 1.8 and 1.10 that a shard costs the living.
+
+It raises:
+
+- **For its build:** whether the bog's changed colours reach every player's screen once its land is turned to swamp (`/fillbiome` does it in 1.21.1; not tried).
+- **For steps 9 and 11:** whether the Frost Walkers' and the First Village's halls are put down by their quests too. Measured from the ford on three seeds, the nearest the world made lay 2,630 to 4,100 blocks away for the Frost Walkers and 2,000 to 11,000 for the First Village.
+
+### S30 1.5 The Hooded Traveller in detail
+
+1.5 step by step, as the slice builds it (`slice.md`, step 8). Every line is a placeholder for the `lore` skill. It is the fire's story (M12) on the evening after the team's second hall, done either way, its shard taken or left; in the slice that is the Marsh Mothers' (1.4).
+
+1. **The setup, on the road.** On the way back to the caravan that evening the voice says: "Someone's walked in your smoke since my first camp. Don't look round." With the note signed "M." under his lean-to (S27) it is all the warning there is; the old pack's notice about two shards stirring goes.
+2. **She walks in.** Once most of the team sits at the caravan's fire, a hooded woman in Gazebound grey walks out of the dark and sits across the flames: an Illager's body, hood up and face in its shadow, the open eye stitched over the heart, drawn with the `art` skill. Tamsin: "Gazebound. At my fire." Hob stands with his hammer and nobody moves: nothing fights at a fire shared freely (`lore.md`). Corin stays in his tent at the edge; she looks once towards it and lets him be.
+3. **The talk.** She looks at the ember: "So he's dead. I knew his smoke before I knew your face." The answers: "Who are you?", "You left the bread at his camp." (only once the team has found it, W7) and "Get away from our fire." She keeps her name back in the stranger's own words from the Last Fire, "Names are for people who stay", so a player who heard him knows she learned them from him; the band calls her "A hooded woman" until 1.11 names her. Then she sets a loaf on the log: "Eat. You walk further on bread."
+4. **She leaves in smoke.** She stands, the fire gusts, smoke rolls over the circle, and when it thins she is gone; the loaf lies on the log.
+5. **The bread.** The voice: "Eat it. Don't follow her." The answers, the first deciding for the team: Eat it ("You break it and eat. It's good bread, dark and sweet, an open eye pressed into the crust."), Keep it for the road (Her Bread waits in each player's journal to take), or Give it to the fire (the voice: "Waste."). The story keeps the answer: at 2.5, when the player lives the night Wend took her bread and stopped walking, the memory says which they did ("You know this bread. You've eaten it.").
+6. **After.** Corin, at the edge of the light: "She saw my tent. She let me be. ...Don't ask me who she is." Then sleep, as every night.
+
+```text
+Road     <The stranger> Someone's walked in your smoke since my first camp. Don't look round.
+Fire     Someone walks out of the dark and sits across the fire, hood up. Grey cloth. An eye stitched over the heart.
+         <Tamsin> Gazebound. At my fire.
+         <A hooded woman> So he's dead. I knew his smoke before I knew your face.
+           1 Who are you?   2 You left the bread at his camp.   3 Get away from our fire.
+         <A hooded woman> Names are for people who stay.
+         <A hooded woman> Eat. You walk further on bread.
+         The fire gusts. Smoke rolls over the circle, and when it thins she is gone.
+         <The stranger> Eat it. Don't follow her.
+           1 Eat it   2 Keep it for the road   3 Give it to the fire
+         <Corin> She saw my tent. She let me be. ...Don't ask me who she is.
+```
+
+**Alone and in a team.** A player alone plays it the same: the talk waits until they sit at the fire. In a team everyone at the fire sees the same subtitles and answers, the first answer decides each choice, and teammates far from the fire read it in chat (I4).
+
+**Where it lives.** The journal: People, "A hooded woman in Gazebound grey. She knew the stranger's smoke, and that he was dead. She left us bread."; The Story So Far, what she answered ("She wouldn't give her name. Names are for people who stay, she said."); At the Fire, the whole talk; the bread, kept, as Her Bread in the inventory, its tooltip "Dark and sweet, an open eye pressed into the crust. She left it at our fire."
+
+**Sound.** No story piece plays, since evening 3's is the ford's (S25): only the fire and the voices, and a soft rush of smoke as she leaves, chosen by ear with the `sound` skill.
+
+What 1.5 asks of the systems, at their minimum:
+
+| System | For 1.5 |
+|---|---|
+| The quest engine (M1) | A main quest that opens after a number of the act's halls are done, taken or left, and an answer remembered for a later quest |
+| The fire's stories (M12) | A night's story that waits for most of the team at the caravan's fire |
+| Conversations (M3) | A person who walks in, talks and leaves in smoke; an answer offered only once a side quest was found |
+| People (D12) | The hooded woman, an Illager evoker in Gazebound grey with her hood up |
+| Sound (`sound.md`) | Her leaving in smoke |
+
+**Why:** Elden Ring's Melina comes to the player the third time they rest at a Site of Grace, offers a gift to accept or refuse, and returns later, so a visitor who comes by count to the fire the player already rests at needs no quest marker to find her. Her bread is the gesture Wend gave in to, so the voice's "Eat it" is the dragon's quiet test, and keeping the answer for 2.5 makes it a choice that comes back.
+
+### S31 1.6 The Last Frost Walker in detail
+
+1.6 step by step, as the slice builds it (`slice.md`, step 9). Every line is a placeholder for the `lore` skill. It opens the morning after 1.5 and waits in the journal until it is tracked (D6); its title there is "Tracks in the Snow", since nobody has said "Frost Walker" yet, and it takes the name it has here once Nell says it.
+
+1. **The pull.** Tracked, the ember pulls, by feeling, as in 1.1 and 1.4. The quest puts the Frost Walkers' winter house down about 2,048 blocks ahead on the home land, at the edge of the nearest snow, and their hall about 512 blocks further into it for 1.7, both out of sight (M40).
+2. **The tracks.** About 256 blocks before the house, fresh tracks cross the way: a hunter's prints, a drag mark, a little blood. The narrator: "Someone hunts here. Fresh." The task panel says to follow them. They glow under Trail-sight and under the held-up ember, bend with the land for about 256 blocks, and drifts of powder snow lie beside them.
+3. **The house.** The tracks end at a long, low house of stone and hide, half buried in snow, a deer hung by its door. An arrow thuds into the snow at the player's feet; a woman in furs stands on the roof, bow drawn.
+4. **The talk.** She is Nell, the last of her people. She sees the ember and lowers the bow a little: her people's calling stone answers only to a Wayfarer's fire, and she has waited twenty winters for one. She wants a name: who emptied the hall.
+5. **The snowshoes.** She asks the player to wake the stone in her people's hall, up in the deep snow, and gives each of the team a pair of her people's snowshoes for the way ("My mother made them."): Artifacts' snowshoes, renamed and with a tooltip, worn in the charms' feet slot, walking on powder snow and faster on snow. They fill the snowshoes tier of the Gear page's "Against the cold" (M18) and are the cold gate's key (M11): the way to the hall crosses drifts of powder snow. Artifacts' own copies leave every loot table, so snowshoes come only from the Frost Walkers. "I'll be at the stair at first light. Don't make me wait."
+6. **The caravan.** Make for the caravan, which camps on the last ground without snow. At the fire Tamsin speaks of the woman in furs; if Corin is with the team, he keeps to the edge of the light: "She looked at my coat for a long time."
+
+```text
+Snow     Prints in the snow, a drag mark, blood. Someone hunts here. Fresh.
+         An arrow thuds into the snow by your boot.
+         <A woman in furs> That's close enough. Hold the fire where I can see it.
+         <A woman in furs> ...A Wayfarer's fire. Twenty winters I've waited for one of those.
+         <Nell> Nell. The last of the Frost Walkers. Our hall is up there, and it's empty.
+         <Nell> You'll sink to the waist up there in those. Here. My mother made them.
+Fire     <Corin> She looked at my coat for a long time.
+```
+
+**Edge cases.**
+- Walking off the tracks: the house still stands at their end, and the compass keeps the pull.
+- A night in the snow: the cold bites (Tough As Nails); a tent with a fire still shelters, and the caravan camps below the snow line.
+- Dying on the trail: the grave stands on open ground beside the snow, as everywhere (M34).
+- Striking Nell: she is a person, so blows do nothing outside a hold, and she says so.
+- No snow near the way: the quest makes a snowfield round the house and the hall, as 1.4 makes a bog (M40).
+- Untracking the quest on the trail: the tracks and the house stay; the talk waits until it is tracked again (D6).
+- In a team: whoever stands with her in sight first starts the talk, and the first answer decides; every player takes their own pair of snowshoes from the journal, a teammate who joins later too.
+- Snowshoes lost to a death lie in the grave with the rest of the player's things.
+- Leather boots also walk on powder snow, as in vanilla; the snowshoes add speed on snow and keep the boots' slot free.
+
+**Alone and in a team.** A player alone plays it the same; nothing in it waits for a second player.
+
+**Where it lives.** The journal: People, "Nell, the last of the Frost Walkers. She came home from a hunt twenty winters ago to find her people dead on their hall's stair. She wants a name."; Words, the Frost Walkers; The Story So Far; At the Fire. The snowshoes, with their tooltip, and their row on the Gear page.
+
+**Sound.** No story piece plays, since evening 4's is the theft's (S25): the wind in the snow, the arrow's thud, the voices.
+
+What 1.6 asks of the systems, at their minimum:
+
+| System | For 1.6 |
+|---|---|
+| The quest engine (M1) | A quest whose title changes once its people are named |
+| Places (M40) | The winter house and the hall put down in snow on the home land, a snowfield made where none lies |
+| Track (M10) | A laid trail of prints, drag mark and blood, glowing under Trail-sight and the ember |
+| Gates (M11) | The cold: drifts of powder snow and Tough As Nails, with the snowshoes as the key |
+| Gear (M18) | The snowshoes tier of "Against the cold" |
+| People (D12) | Nell, a hunter in furs with a bow, drawn with the `art` skill |
+
+**Why:** Red Dead Redemption 2 opens with a search through snow that follows a trail to the person at its end, and The Witcher 3's senses make such a trail readable without a marker, so the Diggers' Trail-sight pays off on the first real trail. A woman who has waited twenty winters for a Wayfarer's fire gives the team a reason to wake her hall that is hers, not the voice's, and keeps 1.7's twist for the memory; snowshoes from her mother's hands make the cold gate's key a gift from a person.
 
 ## Open
 

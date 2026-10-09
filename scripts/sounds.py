@@ -129,7 +129,7 @@ def main(wanted):
             make(name, effect, "effects", TARGETS[effect["kind"]] + effect.get("gain", 0), effect["kind"] == "loop")
     for name, piece in spec["music"].items():
         if name in wanted or (not wanted and not (SOUNDS / "music" / f"{name}.ogg").exists()):
-            make(name, piece, "music", TARGETS["music"], False)
+            make(name, piece, "music", TARGETS["music"] + piece.get("gain", 0), False)
 
 
 if __name__ == "__main__":

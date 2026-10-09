@@ -83,6 +83,10 @@ CELLAR = 4
 ROTATE_FACING = {"north": "east", "east": "south", "south": "west", "west": "north"}
 
 
+def stores(kind):
+    return {"LootTable": f"wayfarer:chests/tollbridge/{kind}"}
+
+
 def char(t, pos, axis="y"):
     t.set(pos, CHAR[int(noise("tollbridge/char", *pos) * 2)], axis=axis)
 
@@ -401,7 +405,7 @@ def furnish(t, seed, trade, x0, z0, x1, z1, door, taken):
             fence(t, (x, 1, z))
             t.set((x, 2, z), "minecraft:dark_oak_pressure_plate", powered=False)
         else:
-            t.set((x, 1, z), name, **properties)
+            t.set((x, 1, z), name, entity=stores(trade) if name == "minecraft:barrel" else None, **properties)
 
 
 def lean_to(t, seed, side, x0, z0, x1, z1):
@@ -455,6 +459,7 @@ def yard(t, seed, x0, z0, x1, z1, outer_w, outer_d, door):
     ]
     for i in range(int(noise(f"{seed}/props") * 3)):
         name, properties = choose(f"{seed}/prop/{i}", props)
+        entity = stores("yard") if name == "minecraft:barrel" else None
         spot = choose(
             f"{seed}/prop-at/{i}", [(x1 + 2, z0 + 1 + i), (x0 - 2, z0 + 2 + i), (x0 + 1 + i, z0 - 2), (x1 + 1, z1 - i)]
         )
@@ -465,7 +470,7 @@ def yard(t, seed, x0, z0, x1, z1, outer_w, outer_d, door):
                 for y in (1, 2) if dz == 0 else (1,):
                     t.set((spot[0], y, spot[1] + dz), "minecraft:stripped_spruce_log", axis="x")
         else:
-            t.set((spot[0], 1, spot[1]), name, **properties)
+            t.set((spot[0], 1, spot[1]), name, entity=entity, **properties)
 
 
 def tower():
@@ -495,8 +500,8 @@ def tower():
         for below in range(1, y):
             t.set((x, below, lo + 1), "minecraft:stone_bricks")
     smoulder(t, (hi - 1, 1, hi - 1))
-    t.set((lo + 1, 1, hi - 1), "minecraft:barrel", facing="up", open=False)
-    t.set((lo + 1, 1, hi - 2), "minecraft:barrel", facing="east", open=False)
+    t.set((lo + 1, 1, hi - 1), "minecraft:barrel", entity=stores("cellar"), facing="up", open=False)
+    t.set((lo + 1, 1, hi - 2), "minecraft:barrel", entity=stores("cellar"), facing="east", open=False)
     t.set((lo + 1, 2, hi - 1), "minecraft:hay_block", axis="y")
     for z in (lo + 2, lo + 3):
         t.set(
@@ -714,9 +719,9 @@ def hall(seed, width, depth, strongbox=False):
     burning(t, (x1 - 2, 2, z0 + 4))
     t.set((door, 1, z0 + depth // 2), "minecraft:magma_block")
     if strongbox:
-        t.set((x0 + 1, 1, z0 + 1), "minecraft:barrel", facing="up", open=True)
-        t.set((x0 + 1, 1, z0 + 2), "minecraft:barrel", facing="east", open=False)
-        t.set((x0 + 2, 1, z0 + 1), "minecraft:barrel", facing="up", open=False)
+        t.set((x0 + 1, 1, z0 + 1), "minecraft:barrel", entity=stores("strongbox"), facing="up", open=True)
+        t.set((x0 + 1, 1, z0 + 2), "minecraft:barrel", entity=stores("inn"), facing="east", open=False)
+        t.set((x0 + 2, 1, z0 + 1), "minecraft:barrel", entity=stores("inn"), facing="up", open=False)
         for x, z in ((door, z0 + 4), (door, z1 - 3)):
             fence(t, (x, 1, z))
             t.set((x, 2, z), "minecraft:dark_oak_pressure_plate", powered=False)
@@ -729,7 +734,7 @@ def hall(seed, width, depth, strongbox=False):
                 waterlogged=False,
             )
     else:
-        t.set((x1 - 1, 1, z0 + 1), "minecraft:barrel", facing="up", open=True)
+        t.set((x1 - 1, 1, z0 + 1), "minecraft:barrel", entity=stores("hall"), facing="up", open=True)
         t.set((x0 + 1, 1, z1 - 1), "minecraft:cauldron")
     t.door = (door, z1)
     return t
@@ -761,7 +766,7 @@ def smithy():
         t.set((x0 + 3, y, z0), SOOT)
     t.set((x0 + 3, 1, z0 + 3), "minecraft:anvil", facing="east")
     t.set((x0 + 5, 1, z0 + 2), "minecraft:water_cauldron", level=1)
-    t.set((x0 + 1, 1, z0 + 4), "minecraft:barrel", facing="up", open=True)
+    t.set((x0 + 1, 1, z0 + 4), "minecraft:barrel", entity=stores("smithy"), facing="up", open=True)
     fallen_beam(t, (x0 + 1, z0 + 5), 4, "x", 1)
     burning(t, (x0 + 2, 2, z0 + 5))
     t.door = (x0 + 3, z1)
@@ -794,6 +799,7 @@ def barn(seed):
         burning(t, (x0 + 3, 2, z))
     for x, z in ((x0 + 2, z0 + 4), (x1 - 2, z0 + 7), (x0 + 3, z1 - 3)):
         t.set((x, 1, z), "minecraft:hay_block", axis="y")
+        t.set((x, 2, z), "minecraft:hay_block", axis="y")
         t.set((x + 1, 1, z), "minecraft:coarse_dirt")
     t.set((x1 - 1, 1, z0 + 1), "minecraft:magma_block")
     t.door = (door, z1)
@@ -834,7 +840,7 @@ def shed(seed):
     if closed:
         fallen_beam(t, (x0 + 1, z0 + 1), width - 2, "x", 1)
         burning(t, (x0 + 2, 2, z0 + 1))
-        t.set((x1 - 1, 1, z1 - 1), "minecraft:barrel", facing="up", open=True)
+        t.set((x1 - 1, 1, z1 - 1), "minecraft:barrel", entity=stores("shed"), facing="up", open=True)
         if depth > 4:
             t.set((x0 + 1, 1, z1 - 1), "minecraft:hay_block", axis="y")
     else:
@@ -855,7 +861,7 @@ def stall(seed):
     for x, z in ((0, 0), (2, 0), (0, 2), (2, 2)):
         for y in range(1, 2 + int(coherent(f"tollbridge/{seed}/post", (x, 0, z)) * 3)):
             fence(t, (x, y, z))
-    t.set((1, 1, 0), "minecraft:barrel", facing="up", open=True)
+    t.set((1, 1, 0), "minecraft:barrel", entity=stores("stall"), facing="up", open=True)
     t.set((1, 1, 2), "minecraft:dark_oak_slab", type="bottom", waterlogged=False)
     if t.get((0, 3, 0)) is not None and t.get((2, 3, 0)) is not None:
         t.set((1, 3, 0), "minecraft:dark_oak_slab", type="top", waterlogged=False)
@@ -881,7 +887,7 @@ def toll_house():
     t.set((2, 1, 0), "minecraft:stone_brick_slab", type="top", waterlogged=False)
     char(t, (1, 4, 2), "x")
     char(t, (2, 4, 2), "x")
-    t.set((2, 1, 2), "minecraft:barrel", facing="up", open=True)
+    t.set((2, 1, 2), "minecraft:barrel", entity=stores("toll"), facing="up", open=True)
     return t
 
 

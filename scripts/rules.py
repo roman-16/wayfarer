@@ -116,11 +116,15 @@ KINDS = {
     "sleep",
     "talk",
     "wait",
+    "visit",
     "walk",
 }
 MEMORY_KINDS = {"cook", "gather", "lay", "light", "notch", "talk"}
 PLACES = {
     "bell",
+    "bell_agna",
+    "bell_hob",
+    "bell_pip",
     "brother",
     "cache",
     "caravan",
@@ -132,6 +136,9 @@ PLACES = {
     "ford_far",
     "last_camp",
     "maren",
+    "marsh",
+    "marsh_cellar",
+    "marsh_fisher",
     "marsh_hall",
     "tollbridge",
 }
@@ -143,6 +150,7 @@ TASKS = {
     "enter",
     "fire",
     "horse",
+    "look",
     "map",
     "marks",
     "pack",
@@ -195,6 +203,11 @@ def story():
         for after in quest.get("after", []):
             if after not in ids:
                 yield f"story/quests.toml: {quest['id']} comes after {after}, which is not a quest"
+        for line in quest.get("road", []):
+            if "by" in line and line["by"] not in people:
+                yield f"story/quests.toml: {quest['id']} has {line['by']} speak on the road, who is not in story/people.toml"
+        if "road" in quest and "halls" not in quest:
+            yield f"story/quests.toml: {quest['id']} has lines for the road back from a hall but opens after no number of halls"
         for step in quest["steps"]:
             where = f"story/quests.toml: {quest['id']}/{step['id']}"
             if step["kind"] not in KINDS:
@@ -206,6 +219,7 @@ def story():
             said = step.get("lines", []) + step.get("done", []) + step.get("burial", [])
             named = [line["by"] for line in said if "by" in line]
             named += [step[key] for key in ("whom", "with") if key in step]
+            named += [line["vanishes"] for line in said if "vanishes" in line]
             named += (
                 list(step.get("people", {}))
                 + list(step.get("poses", {}))
@@ -224,6 +238,8 @@ def story():
             for choice in step.get("choices", []):
                 if "stone" in choice:
                     yield from stone(where, choice["stone"])
+                if "needs" in choice and choice["needs"] not in ids:
+                    yield f"{where} offers {choice['id']} once {choice['needs']} has begun, which is not a quest"
             for line in said:
                 if "sound" in line and line["sound"] not in sounds["effects"]:
                     yield f"{where} plays the sound {line['sound']}, which story/sounds.toml does not have"

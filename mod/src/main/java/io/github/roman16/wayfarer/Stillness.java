@@ -1,6 +1,6 @@
 package io.github.roman16.wayfarer;
 
-import net.minecraft.ChatFormatting;
+import io.github.roman16.wayfarer.story.Talk;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -57,7 +57,7 @@ public final class Stillness {
             next.putInt(STAGE, MOVING);
             player.setData(Wayfarer.STILLNESS, next);
             if (before != MOVING) {
-                player.displayClientMessage(Component.translatable("wayfarer.stillness.brightens").withStyle(ChatFormatting.GOLD), false);
+                Talk.tell(player, Component.translatable("wayfarer.stillness.brightens"));
                 Nights.sync(player);
             }
             return;
@@ -70,11 +70,11 @@ public final class Stillness {
         next.putInt(STAGE, stage);
         player.setData(Wayfarer.STILLNESS, next);
         if (before < DIMMING) {
-            player.displayClientMessage(Component.translatable("wayfarer.stillness.dimming").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), false);
+            Talk.tell(player, Component.translatable("wayfarer.stillness.dimming"));
             Firsts.first(player, "dimming");
         }
         if (stage == FOUND) {
-            player.displayClientMessage(Component.translatable("wayfarer.stillness.found").withStyle(ChatFormatting.RED), false);
+            Talk.tell(player, Component.translatable("wayfarer.stillness.found"));
             Nights.sync(player);
         }
     }

@@ -1,6 +1,7 @@
 creatures = [
   "friendsandfoes:moobloom",
   "minecraft:sniffer",
+  "minecraft:witch",
   "wildernature:minisheep",
 ]
 

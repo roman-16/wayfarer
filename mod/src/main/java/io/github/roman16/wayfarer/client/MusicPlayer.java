@@ -34,6 +34,10 @@ public final class MusicPlayer {
         LOGGER.info("story music {} {}", play.piece(), play.loop() ? "looping" : "once");
     }
 
+    public static boolean playing(String piece) {
+        return playing != null && playing.piece.equals(piece);
+    }
+
     private static void fade() {
         if (playing != null) {
             LOGGER.info("story music {} fades", playing.piece);

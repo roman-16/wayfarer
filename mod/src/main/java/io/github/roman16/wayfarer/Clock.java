@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.GameRules;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -22,7 +21,6 @@ public final class Clock {
     private static final long HOUR = 1000;
     private static final float HOLD = 1f / 1024;
     private static final int MORNING_HOUR = 6;
-    private static final int OPEN_SKY = 15;
     private static final int TICKS_PER_SECOND = 20;
     private static final float VANILLA = -1;
     private static final Set<UUID> rested = new HashSet<>();
@@ -41,6 +39,7 @@ public final class Clock {
     private enum Mode {
         EASE,
         EVENING,
+        NIGHTFALL,
         OFF,
         PASS
     }
@@ -127,15 +126,15 @@ public final class Clock {
     }
 
     public static boolean nightfall() {
-        return mode == Mode.EVENING;
+        return mode == Mode.NIGHTFALL || mode == Mode.EVENING;
     }
 
     public static boolean passed() {
         return mode != Mode.PASS;
     }
 
-    public static boolean evening(ServerLevel level) {
-        return mode == Mode.EVENING && level.getDayTime() >= target;
+    public static boolean evening() {
+        return mode == Mode.EVENING;
     }
 
     public static long next(long now, String hour) {
@@ -166,12 +165,17 @@ public final class Clock {
             return;
         }
         long now = level.getDayTime();
-        if (mode == Mode.OFF || Math.floorDiv(now, DAY) > day && mode != Mode.PASS) {
+        if (mode == Mode.OFF || Math.floorDiv(now, DAY) > day && mode != Mode.PASS && mode != Mode.NIGHTFALL) {
             road(level);
             return;
         }
         if (mode == Mode.PASS && now >= target) {
             arrive(level, now, after);
+            return;
+        }
+        if (mode == Mode.NIGHTFALL && now >= target) {
+            mode = Mode.EVENING;
+            speed(level);
             return;
         }
         if (server.getTickCount() % CHECK_TICKS != 0) {
@@ -215,42 +219,24 @@ public final class Clock {
         return player.level() == level && player.distanceToSqr(caravan.getX() + 0.5, player.getY(), caravan.getZ() + 0.5) <= (double) blocks * blocks;
     }
 
-    private static void begin(ServerLevel level, long now, int seconds) {
-        mode = Mode.EVENING;
+    static void begin(ServerLevel level, long now, int seconds) {
         from = now;
         target = Math.floorDiv(now, DAY) * DAY + ticks(Balance.get().clock().evening());
-        long out = monsterHour(level, now, target);
-        long gap = target - from;
-        pace = out <= now ? 1 : gap / (double) (TICKS_PER_SECOND * seconds) * Math.log(gap / (double) (target - out));
+        mode = now >= target ? Mode.EVENING : Mode.NIGHTFALL;
+        pace = (target - from) / (double) (seconds * TICKS_PER_SECOND);
         caravan = null;
         rested.clear();
         speed(level);
     }
 
-    private static long monsterHour(ServerLevel level, long now, long until) {
-        if (level.isThundering()) {
-            return now;
-        }
-        int light = level.dimensionType().monsterSpawnLightTest().getMaxValue();
-        for (long time = now; time < until; time++) {
-            if (OPEN_SKY - darken(level, time) <= light) {
-                return time;
-            }
-        }
-        return until;
-    }
-
-    private static int darken(ServerLevel level, long time) {
-        double rain = 1.0 - level.getRainLevel(1.0F) * 5.0F / 16.0;
-        double thunder = 1.0 - level.getThunderLevel(1.0F) * 5.0F / 16.0;
-        double sun = 0.5 + 2.0 * Mth.clamp(Mth.cos(level.dimensionType().timeOfDay(time) * (float) (Math.PI * 2)), -0.25, 0.25);
-        return (int) ((1.0 - sun * rain * thunder) * 11.0);
-    }
-
     private static void speed(ServerLevel level) {
         level.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(true, level.getServer());
-        if (mode == Mode.PASS) {
+        if (mode == Mode.PASS || mode == Mode.NIGHTFALL) {
             level.setDayTimePerTick((float) pace);
+            return;
+        }
+        if (mode == Mode.EVENING) {
+            level.setDayTimePerTick(HOLD);
             return;
         }
         long left = target - level.getDayTime();

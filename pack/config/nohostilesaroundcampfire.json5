@@ -5,6 +5,6 @@
   "campfireMustBeSignalling": false,
   "enableEffectForNormalCampfires": true,
   "enableEffectForSoulCampfires": true,
-  "preventHostilesRadius": 12,
+  "preventHostilesRadius": 32,
   "preventMobSpawnerSpawns": false
 }

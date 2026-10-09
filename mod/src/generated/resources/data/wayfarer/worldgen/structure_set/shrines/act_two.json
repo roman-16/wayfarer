@@ -1,9 +1,11 @@
 {
   "placement": {
-    "salt": 198841077,
-    "separation": 96,
-    "spacing": 129,
-    "type": "minecraft:random_spread"
+    "from_blocks": 12288,
+    "salt": 1702562227,
+    "separation": 93,
+    "spacing": 125,
+    "to_blocks": 24576,
+    "type": "wayfarer:band"
   },
   "structures": [
     {
@@ -11,7 +13,7 @@
       "weight": 1
     },
     {
-      "structure": "wayfarer:shrine/cold",
+      "structure": "wayfarer:shrine/exotic",
       "weight": 1
     },
     {
@@ -20,10 +22,6 @@
     },
     {
       "structure": "wayfarer:shrine/rogue",
-      "weight": 1
-    },
-    {
-      "structure": "wayfarer:shrine/witch",
       "weight": 1
     }
   ]

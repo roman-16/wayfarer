@@ -3,15 +3,16 @@
 Music in the Wayfarer mod:
 
 - Home Was You, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/home-was-you/
-- Calm fireplace guitar song, by ShggothSlave. CC0 1.0. https://opengameart.org/content/calm-fireplace-guitar-song
+- Amberlight, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/amberlight/
 - Heartfelt Battle (loop), by request. CC0 1.0. https://opengameart.org/content/heartfelt-battle-loopable-fantasy-stringspianohorn
-- Edvard Grieg, The Death of Åse (Peer Gynt Suite No. 1, Op. 46), Musopen Symphony. Public domain. https://commons.wikimedia.org/wiki/File:Grieg_-_Peer_Gynt_Suite_No._1,_Op._46_-_II._The_Death_of_Aase_(Musopen_Symphony).flac
-- Edvard Grieg, Morning Mood (Peer Gynt Suite No. 1, Op. 46), Musopen Symphony. Public domain. https://commons.wikimedia.org/wiki/File:Grieg_-_Peer_Gynt_Suite_No._1,_Op._46_-_I._Morning_Mood_(Musopen_Symphony).flac
+- What We Don't Say, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/what-we-dont-say/
+- Emotional Original Soundtrack - BETTER LIFE, by Magmi.Soundtracks. CC BY 4.0. https://freesound.org/people/Magmi.Soundtracks/sounds/522207
 - Emotional Original Soundtrack - FORGIVENESS, by Magmi.Soundtracks. CC0 1.0. https://freesound.org/people/Magmi.Soundtracks/sounds/478246
 
 Sounds in the Wayfarer mod:
 
 - aturax_leatherBookUI_92, by GeoffAturax. CC BY 4.0. https://freesound.org/people/GeoffAturax/sounds/532189
+- Wood Click 1.wav, by Sawuare. CC0 1.0. https://freesound.org/people/Sawuare/sounds/500926
 - Bonfire, by Electroviolence. CC0 1.0. https://freesound.org/people/Electroviolence/sounds/234542
 - Shiny Object of Value - Rare Loot Find, by LilMati. CC0 1.0. https://freesound.org/people/LilMati/sounds/659677
 - Hand Crank Music Box (E5 Note), by moodyfingers. CC0 1.0. https://freesound.org/people/moodyfingers/sounds/732942
@@ -32,10 +33,12 @@ Sounds in the Wayfarer mod:
 - Level Up/Mission Complete (Fantasy), by SilverIllusionist. CC BY 4.0. https://freesound.org/people/SilverIllusionist/sounds/665203
 - Item Received, by spookymodem. CC0 1.0. https://freesound.org/people/spookymodem/sounds/249815
 - DSGNSrce Glass-metal Resonant Transition 13, by newlocknew. CC BY 4.0. https://freesound.org/people/newlocknew/sounds/711059
+- Fire Torch_Whoosh 2(medium speed).wav, by kev_durr. CC BY 4.0. https://freesound.org/people/kev_durr/sounds/426209
 - Tarea completa, by valeulloam97. CC0 1.0. https://freesound.org/people/valeulloam97/sounds/541389
 - Canvas Tent 1, by kevinkace. CC0 1.0. https://freesound.org/people/kevinkace/sounds/66773
 - Umbrella Close 3, by Geoff-Bremner-Audio. CC BY 4.0. https://freesound.org/people/Geoff-Bremner-Audio/sounds/790255
 - FIREPLACE, by leosalom. CC BY 3.0. https://freesound.org/people/leosalom/sounds/234288
+- 9. Esfumar Vanish, by cabusta9. CC0 1.0. https://freesound.org/people/cabusta9/sounds/444710
 
 Fonts in the Wayfarer mod:
 

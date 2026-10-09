@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer.story;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
@@ -74,6 +75,7 @@ public final class StoryDev {
     private static final String COMPASS = "compass";
     private static final String GEAR = "gear";
     private static final String JOURNAL = "journal";
+    private static final String LOOK = "look";
     private static final String MAP = "map";
     @Nullable
     private static Run run;
@@ -130,7 +132,16 @@ public final class StoryDev {
                                 .then(Commands.literal("keep").executes(context -> keepMarks(context.getSource())))
                                 .then(Commands.literal("restore").executes(context -> restoreMarks(context.getSource()))))
                         .then(Commands.literal("memory").then(Commands.argument("step", StringArgumentType.word())
-                                .executes(context -> memory(context.getSource(), StringArgumentType.getString(context, "step")))))));
+                                .executes(context -> memory(context.getSource(), StringArgumentType.getString(context, "step")))))
+                        .then(Commands.literal("marsh").then(Commands.argument("x", IntegerArgumentType.integer())
+                                .then(Commands.argument("z", IntegerArgumentType.integer()).executes(context -> marsh(context.getSource(),
+                                        IntegerArgumentType.getInteger(context, "x"), IntegerArgumentType.getInteger(context, "z"))))))));
+    }
+
+    private static int marsh(CommandSourceStack source, int x, int z) {
+        Marsh.move(source.getServer(), x, z);
+        source.sendSuccess(() -> Component.literal("story: the Marsh Mothers' hall moves under " + x + " " + z), false);
+        return 1;
     }
 
     private static int memory(CommandSourceStack source, String step) {
@@ -372,6 +383,10 @@ public final class StoryDev {
                 }
             }
             case "dawn", "sleep" -> Clock.jump(level, Steps.DAWN, clock.road());
+            case "visit" -> {
+                step.choices().stream().findFirst().ifPresent(choice -> Engine.choose(server, active.quest().id(), step.id(), choice));
+                run.here = Engine.at(server, Caravan.NAME);
+            }
             case "caravan" -> {
                 if (!Caravan.campedToday(server)) {
                     Caravan.headIn(server);
@@ -388,7 +403,7 @@ public final class StoryDev {
         if (ended || step.spec().has("finds")) {
             Engine.open(server);
         }
-        if (ended && level.getDayTime() % Clock.DAY > Clock.DAY / 4) {
+        if (ended && level.getDayTime() % Clock.DAY > Clock.DAY / 4 && Engine.main(server).map(next -> !next.step().kind().equals("visit")).orElse(true)) {
             Clock.jump(level, Steps.DAWN, clock.road());
         }
         Talk.reset();
@@ -411,14 +426,16 @@ public final class StoryDev {
         if (Ember.carried(server)) {
             asked.add(CHARMS);
         }
-        if (step.kind().equals("talk") && !step.choices().isEmpty()) {
+        if ((step.kind().equals("talk") || step.kind().equals("visit")) && !step.choices().isEmpty()) {
             asked.add(ANSWER);
         }
         if (Engine.marked(player).isPresent()) {
             asked.add(COMPASS);
         }
-        if (step.spec().has("tasks") && step.spec().getAsJsonArray("tasks").contains(new JsonPrimitive(MAP))) {
-            asked.add(MAP);
+        for (String control : List.of(LOOK, MAP)) {
+            if (step.spec().has("tasks") && step.spec().getAsJsonArray("tasks").contains(new JsonPrimitive(control))) {
+                asked.add(control);
+            }
         }
         return asked;
     }
@@ -431,7 +448,7 @@ public final class StoryDev {
         List<Progress.Heard> heard = List.copyOf(progress.fire.getOrDefault(quest, List.of()));
         step.lines().stream().map(line -> new Progress.Heard(label(server, line.by()), fill.fill(line.text()))).filter(line -> !heard.contains(line))
                 .forEach(line -> progress.hear(quest, line.by(), line.text()));
-        String asker = step.kind().equals("talk") ? step.lines().stream().map(Story.Line::by).filter(Objects::nonNull).reduce((first, second) -> second)
+        String asker = step.kind().equals("talk") || step.kind().equals("visit") ? step.lines().stream().map(Story.Line::by).filter(Objects::nonNull).reduce((first, second) -> second)
                 .orElse(null) : null;
         progress.choice(quest, step.id()).flatMap(chosen -> step.choices().stream().filter(choice -> choice.id().equals(chosen)).findFirst())
                 .ifPresent(choice -> {
@@ -447,10 +464,11 @@ public final class StoryDev {
 
     private static void arrive(MinecraftServer server, Engine.Active active) {
         stand(server, active);
+        follow(server, active);
         if (run.save != null) {
             save(server, run.save);
         }
-        Engine.active(server).stream().filter(open -> !Steps.entered(open)).forEach(open -> Steps.enter(server, open));
+        Engine.active(server).stream().filter(open -> !Steps.entered(open) && Engine.pursued(server, open.quest())).forEach(open -> Steps.enter(server, open));
         say("story: at " + active.key() + ", after " + steps(run.played));
         finish(server);
     }
@@ -461,9 +479,14 @@ public final class StoryDev {
             return;
         }
         stand(server, active);
+        follow(server, active);
         save(server, folder);
         server.getPlayerList().getPlayers().forEach(player -> player.setGameMode(GameType.SPECTATOR));
         say("story: kept " + active.key());
+    }
+
+    private static void follow(MinecraftServer server, Engine.Active active) {
+        server.getPlayerList().getPlayers().forEach(player -> Engine.track(player, active.quest().id()));
     }
 
     private static void stand(MinecraftServer server, Engine.Active active) {
@@ -531,7 +554,8 @@ public final class StoryDev {
             case Caravan.NAME -> Caravan.tick(server);
             case Diggers.NAME, Diggers.HALL -> Diggers.tick(server);
             case FirstCamp.NAME -> FirstCamp.tick(server);
-            case Ford.NAME, Ford.HALL -> Ford.tick(server);
+            case Ford.NAME -> Ford.tick(server);
+            case Marsh.NAME, Marsh.HALL, Marsh.CELLAR -> Marsh.tick(server);
             default -> throw new IllegalStateException("the story has no way to build " + place);
         }
     }

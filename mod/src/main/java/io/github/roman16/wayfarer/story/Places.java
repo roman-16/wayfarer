@@ -24,7 +24,8 @@ public final class Places {
             case Tollbridge.NAME -> Tollbridge.begin(server);
             case Diggers.NAME, Diggers.HALL -> Diggers.begin(server);
             case FirstCamp.NAME -> FirstCamp.find(server);
-            case Ford.NAME, Ford.HALL -> Ford.find(server);
+            case Ford.NAME -> Ford.find(server);
+            case Marsh.NAME, Marsh.HALL, Marsh.CELLAR -> Marsh.find(server);
             default -> throw new IllegalArgumentException("the story has no way to build " + name);
         }
     }
@@ -34,7 +35,13 @@ public final class Places {
     }
 
     static int arrival(String name) {
-        return name.equals(Ford.NAME) ? Balance.get().ford().noticeBlocks() : Balance.get().story().arriveBlocks();
+        return switch (name) {
+            case Ford.NAME -> Balance.get().ford().noticeBlocks();
+            case Marsh.NAME -> Balance.get().marsh().noticeBlocks();
+            case Marsh.HALL -> Balance.get().marsh().hallBlocks();
+            case Marsh.CELLAR -> Balance.get().marsh().cellarBlocks();
+            default -> Balance.get().story().arriveBlocks();
+        };
     }
 
     static Optional<BlockPos> place(MinecraftServer server, String name) {
@@ -54,6 +61,7 @@ public final class Places {
             Diggers.tick(event.getServer());
             FirstCamp.tick(event.getServer());
             Ford.tick(event.getServer());
+            Marsh.tick(event.getServer());
         }
     }
 

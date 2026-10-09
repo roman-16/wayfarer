@@ -42,7 +42,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Tasks {
-    public static final Set<String> STEP_TASKS = Set.of("bed", "bury", "ember", "enter", "fire", "horse", "map", "marks", "pack", "rest", "search", "stone", "sweep", "tent");
+    public static final Set<String> STEP_TASKS = Set.of("bed", "bury", "ember", "enter", "fire", "horse", "look", "map", "marks", "pack", "rest", "search", "stone", "sweep", "tent");
     private static final Set<String> TOLD_BY_CLIENT = Set.of("charms", "gear", "journal", "map");
     private static final Set<String> QUIET = Set.of("evening", "waiting");
     static final String FIRST = "task.";
@@ -52,6 +52,7 @@ public final class Tasks {
     static final String JOURNAL_KEY = "key.wayfarer.journal";
     private static final String HOTBAR = "key.hotbar.";
     private static final int CHECK_TICKS = 20;
+    private static final int TICKS_PER_SECOND = 20;
     private static final int FADE_TICKS = 60;
     private static final int NEAR = 32;
     private static final int FOLLOWED = 64;
@@ -175,7 +176,7 @@ public final class Tasks {
         Component title = Component.empty();
         Component objective = Component.empty();
         Optional<Engine.Active> tracked = Engine.tracked(player);
-        if (Caravan.heading(server) && tracked.map(active -> !active.step().kind().equals("caravan")).orElse(true)) {
+        if (Caravan.heading(player) && tracked.map(active -> !active.step().kind().equals("caravan")).orElse(true)) {
             kind = Component.translatable("wayfarer.journal.main");
             title = Component.translatable("wayfarer.caravan.title");
             objective = Component.translatable("wayfarer.caravan.objective");
@@ -184,13 +185,12 @@ public final class Tasks {
             Engine.Active active = tracked.get();
             kind = Component.translatable("wayfarer.journal." + active.quest().kind());
             title = Component.literal(active.quest().title());
-            objective = Component.literal(Journal.objective(player, active));
-            tasks(player, active, open);
-        }
-        for (Engine.Active side : Engine.active(server)) {
-            if (!side.quest().kind().equals("main")) {
-                tasks(player, side, open);
+            if (Steps.entered(active)) {
+                objective = Component.literal(Journal.objective(player, active));
             }
+            tasks(player, active, open);
+        } else if (!Firsts.seen(player, Engine.TRACKED) && Engine.active(server).stream().anyMatch(active -> !active.quest().act().equals(Engine.PROLOGUE))) {
+            open.put("choose", task("choose", key(JOURNAL_KEY)));
         }
         if (OwnStone.carried(player) && !Firsts.seen(player, FIRST + "stone_set")) {
             open.put("stone_set", task("stone_set"));
@@ -213,11 +213,14 @@ public final class Tasks {
     }
 
     private static void tasks(ServerPlayer player, Engine.Active active, Map<String, Component> open) {
-        if (!active.step().spec().has("tasks") || !Steps.entered(active)) {
+        if (!active.step().spec().has("tasks") || !Steps.entered(active) || Talk.busy()) {
             return;
         }
         for (JsonElement task : active.step().spec().getAsJsonArray("tasks")) {
-            if (task.getAsString().equals("rest")) {
+            if (task.getAsString().equals("rest") && active.step().kind().equals("rest")) {
+                int left = Balance.get().story().restSeconds() - active.scratch().getInt(Steps.RESTED_TICKS) / TICKS_PER_SECOND;
+                open.put("rest", task("rest_while", Math.max(1, left)));
+            } else if (task.getAsString().equals("rest")) {
                 rest(player, active.step().kind(), rested(active), open);
             } else {
                 step(player, active, task.getAsString()).ifPresent(text -> open.put(task.getAsString(), text));
@@ -230,10 +233,10 @@ public final class Tasks {
         boolean inTent = Tents.isTent(level.dimension());
         return switch (id) {
             case "bury" -> unless(active.scratch().contains(Steps.BURIED), task("bury"));
-            case "stone" -> unless(!active.scratch().getBoolean(Steps.WRITING), task("stone"));
             case "tent" -> unless(inTent || Tents.pitchedNear(level, player.blockPosition(), NEAR), task("tent"));
             case "fire" -> unless(inTent || campfire(level, player.blockPosition()), task("fire", Balance.get().tent().fireBlocks()));
             case "ember" -> Optional.of(task("ember", key(Sense.KEY)));
+            case "look" -> unless(Firsts.seen(player, FIRST + "look"), task("look"));
             case "marks" -> Optional.of(task("marks", key(Sense.KEY)));
             case "sweep" -> Optional.of(task("sweep", key(Sense.KEY)));
             case "search" -> Optional.of(task("search", key(Sense.KEY)));
@@ -276,6 +279,7 @@ public final class Tasks {
         return switch (active.step().kind()) {
             case "camp" -> member -> active.scratch().getCompound(Steps.RESTED).contains(member.getStringUUID());
             case "caravan" -> Clock::rested;
+            case "dusk" -> Fire::resting;
             default -> member -> false;
         };
     }
@@ -290,6 +294,9 @@ public final class Tasks {
         }
         if (!rested.test(player)) {
             open.put("rest", task("rest"));
+            return;
+        }
+        if (kind.equals("dusk")) {
             return;
         }
         List<String> waiting = new ArrayList<>();

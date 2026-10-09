@@ -29,8 +29,9 @@ public final class Journal {
     private Journal() {}
 
     public record View(String json) implements CustomPacketPayload {
+        private static final int LONGEST = 1 << 18;
         public static final Type<View> TYPE = new Type<>(Wayfarer.id("journal"));
-        public static final StreamCodec<ByteBuf, View> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(View::new, View::json);
+        public static final StreamCodec<ByteBuf, View> STREAM_CODEC = ByteBufCodecs.stringUtf8(LONGEST).map(View::new, View::json);
 
         @Override
         public Type<View> type() {
@@ -99,6 +100,7 @@ public final class Journal {
             entry.addProperty("id", quest.id());
             entry.addProperty("title", quest.title());
             entry.addProperty("kind", quest.kind());
+            entry.addProperty("prologue", quest.act().equals(Engine.PROLOGUE));
             entry.addProperty("summary", quest.summary());
             boolean done = progress.done(quest.id());
             entry.addProperty("done", done);

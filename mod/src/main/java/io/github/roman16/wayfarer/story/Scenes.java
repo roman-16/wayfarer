@@ -10,6 +10,7 @@ import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.CompassEvent;
 import io.github.roman16.wayfarer.CompassPayload;
 import io.github.roman16.wayfarer.Journey;
+import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -318,6 +319,7 @@ public final class Scenes {
                     for (JsonElement item : text.getAsJsonArray("gifts")) {
                         ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(item.getAsJsonObject().get("id").getAsString())),
                                 item.getAsJsonObject().get("count").getAsInt());
+                        Notices.given(player, List.of(stack));
                         if (!player.getInventory().add(stack)) {
                             player.drop(stack, false);
                         }
@@ -692,10 +694,12 @@ public final class Scenes {
                 break;
             }
             scene.originals.putIfAbsent(ground.above(), level.getBlockState(ground.above()));
-            add(scene, Clues.print(level, ground.above(), clue("cart", "tracks")));
+            Clues.print(level, ground.above(), clue("cart", "tracks")).forEach(entity -> add(scene, entity));
             last = ground;
         }
-        add(scene, Clues.box(level, Vec3.atBottomCenterOf(last.above()), clue("cart", "tracks")));
+        if (last.equals(scene.centre)) {
+            Clues.print(level, last.above(), clue("cart", "tracks")).forEach(entity -> add(scene, entity));
+        }
         Horse horse = EntityType.HORSE.create(level);
         spawn(level, scene, horse, Vec3.atBottomCenterOf(last.above()), random.nextFloat() * 360);
         horse.setVariant(Variant.BROWN);
@@ -794,14 +798,14 @@ public final class Scenes {
         if (text.has("voice") && !Journey.claimed(server).isEmpty() && (story || now - ledger.voiceAt >= gap)) {
             JsonArray voice = text.getAsJsonArray("voice");
             List<String> names = text.has("names") ? text.getAsJsonArray("names").asList().stream().map(JsonElement::getAsString).toList() : List.of();
-            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(STRANGER, voice.get(server.overworld().getRandom().nextInt(voice.size())).getAsString(), names, null, null));
+            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(STRANGER, voice.get(server.overworld().getRandom().nextInt(voice.size())).getAsString(), names, null, null, false, null, null));
             ledger.voiceAt = now;
         }
         if (story) {
             Progress progress = Progress.of(server);
             progress.place(CACHE, scene.centre);
             progress.setDirty();
-            Talk.then(() -> Engine.openQuests(server));
+            Talk.then(() -> Engine.open(server));
         }
         ledger.setDirty();
     }
@@ -819,7 +823,7 @@ public final class Scenes {
                     }
                     List<Story.Choice> choices = text.getAsJsonArray("choices").asList().stream().map(JsonElement::getAsJsonObject)
                             .map(choice -> new Story.Choice(choice.get("id").getAsString(), choice.get("text").getAsString(), choice.get("reply").getAsString(),
-                                    null, null, false, null))
+                                    null, null, null))
                             .toList();
                     Talk.ask(new Talk.Offer(Talk.ROAD, null, choices, Vec3.atCenterOf(scene.centre), (player, choice) -> chosen(player, scene, choice)));
                 }

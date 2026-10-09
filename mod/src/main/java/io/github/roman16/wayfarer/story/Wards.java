@@ -1,6 +1,7 @@
 package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Clock;
+import io.github.roman16.wayfarer.Graves;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -68,7 +69,8 @@ public final class Wards {
 
     @SubscribeEvent
     public static void onLeftClick(PlayerInteractEvent.LeftClickBlock event) {
-        if (event.getAction() == PlayerInteractEvent.LeftClickBlock.Action.START && !event.getEntity().isCreative()) {
+        if (event.getAction() == PlayerInteractEvent.LeftClickBlock.Action.START && !event.getEntity().isCreative()
+                && !Graves.grave(event.getLevel().getBlockState(event.getPos()))) {
             at(event.getLevel(), event.getPos()).ifPresent(ward -> {
                 event.setCanceled(true);
                 refuse(event.getEntity(), ward);
@@ -78,7 +80,7 @@ public final class Wards {
 
     @SubscribeEvent
     public static void onBreak(BlockEvent.BreakEvent event) {
-        if (!event.getPlayer().isCreative()) {
+        if (!event.getPlayer().isCreative() && !Graves.grave(event.getState())) {
             at(event.getLevel(), event.getPos()).ifPresent(ward -> {
                 event.setCanceled(true);
                 refuse(event.getPlayer(), ward);
@@ -158,7 +160,7 @@ public final class Wards {
 
     @SubscribeEvent
     public static void onPotentialSpawns(LevelEvent.PotentialSpawns event) {
-        if (event.getMobCategory() == MobCategory.MONSTER && at(event.getLevel(), event.getPos()).filter(ward -> ward.place().equals(Diggers.NAME)).isPresent()) {
+        if (event.getMobCategory() == MobCategory.MONSTER && at(event.getLevel(), event.getPos()).filter(ward -> ward.place().equals(Diggers.NAME) || ward.place().equals(Marsh.NAME)).isPresent()) {
             event.setCanceled(true);
         }
     }

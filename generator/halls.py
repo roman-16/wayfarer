@@ -19,6 +19,8 @@ from blocks import (
 )
 
 FLOOR = 2
+HIDDEN_ROW = 6
+FALSE_WALL = "wayfarer:false_wall"
 DOOR_HEIGHT = 3
 DOOR_HALF = 1
 CORALS = ["minecraft:dead_brain_coral_block", "minecraft:dead_fire_coral_block", "minecraft:dead_tube_coral_block"]
@@ -1037,12 +1039,25 @@ def witch(eye, spec):
     candle(room, (3, 3, 9), "minecraft:green_candle", 2)
     shrine(room, eye, spec, (cx, 3, cz), (cx - 2, 2, cz + 3), "south")
     door = doorway(room, 6, 2)
+    hidden = stairway(room, HIDDEN_ROW)
     detail.moss(room, 0.45)
     detail.roots(room, 0.15, soil="minecraft:muddy_mangrove_roots")
     detail.rubble(room, wall, 0.35)
     detail.webs(room, 0.4)
     detail.floor_lights(room, LAMP, 4)
-    return done(eye, room, door)
+    return done(eye, room, door, hidden=hidden)
+
+
+def stairway(room, z):
+    x = 0
+    while (x, FLOOR, z) not in room.open or (x, FLOOR + 1, z) not in room.open:
+        room.set((x, FLOOR - 1, z), room.floor)
+        room.carve((x, FLOOR, z), (x, FLOOR + 1, z))
+        x += 1
+    room.reserve((0, z - 1), (x, z + 1))
+    for y in (FLOOR, FLOOR + 1):
+        room.set((x - 1, y, z), FALSE_WALL)
+    return [x - 1, FLOOR, z]
 
 
 HALLS = {

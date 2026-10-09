@@ -59,6 +59,13 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
+modId = "combat_roll"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
 modId = "dungeons_arise"
 type = "optional"
 versionRange = "*"
@@ -95,6 +102,13 @@ side = "BOTH"
 
 [[dependencies.${mod_id}]]
 modId = "hordes"
+type = "optional"
+versionRange = "*"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.${mod_id}]]
+modId = "jei"
 type = "optional"
 versionRange = "*"
 ordering = "AFTER"

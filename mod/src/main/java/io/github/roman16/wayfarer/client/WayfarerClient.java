@@ -40,11 +40,16 @@ public final class WayfarerClient {
     public static final KeyMapping JOURNAL = new KeyMapping("key.wayfarer.journal", GLFW.GLFW_KEY_J, "key.categories.wayfarer");
     private static final KeyMapping MAP = new KeyMapping("key.wayfarer.map", GLFW.GLFW_KEY_M, "key.categories.wayfarer");
     private static final KeyMapping SENSE = new KeyMapping(Sense.KEY, GLFW.GLFW_KEY_Z, "key.categories.wayfarer");
+    private static final String INVMOVE = "invmove";
+    private static final String JEI = "jei";
     private static final String JOURNEYMAP = "journeymap";
     private static final String TITLE = "title";
 
     public WayfarerClient(IEventBus modBus, ModContainer container) {
-        container.registerConfig(ModConfig.Type.CLIENT, TalkSize.SPEC);
+        container.registerConfig(ModConfig.Type.CLIENT, HudSize.SPEC);
+        if (ModList.get().isLoaded(INVMOVE) && ModList.get().isLoaded(JEI)) {
+            InvMoveLink.register();
+        }
         modBus.addListener(RegisterKeyMappingsEvent.class, event -> {
             event.register(JOURNAL);
             event.register(MAP);
@@ -63,6 +68,9 @@ public final class WayfarerClient {
             event.registerBlockEntityRenderer(Wayfarer.SHRINE_PEDESTAL_ENTITY.get(), ShrinePedestalRenderer::new);
             event.registerEntityRenderer(Wayfarer.FALLEN.get(), FallenRenderer::new);
         });
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> HeldLight.tick());
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> OwnInventory.tick(Minecraft.getInstance()));
+        NeoForge.EVENT_BUS.addListener(ScreenEvent.Closing.class, event -> HeldLight.follow());
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Sight.tick(Minecraft.getInstance()));
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Opening.class, event -> {
             if (event.getNewScreen() instanceof TitleScreen) {
@@ -73,6 +81,8 @@ public final class WayfarerClient {
             }
         });
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Init.Post.class, FrontDoor::init);
+        NeoForge.EVENT_BUS.addListener(ScreenEvent.Init.Post.class, RecipeBooks::hide);
+        NeoForge.EVENT_BUS.addListener(ScreenEvent.Init.Pre.class, RecipeBooks::close);
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Render.Pre.class, Recap::render);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Recap.tick(Minecraft.getInstance()));
         NeoForge.EVENT_BUS.addListener(RenderTooltipEvent.Color.class, Tooltips::color);
@@ -83,7 +93,12 @@ public final class WayfarerClient {
                 event.setCanceled(true);
             }
         });
-        NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingIn.class, event -> MusicPlayer.play(new Music.Play("", false)));
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> {
+            Minecraft minecraft = Minecraft.getInstance();
+            if (minecraft.level != null && minecraft.screen == null && MusicPlayer.playing(TITLE)) {
+                MusicPlayer.play(new Music.Play("", false));
+            }
+        });
         NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingOut.class, event -> {
             HudState.compass = CompassPayload.hidden(List.of());
             HudState.gaze = GazePayload.CLOSED;
@@ -92,6 +107,7 @@ public final class WayfarerClient {
             Conversation.forget();
             Hud.clearBanners();
             JournalScreen.forget();
+            OwnInventory.forget();
         });
     }
 

@@ -1,6 +1,6 @@
 package io.github.roman16.wayfarer.mixin;
 
-import io.github.roman16.wayfarer.client.TalkSize;
+import io.github.roman16.wayfarer.client.HudSize;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,9 +15,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(AccessibilityOptionsScreen.class)
 public abstract class AccessibilityOptionsScreenMixin {
     @Inject(method = "options", at = @At("RETURN"), cancellable = true)
-    private static void wayfarer$talkSize(Options options, CallbackInfoReturnable<OptionInstance<?>[]> info) {
+    private static void wayfarer$hudSize(Options options, CallbackInfoReturnable<OptionInstance<?>[]> info) {
         List<OptionInstance<?>> all = new ArrayList<>(Arrays.asList(info.getReturnValue()));
-        all.add(all.indexOf(options.showSubtitles()) + 1, TalkSize.option());
+        all.add(all.indexOf(options.showSubtitles()) + 1, HudSize.option());
         info.setReturnValue(all.toArray(OptionInstance<?>[]::new));
     }
 }

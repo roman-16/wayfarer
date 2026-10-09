@@ -7,6 +7,7 @@ import io.github.roman16.wayfarer.client.Conversation;
 import io.github.roman16.wayfarer.client.Flash;
 import io.github.roman16.wayfarer.client.JournalScreen;
 import io.github.roman16.wayfarer.client.MusicPlayer;
+import io.github.roman16.wayfarer.client.PickUps;
 import io.github.roman16.wayfarer.story.Banners;
 import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Engine;
@@ -42,10 +43,12 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
@@ -74,6 +77,7 @@ public final class Wayfarer {
     private static final DeferredRegister<AttachmentType<?>> ATTACHMENTS = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, MODID);
     private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
+    private static final DeferredRegister<MapCodec<? extends DensityFunction>> DENSITY_FUNCTIONS = DeferredRegister.create(Registries.DENSITY_FUNCTION_TYPE, MODID);
     private static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT, MODID);
     private static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, MODID);
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
@@ -104,11 +108,17 @@ public final class Wayfarer {
     public static final DeferredHolder<MobEffect, MobEffect> WARM = EFFECTS.register("warm", Warm::new);
     public static final DeferredHolder<StructureProcessorType<?>, StructureProcessorType<NetherSwap>> NETHER_SWAP =
             PROCESSORS.register("nether_swap", () -> () -> NetherSwap.CODEC);
+    public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<ContainerLoot>> CONTAINER_LOOT =
+            LOOT_MODIFIERS.register("container_loot", () -> ContainerLoot.CODEC);
     public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<Cuts.Loot>> CUT_LOOT =
             LOOT_MODIFIERS.register("cut", () -> Cuts.Loot.CODEC);
 
+    public static final DeferredHolder<StructurePlacementType<?>, StructurePlacementType<BandPlacement>> BAND =
+            PLACEMENTS.register("band", () -> () -> BandPlacement.CODEC);
     public static final DeferredHolder<StructurePlacementType<?>, StructurePlacementType<ExactRingPlacement>> EXACT_RING =
             PLACEMENTS.register("exact_ring", () -> () -> ExactRingPlacement.CODEC);
+    public static final DeferredHolder<MapCodec<? extends DensityFunction>, MapCodec<WorldShape>> WORLD_SHAPE =
+            DENSITY_FUNCTIONS.register("world_shape", () -> WorldShape.CODEC);
 
     public static final DeferredHolder<StructureType<?>, StructureType<ShrineStructure>> SHRINE =
             STRUCTURES.register("shrine", () -> () -> ShrineStructure.CODEC);
@@ -121,6 +131,17 @@ public final class Wayfarer {
 
     public static final DeferredHolder<StructurePieceType, StructurePieceType> SHAFT_PIECE =
             PIECES.register("shaft", () -> ShaftPiece::new);
+
+    public static final DeferredBlock<Block> FALSE_WALL = BLOCKS.registerSimpleBlock("false_wall",
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.DIRT)
+                    .strength(1)
+                    .sound(SoundType.PACKED_MUD)
+                    .noCollission()
+                    .noOcclusion()
+                    .isViewBlocking((state, level, pos) -> false)
+                    .isSuffocating((state, level, pos) -> false)
+                    .noLootTable());
 
     public static final DeferredBlock<Hearthstone> HEARTHSTONE = BLOCKS.registerBlock("hearthstone", Hearthstone::new,
             BlockBehaviour.Properties.of()
@@ -190,6 +211,7 @@ public final class Wayfarer {
             RECIPE_SERIALIZERS.register(modBus);
         }
         PLACEMENTS.register(modBus);
+        DENSITY_FUNCTIONS.register(modBus);
         PROCESSORS.register(modBus);
         STRUCTURES.register(modBus);
         modBus.addListener(Wayfarer::registerPayloads);
@@ -229,6 +251,7 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Shards.class);
         NeoForge.EVENT_BUS.register(Shine.class);
         NeoForge.EVENT_BUS.register(Shrines.class);
+        NeoForge.EVENT_BUS.register(Sorting.class);
         NeoForge.EVENT_BUS.register(Sounds.class);
         Sounds.loop("camp", Caravan::standing);
         Sounds.loop("town_burning", Tollbridge::burning);
@@ -237,6 +260,7 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Tasks.class);
         NeoForge.EVENT_BUS.register(Tents.class);
         NeoForge.EVENT_BUS.register(Wards.class);
+        NeoForge.EVENT_BUS.register(Weather.class);
         NeoForge.EVENT_BUS.register(WorldSetup.class);
         if (ModList.get().isLoaded("waystones")) {
             NeoForge.EVENT_BUS.register(Waystone.class);
@@ -246,7 +270,7 @@ public final class Wayfarer {
             NeoForge.EVENT_BUS.register(StoneWatch.class);
         }
         if (ModList.get().isLoaded("hordes")) {
-            NeoForge.EVENT_BUS.register(HordeRefuge.class);
+            NeoForge.EVENT_BUS.register(Hordes.class);
         }
         if (ModList.get().isLoaded("nomadictents")) {
             NeoForge.EVENT_BUS.register(TentPitch.class);
@@ -278,6 +302,7 @@ public final class Wayfarer {
             Tasks.refresh((ServerPlayer) context.player());
         });
         registrar.playToServer(Sense.Payload.TYPE, Sense.Payload.STREAM_CODEC, (payload, context) -> Sense.sense((ServerPlayer) context.player()));
+        registrar.playToServer(Sorting.Looking.TYPE, Sorting.Looking.STREAM_CODEC, (payload, context) -> Sorting.look((ServerPlayer) context.player(), payload.open()));
         registrar.playToClient(Tasks.Panel.TYPE, Tasks.Panel.STREAM_CODEC, (payload, context) -> HudState.panel = payload);
         registrar.playToServer(Caravan.HeadIn.TYPE, Caravan.HeadIn.STREAM_CODEC, (payload, context) -> Caravan.headIn((ServerPlayer) context.player()));
         registrar.playToServer(Tasks.Did.TYPE, Tasks.Did.STREAM_CODEC, (payload, context) -> Tasks.told((ServerPlayer) context.player(), payload.task()));
@@ -286,5 +311,7 @@ public final class Wayfarer {
         registrar.playToClient(NightPayload.TYPE, NightPayload.STREAM_CODEC, (payload, context) -> HudState.night = payload);
         registrar.playToClient(Memories.Flash.TYPE, Memories.Flash.STREAM_CODEC, (payload, context) -> Flash.show(payload));
         registrar.playToClient(Music.Play.TYPE, Music.Play.STREAM_CODEC, (payload, context) -> MusicPlayer.play(payload));
+        registrar.playToClient(Notices.Given.TYPE, Notices.Given.STREAM_CODEC, (payload, context) -> PickUps.given(payload));
+        registrar.playToClient(Notices.Written.TYPE, Notices.Written.STREAM_CODEC, (payload, context) -> PickUps.written(payload));
     }
 }

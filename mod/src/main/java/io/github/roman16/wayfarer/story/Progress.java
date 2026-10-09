@@ -45,6 +45,7 @@ public final class Progress extends SavedData {
     final Set<String> named = new LinkedHashSet<>();
     final Map<UUID, Set<String>> seen = new LinkedHashMap<>();
     final Map<UUID, String> tracking = new LinkedHashMap<>();
+    final Map<String, Integer> trust = new LinkedHashMap<>();
     String stone = "";
 
     record Heard(String by, String text) {}
@@ -112,6 +113,24 @@ public final class Progress extends SavedData {
         return people.containsKey(person);
     }
 
+    public int trust(String people) {
+        return trust.getOrDefault(people, 0);
+    }
+
+    void trust(Map<String, Integer> levels) {
+        levels.forEach((people, level) -> {
+            if (trust(people) >= 0) {
+                trust.put(people, level);
+                setDirty();
+            }
+        });
+    }
+
+    void shun(String people) {
+        trust.put(people, -1);
+        setDirty();
+    }
+
     public boolean claimed(String reward, UUID player) {
         return claims.getOrDefault(reward, Set.of()).contains(player);
     }
@@ -168,6 +187,8 @@ public final class Progress extends SavedData {
         seen.getAllKeys().forEach(key -> progress.seen.put(UUID.fromString(key), new LinkedHashSet<>(strings(seen.getList(key, Tag.TAG_STRING)))));
         CompoundTag tracking = tag.getCompound("tracking");
         tracking.getAllKeys().forEach(key -> progress.tracking.put(UUID.fromString(key), tracking.getString(key)));
+        CompoundTag trust = tag.getCompound("trust");
+        trust.getAllKeys().forEach(key -> progress.trust.put(key, trust.getInt(key)));
         return progress;
     }
 
@@ -238,6 +259,9 @@ public final class Progress extends SavedData {
         CompoundTag tracking = new CompoundTag();
         this.tracking.forEach((player, quest) -> tracking.putString(player.toString(), quest));
         tag.put("tracking", tracking);
+        CompoundTag trust = new CompoundTag();
+        this.trust.forEach(trust::putInt);
+        tag.put("trust", trust);
         tag.putString("stone", stone);
         return tag;
     }

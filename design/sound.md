@@ -21,7 +21,7 @@ Every sound effect and piece of music the pack chooses and ships itself is free 
 The Wayfarer mod plays a story piece itself, in the Music category, and Reactive Music fades its own music out over a few seconds while it plays and back in after (its `soundsMuteMusicIgnoreDistance`). A piece started by a line plays once to its end; a piece that belongs to a step, such as a hold, loops until the step ends and then fades out.
 
 ```text
-<The stranger> Don't let it... the shards. I took them.   ♪ The Death of Åse, Reactive Music fading out
+<The stranger> Don't let it... the shards. I took them.   ♪ What We Don't Say swelling in, Reactive Music fading out
 [Hold] The cellar door - wave 3 of 4                      ♪ the battle piece, looping until the last wave
 ```
 
@@ -33,16 +33,18 @@ Each quest adds its moments here as it is built, along the road's curve (`story.
 
 | Moment | Sound | Source |
 |---|---|---|
-| The stranger's death (P1), from his cough through the burial | Edvard Grieg, The Death of Åse (Peer Gynt Suite No. 1), once | Musopen Symphony, CC0, Wikimedia Commons |
+| The stranger's death (P1), from his cough through the burial, swelling in over sixteen seconds and low under the lines | What We Don't Say, piano, strings, winds and voice, its first four minutes, once | Scott Buckley, CC BY 4.0, [scottbuckley.com.au](https://www.scottbuckley.com.au/library/what-we-dont-say/) |
 | The stranger presses the ember into the player's hand (P1) | mystic 2, ambient magic | Zixem, CC0, [Freesound](https://freesound.org/people/Zixem/sounds/69506) |
 | The ember wakes at dusk (P2) | Magic 2.Wouw+SinePad, a soft warm swell | gsb1039, CC0, [Freesound](https://freesound.org/people/gsb1039/sounds/430894) |
 | The hold at the cellar door (P3), and every horde night | Heartfelt Battle, looping while it lasts | request, CC0, OpenGameArt |
-| The dawn after the hold (P3) | Edvard Grieg, Morning Mood (Peer Gynt Suite No. 1), once | Musopen Symphony, CC0, Wikimedia Commons |
-| The evening at the caravan's first fire (P3) | Calm fireplace guitar song, once | ShggothSlave, CC0, OpenGameArt |
+| The dawn after the hold (P3) | Emotional Original Soundtrack - BETTER LIFE, piano and strings from its thirtieth second, once | Magmi.Soundtracks, CC BY 4.0, [Freesound](https://freesound.org/people/Magmi.Soundtracks/sounds/522207) |
+| The evening at the caravan's first fire (P3) | Amberlight, soft piano with strings coming in under it, once, from its start | Scott Buckley, CC BY 4.0, [scottbuckley.com.au](https://www.scottbuckley.com.au/library/amberlight/) |
 | The Gazebound's horn: across the water at the ford before anything shows (1.3), and calling them back after; theirs wherever they come later | Battle_horn_1, one breathy war-horn blast | kirmm, CC0, [Freesound](https://freesound.org/people/kirmm/sounds/392180) |
 | The battle piece at the ford (1.3) | Heartfelt Battle, looping while the hold lasts | request, CC0, OpenGameArt |
 | The first memory, His First Camp (1.2), from waking in it until waking from it | Home Was You, piano, strings and accordion, once | Scott Buckley, CC BY 4.0, [scottbuckley.com.au](https://www.scottbuckley.com.au/library/home-was-you/) |
 | A shard is taken | Glass-metal Resonant Transition 13, glass and metal resonating | newlocknew, CC-BY 4.0, [Freesound](https://freesound.org/people/newlocknew/sounds/711059) |
+| True-sight shows a false wall, first beside the Marsh Mothers' calling stone (1.4) | 9. Esfumar Vanish, a soft smoky whoosh, its 1.7 s middle | cabusta9, CC0, [Freesound](https://freesound.org/people/cabusta9/sounds/444710) |
+| The hooded woman leaves the caravan's fire in smoke (1.5) | Fire Torch Whoosh 2, a low, breathy gust through a fire with a smoky tail, its first 1.9 s | kev_durr, CC BY 4.0, [Freesound](https://freesound.org/people/kev_durr/sounds/426209) |
 | A reward is taken from the journal | Item Received, things stowed into a satchel | spookymodem, CC0, [Freesound](https://freesound.org/people/spookymodem/sounds/249815) |
 | A creature of the gaze crumbles at dawn | Cinematic Dragon Sound - Dragon Hiss 4, its first 0.85 s | Soughtaftersounds, CC BY 3.0, [Freesound](https://freesound.org/people/Soughtaftersounds/sounds/239650) |
 | The caravan's camp, heard within about 64 blocks while it stands | Bonfire, looping | Electroviolence, CC0, [Freesound](https://freesound.org/people/Electroviolence/sounds/234542) |
@@ -62,11 +64,11 @@ Each quest adds its moments here as it is built, along the road's curve (`story.
 | A quest begun: the parchment banner under the compass (`interface.md`, I2) | Magic 3.Glitter+Arrival, a glittering arrival | gsb1039, CC0, [Freesound](https://freesound.org/people/gsb1039/sounds/430893) |
 | A quest done: the banner | Level Up/Mission Complete (Fantasy) | SilverIllusionist, CC BY 4.0, [Freesound](https://freesound.org/people/SilverIllusionist/sounds/665203) |
 | A task ticked in the panel (I1) | Tarea completa, its first second | valeulloam97, CC0, [Freesound](https://freesound.org/people/valeulloam97/sounds/541389) |
-| A new journal entry: the gold dot on its ribbon (I3) | Pencil, Writing, Close, A, cut to 4 s and eased out | InspectorJ, CC BY 4.0, [Freesound](https://freesound.org/people/InspectorJ/sounds/398271) |
+| A new person, word or page in the journal: the gold dot on its ribbon (I3) | Pencil, Writing, Close, A, cut to 4 s and eased out | InspectorJ, CC BY 4.0, [Freesound](https://freesound.org/people/InspectorJ/sounds/398271) |
 | The journal opened, a ribbon or an entry chosen | Page Turn, a page flip | qubodup, CC0, [Freesound](https://freesound.org/people/qubodup/sounds/442857) |
 | An answer chosen in a conversation (I4) | aturax_leatherBookUI_92, a wooden click | GeoffAturax, CC BY 4.0, [Freesound](https://freesound.org/people/GeoffAturax/sounds/532189) |
-| A conversation's line | None: the words, and later the voice, carry it | |
-| The title screen (`interface.md`, I6) | FORGIVENESS, piano, strings and a music box, looping | Magmi.Soundtracks, CC0, [Freesound](https://freesound.org/people/Magmi.Soundtracks/sounds/478246) |
+| The band speaks after a quiet moment: the first line of a talk or a lone notice (I4) | Wood Click 1, a tiny dry wood tap | Sawuare, CC0, [Freesound](https://freesound.org/people/Sawuare/sounds/500926) |
+| The title screen and the loading screens after it, until the world shows (`interface.md`, I6) | FORGIVENESS, piano, strings and a music box, looping | Magmi.Soundtracks, CC0, [Freesound](https://freesound.org/people/Magmi.Soundtracks/sounds/478246) |
 
 Every sound the pack makes for its own things is its own, from a free library, chosen by ear; where a file is cut or faded, the table says so.
 

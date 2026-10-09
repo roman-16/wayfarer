@@ -1,0 +1,6 @@
+[display]
+	doPopUpLogging = false
+	doDisplayShaderInGameMessage = false
+
+[updates]
+	doUpdateChecking = "none"

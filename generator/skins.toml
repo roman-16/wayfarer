@@ -540,6 +540,250 @@ t = ["#2e2a26", "#3a3530", "#46403a"]
 w = "#d6d0c6"
 z = "#4e423c"
 
+[maren]
+model = "illusioner"
+scale = 1.0
+arm = [
+  "GGGG",
+  "GGGG",
+  "GGdG",
+  "GGGG",
+  "GGGG",
+  "GdGG",
+  "GGGG",
+  "GGGG",
+  "hhhh",
+  "SSSS",
+  "SSSS",
+  "SSSS",
+]
+body = [
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "LLLLLLLL",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+]
+body_side = [
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "LLLLLL",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+]
+crossed = ["GGGG", "GGdG", "GGGG", "GGGG", "GdGG", "GGGG", "hhhh", "SSSS"]
+hat_back = [
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHdHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHdHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+]
+hat_front = [
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "Hhh..hhH",
+  "Hh....hH",
+  "h......h",
+  "h......h",
+  "h......h",
+  "h......h",
+  "Hh....hH",
+  "HHhhhhHH",
+  "HHHHHHHH",
+]
+hat_side = [
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHdHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHdH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHH.",
+]
+hat_top = [
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+  "HHHHHHHH",
+]
+head = [
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+]
+head_bottom = [
+  "ffffffff",
+  "ffffffff",
+  "ffffffff",
+  "ffffffff",
+  "ffffffff",
+  "ffffffff",
+  "ffffffff",
+  "ffffffff",
+]
+head_front = [
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DyyDDyyD",
+  "fDDffDDf",
+  "ffffffff",
+  "ffffffff",
+  "ffgffgff",
+]
+head_top = [
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+]
+leg = [
+  "KKKK",
+  "KKKK",
+  "KKKK",
+  "KKKK",
+  "KKKK",
+  "KKKK",
+  "KKKK",
+  "KKKK",
+  "KKKK",
+  "TTTT",
+  "TTTT",
+  "TTTT",
+]
+middle_back = ["GGGGGGGG", "GGGdGGGG", "GGGGGGGG", "GGGGGGGG"]
+middle_front = ["GGSSSSGG", "GhSSSShG", "GGSSSSGG", "GGGGGGGG"]
+middle_side = ["GGGG", "GGGG", "GGGG", "GGGG"]
+nose = ["ff", "ff", "gg", "gg"]
+robe_back = [
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGdGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "LLLLLLLL",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGdGGG",
+  "GGGGdGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGGGG",
+  "GGGGGdGG",
+  "GGGGGGGG",
+  "G.GGG.GG",
+]
+robe_front = [
+  "GGGddGGG",
+  "GGGddGGG",
+  "GGGdGGGG",
+  "GGGdGBBG",
+  "GGGdBpbB",
+  "GGGdGBBG",
+  "GGGdGGGG",
+  "GGGdGGGG",
+  "LLLyLLLL",
+  "GGGdGGGG",
+  "GGGdGGGG",
+  "GGGdGGGG",
+  "GGGdGGGG",
+  "GGGdGGGG",
+  "GGGdGGGG",
+  "GGGdGGGG",
+  "GGGdGGGG",
+  "GGGdGGGG",
+  "GGGdGGGG",
+  "GG.dG.GG",
+]
+robe_side = [
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "LLLLLL",
+  "GGGGGG",
+  "GGGGGG",
+  "GGdGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGGG",
+  "GGGGdG",
+  "GGGGGG",
+  "G.GGG.",
+]
+
+[maren.palette]
+B = ["#a89f8c", "#b8af9a", "#c4bba6"]
+D = "#141313"
+G = ["#4a4d4f", "#55595b", "#62666a"]
+H = ["#3d4042", "#45484b", "#4e5255"]
+K = ["#1e1a17", "#231e1b", "#29231f"]
+L = "#2e2620"
+S = ["#737979", "#7c8282", "#848989"]
+T = ["#29231f", "#2e2620", "#342b24"]
+b = "#3f4a3c"
+d = "#3a3d3f"
+f = ["#24272a", "#2a2d30", "#303336"]
+g = "#3a3e41"
+h = "#2c2e30"
+p = "#1e1f20"
+y = "#5f6e5c"
+
 [pip]
 raised = { arm = "U", body = "Uq", head = "Hh", leg = "B" }
 model = "humanoid"
@@ -670,6 +914,543 @@ t = ["#4a3e30", "#584a3a", "#665644"]
 u = ["#6e5e40", "#80704e", "#90805e"]
 w = "#e4e0d8"
 z = "#6a5a52"
+
+[rue]
+model = "witch"
+scale = 1.0
+body_back = [
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "LLLLLLLL",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+]
+body_front = [
+  "sSssssSs",
+  "sssSSsss",
+  "DDsssDDD",
+  "DDDssDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "LLLyLLLL",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+]
+body_side = [
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "LLLLLL",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+]
+brim = ["AAAAAAAAAA", "aaaaaaaaaa"]
+brim_bottom = [
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+]
+brim_top = [
+  "aaaaaaaaaa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aaaaaaaaaa",
+]
+crossed = ["RrRQ", "RrRQ", "RrRQ", "RrRQ", "RrQR", "RrQR", "RrQR", "TTTT"]
+crown_back = ["AAAAAAA", "AAaAAAA", "ZZZZZZZ", "aAAAAAa"]
+crown_bottom = [
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+]
+crown_front = ["AAAAAAA", "AAAAAfA", "ZZZZfFf", "aAAAAga"]
+crown_side = ["AAAAAAA", "AAAAAAA", "ZZZZZZZ", "aAAAAAa"]
+crown_top = [
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+]
+head_back = [
+  "hhhhhhhh",
+  "hhHhhhHh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhHhhhHh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhHhhhHh",
+  "HhhHhhhH",
+  "HhhHhhhH",
+]
+head_bottom = [
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+]
+head_front = [
+  "hhhhhhhh",
+  "hhsssshh",
+  "Hssksssh",
+  "Hsssssss",
+  "Sskssksh",
+  "Sbbssbbh",
+  "Swissiwh",
+  "SkSssSkS",
+  "SsSmmSsS",
+  "SSkssksS",
+]
+head_side = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhsss",
+  "hhhhssss",
+  "hhhsssss",
+  "hhssssss",
+  "HhhSSsss",
+  "HhSSSsss",
+  "HhSSSsss",
+]
+head_top = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+]
+leg = [
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "uuuu",
+  "uuuu",
+  "LLLL",
+  "LLLL",
+]
+middle_back = ["RRrRRQRR", "RRrRRQRR", "RRrRRQRR", "TTTTTTTT"]
+middle_front = ["sSRrRQSs", "SsRrRQsS", "sSRrRQSs", "TTTTTTTT"]
+middle_side = ["RrRQ", "RrRQ", "RrRQ", "TTTT"]
+mole = ["o"]
+nose = ["nn", "no", "nN", "NN"]
+nose_top = ["nn", "nn"]
+peak = ["AAAA", "AaAA", "AAAA", "aAAa"]
+peak_bottom = ["aaaa", "aaaa", "aaaa", "aaaa"]
+peak_top = ["AAAA", "AAAA", "AAAA", "AAAA"]
+robe_back = [
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "LLLLLLLL",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RRrRQRRr",
+  "RRrRQRRr",
+  "RRrRQRRr",
+  "RRrRQRRr",
+  "RuRRRuRR",
+  "uuRuuRuu",
+  "uuuuuuuu",
+  ".uuu.uuu",
+]
+robe_front = [
+  "R......R",
+  "RR....RR",
+  "RRR..RRR",
+  "RRTDDTRR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "LLLyyLLL",
+  "RrTDPTrR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "RrTDDTRQ",
+  "RrTDDTRQ",
+  "RrTDDTRQ",
+  "RrTDDTRu",
+  "uRTuDTuR",
+  "uuTuuTuu",
+  "u.uuu.uu",
+]
+robe_side = [
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "LLLLLL",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RRrRQR",
+  "RRrRQR",
+  "RRrRQR",
+  "RRrRQR",
+  "RuRRuR",
+  "uuRuuR",
+  "uuuuuu",
+  "uu.uu.",
+]
+tip = ["A", "a"]
+tip_bottom = ["a"]
+tip_top = ["A"]
+
+[rue.palette]
+A = "#2e2a22"
+a = "#1e1b15"
+b = "#d4d0c6"
+D = "#4a3c2c"
+F = "#2a5aa8"
+f = "#3c78d8"
+g = "#4a7a30"
+H = "#86827a"
+h = ["#9c988f", "#aeaaa1", "#bebab1"]
+i = "#4a5a3a"
+k = "#776f60"
+L = "#4a3420"
+m = "#5a4a40"
+N = "#8c8373"
+n = ["#a0978a", "#aca393", "#b6ad9c"]
+o = "#5e6b3c"
+P = "#6a5034"
+Q = "#40553a"
+R = "#34452b"
+r = "#26331f"
+S = "#857d6d"
+s = ["#9a9282", "#a69e8d", "#b0a897"]
+T = "#5b4a2e"
+u = "#3e3224"
+w = "#e2ded4"
+y = "#a08850"
+Z = "#5a4a2a"
+
+[sedge]
+model = "witch"
+scale = 1.0
+body_back = [
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "LLLLLLLL",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+]
+body_front = [
+  "sSssssSs",
+  "sssSSsss",
+  "DDsssDDD",
+  "DDDssDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "LLLyLLLL",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+]
+body_side = [
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "LLLLLL",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+]
+brim = ["AAAAAAAAAA", "aaaaaaaaaa"]
+brim_bottom = [
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+]
+brim_top = [
+  "aaaaaaaaaa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aaaaaaaaaa",
+]
+crossed = ["RrRQ", "RrRQ", "RrRQ", "RrRQ", "RrQR", "RrQR", "RrQR", "TTTT"]
+crown_back = ["AAAAAAA", "AAaAAAA", "ZZZZZZZ", "aAAAAAa"]
+crown_bottom = [
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+]
+crown_front = ["AAAAAAA", "AppAAAA", "ZZZZZZZ", "aAAAAAa"]
+crown_side = ["AAAAAAA", "AAAAAAA", "ZZZZZZZ", "aAAAAAa"]
+crown_top = [
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+]
+head_back = [
+  "hhhhhhhh",
+  "hhHhhhHh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhHhhhHh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhHhhhHh",
+  "HhhHhhhH",
+  "HhhHhhhH",
+]
+head_bottom = [
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+]
+head_front = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hsssssss",
+  "Hsssssss",
+  "Ssssssss",
+  "Sbbssbbs",
+  "Swissiws",
+  "SsSssSsS",
+  "SssmmssS",
+  "SSssssSS",
+]
+head_side = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhsss",
+  "hhhhssss",
+  "hhhsssss",
+  "hhssssss",
+  "HhhSSsss",
+  "HhSSSsss",
+  "HhSSSsss",
+]
+head_top = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+]
+leg = [
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "uuuu",
+  "uuuu",
+  "LLLL",
+  "LLLL",
+]
+middle_back = ["RRrRRQRR", "RRrRRQRR", "RRrRRQRR", "TTTTTTTT"]
+middle_front = ["sSRrRQSs", "SsRrRQsS", "sSRrRQSs", "TTTTTTTT"]
+middle_side = ["RrRQ", "RrRQ", "RrRQ", "TTTT"]
+mole = ["o"]
+nose = ["nn", "nn", "nN", "NN"]
+nose_top = ["nn", "nn"]
+peak = ["AAAA", "AaAA", "AAAA", "aAAa"]
+peak_bottom = ["aaaa", "aaaa", "aaaa", "aaaa"]
+peak_top = ["AAAA", "AAAA", "AAAA", "AAAA"]
+robe_back = [
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "LLLLLLLL",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RRrRQRRr",
+  "RRrRQRRr",
+  "RRrRQRRr",
+  "RRrRQRRr",
+  "RuRRRuRR",
+  "uuRuuRuu",
+  "uuuuuuuu",
+  ".uuu.uuu",
+]
+robe_front = [
+  "R......R",
+  "RR....RR",
+  "RRR..RRR",
+  "RRTDDTRR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "LLLyyLLL",
+  "RrTDPTrR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "RrTDDTRQ",
+  "RrTDDTRQ",
+  "RrTDDTRQ",
+  "RrTDDTRu",
+  "uRTuDTuR",
+  "uuTuuTuu",
+  "u.uuu.uu",
+]
+robe_side = [
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "LLLLLL",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RRrRQR",
+  "RRrRQR",
+  "RRrRQR",
+  "RRrRQR",
+  "RuRRuR",
+  "uuRuuR",
+  "uuuuuu",
+  "uu.uu.",
+]
+tip = ["A", "a"]
+tip_bottom = ["a"]
+tip_top = ["A"]
+
+[sedge.palette]
+A = "#1e1e1c"
+a = "#121211"
+b = "#3a3020"
+D = "#383d2e"
+H = "#221a13"
+h = ["#2e241b", "#35291f", "#3c2f24"]
+i = "#3a2a1a"
+L = "#2a2a22"
+m = "#5a4030"
+N = "#8a7e68"
+n = ["#a2967e", "#ada18a", "#b7ab94"]
+o = "#5b5a34"
+P = "#5a4a32"
+p = "#3a4a2a"
+Q = "#54402e"
+R = "#463324"
+r = "#33251a"
+S = "#877b65"
+s = ["#9c9078", "#a89c84", "#b2a68e"]
+T = "#3e5a2c"
+u = "#3a2e20"
+w = "#e2ded4"
+y = "#8a8a7a"
+Z = "#4a3a28"
 
 [stranger]
 raised = { arm = "Cc", body = "Cckly", head = "Hgh" }
@@ -992,3 +1773,273 @@ r = ["#562c24", "#66372c", "#764436"]
 s = ["#c4a08a", "#d4b29c", "#e0c0aa"]
 w = "#dcd8d0"
 y = "#b8a868"
+
+[tansy]
+model = "witch"
+scale = 0.9375
+body_back = [
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "LLLLLLLL",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+]
+body_front = [
+  "sSssssSs",
+  "sssSSsss",
+  "DDsssDDD",
+  "DDDssDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "LLLyLLLL",
+  "DDDDDDDD",
+  "DDDDDDDD",
+  "DDDDDDDD",
+]
+body_side = [
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+  "LLLLLL",
+  "DDDDDD",
+  "DDDDDD",
+  "DDDDDD",
+]
+brim = ["AAAAAAAAAA", "aaaaaaaaaa"]
+brim_bottom = [
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+  "aaaaaaaaaa",
+]
+brim_top = [
+  "aaaaaaaaaa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aAAAAAAAAa",
+  "aaaaaaaaaa",
+]
+crossed = ["RrRQ", "RrRQ", "RrRQ", "RrRQ", "RrQR", "RrQR", "RrQR", "TTTT"]
+crown_back = ["AAAAAAA", "AAaAAAA", "ZZZZZZZ", "aAAAAAa"]
+crown_bottom = [
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+  "aaaaaaa",
+]
+crown_front = ["AAAAAAA", "AAAAAfA", "ZZZZfFf", "aAAAAga"]
+crown_side = ["AAAAAAA", "AAAAAAA", "ZZZZZZZ", "aAAAAAa"]
+crown_top = [
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+  "AAAAAAA",
+]
+head_back = [
+  "hhhhhhhh",
+  "hhHhhhHh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhHhhhHh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhHhhhHh",
+  "HhhHhhhH",
+  "HhhHhhhH",
+]
+head_bottom = [
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+  "SSSSSSSS",
+]
+head_front = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhsssshh",
+  "hsssssss",
+  "Ssssssss",
+  "Sbbssbbs",
+  "Swissiws",
+  "ScssssSc",
+  "SssmmssS",
+  "SSssssSS",
+]
+head_side = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhsss",
+  "hhhhssss",
+  "hhhsssss",
+  "hhssssss",
+  "HhhSSsss",
+  "HhSSSsss",
+  "HhSSSsss",
+]
+head_top = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+]
+leg = [
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "DDDD",
+  "uuuu",
+  "uuuu",
+  "LLLL",
+  "LLLL",
+]
+middle_back = ["RRrRRQRR", "RRrRRQRR", "RRrRRQRR", "TTTTTTTT"]
+middle_front = ["sSRrRQSs", "SsRrRQsS", "sSRrRQSs", "TTTTTTTT"]
+middle_side = ["RrRQ", "RrRQ", "RrRQ", "TTTT"]
+mole = ["o"]
+nose = ["nn", "nn", "nN", "NN"]
+nose_top = ["nn", "nn"]
+peak = ["AAAA", "AaAA", "AAAA", "aAAa"]
+peak_bottom = ["aaaa", "aaaa", "aaaa", "aaaa"]
+peak_top = ["AAAA", "AAAA", "AAAA", "AAAA"]
+robe_back = [
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "LLLLLLLL",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RrRRQRrR",
+  "RRrRQRRr",
+  "RRrRQRRr",
+  "RRrRQRRr",
+  "RRrRQRRr",
+  "RuRRRuRR",
+  "uuRuuRuu",
+  "uuuuuuuu",
+  ".uuu.uuu",
+]
+robe_front = [
+  "R......R",
+  "RR....RR",
+  "RRR..RRR",
+  "RRTDDTRR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "LLLyyLLL",
+  "RrTDPTrR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "RrTDDTQR",
+  "RrTDDTRQ",
+  "RrTDDTRQ",
+  "RrTDDTRQ",
+  "RrTDDTRu",
+  "uRTuDTuR",
+  "uuTuuTuu",
+  "u.uuu.uu",
+]
+robe_side = [
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "LLLLLL",
+  "RrRRQR",
+  "RrRRQR",
+  "RrRRQR",
+  "RRrRQR",
+  "RRrRQR",
+  "RRrRQR",
+  "RRrRQR",
+  "RuRRuR",
+  "uuRuuR",
+  "uuuuuu",
+  "uu.uu.",
+]
+tip = ["A", "a"]
+tip_bottom = ["a"]
+tip_top = ["A"]
+
+[tansy.palette]
+A = "#2c1c36"
+a = "#1a1020"
+b = "#4a2a1e"
+c = "#b88a7a"
+D = "#463c2e"
+F = "#b8901c"
+f = "#e8c030"
+g = "#5a7a2a"
+H = "#3e2216"
+h = ["#52301f", "#5a3424", "#623829"]
+i = "#5a3a6a"
+L = "#3a2a1c"
+m = "#7a4a42"
+N = "#968470"
+n = ["#b09d86", "#baa790", "#c4b19a"]
+o = "#6a5a3a"
+P = "#6a4e32"
+Q = "#432856"
+R = "#382048"
+r = "#281636"
+S = "#9a876f"
+s = ["#ab9881", "#b5a28a", "#bfac94"]
+T = "#6a5a2a"
+u = "#3e3124"
+w = "#ebe7df"
+y = "#c8a840"
+Z = "#4a3a20"

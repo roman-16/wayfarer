@@ -63,6 +63,10 @@ public final class Tollbridge {
     static final String CELLAR = "cellar";
     private static final String BURNS_UNTIL = "morning";
     static final String BELL = "bell";
+    private static final List<String> BELL_STANDERS = List.of("agna", "hob", "pip");
+    private static final int BELL_DIRECTIONS = 16;
+    private static final int BELL_FAR = 4;
+    private static final int BELL_NEAR = 2;
     static final String DEAD = Wayfarer.MODID + "_dead";
     private static final String SITE = "tollbridge_site";
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -71,7 +75,7 @@ public final class Tollbridge {
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_tollbridge", Comparator.comparingLong(ChunkPos::toLong));
     private static final Direction[] AROUND = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
     private static final int[] ANGLES = {0, 16, -16, 32, -32, 64, -64, 96, -96};
-    private static final int[] NUDGES = {0, 32, -32, 64, 128};
+    private static final int[] NUDGES = {0, 32, 64, 128};
     private static final int BRIDGE_SPAN = 11;
     private static final int CHUNK = 16;
     private static final int DEAD_APART = 8;
@@ -214,14 +218,16 @@ public final class Tollbridge {
             return;
         }
         if (build.searching == null) {
-            BlockPos camp = Progress.of(server).place(Steps.OWN_CAMP)
+            BlockPos walked = Progress.of(server).place(Steps.OWN_CAMP)
                     .orElseGet(() -> Engine.players(server).stream().findFirst().map(ServerPlayer::blockPosition).orElse(level.getSharedSpawnPos()));
             BlockPos last = Engine.at(server, Prologue.LAST_CAMP);
-            double heading = Math.atan2(camp.getZ() - last.getZ(), camp.getX() - last.getX());
+            int ahead = Balance.get().tollbridge().aheadBlocks();
+            Home.Aim aim = Home.aim(walked, new Vec3(walked.getX() - last.getX(), 0, walked.getZ() - last.getZ()).normalize(), ahead);
+            BlockPos camp = aim.from();
+            double heading = Math.atan2(aim.way().z, aim.way().x);
             build.heights = new Unseen.Heights(level);
             Unseen.Heights heights = build.heights;
             Neighbours neighbours = new Neighbours(level);
-            int ahead = Balance.get().tollbridge().aheadBlocks();
             build.searching = CompletableFuture.supplyAsync(() -> sites(heights, neighbours, camp, heading, ahead), Util.backgroundExecutor());
             return;
         }
@@ -1000,6 +1006,14 @@ public final class Tollbridge {
         BlockPos seatAt = surface(level, world(tower, seat.get(0).getAsInt(), 0, seat.get(1).getAsInt())).above();
         progress.place("seat_" + BELL, seatAt);
         progress.yaws.put("seat_" + BELL, (float) yaw(seatAt, bellAt));
+        List<BlockPos> taken = new ArrayList<>(List.of(seatAt));
+        for (String person : BELL_STANDERS) {
+            standing(level, bellAt, taken).ifPresent(at -> {
+                taken.add(at);
+                progress.place("seat_" + BELL + "_" + person, at);
+                progress.yaws.put("seat_" + BELL + "_" + person, (float) yaw(at, bellAt));
+            });
+        }
         BlockPos fire = world(tower, tower().getAsJsonArray("fire"));
         progress.place(CELLAR, fire);
         BoundingBox ward = template(level, TOWER_PIECE).getBoundingBox(tower.settings(), tower.origin());
@@ -1014,7 +1028,7 @@ public final class Tollbridge {
         dead(level, town);
         build.placed.stream().filter(placed -> placed.lot().piece().equals("inn")).findFirst()
                 .ifPresent(inn -> Clues.marker(level, world(inn, PLAN.get().getAsJsonArray("strongbox")), "strongbox"));
-        Clues.marker(level, world(tower, tower().getAsJsonArray("clue")), "cellar");
+        Clues.door(level, world(tower, tower().getAsJsonArray("clue")), "cellar");
         tracks(level, town);
         progress.place(NAME, surface(level, town.centre));
         progress.places.remove(SITE);
@@ -1106,18 +1120,24 @@ public final class Tollbridge {
 
     private static void tracks(ServerLevel level, Town town) {
         List<Cell> street = town.approach;
-        BlockPos middle = null;
         for (int print = 0; print < TRACKS && 2 + print * 2 < street.size(); print++) {
             Cell cell = street.get(2 + print * 2);
-            BlockPos at = surface(level, cell.at().relative(cell.way().getClockWise(), print % 2)).above();
-            Clues.print(level, at, "tracks");
-            if (print == TRACKS / 2) {
-                middle = at;
+            Clues.print(level, surface(level, cell.at().relative(cell.way().getClockWise(), print % 2)).above(), "tracks");
+        }
+    }
+
+    private static Optional<BlockPos> standing(ServerLevel level, BlockPos bell, List<BlockPos> taken) {
+        for (int radius = BELL_NEAR; radius <= BELL_FAR; radius++) {
+            for (int step = 0; step < BELL_DIRECTIONS; step++) {
+                double angle = Math.PI * 2 * step / BELL_DIRECTIONS;
+                BlockPos at = surface(level, bell.offset((int) Math.round(Math.cos(angle) * radius), 0, (int) Math.round(Math.sin(angle) * radius))).above();
+                if (Math.abs(at.getY() - bell.getY()) <= 1 && level.getBlockState(at).isAir() && level.getBlockState(at.above()).isAir()
+                        && taken.stream().allMatch(other -> other.distManhattan(at) >= 2)) {
+                    return Optional.of(at);
+                }
             }
         }
-        if (middle != null) {
-            Clues.box(level, Vec3.atBottomCenterOf(middle), "tracks");
-        }
+        return Optional.empty();
     }
 
     private static BlockPos surface(ServerLevel level, BlockPos column) {

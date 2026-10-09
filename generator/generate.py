@@ -20,10 +20,13 @@ from first_camp import SIZE as FIRST_CAMP_SIZE
 from first_camp import first_camp
 from first_camp import positions as first_camp_positions
 from halls import HALLS
+from marsh import carved, hut, way
+from marsh import layout as marsh_layout
+from marsh import size as marsh_size
 from scenes import SCENES
 from skins import skin
 from tollbridge import PIECES, plan, size, tower
-from townsfolk import roadfolk, townsfolk
+from townsfolk import riverfolk, roadfolk, townsfolk
 
 ROOT = Path(__file__).resolve().parent.parent
 TICKS_PER_SECOND = 20
@@ -34,9 +37,11 @@ IRIS = ROOT / "pack/config/iris.properties"
 LANG = ROOT / "mod/src/main/resources/assets/wayfarer/lang/en_us.json"
 SPARSE_STRUCTURES = ROOT / "pack/config/sparsestructures.json5"
 CAMPFIRE_SPAWNS = ROOT / "pack/config/nohostilesaroundcampfire.json5"
+COMBAT_ROLL = ROOT / "pack/config/combat_roll/client.json5"
 CHUNK = 16
+CONTAINER_LOOT = "container_loot"
 CUT_LOOT = "cut"
-TIER_NAMES = {1: "tier_one", 2: "tier_two"}
+ACT_NAMES = {2: "act_two", 3: "act_three"}
 
 COVER = 3
 SHOWROOM_LAYERS = [
@@ -426,7 +431,7 @@ def books(spec, eyes, entries):
     modifiers = sorted(
         f"wayfarer:{path.stem}"
         for path in (ROOT / "mod/src/main/resources/data/wayfarer/loot_modifiers").glob("*.json")
-        if path.stem != CUT_LOOT
+        if path.stem not in (CONTAINER_LOOT, CUT_LOOT)
     )
     for collection in spec["collections"]:
         pool = [
@@ -481,7 +486,7 @@ def books(spec, eyes, entries):
         modifiers.append(f"wayfarer:books/{collection['id']}")
     write_json(
         MAIN / "data/neoforge/loot_modifiers/global_loot_modifiers.json",
-        {"entries": [*sorted(modifiers), f"wayfarer:{CUT_LOOT}"], "replace": False},
+        {"entries": [f"wayfarer:{CONTAINER_LOOT}", *sorted(modifiers), f"wayfarer:{CUT_LOOT}"], "replace": False},
     )
     write_json(
         MAIN / "wayfarer/library.json",
@@ -522,7 +527,14 @@ def states(value):
     return {"Name": value, "Properties": {"lit": "true"}} if value == LAMP else {"Name": value}
 
 
-def worldgen(eyes, layouts, tiers, balance):
+def acts_bands(balance):
+    world = balance["world"]
+    far = balance["shrines"]["act_three_from_blocks"]
+    coast = balance["strongholds"]["radius_blocks"] + world["last_sea_past_ring_blocks"]
+    return {2: (world["home_blocks"] + world["sea_blocks"], far), 3: (far, coast)}
+
+
+def worldgen(eyes, layouts, acts, balance):
     for eye, spec in eyes.items():
         layout = {"cover": COVER, "door": list(layouts[eye]["door"])}
         if "oculus" in layouts[eye]:
@@ -557,7 +569,7 @@ def worldgen(eyes, layouts, tiers, balance):
                 "id": f"{eye}_eye",
                 "loot_tables_id": [],
                 "loot_to_inject_id": "minecraft:empty",
-                "rarity": "rare" if spec["tier"] == 1 else "epic",
+                "rarity": "epic" if spec["act"] == 3 else "rare",
             },
         )
         write_json(
@@ -569,21 +581,24 @@ def worldgen(eyes, layouts, tiers, balance):
         MAIN / "data/wayfarer/tags/worldgen/structure/shrines.json",
         {"values": [f"wayfarer:shrine/{eye}" for eye in names]},
     )
-    for tier, name in TIER_NAMES.items():
-        members = [f"wayfarer:shrine/{eye}" for eye in names if eyes[eye]["tier"] == tier]
+    bands = acts_bands(balance)
+    for act, name in ACT_NAMES.items():
+        members = [f"wayfarer:shrine/{eye}" for eye in names if eyes[eye]["act"] == act]
         write_json(MAIN / f"data/wayfarer/tags/worldgen/structure/shrines/{name}.json", {"values": members})
         members = [
             member for member in members if not eyes[member.removeprefix("wayfarer:shrine/")].get("story", False)
         ]
-        spacing = tiers[str(tier)]["spacing"]
+        spacing = acts[str(act)]["spacing"]
         write_json(
             MAIN / f"data/wayfarer/worldgen/structure_set/shrines/{name}.json",
             {
                 "placement": {
+                    "from_blocks": bands[act][0],
                     "salt": salt(f"wayfarer:shrines/{name}"),
                     "separation": spacing * 3 // 4,
                     "spacing": spacing,
-                    "type": "minecraft:random_spread",
+                    "to_blocks": bands[act][1],
+                    "type": "wayfarer:band",
                 },
                 "structures": [{"structure": member, "weight": 1} for member in members],
             },
@@ -616,7 +631,7 @@ def worldgen(eyes, layouts, tiers, balance):
 
 def spread(balance):
     structures = balance["structures"]
-    unspread = sorted(structures["unspread"] + [f"wayfarer:shrines/{name}" for name in TIER_NAMES.values()])
+    unspread = sorted(structures["unspread"] + [f"wayfarer:shrines/{name}" for name in ACT_NAMES.values()])
     write_json(
         SPARSE_STRUCTURES,
         {
@@ -643,6 +658,23 @@ def campfire_spawns(balance):
             "enableEffectForSoulCampfires": True,
             "preventHostilesRadius": balance["fire"]["circle_blocks"],
             "preventMobSpawnerSpawns": False,
+        },
+    )
+
+
+def combat_roll(style):
+    write_json(
+        COMBAT_ROLL,
+        {
+            "hudArrowColor": int(style["ramps"]["ember"][3].removeprefix("#"), 16),
+            "hudBackgroundOpacity": 100,
+            "keybindingLabelPosition": "LEFT",
+            "playCooldownFlash": True,
+            "playCooldownSound": True,
+            "playRollSound": True,
+            "showHUDInCreative": False,
+            "showKeybinding": True,
+            "showWhenFull": True,
         },
     )
 
@@ -693,6 +725,21 @@ def removals(spec):
             )
 
 
+def stores(loot):
+    def uniform(span):
+        return {"max": span[1], "min": span[0], "type": "minecraft:uniform"}
+
+    entries = [
+        {
+            "functions": [{"count": uniform(span), "function": "minecraft:set_count"}],
+            "name": item,
+            "type": "minecraft:item",
+        }
+        for item, span in sorted(loot["items"].items())
+    ]
+    return {"pools": [{"entries": entries, "rolls": uniform(loot["rolls"])}], "type": "minecraft:chest"}
+
+
 def main():
     source = tomllib.loads((ROOT / "generator/eyes.toml").read_text())
     eyes = source["eyes"]
@@ -701,7 +748,7 @@ def main():
     for directory in (DEV, ENDREM_EYES, MAIN):
         shutil.rmtree(directory, ignore_errors=True)
     layouts = dict(shrines(eyes))
-    worldgen(eyes, layouts, source["tiers"], balance)
+    worldgen(eyes, layouts, source["acts"], balance)
     tour(eyes, layouts)
     spread(balance)
     campfire_spawns(balance)
@@ -726,11 +773,17 @@ def main():
         built = piece()
         built.save(MAIN / f"data/wayfarer/structure/tollbridge/{name}.nbt", size(built))
     write_json(MAIN / "wayfarer/tollbridge.json", plan())
+    for kind, loot in balance["tollbridge"]["loot"].items():
+        write_json(MAIN / f"data/wayfarer/loot_table/chests/tollbridge/{kind}.json", stores(loot))
     entrance().save(MAIN / "data/wayfarer/structure/diggers/entrance.nbt")
     for name, scene in SCENES.items():
         scene().save(MAIN / f"data/wayfarer/structure/scene/{name}.nbt")
     tunnels(eyes["lost"]).save(MAIN / "data/wayfarer/structure/diggers/tunnels.nbt")
     write_json(MAIN / "wayfarer/diggers.json", layout())
+    passage = way()
+    passage.save(MAIN / "data/wayfarer/structure/marsh/way.nbt")
+    hut(carved(passage)).save(MAIN / "data/wayfarer/structure/marsh/hut.nbt", marsh_size())
+    write_json(MAIN / "wayfarer/marsh.json", marsh_layout(layouts["witch"], carved(passage)))
     empty()
     caravan(MAIN)
     creatures(DEV)
@@ -741,8 +794,9 @@ def main():
     display = faces["display"]
     stamp.write(MAIN, style, fonts.glyphs(display, fonts.TrueType((ROOT / "generator" / display["file"]).read_bytes())))
     write_json(MAIN / "wayfarer/style.json", style)
+    combat_roll(style)
     fonts.write(MAIN, faces, ROOT / "generator", write_json)
-    skins = tomllib.loads((ROOT / "generator/skins.toml").read_text()) | townsfolk() | roadfolk()
+    skins = tomllib.loads((ROOT / "generator/skins.toml").read_text()) | townsfolk() | roadfolk() | riverfolk()
     people(skins)
     poses.write(MAIN)
     story(

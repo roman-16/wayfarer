@@ -98,11 +98,11 @@ final class Diggers {
             return;
         }
         if (build.searching == null) {
-            BlockPos from = progress.place(Caravan.NAME).or(() -> progress.place(Steps.OWN_CAMP)).orElseGet(level::getSharedSpawnPos);
-            Vec3 way = Caravan.way(server);
-            Unseen.Heights heights = new Unseen.Heights(level);
             int ahead = Balance.get().diggers().aheadBlocks();
-            build.searching = CompletableFuture.supplyAsync(() -> sites(heights, from, way, ahead), Util.backgroundExecutor());
+            Home.Aim aim = Home.aim(progress.place(Caravan.NAME).or(() -> progress.place(Steps.OWN_CAMP)).orElseGet(level::getSharedSpawnPos),
+                    Caravan.way(server), ahead);
+            Unseen.Heights heights = new Unseen.Heights(level);
+            build.searching = CompletableFuture.supplyAsync(() -> sites(heights, aim.from(), aim.way(), ahead), Util.backgroundExecutor());
             return;
         }
         if (!build.searching.isDone()) {

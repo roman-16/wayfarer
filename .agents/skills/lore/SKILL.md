@@ -38,7 +38,7 @@ A moment that matters is played as a scene on the band, line by line, never told
 - **A reason before a task.** The story gives the reason for an action before the task panel names it: "You can't leave him here for the crows." comes before "Bury him". A rule someone gives comes with its reason in their voice.
 - **Give it room.** Important information comes in focused moments with nothing else to do; small talk can happen while walking. Do not rush the scenes that are meant to be remembered.
 - **Go cold after.** Grief is a line, not a paragraph: the road goes on, and the dead push the living onward.
-- **The player opens screens.** Never open a screen on the player unasked. A choice that needs typing is offered as an answer first ("Write my own words."), with ready answers beside it, and only that answer opens the screen, with a task saying what to do there.
+- **The player opens screens.** Never open a screen on the player unasked. A choice that needs typing is offered as an answer first, with ready answers beside it, and only that answer opens the screen, with a task saying what to do there.
 - **Answers are lines the character says.** A choice reads as something the player's character says or does, in their voice, and makes clear what happens when clicked.
 
 ## Teaching

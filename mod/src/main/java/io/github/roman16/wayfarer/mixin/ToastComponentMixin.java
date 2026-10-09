@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer.mixin;
 
+import net.minecraft.client.gui.components.toasts.AdvancementToast;
 import net.minecraft.client.gui.components.toasts.RecipeToast;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
@@ -13,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 abstract class ToastComponentMixin {
     @Inject(method = "addToast", at = @At("HEAD"), cancellable = true)
     private void wayfarer$quiet(Toast toast, CallbackInfo info) {
-        if (toast instanceof RecipeToast || toast instanceof TutorialToast) {
+        if (toast instanceof AdvancementToast || toast instanceof RecipeToast || toast instanceof TutorialToast) {
             info.cancel();
         }
     }

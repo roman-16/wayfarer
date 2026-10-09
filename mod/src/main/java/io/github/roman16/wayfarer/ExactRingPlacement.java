@@ -36,6 +36,7 @@ public class ExactRingPlacement extends ConcentricRingsStructurePlacement {
     });
 
     private static final int BIOME_SEARCH_BLOCKS = 112;
+    private static final int ARC_STEP_BLOCKS = BIOME_SEARCH_BLOCKS * 2;
 
     private final int jitterBlocks;
     private final int radiusBlocks;
@@ -74,14 +75,24 @@ public class ExactRingPlacement extends ConcentricRingsStructurePlacement {
             int x = (int) Math.round(Math.cos(angle) * radius);
             int z = (int) Math.round(Math.sin(angle) * radius);
             RandomSource search = random.fork();
-            positions.add(CompletableFuture.supplyAsync(() -> {
-                Pair<BlockPos, ?> found = biomeSource.findBiomeHorizontal(
-                        x, 0, z, BIOME_SEARCH_BLOCKS, preferredBiomes()::contains, search, sampler);
-                BlockPos pos = found == null ? new BlockPos(x, 0, z) : found.getFirst();
-                return new ChunkPos(pos);
-            }, Util.backgroundExecutor()));
+            positions.add(CompletableFuture.supplyAsync(() -> new ChunkPos(land(biomeSource, sampler, search, angle, radius)
+                    .orElse(new BlockPos(x, 0, z))), Util.backgroundExecutor()));
         }
         return Util.sequence(positions);
+    }
+
+    private Optional<BlockPos> land(BiomeSource biomeSource, Climate.Sampler sampler, RandomSource search, double angle, double radius) {
+        int steps = Balance.get().strongholds().landSearchBlocks() / ARC_STEP_BLOCKS;
+        for (int step = 0; step <= steps * 2; step++) {
+            int along = (step + 1) / 2 * (step % 2 == 0 ? 1 : -1);
+            double turned = angle + along * ARC_STEP_BLOCKS / radius;
+            Pair<BlockPos, ?> found = biomeSource.findBiomeHorizontal((int) Math.round(Math.cos(turned) * radius), 0, (int) Math.round(Math.sin(turned) * radius),
+                    BIOME_SEARCH_BLOCKS, preferredBiomes()::contains, search, sampler);
+            if (found != null) {
+                return Optional.of(found.getFirst());
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

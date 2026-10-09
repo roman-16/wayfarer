@@ -40,6 +40,9 @@ public final class Hud {
     private static final float DIRECTION_STEP = 45;
     private static final int BAND_SIDE = HALF_WIDTH + 12;
     private static final int BAND_HEIGHT = 15;
+    private static final int BAND_CAP = 8;
+    private static final int HALLOWED_HEIGHT = 7;
+    private static final int HALLOWED_WIDTH = 5;
     private static final int BAND_TEXT = 4;
     private static final int POINTER_WIDTH = 5;
     private static final int POINTER_HEIGHT = 3;
@@ -59,7 +62,7 @@ public final class Hud {
     private static final int TASK_LINE = 12;
     private static final int TASK_INDENT = 8;
     private static final int TITLE_INDENT = Stamp.MARK_WIDTH + 4;
-    private static final int SUBTITLE_ROOM = 96;
+    public static final int SUBTITLE_ROOM = 96;
     private static final int BANNER_HEIGHT = 34;
     private static final int BANNER_CAP = 9;
     private static final int BANNER_PAD = 10;
@@ -69,6 +72,8 @@ public final class Hud {
     private static final int BANNER_DROP = 8;
     private static final int OPAQUE_TEXT = 4;
     private static int bossBottom;
+    private static int high;
+    private static int wide;
     @Nullable
     private static Banners.Payload banner;
     private static long bannerFrom;
@@ -101,12 +106,18 @@ public final class Hud {
             return;
         }
         Font font = minecraft.font;
+        float scale = HudSize.scale();
+        wide = Math.round(graphics.guiWidth() / scale);
+        high = Math.round(graphics.guiHeight() / scale);
+        graphics.pose().pushPose();
+        graphics.pose().scale(scale, scale, 1);
         CompassPayload reading = HudState.compass;
         boolean compass = reading.mode() != CompassPayload.Mode.HIDDEN;
-        int y = Math.max(TOP, bossBottom + EDGE);
+        int effects = Math.round(effectRows(player) * EFFECT_ROW / scale);
+        int y = Math.max(TOP, Math.round(bossBottom / scale) + EDGE);
         int half = 0;
-        if (compass && graphics.guiWidth() - EFFECT_COLUMN * effectColumns(player) < graphics.guiWidth() / 2 + BAND_SIDE + EDGE * 2 + PLATE_HEIGHT) {
-            y = Math.max(y, TOP + effectRows(player) * EFFECT_ROW);
+        if (compass && wide - Math.round(EFFECT_COLUMN * effectColumns(player) / scale) < wide / 2 + BAND_SIDE + EDGE * 2) {
+            y = Math.max(y, TOP + effects);
         }
         if (compass) {
             band(graphics, font, reading, player, y);
@@ -114,7 +125,7 @@ public final class Hud {
             if (distances(graphics, font, reading, player, y)) {
                 y += PLATE_HEIGHT + GAP;
             }
-            half = BAND_SIDE + EDGE + PLATE_HEIGHT;
+            half = BAND_SIDE + EDGE;
         }
         Urgent urgent = urgent(reading, compass);
         if (urgent != null) {
@@ -122,19 +133,20 @@ public final class Hud {
             y += PLATE_HEIGHT + GAP;
         }
         if (!minecraft.getDebugOverlay().showDebugScreen() && (minecraft.screen == null || minecraft.screen instanceof ChatScreen)) {
-            int left = graphics.guiWidth() - EDGE - PANEL_WIDTH;
-            int below = half > 0 && left < graphics.guiWidth() / 2 + half ? y : TOP;
-            int top = Math.max(below, TOP + effectRows(player) * EFFECT_ROW);
-            int bottom = graphics.guiHeight() - (minecraft.options.showSubtitles().get() ? SUBTITLE_ROOM : EDGE);
-            if (Conversation.answersRight > left) {
-                bottom = Math.min(bottom, Conversation.answersTop - EDGE);
+            int left = wide - EDGE - PANEL_WIDTH;
+            int below = half > 0 && left < wide / 2 + half ? y : TOP;
+            int top = Math.max(below, TOP + effects);
+            int bottom = Math.min(high * 3 / 4, high - (minecraft.options.showSubtitles().get() ? Math.round(SUBTITLE_ROOM / scale) : EDGE));
+            if (Math.round(Conversation.answersRight / scale) > left) {
+                bottom = Math.min(bottom, Math.round(Conversation.answersTop / scale) - EDGE);
             }
-            if (Conversation.bandRight > left) {
-                bottom = Math.min(bottom, Conversation.bandTop - EDGE);
+            if (Math.round(Conversation.bandRight / scale) > left) {
+                bottom = Math.min(bottom, Math.round(Conversation.bandTop / scale) - EDGE);
             }
             panel(graphics, font, HudState.panel, top, bottom);
         }
         banner(graphics, font, y + GAP);
+        graphics.pose().popPose();
     }
 
     private record Run(Component text, int color) {}
@@ -179,7 +191,7 @@ public final class Hud {
         if (urgent.after() != null) {
             width += PLATE_PAD + font.width(urgent.after());
         }
-        int center = graphics.guiWidth() / 2;
+        int center = wide / 2;
         int left = center - width / 2 - PLATE_PAD;
         graphics.blitSprite(Stamp.PLATE, left, y, width + PLATE_PAD * 2, PLATE_HEIGHT);
         int x = left + PLATE_PAD;
@@ -220,13 +232,13 @@ public final class Hud {
         int labelWidth = label.stream().mapToInt(piece -> piece.key() ? Stamp.keycapWidth(font, piece.text()) + 2 : Stamp.labelWidth(font, piece.text())).sum()
                 + Stamp.MARK_WIDTH + 4;
         int width = Math.max(labelWidth, Stamp.titleWidth(font, title)) + (BANNER_CAP + BANNER_PAD) * 2;
-        int x = graphics.guiWidth() / 2 - width / 2;
+        int x = wide / 2 - width / 2;
         int top = y + Math.round((eased - 1) * BANNER_DROP);
         int alpha = Math.max(OPAQUE_TEXT, Math.round(eased * 255));
         graphics.flush();
         graphics.setColor(1, 1, 1, eased);
         graphics.blitSprite(Stamp.STRIP, x, top, width, BANNER_HEIGHT);
-        int markLeft = graphics.guiWidth() / 2 - labelWidth / 2;
+        int markLeft = wide / 2 - labelWidth / 2;
         Stamp.mark(graphics, markLeft, top + BANNER_LABEL - 1, false);
         graphics.flush();
         graphics.setColor(1, 1, 1, 1);
@@ -238,7 +250,7 @@ public final class Hud {
                 cursor = Stamp.label(graphics, font, piece.text(), cursor, top + BANNER_LABEL, Stamp.withAlpha(Stamp.LABEL, alpha), true) + 1;
             }
         }
-        Stamp.title(graphics, font, title, graphics.guiWidth() / 2 - Stamp.titleWidth(font, title) / 2, top + BANNER_TITLE, Stamp.withAlpha(Stamp.GOLD, alpha), true);
+        Stamp.title(graphics, font, title, wide / 2 - Stamp.titleWidth(font, title) / 2, top + BANNER_TITLE, Stamp.withAlpha(Stamp.GOLD, alpha), true);
     }
 
     private sealed interface Row permits Label, Title, Text, Task {
@@ -296,13 +308,16 @@ public final class Hud {
             used += rows.get(shown).height();
             shown++;
         }
+        while (shown > 0 && shown < rows.size() && continues(rows.get(shown - 1), rows.get(shown))) {
+            used -= rows.get(--shown).height();
+        }
         if (shown > 0 && rows.get(shown - 1) instanceof Label) {
             used -= rows.get(--shown).height();
         }
         if (shown == 0) {
             return;
         }
-        int right = graphics.guiWidth() - EDGE;
+        int right = wide - EDGE;
         int left = right - PANEL_WIDTH;
         graphics.blitSprite(Stamp.PANEL_CLEAR, left, top, PANEL_WIDTH, used + PANEL_PAD * 2 - 2);
         int y = top + PANEL_PAD;
@@ -326,6 +341,10 @@ public final class Hud {
         }
     }
 
+    private static boolean continues(Row before, Row row) {
+        return row instanceof Task task && !task.first() || row instanceof Text && before instanceof Text;
+    }
+
     private static void task(List<Row> rows, Font font, Component text, int width, boolean done) {
         List<List<Inline.Piece>> lines = Inline.lines(font, text, width - TASK_INDENT);
         for (int index = 0; index < lines.size(); index++) {
@@ -346,7 +365,7 @@ public final class Hud {
     }
 
     private static void band(GuiGraphics graphics, Font font, CompassPayload reading, LocalPlayer player, int y) {
-        int center = graphics.guiWidth() / 2;
+        int center = wide / 2;
         graphics.blitSprite(Stamp.BAND, center - BAND_SIDE, y, BAND_SIDE * 2, BAND_HEIGHT);
         Stamp.tinted(graphics, Stamp.compass("pointer"), center - POINTER_WIDTH / 2, y + BAND_HEIGHT - 1, POINTER_WIDTH, POINTER_HEIGHT, Stamp.GOLD);
         int text = y + BAND_TEXT;
@@ -386,10 +405,9 @@ public final class Hud {
             case SHRINE -> Stamp.compass("hall");
         };
         if (hallowed != null) {
-            int left = center + BAND_SIDE + GAP;
-            graphics.blitSprite(Stamp.PLATE, left, y + 1, PLATE_HEIGHT, PLATE_HEIGHT);
-            int size = reading.shelter() == CompassPayload.Shelter.FIRE ? 5 : 7;
-            Stamp.tinted(graphics, hallowed, left + (PLATE_HEIGHT - size) / 2, y + 4, size, 7,
+            int cap = center + BAND_SIDE - BAND_CAP;
+            graphics.fill(cap + 1, y + 2, cap + BAND_CAP - 1, y + BAND_HEIGHT - 2, Stamp.ramp("iron", 0));
+            Stamp.tinted(graphics, hallowed, cap + 1, y + (BAND_HEIGHT - HALLOWED_HEIGHT) / 2, HALLOWED_WIDTH, HALLOWED_HEIGHT,
                     reading.shelter() == CompassPayload.Shelter.FIRE ? Stamp.GOLD : Stamp.BONE);
         }
     }
@@ -424,7 +442,7 @@ public final class Hud {
     }
 
     private static boolean distances(GuiGraphics graphics, Font font, CompassPayload reading, LocalPlayer player, int y) {
-        int center = graphics.guiWidth() / 2;
+        int center = wide / 2;
         List<int[]> taken = new ArrayList<>();
         for (CompassPayload.Marker marker : reading.markers()) {
             float relative = bearing(marker.x(), marker.z(), player);

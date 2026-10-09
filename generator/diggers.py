@@ -84,26 +84,26 @@ def post(room, pos):
     room.set(pos, POSTS[int(noise("diggers/post", *pos) * len(POSTS))], axis="y")
 
 
-def timber(room, x, floor, z, axis, seed):
+def timber(room, x, floor, z, axis, seed, height=3):
     left, middle, right = across(x, z, axis)
-    broken = noise(seed, x, z)
+    broken = noise(seed, x, z) < 0.25
     light = noise(seed + "/kind", x, z) < 0.4
     beam_axis = "x" if axis == "z" else "z"
     fence = {"east": False, "north": False, "south": False, "west": False}
-    for side in (right,) if broken < 0.15 else (left, right):
-        for y in (floor + 1, floor + 2):
+    for side in (right,) if broken else (left, right):
+        for y in range(floor + 1, floor + height):
             if light:
                 room.set((side[0], y, side[1]), "minecraft:spruce_fence", waterlogged=False, **fence)
             else:
                 post(room, (side[0], y, side[1]))
-    if broken < 0.25:
-        room.set((middle[0], floor + 1, middle[1]), "minecraft:spruce_log", axis=beam_axis)
+    if broken:
+        room.set((left[0], floor + 1, left[1]), "minecraft:spruce_log", axis=axis)
         return
     for cell in (left, middle, right):
         if light:
-            room.set((cell[0], floor + 3, cell[1]), "minecraft:spruce_planks")
+            room.set((cell[0], floor + height, cell[1]), "minecraft:spruce_planks")
         else:
-            room.set((cell[0], floor + 3, cell[1]), "minecraft:spruce_log", axis=beam_axis)
+            room.set((cell[0], floor + height, cell[1]), "minecraft:spruce_log", axis=beam_axis)
 
 
 def drift(room, cells, walk, rails=False, seed="drift"):
@@ -111,7 +111,7 @@ def drift(room, cells, walk, rails=False, seed="drift"):
         for cx, cz in across(x, z, axis):
             room.set((cx, floor, cz), FLOOR)
             room.carve((cx, floor + 1, cz), (cx, floor + 3, cz))
-        walk.add((x, z))
+        walk[(x, z)] = floor
         if index % SET_EVERY == SET_EVERY // 2:
             timber(room, x, floor, z, axis, seed)
         elif rails and noise(seed + "/rail", x, z) > 0.2:
@@ -139,9 +139,9 @@ def decline(room, x, z0, top, drop_every, cells, walk, worked=False):
             if stepped:
                 stair = "minecraft:polished_deepslate_stairs" if worked else "minecraft:cobblestone_stairs"
                 room.set((cx, lower + 1, z), stair, facing="north", half="bottom", shape="straight", waterlogged=False)
-        walk.add((x, z))
+        walk[(x, z)] = lower
         if not worked and not stepped and index % SET_EVERY == SET_EVERY // 2:
-            timber(room, x, lower, z, "z", "diggers/decline")
+            timber(room, x, lower, z, "z", "diggers/decline", height=4)
         floor = lower
     return floor
 
@@ -179,7 +179,7 @@ def sump(room, x, z0, walk):
                     room.water((cx, y, cz))
                 else:
                     room.air((cx, y, cz))
-        walk.add((x, z))
+        walk[(x, z)] = floor
 
 
 def collapse(room, x, z0, length):
@@ -199,7 +199,7 @@ def crawl(room, cells, walk):
     for x, z in cells:
         room.set((x, LEVEL_B, z), FLOOR)
         room.carve((x, LEVEL_B + 1, z), (x, LEVEL_B + 2, z))
-        walk.add((x, z))
+        walk[(x, z)] = LEVEL_B
 
 
 def chasm(room):
@@ -230,7 +230,7 @@ def bridge(room, x, walk):
         if noise("diggers/bridge-rail", z) > 0.45:
             fence = {"east": False, "north": False, "south": False, "west": False}
             room.set((x - 1, LEVEL_B + 1, z), "minecraft:spruce_fence", waterlogged=False, **fence)
-        walk.add((x, z))
+        walk[(x, z)] = LEVEL_B
 
 
 def mark(room, pos):
@@ -298,7 +298,7 @@ def hall(room, spec, walk):
     for z in range(97, 109):
         if noise("diggers/hall-rail", z) > 0.15:
             room.set((cx, HALL_FLOOR + 1, z), "minecraft:rail", shape="north_south", waterlogged=False)
-        walk.add((cx, z))
+        walk[(cx, z)] = HALL_FLOOR
     for x, z in ((3, 101), (17, 103), (3, 107)):
         if (x, HALL_FLOOR + 1, z) in room.open:
             room.set((x, HALL_FLOOR + 1, z), "minecraft:barrel", facing="up", open=False)
@@ -327,7 +327,7 @@ def layout():
 
 def tunnels(spec):
     room = Room(SIZE, ROCK, FLOOR, shell_at=shell_at, decay=0.1)
-    walk = set()
+    walk = {}
     x = 24
     level_a = decline(room, x, 0, TOP, 2, 20, walk)
     drift(room, line(x, 20, x, 46, level_a), walk, rails=True, seed="diggers/haulage")
@@ -372,7 +372,45 @@ def tunnels(spec):
     detail.webs(room, 0.35, seed="diggers/webs")
     detail.roots(room, 0.05, seed="diggers/roots")
     detail.moss(room, 0.12, seed="diggers/moss")
+    headroom(room, walk)
     return room
+
+
+PASSABLE = {
+    AIR,
+    "minecraft:cobweb",
+    "minecraft:hanging_roots",
+    "minecraft:ladder",
+    "minecraft:moss_carpet",
+    "minecraft:rail",
+    "minecraft:water",
+    "wayfarer:wayfarer_sign",
+}
+STANDING_HEIGHT = 1.8
+
+
+def standing(room, cell, floor):
+    x, z = cell
+    on = room.get((x, floor + 1, z)) or ""
+    surface = floor + 1.5 if on.endswith("_stairs") or on.endswith("_slab") else floor + 1
+    y = floor + 2 if surface > floor + 1 else floor + 1
+    while y < SIZE[1] and room.get((x, y, z)) in PASSABLE:
+        y += 1
+    return surface, y
+
+
+def headroom(room, walk):
+    for (x, z), floor in walk.items():
+        if room.get((x, floor, z)) in PASSABLE or room.get((x, floor + 1, z)) == "minecraft:water":
+            continue
+        here, over = standing(room, (x, z), floor)
+        for nx, nz in ((x + 1, z), (x - 1, z), (x, z + 1), (x, z - 1)):
+            if (nx, nz) not in walk or room.get((nx, walk[(nx, nz)], nz)) in PASSABLE:
+                continue
+            there, above = standing(room, (nx, nz), walk[(nx, nz)])
+            room_left = min(over, above) - max(here, there)
+            if 0 < room_left < STANDING_HEIGHT:
+                raise ValueError(f"diggers: the way from {(x, z)} to {(nx, nz)} has {room_left} blocks of headroom")
 
 
 SOIL = Material(

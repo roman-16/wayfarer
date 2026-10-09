@@ -183,7 +183,7 @@ The reveals' places are settled in `story.md` (S2), and the voice's in S4.
 
 ### D6 The quest log: the journal, the compass and the map
 
-- The journal lists the main and side quests, each with its current objective. Each player tracks one quest, and the compass shows its goal as the player knows it:
+- The journal lists the main and side quests, each with its current objective. Each player chooses which quest they follow, if any, and the compass shows its goal as the player knows it:
 
   | How the player knows the goal | What the compass shows |
   |---|---|
@@ -201,6 +201,15 @@ The reveals' places are settled in `story.md` (S2), and the voice's in S4.
   ```
 
 - The tracked quest, its objective and its tasks, how to do what the step asks and each control the first time it is needed, stand in the task panel at the top right of the screen (`interface.md`, I1).
+
+- A quest is followed by choice, as The Witcher 3, Cyberpunk 2077 and GTA V let the player pick up a job when they are ready. A new quest waits in the journal ("New in your journal"), and nothing of it happens until someone tracks it: its places are not put down, its people do not start talking, its holds and visits do not come and the voice keeps quiet. Tracking it ("Track" on its page) begins it; when it is done nothing is tracked, the task panel stands empty and the compass shows only friends, stones and, from 17:00, the caravan's smoke, until the team chooses the next. What has begun finishes, a talk, a hold or a dream, and "Stop tracking" puts the quest aside where it stands. What the team does always counts: a shard taken, a gift found or a clue clicked counts for its quest whether it is tracked or not, and right-clicking the person a step waits on starts the talk and tracks its quest. In a team a quest moves while anyone tracks it, and a teammate's tracked goal shows faintly on the others' compasses. The day is not a quest: the caravan's "Make for the caravan" still comes by itself at 17:00, so night always falls. The prologue, the first evening, follows itself, The Last Fire to Ash, since it teaches the journal; from The Pull on, the team chooses, and the first time nothing is tracked the task panel says once to open the journal and press Track.
+
+  ```text
+  Done: The Pull.        Task panel: (empty)
+  New in your journal J: His First Camp
+  ...the team builds, hunts, explores...
+  Journal › His First Camp › [Track]    A new road: His First Camp
+  ```
 
 - What failing means depends on what went wrong:
   - Falling never fails a quest: the player wakes at their fire, and the quest waits where they left it.

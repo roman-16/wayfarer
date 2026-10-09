@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Talk;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerWakeUpEvent;
@@ -86,23 +88,35 @@ public final class Tents {
         return false;
     }
 
-    public static void eject(ServerPlayer player) {
+    public record Outside(ServerLevel level, Vec3 at, float yaw) {}
+
+    public static Optional<Outside> outside(ServerPlayer player) {
         ServerLevel tent = player.serverLevel();
-        Optional<CompoundTag> door = doors(tent, player.chunkPosition())
+        if (!isTent(tent.dimension())) {
+            return Optional.empty();
+        }
+        return doors(tent, player.chunkPosition())
                 .min(Comparator.comparingDouble(entity -> entity.getBlockPos().distSqr(player.blockPosition())))
-                .map(entity -> entity.saveWithoutMetadata(tent.registryAccess()));
-        ServerLevel target = door.map(tag -> player.server.getLevel(
-                        ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(tag.getString(SPAWN_DIMENSION)))))
-                .orElse(null);
-        if (target != null) {
-            CompoundTag point = door.get().getCompound(SPAWN_POINT);
-            player.teleportTo(target, point.getDouble("X"), point.getDouble("Y"), point.getDouble("Z"), door.get().getFloat(SPAWN_ROTATION), player.getXRot());
+                .map(entity -> entity.saveWithoutMetadata(tent.registryAccess()))
+                .flatMap(door -> Optional.ofNullable(player.server.getLevel(
+                                ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(door.getString(SPAWN_DIMENSION)))))
+                        .map(level -> {
+                            CompoundTag point = door.getCompound(SPAWN_POINT);
+                            return new Outside(level, new Vec3(point.getDouble("X"), point.getDouble("Y"), point.getDouble("Z")), door.getFloat(SPAWN_ROTATION));
+                        }));
+    }
+
+    public static void eject(ServerPlayer player) {
+        Optional<Outside> outside = outside(player);
+        if (outside.isPresent()) {
+            Vec3 at = outside.get().at();
+            player.teleportTo(outside.get().level(), at.x, at.y, at.z, outside.get().yaw(), player.getXRot());
         } else {
             ServerLevel overworld = player.server.overworld();
             BlockPos spawn = overworld.getSharedSpawnPos();
             player.teleportTo(overworld, spawn.getX() + 0.5, spawn.getY(), spawn.getZ() + 0.5, player.getYRot(), player.getXRot());
         }
-        player.displayClientMessage(Component.translatable("wayfarer.night.ejected").withStyle(ChatFormatting.RED), false);
+        Talk.tell(player, Component.translatable("wayfarer.night.ejected"));
     }
 
     private static Stream<BlockEntity> doors(ServerLevel tent, ChunkPos center) {

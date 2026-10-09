@@ -35,7 +35,11 @@ final class Remarks {
     }
 
     private static List<String> lines(MinecraftServer server, String person) {
-        Optional<Engine.Active> tracked = Engine.main(server);
+        Story.Person spec = Story.get().person(person);
+        if (spec.people() != null && Progress.of(server).trust(spec.people()) < 0) {
+            return spec.cold();
+        }
+        Optional<Engine.Active> tracked = Engine.main(server).filter(Steps::entered);
         if (tracked.isPresent()) {
             List<Story.Step> steps = tracked.get().quest().steps();
             for (int index = steps.indexOf(tracked.get().step()); index >= 0; index--) {

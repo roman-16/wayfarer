@@ -102,9 +102,10 @@ registries:
     python3 scripts/server.py run "wayfarer registries {{ justfile_directory() }}/build/reports"
     python3 scripts/server.py stop
 
-[doc("Ask an audio model about sound files, through OpenRouter with pi's own sign-in, after a brief on the pack's sound; each clip is labelled with its file name, and --plain leaves the brief out: just hear \"<question>\" <file>...")]
-hear question *files:
-    python3 scripts/hear.py {{ quote(question) }} {{ files }}
+[doc("Ask an audio model about sound files, through OpenRouter with pi's own sign-in, after a brief on the pack's sound: just hear \"<question>\" [--context <label>=<file>]... [--each] <label>=<file>...; --each asks about every clip in its own call, all at once, and --plain leaves the brief out")]
+[positional-arguments]
+hear *arguments:
+    python3 scripts/hear.py "$@"
 
 [doc("Fetch, cut and loudness-match the pack's own sounds from story/sounds.toml into the mod's assets; names choose which, and a missing piece of music is made either way")]
 sounds *names:

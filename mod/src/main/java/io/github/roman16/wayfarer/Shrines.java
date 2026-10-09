@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Engine;
 import io.github.roman16.wayfarer.story.Pages;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.ArrayList;
@@ -37,11 +38,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Shrines {
     public static final TagKey<Structure> ALL = TagKey.create(Registries.STRUCTURE, Wayfarer.id("shrines"));
-    public static final TagKey<Structure> TIER_ONE = TagKey.create(Registries.STRUCTURE, Wayfarer.id("shrines/tier_one"));
-    public static final TagKey<Structure> TIER_TWO = TagKey.create(Registries.STRUCTURE, Wayfarer.id("shrines/tier_two"));
 
     private static final int TITLE_CHECK_TICKS = 20;
-    private static final int STIRRING_SHARDS = 2;
     private static final String SHARD_TAKEN = "shard_taken";
     private static final Map<UUID, ResourceLocation> INSIDE = new HashMap<>();
 
@@ -62,14 +60,14 @@ public final class Shrines {
         return inside(player.serverLevel(), player.blockPosition()).isPresent();
     }
 
-    public static List<Holder<Structure>> tier(ServerLevel level, TagKey<Structure> tier) {
-        return level.registryAccess().registryOrThrow(Registries.STRUCTURE).getTag(tier)
+    public static List<Holder<Structure>> members(ServerLevel level, TagKey<Structure> tag) {
+        return level.registryAccess().registryOrThrow(Registries.STRUCTURE).getTag(tag)
                 .map(set -> set.stream().toList())
                 .orElse(List.of());
     }
 
     public static int count(ServerLevel level) {
-        return tier(level, ALL).size();
+        return members(level, ALL).size();
     }
 
     public static ResourceLocation key(Holder<Structure> shrine) {
@@ -105,6 +103,9 @@ public final class Shrines {
             return;
         }
         ResourceLocation shrine = found.get();
+        if (Engine.asks(player, pedestal, shrine)) {
+            return;
+        }
         if (!Journey.of(player.server).claim(shrine)) {
             player.displayClientMessage(Component.translatable("wayfarer.shrine.spent", eyeName(shrine)).withStyle(ChatFormatting.GRAY), true);
             return;
@@ -113,9 +114,6 @@ public final class Shrines {
         Talk.notice(Component.translatable("wayfarer.shrine.claimed", player.getDisplayName(), eyeName(shrine), taken));
         if (taken == 1) {
             Talk.notice(Component.translatable("wayfarer.shrine.sinks"));
-        }
-        if (taken == STIRRING_SHARDS) {
-            Talk.notice(Component.translatable("wayfarer.shrine.stirs"));
         }
         for (ServerPlayer member : player.server.getPlayerList().getPlayers()) {
             Sounds.play(member, SHARD_TAKEN);

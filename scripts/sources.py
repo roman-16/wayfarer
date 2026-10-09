@@ -48,23 +48,41 @@ def game():
     prune(SOURCES, {target.name, "mods"})
 
 
+def vineflower_run(vineflower, jar, output, log):
+    result = subprocess.run(
+        ["java", "-Xmx4G", "-jar", str(vineflower), "--log-level=warn", str(jar), str(output)],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        log.write_text(result.stdout + result.stderr)
+        raise RuntimeError(
+            f"{jar.name} did not decompile (exit {result.returncode}); its log is {log.relative_to(ROOT)}"
+        )
+
+
+def unbundle(vineflower, folder, log):
+    bundled = sorted(folder.glob("META-INF/jars/*.jar"))
+    for jar in bundled:
+        target = jar.with_suffix("")
+        replace(target, lambda partial, jar=jar: vineflower_run(vineflower, jar, partial, log))
+        jar.unlink()
+        unbundle(vineflower, target, log)
+    return bool(bundled)
+
+
 def decompile(vineflower, jar):
     target = SOURCES / "mods" / jar.stem
-    if target.exists():
-        return None
     log = target.with_name(target.name + ".log")
+    if target.exists():
+        unbundled = unbundle(vineflower, target, log)
+        if unbundled:
+            print(f"decompiled the jars bundled in {jar.name}")
+        return jar.name if unbundled else None
 
     def run(partial):
-        result = subprocess.run(
-            ["java", "-Xmx4G", "-jar", str(vineflower), "--log-level=warn", str(jar), str(partial)],
-            capture_output=True,
-            text=True,
-        )
-        if result.returncode != 0:
-            log.write_text(result.stdout + result.stderr)
-            raise RuntimeError(
-                f"{jar.name} did not decompile (exit {result.returncode}); its log is {log.relative_to(ROOT)}"
-            )
+        vineflower_run(vineflower, jar, partial, log)
+        unbundle(vineflower, partial, log)
 
     replace(target, run)
     log.unlink(missing_ok=True)

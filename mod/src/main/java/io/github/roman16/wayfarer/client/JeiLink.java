@@ -35,6 +35,10 @@ public final class JeiLink implements IModPlugin {
         return runtime != null;
     }
 
+    static boolean typing() {
+        return runtime != null && runtime.getIngredientListOverlay().hasKeyboardFocus();
+    }
+
     static void show(ResourceLocation item) {
         if (runtime != null) {
             ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(item));

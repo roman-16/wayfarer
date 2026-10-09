@@ -1,5 +1,7 @@
 package io.github.roman16.wayfarer.story;
 
+import io.github.roman16.wayfarer.Tents;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import net.neoforged.neoforge.common.Tags;
 
 final class Unseen {
     private static final int CELL = 8;
+    private static final double EYE_HEIGHT = 1.62;
     private static final int SIGHT_NEAR = 4;
     private static final int SIGHT_OWN = 16;
     private static final int SIGHT_STEP = 8;
@@ -29,8 +32,13 @@ final class Unseen {
     record Viewer(Vec3 eye, Vec3 look, ChunkPos chunk) {}
 
     static List<Viewer> viewers(ServerLevel level) {
-        return level.players().stream().filter(player -> !player.isSpectator())
-                .map(player -> new Viewer(player.getEyePosition(), Vec3.directionFromRotation(0, player.getYRot()), player.chunkPosition())).toList();
+        List<Viewer> viewers = new ArrayList<>(level.players().stream().filter(player -> !player.isSpectator())
+                .map(player -> new Viewer(player.getEyePosition(), Vec3.directionFromRotation(0, player.getYRot()), player.chunkPosition())).toList());
+        level.getServer().getPlayerList().getPlayers().stream().filter(player -> !player.isSpectator())
+                .flatMap(player -> Tents.outside(player).filter(outside -> outside.level() == level).stream())
+                .forEach(outside -> viewers.add(new Viewer(outside.at().add(0, EYE_HEIGHT, 0), Vec3.directionFromRotation(0, outside.yaw()),
+                        new ChunkPos(BlockPos.containing(outside.at())))));
+        return viewers;
     }
 
     static boolean beyond(List<Viewer> viewers, Vec3 target, int view) {

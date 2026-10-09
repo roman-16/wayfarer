@@ -20,7 +20,6 @@ FOUND = re.compile(r"The nearest (\S+)(?: \([^)]*\))? is at \[(-?\d+), [^,]+, (-
 MISSING = re.compile(r"Could not find a structure of type \"?(\S+?)\"? nearby")
 BIOME_SHIFT_BLOCKS = 128
 MAX_STEP = 2.0
-SURVEY_RADIUS_BLOCKS = 10000
 SURVEY_SEEDS = (1, 2, 3, 4, 5)
 SURVEY_PORT = 25600
 VOICE_PORT = 24600
@@ -88,10 +87,9 @@ def check(server):
     return failures
 
 
-def points(count):
+def points(count, radius):
     rng = random.Random(0)
     for _ in range(count):
-        radius = SURVEY_RADIUS_BLOCKS * math.sqrt(rng.random())
         angle = rng.random() * math.tau
         yield round(radius * math.cos(angle)), round(radius * math.sin(angle))
 
@@ -113,19 +111,18 @@ def world(server, seed):
     return target
 
 
-def journey(server, eyes, start, legs):
+def journey(server, eyes, start, act, legs):
     pos = start
-    for tier in legs:
-        remaining = [eye for eye in sorted(eyes) if eyes[eye]["tier"] == tier and not eyes[eye].get("story", False)]
-        while remaining:
-            hits = locate(server, [f"wayfarer:shrine/{eye}" for eye in remaining], pos)
-            found = [(hit, eye) for eye in remaining if (hit := hits[f"wayfarer:shrine/{eye}"])]
-            if not found:
-                break
-            (distance, x, z), eye = min(found)
-            legs[tier].append(distance)
-            pos = (x, z)
-            remaining.remove(eye)
+    remaining = [eye for eye in sorted(eyes) if eyes[eye]["act"] == act and not eyes[eye].get("story", False)]
+    while remaining:
+        hits = locate(server, [f"wayfarer:shrine/{eye}" for eye in remaining], pos)
+        found = [(hit, eye) for eye in remaining if (hit := hits[f"wayfarer:shrine/{eye}"])]
+        if not found:
+            break
+        (distance, x, z), eye = min(found)
+        legs[act].append(distance)
+        pos = (x, z)
+        remaining.remove(eye)
 
 
 def minutes(blocks):
@@ -133,44 +130,48 @@ def minutes(blocks):
 
 
 def survey(server, count, apply):
-    balance = tomllib.loads((ROOT / "balance.toml").read_text())["shrines"]
-    targets = {1: balance["tier_one_leg_blocks"], 2: balance["tier_two_leg_blocks"]}
+    balance = tomllib.loads((ROOT / "balance.toml").read_text())
+    targets = {2: balance["shrines"]["act_two_leg_blocks"], 3: balance["shrines"]["act_three_leg_blocks"]}
+    shores = {
+        2: balance["world"]["home_blocks"] + balance["world"]["sea_blocks"],
+        3: balance["shrines"]["act_three_from_blocks"],
+    }
     eyes_path = ROOT / "generator/eyes.toml"
     shrines = tomllib.loads(eyes_path.read_text())
-    starts = list(points(count))
 
     def walk(seed):
-        legs = {tier: [] for tier in targets}
+        legs = {act: [] for act in targets}
 
         def measure(server):
-            for start in starts:
-                journey(server, shrines["eyes"], start, legs)
+            for act, shore in shores.items():
+                for start in points(count, shore):
+                    journey(server, shrines["eyes"], start, act, legs)
             return []
 
         boot(world(server, seed), measure)
         return legs
 
-    legs = {tier: [] for tier in targets}
+    legs = {act: [] for act in targets}
     with ThreadPoolExecutor(max_workers=len(SURVEY_SEEDS)) as pool:
         for found in pool.map(walk, SURVEY_SEEDS):
-            for tier, distances in found.items():
-                legs[tier] += distances
+            for act, distances in found.items():
+                legs[act] += distances
     text = eyes_path.read_text()
     print(
-        f"{'tier':<4} {'legs':>5} {'spacing':>7} {'median':>7} {'walk':>7} {'shortest':>8} {'target':>7} {'walk':>7} {'tuned':>6}"
+        f"{'act':<4} {'legs':>5} {'spacing':>7} {'median':>7} {'walk':>7} {'shortest':>8} {'target':>7} {'walk':>7} {'tuned':>6}"
     )
-    for tier, target in targets.items():
-        spacing = shrines["tiers"][str(tier)]["spacing"]
-        found = legs[tier]
+    for act, target in targets.items():
+        spacing = shrines["acts"][str(act)]["spacing"]
+        found = legs[act]
         median = statistics.median(found) if found else 0
         ratio = min(MAX_STEP, max(1 / MAX_STEP, math.sqrt(target / median))) if median else 1
         tuned = max(2, round(spacing * ratio))
         shortest = min(found) if found else 0
         print(
-            f"{tier:<4} {len(found):>5} {spacing:>7} {median:>7.0f} {minutes(median):>5.0f} m {shortest:>8}"
+            f"{act:<4} {len(found):>5} {spacing:>7} {median:>7.0f} {minutes(median):>5.0f} m {shortest:>8}"
             + f" {target:>7} {minutes(target):>5.0f} m {tuned:>6}"
         )
-        text = re.sub(rf"(\[tiers\.{tier}\]\n)spacing = \d+", rf"\g<1>spacing = {tuned}", text, count=1)
+        text = re.sub(rf"(\[acts\.{act}\]\n)spacing = \d+", rf"\g<1>spacing = {tuned}", text, count=1)
     if apply:
         eyes_path.write_text(text)
         print(

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "wayfarer:block/false_wall"
+    }
+  }
+}

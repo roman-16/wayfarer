@@ -31,6 +31,8 @@ public final class Stamp {
     public static final ResourceLocation MARK_INK = sprite("mark_ink");
     public static final ResourceLocation PAGE_LEFT = sprite("page_left");
     public static final ResourceLocation PAGE_RIGHT = sprite("page_right");
+    public static final ResourceLocation PAGE_SCROLLER = sprite("page_scroller");
+    public static final ResourceLocation PAGE_SCROLLER_TRACK = sprite("page_scroller_track");
     public static final ResourceLocation PANEL = sprite("panel");
     public static final ResourceLocation PANEL_CLEAR = sprite("panel_clear");
     public static final ResourceLocation PLATE = sprite("plate");

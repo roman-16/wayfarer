@@ -46,6 +46,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.scores.PlayerTeam;
+import net.minecraft.world.scores.Scoreboard;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -53,6 +55,7 @@ import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
@@ -70,12 +73,14 @@ public final class Hold {
     private static final String CROSSED = "crossed";
     private static final String HORN = "gazebound_horn";
     private static final String RETREAT = Wayfarer.MODID + "_retreat";
+    private static final String WAVE_SPAWN = Wayfarer.MODID + "_wave";
     private static final int SPREAD = 3;
     private static final int BESIEGE_PRIORITY = 4;
     private static final int CRACK_STAGES = 10;
     private static final int CRACKS = -Wayfarer.MODID.hashCode();
     private static final int DOOR_SEARCH = 16;
     private static final int REACH = 96;
+    private static final String OUTLINED = Wayfarer.MODID + "_besieging";
     private static final int REPATH_TICKS = 20;
     private static final int TICKS_PER_SECOND = 20;
     @Nullable
@@ -92,15 +97,17 @@ public final class Hold {
         private final BlockPos door;
         private final Map<BlockPos, Long> blows = new HashMap<>();
         private final Set<UUID> monsters = new HashSet<>();
-        private final Set<UUID> wave = new HashSet<>();
+        private final long started;
+        private boolean spawned;
         private int strain;
         private long waveStarted = -1;
 
-        private Running(String quest, BlockPos at, @Nullable BlockPos door, boolean across) {
+        private Running(String quest, BlockPos at, @Nullable BlockPos door, boolean across, long started) {
             this.quest = quest;
             this.at = at;
             this.across = across;
             this.door = door;
+            this.started = started;
         }
     }
 
@@ -165,7 +172,14 @@ public final class Hold {
             });
         }
         mend(level, scratch);
-        running = new Running(active.quest().id(), at, scratch.contains(DOOR) ? BlockPos.of(scratch.getLong(DOOR)) : null, crossing(active));
+        if (scratch.contains(DOOR)) {
+            BlockPos door = BlockPos.of(scratch.getLong(DOOR));
+            BlockState state = level.getBlockState(door);
+            if (state.getBlock() instanceof DoorBlock shut) {
+                shut.setOpen(null, level, state, door, false);
+            }
+        }
+        running = new Running(active.quest().id(), at, scratch.contains(DOOR) ? BlockPos.of(scratch.getLong(DOOR)) : null, crossing(active), level.getGameTime());
         level.getEntitiesOfClass(Monster.class, new AABB(at).inflate(REACH), Hold::besieges).forEach(monster -> {
             besiege(monster);
             running.monsters.add(monster.getUUID());
@@ -195,6 +209,12 @@ public final class Hold {
         int waves = across ? crossing.waves() : hold.waves();
         long now = level.getGameTime();
         int wave = active.scratch().getInt(WAVE);
+        if (!defended(server)) {
+            if (running.waveStarted >= 0) {
+                running.waveStarted++;
+            }
+            return;
+        }
         if (running.waveStarted < 0) {
             if (wave >= waves) {
                 end(server, active, level);
@@ -204,10 +224,13 @@ public final class Hold {
             if (across && (!Ford.crossed(server) || Talk.busy())) {
                 return;
             }
+            if (!across && wave == 0 && (now - running.started < (long) hold.calmSeconds() * TICKS_PER_SECOND || Talk.busy())) {
+                return;
+            }
             nearest(server, running.at).ifPresent(player -> {
                 keep(active).forEach(person -> People.find(server, person).filter(body -> !body.getTags().contains(KEEP)).ifPresent(Hold::vulnerable));
                 running.waveStarted = now;
-                running.wave.clear();
+                running.spawned = false;
                 Talk.notice(Component.literal(active.step().text("wave").replace("{wave}", String.valueOf(wave + 1))
                         .replace("{waves}", String.valueOf(waves))).withStyle(ChatFormatting.DARK_RED));
                 if (across) {
@@ -215,7 +238,8 @@ public final class Hold {
                     Progress.of(server).setDirty();
                     cross(server, active, level, wave, crossing);
                 } else {
-                    command(server, "hordes spawnWave %s %d %s".formatted(player.getScoreboardName(), hold.firstWave() + hold.waveGrowth() * wave, TABLE));
+                    long team = Math.max(1, Engine.players(server).stream().filter(member -> member.level().dimension() == Level.OVERWORLD).count());
+                    command(server, "hordes spawnWave %s %d %s".formatted(player.getScoreboardName(), (hold.firstWave() + hold.waveGrowth() * wave) * team, TABLE));
                 }
             });
             return;
@@ -223,12 +247,18 @@ public final class Hold {
         blows(level, now, hold);
         long elapsed = now - running.waveStarted;
         long ticks = (long) (across ? crossing.waveSeconds() : hold.waveSeconds()) * TICKS_PER_SECOND;
-        boolean cleared = running.wave.stream().map(level::getEntity).noneMatch(entity -> entity != null && entity.isAlive());
+        boolean cleared = running.spawned && level.getEntitiesOfClass(Monster.class, new AABB(running.at).inflate(REACH),
+                monster -> monster.isAlive() && running.monsters.contains(monster.getUUID())).isEmpty();
         if (cleared && elapsed >= TICKS_PER_SECOND || elapsed >= ticks) {
             running.waveStarted = -1;
             active.scratch().putInt(WAVE, wave + 1);
             Progress.of(server).setDirty();
         }
+    }
+
+    private static boolean defended(MinecraftServer server) {
+        return Engine.players(server).stream().anyMatch(player -> player.isAlive() && player.level().dimension() == Level.OVERWORLD
+                && player.distanceToSqr(running.at.getCenter()) <= (double) REACH * REACH);
     }
 
     private static boolean crossing(Engine.Active active) {
@@ -357,12 +387,14 @@ public final class Hold {
             People.find(server, person).ifPresent(Hold::guarded);
         }
         mend(level, active.scratch());
+        unoutline(level);
         running = null;
     }
 
     private static void fail(MinecraftServer server, Engine.Active active, ServerLevel level) {
         active.scratch().putBoolean(FAILED, true);
         Progress.of(server).setDirty();
+        unoutline(level);
         running.monsters.stream().map(level::getEntity).filter(entity -> entity != null).forEach(Entity::discard);
         mend(level, active.scratch());
         running = null;
@@ -379,7 +411,7 @@ public final class Hold {
     }
 
     private static void offerRetry(MinecraftServer server, Engine.Active active) {
-        Talk.ask(new Talk.Offer(active.quest().id(), null, List.of(new Story.Choice(RETRY, active.step().text("retry"), "", null, null, false, null)), null,
+        Talk.ask(new Talk.Offer(active.quest().id(), null, List.of(new Story.Choice(RETRY, active.step().text("retry"), "", null, null, null)), null,
                 (player, choice) -> retry(server, active)));
     }
 
@@ -424,13 +456,13 @@ public final class Hold {
             return;
         }
         if (running == null || !(event.getEntity() instanceof Monster monster) || !besieges(monster)
-                || monster.distanceToSqr(running.at.getCenter()) > (double) REACH * REACH) {
+                || !running.across && !monster.getTags().contains(WAVE_SPAWN) || monster.distanceToSqr(running.at.getCenter()) > (double) REACH * REACH) {
             return;
         }
         besiege(monster);
         running.monsters.add(monster.getUUID());
-        if (!event.loadedFromDisk()) {
-            running.wave.add(monster.getUUID());
+        if (!event.loadedFromDisk() && running.waveStarted >= 0) {
+            running.spawned = true;
         }
     }
 
@@ -438,12 +470,51 @@ public final class Hold {
         return monster.isAlive() && !monster.getTags().contains(People.TAG) && (!running.across || monster.getTags().contains(RETREAT));
     }
 
+    public static void wave(Mob mob) {
+        if (running != null && !running.across) {
+            mob.addTag(WAVE_SPAWN);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onSpawnCheck(MobSpawnEvent.PositionCheck event) {
+        if (running != null && event.getLevel() instanceof ServerLevel level && level.dimension() == Level.OVERWORLD
+                && event.getSpawnType() != MobSpawnType.EVENT && Fire.fears(event.getEntity())
+                && event.getEntity().distanceToSqr(running.at.getCenter()) <= (double) REACH * REACH) {
+            event.setResult(MobSpawnEvent.PositionCheck.Result.FAIL);
+        }
+    }
+
     private static void besiege(Monster monster) {
+        outline(monster, true);
         if (monster.goalSelector.getAvailableGoals().stream().anyMatch(goal -> goal.getGoal() instanceof Besiege)) {
             return;
         }
         monster.targetSelector.addGoal(0, new Kept(monster));
         monster.goalSelector.addGoal(BESIEGE_PRIORITY, new Besiege(monster));
+    }
+
+    private static void outline(Entity monster, boolean on) {
+        Scoreboard scoreboard = monster.level().getScoreboard();
+        PlayerTeam team = scoreboard.getPlayerTeam(OUTLINED);
+        if (team == null) {
+            team = scoreboard.addPlayerTeam(OUTLINED);
+            team.setColor(ChatFormatting.DARK_RED);
+        }
+        monster.setGlowingTag(on);
+        if (on) {
+            scoreboard.addPlayerToTeam(monster.getStringUUID(), team);
+        } else if (team.getPlayers().contains(monster.getStringUUID())) {
+            scoreboard.removePlayerFromTeam(monster.getStringUUID(), team);
+        }
+    }
+
+    private static void unoutline(ServerLevel level) {
+        running.monsters.stream().map(level::getEntity).filter(entity -> entity != null).forEach(entity -> outline(entity, false));
+        PlayerTeam team = level.getScoreboard().getPlayerTeam(OUTLINED);
+        if (team != null) {
+            level.getScoreboard().removePlayerTeam(team);
+        }
     }
 
     @SubscribeEvent

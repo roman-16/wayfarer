@@ -1,6 +1,7 @@
 package io.github.roman16.wayfarer;
 
 import com.mojang.authlib.GameProfile;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.roman16.wayfarer.story.Talk;
 import io.netty.channel.embedded.EmbeddedChannel;
@@ -53,7 +54,11 @@ public final class Pretend {
                         .requires(source -> source.hasPermission(OWNER))
                         .then(Commands.literal("join").then(name(Pretend::join)))
                         .then(Commands.literal("leave").then(name(Pretend::leave)))
-                        .then(Commands.literal("respawn").then(name(Pretend::respawn)))));
+                        .then(Commands.literal("respawn").then(name(Pretend::respawn)))
+                        .then(Commands.literal("answer").then(Commands.argument("name", StringArgumentType.word())
+                                .then(Commands.argument("answer", IntegerArgumentType.integer(1))
+                                        .executes(context -> answer(context.getSource(), StringArgumentType.getString(context, "name"),
+                                                IntegerArgumentType.getInteger(context, "answer"))))))));
     }
 
     @SubscribeEvent
@@ -126,6 +131,20 @@ public final class Pretend {
         ServerPlayer respawned = source.getServer().getPlayerList().getPlayerByName(name);
         source.sendSuccess(() -> Component.literal("%s respawned at %.1f %.1f %.1f in %s"
                 .formatted(name, respawned.getX(), respawned.getY(), respawned.getZ(), respawned.level().dimension().location())), false);
+        return 1;
+    }
+
+    private static int answer(CommandSourceStack source, String name, int answer) {
+        ServerPlayer player = pretender(source, name);
+        if (player == null) {
+            return 0;
+        }
+        if (Talk.open().filter(offer -> answer <= offer.choices().size()).isEmpty() || !Talk.answering(player)) {
+            source.sendFailure(Component.literal("pretend failed: " + name + " has no answer " + answer + " to give"));
+            return 0;
+        }
+        Talk.pick(player, answer - 1);
+        source.sendSuccess(() -> Component.literal(name + " answered " + answer), false);
         return 1;
     }
 

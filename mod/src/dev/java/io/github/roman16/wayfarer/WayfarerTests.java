@@ -12,10 +12,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Vindicator;
 import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
@@ -36,6 +39,29 @@ public final class WayfarerTests {
         if (!condition) {
             helper.fail(message);
         }
+    }
+
+    @GameTest(template = "empty")
+    public static void theEveningArrivesWithinItsRun(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        Balance.Clock clock = Balance.get().clock();
+        long from = Math.floorDiv(level.getDayTime(), Clock.DAY) * Clock.DAY + Clock.ticks(clock.runFrom());
+        level.setDayTime(from);
+        Clock.begin(level, from, clock.duskRunSeconds());
+        long gap = Clock.ticks(clock.evening()) - Clock.ticks(clock.runFrom());
+        check(helper, Clock.nightfall(), "the run home did not begin");
+        check(helper, level.getDayTimePerTick() * clock.duskRunSeconds() * 20 >= gap - 1,
+                "the run home runs " + level.getDayTimePerTick() + " a tick, so it takes longer than " + clock.duskRunSeconds() + " s to reach " + clock.evening());
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void containersKeepHalfTheirLoot(GameTestHelper helper) {
+        check(helper, ContainerLoot.filled(ResourceLocation.parse("ctov:chests/village/plains_house")), "a village chest is a container's loot");
+        check(helper, ContainerLoot.filled(ResourceLocation.parse("supplementaries:loot/galleon/chest")), "a galleon's chest is a container's loot");
+        check(helper, !ContainerLoot.filled(ResourceLocation.parse("minecraft:blocks/chest")), "a broken chest drops itself whole");
+        check(helper, !ContainerLoot.filled(ResourceLocation.parse("wayfarer:chests/tollbridge/strongbox")), "the pack's own containers keep their numbers");
+        helper.succeed();
     }
 
     @GameTest(template = "empty")
@@ -101,6 +127,32 @@ public final class WayfarerTests {
         check(helper, LastUse.lastUse(pick), "the pick is at its last use");
         check(helper, !player.hasCorrectToolForDrops(ore, helper.getLevel(), at), "at its last use iron ore drops nothing, as for a bare hand");
         check(helper, player.getDigSpeed(ore, at) == bare, "at its last use it digs as a bare hand");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void inventoriesSortByKind(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        Inventory inventory = player.getInventory();
+        inventory.setItem(0, new ItemStack(Items.DIRT, 5));
+        inventory.setItem(9, new ItemStack(Items.OAK_LOG, 40));
+        inventory.setItem(12, new ItemStack(Items.BREAD, 3));
+        inventory.setItem(20, new ItemStack(Items.OAK_LOG, 40));
+        inventory.setItem(30, new ItemStack(Items.IRON_AXE));
+        inventory.setItem(31, new ItemStack(Items.LEATHER_HELMET));
+        Sorting.tidy(inventory);
+        check(helper, inventory.getItem(0).is(Items.DIRT) && inventory.getItem(0).getCount() == 5, "the hotbar stays as it was");
+        check(helper, inventory.getItem(9).is(Items.IRON_AXE), "tools and weapons come first");
+        check(helper, inventory.getItem(10).is(Items.LEATHER_HELMET), "armour comes next");
+        check(helper, inventory.getItem(11).is(Items.BREAD), "food comes before blocks");
+        check(helper, inventory.getItem(12).getCount() == 64 && inventory.getItem(13).getCount() == 16, "stacks merge, the fullest first");
+        check(helper, inventory.getItem(14).isEmpty(), "the rest of the rows is empty");
+        SimpleContainer chest = new SimpleContainer(27);
+        chest.setItem(5, new ItemStack(Items.COBBLESTONE, 12));
+        chest.setItem(17, new ItemStack(Items.APPLE, 2));
+        Sorting.tidy(Sorting.stored(ChestMenu.threeRows(0, inventory, chest)), player);
+        check(helper, chest.getItem(0).is(Items.APPLE) && chest.getItem(1).is(Items.COBBLESTONE) && chest.getItem(2).isEmpty(), "a chest sorts the same way");
+        check(helper, inventory.getItem(9).is(Items.IRON_AXE), "sorting a chest leaves the player's rows alone");
         helper.succeed();
     }
 

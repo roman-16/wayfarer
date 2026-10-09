@@ -8,6 +8,14 @@ licence = "CC BY 4.0"
 page = "https://freesound.org/people/GeoffAturax/sounds/532189"
 slider = "master"
 
+[effects.band_tick]
+credit = "Wood Click 1.wav, by Sawuare"
+downloaded = "09.10.2026"
+kind = "frequent"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/Sawuare/sounds/500926"
+slider = "master"
+
 [effects.camp]
 credit = "Bonfire, by Electroviolence"
 downloaded = "06.10.2026"
@@ -201,6 +209,16 @@ licence = "CC BY 4.0"
 page = "https://freesound.org/people/newlocknew/sounds/711059"
 slider = "players"
 
+[effects.smoke_gust]
+credit = "Fire Torch_Whoosh 2(medium speed).wav, by kev_durr"
+cut = { fade_in = 0.2, fade_out = 0.5, length = 1.95, start = 0.1 }
+downloaded = "09.10.2026"
+gain = -16
+kind = "rare"
+licence = "CC BY 4.0"
+page = "https://freesound.org/people/kev_durr/sounds/426209"
+slider = "ambient"
+
 [effects.task_ticked]
 credit = "Tarea completa, by valeulloam97"
 cut = { fade_out = 0.25, length = 1 }
@@ -239,6 +257,17 @@ licence = "CC BY 3.0"
 page = "https://freesound.org/people/leosalom/sounds/234288"
 reach = 128
 slider = "ambient"
+
+[effects.true_sight]
+credit = "9. Esfumar Vanish, by cabusta9"
+cut = { fade_in = 0.03, fade_out = 0.3, length = 1.7, start = 0.35 }
+downloaded = "09.10.2026"
+gain = -12
+kind = "rare"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/cabusta9/sounds/444710"
+slider = "players"
+
 [music.first_camp]
 credit = "Home Was You, by Scott Buckley"
 downloaded = "08.10.2026"
@@ -246,10 +275,11 @@ licence = "CC BY 4.0"
 page = "https://www.scottbuckley.com.au/library/home-was-you/"
 
 [music.first_fire]
-credit = "Calm fireplace guitar song, by ShggothSlave"
-downloaded = "05.10.2026"
-licence = "CC0 1.0"
-page = "https://opengameart.org/content/calm-fireplace-guitar-song"
+credit = "Amberlight, by Scott Buckley"
+cut = { fade_in = 2 }
+downloaded = "09.10.2026"
+licence = "CC BY 4.0"
+page = "https://www.scottbuckley.com.au/library/amberlight/"
 
 [music.hold]
 credit = "Heartfelt Battle (loop), by request"
@@ -259,16 +289,20 @@ loop = true
 page = "https://opengameart.org/content/heartfelt-battle-loopable-fantasy-stringspianohorn"
 
 [music.last_fire]
-credit = "Edvard Grieg, The Death of Åse (Peer Gynt Suite No. 1, Op. 46), Musopen Symphony"
-downloaded = "05.10.2026"
-licence = "Public domain"
-page = "https://commons.wikimedia.org/wiki/File:Grieg_-_Peer_Gynt_Suite_No._1,_Op._46_-_II._The_Death_of_Aase_(Musopen_Symphony).flac"
+credit = "What We Don't Say, by Scott Buckley"
+cut = { fade_in = 16, fade_out = 16, length = 256 }
+downloaded = "09.10.2026"
+gain = -8
+licence = "CC BY 4.0"
+page = "https://www.scottbuckley.com.au/library/what-we-dont-say/"
 
 [music.morning]
-credit = "Edvard Grieg, Morning Mood (Peer Gynt Suite No. 1, Op. 46), Musopen Symphony"
-downloaded = "05.10.2026"
-licence = "Public domain"
-page = "https://commons.wikimedia.org/wiki/File:Grieg_-_Peer_Gynt_Suite_No._1,_Op._46_-_I._Morning_Mood_(Musopen_Symphony).flac"
+credit = "Emotional Original Soundtrack - BETTER LIFE, by Magmi.Soundtracks"
+cut = { fade_in = 2, start = 30 }
+downloaded = "09.10.2026"
+gain = -3
+licence = "CC BY 4.0"
+page = "https://freesound.org/people/Magmi.Soundtracks/sounds/522207"
 
 [music.title]
 credit = "Emotional Original Soundtrack - FORGIVENESS, by Magmi.Soundtracks"

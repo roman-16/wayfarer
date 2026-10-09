@@ -86,6 +86,9 @@ public final class Shards {
             for (int slot = 0; slot < stacks.getSlots(); slot++) {
                 ItemStack shard = slot < claimed.size() ? shard(claimed.get(slot)) : ItemStack.EMPTY;
                 if (!ItemStack.matches(stacks.getStackInSlot(slot), shard)) {
+                    if (stacks.getStackInSlot(slot).isEmpty()) {
+                        Notices.given(player, List.of(shard));
+                    }
                     stacks.setStackInSlot(slot, shard);
                 }
             }

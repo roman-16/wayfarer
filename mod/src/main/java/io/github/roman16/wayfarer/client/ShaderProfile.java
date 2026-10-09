@@ -16,6 +16,10 @@ final class ShaderProfile {
         return IrisApi.getInstance().getConfig().areShadersEnabled();
     }
 
+    static boolean drawing() {
+        return IrisApi.getInstance().isShaderPackInUse();
+    }
+
     static void enable(boolean on) {
         IrisApi.getInstance().getConfig().setShadersEnabledAndApply(on);
     }

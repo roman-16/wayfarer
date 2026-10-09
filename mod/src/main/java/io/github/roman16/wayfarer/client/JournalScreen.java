@@ -73,11 +73,14 @@ public final class JournalScreen extends Screen {
     private static final int POINTED = Stamp.withAlpha(Stamp.ramp("paper", 1), Stamp.FAINT / 2);
     private static final String FOLDED_MARK = "+ ";
     private static final String UNFOLDED_MARK = "- ";
-    private static final String MORE_MARK = "...";
+    private static final int SCROLLER_WIDTH = 4;
+    private static final int SCROLLER_LEAST = 8;
     private static String latest = "{}";
     private static Tab open = Tab.QUESTS;
     private static final Map<Tab, String> CHOSEN_ENTRY = new EnumMap<>(Tab.class);
     private static final Map<String, String> CHOSEN_THING = new HashMap<>();
+    private static final Set<String> MARKED = new HashSet<>();
+    private static final String CHAPTER = "chapter";
     private final Set<String> seen = new HashSet<>();
     private boolean doneUnfolded;
     private JsonObject view = new JsonObject();
@@ -96,6 +99,10 @@ public final class JournalScreen extends Screen {
     private int bookHeight;
     private int listScroll;
     private int pageScroll;
+    private int pageRoom;
+    private int pageLength;
+    @Nullable
+    private Boolean dragging;
 
     private JournalScreen() {
         super(Component.translatable("wayfarer.journal"));
@@ -114,6 +121,7 @@ public final class JournalScreen extends Screen {
 
     public static void forget() {
         latest = "{}";
+        MARKED.clear();
         firstPage();
     }
 
@@ -184,6 +192,7 @@ public final class JournalScreen extends Screen {
         shown = latest;
         view = view();
         view.getAsJsonArray("seen").forEach(entry -> seen.add(entry.getAsString()));
+        seen.addAll(MARKED);
         ribbons = new ArrayList<>();
         for (Tab tab : Tab.values()) {
             if (tab == Tab.QUESTS || tab == Tab.MAP && ModList.get().isLoaded("journeymap") || !entries(tab).isEmpty()) {
@@ -228,6 +237,8 @@ public final class JournalScreen extends Screen {
         if (chosen != null && chosen.kind() == Kind.QUEST && !chosen.data().get("id").getAsString().equals(tracked())) {
             String quest = chosen.data().get("id").getAsString();
             action("wayfarer.journal.track", () -> PacketDistributor.sendToServer(new Journal.Track(quest)));
+        } else if (chosen != null && chosen.kind() == Kind.QUEST && !chosen.data().get("prologue").getAsBoolean()) {
+            action("wayfarer.journal.untrack", () -> PacketDistributor.sendToServer(new Journal.Track("")));
         }
         if (chosen != null && chosen.data().has("memory") && (chosen.kind() == Kind.QUEST || chosen.kind() == Kind.DONE)) {
             String memory = chosen.data().get("memory").getAsString();
@@ -337,6 +348,7 @@ public final class JournalScreen extends Screen {
     private void see(Entry entry) {
         CHOSEN_ENTRY.put(open, entry.key());
         if (seen.add(entry.key())) {
+            MARKED.add(entry.key());
             PacketDistributor.sendToServer(new Journal.Seen(entry.key()));
         }
     }
@@ -349,7 +361,7 @@ public final class JournalScreen extends Screen {
         List<Entry> found = new ArrayList<>();
         switch (tab) {
             case QUESTS -> quests(found);
-            case STORY -> lines(found, view.getAsJsonArray("story"), "chapter", false);
+            case STORY -> lines(found, view.getAsJsonArray("story"), CHAPTER, false);
             case PEOPLE -> lines(found, view.getAsJsonArray("people"), "person", false);
             case WORDS -> lines(found, view.getAsJsonArray("words"), "word", true);
             case PAGES -> view.getAsJsonArray("pages").forEach(element -> {
@@ -570,6 +582,7 @@ public final class JournalScreen extends Screen {
         graphics.enableScissor(listLeft(), listTop(), listLeft() + pageWidth(), listBottom());
         rows.forEach(row -> row.render(graphics, mouseX, mouseY, partialTick));
         graphics.disableScissor();
+        scroller(graphics, listScrollerX(), listTop(), listBottom(), rows.size() * LINE, listScroll);
         things.forEach(thing -> thing.render(graphics, mouseX, mouseY, partialTick));
         entry(graphics, mouseX, mouseY);
     }
@@ -617,7 +630,9 @@ public final class JournalScreen extends Screen {
         }
         int pageTop = entryTop(chosen);
         int bottom = pagesBottom() - PAD - (acting > 0 ? BUTTON_HEIGHT + PAD : 0) - (slots.isEmpty() ? 0 : SLOT + PAD);
-        pageScroll = Mth.clamp(pageScroll, 0, Math.max(0, page.stream().mapToInt(JournalScreen::height).sum() - (bottom - pageTop)));
+        pageLength = page.stream().mapToInt(JournalScreen::height).sum();
+        pageRoom = bottom - pageTop;
+        pageScroll = Mth.clamp(pageScroll, 0, Math.max(0, pageLength - pageRoom));
         graphics.enableScissor(pageLeft(), pageTop, pageLeft() + pageWidth(), bottom);
         int y = pageTop - pageScroll;
         for (Line line : page) {
@@ -633,9 +648,7 @@ public final class JournalScreen extends Screen {
             y += height(line);
         }
         graphics.disableScissor();
-        if (y > bottom) {
-            graphics.drawString(font, MORE_MARK, pageLeft() + pageWidth() - PAD - font.width(MORE_MARK), bottom, QUIET_INK, false);
-        }
+        scroller(graphics, pageScrollerX(), pageTop, bottom, pageLength, pageScroll);
         ItemStack hovered = ItemStack.EMPTY;
         int slotX = x;
         for (ItemStack stack : slots) {
@@ -665,7 +678,19 @@ public final class JournalScreen extends Screen {
     }
 
     private boolean unseen(Tab tab) {
-        return entries(tab).stream().anyMatch(entry -> entry.kind() != Kind.FOLD && !seen.contains(entry.key()));
+        return entries(tab).stream().anyMatch(this::unseen);
+    }
+
+    private boolean unseen(Entry entry) {
+        return news(entry) && !seen.contains(entry.key());
+    }
+
+    private static boolean news(Entry entry) {
+        return switch (entry.kind()) {
+            case DONE, FOLD, TALK -> false;
+            case LINES -> !entry.key().startsWith(CHAPTER + ":");
+            default -> true;
+        };
     }
 
     private void choose(Tab tab) {
@@ -710,9 +735,73 @@ public final class JournalScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0 && rows.size() * LINE > listBottom() - listTop() && onScroller(mouseX, mouseY, listScrollerX(), listTop(), listBottom())) {
+            dragging = true;
+            return mouseDragged(mouseX, mouseY, button, 0, 0);
+        }
+        if (button == 0 && pageLength > pageRoom && onScroller(mouseX, mouseY, pageScrollerX(), entryTop(chosen()), entryTop(chosen()) + pageRoom)) {
+            dragging = false;
+            return mouseDragged(mouseX, mouseY, button, 0, 0);
+        }
         boolean handled = super.mouseClicked(mouseX, mouseY, button);
         refresh();
         return handled;
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (dragging == null) {
+            return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        }
+        if (dragging) {
+            int room = listBottom() - listTop();
+            listScroll = scrolled(mouseY, listTop(), room, rows.size() * LINE);
+            place();
+        } else {
+            int pageTop = entryTop(chosen());
+            pageScroll = scrolled(mouseY, pageTop, pageRoom, pageLength);
+            placeThings();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        dragging = null;
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    private int listScrollerX() {
+        return listLeft() + pageWidth() - PAD / 2 - SCROLLER_WIDTH / 2;
+    }
+
+    private int pageScrollerX() {
+        return pageLeft() + pageWidth() - PAD / 2 - SCROLLER_WIDTH / 2;
+    }
+
+    private static boolean onScroller(double mouseX, double mouseY, int x, int top, int bottom) {
+        return mouseX >= x - 1 && mouseX < x + SCROLLER_WIDTH + 1 && mouseY >= top && mouseY < bottom;
+    }
+
+    private static int thumb(int room, int length) {
+        return Math.max(SCROLLER_LEAST, room * room / length);
+    }
+
+    private static int scrolled(double mouseY, int top, int room, int length) {
+        int thumb = thumb(room, length);
+        double along = Mth.clamp((mouseY - top - thumb / 2.0) / Math.max(1, room - thumb), 0, 1);
+        return (int) Math.round(along * (length - room));
+    }
+
+    private static void scroller(GuiGraphics graphics, int x, int top, int bottom, int length, int scroll) {
+        int room = bottom - top;
+        if (length <= room) {
+            return;
+        }
+        int thumb = thumb(room, length);
+        int y = top + Math.round((room - thumb) * scroll / (float) (length - room));
+        graphics.blitSprite(Stamp.PAGE_SCROLLER_TRACK, x, top, SCROLLER_WIDTH, room);
+        graphics.blitSprite(Stamp.PAGE_SCROLLER, x, y, SCROLLER_WIDTH, thumb);
     }
 
     @Override
@@ -805,7 +894,7 @@ public final class JournalScreen extends Screen {
             if (chosen || isHoveredOrFocused()) {
                 graphics.fill(getX(), getY() - 1, getRight(), getBottom() - 1, chosen ? CHOSEN : POINTED);
             }
-            if (entry.kind() != Kind.FOLD && !seen.contains(entry.key())) {
+            if (unseen(entry)) {
                 dot(graphics, getX() - DOT, getY() + 3);
             }
             int x = getX() + 2;

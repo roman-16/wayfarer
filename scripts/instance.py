@@ -18,7 +18,7 @@ CACHE = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "wayfar
 CLIENT_CONFIGS = {
     "dynamic_fps.json": {"enabled": False},
     "iris.properties": {"enableShaders": "false"},
-    "wayfarer-client.toml": {"talk_size": "NORMAL"},
+    "wayfarer-client.toml": {"hud_size": "SMALL"},
 }
 FAR_VIEW_CONFIG = {"client": {"advanced": {"graphics": {"quality": {"lodChunkRenderDistanceRadius": 64}}}}}
 CLIENT_OPTIONS = {

@@ -12,7 +12,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
@@ -29,16 +28,13 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
-import net.minecraft.world.level.levelgen.structure.placement.ConcentricRingsStructurePlacement;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 
 final class Ford {
     static final String NAME = "ford";
     static final String FAR = "ford_far";
-    static final String HALL = "marsh_hall";
     static final String OUTPOST = "ford_outpost";
     static final String WOUNDED = "corin";
     private static final String NEAR_BANK = "ford_near_bank";
@@ -46,7 +42,6 @@ final class Ford {
     private static final String CREEK = "ford_creek";
     private static final String WAY = "ford_way";
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final ResourceKey<Structure> MARSH = ResourceKey.create(Registries.STRUCTURE, Wayfarer.id("shrine/witch"));
     private static final TagKey<Structure> OUTPOSTS = TagKey.create(Registries.STRUCTURE, Wayfarer.id("owners/outpost"));
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_ford", Comparator.comparingLong(ChunkPos::toLong));
     private static final int STEP = 16;
@@ -85,9 +80,9 @@ final class Ford {
         ServerLevel level = Engine.overworld(server);
         BlockPos from = progress.place(Caravan.NAME).orElseGet(level::getSharedSpawnPos);
         Balance.Ford balance = Balance.get().ford();
-        Optional<BlockPos> hall = hall(level, from);
-        Vec3 way = hall.map(found -> new Vec3(found.getX() - from.getX(), 0, found.getZ() - from.getZ()).normalize()).orElseGet(() -> Caravan.way(server));
-        progress.place(HALL, hall.orElseGet(() -> BlockPos.containing(Vec3.atLowerCornerOf(from).add(way.scale(balance.searchBlocks() * 2)))));
+        Marsh.find(server);
+        BlockPos hall = progress.place(Marsh.HALL).orElseThrow();
+        Vec3 way = new Vec3(hall.getX() - from.getX(), 0, hall.getZ() - from.getZ()).normalize();
         Unseen.Heights heights = new Unseen.Heights(level);
         Vec3 start = Vec3.atLowerCornerOf(from);
         Banks banks = river(heights, level, start, way, balance, true)
@@ -107,16 +102,6 @@ final class Ford {
         progress.setDirty();
         LOGGER.info("the ford lies between {} and {}{}, found in {} ms", near, far, creek ? ", a creek the quest cuts" : ", across a river",
                 (System.nanoTime() - started) / NANOS_PER_MILLI);
-    }
-
-    private static Optional<BlockPos> hall(ServerLevel level, BlockPos from) {
-        return level.registryAccess().registryOrThrow(Registries.STRUCTURE_SET).stream()
-                .filter(set -> set.structures().stream().anyMatch(entry -> entry.structure().is(MARSH)))
-                .map(StructureSet::placement).filter(placement -> placement instanceof ConcentricRingsStructurePlacement)
-                .map(placement -> level.getChunkSource().getGeneratorState().getRingPositionsFor((ConcentricRingsStructurePlacement) placement))
-                .filter(positions -> positions != null).flatMap(List::stream)
-                .min(Comparator.comparingDouble(chunk -> chunk.getMiddleBlockPosition(from.getY()).distSqr(from)))
-                .map(chunk -> chunk.getMiddleBlockPosition(from.getY()));
     }
 
     @Nullable

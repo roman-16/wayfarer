@@ -1,8 +1,10 @@
 package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Library;
+import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.Sounds;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +21,7 @@ public final class Pages {
     public static void read(MinecraftServer server, String book) {
         if (Progress.of(server).read(book)) {
             Sounds.play(server, JOURNAL_ENTRY);
+            Library.get().book(book).ifPresent(found -> Notices.written(server, Component.translatable("wayfarer.notice.pages", found.title())));
             Journal.syncAll(server);
         }
     }

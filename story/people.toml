@@ -1,16 +1,34 @@
 [agna]
 color = "green"
-mornings = ["Eat something before you go. Then go on; we'll follow.", "Go. I'll keep the child from running after you."]
+mornings = [
+  "Eat something before you go. Then go on; we'll follow.",
+  "Go. I'll keep the child from running after you.",
+]
 name = "Agna"
-remarks = ["Eat something. You look like a ghost.", "If it hurts, show me. If it doesn't, walk."]
+remarks = [
+  "Eat something. You look like a ghost.",
+  "If it hurts, show me. If it doesn't, walk.",
+]
 unnamed = "A woman in green"
+welcomes = [
+  "Back in one piece. Sit, let me look at you.",
+  "There you are. Eat before you do anything else.",
+]
 
 [corin]
 color = "dark_aqua"
-mornings = ["Go on ahead. I'll keep to the back, where I'm no trouble.", "Mind the ridges today. Grey coats see a long way."]
+mornings = [
+  "Go on ahead. I'll keep to the back, where I'm no trouble.",
+  "Mind the ridges today. Grey coats see a long way.",
+]
 name = "Corin"
 remarks = ["Don't ask about the scar.", "I sleep with my boots on. Habit."]
 unnamed = "A wounded man"
+
+[fisher]
+color = "white"
+name = "The fisher"
+unnamed = "A fevered man"
 
 [gazebound]
 color = "gray"
@@ -25,10 +43,22 @@ road = true
 
 [hob]
 color = "red"
-mornings = ["We'll be packing a while yet. Go on ahead.", "Cart's loaded by noon. Walk on, we'll find your marks."]
+mornings = [
+  "We'll be packing a while yet. Go on ahead.",
+  "Cart's loaded by noon. Walk on, we'll find your marks.",
+]
 name = "Hob"
-remarks = ["Bring me that blade when it's dull.", "Don't mind me. I think better with a hammer in my hand."]
+remarks = [
+  "Bring me that blade when it's dull.",
+  "Don't mind me. I think better with a hammer in my hand.",
+]
 unnamed = "A big man"
+welcomes = ["There you are. Fire's going.", "You found us, then. Pot's on."]
+
+[maren]
+color = "gray"
+name = "Maren"
+unnamed = "A hooded woman"
 
 [pedlar]
 color = "white"
@@ -37,10 +67,33 @@ road = true
 
 [pip]
 color = "yellow"
-mornings = ["Can I walk with you today? ...Fine. Go on, then.", "Tamsin says we're slow. Go on, we'll catch up!"]
+mornings = [
+  "Can I walk with you today? ...Fine. Go on, then.",
+  "Tamsin says we're slow. Go on, we'll catch up!",
+]
 name = "Pip"
-remarks = ["Where are we going tomorrow?", "I practised walking quiet. Like you."]
+remarks = [
+  "Where are we going tomorrow?",
+  "I practised walking quiet. Like you.",
+]
 unnamed = "A child"
+welcomes = ["You're back! What did you see?", "I watched for you all day!"]
+
+[rue]
+cold = ["She turns her back on you.", "Thief. Off my porch."]
+color = "dark_green"
+name = "Rue"
+people = "witches"
+remarks = ["Mud and water, light-bearer. That's all there is out here."]
+unnamed = "An old woman"
+
+[sedge]
+cold = ["She spits in the water and won't look at you."]
+color = "green"
+name = "Sedge"
+people = "witches"
+remarks = ["Mind where you put your feet. The bog keeps what it gets."]
+unnamed = "A hard-faced woman"
 
 [stranger]
 color = "gold"
@@ -49,10 +102,28 @@ voice = true
 
 [tamsin]
 color = "aqua"
-mornings = ["We're packing up. Go on ahead; we'll follow your marks.", "Don't wait for us. Look for our smoke tonight."]
+mornings = [
+  "We're packing up. Go on ahead; we'll follow your marks.",
+  "Don't wait for us. Look for our smoke tonight.",
+]
 name = "Tamsin"
-remarks = ["We follow your marks. Don't make me regret it.", "The bell's still with us. So are we."]
+remarks = [
+  "We follow your marks. Don't make me regret it.",
+  "The bell's still with us. So are we.",
+]
 unnamed = "A grey-haired woman"
+welcomes = [
+  "There you are. Sit, and tell me what's ahead.",
+  "Good. Everyone's in.",
+]
+
+[tansy]
+cold = ["She won't meet your eyes. Maybe she's afraid to."]
+color = "light_purple"
+name = "Tansy"
+people = "witches"
+remarks = ["Don't look at me like that. I saw what I saw."]
+unnamed = "A young woman"
 
 [traveller]
 color = "white"

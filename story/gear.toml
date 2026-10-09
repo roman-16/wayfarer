@@ -224,10 +224,22 @@ who = "tamsin"
 
 [[rows.things]]
 good = "A tent for one, from his pack."
+have = [{ item = "nomadictents:tiny_yurt" }]
+id = "tiny_yurt"
+made = "It was his."
+name = "Tiny yurt"
+
+[[rows.things]]
+good = "More room inside."
 have = [{ item = "nomadictents:small_yurt" }]
 id = "small_yurt"
-made = "It was his."
+jei = "nomadictents:small_yurt"
+made = "Made at my bench."
+make = "Make a small yurt: three yurt sections around the tiny yurt in a crafting grid"
 name = "Small yurt"
+needs = [
+  { count = 3, item = "nomadictents:yurt_section", name = "yurt sections", where = "made at my bench from canvas, which is wool, and sticks" },
+]
 
 [[rows.things]]
 good = "Room for a friend."

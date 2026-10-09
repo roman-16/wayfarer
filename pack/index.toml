@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "c645f2ab77b8c7b578095edef517433bbcfa3fa54b1e506c8334433193666f38"
+hash = "3d5fba614e5c366f1fbe7f28a3d85e7a9356c4138e00b3e3577d12566916b7e3"
 
 [[files]]
 file = "config/DistantHorizons.toml"
@@ -26,11 +26,11 @@ hash = "955499a305a58e6fd61800e4a1296257b865ab590a3b5455c05bc557762d90f9"
 
 [[files]]
 file = "config/EndRemastered-NeoForge/Eyes/evil_eye.json"
-hash = "5c16b4b534c82d7b119b9bc03189d25d233d7409e0a9fc012b90a36f9de22e16"
+hash = "677219c1ad26528814ac66dcad8e00ab763402f42947691a1cfbfb1e0a064490"
 
 [[files]]
 file = "config/EndRemastered-NeoForge/Eyes/exotic_eye.json"
-hash = "fc0a8c39d47d3dd6f420c441841d02c852f824263e5f77e825588d72621c67e8"
+hash = "ac00fdcab86b1590059d3688b65d705c9e30d00d9850ca4cf05159760086252e"
 
 [[files]]
 file = "config/EndRemastered-NeoForge/Eyes/lost_eye.json"
@@ -77,8 +77,12 @@ file = "config/carryon-common.toml"
 hash = "00fd7cd1cc4dc55a9cedad03e7942c738011e90ceebc8604ba29888be52d02ee"
 
 [[files]]
+file = "config/combat_roll/client.json5"
+hash = "c1179a453927031df79775fcef10e00cfc8a1e5bd02f02273d8e6cbeb3a394af"
+
+[[files]]
 file = "config/defaultoptions/keybindings.txt"
-hash = "c831e807fc43a09432d4ec6b5a0094e2d5bbf357a2f1e8de98c0cd2298555cb4"
+hash = "4bea4a9a3578976390beddc38a09c0f703bc268ee46c87953393ca53aad17c5c"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
@@ -93,6 +97,10 @@ file = "config/enhancedcelestials2core/translations.json"
 hash = "24c34c89632454822eb2acc91d2b38b1a72fd370925c544c796396b2b174a205"
 
 [[files]]
+file = "config/euphoria_patcher/settings.toml"
+hash = "e9af80130348bd304138ae2d5ef3aff3d44c7d6b0784d89afdc86b01855e06a6"
+
+[[files]]
 file = "config/fml.toml"
 hash = "452d2618167568939426064cd6d2467e5e12f0751a88ff0a244cd036b5a96878"
 
@@ -105,12 +113,16 @@ file = "config/hordes-common.toml"
 hash = "056d2a67bc4f045aab0b4188198dd2dc88a54e3b5582a414ce7a65cb850fff8c"
 
 [[files]]
+file = "config/immersive-hotbar.json5"
+hash = "acb2355da3de8add82c5f5f075956a00306ce0344873b081eaef2ddfdfd91178"
+
+[[files]]
 file = "config/improvedmobs/client.toml"
 hash = "4ff0c1634c0549f0a91dfcc1f53ca780cadb6655302e195fb6ec2278d57b3948"
 
 [[files]]
 file = "config/improvedmobs/common.toml"
-hash = "054c496cf8ac08e4be1e2c140fefbbe8b76f011de59190402d7b4fbd52e292ff"
+hash = "7aff14a9a4821e4b01fae617c57ac1a066b33ffd5871fc797fc6105d0d56bfd8"
 
 [[files]]
 file = "config/improvedmobs/equipment.json"
@@ -130,7 +142,7 @@ hash = "55af2f0e56f3dbce98b158543e375f9cffd7c3233311f15c57fe66bc347bc4f4"
 
 [[files]]
 file = "config/jade/jade.json"
-hash = "188374a62e8fd7b081056b844337099354156512468076fd41e5ff347f574e09"
+hash = "e47ed5f9ce7f86575224e3475a6afa607ee8e60503293c82e0451feffade4dc4"
 
 [[files]]
 file = "config/jade/plugins.json"
@@ -142,7 +154,7 @@ hash = "cda675a661efe4de11d0292127b19f664dd08552b8b5cfcd65bef99f66ec9444"
 
 [[files]]
 file = "config/nohostilesaroundcampfire.json5"
-hash = "f65a32c4ca9612269ccbb5e51a2438c6787763f169010aa2ddf3b39dec008dbf"
+hash = "c3b7e627d0fb29a431270837dd9d9741ddb00acef7fce8b547d3dbdc7ee7ea37"
 
 [[files]]
 file = "config/nomadictents-common.toml"
@@ -155,6 +167,10 @@ hash = "7b5d6ac6e4cb2b089a84466dd6e1d721473dd55c4572616c7656e69ff55bb259"
 [[files]]
 file = "config/particular-common.toml"
 hash = "dc881dc9411bf619697efc02a5ab90141aef90301dafc36373737e04b38cec94"
+
+[[files]]
+file = "config/pickupnotifier/pickupnotifier-client.toml"
+hash = "1ff43fd6169b4d601700360fdf1a0a44f9a734a21c028c6357b3b03ec225842e"
 
 [[files]]
 file = "config/raritycore/RarityStyle.json"
@@ -186,7 +202,7 @@ hash = "b2ce9644c74ba7c36ce239b281ac1193e1db015f1546e5faaf17cf54b47d0d4c"
 
 [[files]]
 file = "config/sparsestructures.json5"
-hash = "318e890959d0185b2e775cfbdf014be0f55ca5d85f249b85cfb4a70d48a49f48"
+hash = "ddd34de558bc0cccf5ebb00ee806a944883122d67c7fe50253cf7941f605fba6"
 
 [[files]]
 file = "config/streamsreflowing-common.toml"
@@ -223,6 +239,10 @@ hash = "95c55f5a51e25dca37f887896486ba413b6ce5d1c1ce59c753be61a4ca894637"
 [[files]]
 file = "journeymap/config/6.0/journeymap.core.config"
 hash = "837f0638e39dc55451f22771880bff2a944e85e93f01cde18d7bd17525f08ef3"
+
+[[files]]
+file = "journeymap/config/6.0/journeymap.fullmap.config"
+hash = "94d2e424c6fedacda3be80099db29c8302d5207b24be8b90637cc30a38bf9085"
 
 [[files]]
 file = "journeymap/config/6.0/journeymap.minimap.config"
@@ -542,6 +562,11 @@ hash = "e612f6a7f4d6101651ec929647a42d18a6b321d596e29e2b7821ced0bbccdff9"
 metafile = true
 
 [[files]]
+file = "mods/immersive-hotbar.pw.toml"
+hash = "b4a0463eef9dc6370f2e9e6d08f266c93134f58e3f14b093aab8a2ea463772aa"
+metafile = true
+
+[[files]]
 file = "mods/immersive-ui.pw.toml"
 hash = "4a5e7ba2003a7c5df99905c4952c43e011f7b29a7fad9e20457a76a72e92fde2"
 metafile = true
@@ -599,6 +624,11 @@ metafile = true
 [[files]]
 file = "mods/kotlin-for-forge.pw.toml"
 hash = "712a69b3569a8055979de6eea262068535fe182dffb3833e53e5833e9cbf9766"
+metafile = true
+
+[[files]]
+file = "mods/lambdynamiclights.pw.toml"
+hash = "ebf0dae777cc19c354a662dc8144009dff7269b2d05624b4591fcb7de56fc14e"
 metafile = true
 
 [[files]]
@@ -714,6 +744,11 @@ metafile = true
 [[files]]
 file = "mods/particular-reforged.pw.toml"
 hash = "383d9891f716981f418f6e2a97a5eeeee43912975d90d9ab4ffbfe98a832e40e"
+metafile = true
+
+[[files]]
+file = "mods/pick-up-notifier.pw.toml"
+hash = "49c0bacf8e4cb3ade6c384ad379282f92d7fa3075f2affd8e3093feb685288dd"
 metafile = true
 
 [[files]]
