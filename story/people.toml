@@ -15,6 +15,39 @@ welcomes = [
   "There you are. Eat before you do anything else.",
 ]
 
+[bram]
+color = "green"
+name = "Bram"
+remarks = ["Davy's eaten. That's something. Go on."]
+unnamed = "A herder"
+
+[bram_son]
+color = "green"
+name = "Davy"
+remarks = ["Nothing looks at me now. Not even him."]
+unnamed = "A boy in grey"
+
+[brannoc]
+color = "gray"
+name = "Brannoc"
+remarks = ["Tell him I'm well."]
+unnamed = "A man in grey"
+
+[captive_1]
+color = "white"
+name = "A child"
+remarks = ["Are you one of them?"]
+
+[captive_2]
+color = "white"
+name = "A boy"
+remarks = ["I wasn't crying."]
+
+[captive_3]
+color = "white"
+name = "A girl"
+remarks = ["Is it far?"]
+
 [corin]
 color = "dark_aqua"
 mornings = [
@@ -25,16 +58,68 @@ name = "Corin"
 remarks = ["Don't ask about the scar.", "I sleep with my boots on. Habit."]
 unnamed = "A wounded man"
 
+[dicer]
+color = "white"
+name = "The dicer"
+road = true
+
+[drowned_1]
+color = "gray"
+name = "A pale figure"
+people = "drowned_1"
+unnamed = "A pale figure"
+
+[drowned_2]
+color = "gray"
+name = "A pale figure"
+people = "drowned_2"
+unnamed = "A pale figure"
+
+[drowned_3]
+color = "gray"
+name = "A pale figure"
+people = "drowned_3"
+unnamed = "A pale figure"
+
+[edda]
+color = "light_purple"
+name = "Edda"
+people = "edda"
+remarks = ["Mind the hull. It bites splinters.", "The sea's flat today. It lies."]
+unnamed = "A woman with a mallet"
+
 [fisher]
 color = "white"
 name = "The fisher"
 unnamed = "A fevered man"
+
+[founder]
+color = "white"
+name = "A man from the crossing"
+road = true
+
+[frost_elder]
+color = "gray"
+name = "An old woman in furs"
+unnamed = "An old woman in furs"
 
 [gazebound]
 color = "gray"
 name = "A Gazebound"
 road = true
 unnamed = "A man in grey"
+
+[heir]
+color = "gold"
+name = "The heir"
+remarks = ["Not here. Not yet.", "Lift it. I'll take it from you at the gate."]
+unnamed = "A man in fine grey"
+
+[heirs_sister]
+color = "gold"
+name = "Linnet"
+remarks = ["Tell him. That's all I ask."]
+unnamed = "A woman in ochre"
 
 [herder]
 color = "white"
@@ -55,15 +140,72 @@ remarks = [
 unnamed = "A big man"
 welcomes = ["There you are. Fire's going.", "You found us, then. Pot's on."]
 
+[ilse]
+color = "blue"
+mornings = [
+  "I'll walk with the wagons. My feet aren't used to this yet.",
+  "Go on. I'm writing down yesterday before I lose it.",
+]
+name = "Ilse"
+remarks = [
+  "Master Ansel copied that book three times. I can still smell the smoke on it.",
+  "Everything the Keepers wrote down, and none of them ever walked this far.",
+]
+unnamed = "A young woman in grey"
+welcomes = ["You're back. Tell me where you went. Slowly.", "I saved you a seat. And a page."]
+
 [maren]
 color = "gray"
 name = "Maren"
 unnamed = "A hooded woman"
 
+[maren_child]
+color = "gray"
+name = "A girl in grey"
+people = "maren_child"
+unnamed = "A girl in grey"
+
+[morwen]
+color = "aqua"
+name = "Morwen"
+people = "morwen"
+remarks = ["Sleep while the sun's up. That's when we do.", "The bay's been kind to us. Don't make me regret you."]
+unnamed = "A woman with a net"
+
+[nell]
+cold = ["Don't talk to me. You know why.", "You kept it. Live with that."]
+color = "white"
+mornings = ["I'll walk the ridge. Don't wait for me.", "Snow's coming off the high ground. Walk fast."]
+name = "Nell"
+people = "nell"
+remarks = ["Twenty winters. I can wait a few days more.", "Don't stand behind me."]
+unnamed = "A woman in furs"
+
+[newcomer]
+color = "white"
+name = "A face on the road"
+
+[novice]
+color = "gray"
+name = "Tobin"
+unnamed = "A boy in grey"
+
+[oldest_keeper]
+color = "dark_purple"
+name = "The oldest Keeper"
+remarks = ["Sit. You've walked far enough to be listened to."]
+unnamed = "An old woman in a Keeper's hood"
+
 [pedlar]
 color = "white"
 name = "The pedlar"
 road = true
+
+[pilgrim]
+color = "gray"
+name = "Hesper"
+remarks = ["They'll let us in. They have to."]
+unnamed = "A pilgrim with a staff"
 
 [pip]
 color = "yellow"
@@ -95,9 +237,24 @@ people = "witches"
 remarks = ["Mind where you put your feet. The bog keeps what it gets."]
 unnamed = "A hard-faced woman"
 
+[sefa]
+color = "yellow"
+name = "Sefa"
+people = "sefa"
+remarks = ["...and the sand lay still, and the worm went under the hill.", "Keep your heads covered. The sun out here eats fools first."]
+unnamed = "A singing woman"
+
+[settled_wayfarer]
+color = "gray"
+name = "Oswin"
+remarks = ["Sit. The fire's warm. That's all a man needs."]
+unnamed = "An old man by a cold hearth"
+
 [stranger]
 color = "gold"
-name = "The stranger"
+name = "Wend"
+renamed = { the_gaze = "The gaze" }
+unnamed = "The stranger"
 voice = true
 
 [tamsin]
@@ -125,7 +282,44 @@ people = "witches"
 remarks = ["Don't look at me like that. I saw what I saw."]
 unnamed = "A young woman"
 
+[tide_warden_1]
+color = "dark_aqua"
+name = "A warden"
+people = "tide_warden_1"
+remarks = ["...", "I don't know why. I just did."]
+unnamed = "A warden"
+
+[tide_warden_2]
+color = "dark_aqua"
+name = "A warden"
+people = "tide_warden_2"
+remarks = ["Don't ask me. My knees asked."]
+unnamed = "A warden"
+
 [traveller]
 color = "white"
 name = "The traveller"
 road = true
+
+[warden]
+color = "gold"
+name = "The warden"
+remarks = ["The ward holds. For now."]
+unnamed = "An old man in ochre"
+
+[wend_reading]
+color = "gold"
+name = "Wend"
+unnamed = "A man reading"
+
+[wil]
+color = "dark_aqua"
+name = "Wil"
+remarks = ["Mind the hoops. They roll."]
+unnamed = "An old cooper"
+
+[wren]
+color = "yellow"
+name = "Wren"
+remarks = ["I'm not tired. I'm not."]
+unnamed = "A feverish girl"

@@ -1,5 +1,7 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Engine;
+import io.github.roman16.wayfarer.story.Progress;
 import io.github.roman16.wayfarer.story.Sense;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Compass {
+    private static final String STONE_SIGHT = "stone_sight";
     private static final String COMPASS_MARK = "compass_mark";
     private static final String EMBER_FLARES = "ember_flares";
     private static final String EMBER_GUTTERS = "ember_gutters";
@@ -104,7 +107,7 @@ public final class Compass {
             return still(event.named() ? CompassPayload.Mode.COLD : CompassPayload.Mode.BARE, claimed, markers, shelter, false);
         }
         bearing.aim(event.aim());
-        boolean sight = claimed.size() >= Balance.get().sight().shards() && !Journey.slain(player.server);
+        boolean sight = Engine.running(player.server) && Progress.of(player.server).gift(STONE_SIGHT) && !Journey.over(player.server);
         if (Gaze.airborne(player)) {
             return still(CompassPayload.Mode.AIR, claimed, markers, shelter, sight);
         }

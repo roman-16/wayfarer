@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Bell;
 import io.github.roman16.wayfarer.story.Hold;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -116,9 +118,11 @@ public final class Fire {
             return;
         }
         int radius = Balance.get().fire().circleBlocks();
+        Optional<BlockPos> ringing = level.dimension() == Level.OVERWORLD ? Bell.camp(level.getServer()) : Optional.empty();
         Set<BlockPos> holding = new HashSet<>();
         for (ServerPlayer player : level.players()) {
-            Optional<BlockPos> fire = Nights.fearless(player) || Hold.active(player.server) ? Optional.empty() : nearest(level, player.position(), radius);
+            Optional<BlockPos> fire = Nights.fearless(player) || Hold.active(player.server) ? Optional.empty()
+                    : ringing.filter(camp -> inside(camp, player.position(), radius * 2)).or(() -> nearest(level, player.position(), radius));
             if (fire.isPresent()) {
                 SHELTERED.put(player.getUUID(), fire.get());
                 holding.add(fire.get());
@@ -127,12 +131,13 @@ public final class Fire {
             }
         }
         for (BlockPos fire : holding) {
-            for (Mob mob : level.getEntitiesOfClass(Mob.class, new AABB(fire).inflate(radius + 2), Fire::fears)) {
+            int circle = Bell.circle(level.getServer(), fire);
+            for (Mob mob : level.getEntitiesOfClass(Mob.class, new AABB(fire).inflate(circle + 2), Fire::fears)) {
                 if (mob.getTarget() instanceof ServerPlayer target && SHELTERED.containsKey(target.getUUID())) {
                     mob.setTarget(null);
                 }
-                if (inside(fire, mob.position(), radius)) {
-                    flee(mob, fire, radius);
+                if (inside(fire, mob.position(), circle)) {
+                    flee(mob, fire, circle);
                 }
             }
         }
@@ -180,7 +185,7 @@ public final class Fire {
     private static void rest(ServerPlayer player, BlockPos fire) {
         player.setData(Wayfarer.LAST_FIRE, GlobalPos.of(player.level().dimension(), fire.immutable()));
         NeoForge.EVENT_BUS.post(new RestEvent(player, fire));
-        if (Journey.awake(player.server) && !Journey.slain(player.server) && !player.hasEffect(Wayfarer.WARM) && !Talk.busy()) {
+        if (Journey.awake(player.server) && !Journey.over(player.server) && !player.hasEffect(Wayfarer.WARM) && !Talk.busy()) {
             player.addEffect(new MobEffectInstance(Wayfarer.WARM, untilTomorrowsDusk(player.server.overworld().getDayTime()), 0, true, false, true));
             Talk.tell(player, Component.translatable("wayfarer.fire.warm"));
             Firsts.first(player, "warm");

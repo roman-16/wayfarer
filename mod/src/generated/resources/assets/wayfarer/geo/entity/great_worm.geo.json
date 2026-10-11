@@ -1,0 +1,164 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": {
+        "identifier": "geometry.great_worm",
+        "texture_width": 256,
+        "texture_height": 128,
+        "visible_bounds_width": 4,
+        "visible_bounds_height": 6,
+        "visible_bounds_offset": [
+          0,
+          2.5,
+          0
+        ]
+      },
+      "bones": [
+        {
+          "name": "root",
+          "pivot": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "name": "segment0",
+          "parent": "root",
+          "pivot": [
+            0,
+            0,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -12.0,
+                0,
+                -12.0
+              ],
+              "size": [
+                24,
+                16,
+                24
+              ],
+              "uv": [
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "segment1",
+          "parent": "segment0",
+          "pivot": [
+            0,
+            16,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -10.0,
+                16,
+                -10.0
+              ],
+              "size": [
+                20,
+                16,
+                20
+              ],
+              "uv": [
+                96,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "segment2",
+          "parent": "segment1",
+          "pivot": [
+            0,
+            32,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -9.0,
+                32,
+                -9.0
+              ],
+              "size": [
+                18,
+                16,
+                18
+              ],
+              "uv": [
+                176,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "segment3",
+          "parent": "segment2",
+          "pivot": [
+            0,
+            48,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -8.0,
+                48,
+                -8.0
+              ],
+              "size": [
+                16,
+                16,
+                16
+              ],
+              "uv": [
+                0,
+                40
+              ]
+            }
+          ]
+        },
+        {
+          "name": "head",
+          "parent": "segment3",
+          "pivot": [
+            0,
+            64,
+            0
+          ],
+          "cubes": [
+            {
+              "origin": [
+                -8.0,
+                64,
+                -8.0
+              ],
+              "size": [
+                16,
+                20,
+                16
+              ],
+              "uv": [
+                64,
+                40
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

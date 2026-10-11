@@ -2,32 +2,24 @@ package io.github.roman16.wayfarer.story;
 
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
-import io.github.roman16.wayfarer.Wayfarer;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.SectionPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
@@ -42,7 +34,6 @@ final class Ford {
     private static final String CREEK = "ford_creek";
     private static final String WAY = "ford_way";
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final TagKey<Structure> OUTPOSTS = TagKey.create(Registries.STRUCTURE, Wayfarer.id("owners/outpost"));
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_ford", Comparator.comparingLong(ChunkPos::toLong));
     private static final int STEP = 16;
     private static final int SAMPLE = 4;
@@ -78,7 +69,7 @@ final class Ford {
         }
         long started = System.nanoTime();
         ServerLevel level = Engine.overworld(server);
-        BlockPos from = progress.place(Caravan.NAME).orElseGet(level::getSharedSpawnPos);
+        BlockPos from = Caravan.last(server);
         Balance.Ford balance = Balance.get().ford();
         Marsh.find(server);
         BlockPos hall = progress.place(Marsh.HALL).orElseThrow();
@@ -371,32 +362,11 @@ final class Ford {
                 }
             }
         }
-        ChunkGenerator generator = level.getChunkSource().getGenerator();
-        Holder<Biome> biome = level.getBiome(best);
-        List<Holder<Structure>> outposts = new ArrayList<>();
-        level.registryAccess().registryOrThrow(Registries.STRUCTURE).getTagOrEmpty(OUTPOSTS).forEach(outposts::add);
-        outposts.sort(Comparator.comparing((Holder<Structure> outpost) -> !outpost.value().biomes().contains(biome))
-                .thenComparing(outpost -> outpost.unwrapKey().map(key -> key.location().toString()).orElse("")));
-        StructureStart start = StructureStart.INVALID_START;
-        for (Holder<Structure> outpost : outposts) {
-            start = outpost.value().generate(level.registryAccess(), generator, generator.getBiomeSource(), level.getChunkSource().randomState(),
-                    level.getStructureManager(), level.getSeed(), new ChunkPos(best), 0, level, any -> true);
-            if (start.isValid()) {
-                break;
-            }
-        }
-        if (!start.isValid()) {
+        Optional<BoundingBox> raised = Errands.raise(level, Errands.kinds(level, Errands.OUTPOSTS), best).map(StructureStart::getBoundingBox);
+        if (raised.isEmpty()) {
             LOGGER.info("no Gazebound outpost would stand at {}", best);
-            return best;
         }
-        StructureStart standing = start;
-        BoundingBox box = standing.getBoundingBox();
-        ChunkPos.rangeClosed(new ChunkPos(SectionPos.blockToSectionCoord(box.minX()), SectionPos.blockToSectionCoord(box.minZ())),
-                new ChunkPos(SectionPos.blockToSectionCoord(box.maxX()), SectionPos.blockToSectionCoord(box.maxZ()))).forEach(chunk -> standing.placeInChunk(level,
-                        level.structureManager(), generator, level.getRandom(),
-                        new BoundingBox(chunk.getMinBlockX(), level.getMinBuildHeight(), chunk.getMinBlockZ(), chunk.getMaxBlockX(), level.getMaxBuildHeight(),
-                                chunk.getMaxBlockZ()), chunk));
-        return new BlockPos(box.getCenter().getX(), box.minY(), box.getCenter().getZ());
+        return raised.map(box -> new BlockPos(box.getCenter().getX(), box.minY(), box.getCenter().getZ())).orElse(best);
     }
 
     private static BlockPos surface(ServerLevel level, BlockPos at) {

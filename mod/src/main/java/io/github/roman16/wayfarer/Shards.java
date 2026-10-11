@@ -75,8 +75,8 @@ public final class Shards {
 
     private static Optional<String> gift(String eye) {
         return Story.get().quests().stream().flatMap(quest -> quest.steps().stream())
-                .filter(step -> step.kind().equals("shard") && step.text("eye").equals(eye) && step.spec().has("gift"))
-                .map(step -> step.text("gift")).findFirst();
+                .filter(step -> step.kind().equals("shard") && step.spec().has("gifts") && step.spec().getAsJsonObject("gifts").has(eye))
+                .map(step -> step.spec().getAsJsonObject("gifts").get(eye).getAsString()).findFirst();
     }
 
     public static void sync(ServerPlayer player) {

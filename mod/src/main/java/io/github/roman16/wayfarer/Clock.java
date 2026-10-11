@@ -45,7 +45,7 @@ public final class Clock {
     }
 
     public static boolean storied(MinecraftServer server) {
-        return server.getGameRules().getBoolean(Wayfarer.STORY) && !Journey.slain(server);
+        return server.getGameRules().getBoolean(Wayfarer.STORY) && !Journey.over(server);
     }
 
     public static void road(ServerLevel level) {
@@ -236,7 +236,7 @@ public final class Clock {
             return;
         }
         if (mode == Mode.EVENING) {
-            level.setDayTimePerTick(HOLD);
+            level.setDayTimePerTick(Nights.hard(level.getServer()) ? VANILLA : HOLD);
             return;
         }
         long left = target - level.getDayTime();

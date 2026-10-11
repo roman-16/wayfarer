@@ -1,10 +1,12 @@
 package io.github.roman16.wayfarer.story;
 
+import io.github.roman16.wayfarer.BookPayload;
 import io.github.roman16.wayfarer.Library;
 import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.Sounds;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -12,9 +14,12 @@ import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Pages {
     private static final String JOURNAL_ENTRY = "journal_entry";
+    private static final ResourceLocation OLD_SCRIPT = ResourceLocation.withDefaultNamespace("alt");
+    private static final String OLD_SCRIPT_GIFT = "old_script";
 
     private Pages() {}
 
@@ -22,8 +27,17 @@ public final class Pages {
         if (Progress.of(server).read(book)) {
             Sounds.play(server, JOURNAL_ENTRY);
             Library.get().book(book).ifPresent(found -> Notices.written(server, Component.translatable("wayfarer.notice.pages", found.title())));
+            if (Engine.running(server)) {
+                Engine.open(server);
+            }
             Journal.syncAll(server);
         }
+    }
+
+    static void openOldScript(ServerPlayer player, String book) {
+        boolean taught = Progress.of(player.server).gift(OLD_SCRIPT_GIFT);
+        Library.get().book(book).ifPresent(found -> PacketDistributor.sendToPlayer(player, new BookPayload(found.pages().stream()
+                .map(page -> (Component) Component.literal(page).withStyle(style -> taught ? style : style.withFont(OLD_SCRIPT))).toList())));
     }
 
     private static void read(MinecraftServer server, ItemStack stack) {

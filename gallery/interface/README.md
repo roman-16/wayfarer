@@ -30,64 +30,44 @@
 
 **Options in the stamp**, in the showroom
 
-| Scale 2 | Scale 3 | Scale 4 |
-| --- | --- | --- |
-| ![Scale 2](vanilla/options-2.png) | ![Scale 3](vanilla/options-3.png) | ![Scale 4](vanilla/options-4.png) |
+![Options in the stamp](vanilla/options.png)
 
 **Controls in the stamp**, in the showroom
 
-| Scale 2 | Scale 3 | Scale 4 |
-| --- | --- | --- |
-| ![Scale 2](vanilla/controls-2.png) | ![Scale 3](vanilla/controls-3.png) | ![Scale 4](vanilla/controls-4.png) |
+![Controls in the stamp](vanilla/controls.png)
 
 **Video Settings: Sodium's own screen in the pack's font**, in the showroom
 
-| Scale 2 | Scale 3 | Scale 4 |
-| --- | --- | --- |
-| ![Scale 2](vanilla/video-2.png) | ![Scale 3](vanilla/video-3.png) | ![Scale 4](vanilla/video-4.png) |
+![Video Settings: Sodium's own screen in the pack's font](vanilla/video.png)
 
 **The inventory, recoloured into the stamp: char, iron bevels, labels in bone**, in the story at `the_pull/the_fireside`
 
-| Scale 2 | Scale 3 | Scale 4 |
-| --- | --- | --- |
-| ![Scale 2](vanilla/inventory-2.png) | ![Scale 3](vanilla/inventory-3.png) | ![Scale 4](vanilla/inventory-4.png) |
+![The inventory, recoloured into the stamp: char, iron bevels, labels in bone](vanilla/inventory.png)
 
 **A chest, recoloured into the stamp**, in the showroom
 
-| Scale 2 | Scale 3 | Scale 4 |
-| --- | --- | --- |
-| ![Scale 2](vanilla/chest-2.png) | ![Scale 3](vanilla/chest-3.png) | ![Scale 4](vanilla/chest-4.png) |
+![A chest, recoloured into the stamp](vanilla/chest.png)
 
 **A furnace, recoloured into the stamp**, in the showroom
 
-| Scale 2 | Scale 3 | Scale 4 |
-| --- | --- | --- |
-| ![Scale 2](vanilla/furnace-2.png) | ![Scale 3](vanilla/furnace-3.png) | ![Scale 4](vanilla/furnace-4.png) |
+![A furnace, recoloured into the stamp](vanilla/furnace.png)
 
 ## Mods
 
 **Simple Voice Chat's menu, recoloured into the stamp**, in the showroom
 
-| Scale 2 | Scale 3 | Scale 4 |
-| --- | --- | --- |
-| ![Scale 2](mods/voice-chat-2.png) | ![Scale 3](mods/voice-chat-3.png) | ![Scale 4](mods/voice-chat-4.png) |
+![Simple Voice Chat's menu, recoloured into the stamp](mods/voice-chat.png)
 
 **A Sophisticated Backpacks backpack, recoloured into the stamp**, in the showroom
 
-| Scale 2 | Scale 3 | Scale 4 |
-| --- | --- | --- |
-| ![Scale 2](mods/backpack-2.png) | ![Scale 3](mods/backpack-3.png) | ![Scale 4](mods/backpack-4.png) |
+![A Sophisticated Backpacks backpack, recoloured into the stamp](mods/backpack.png)
 
 **JourneyMap's full map in its Victorian theme**, in the showroom
 
-| Scale 2 | Scale 3 | Scale 4 |
-| --- | --- | --- |
-| ![Scale 2](mods/map-2.png) | ![Scale 3](mods/map-3.png) | ![Scale 4](mods/map-4.png) |
+![JourneyMap's full map in its Victorian theme](mods/map.png)
 
 ## Vanilla
 
 **A book at a lectern, in the stamp's leather and parchment**, in the showroom
 
-| Scale 2 | Scale 3 | Scale 4 |
-| --- | --- | --- |
-| ![Scale 2](vanilla/book-2.png) | ![Scale 3](vanilla/book-3.png) | ![Scale 4](vanilla/book-4.png) |
+![A book at a lectern, in the stamp's leather and parchment](vanilla/book.png)

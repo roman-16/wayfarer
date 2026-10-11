@@ -9,24 +9,83 @@ import png
 import poses
 import stamp
 import tomllib
+from act3 import HOUSE as ACT3_HOUSE
+from act3 import airfield as act3_airfield
+from act3 import gatehouse as act3_gatehouse
+from act3 import graves as act3_graves
+from act3 import house as act3_house
+from act3 import positions as act3_positions
 from blocks import LAMP, Template, box, cuboid, text
 from camp import FIRE, GRAVE, HEADSTONE, OLD_SIZE, STRANGER, WAKE, camp, grave, old_camp
 from camp import SIZE as CAMP
 from caravan import caravan
-from creatures import creatures
+from creatures import deep, great_worm
 from diggers import entrance, layout, tunnels
 from entrances import ENTRANCES, Cover
+from errands import RUIN as ERRANDS_RUIN
+from errands import cairns as errands_cairns
+from errands import nest as errands_nest
+from errands import positions as errands_positions
+from errands import ruin as errands_ruin
 from first_camp import SIZE as FIRST_CAMP_SIZE
 from first_camp import first_camp
 from first_camp import positions as first_camp_positions
+from first_village import houses as first_village_houses
+from first_village import pit as first_village_pit
+from first_village import positions as first_village_positions
+from frost import HOUSE as FROST_HOUSE
+from frost import house as frost_house
+from frost import lake as frost_lake
+from frost import positions as frost_positions
 from halls import HALLS
+from locks import HOUSE as LOCKS_HOUSE
+from locks import house as locks_house
+from locks import positions as locks_positions
 from marsh import carved, hut, way
 from marsh import layout as marsh_layout
 from marsh import size as marsh_size
+from mine import deep as mine_deep
+from mine import head as mine_head
+from mine import positions as mine_positions
+from mine import stage as mine_stage
+from reading_house import house as reading_house
+from reading_house import positions as reading_house_positions
+from reading_house import vault as reading_house_vault
+from sand import CAMP as SAND_CAMP
+from sand import camp as sand_camp
+from sand import positions as sand_positions
 from scenes import SCENES
+from shipyard import WRECK as SHIPYARD_WRECK
+from shipyard import YARD as SHIPYARD
+from shipyard import positions as shipyard_positions
+from shipyard import rest as shipyard_rest
+from shipyard import wreck as shipyard_wreck
+from shipyard import yard as shipyard_yard
 from skins import skin
+from tide import VILLAGE as TIDE_VILLAGE
+from tide import positions as tide_positions
+from tide import village as tide_village
 from tollbridge import PIECES, plan, size, tower
-from townsfolk import riverfolk, roadfolk, townsfolk
+from townsfolk import (
+    act3folk,
+    brother_of,
+    coastfolk,
+    drownedfolk,
+    errandfolk,
+    founders,
+    frostfolk,
+    girl_in_grey,
+    heir_of,
+    keeperfolk,
+    riverfolk,
+    roadfolk,
+    sandfolk,
+    tidefolk,
+    townsfolk,
+)
+from wend_camp import SIZE as WEND_CAMP_SIZE
+from wend_camp import positions as wend_camp_positions
+from wend_camp import wend_camp
 
 ROOT = Path(__file__).resolve().parent.parent
 TICKS_PER_SECOND = 20
@@ -37,7 +96,6 @@ IRIS = ROOT / "pack/config/iris.properties"
 LANG = ROOT / "mod/src/main/resources/assets/wayfarer/lang/en_us.json"
 SPARSE_STRUCTURES = ROOT / "pack/config/sparsestructures.json5"
 CAMPFIRE_SPAWNS = ROOT / "pack/config/nohostilesaroundcampfire.json5"
-COMBAT_ROLL = ROOT / "pack/config/combat_roll/client.json5"
 CHUNK = 16
 CONTAINER_LOOT = "container_loot"
 CUT_LOOT = "cut"
@@ -416,7 +474,7 @@ def library(spec, eyes):
     return entries
 
 
-def old_camps():
+def old_camps(balance, written):
     old_camp().save(MAIN / "data/wayfarer/structure/old_camp/last_camp.nbt")
     for now, name in ((True, "now"), (False, "then")):
         camp = first_camp(now=now)
@@ -425,6 +483,50 @@ def old_camps():
             [FIRST_CAMP_SIZE, max(y for _, y, _ in camp.blocks) + 1, FIRST_CAMP_SIZE],
         )
     write_json(MAIN / "wayfarer/first_camp.json", first_camp_positions())
+    frost_house().save(MAIN / "data/wayfarer/structure/frost/house.nbt", list(FROST_HOUSE))
+    frost_lake().save(MAIN / "data/wayfarer/structure/frost/lake.nbt")
+    mine_head().save(MAIN / "data/wayfarer/structure/frost/mine_head.nbt")
+    mine_stage().save(MAIN / "data/wayfarer/structure/frost/mine_stage.nbt")
+    mine_deep(balance["forge"]["vein_lumps"]).save(MAIN / "data/wayfarer/structure/frost/mine_deep.nbt")
+    write_json(MAIN / "wayfarer/frost.json", frost_positions() | {"mine": mine_positions()})
+    reading_house().save(MAIN / "data/wayfarer/structure/reading_house/house.nbt")
+    reading_house_vault().save(MAIN / "data/wayfarer/structure/reading_house/vault.nbt")
+    write_json(MAIN / "wayfarer/reading_house.json", reading_house_positions())
+    for name, template in first_village_houses().items():
+        template.save(MAIN / f"data/wayfarer/structure/{name}.nbt")
+    first_village_pit().save(MAIN / "data/wayfarer/structure/first_village/pit.nbt")
+    write_json(MAIN / "wayfarer/first_village.json", first_village_positions())
+    shipyard, unfinished = shipyard_yard()
+    shipyard.save(MAIN / "data/wayfarer/structure/shipyard/yard.nbt", list(SHIPYARD))
+    shipyard_rest(unfinished).save(MAIN / "data/wayfarer/structure/shipyard/hull.nbt", list(SHIPYARD))
+    shipyard_wreck().save(MAIN / "data/wayfarer/structure/shipyard/wreck.nbt", list(SHIPYARD_WRECK))
+    write_json(MAIN / "wayfarer/shipyard.json", shipyard_positions())
+    for now, name in ((True, "now"), (False, "then")):
+        camp = wend_camp(now=now)
+        camp.save(MAIN / f"data/wayfarer/structure/wend_camp/{name}.nbt", [WEND_CAMP_SIZE, 6, WEND_CAMP_SIZE])
+    write_json(MAIN / "wayfarer/wend_camp.json", wend_camp_positions())
+    errands_ruin(next(book for book in written["found"] if book["id"] == "keepers/wend")).save(
+        MAIN / "data/wayfarer/structure/errands/seal.nbt", list(ERRANDS_RUIN)
+    )
+    errands_cairns().save(MAIN / "data/wayfarer/structure/errands/cairns.nbt")
+    errands_nest().save(MAIN / "data/wayfarer/structure/errands/nest.nbt")
+    act3_airfield().save(MAIN / "data/wayfarer/structure/act3/airfield.nbt")
+    act3_gatehouse().save(MAIN / "data/wayfarer/structure/act3/gatehouse.nbt")
+    act3_graves().save(MAIN / "data/wayfarer/structure/act3/graves.nbt")
+    act3_house(next(book for book in written["found"] if book["id"] == "wend/orders")).save(
+        MAIN / "data/wayfarer/structure/act3/house.nbt", list(ACT3_HOUSE)
+    )
+    write_json(MAIN / "wayfarer/act3.json", act3_positions())
+    write_json(MAIN / "wayfarer/errands.json", errands_positions())
+    locks_house(next(book for book in written["found"] if book["id"] == "jungle/prayer")).save(
+        MAIN / "data/wayfarer/structure/locks/house.nbt", list(LOCKS_HOUSE)
+    )
+    write_json(MAIN / "wayfarer/locks.json", locks_positions())
+    sand_camp().save(MAIN / "data/wayfarer/structure/sand/camp.nbt", list(SAND_CAMP))
+    write_json(MAIN / "wayfarer/sand.json", sand_positions())
+    tide, doors = tide_village()
+    tide.save(MAIN / "data/wayfarer/structure/tide/village.nbt", list(TIDE_VILLAGE))
+    write_json(MAIN / "wayfarer/tide.json", tide_positions(doors))
 
 
 def books(spec, eyes, entries):
@@ -662,23 +764,6 @@ def campfire_spawns(balance):
     )
 
 
-def combat_roll(style):
-    write_json(
-        COMBAT_ROLL,
-        {
-            "hudArrowColor": int(style["ramps"]["ember"][3].removeprefix("#"), 16),
-            "hudBackgroundOpacity": 100,
-            "keybindingLabelPosition": "LEFT",
-            "playCooldownFlash": True,
-            "playCooldownSound": True,
-            "playRollSound": True,
-            "showHUDInCreative": False,
-            "showKeybinding": True,
-            "showWhenFull": True,
-        },
-    )
-
-
 def owners(spec, balance):
     every = balance["structures"]["every_blocks"]
     kinds = {}
@@ -696,6 +781,10 @@ def owners(spec, balance):
             MAIN / f"data/wayfarer/tags/worldgen/structure/owners/{kind}.json",
             {"values": [{"id": structure, "required": False} for structure in spec[kind]]},
         )
+    write_json(
+        MAIN / "data/wayfarer/tags/worldgen/structure/taverns.json",
+        {"values": [{"id": structure, "required": False} for structure in spec["tavern"]]},
+    )
 
 
 def removals(spec):
@@ -786,7 +875,8 @@ def main():
     write_json(MAIN / "wayfarer/marsh.json", marsh_layout(layouts["witch"], carved(passage)))
     empty()
     caravan(MAIN)
-    creatures(DEV)
+    deep(MAIN)
+    great_worm(MAIN)
     showroom(eyes)
     textures(tomllib.loads((ROOT / "generator/textures.toml").read_text()))
     style = tomllib.loads((ROOT / "style.toml").read_text())
@@ -794,9 +884,28 @@ def main():
     display = faces["display"]
     stamp.write(MAIN, style, fonts.glyphs(display, fonts.TrueType((ROOT / "generator" / display["file"]).read_bytes())))
     write_json(MAIN / "wayfarer/style.json", style)
-    combat_roll(style)
     fonts.write(MAIN, faces, ROOT / "generator", write_json)
-    skins = tomllib.loads((ROOT / "generator/skins.toml").read_text()) | townsfolk() | roadfolk() | riverfolk()
+    skins = (
+        tomllib.loads((ROOT / "generator/skins.toml").read_text())
+        | townsfolk()
+        | founders()
+        | roadfolk()
+        | riverfolk()
+        | frostfolk()
+        | keeperfolk()
+        | coastfolk()
+        | tidefolk()
+        | drownedfolk()
+        | sandfolk()
+        | errandfolk()
+        | act3folk()
+    )
+    skins["maren_child"] = girl_in_grey(skins["maren"])
+    skins["heir"] = heir_of(skins["corin"])
+    skins["brannoc"] = brother_of(skins["corin"])
+    skins["wend_reading"] = skins["stranger"]
+    skins["newcomer"] = skins["road_07"]
+
     people(skins)
     poses.write(MAIN)
     story(
@@ -808,11 +917,12 @@ def main():
     write_json(DEV / "wayfarer/states.json", tomllib.loads((ROOT / "story/states.toml").read_text()))
     write_json(MAIN / "wayfarer/gear.json", tomllib.loads((ROOT / "story/gear.toml").read_text()))
     write_json(MAIN / "wayfarer/scenes.json", tomllib.loads((ROOT / "story/scenes.toml").read_text())["scenes"])
+    write_json(MAIN / "wayfarer/dice.json", tomllib.loads((ROOT / "story/dice.toml").read_text()))
     music = tomllib.loads((ROOT / "story/sounds.toml").read_text())
     sounds(music)
     credits(music, faces)
     shard_names(eyes)
-    old_camps()
+    old_camps(balance, written)
     books(written, eyes, library(written, eyes))
     shaders()
 

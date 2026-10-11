@@ -28,7 +28,7 @@ public final class Stillness {
     }
 
     public static boolean found(ServerPlayer player) {
-        return !Journey.slain(player.server) && player.getData(Wayfarer.STILLNESS).getInt(STAGE) == FOUND;
+        return !Journey.over(player.server) && player.getData(Wayfarer.STILLNESS).getInt(STAGE) == FOUND;
     }
 
     @SubscribeEvent
@@ -42,7 +42,7 @@ public final class Stillness {
         CompoundTag anchor = player.getData(Wayfarer.STILLNESS);
         long today = player.server.overworld().getDayTime() / TICKS_PER_DAY;
         int before = anchor.getInt(STAGE);
-        if (Journey.slain(player.server)) {
+        if (Journey.over(player.server)) {
             if (before != MOVING) {
                 player.setData(Wayfarer.STILLNESS, new CompoundTag());
             }

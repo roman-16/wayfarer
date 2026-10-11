@@ -465,7 +465,7 @@ What opens a new part of the game belongs to a quest or an act, never to a numbe
 | Unlock | Belongs to |
 |---|---|
 | The voice speaks | The first hall |
-| Ships | The quest that opens Act 2 |
+| Ships | 1.11 The Name, which ends Act 1 and turns the road to the sea |
 | Flight | The quest that opens Act 3 |
 | Seeing through stone | The quest where the Eye in the player first sees |
 | Monsters growing stronger | How brightly the player shines, stage by stage (S12), not each shard or day |

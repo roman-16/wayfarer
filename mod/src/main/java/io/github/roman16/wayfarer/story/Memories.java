@@ -7,6 +7,7 @@ import io.github.roman16.wayfarer.Heat;
 import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.NotchedLog;
 import io.github.roman16.wayfarer.Notices;
+import io.github.roman16.wayfarer.ShrinePedestalBlockEntity;
 import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
@@ -40,8 +41,15 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
@@ -49,9 +57,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -59,6 +70,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -70,9 +82,16 @@ public final class Memories {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final ResourceKey<net.minecraft.world.level.dimension.DimensionType> DREAM_TYPE =
             ResourceKey.create(Registries.DIMENSION_TYPE, Wayfarer.id("dream"));
+    private static final ResourceKey<net.minecraft.world.level.dimension.DimensionType> NIGHT_DREAM_TYPE =
+            ResourceKey.create(Registries.DIMENSION_TYPE, Wayfarer.id("dream_night"));
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_memory", Comparator.comparingLong(ChunkPos::toLong));
-    private static final int CHUNKS = 3;
+    static final String ROLE = Wayfarer.MODID + "_memory_";
+    private static final int CHUNKS = 4;
+    private static final int COPY_FLAGS = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE;
     private static final String OPENS = "memory_opens";
+    private static final String SHARD_TAKEN = "shard_taken";
+    private static final double MEETING_BLOCKS = 2;
+    private static final float CAST_VOLUME = 0.5f;
     private static final List<ResourceKey<Level>> LET_GO = new ArrayList<>();
     @Nullable
     private static Dream dream;
@@ -102,22 +121,26 @@ public final class Memories {
         private final Engine.Active active;
         private final ResourceKey<Level> key;
         private final ServerLevel level;
-        private final BlockPos hearth;
+        private final BlockPos stone;
         private final Map<UUID, Vec3> arrivals = new LinkedHashMap<>();
+        private Vec3 anchor;
         private final Map<UUID, Return> dreamers = new LinkedHashMap<>();
         private Phase phase = Phase.MAKING;
         private int step;
         private boolean entered;
         private boolean asked;
         private boolean finishing;
+        private boolean taken;
+        private boolean cast;
         private int fade;
 
-        private Dream(Story.Memory memory, @Nullable Engine.Active active, ResourceKey<Level> key, ServerLevel level, BlockPos hearth) {
+        private Dream(Story.Memory memory, @Nullable Engine.Active active, ResourceKey<Level> key, ServerLevel level, BlockPos stone) {
             this.memory = memory;
             this.active = active;
             this.key = key;
             this.level = level;
-            this.hearth = hearth;
+            this.stone = stone;
+            this.anchor = Vec3.atCenterOf(stone);
         }
 
         private Story.Step current() {
@@ -127,19 +150,38 @@ public final class Memories {
 
     public static boolean touch(ServerPlayer player, BlockPos pos, ItemStack stack) {
         MinecraftServer server = player.server;
-        if (dream != null && player.level() == dream.level && dream.phase == Phase.DREAMING) {
-            return lay(player, pos, stack);
+        if (dream != null && player.level() == dream.level) {
+            if (dream.phase == Phase.DREAMING) {
+                switch (dream.current().kind()) {
+                    case "lay" -> lay(player, pos, stack);
+                    case "take" -> take(player, pos);
+                    default -> {}
+                }
+            }
+            return true;
         }
         Optional<Engine.Active> active = Engine.main(server).filter(step -> step.step().kind().equals("memory"));
         if (active.isEmpty() || dream != null || player.level().dimension() != Level.OVERWORLD) {
             return false;
         }
         Story.Memory memory = Story.get().memory(active.get().step().text("memory"));
-        if (!FirstCamp.NAME.equals(memory.place()) || !FirstCamp.built(server) || !FirstCamp.world(server, "hearth").equals(pos)) {
+        if (stone(server, memory).filter(pos::equals).isEmpty()) {
             return false;
         }
-        begin(server, memory, active.get(), pos, pos);
+        begin(server, memory, active.get(), pos, player.blockPosition());
         return true;
+    }
+
+    static Optional<BlockPos> stone(MinecraftServer server, Story.Memory memory) {
+        return switch (memory.place()) {
+            case FirstCamp.NAME -> FirstCamp.built(server) ? Optional.of(FirstCamp.world(server, "hearth")) : Optional.empty();
+            case Frost.STONE -> Frost.built(server) ? Progress.of(server).place(Frost.STONE) : Optional.empty();
+            case FirstVillage.STONE -> FirstVillage.built(server) ? Progress.of(server).place(FirstVillage.STONE) : Optional.empty();
+            case WendCamp.NAME -> WendCamp.ready(server) ? Progress.of(server).place(WendCamp.NAME) : Optional.empty();
+            case SandSingers.LAIR -> SandSingers.ready(server, SandSingers.LAIR) ? Progress.of(server).place(SandSingers.LAIR) : Optional.empty();
+            case Act3Halls.MANSION_CHAIR, Prologue.LAST_CAMP -> Progress.of(server).place(memory.place());
+            default -> throw new IllegalStateException("memory " + memory.id() + " happens at " + memory.place() + ", where no memory can be dreamt");
+        };
     }
 
     public static void again(ServerPlayer player, String id) {
@@ -151,10 +193,7 @@ public final class Memories {
             return;
         }
         Story.Memory memory = Story.get().memory(id);
-        if (!FirstCamp.NAME.equals(memory.place()) || !FirstCamp.built(server)) {
-            return;
-        }
-        begin(server, memory, null, FirstCamp.world(server, "hearth"), fire.get());
+        stone(server, memory).ifPresent(stone -> begin(server, memory, null, stone, fire.get()));
     }
 
     static Optional<String> dreamt(Progress progress, Story.Quest quest) {
@@ -171,6 +210,39 @@ public final class Memories {
         int reach = Balance.get().memory().fireBlocks();
         return BlockPos.betweenClosedStream(at.offset(-reach, -reach, -reach), at.offset(reach, reach, reach))
                 .filter(pos -> CampfireBlock.isLitCampfire(level.getBlockState(pos))).map(BlockPos::immutable).min(Comparator.comparingDouble(at::distSqr));
+    }
+
+    static boolean copy(MinecraftServer server, ServerLevel dream, BoundingBox box) {
+        for (int cx = box.minX() >> 4; cx <= box.maxX() >> 4; cx++) {
+            for (int cz = box.minZ() >> 4; cz <= box.maxZ() >> 4; cz++) {
+                if (dream.getChunkSource().getChunkNow(cx, cz) == null) {
+                    return false;
+                }
+            }
+        }
+        ServerLevel world = Engine.overworld(server);
+        for (BlockPos pos : BlockPos.betweenClosed(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ())) {
+            BlockState state = world.getBlockState(pos);
+            if (!dream.getBlockState(pos).equals(state)) {
+                dream.setBlock(pos, state, COPY_FLAGS);
+            }
+            BlockEntity entity = world.getBlockEntity(pos);
+            BlockEntity copy = dream.getBlockEntity(pos);
+            if (entity != null && copy != null) {
+                copy.loadWithComponents(entity.saveWithFullMetadata(server.registryAccess()), server.registryAccess());
+                copy.setChanged();
+            }
+        }
+        return true;
+    }
+
+    private static boolean standable(BlockPos at) {
+        return dream.level.getBlockState(at).isAir() && dream.level.getBlockState(at.above()).isAir()
+                && dream.level.getBlockState(at.below()).isFaceSturdy(dream.level, at.below(), Direction.UP);
+    }
+
+    public static boolean dream(Level level) {
+        return level.dimensionTypeRegistration().is(DREAM_TYPE) || level.dimensionTypeRegistration().is(NIGHT_DREAM_TYPE);
     }
 
     public static boolean dreaming(Player player) {
@@ -201,13 +273,13 @@ public final class Memories {
                 Component.literal(dream.current().objective()), List.of(), List.of()));
     }
 
-    private static void begin(MinecraftServer server, Story.Memory memory, @Nullable Engine.Active active, BlockPos hearth, BlockPos gathering) {
+    private static void begin(MinecraftServer server, Story.Memory memory, @Nullable Engine.Active active, BlockPos stone, BlockPos gathering) {
         ServerLevel overworld = Engine.overworld(server);
         ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, Wayfarer.id("memory_" + Long.toHexString(System.currentTimeMillis())));
-        LevelStem stem = new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(DREAM_TYPE),
+        LevelStem stem = new LevelStem(server.registryAccess().registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(memory.night() ? NIGHT_DREAM_TYPE : DREAM_TYPE),
                 overworld.getChunkSource().getGenerator());
         ServerLevel level = InfiniverseAPI.get().getOrCreateLevel(server, key, () -> stem);
-        dream = new Dream(memory, active, key, level, hearth);
+        dream = new Dream(memory, active, key, level, stone);
         Balance.Memory balance = Balance.get().memory();
         for (ServerPlayer player : overworld.players()) {
             if (player.blockPosition().distSqr(gathering) <= (double) balance.togetherBlocks() * balance.togetherBlocks()) {
@@ -216,12 +288,12 @@ public final class Memories {
                 if (active == null && offset.horizontalDistance() > balance.arrivalBlocks()) {
                     offset = offset.multiply(1, 0, 1).normalize().scale(balance.arrivalBlocks());
                 }
-                dream.arrivals.put(player.getUUID(), Vec3.atBottomCenterOf(hearth.above()).add(offset.x, 0, offset.z));
+                dream.arrivals.put(player.getUUID(), Vec3.atBottomCenterOf(stone.above()).add(offset.x, 0, offset.z));
                 PacketDistributor.sendToPlayer(player, new Flash(true, Balance.get().memory().fadeTicks()));
                 Sounds.play(player, OPENS);
             }
         }
-        level.getChunkSource().addRegionTicket(TICKET, new ChunkPos(hearth), CHUNKS, new ChunkPos(hearth));
+        level.getChunkSource().addRegionTicket(TICKET, new ChunkPos(stone), CHUNKS, new ChunkPos(stone));
         LOGGER.info("memory {}: {} dream it together in {}", memory.id(), dream.dreamers.size(), key.location());
     }
 
@@ -244,15 +316,30 @@ public final class Memories {
     }
 
     private static void make(MinecraftServer server) {
-        ChunkPos centre = new ChunkPos(dream.hearth);
-        for (int x = centre.x - CHUNKS; x <= centre.x + CHUNKS; x++) {
-            for (int z = centre.z - CHUNKS; z <= centre.z + CHUNKS; z++) {
+        ChunkPos centre = new ChunkPos(dream.stone);
+        for (int x = centre.x - CHUNKS + 1; x < centre.x + CHUNKS; x++) {
+            for (int z = centre.z - CHUNKS + 1; z < centre.z + CHUNKS; z++) {
                 if (dream.level.getChunkSource().getChunkNow(x, z) == null) {
                     return;
                 }
             }
         }
-        Camps.build(dream.level, FirstCamp.THEN, FirstCamp.origin(server), FirstCamp.turn(server));
+        boolean built = switch (dream.memory.place()) {
+            case FirstCamp.NAME -> {
+                Camps.build(dream.level, FirstCamp.THEN, FirstCamp.origin(server), FirstCamp.turn(server));
+                yield true;
+            }
+            case Frost.STONE -> Frost.past(server, dream.level);
+            case FirstVillage.STONE -> FirstVillage.past(server, dream.level);
+            case WendCamp.NAME -> WendCamp.past(server, dream.level);
+            case SandSingers.LAIR -> SandSingers.past(server, dream.level);
+            case Act3Halls.MANSION_CHAIR -> Act3Halls.past(server, dream.level);
+            case Prologue.LAST_CAMP -> Prologue.past(server, dream.level);
+            default -> throw new IllegalStateException("memory " + dream.memory.id() + " happens at " + dream.memory.place() + ", which has no past to build");
+        };
+        if (!built) {
+            return;
+        }
         for (Map.Entry<UUID, Return> entry : dream.dreamers.entrySet()) {
             ServerPlayer player = server.getPlayerList().getPlayer(entry.getKey());
             if (player != null) {
@@ -293,7 +380,8 @@ public final class Memories {
         Story.Step step = dream.current();
         if (!dream.entered) {
             dream.entered = true;
-            Talk.say(quest(), Vec3.atCenterOf(dream.hearth), step.lines(), Talk.Placeholders.NONE);
+            enter(server, step);
+            Talk.say(quest(), dream.anchor, step.lines(), Talk.Placeholders.NONE);
             dream.dreamers.keySet().stream().map(server.getPlayerList()::getPlayer).filter(player -> player != null).forEach(Tasks::refresh);
         }
         if (step.kind().equals("talk")) {
@@ -308,8 +396,43 @@ public final class Memories {
         }
     }
 
+    private static void enter(MinecraftServer server, Story.Step step) {
+        Optional<ServerPlayer> leader = dreamers(server).stream().max(Comparator.comparingDouble(player -> Steps.horizontal(player.blockPosition(), dream.stone)));
+        leader.ifPresent(player -> dream.anchor = player.position());
+        List<Entity> bodies = new ArrayList<>();
+        dream.level.getAllEntities().forEach(bodies::add);
+        if (step.spec().has("stands")) {
+            bodies.stream().filter(body -> body.getTags().contains(ROLE + step.text("stands"))).forEach(body -> People.pose(body, "standing"));
+        }
+        if (step.spec().has("vanish")) {
+            bodies.stream().filter(body -> body.getTags().contains(ROLE + step.text("vanish"))).forEach(Entity::discard);
+        }
+        if (step.spec().has("meets")) {
+            leader.ifPresent(player -> meet(player, step.text("meets")));
+        }
+    }
+
+    private static void meet(ServerPlayer dreamer, String person) {
+        Vec3 ahead = dreamer.position().add(Vec3.directionFromRotation(0, dreamer.getYRot()).scale(MEETING_BLOCKS));
+        BlockPos level = BlockPos.containing(ahead.x, dreamer.getY(), ahead.z);
+        Vec3 at = standable(level) ? Vec3.atBottomCenterOf(level)
+                : new Vec3(ahead.x, dream.level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(ahead.x), Mth.floor(ahead.z)), ahead.z);
+        float yaw = dreamer.getYRot() + 180;
+        if (People.skinned(person)) {
+            People.spawn(dream.level, person, at, yaw, "standing", ROLE + person);
+            return;
+        }
+        Mob grey = EntityType.VINDICATOR.create(dream.level);
+        grey.moveTo(at.x, at.y, at.z, yaw, 0);
+        grey.setYHeadRot(yaw);
+        grey.setNoAi(true);
+        grey.setInvulnerable(true);
+        grey.addTag(ROLE + person);
+        dream.level.addFreshEntity(grey);
+    }
+
     private static boolean done(MinecraftServer server, Story.Step step) {
-        BlockPos fire = dream.hearth.above();
+        BlockPos fire = dream.stone.above();
         BlockState state = dream.level.getBlockState(fire);
         return switch (step.kind()) {
             case "gather" -> dreamers(server).stream().anyMatch(player -> carried(player, step) >= step.number("count"));
@@ -318,6 +441,13 @@ public final class Memories {
             case "cook" -> dream.level.getBlockEntity(fire) instanceof CampfireBlockEntity campfire
                     && campfire.getItems().stream().anyMatch(stack -> !stack.isEmpty());
             case "notch" -> FirstCamp.pine(server).stream().anyMatch(pos -> dream.level.getBlockState(pos).is(Wayfarer.NOTCHED_SPRUCE_LOG));
+            case "take" -> dream.taken;
+            case "cast" -> dream.cast;
+            case "climb" -> dreamers(server).stream().anyMatch(player -> player.getY() >= Engine.at(server, step.text("at")).getY() - 1
+                    && dream.level.canSeeSky(player.blockPosition()));
+            case "away" -> dreamers(server).stream().anyMatch(player -> Steps.horizontal(player.blockPosition(), dream.stone)
+                    >= (double) Places.leaving(dream.memory.place()) * Places.leaving(dream.memory.place()));
+            case "say" -> !Talk.busy();
             default -> throw new IllegalStateException("memory " + dream.memory.id() + "/" + step.id() + " is of the kind " + step.kind()
                     + ", which a memory does not know");
         };
@@ -328,32 +458,41 @@ public final class Memories {
         return player.getInventory().items.stream().filter(stack -> stack.is(tag)).mapToInt(ItemStack::getCount).sum();
     }
 
-    private static boolean lay(ServerPlayer player, BlockPos pos, ItemStack stack) {
+    private static void lay(ServerPlayer player, BlockPos pos, ItemStack stack) {
         Story.Step step = dream.current();
-        if (!step.kind().equals("lay") || !pos.equals(dream.hearth) || !stack.is(ItemTags.LOGS) || stack.getCount() < step.number("count")
-                || !dream.level.getBlockState(pos.above()).isAir()) {
-            return false;
+        if (!pos.equals(dream.stone) || !stack.is(ItemTags.LOGS) || stack.getCount() < step.number("count") || !dream.level.getBlockState(pos.above()).isAir()) {
+            return;
         }
         stack.shrink(step.number("count"));
         dream.level.setBlock(pos.above(), Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, false), Block.UPDATE_ALL);
-        return true;
+    }
+
+    private static void take(ServerPlayer player, BlockPos pos) {
+        if (!pos.equals(dream.stone) || dream.taken || !(dream.level.getBlockEntity(pos) instanceof ShrinePedestalBlockEntity pedestal)) {
+            return;
+        }
+        pedestal.hold(Optional.empty());
+        dream.taken = true;
+        Sounds.play(player, SHARD_TAKEN);
     }
 
     private static void ask() {
         Story.Step step = dream.current();
-        Talk.ask(new Talk.Offer(quest(), null, step.choices(), Vec3.atCenterOf(dream.hearth), (player, choice) -> {
+        Talk.ask(new Talk.Offer(quest(), null, step.choices(), dream.anchor, (player, choice) -> {
             if (choice.refused() != null) {
-                Talk.say(quest(), Vec3.atCenterOf(dream.hearth), new Story.Line(null, choice.refused()));
+                Talk.say(quest(), dream.anchor, new Story.Line(null, choice.refused()));
                 Talk.then(Memories::ask);
                 return;
             }
-            Talk.say(quest(), Vec3.atCenterOf(dream.hearth), new Story.Line(null, choice.reply()));
+            if (!choice.reply().isEmpty()) {
+                Talk.say(quest(), dream.anchor, new Story.Line(null, choice.reply()));
+            }
             next(player.server);
         }));
     }
 
     private static void next(MinecraftServer server) {
-        Talk.say(quest(), Vec3.atCenterOf(dream.hearth), dream.current().done(), Talk.Placeholders.NONE);
+        Talk.say(quest(), dream.anchor, dream.current().done(), Talk.Placeholders.NONE);
         if (dream.step + 1 < dream.memory.steps().size()) {
             dream.step++;
             dream.entered = false;
@@ -386,7 +525,7 @@ public final class Memories {
     }
 
     private static void end(MinecraftServer server) {
-        dream.level.getChunkSource().removeRegionTicket(TICKET, new ChunkPos(dream.hearth), CHUNKS, new ChunkPos(dream.hearth));
+        dream.level.getChunkSource().removeRegionTicket(TICKET, new ChunkPos(dream.stone), CHUNKS, new ChunkPos(dream.stone));
         InfiniverseAPI.get().markDimensionForUnregistration(server, dream.key);
         LET_GO.add(dream.key);
         LOGGER.info("memory {}: woke, {} let go", dream.memory.id(), dream.key.location());
@@ -416,6 +555,21 @@ public final class Memories {
     }
 
     @SubscribeEvent
+    public static void onUse(PlayerInteractEvent.RightClickBlock event) {
+        if (dream == null || event.getLevel() != dream.level || dream.phase != Phase.DREAMING || !dream.current().kind().equals("cast")
+                || !(event.getEntity() instanceof ServerPlayer player) || !event.getPos().equals(Engine.at(player.server, dream.current().text("at")))) {
+            return;
+        }
+        event.setCanceled(true);
+        event.setCancellationResult(InteractionResult.SUCCESS);
+        if (!dream.cast) {
+            dream.cast = true;
+            dream.level.playSound(null, event.getPos(), SoundEvents.LAVA_POP, SoundSource.BLOCKS, 1, 1);
+            dream.level.playSound(null, event.getPos(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, CAST_VOLUME, 1);
+        }
+    }
+
+    @SubscribeEvent
     public static void onToolModification(BlockEvent.BlockToolModificationEvent event) {
         if (dream == null || event.getItemAbility() != ItemAbilities.AXE_STRIP || event.getLevel() != dream.level
                 || !dream.current().kind().equals("notch") || !FirstCamp.pine(dream.level.getServer()).contains(event.getPos())) {
@@ -428,7 +582,7 @@ public final class Memories {
 
     @SubscribeEvent
     public static void onPotentialSpawns(LevelEvent.PotentialSpawns event) {
-        if (event.getLevel() instanceof ServerLevel level && level.dimensionTypeRegistration().is(DREAM_TYPE)) {
+        if (event.getLevel() instanceof ServerLevel level && dream(level)) {
             event.setCanceled(true);
         }
     }

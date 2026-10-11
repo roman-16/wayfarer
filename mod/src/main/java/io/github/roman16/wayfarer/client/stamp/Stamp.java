@@ -105,6 +105,10 @@ public final class Stamp {
         return graphics.drawString(font, display(text), x, y + DISPLAY_RISE, color, shadow);
     }
 
+    public static int title(GuiGraphics graphics, Font font, FormattedCharSequence text, int x, int y, int color, boolean shadow) {
+        return graphics.drawString(font, text, x, y + DISPLAY_RISE, color, shadow);
+    }
+
     public static ResourceLocation icon(String name, boolean ink) {
         return sprite("icon/" + name + (ink ? "_ink" : ""));
     }

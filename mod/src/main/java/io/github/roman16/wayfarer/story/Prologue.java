@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Block;
@@ -38,6 +39,12 @@ public final class Prologue {
         BlockPos spawn = origin.offset(wake.get(0).getAsInt(), wake.get(1).getAsInt(), wake.get(2).getAsInt());
         level.setDefaultSpawnPos(spawn, wake.get(3).getAsFloat());
         level.getGameRules().getRule(GameRules.RULE_SPAWN_RADIUS).set(0, level.getServer());
+    }
+
+    static boolean past(MinecraftServer server, ServerLevel dream) {
+        BlockPos origin = Engine.at(server, LAST_CAMP).subtract(vector(CAMP.get().getAsJsonArray("fire")));
+        dream.getStructureManager().getOrCreate(Wayfarer.id(LAST_CAMP)).placeInWorld(dream, origin, origin, new StructurePlaceSettings(), dream.random, Block.UPDATE_CLIENTS);
+        return true;
     }
 
     static BlockPos grave(ServerLevel level) {

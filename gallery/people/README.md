@@ -405,3 +405,255 @@
 | Front | Three quarters |
 | --- | --- |
 | ![Front](the-living/standing-weight/front.jpg) | ![Three quarters](the-living/standing-weight/three-quarters.jpg) |
+
+## The caravan
+
+**Bram the herder**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](the-caravan/bram/front.jpg) | ![Side](the-caravan/bram/side.jpg) | ![Three quarters](the-caravan/bram/three-quarters.jpg) |
+
+**Davy, Bram's son, in Gazebound grey**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](the-caravan/bram-son/front.jpg) | ![Side](the-caravan/bram-son/side.jpg) | ![Three quarters](the-caravan/bram-son/three-quarters.jpg) |
+
+## The road
+
+**Brannoc, Corin's brother**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](the-road/brannoc/front.jpg) | ![Side](the-road/brannoc/side.jpg) | ![Three quarters](the-road/brannoc/three-quarters.jpg) |
+
+## Act three
+
+**A child in the Gazebound house's cage (1 of 3)**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-three/captive-1/front.jpg) | ![Side](act-three/captive-1/side.jpg) | ![Three quarters](act-three/captive-1/three-quarters.jpg) |
+
+**A child in the Gazebound house's cage (2 of 3)**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-three/captive-2/front.jpg) | ![Side](act-three/captive-2/side.jpg) | ![Three quarters](act-three/captive-2/three-quarters.jpg) |
+
+**A child in the Gazebound house's cage (3 of 3)**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-three/captive-3/front.jpg) | ![Side](act-three/captive-3/side.jpg) | ![Three quarters](act-three/captive-3/three-quarters.jpg) |
+
+## Act two
+
+**One of the Drowned City's last people (1 of 3)**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-two/drowned-1/front.jpg) | ![Side](act-two/drowned-1/side.jpg) | ![Three quarters](act-two/drowned-1/three-quarters.jpg) |
+
+**One of the Drowned City's last people (2 of 3)**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-two/drowned-2/front.jpg) | ![Side](act-two/drowned-2/side.jpg) | ![Three quarters](act-two/drowned-2/three-quarters.jpg) |
+
+**One of the Drowned City's last people (3 of 3)**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-two/drowned-3/front.jpg) | ![Side](act-two/drowned-3/side.jpg) | ![Three quarters](act-two/drowned-3/three-quarters.jpg) |
+
+**Edda the shipwright**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-two/edda/front.jpg) | ![Side](act-two/edda/side.jpg) | ![Three quarters](act-two/edda/three-quarters.jpg) |
+
+## Act one
+
+**The fevered fisher**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-one/fisher/front.jpg) | ![Side](act-one/fisher/side.jpg) | ![Three quarters](act-one/fisher/three-quarters.jpg) |
+
+**A founder of the First Village**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-one/founder/front.jpg) | ![Side](act-one/founder/side.jpg) | ![Three quarters](act-one/founder/three-quarters.jpg) |
+
+**The Frost Walkers' elder**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-one/frost-elder/front.jpg) | ![Side](act-one/frost-elder/side.jpg) | ![Three quarters](act-one/frost-elder/three-quarters.jpg) |
+
+## Act two
+
+**The Grass King's heir**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-two/heir/front.jpg) | ![Side](act-two/heir/side.jpg) | ![Three quarters](act-two/heir/three-quarters.jpg) |
+
+## The caravan
+
+**Ilse, the Keeper's apprentice**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](the-caravan/ilse/front.jpg) | ![Side](the-caravan/ilse/side.jpg) | ![Three quarters](the-caravan/ilse/three-quarters.jpg) |
+
+## Act one
+
+**Maren, the hooded woman**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-one/maren/front.jpg) | ![Side](act-one/maren/side.jpg) | ![Three quarters](act-one/maren/three-quarters.jpg) |
+
+## Act three
+
+**Maren as a girl in grey**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-three/maren-child/front.jpg) | ![Side](act-three/maren-child/side.jpg) | ![Three quarters](act-three/maren-child/three-quarters.jpg) |
+
+## Act two
+
+**Morwen of the Tide Folk**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-two/morwen/front.jpg) | ![Side](act-two/morwen/side.jpg) | ![Three quarters](act-two/morwen/three-quarters.jpg) |
+
+## The caravan
+
+**Nell, the last Frost Walker**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](the-caravan/nell/front.jpg) | ![Side](the-caravan/nell/side.jpg) | ![Three quarters](the-caravan/nell/three-quarters.jpg) |
+
+## Act two
+
+**Tobin, the novice who died in the rite**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-two/novice/front.jpg) | ![Side](act-two/novice/side.jpg) | ![Three quarters](act-two/novice/three-quarters.jpg) |
+
+## Act three
+
+**The oldest Keeper**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-three/oldest-keeper/front.jpg) | ![Side](act-three/oldest-keeper/side.jpg) | ![Three quarters](act-three/oldest-keeper/three-quarters.jpg) |
+
+**Hesper the pilgrim**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-three/pilgrim/front.jpg) | ![Side](act-three/pilgrim/side.jpg) | ![Three quarters](act-three/pilgrim/three-quarters.jpg) |
+
+## Act one
+
+**Rue of the Marsh Mothers**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-one/rue/front.jpg) | ![Side](act-one/rue/side.jpg) | ![Three quarters](act-one/rue/three-quarters.jpg) |
+
+**Sedge of the Marsh Mothers**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-one/sedge/front.jpg) | ![Side](act-one/sedge/side.jpg) | ![Three quarters](act-one/sedge/three-quarters.jpg) |
+
+## Act two
+
+**Sefa of the Sand Singers**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-two/sefa/front.jpg) | ![Side](act-two/sefa/side.jpg) | ![Three quarters](act-two/sefa/three-quarters.jpg) |
+
+**Oswin, the Wayfarer who settled**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-two/settled-wayfarer/front.jpg) | ![Side](act-two/settled-wayfarer/side.jpg) | ![Three quarters](act-two/settled-wayfarer/three-quarters.jpg) |
+
+## Act one
+
+**Tansy of the Marsh Mothers**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-one/tansy/front.jpg) | ![Side](act-one/tansy/side.jpg) | ![Three quarters](act-one/tansy/three-quarters.jpg) |
+
+## Act two
+
+**A warden of the Tide Folk (1 of 2)**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-two/tide-warden-1/front.jpg) | ![Side](act-two/tide-warden-1/side.jpg) | ![Three quarters](act-two/tide-warden-1/three-quarters.jpg) |
+
+**A warden of the Tide Folk (2 of 2)**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-two/tide-warden-2/front.jpg) | ![Side](act-two/tide-warden-2/side.jpg) | ![Three quarters](act-two/tide-warden-2/three-quarters.jpg) |
+
+## Act three
+
+**The Grass Kingdom's warden**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-three/warden/front.jpg) | ![Side](act-three/warden/side.jpg) | ![Three quarters](act-three/warden/three-quarters.jpg) |
+
+**Wend at the Scribes' lectern**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-three/wend-reading/front.jpg) | ![Side](act-three/wend-reading/side.jpg) | ![Three quarters](act-three/wend-reading/three-quarters.jpg) |
+
+## The caravan
+
+**Wil the cooper**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](the-caravan/wil/front.jpg) | ![Side](the-caravan/wil/side.jpg) | ![Three quarters](the-caravan/wil/three-quarters.jpg) |
+
+## Act two
+
+**Wren, the potter's girl**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-two/wren/front.jpg) | ![Side](act-two/wren/side.jpg) | ![Three quarters](act-two/wren/three-quarters.jpg) |
+
+## Act three
+
+**Linnet, the heir's sister**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-three/heirs-sister/front.jpg) | ![Side](act-three/heirs-sister/side.jpg) | ![Three quarters](act-three/heirs-sister/three-quarters.jpg) |
+
+**The face on the road in his last memory**, in the showroom
+
+| Front | Side | Three quarters |
+| --- | --- | --- |
+| ![Front](act-three/newcomer/front.jpg) | ![Side](act-three/newcomer/side.jpg) | ![Three quarters](act-three/newcomer/three-quarters.jpg) |

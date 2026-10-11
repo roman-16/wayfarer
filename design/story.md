@@ -293,7 +293,7 @@ Memory   Twenty winters ago. The hall is lit, the shard on its pedestal. Your ha
          An old woman grabs your arm: "Please." (Spare her - you can't; he didn't.)
          You bury the shard in the ice of a frozen lake, a day east, and mark the place.
 Now      You're back. Nell is watching you. "Well? Who was it?"
-         Tell her it was Wend  /  Say you didn't see
+         The man whose fire I carry.  /  I didn't see his face.
          [Main] Under the Ice - the frozen lake, a day east
 ```
 
@@ -337,6 +337,7 @@ A cut gets a reason in the lore only where the player notices it by trying: a se
 | The gaze's creatures walk in rain and storms, and the sea's beast comes by day | Under cloud and rain the sky is dark enough for the gaze's creatures to dare the day, as in shade | A Tide Folk fisher |
 | The Flare fills again at a fire | The Flare spends the ember's light at once, and a fire, the ember's kin, fills it again | The Scribes' books |
 | Only a smith can put an enchanted book on | The old enchantments are written in the smiths' script, and only a smith who knows it can set one into steel | Hob: "Pretty book. Useless in your hands." |
+| Frost iron comes only from a smith | It comes from deep stone the silence chilled, and no common fire melts it: only a smith's forge, working through a night | Raw frost iron's tooltip, and Hob |
 | Kill a Gazebound captain, and they raid the next village | His band takes his death out on the next village the killer walks into, to show the settled what sheltering a Wayfarer costs | Corin |
 | A waystone of one's own | The first Wayfarers each carried a small stone cut from their waystones: set down and touched, it holds the place, and the road folds back to it; like everything, it is carried | Ilse, or an old Wayfarer's journal |
 
@@ -957,7 +958,7 @@ What 1.5 asks of the systems, at their minimum:
 
 1. **The pull.** Tracked, the ember pulls, by feeling, as in 1.1 and 1.4. The quest puts the Frost Walkers' winter house down about 2,048 blocks ahead on the home land, at the edge of the nearest snow, and their hall about 512 blocks further into it for 1.7, both out of sight (M40).
 2. **The tracks.** About 256 blocks before the house, fresh tracks cross the way: a hunter's prints, a drag mark, a little blood. The narrator: "Someone hunts here. Fresh." The task panel says to follow them. They glow under Trail-sight and under the held-up ember, bend with the land for about 256 blocks, and drifts of powder snow lie beside them.
-3. **The house.** The tracks end at a long, low house of stone and hide, half buried in snow, a deer hung by its door. An arrow thuds into the snow at the player's feet; a woman in furs stands on the roof, bow drawn.
+3. **The house.** The tracks end at a long, low house of stone and hide, half buried in snow, a goat she dragged home lying dead by its door. An arrow thuds into the snow at the player's feet; a woman in furs stands on the roof, bow drawn.
 4. **The talk.** She is Nell, the last of her people. She sees the ember and lowers the bow a little: her people's calling stone answers only to a Wayfarer's fire, and she has waited twenty winters for one. She wants a name: who emptied the hall.
 5. **The snowshoes.** She asks the player to wake the stone in her people's hall, up in the deep snow, and gives each of the team a pair of her people's snowshoes for the way ("My mother made them."): Artifacts' snowshoes, renamed and with a tooltip, worn in the charms' feet slot, walking on powder snow and faster on snow. They fill the snowshoes tier of the Gear page's "Against the cold" (M18) and are the cold gate's key (M11): the way to the hall crosses drifts of powder snow. Artifacts' own copies leave every loot table, so snowshoes come only from the Frost Walkers. "I'll be at the stair at first light. Don't make me wait."
 6. **The caravan.** Make for the caravan, which camps on the last ground without snow. At the fire Tamsin speaks of the woman in furs; if Corin is with the team, he keeps to the edge of the light: "She looked at my coat for a long time."
@@ -1001,6 +1002,899 @@ What 1.6 asks of the systems, at their minimum:
 | People (D12) | Nell, a hunter in furs with a bow, drawn with the `art` skill |
 
 **Why:** Red Dead Redemption 2 opens with a search through snow that follows a trail to the person at its end, and The Witcher 3's senses make such a trail readable without a marker, so the Diggers' Trail-sight pays off on the first real trail. A woman who has waited twenty winters for a Wayfarer's fire gives the team a reason to wake her hall that is hers, not the voice's, and keeps 1.7's twist for the memory; snowshoes from her mother's hands make the cold gate's key a gift from a person.
+
+### S32 1.7 The Theft and 1.8 Under the Ice in detail
+
+1.7 and 1.8 step by step, as the slice builds them with 1.6 (`slice.md`, step 9). Every line is a placeholder for the `lore` skill.
+
+**1.7 The Theft** (the Frost Walkers' hall; Investigate, then a memory). It opens once 1.6 is done; tracked, the compass marks the hall exactly, since Nell told the team where it is (D6).
+
+1. **The stair.** At first light Nell waits at the top of a stair cut into the snow, about 512 blocks into the drifts the snowshoes carry the team over: "You came. Down, then."
+2. **The hall.** Stone under the snow, rimed with frost. Her people lie in rows along its walls, laid out by a girl twenty winters ago and never buried. The calling stone stands empty. The lectern holds the Frost Walkers' last account (S26), written by one of them that night. Held up, the ember shows grey-coat boot prints frozen into the floor.
+3. **The memory** (M8). Touching the calling stone makes the ember flare, and the player wakes there twenty winters ago as Wend: older than at his first camp, in Gazebound grey, his ember still burning. The theft's theme plays (S25), chosen by ear with the `sound` skill.
+   - **Lift the shard and get out.** The Frost Walkers wake and come up the stair behind him; he runs down through the snow, and the grey coats waiting below go up past him. The player never kills a Frost Walker: the grey coats do the killing behind him.
+   - **The refused choice.** An old woman catches his arm at the foot of the stair: "Please." The answer "Give it back." is refused: "You can't. He didn't."
+   - **The lie.** A grey coat: "Well, finder?" He, in the narrator's words, since nobody has named him: "Empty. Someone beat us to it."
+   - **The ice.** He walks a day east to a frozen lake, cuts the ice, sinks the shard and cuts his Wayfarer's sign into a stone on the shore.
+4. **Who was it.** The player wakes at the stone. Nell: "Well? Who was it?" The answers, the first of whoever stands with her deciding, her reply remembered for C3, W3 and the breaking: "The man whose fire I carry." ("Then it's mine to bury, when we find it. Not his.") or "I didn't see his face." The voice speaks once, after the team leaves the hall: "I was their finder. I led them up that stair. I won't ask you to lie for me."
+
+**1.8 Under the Ice** (a frozen lake a day east; Reach, then a hard decision). It opens once 1.7 is done; the compass marks the lake exactly, since the player saw it in the memory.
+
+1. **The lake.** A day east, on the home land and turning along the coast if east leads to sea (M40), the quest puts down a frozen lake in the snow, out of sight, with his Wayfarer's sign cut into a stone on its shore. Nell walks with the team, or meets them at the lake if they are slow.
+2. **The ice.** Under the sign a dark shape lies frozen deep in the ice. Cutting down to it takes a pickaxe; the hole fills with freezing water, and the cold bites hard while anyone is in it.
+3. **The shard** lies on a flat stone at the bottom. Before anyone takes it, Nell: "Give it to me. I'll bury it with them." The voice: "Keep it. Every one you leave behind is one the gaze can take back."
+4. **The decision**, a hard one (M3), two thirds of the team voting: keep it, for Dark-sight and a step of shine, and Nell stays at the caravan but hates the player; or give it to her, for no gift and no shine, and she leaves in peace for her people's burial (C3 The Burial opens) and may stand beside the player at the gate (`systems.md`, the decisions' table).
+5. Make for the caravan.
+
+```text
+Hall     Rows of the dead along the walls, rimed with frost. The calling stone is empty.
+         <Nell> Someone took it. I want a name.
+Memory   Twenty winters ago. The hall is lit, the shard on its stone. Your sleeve is grey.
+         [Memory] The Theft - lift the shard and get out
+         An old woman grabs your arm: "Please."   Give it back.   (You can't. He didn't.)
+         <A grey coat> Well, finder?   You: "Empty. Someone beat us to it."
+         You sink the shard in the ice of a lake a day east, and cut your sign into a stone.
+Now      <Nell> Well? Who was it?   The man whose fire I carry.  /  I didn't see his face.
+Road     <The stranger> I was their finder. I led them up that stair. I won't ask you to lie for me.
+Lake     <Nell> Give it to me. I'll bury it with them.
+         <The stranger> Keep it. Every one you leave behind is one the gaze can take back.
+           Keep it  /  Give it to Nell   (two thirds of the team)
+```
+
+**Edge cases.**
+- In a team, everyone within 32 blocks of the stone dreams the theft; anyone farther dreams it later at a fire from the journal (M8).
+- Dying in the memory wakes the player at the stone, and the memory runs again from its start.
+- Logging out mid-memory: the player comes back where they stood when it began.
+- A team that comes days late: Nell still waits at the stair, and at the lake.
+- No frozen lake near: the quest makes one, as 1.4 makes a bog.
+- Drowning or freezing in the hole: the grave stands on the shore, and the shard waits.
+- Breaking the shard's stone before the vote: the shard cannot be taken until the vote is done.
+- Logging out mid-vote keeps the player's vote; a player who joins late can vote (M3).
+- Untracking either quest: the hall, the lake and Nell stay, and nothing moves on until it is tracked again (D6).
+
+**Where it lives.** The journal: People, Nell's entry grows with what she was told; The Story So Far; At the Fire, both talks; Pages, the Frost Walkers' last account. Dark-sight on the Shards page for a team that kept it.
+
+What 1.7 and 1.8 ask of the systems, at their minimum:
+
+| System | For 1.7 and 1.8 |
+|---|---|
+| The memories (M8) | A second memory: the hall as it was, a flight as its task, people who wake and pursue, a refused choice, a spoken lie |
+| Places (M40) | The hall with its dead and its stair, the frozen lake with its sign, made where none lies |
+| Conversations (M3) | An ordinary answer remembered for later quests; a hard decision voted by two thirds |
+| Gifts (S6) | Dark-sight |
+| Sound (S25) | The theft's theme |
+
+**Why:** A flight in which others do the killing shows Wend complicit without making the player a murderer, and a lie to his masters with a shard sunk where only he knew keeps him a man who did harm while half keeping his oath, which the voice can claim. Answers without his name keep the act's last reveal for Maren at 1.11; a voice that owns the theft keeps the player's trust until 1.9 cracks it, so the shard's choice at the lake is made between a grieving woman and a voice still believed.
+
+### S33 C7 The Lost Ore in detail
+
+C7 step by step, as the slice builds it with 1.6 to 1.8 (`slice.md`, step 9). Every line is a placeholder for the `lore` skill. It opens once 1.8 is done, either way, and waits in the journal until it is tracked (D6); its summary says Hob wants a word about the Frost Walkers' metal, and tracked, his talk starts once he is in sight at the caravan.
+
+1. **Hob's word.** At the caravan Hob talks: while Nell camped with them he asked to see her knife, twenty winters old and not a fleck of rust on it. "Frost iron, she called it." His hammer cracked the night Tollbridge burned, and since then he mends only halfway (the forge, below); with that metal he would make a hammer worth the name, and then make anything whole. They would have dug it close to their hall: "You don't haul ore through deep snow." The compass marks the hall exactly, since the team has been there.
+2. **The cart.** By the hall's stair an old ore cart lies half buried in the snow, still loaded with dark stone, its iron bands bright as new, and under the snow two grooves are worn into the rock a cart's width apart. Both are clues, glowing under the held-up ember (M10); finding both ends the step: "Carts went this way for a long time."
+3. **The ruts.** Held up, the ember shows the ruts running on into the snow, a laid trail like Nell's (S31), about 256 blocks, bending with the land; the compass pulls only by feeling. They end at a frame of black timber over a square shaft, a heap of dark spoil beside it, a windlass with its rope long rotted, cold air breathing up out of the dark. The quest put the mine down out of sight when C7 opened, on flat snowy ground about 256 blocks from the stair, away from the winter house; in a wood it stands in a clearing the Frost Walkers cut for its timber, stumps under the snow.
+4. **Down.** Ladders go down the shaft in stages of 8 blocks, each ending on a timber landing, so a fall costs at most a stage, to a drift in the deep stone well below the surface. The mine is dark (M11, the darkness gate): torches, or Dark-sight for a team that kept the third shard. The drift ends in a broken wall that is not rock: dressed black stone, older than anything above, sculk grown over it like moss, sensors that twitch at a footstep. The Frost Walkers dug up to the edge of an Ancient City, and stopped. In the deep stone round the break, pale metal glints.
+5. **The ore.** Frost iron ore, 64 blocks of it in the stone round the break, the only frost iron in Act 1. It wants an iron pickaxe: a lesser pick does not move it, and the first try says so. The shriekers in the old wall shriek at noise, but nothing comes: they cannot call the Warden, which belongs to W4 (M37). The first shriek in the mine gets one line: "Something behind the old wall shrieks. The sound goes down and down, a long way. Nothing answers." The step ends when anyone carries four lumps.
+6. **The hammer.** Make for the caravan; at the fire, hold the four lumps out to Hob. "That's it. Cold as the day it came out of the rock. Leave it with me tonight." The quest is done: from then on Hob restores worn gear fully, forges frost iron and sets enchanted books (the forge, below). The next morning: "There. A hammer worth the name. Bring me anything."
+
+```text
+Fire     <Hob> That Frost Walker let me look at her knife once. Twenty winters old. Not a fleck of rust.
+         <Hob> Frost iron, she called it. Find me where they dug it, and I'll make a hammer worth the name.
+Hall     An old ore cart, half buried in the snow, still loaded with dark stone. Its iron bands are as bright as the day they were forged.
+         Two grooves worn into the rock, a cart's width apart. Carts went this way for a long time.
+Mine     A frame of black timber over a shaft. Cold air breathes up out of the dark.
+         The drift ends in a wall that isn't rock. Pale metal glints in the stone round the break.
+         Something behind the old wall shrieks. The sound goes down and down, a long way. Nothing answers.
+Fire     <Hob> That's it. Cold as the day it came out of the rock. Leave it with me tonight.
+Morning  <Hob> There. A hammer worth the name. Bring me anything.
+```
+
+**The forge.** Hob's work is overnight (M18): right-clicking him at the caravan, in the evening or while it packs in the morning, with a piece of gear in hand hands it over, and what is in the other hand says what for.
+
+| In the other hand | Before C7 | After C7 |
+|---|---|---|
+| Nothing | Mended to half, as far as a fire's kit mends: "Best I can do with this hammer." A piece already past half: "That's better than this hammer leaves it." | Restored fully |
+| Frost iron | "Not till I've a hammer for it." | Made again in frost iron: a sword, pickaxe, axe, shovel, hoe or any piece of armour, for as many lumps as vanilla's iron one takes ingots (two for a sword, eight for a chestplate); the handle, the name and what is written in it stay |
+| An enchanted book | "Pretty book. Useless in your hands. And in mine, with this hammer." | The book is set into the piece, if it takes what is written there |
+
+- He takes the piece and the frost iron or the book at once: "Leave it with me tonight." From the next dawn, the overworld's day count moving past the day it was left (M18's finding), right-clicking him hands back everything of that player's that is ready: "Here. Mind the edge." Before dawn: "Not till morning."
+- Each player's work is their own: Hob hands it only to the player who left it, which settles M18's open finding.
+- Raw frost iron does not melt in a furnace ("No common fire melts it. It wants a smith's forge, and a night."), and Silent Gear makes no part of it at the bench, so frost iron gear comes only from Hob. A repair kit filled with it mends frost iron gear at a fire, as any kit does.
+- Frost iron wears about half again as long as iron and often takes no wear at all, digs and cuts a little better, and is the first metal from the deep places a player holds (`lore.md`).
+
+**Edge cases.**
+- Walking off the ruts: the mine still stands at their end, and the compass keeps the pull.
+- Untracking C7: the cart, the ruts and the mine stay; ore dug meanwhile still counts once it is tracked again (D6).
+- A lesser pick on the ore: it does not move, and "It won't come out for that. It wants iron at least." No ore is lost to a wrong pick.
+- Falling in the shaft: a stage at most, since every 8 blocks ends on a landing. Dying in the mine: the grave stands where the player fell, as everywhere (M34).
+- Monsters spawn in the dark mine as in any cave; the mine has no ward, since the ore is dug.
+- Noise at the old wall: the shriekers shriek, and nothing comes; no Darkness either, since a shrieker that cannot call gives none.
+- Nell gone (given the shard) or hostile (kept it): Hob's word is about her knife from the evenings she camped with them, so it holds either way.
+- In a team: anyone's four lumps finish the dig; whoever holds them out to Hob finishes the quest; everyone digs their own ore for their own work after.
+- Logging out or dying with work at Hob's: he keeps it, and hands it over whenever that player next comes to him after dawn.
+- A full inventory when collecting: he hands over what fits and keeps the rest: "Make room. I'll not drop it in the mud."
+- A piece he cannot make again (a bow, a shield, a trident, a found blade): "That's not mine to make again." He mends it instead, with nothing in the other hand.
+- Too few lumps: "A pickaxe wants three. You've two." A piece already of frost iron: "It's frost iron already." A book whose writing the piece will not take: "It won't take what's in that book."
+- The vein dug out: no more frost iron in Act 1; Act 2's tiers come from its own places (M18).
+- A team that never tracks C7: Hob mends to half for the whole act, and his word waits in the journal.
+
+**Alone and in a team.** A player alone plays it the same; nothing in it waits for a second player.
+
+**Where it lives.** The journal: The Story So Far; At the Fire, Hob's word; People, Hob's entry grows ("His hammer cracked the night Tollbridge burned."); Words, frost iron. The Gear page: the Frost Walkers' metal in weapons, tools and armour, with what it needs, where it lies and who makes it (M18), trackable, its task saying how to hand it to Hob. Raw frost iron's tooltip says no common fire melts it.
+
+**Sound.** No story piece plays: evening 5's are the bell's and the Name's (S25). The mine sounds as vanilla's deep dark does: the sculk's clicks and the shriek.
+
+What C7 asks of the systems, at their minimum:
+
+| System | For C7 |
+|---|---|
+| The quest engine (M1) | A step that ends when anyone carries enough of a thing, and one that ends when it is held out to a person |
+| Places (M40) | The mine put down out of sight near the hall, its ruts laid as a trail, its shaft down to the deep stone, the City's broken wall with the vein |
+| Gear (M18) | Frost iron as a Silent Gear material and its ore; the overnight forge, per player; the Frost Walkers' metal on the Gear page |
+| Gates (M11) | The darkness gate in the mine; the iron pick for the ore |
+
+**Why:** The Witcher 3's master armourer quest and Kingdom Come's smiths make the best gear a person's work, fetched from a place with its own story, and the Frost Walkers' metal dug at the edge of an Ancient City ties Act 1's best tier to the lore's rule that ore lies in old mines and the Cities' deep stone. A hammer cracked the night the town burned gives the turn a reason the player can see, keeps Hob's own "bring it to me" true from the prologue on, and makes his full mending a thing the team earned for him. Shriekers that shriek and call nothing let the deep dark show itself in Act 1 while keeping the Warden for W4.
+
+### S34 1.9 The Keeper's Apprentice in detail
+
+1.9 step by step, as the slice builds it (`slice.md`, step 10). Every line is a placeholder for the `lore` skill. It opens once the act's third hall is done, whichever way it ended (S3), and waits in the journal until it is tracked (D6).
+
+1. **The smoke.** On the way back from the third hall the wind brings it: "The wind turns and brings smoke with it, thick and bitter. Something big is burning, far off." The quest opens at the caravan that evening, and once it is tracked the compass marks where the smoke comes from. The quest puts the Keepers' reading-house down out of sight about 1,024 blocks along the way, on the most even rise near there on the home land, out of snow and swamp where it can be (M40). Its fires still smoulder; in a wood it stands in a clearing the Keepers kept around it.
+2. **The ashes.** A house of grey stone, roofless and blackened, the ash in it still warm. Three things to find, glowing under the held-up ember (M10):
+   - an old man in a grey robe at the door, his chest opened like the dead of Tollbridge, ink on his fingers;
+   - on a lectern that did not burn, a scorched book whose pages are in letters the player has never seen: the marks that crawl over an enchanting table (the knowledge gate, M11). Clicking it opens the book in those marks, which nobody but a Keeper can read;
+   - fresh footprints in the ash, one person's, going down the stair in the tower.
+   When all three are found, a voice comes up the stair: "Stay where you are. I have a knife."
+3. **Ilse.** A young woman in a grey robe comes up the stair with an armful of books and a knife she does not know how to hold. She sees the ember and lowers it. She is Ilse, the apprentice of the old Keeper at the door, Ansel. This was the Keepers' reading-house, where Wayfarers came to learn the oath in the old script, and none came in his lifetime. Three nights ago the night came for it; he sent her down to the vault with the oldest books and held the door. The answers are an ordinary choice, the first of whoever stands with her deciding: "I'm sorry." / "Who are the Keepers?" / "What does that book say?"
+4. **The Breaking.** She sits on the stair and reads the scorched book aloud, turning the marks into words: the Eye in the portal between the worlds, the dragon watching everything that stood still through it, the survivors of the deep cities tearing it out and the dragon going blind; the Eye that fire, sea and hammer could only break; the twelve shards sent to twelve peoples, and the ones who carried its light walking, never to settle, never to shine, everything carried. Then the last line of it: "A frame takes whatever of the Eye you bring it. One shard or twelve, it closes the same." The voice, at once: "All twelve, or none of this matters." It is the first time the voice and a written record disagree (S4). Ilse looks up: she heard nothing. "Who were you listening to?" The answers, remembered for C5 and 3.6: "The man whose ember I carry." ("He's dead, and he talks to you. ...Master Ansel would have had a page on that. I'll look.") / "Nobody." ("...All right.").
+5. **Ilse joins.** "He guarded these his whole life and never saw a single place they talk about. Take me with you. I can carry books, and I can read them." She joins the caravan with her tent of books (S10). The Breaking lands in every player's journal under Pages, in plain words, as she read it.
+6. **The caravan.** Make for their smoke. At the fire Tamsin: "A Keeper's girl. My grandmother said the Keepers were a story for children." Ilse: "So did mine. Then she sent me to them." Pip asks her to read something, anything.
+
+```text
+Road     The wind turns and brings smoke with it, thick and bitter. Something big is burning, far off.
+House    A house of grey stone, roofless and black. The ash in it is still warm.
+         A scorched book on a lectern. The letters are like nothing you know: the marks on an enchanting table.
+         A voice from the tower stair: "Stay where you are. I have a knife."
+         <Ilse> A lit ember. Master Ansel waited sixty years for someone to carry one through that door.
+         <Ilse> ...A frame takes whatever of the Eye you bring it. One shard or twelve, it closes the same.
+         <The stranger> All twelve, or none of this matters.
+         <Ilse> Who were you listening to?   The man whose ember I carry.  /  Nobody.
+Fire     <Tamsin> A Keeper's girl. My grandmother said the Keepers were a story for children.
+```
+
+**Edge cases.**
+- Walking off, or untracking the quest: the house, its smoke and Ilse in the vault stay; nothing moves on until it is tracked again (D6).
+- Arriving at night: the house is warded (M11), so nothing spawns inside and nothing in it breaks; the fires keep the ash lit.
+- Breaking the shelves or the lectern: the ward holds, "The ward holds".
+- Striking Ilse: she is a person, so blows do nothing outside a hold.
+- Dying on the way: the grave stands where the player fell, as everywhere (M34).
+- In a team: anyone may find the three things; whoever stands with Ilse first starts her talk, and the first answer decides; teammates far away read it in chat. Everyone gets The Breaking in Pages, a teammate who joins later too.
+- A team that never reads the lectern: the clue still counts once it is clicked, and Ilse reads it aloud regardless, so nobody misses the breaking.
+- No even ground near the way out of snow: the house stands on the lowest even ground near there, in the snow if it must; its smoke shows all the same.
+
+**Alone and in a team.** A player alone plays it the same; nothing in it waits for a second player.
+
+**Where it lives.** The journal: People, "Ilse, a Keeper's apprentice. Her master died holding the door of their reading-house. She reads the old script."; Words, the Keepers and the old script; Pages, The Breaking; The Story So Far; At the Fire, Ilse's talk. The scorched book can be read again at the lectern while the house stands.
+
+**Sound.** No story piece plays: evening 5's are the bell's and the Name's (S25). The house sounds of its smouldering fires and the wind.
+
+**Looks.** The reading-house is the Keepers' own architecture in small, the far ring's strongholds' stone bricks, mossy and cracked, with a squat tower over the vault stair, its timber roof burnt away to a few black rafters, its shelves charred and emptied, ash drifted on the floor. The vault below is the one room the fire did not reach: full shelves, candles, Ilse's bedroll. Ansel and Ilse wear the Keepers' undyed grey wool; Ilse's is an apprentice's, sooted at the hem, ink on her fingers and a satchel of books over her shoulder. All drawn with the `art` skill.
+
+What 1.9 asks of the systems, at their minimum:
+
+| System | For 1.9 |
+|---|---|
+| The quest engine (M1) | A step that adds a book to the journal's Pages |
+| Places (M40) | The reading-house put down on high ground ahead, its fires smoking, warded |
+| Clues (M10) | A clue that opens a book, in the old script |
+| Gates (M11) | Knowledge: the old script, which only Ilse reads |
+| The caravan (M5) | Ilse's tent of books |
+
+**Why:** The Witcher 3's scholars and Mass Effect's Liara join as the one person who can read what the hero cannot, which makes the knowledge gate a person rather than a lock. Letting the Keepers' own record say a frame takes whatever it is brought, and the voice answer it at once, gives the act its first crack without anyone accusing it, so the player starts doubting on their own, and the answer Ilse asks for is the first time they choose whether to keep the voice a secret.
+
+### S35 W8 Captains' Pages, Act 1
+
+W8's first part, as the slice builds it with 1.9 (`slice.md`, step 10). Every line is a placeholder for the `lore` skill. Acts 2 and 3 add their own pages to it, the last in Wend's own hand, when they are built.
+
+1. **The pages.** The chests of the Gazebound's outposts (M13's outposts, which are theirs) hold the heir's written orders, copied by his captains: Captain's Pages. Act 1 has three. The first chest a team opens in an outpost holds the next page nobody has found yet, in order, wherever the outpost stands, and that outpost's other chests hold the same page again, since every player opens their own loot (Lootr); once all three are out, new outposts hold none. Reaching the chest means getting into the outpost, past its Gazebound, and taking it is a raid as M37 has it: killing a captain brings their revenge on the next village (M15's raid rule).
+2. **Reading.** A page is a book: right-clicked, it opens, and it lands in the journal's Pages for the whole team (D11). The first page read opens W8 in the journal, "Captains' Pages", whose objective counts them: "Captains' pages read: 1/3".
+3. **Corin reads them.** Once all three are read, at the caravan's evening fire Corin asks to see them, reads them through and gives the act's turn of W8: "These are the heir's orders, in his captains' hands. They're not hunting you. They're herding you." The quest's Act 1 part ends there.
+
+The three pages, in the heir's words as his captains copied them:
+
+| Page | What it says |
+|---|---|
+| 1 | Watch for smoke where no village stands: a Wayfarer's fire is small and burns every night in a new place. Do not fight whoever carries one. Feed them. |
+| 2 | The finder's ember is dark and he walks no more. Our hope is whoever he passes his light to: when the old man lights his last fire, follow the one who leaves it. |
+| 3 | A carrier who trusts us walks faster than one who fears us. Let the swamp women and the snow folk think the worst of us; leave bread where the carrier sleeps. |
+
+**Edge cases.**
+- Pages in order: whichever outpost a team raids first holds page 1, so no page is missed and none is found twice.
+- A page taken but never read does not count; its tooltip says to read it.
+- Dying with a page: it lies in the grave with everything else (M34).
+- In a team: whoever opens the chest gets the page; once anyone reads it, everyone has it in Pages.
+- A team that never raids an outpost never opens W8; nothing in the main road needs it.
+- Corin gone or not yet joined: Corin is always with the caravan in Act 1 after 1.3, which comes before any outpost's page matters; if he is not there yet, the talk waits for him.
+
+**Where it lives.** The journal: Pages, the three Captain's Pages; W8 in Quests with its count; At the Fire, Corin's reading.
+
+**Sound.** None of its own: the outposts' own fights.
+
+**Why:** Collected documents that build a picture page by page, as The Witcher 3's notes and Dark Souls' item texts do, reward raiding the cult's places with understanding instead of loot; pages in fixed order, wherever they are found, keep the picture readable however the team roams. Corin, who served under the finder, is the one who can say what the orders mean.
+
+### S36 W11 The Dice, Act 1
+
+W11's first part, as the slice builds it with 1.9 (`slice.md`, step 10). Every line is a placeholder for the `lore` skill.
+
+1. **Where.** In every tavern the world grows (the settled world's taverns, M13) stands a dicer under its roof near the middle of the house, a tavern regular with a cup of dice, put there out of sight when the tavern first loads. Right-clicking them offers a game: "Bones, traveller? Stakes on the table."
+2. **The game, Bones.** The peoples' dice game, played on the band with answers (I4): each turn a player throws two dice as often as they like, adding them to the turn's pot, and stops to bank it; a throw with a one in it loses the turn's pot. The first to bank 32 wins. The dicer plays by a rule a player can learn: they stop once their pot reaches 12, or what they need to win.
+   ```text
+   <The dicer> Bones, traveller? Stakes on the table.
+     1 Play, for what's in my hand   2 Not now
+   You throw 4 and 5: nine. The pot stands at 9. Banked: 0 to their 12.
+     1 Throw again   2 Bank it
+   The dicer throws 1 and 3. A one: their pot is lost.
+   ```
+3. **Stakes.** The player stakes what they hold in their hand, and the dicer matches it with something from their purse of about the same use: bread, arrows, torches, a few iron nuggets. The winner takes both. Losing loses the stake. With an empty hand, the game is for nothing: "Then we play for the fun of it."
+4. **The quest.** The first game opens W11 in the journal, "The Dice", which counts games won. The deed The Dice (M38) waits on eight. Act 3's dicer, who bets a map, comes with Act 3.
+
+**Edge cases.**
+- Walking away mid-game, or the dicer out of reach: the game ends and the stakes go back.
+- Dying or logging out mid-game: the stakes go back.
+- In a team: one game at a time per dicer; a teammate who walks up while one runs sees it on the band and waits.
+- A held stack: the whole stack is staked, and the dicer matches it with a stack of their own.
+- The dicer in a tavern's chunk that unloads and loads again: they stand where they stood; a tavern with no room under its roof gets no dicer.
+- A talk of the story running elsewhere: the game runs on its own lines, to the players near the dicer only, so neither waits for the other.
+
+**Where it lives.** The journal: W11 in Quests with games won; the band during play.
+
+**Sound.** The dice's rattle on each throw, chosen by ear with the `sound` skill, or vanilla's own if none fits.
+
+**Why:** The Witcher 3's Gwent and Red Dead Redemption 2's dominoes give the world's taverns a game of their own; a press-your-luck dice game, played on the band the pack already has, needs no screen of its own, teaches itself in one throw, and a dicer with a plain rule is a person the player can learn to beat.
+
+### S37 1.10 The Bell in detail
+
+1.10 step by step, as the slice builds it (`slice.md`, step 11). Every line is a placeholder for the `lore` skill. It opens once 1.9 is done and waits in the journal until it is tracked (D6). It is the act's climax (S25): a memory, a red moon over the caravan and the act's hardest decision.
+
+1. **The pull.** Tracked, the ember pulls, by feeling, as in 1.1, 1.4 and 1.6: an empty hall still calls (`lore.md`). Its title reads "The Old Green" until the memory names the First Village, then "The Bell". The quest puts the First Village's ruins down out of sight about 2,048 blocks along the way on the home land (M40): on open plains within 2,048 blocks of that spot; with none there, on the most even land near it out of water, swamp, mountains and dry land, where the quest makes a green as 1.4 makes a bog: trees taken stumps and all, since the village fell long ago, snow gone, grass laid and the land turned plains for about 40 blocks round the well, in the memory too. The search reads the land's noise, never loads it, and checks the biome before the height, so it costs the server well under a second.
+2. **The ruins.** A ring of fallen houses in the grass round an empty green, burned and grown over long ago, an old well in the middle and beside it a casting pit, black with slag. "A village stood here once. It burned so long ago the grass has forgotten." The well is dry: a ladder goes down it to a small hall, its benches in rows, and its calling stone stands empty.
+3. **The memory** (M8), the act's third: touching the empty stone makes the ember flare, and the player wakes there forty-five summers ago as Wend, young, his ember bright, the green outside already ruins. The bell's theme plays (S25), chosen by ear.
+   - **Lift the shard.** It hums on the stone. Climb out of the well: up on the green, riders in grey show on the ridge, the Gazebound, searching.
+   - **The founders.** On the green, people from the river crossing are casting a bell in the old pit, from the dead village's bronze they dug up: "Tollbridge will have a bell of its own." Wend asks nothing; he watches the melt.
+   - **The refused choice.** "Keep it in your pack." is refused: "You can't. He didn't."
+   - **The melt.** He drops the shard into the bronze while the founders' backs are turned: right-click the melt with the shard. "The bronze takes it without a sound."
+   - **The pour.** "You stay to watch them pour it. When it's cool they hang it on a pole and ring it, and the whole crossing comes to hear."
+4. **Waking.** At the stone. The voice: "So that's where it went. Her bell. Get it out of there." The narrator says what the player now knows: "Tamsin's bell. All those years it rang over Tollbridge with the shard inside it, and the town under it grew bright enough to burn."
+5. **The red moon.** Make for the caravan; once the camp stands the moon comes up red over it (S25, M6): Enhanced Celestials' blood moon, started by the story for that night and cut to its red sky and red moon, so its own spawns, notice and music stay out and the hold alone brings the danger. No tent opens and no bed takes anyone while a story hold runs. The bell hums on its cart, and the gaze comes for it: a hold at the camp until dawn (M10), its waves making for the bell's cart, the battle piece playing, every wave announced on the band, the waves growing with the team online (M37). Tamsin stands by her bell all night; if she falls, the night is tried again.
+6. **The bell, at dawn.** The creatures crumble with the sun. Coming up to Tamsin by the cart puts the question: "It's still ringing in my head. Tell me what's in it." The player tells her, and she says what the bell was to her: "I was nine when they hung it. I carried charcoal for that fire." The decision, a hard one (M3), two thirds of the team voting:
+   - **Melt the bell.** Hob melts it in his forge and the shard comes out of the bronze: Warmth, the ember warming the player like a fire (M11; one step warmer when the land is cold), and a step of shine. Tamsin never forgives it: she turns her back (trust −1), and the bell's cart no longer travels with the caravan.
+   - **Keep the bell.** It stays on its cart and Tamsin rings it once each evening as the camp goes up: its toll keeps the lesser creatures off the camp, as the caravan fire's circle doubles while it is kept and no monster is born inside it (trust +1).
+   - Either way the nightly chance that the gaze finds the caravan (M6) follows: it is doubled while the bell travels with the caravan, so keeping it brings hard nights twice as often as melting it.
+
+```text
+Ruins    A village stood here once. It burned so long ago the grass has forgotten.
+Memory   Forty-five summers ago. The shard hums on the stone. Grey riders on the ridge.
+         <A founder> Bronze from the old bell. Tollbridge will have a bell of its own.
+         Keep it in your pack.   (You can't. He didn't.)
+         The bronze takes it without a sound.
+Stone    <The stranger> So that's where it went. Her bell. Get it out of there.
+Night    The moon comes up red over the camp. Tonight nobody sleeps.
+Dawn     <Tamsin> It's still ringing in my head. Tell me what's in it.
+           Melt the bell  /  Keep the bell   (two thirds of the team)
+```
+
+**Edge cases.**
+- Walking off, or untracking: the ruins, the hall and the empty stone stay; the red moon waits for the caravan step, and nothing moves until it is tracked again (D6).
+- The bell's cart finds no room in a camp: the hold and the decision happen at the fire instead, where its people stand.
+- Dying in the memory: the player wakes at the stone, and the memory runs again from its start.
+- Dying in the hold: the grave stands where they fell (M34), and they come to beside a friend, or at the camp's fire, which still burns; the hold runs on.
+- Logging out mid-hold: the hold runs for whoever stays; a player who logs back in before dawn comes back into it.
+- A team that never makes for the caravan that night: the hold begins only once the camp stands and the evening has come there, so the red moon waits for the team.
+- Hiding in a tent through the hold: no tent opens while a story hold runs at night.
+- A teammate far away in the memory: everyone within 32 blocks dreams it; anyone farther dreams it later at a fire (M8).
+- Logging out mid-vote keeps the vote; a player who joins late can vote (M3).
+- Tamsin is a person: blows do nothing outside a hold.
+
+**Alone and in a team.** A player alone plays it the same: the hold's waves are sized for one, and the decision is theirs alone.
+
+**Where it lives.** The journal: The Story So Far; At the Fire, Tamsin at dawn; Words, the First Village; People, Tamsin's entry grows with what was chosen; the Shards page holds Warmth for a team that melted the bell.
+
+**Sound.** The bell's theme in the memory, the battle piece in the hold (S25); the bell's own toll at dusk while it stays.
+
+**Looks.** The First Village's ruins: six fallen houses in a ring about 15 blocks round the well, each with broken walls of mossy cobble higher at the corners, a chimney stack over a cold hearth, a charred beam lying across the floor and a burnt post, grass, ferns and moss grown through; a house that would stand in water turns round the ring or is left out. The well is the hall's own cover, its winch still standing, and the casting pit lies beside it, black with slag round a sunken cauldron. In the memory, the same ground forty-five summers ago: the melt glowing in the pit, a casting fire, old bronze dug from the ashes piled green beside it, five founders from the crossing round it (a girl among them), and three grey riders on the highest ground about 40 blocks off. Drawn with the `art` skill.
+
+What 1.10 asks of the systems, at their minimum:
+
+| System | For 1.10 |
+|---|---|
+| Places (M40) | The First Village's ruins and hall put down on the plains ahead |
+| The memories (M8) | A third memory with people at work in it and a melt to drop a shard in |
+| Holds (M10) and nights (M6) | A red moon over the caravan with a hold at its camp until dawn |
+| Conversations (M3) | A hard decision voted at dawn |
+| The caravan (M5) | Families leaving, Tamsin's back turned, the bell's toll keeping the camp |
+| Gifts (S6) | Warmth |
+
+**Why:** The memory answers the oldest question the prologue left, why her town burned, with an act the player commits with their own hand, and the red moon makes that answer cost a night at once. Two sides that both cost the caravan, a woman's grief against a gift and a quieter road, make it the act's hardest choice and give Tamsin a fate the player decided (M16).
+
+### S38 1.11 The Name in detail
+
+1.11 step by step, as the slice builds it (`slice.md`, step 11). Every line is a placeholder for the `lore` skill. It opens once the act's fourth hall is done (S3), whichever way it ended, at the caravan's evening fire, the act's revelation (S25).
+
+1. **She comes back.** Once most of the team sits at the caravan's fire, the hooded woman walks in again, as at 1.5 (S30), and sits. Corin, at the edge of the light, stands up.
+2. **The name.** She says it: "His name was Wend. He was a Wayfarer once, and then he was ours: a captain of the heir's finders. He raised me." Her own she keeps back, as he taught her: "Names are for people who stay." She answers once, the first of whoever sits with her deciding: "Why tell us now?" ("Because you've stopped walking towards his halls and started walking towards the gate. He'd want you to know whose fire you carry.") / "What do you want?" ("To see what you do when you know.").
+3. **Corin.** "It's true. I served under him six winters. Captain Wend. I never said his name; it's not a name you say twice."
+4. **The voice.** From then on it speaks as Wend (S4): the band labels it Wend once the name is said. Its first words after: "So now you know my name. It doesn't change what's in your chest. The rest of them lie past the sea."
+5. **The road to the sea.** Maren leaves in smoke as before. The team sleeps; at dawn Tamsin asks where the ember wants them now, it pulls towards the coast and past it, and she says: "Past the sea. Then we need boats." With the quest done, ships can be used (D15) and the road turns to the coast; before it, a ship refuses: "A ship wants a harbour and a reason. You have neither yet."
+
+```text
+Fire     <Maren> His name was Wend. A Wayfarer once, then ours: a captain of the heir's finders. He raised me.
+         <Corin> It's true. Captain Wend. I served under him six winters.
+         <Wend> So now you know my name. It doesn't change what's in your chest.
+Dawn     <Tamsin> The voice says past the sea. Then we need boats.
+```
+
+**Edge cases.**
+- Nobody sits at the fire: she waits until most of the team sits, as at 1.5.
+- Corin not with the caravan: he always is in Act 1 after 1.3; if he left, his line goes.
+- Striking Maren: nothing fights at a fire shared freely; she leaves in smoke at once and the name is said by Corin instead.
+- A team that kept or melted the bell: both are the fourth hall done; the visit comes either way.
+- Mounting a ship before 1.11 is done: "A ship wants a harbour and a reason. You have neither yet."
+
+**Alone and in a team.** A player alone plays it the same.
+
+**Where it lives.** The journal: People, the stranger's entry renamed Wend and grown; the hooded woman's entry grows; At the Fire; The Story So Far. The voice's label in every later line.
+
+**Sound.** The Name at the fire (S25), a story piece chosen by ear, from her first line to her leaving.
+
+What 1.11 asks of the systems, at their minimum:
+
+| System | For 1.11 |
+|---|---|
+| The quest engine (M1) | The voice's label changing once its name is said |
+| The fire's night stories (M12) | A second visit by Maren |
+| Unlocks (D15) | Ships opened by the quest, not by a count of shards |
+
+**Why:** A name said by the one person who loved him, and confirmed by the one who served under him, turns the voice from a stranger the player trusted into a man they now know harmed people, while the voice's own reply, that it changes nothing, is the first time it sounds less like him than like something wearing him.
+
+### S39 2.1 Ships for Everyone in detail
+
+2.1 step by step, as `acts.md` builds it (step 12). Every line is a placeholder for the `lore` skill. It opens the morning after 1.11 and waits in the journal until it is tracked (D6). Its title reads "The Shipwright".
+
+1. **The coast.** Tracked, the ember pulls towards the sea and past it, by feeling. The quest puts a shipwrights' yard down out of sight on the home land's coast (M39), straight out from the Last Camp past the caravan, on the lowest and straightest stretch of shore it finds there: a jetty, a slip with a half-planked hull, a cottage, a sawpit and stacked timber, a tar pot gone cold. Nobody is working. "A yard on the shore. A hull on the slip, half planked, and the tar gone cold in its pot."
+2. **Edda.** A woman with a mallet stops the team at the hull: "Don't touch it. It's not for sailing." Nobody crosses that water; her man tried three summers ago. She names herself, the last shipwright on the coast, and sends them to what is left of his boat on the beach a little way along the shore: "Go and look at it. Then tell me you want to cross." Two answers: "We need boats for all of us." ("Then you need someone braver than me.") or "What happened to him?" ("The sea happened. Go and look.").
+3. **The wreck.** A boat's ribs in the sand about 256 blocks along the shore (Investigate, three clues): the keel bitten through below the waterline by something with a jaw as wide as an arm; his tool chest with Edda's mark burned into the lid; and his log in oilcloth, whose last pages say he made landfall: "A bay where they fish by night and nothing comes for them." The log lands in Pages.
+4. **The log.** Back at the yard Edda reads it to the last page: he made it across, and the sea took him on the way home. "All right. Bring me timber, and I'll build you boats."
+5. **Timber.** Bring her 32 logs of any wood (Earn: the yard's trust, M10): the task counts what the player carries, and holding them out to her ends it.
+6. **The night.** Make for the caravan's smoke; Edda works through the night. Sleep.
+7. **The launch.** At first light the hull on the slip is planked to the gunwale and tarred, and Edda sits at the end of her jetty: "Every hull I had on the stocks, finished in a night. Take one each." Each player takes a ship from the journal (a Small Ships cog, "Edda's Cog"). The voice makes its promise: "There's a valley past the sea where nothing comes at night. I've seen it. Bring them." Tamsin's answer, "Ask him again how far", opens 2.2 at the caravan's fire.
+
+```text
+Coast    A yard on the shore. A hull on the slip, half planked, and the tar gone cold in its pot.
+         <A woman with a mallet> Don't touch it. It's not for sailing.
+Wreck    His log, in oilcloth: "Day 9. Land. A bay where they fish by night and nothing comes for them."
+Yard     <Edda> He made it. Nine days, and he made it. ...Bring me timber, and I'll build you boats.
+Dawn     <Edda> Every hull I had on the stocks, finished in a night. Take one each.     [Reward] A ship
+         <Wend> There's a valley past the sea where nothing comes at night. I've seen it. Bring them.
+```
+
+**Edge cases.**
+- Walking off or untracking: the yard and the wreck stay; Edda waits at her hull.
+- A home land whose coast is far: the yard stands on the coast however far; the compass marks it by feeling, then exactly within 256 blocks. A coast of cliffs: the yard takes the lowest stretch within about 30 degrees either side, and cuts into the slope if none is low.
+- A team that walks off before Edda reads the log: the yard and the wreck stay as they are, and the log waits in the wreck until found.
+- Timber in a team: one player holds out all 32; the logs of several players are not pooled, and whatever is over 32 stays with the giver.
+- A lost ship: Small Ships' own recipes build another anywhere, as Edda's do.
+- Dying at the wreck: the grave and the fire's return as everywhere (M34); the clues stay found.
+- Edda is a person: blows do nothing.
+
+**Alone and in a team.** Alone the player does all of it; in a team every player takes a ship of their own from the journal.
+
+**Where it lives.** The journal: People, Edda; Pages, the shipwright's log; The Story So Far. The ship is an item.
+
+**Sound.** None of its own.
+
+**Looks.** The yard and the wreck, drawn with the `art` skill: weathered spruce and oak, tar-black planks, a slip of stone and logs into the water, nets and barrels; Edda in a leather apron with her sleeves rolled.
+
+**Why:** The crossing needs a reason the caravan has never crossed, and a widow who will not build is that reason made into a person; her husband's log is the first word of the Tide Folk's bay, so the far shore has a goal before the voice names its valley.
+
+### S40 2.2 The Crossing in detail
+
+2.2 step by step, as `acts.md` builds it (step 13). Every line is a placeholder for the `lore` skill. It opens when 2.1 ends and waits in the journal until it is tracked. Its title reads "The Crossing".
+
+1. **The promise.** The morning of the launch, Tamsin comes down to Edda's yard. She has heard the voice's promise from the player: "So. Your dead man says there's a valley past the sea where nothing comes at night. Ask him again how far." Held up, the ember pulls out over the water and keeps pulling. The voice: "Far enough that nothing follows. Go at dusk." Tamsin: a night and a day for the caravan's boats, Edda says, and nobody lands on a strange shore in the dark, so they load today and push off at dusk.
+2. **The shore camp.** The caravan camps on the shore by the yard that evening.
+3. **Push off.** At the fire Tamsin says the boats are loaded and asks the player to lead: "We'll keep your light in sight."
+4. **Open water.** Put to sea and sail for open water (M22: more than 64 blocks from land). The sun goes down behind the team as the coast falls away, and the caravan's boats put out one by one behind them, lamps hooded, told and never seen. The compass marks the far shore by feeling.
+5. **The night on the water.** The moment a player is aboard on open water after dark, Tamsin's boat comes up alongside: a cog with Tamsin and Pip aboard. Something knocks against her hull, and the sea's beast (M22) rises and circles, ramming her boat; pale drowned climb out of the dark water in waves, each named on the band, and go for whoever is aboard. The battle piece plays. The team strikes the beast when it surfaces, which drives it off for a while, and mends Tamsin's hull with iron nuggets and planks, as any Small Ships hull is mended (the task panel says how). When the last wave is beaten the beast sounds and dives, and the sky greys.
+   - If Tamsin's boat goes down, the beast dives with it and the drowned sink back into the dark; the other boats pull Tamsin and Pip out of the water, and her boat and everything in it are lost, and the night ends. Nobody dies, and the loss is kept for the fire and for later (M37: getting past a fight is an answer, never a fail).
+6. **Landfall.** Sail on to the far shore. Act 2's first morning plays on landing: "Land. Pale dunes, and beyond them hills nobody you know has ever walked."
+7. **The far shore's camp.** The caravan makes its first camp across the sea that evening.
+8. **At the fire.** Tamsin speaks of the night, as it went: held, "Pip says you beat it off with a lamp and a stick. I had my eyes shut."; lost, "We lost my boat and everything in it. Not Pip. Not me. Everything else."
+
+```text
+Yard     <Tamsin> So. Your dead man says there's a valley past the sea where nothing comes at night. Ask him again how far.
+         <Wend> Far enough that nothing follows. Go at dusk.
+Sea      Behind you the caravan's boats put out one by one, lamps hooded, following your light.
+Night    Something knocks against the hull of Tamsin's boat. Then again.
+         Pale shapes in the water: 1 of 3
+Dawn     The sky greys. Something long slides away under the boats and doesn't come back.
+Shore    Land. Pale dunes, and beyond them hills nobody you know has ever walked.
+```
+
+**Edge cases.**
+- Sailing on and leaving Tamsin's boat behind: once no player has been within 96 blocks of her for 32 seconds, the beast has her; she is lost as above, and the night ends.
+- Dying at sea: the player wakes at their last fire on the home land, as anywhere (M34); a teammate holds on, and alone the boat is soon left behind as above. Their ship stays where it was; Small Ships' recipes build another, and by day no beast comes.
+- Logging out or reloading mid-night: the night resumes at its wave, Tamsin's boat where it lay.
+- Untracking the quest before open water: nothing happens at sea that the world does not do by itself (M22).
+- A vanilla boat: it counts as afloat, and the beast breaks it with one ram, as M22 has it.
+- A teammate on the shore: the night is held by whoever is at sea.
+
+**Alone and in a team.** Alone the player holds the night; waves grow with the team online, as every hold does (M37).
+
+**Where it lives.** The journal: The Story So Far; Tamsin's page keeps how the night went.
+
+**Sound.** The battle piece at sea; Act 2's first morning, chosen by ear.
+
+**Looks.** Tamsin's boat, an oak cog with her people aboard. The beast, drawn with the `art` skill: a guardian's shape four times its size, gone the black of deep water, with one pale violet eye, the colour of the Eye it serves.
+
+**Why:** The crossing is Act 2's door and its first night, and a night held beside someone the player knows makes the sea's price personal; a loss that costs stores and not lives keeps M37's rule while still costing something.
+
+### S41 2.3 The Tide Folk in detail
+
+2.3 step by step, as `acts.md` builds it (step 14). Every line is a placeholder for the `lore` skill. It opens when 2.2 ends and waits in the journal until it is tracked. Its title reads "The Bay" until the Tide Folk are named.
+
+1. **The pull.** Tracked, the ember pulls by feeling to the nearest of the Tide Folk's halls the world grew in Act 2's band (M40), and knows its place within 256 blocks. Around it the quest puts down the Tide Folk's village out of sight: a few huts on stilts above the tideline, boats drawn up on the sand, drying racks of fish, nets, and a fire pit of black stones that is never lit by day. By day the village sleeps; they fish by night.
+2. **The bow.** As the team walks in, two of their wardens step out with tridents, and stop, and bow low to the player, both at once. Nobody told them to. Their elder, Morwen, comes out of the nearest hut and stares at them: "They've never bowed to anyone. Not to me. Not to my mother." Nobody knows why, the player least of all (it is the first sign of what the player is, S4; nothing explains it until the first reveal).
+3. **Morwen.** The talk. She knows a Wayfarer by the light; her grandmother told of them. Their bay is hallowed: nothing comes up at night, so their boats can go out with lamps lit. Under the fire pit lies the reason: their stone, and on it two shards, theirs and the Drowned City's, which that city's last people brought them generations ago under an oath to keep it from the gaze. Answers: "A shipwright sent us." (she remembers Edda's husband, the man in the patched boat who ate with them and would not stay: trust), "Why do they bow?" ("I hoped you'd tell me."), and "We're looking for a valley past the sea." ("There's no valley. There's sea, and then more sea, and then the cold."). Then: "They bowed. I've no right to keep you out of anything. Come and see what you'd be taking."
+4. **The hall.** She leads them down under the fire pit into the hall. Its lectern holds the Tide Folk's own account, rewritten to its fate (S26). On the stone's dais lie two shards side by side, the second on a stone of its own the Drowned City's last set beside the first.
+5. **The decision.** At the stone: the voice, "Both. They've had their share of safe nights." Morwen: "Ours keeps the gaze off our boats. Theirs keeps the deep things out of the bay. Take one, and we fish close in, and go hungry. Take both, and we don't fish at all." Four answers:
+   - **Take both:** Deep-sight and Stare; the bay goes dark to them, and their boats are seen; they will starve unless Night Fishing (T2) saves them. Their trust is lost.
+   - **Take the Tide Folk's:** Deep-sight; the gaze can see their boats, so they fish only close inshore. Their trust drops.
+   - **Take the Drowned City's:** Stare; the oath is broken and the deep things come back into the bay at night. Their trust drops.
+   - **Leave both:** no gift; the bay stays as it is, and their trust grows (Keep the oath, S5).
+6. **Make for the caravan's smoke.** The voice speaks as the choice went; that night at the fire, Corin or Tamsin answers it.
+
+```text
+Bay      Two wardens step out with tridents, and stop, and bow low to you. Both at once.
+         <A woman with a net> They've never bowed to anyone. Not to me. Not to my mother.
+Hall     Two shards lie side by side on the dais, one on a stone of its own.
+         <Wend> Both. They've had their share of safe nights.
+         <Morwen> Take one, and we fish close in, and go hungry. Take both, and we don't fish at all.
+```
+
+**Edge cases.**
+- Walking off before the decision: the village and the hall stay; Morwen waits in the hall until the choice is made, then goes back to her hut.
+- Taking a shard without the talk (straight down to the stone): the stone asks first, as every shard step does; the choice decides.
+- In a team, two thirds decide (D11, as every decision).
+- Breaking into the village: the huts are warded, as every place the story makes.
+- Arriving at night: the boats are out, lamps on the water, and the village is empty but for Morwen at the fire pit; the wardens bow on the beach.
+- A team that found the hall before tracking the quest (D6): what they took counts, and the decision offers only what is left.
+
+**Alone and in a team.** Alone the player decides; in a team two thirds do.
+
+**Where it lives.** People: Morwen, the Tide Folk; Words: the Tide Folk, the Drowned City; Pages: the Tide Folk's account. The gifts on the Charms page.
+
+**Sound.** None of its own: the village by day is quiet, and the decision has the shard's own sounds.
+
+**Looks.** The village, drawn with the `art` skill: grey driftwood and dark planks, huts on stilts over the sand, boats turned keel-up, fish on racks, nets, a black-stone fire pit. The Tide Folk in sea-coloured wool and oilskin, weathered, barefoot or in sealskin boots; the wardens with tridents.
+
+**Why:** A people whose guards bow to the player is the act's first crack in the player's own story, small and unexplained; and two shards on one stone make the act's first decision a matter of degree, how much of someone else's safety the player will spend.
+
+### S42 2.4 The Dry City in detail
+
+2.4 step by step, as `acts.md` builds it (step 15). Every line is a placeholder for the `lore` skill. It opens when 2.3 ends and waits in the journal until it is tracked. Its title reads "The Red Canyons".
+
+1. **The pull.** Tracked, the ember pulls by feeling to the nearest of the Drowned City's halls the world grew in Act 2's band (M40), in the badlands, and knows its place within 256 blocks.
+2. **The heat.** By day the badlands burn (M10, Tough As Nails): the first time a player is too hot the task panel says what helps (shade, water, leaf clothes, a cooling drink), and the night is cool enough to cross. The Sand Singers' shade (2.6) makes the canyons easy later; 2.4 needs none of it.
+3. **The empty hall.** A hall cut into the red rock, its stone empty: nobody has stood on its stair for a long time. The lectern holds the Drowned City's own account, rewritten to its fate (S26): the most beautiful city on the coast, seen, and drowned; its last people carried their shard out of this hall to the one bay the eye could not see.
+4. **The stone remembers.** Touching the empty stone with the ember shows what it saw, as the Frost Walkers' stone showed Nell's people (S32): not a memory of Wend's, a sight of the hall's own past. Three pale figures stand at the stone, lift the shard and wrap it in a net, and climb out of the hall towards the sea, one of them looking back at the stone; the figures fade on the stair.
+5. **Make for the caravan's smoke.** The voice, as the Tide Folk's choice went: if the Drowned City's shard is in the ember, "We have it already. Don't get sentimental about a stone."; if it lies in the bay, "It's in the bay. You know where."
+
+```text
+Hall     A hall in the red rock. Its stone stands empty.
+Stone    The ember warms. Three pale figures stand where you stand, and one lifts the shard into a net.
+         They climb out of the hall, towards the sea. One of them looks back at the stone, and is gone.
+```
+
+**Edge cases.**
+- Too hot by day: the heat wears a player down but never kills one who heads for shade or water; dying wakes them at their last fire, as anywhere (M34), and the clues stay touched.
+- Coming at night: the canyons are cool, and the gaze's creatures walk; the hall itself keeps them out (it is a hall).
+- In a team, everyone within 32 blocks of the stone sees the figures; a teammate farther off reads it in the journal.
+- A team that took nothing at the Tide Folk's: the voice points them back to the bay; nothing forces it.
+- The Drowned City's halls the world grows hold no shard on their stone: the shard is the second on the Tide Folk's stone, so every such stone stands empty from the day the world grew it.
+
+**Alone and in a team.** The same; the heat is per player.
+
+**Where it lives.** People: the Drowned City's last; Pages: the Drowned City's account; The Story So Far.
+
+**Sound.** None of its own.
+
+**Looks.** The figures: pale, sea-coloured, with the Drowned City's green-glass beads, drawn with the `art` skill; faint sparks rise from them as they fade.
+
+**Why:** The empty hall closes the loop the Tide Folk opened, so the player learns where the second shard came from by seeing its people leave, and the heat makes the badlands a place to cross with care, not a place to fight.
+
+### S43 2.5 His Last Camp in detail
+
+2.5 step by step, as `acts.md` builds it (step 16). Every line is a placeholder for the `lore` skill. It opens when 2.4 ends and waits in the journal until it is tracked. Its title reads "His Last Camp".
+
+1. **The lead.** At the caravan's fire the voice, quieter than it has been: "There's a camp of mine near here. The last one. You should see it before you hear about it from someone else." Tracked, the compass marks it about 2,048 blocks ahead in the way the team walks, on dry, open land out of the snow, put down out of sight.
+2. **The camp.** Not a camp any more: a lean-to grown into a hut with log walls, a chair worn smooth by the fire, a plot dug in rows where something was planted, long dead. On the hearthstone the Gazebound's open eye is cut, as at his first camp. A journal lies on the chair (the last page: "Tomorrow I will walk on. I wrote that yesterday too.", `wend/last_camp`), and it lands in Pages.
+3. **The memory.** Touching the hearthstone wakes the fourth memory: thirty winters ago, as Wend, old, in Gazebound grey, his feet sore, his fire small. His own theme plays (chosen by ear).
+   - Grey coats sit down across the fire, kind; their captain says the road is long and his feet are tired. A child comes round the fire with a loaf: a girl in grey, a tiny open eye stitched on her coat, who holds out the bread with both hands.
+   - The answers: "Take the bread." and "Send her away." ("You can't. He didn't.").
+   - The bread, as the team's own choice at 1.5 went: eaten, "You know this bread. You've eaten it: dark and sweet, an eye pressed into the crust."; kept, "You know this bread. A loaf like it is wrapped in your pack."; burned, "You know this bread. You fed a loaf like it to a fire once."
+   - Morning: you write in the journal, "Tomorrow I will walk on." The fire goes out. You don't.
+4. **Waking.** At the hearthstone. The ember is small for a breath, then it isn't. The voice: "...Enough of that. Walk." Then make for the caravan's smoke.
+
+```text
+Camp     A lean-to grown into a hut. A chair worn smooth by the fire. A plot dug in rows, where something was planted, long dead.
+Memory   Thirty winters ago. Your feet hurt. The fire is small, and the men in grey are kind.
+         A girl in grey comes round the fire with a loaf, and holds it out with both hands.
+           1 Take the bread.   2 Send her away. (You can't. He didn't.)
+         You know this bread. You've eaten it: dark and sweet, an eye pressed into the crust.
+         In the morning you write: "Tomorrow I will walk on." You don't.
+Awake    <Wend> ...Enough of that. Walk.
+```
+
+**Edge cases.** As every memory (M8): everyone within 32 blocks dreams it; dying in it wakes the dreamer at the stone and it runs again; logging out returns the player where they stood; a teammate far away dreams it later from the journal at a fire. The journal on the chair can be read before or after. A team that walks off before touching the hearthstone finds the camp as it was.
+
+**Alone and in a team.** The same; the bread's line follows the team's choice at 1.5, made by the first answer.
+
+**Where it lives.** Pages: his last page; People: Wend, the girl in grey (not named until 2.9); The Story So Far; the memory under His Last Camp, to dream again at a fire.
+
+**Sound.** The last camp's theme, chosen by ear.
+
+**Looks.** The hut and the dead garden drawn with the `art` skill; the girl in grey, a small Illager in Corin's grey with the eye stitched small, drawn to sit beside Maren's look.
+
+**Why:** The night Wend gave in is the act's turn in his story, and the girl's hand is the first time the player sees Maren as she was; the bread, which the player already met at their own fire, makes the temptation something they have tasted.
+
+### S44 2.6 The Worm in detail
+
+2.6 step by step, as `acts.md` builds it (step 17). Every line is a placeholder for the `lore` skill. It opens when 2.5 ends and waits in the journal until it is tracked. Its title reads "The Singers" until the worm is named.
+
+1. **The pull.** Tracked, the ember pulls by feeling to the nearest of the Sand Singers' halls the world grew in Act 2's band (M40), in the desert, and knows its place within 256 blocks. Near it the quest puts down the Sand Singers' camp out of sight: long tents of striped cloth on poles, camels, a fire of dung and thorn, and their singer.
+2. **The singer.** The talk with Sefa, who sings before she speaks. The worm: it came out of the deep sand the summer it swallowed the stone in their hall, and grew, and sees; nothing that walks on two legs crosses its ground, so no raider has troubled the Sand Singers since. They sing to it, and it lets them be. A man with a coal in his hand fought it once and ran, and the song of his running is the funniest they have. Answers: "We need what it swallowed." ("Then you need it dead, and we need it alive."), "The man who ran was mine." ("Then his song is yours. You'll hear it if you go to its ground."), "Leave it" (closing the talk). She gives the team the Sand Singers' shade, cloth that keeps the sun off (S42's heat gate), and, because they asked, the song: a goat horn that plays "Sing". "Blow it on its ground, and it comes up to see who sings. Its eye is where it can be hurt."
+3. **Its ground.** Sefa points the way: a morning's walk, about 256 blocks on past the hall, and the ember knows the place by feeling. There lies its lair, a sunken bowl of sand ringed with old bones, a broken spear in the middle.
+4. **The memory.** The broken spear is Wend's. Touching it wakes the fifth memory, short: as Wend, thirty-five winters ago, spear in hand, the sand heaves, an eye opens in the dune, and you run (an `away` step); the Sand Singers' laughter follows you over the dunes.
+5. **The decision.** Awake at the bowl's edge, the horn in hand. The voice: "Blow it. It's only a worm." Two answers:
+   - **Blow the horn:** the worm comes up. The fight (M37): it surfaces to look at whoever sang, its eye open, and only then can it be hurt; it dives and comes up elsewhere, under a player who stands still too long; blowing the horn again brings it up. The battle piece plays. Killed, it gives up the shard: Far-sight. The Sand Singers lose their protector and the raiders come (T3).
+   - **Leave it:** the team walks away from the bowl; the Sand Singers trust them, and sing them the worm's song (T3).
+6. **Make for the caravan's smoke.** The voice, as it went.
+
+```text
+Camp     Long tents of striped cloth, camels, a fire of thorn. A woman sings before she speaks.
+         <Sefa> A man with a coal in his hand fought it once, and ran. His song is the funniest we have.
+Lair     A bowl of sand ringed with old bones. In the middle, a broken spear.
+Memory   Thirty-five winters ago. The sand heaves. An eye opens in the dune, as big as a door. Run.
+Bowl     <Wend> Blow it. It's only a worm.
+```
+
+**Edge cases.**
+- Blowing the horn anywhere but its ground: nothing comes.
+- Standing still on its ground: it comes up under the one who stands longest; moving keeps it guessing.
+- Dying in the fight: the fire's return as anywhere (M34); the worm dives and heals over a minute, and the horn calls it again.
+- Walking off mid-fight: it dives, and the decision stays open until the team blows the horn again or leaves the ground for good (the caravan's evening counts as leaving).
+- In a team: everyone the horn reaches fights; its health grows with the team online (M37).
+- A team that kills it without the talk: the shard is theirs; the Sand Singers' trust is lost.
+
+**Alone and in a team.** Alone the fight is shorter, the worm weaker; the horn works for anyone holding it.
+
+**Where it lives.** People: Sefa, the Sand Singers; Words: the worm; the shade and the horn as items; the memory under The Worm.
+
+**Sound.** The battle piece in the fight; the horn is vanilla's "Sing".
+
+**Looks.** The camp and the lair drawn with the `art` skill; the worm made the T3 way with GeckoLib (`generator/creatures.py`), a sand-coloured beast whose open eye shows only when it surfaces.
+
+**Why:** A hunt that asks the team to learn something first, and gives them the choice of whether to use it, turns the Sand Singers' protector into a question rather than a boss.
+
+### S45 2.7 Your Eyes and 2.8 The Locks That Never Sleep in detail
+
+As `acts.md` builds them (step 18). Every line is a placeholder for the `lore` skill.
+
+**2.7 Your Eyes**, a fire's story by count: it opens at the caravan's fire the evening after the team's second hall of Act 2, done either way.
+
+1. At the fire, once most of the team sits, Corin looks at the player across the flames and keeps looking: "Your eyes. Did you know they do that?" When the ember flares they catch the light like an animal's, pale, the colour of the Eye; the player cannot see it.
+2. Agna laughs: "It's the fire, Corin. Everyone's eyes do that." She looks herself, and stops laughing. Tamsin: "Leave it. All of you."
+3. The answers: "Do what?" ("Shine. Like a cat's, but the wrong colour."), "It's the fire." (Agna: "...Yes. It's the fire."), and "I know." ("Then you know more than us.").
+4. The voice, after: "Firelight. Sit down."
+
+**2.8 The Locks That Never Sleep**: it opens when 2.6 ends and waits in the journal until tracked. Its title reads "The Locks".
+
+1. **The pull.** Tracked, the ember pulls by feeling to the nearest of the Jungle Folk's halls in Act 2's band (M40), or one raised on the nearest jungle within reach. At the head of the hall's stair, on the side the team comes from, the quest puts the Jungle Folk's lock house, a long, low house of mossy stone and jungle wood with three doors of bars inside it, one behind the other, and Gazebound boot prints in the mud: someone came this way days ago.
+2. **The locks** (Solve, M10). The locks keep the stone asleep: until all three are open, the stone below is cold and lifts nothing ("Something up in the lock house keeps it asleep."). Each lock opens the next door of bars, and each needs only looking, no redstone knowledge:
+   - **The levers.** Four levers on a wall, and over them four stones; two are carved and catch the ember's light. Pulling the levers under them, and only those, opens the first door.
+   - **The word.** A lectern holds the Jungle Folk's prayer, which ends on their word, WAKE. Writing it on the sign by the second door opens it.
+   - **The weights.** Two wooden plates on opposite walls must be held down at once: a teammate on each, or alone anything dropped on one while the player stands on the other.
+3. **Through the stone.** As the last bars rise, the stone below wakes, and the player sees, for the first time, through stone (S12, D15): through the ground, plain as day, the Grass King's heir and two of his men by the stone, outlined. From then on the gift Stone-sight shows the gaze's creatures through rock to a player standing still at night (`Sight`). The outline lasts until someone comes within 8 blocks of him.
+4. **The heir.** He waits by the stone with Wend's maps. He cannot lift the shard; only an ember wakes a stone. Face to face he offers his world (the talk): "Nobody needs a tent in a world like that." Answers: "And the price?" ("That someone watches. Someone always watched. I'd only make it kind."), "Wend served you." ("He served my father. He thought he was clever. Then he stopped walking."), "Get out of my way." Then: "Lift it. I'll take it from you at the gate."
+5. **The shard.** Take it or leave it asleep, as every shard; no gift, since Stone-sight came with the locks. Either way he folds his maps and goes up the stair with his men. Until the talk is over, the stone will not be lifted with him standing over it.
+6. **Make for the caravan's smoke.** The voice: "He's right about one thing. Someone always watched." (taken), or "You left it for him to sit beside. He's patient. So am I." (left).
+
+```text
+Fire     <Corin> Your eyes. Did you know they do that?
+         <Agna> It's the fire, Corin. Everyone's eyes do that. ...
+Locks    Four levers under a mural that glows when you hold up the ember.
+Wall     Through the stone, plain as day: three men by the stone, one with maps open on the dais.
+Heir     <The heir> Nobody needs a tent in a world like that.
+```
+
+**Edge cases.**
+- The levers pulled in the wrong order: nothing breaks; set them right and the door opens.
+- The word written wrong: the sign stays as written, and the door stays shut until the word is on it.
+- Alone at the weights: anything dropped on the far plate holds it. An opened door stays open.
+- Walking round the house and down the stair first: the hall is open, but the stone is cold until the locks are open, and nobody waits there yet.
+- In a team, any player opens any lock; the heir talks to whoever comes within 8 blocks first, the others hear him.
+- Fighting the heir or his men: they are warded by the hall; blows do nothing ("Not here. Not yet.").
+- Logging out or reloading mid-locks: opened doors stay open, and the count is kept.
+- A team that took the Jungle Folk's shard before the quest (D6): the quest still plays the locks and the heir, and the shard step completes at once.
+
+**Where it lives.** People: the Grass King's heir; Words: the Jungle Folk; the sight through stone on the Charms page.
+
+**Sound.** None of its own.
+
+**Looks.** The lock house drawn with the `art` skill: mossy cobblestone and jungle wood, vines, iron-bar doors, the mural; the heir an Illager in fine grey and gold, the open eye on his breast, drawn to stand beside Maren and Corin.
+
+**Why:** The act's puzzle hall puts the rival in front of the player for the first time, at the stone he cannot lift without them, and the sight through stone arrives exactly when the player is looking at him through a wall.
+
+### S46 2.9 Maren's Warning and 2.10 The Hollow in detail
+
+As `acts.md` builds them (step 19). Every line is a placeholder for the `lore` skill.
+
+**2.9 Maren's Warning**, a fire's story by count: the evening after the team's third hall of Act 2.
+
+1. Once most of the team sits, Maren walks out of the dark as before (S30) and sits, and this time sets nothing on the log. Tamsin: "No bread tonight?"
+2. Maren, to the player: "He isn't leading you where you think." Answers: "Where, then?" ("I can't. I swore. Look at what he wants, not what he says."), "Who isn't?" ("You know who. You carry him."), "Why tell me?" ("He raised me. I owe him that much, and you more.").
+3. She leaves in smoke. The voice laughs, low and long, and says nothing; the laugh is the first time it sounds like something other than a man.
+
+**2.10 The Hollow**, by count: it opens the evening after the team's fourth hall of Act 2, and it is the act's climax (S25: its biggest fight and its revelation, under the red moon).
+
+1. **The valley.** On the road that day the voice: "We're close. Camp in the hollow tonight, out of the wind." That evening the caravan's camp stands in a hollow among low hills, and the voice says it is the valley. Tamsin, at the fire: "This is it? This is his valley?" Hob laughs for the first time in weeks.
+2. **The red moon.** The moon comes up red (the act's one red moon, S25). The gaze comes down on the hollow: waves that do not stop until dawn, from every side; tents catch, people run. It cannot be won, only survived (M37): the team holds where it can, and the hold ends at dawn whatever they do.
+3. **The morning.** By dawn the fires are out and nine wagons are gone. Who is left was decided before the night began, person by person, by their own side quests (S9, S17):
+
+   | Who | Lives if | Otherwise |
+   |---|---|---|
+   | Tamsin | The Missing (C1) found her last townsman | She went back into the burning tents for the bell, and did not come out |
+   | Hob | The Lost Ore (C7) made his hammer | He held the wagons' line with a cracked hammer until it broke |
+   | Agna | The Fever (C6) taught her the remedy | She was found by the healers' tent, the remedy she never learned unmixed in her hands |
+   | Pip | The Road (C8) gave Pip a horse of their own | Pip ran on foot, and was too slow |
+   | Corin | His Brother (C2) is settled, either way | They took him alive; his old company wanted him back |
+   | Ilse | The Seal (C5) is open | Her book tent burned with her in it, reading |
+   | Nell | She stayed with the caravan and The Burial (C3) laid her dead to rest | Gone into the hills before dawn, without a word |
+
+   The households and townsfolk are lost as the story says, nine wagons in all; a person who left the caravan earlier (Nell with her shard) is not there to be lost.
+4. **The voice.** Over the ashes, not in Wend's voice now: "I needed you alone." It is the first reveal (S4): the thing in the ember was never Wend. From then on its lines are labelled "The gaze", as S4 has it.
+5. Act 2 ends; 3.1 The Morning After begins at the hollow.
+
+```text
+Fire     <Maren> He isn't leading you where you think.
+         The voice laughs, low and long, and doesn't stop for a while.
+Hollow   <The voice> Camp in the hollow tonight, out of the wind.
+Dawn     The fires are out. Nine wagons are gone.
+         <The voice> I needed you alone.
+```
+
+**Edge cases.**
+- Not at the caravan that night: the hollow burns anyway; the team wakes there at dawn (the ember brings them back to the fire they last sat by, M34) to the same toll.
+- Logging out during the night: the night resumes at its wave; the toll is fixed the moment the red moon rises, so it cannot be changed by leaving.
+- A side quest begun but not finished counts as not done.
+- In a team, the toll is the world's: everyone wakes to the same caravan.
+- Dying in the night: back at the fire at dawn, as always.
+
+**Alone and in a team.** The same night and the same toll; waves grow with the team online.
+
+**Where it lives.** People: each person's page ends with how they were lost, or that they lived; The Story So Far names the nine wagons.
+
+**Sound.** The battle piece through the night; a death piece at dawn for the nine wagons, chosen by ear; the red moon's own sky.
+
+**Looks.** The hollow's burnt camp at dawn: charred tents, overturned carts, the fire circle cold; drawn with the `art` skill.
+
+**Why:** Mass Effect 2's final mission decides each companion's fate by what the player did for them before it; here the side quests are that preparation, and the voice's reveal lands on a player who has just lost the people it promised to save.
+
+### S47 The companions' quests before the Hollow in detail
+
+The side quests whose outcome decides who lives at the Hollow (S46): C1 The Missing, C2 His Brother's second stage, C3 The Burial's second stage, C5 The Seal and C6 The Fever. C7 The Lost Ore and C8 The Road's first stage are built. Every line is a placeholder for the `lore` skill.
+
+**C1 The Missing** (Tamsin; Track; Act 1, the evening after 1.6 opens).
+
+1. At the fire Tamsin asks: Wil the cooper, the last of Tollbridge, went to his sister's village up the valley the spring before the town burned. The compass marks the nearest village to the caravan, which the quest takes as his sister's.
+2. In the village Wil stands by the well (an Easy NPC put at the village's meeting place when the team comes near, out of sight). He knows the night has come closer every week, and he's tired of running.
+3. Answers: "Come with us." (he packs and walks to the caravan, and pitches a tent at its edge from then on) or "Stay, then." (he stays). Either way Tamsin knows he lived, which is what C1 decides at the Hollow.
+4. At the fire Tamsin: "Wil. Still alive. Still stubborn." (stayed) or "Wil. Sit, you old fool. Sit by me." (came).
+
+**C2 His Brother, the second stage** (Corin; Raid; Act 2, the evening after the crossing).
+
+1. At the fire Corin says his brother's company crossed the sea before them, and camps at an outpost on this shore. The compass marks the nearest Gazebound outpost to the caravan.
+2. The outpost's men come down on the team as a hold of two waves (the ford's hold, M37).
+3. His brother, Brannoc, stands on the outpost's top, unarmed. He took the scar willingly and does not want to be saved: "I chose it. He chose the road; I chose the quiet."
+4. Answers: "Corin's alive. He asked for you." ("Then tell him I'm well.") or "Come with us." ("No."). Either way it is settled, which is what C2 decides at the Hollow, and he walks away up the hill.
+5. At the fire Corin: "He's well. Good." and nothing else.
+
+**C3 The Burial, the second stage** (Nell; Escort; Act 2, the evening after the crossing).
+
+1. Nell comes to the caravan's fire: her people's old winter grounds lie on this shore, in the snow, and she will bury their names there. If she carries the shard (1.8, given), she will bury it with them; if not, she buries their names alone.
+2. The quest finds the nearest snow on this shore in Act 2's band and puts the grounds there: a ring of cairns. Nell walks with the player (Escort), at her own pace, and keeps up across water and through a night.
+3. At the cairns she reads the names, and the list of the guilty: grey coats she counted on the stair, and one name she heard them call, Corin. Answers: "He left them." ("Then he left late.") or say nothing.
+4. She lays the stones. If she kept the shard, she buries it under the last cairn; the shard leaves the story (not claimed by anyone).
+5. She comes back with the player to the caravan if she was with it; if she had left with the shard, she goes back into the snow, and C3 still counts as laid to rest.
+
+**C5 The Seal** (Ilse; Solve; Act 2, the evening after the Tide Folk).
+
+1. At the fire Ilse says the Keepers kept a house on this shore, sealed: "They seal what they won't burn." The quest puts a Keepers' ruin about a day ahead, a broken stone house with a sealed door cut with the old script.
+2. The seal has three marks, each a word of the oath, hidden in the stone round the door; under the held-up ember they glow. Finding all three opens it: the stone of the door crumbles to sand.
+3. Inside, a lectern with a Keeper's note about Wend at their door, years ago: he came to them with his ember small and asked to stay, and they barred the door, and he cursed them and walked off towards the Gazebound. The note lands in Pages.
+4. At the fire Ilse teaches the player the old script (the Words page's "old script" is now readable, and the journal's old-script pages read plain). That is what keeps Close the Eye open even if she dies (S8).
+
+**C6 The Fever** (Agna; Carry, with a clock; Act 2, the evening after his last camp).
+
+1. A potter's girl of the caravan, Wren, burns with a fever Agna cannot break: "The marsh fever. The Tide Folk's healer can. If she gets there before the third dawn." Escort Wren to the Tide Folk's bay (2.3) before the third dawn.
+2. Wren walks with the player, slowly, coughing; she keeps up across water and is put back beside the player if they are carried far apart. Each dawn the band says how many are left.
+3. At the bay Morwen takes her in: seaweed, salt, and a brew that "hides you from what looks". She writes the remedy down for Agna (a book in Pages).
+4. At the fire Agna reads it: "Seaweed, salt, and something that hides you. So that's what I was missing." That is what C6 decides at the Hollow.
+5. Late (the third dawn passes on the road): Wren dies on the way; the quest ends, and Agna never learns the remedy.
+
+**Edge cases.**
+- Not doing a quest: it waits in the journal; untaken, it counts as not done at the Hollow.
+- Escort: the escorted person follows whoever is nearest; dying or logging out leaves them where they stand until someone comes back; a boat carries them along (they are put beside the player); their deadline counts dawns, which pass for everyone.
+- A team splits: any player can finish any step; talks start with whoever comes near.
+- C1's village burned (W1) or gone: Wil stands at the nearest village standing.
+- C2's outpost: the ford's hold rules (waves grow with the team; dying keeps the wave count).
+- C3 with no snow on this shore within reach: the grounds are put on the coldest ground found, with the snow brought (as 1.6).
+
+**Where it lives.** People: Wil, Brannoc, Wren; Pages: the Keeper's note, the Tide Folk's remedy; Words: the old script.
+
+**Sound.** None of their own.
+
+**Looks.** Wil, Brannoc and Wren as skins with the `art` skill; the Keepers' ruin and the cairn ring as structures.
+
+**Why:** Mass Effect 2's loyalty missions are each a companion's own story, and the final mission reads them back; here each one is short, uses a verb the act already teaches (track, raid, escort, solve, carry), and its ending is one bit the Hollow reads.
+
+### S48 Act 3 in detail
+
+As `acts.md` builds Act 3 (steps 20 to 28). Every line is a placeholder for the `lore` skill. Act 3's halls are found as Act 2's are (S45, M40): the nearest hall of its kind the world grew in Act 3's band within reach, or one the quest raises on the nearest fitting land. From 2.10 on the voice is labelled "The gaze" (S4).
+
+**3.1 The Morning After** (opens at the hollow at dawn).
+
+1. **The wounded.** Three of the caravan lie hurt in the ash; under the held-up ember each shows where they lie. Right-clicking one carries them to the wagons ("Carry the wounded: 1/3").
+2. **The dead.** Three graves are dug where the tents stood, one for each lost household; right-clicking each mound closes it ("Close the graves: 1/3").
+3. **The gaze speaks.** At the cold fire, those left load what is left and follow the player; nobody says where. The gaze, openly for the first time: "I have no voice. I never needed one. I only looked. His is the only one I have. I'm sorry it's his."
+
+**3.2 Wings** (after 3.1).
+
+1. On the road the gaze: "They fly from a field on the high ground. Wear their grey and they'll take you for one of theirs." The quest puts the Gazebound airfield on the nearest high ground ahead: a mast, a hut, a rack of grey robes, and their airship moored.
+2. **The robes.** On the rack, grey robes with the open eye; taking them is the step's reward (claimed from the journal). While a player wears them, no Gazebound turns on them unless struck first.
+3. **The airship.** Boarding it opens flight for the team: Immersive Aircraft's airship and the gliders fly from now on (D15), where before the quest every aircraft refused to lift.
+4. The gaze: "Up. Look down. Tell me what you see." Make for the caravan's smoke, by air.
+
+**3.3 The Dreaming** (a fire's story by count, the evening after Act 3's first hall).
+
+At the fire the player nods off and wakes with a start: in the dream they looked down at the world from very high, and it was very small, and everything in it stood still. Agna, if she lives: "I've nothing for that." If she died at the hollow, nobody says anything. The gaze: "That was me. That's what I see. All of it."
+
+The Ward, the Mansion and the Scribes open together after Wings and come in any order; the Empty Grave, the act's red moon (S25), opens once all three are done.
+
+**3.4 The Ward** (the Grass Kingdom's hall, savanna).
+
+1. The pull, by feeling, to the Grass Kingdom's hall. At its way down the quest puts the kingdom's gatehouse, a wall of sandstone and acacia across the stair with a gate of bars, and the heir's army's camp before it: tents and banners with the open eye.
+2. **The duel.** The heir's champion stands at the gate and calls out whoever carries the ember: one fight, one against one (any teammate may step in; the champion's health grows with the team online). Losing sends the player back to the fire, and the champion waits.
+3. Beaten, the champion falls and the kingdom opens the gate: the Grass Kingdom's warden takes the player down to the stone under the seal, which powers the ward round their walls.
+4. **The decision**: take the shard, and the ward falls: the gaze comes down on the gatehouse that night, a hold until dawn, and Sky-veil (phantoms do not see the player); or leave it, and the kingdom trusts the player (trust `grass_kingdom` +2, which counts for Keep the oath).
+
+**3.5 The Mansion** (the Shadow Circle's shard, dark forest).
+
+1. The pull to the Shadow Circle's hall: its stone is empty, and Gazebound tracks lead from it to a house they built in the copied shape of the Circle's halls nearby (the quest puts it down: a dark-oak mansion house with a cellar).
+2. **The heist.** Inside: his room, with his ledger on the desk (a clue; it lands in Pages: the names he found for them, and one entry, "the girl. Maren. Mine now."), and touching his chair wakes a short memory of raising Maren: teaching a small girl in grey to talk to the fire (a memory of two steps).
+3. In the cellar: the shard on a stand, and three children of a burnt town in a cage. There is time to get only one out (the Gazebound's horn sounds): the shard (Night-walk: monsters do not notice the player at night unless they run) or the children (they walk with the player to the caravan, an escort; trust with the settled).
+
+**3.6 The Scribes' Books** (the Scribes' hall, mountains).
+
+1. The pull up to the Scribes' hall near a peak.
+2. Their books on the shelves; under the ember one glows. Touching the stone wakes a vision (2.4's kind): Wend, young, reading at their lectern by candlelight, and turning a page, and stopping.
+3. The book he stopped at speaks of a thirteenth shard, "the one that walks". If Ilse lives, she reads it and finds the words that close an Eye; if she died but taught the player the old script (C5), the player reads them. Either way `close_words` is learned, which opens Close the Eye.
+4. The shard: take it (The Flare: a burst of the ember's light that crumbles the gaze's creatures) or leave it.
+
+**3.7 The Empty Grave** (the Grave Keepers' hall, old-growth taiga).
+
+1. The pull to the Grave Keepers' hall: round its way down, rows of Wayfarers' graves (the quest puts the graveyard there), each with a circle-and-line sign.
+2. One grave is open and empty, its stone fresh: WEND. Under it, small: M. (a clue; the journal: Maren cut it).
+3. The shard on the stone: taking it wakes the dead, and the red moon rises: a hold in the graveyard until dawn (Act 3's red moon, S25). Hush follows the morning (while crouching, the player's light sinks and the gaze's creatures lose them). Leaving it: the dead sleep.
+
+**3.8 The Rider** (by count, the evening after Act 3's third hall).
+
+1. At the caravan's fire a rider in grey comes out of the dark at a gallop, snatches Pip (if Pip died at the hollow, Wil, Wren or another survivor) and rides off.
+2. **The chase.** The rider flees on horseback; the compass marks him. He can be caught on foot, horse or by air: getting within 4 blocks of him, or bringing his horse down, ends it. If the team falls far behind he slows, so he is always caught in the end.
+3. Caught, he drops the child and says: "He doesn't want the child. He wants you at the gate." He rides off; the child walks back with the player (an escort).
+
+**3.9 The Keepers' Door** (by count, the evening after Act 3's fourth hall).
+
+1. The compass marks the nearest stronghold of the far ring. In its hall of the frame wait the Keepers, old Wayfarers who would not walk; their watch stands at the stair.
+2. **Sneak**: the Keepers' watchers (people with lanterns) see a player within 8 blocks who is not crouching; seen, the watch calls, and the Keepers come. Either way they catch the player at the frame (sneaking only decides whether they come quietly).
+3. The oldest Keeper looks at the ember, and then at the player's eyes: "The thirteenth." The second reveal: the Eye's last piece is in the player, and was put there when Wend gave them the ember; that is why a frame takes what is brought. The gaze, quietly: "Yes."
+
+**Edge cases.**
+- A companion lost at the hollow: every line of theirs in Act 3 has a `when` for the living, and an unsaid line is skipped; a person the quest needs to speak (Agna in 3.3) is replaced by narration.
+- Flight before 3.2: aircraft refuse to lift and gliders do not open, as ships did before 1.11.
+- The duel in a team: the champion fights whoever is nearest; everyone may join, and his health grows per player.
+- The heist: alarm or not, the choice is the same; the horn only sounds once the cellar is reached.
+- The chase: the rider never leaves the overworld and never crosses deep water.
+- The Keepers' Door: the sneak cannot fail the quest; being seen only changes the line the Keepers greet the player with.
+
+**Why:** Act 3's verbs (Sneak, Disguise, Heist, Duel, Chase, Escort, Carry, S16) each get one quest that shows them plainly, while the act's spine is reading Wend backwards to the reveal: his chair, his ledger, his book, his own empty grave, and the Keepers who barred their door to him and now name the player.
+
+### S49 The finale in detail
+
+**F1 The Gate** (opens with 3.9, at the stronghold's frame).
+
+1. The heir's band comes down the stronghold's stair: a hold of the act's size at the frame (named fights scale with the team, M37).
+2. Maren is with them. If the team ate or kept her bread and spoke her fair (1.5, 2.9), she breaks Wend's seal on the letter she carried for thirty winters, reads it, and turns on her band: the hold ends. Otherwise the hold runs its waves.
+3. A memory, at the frame: the night of the prologue, from Wend's side. The player plays him dying at the Last Camp, finding a face by the road, and giving it the ember; his real last whisper surfaces under the mask: "...don't let it look at them..." (S4).
+
+**F2 The Doors** (at the frame, with the shards the team carries).
+
+The team chooses (two thirds, M3) among the doors that are open (S8): Blind it (always), Give it its sight (always), Keep the oath (two of the four living peoples trust the player), Close the Eye (`close_words`). The choice is said at the frame as a talk with the gaze.
+
+- **Blind it**: setting the shards opens the portal (the gate as it is built); the dragon fights with the sight the shards gave it (M14).
+- **Give it its sight**: the shards go into the frame and the Eye opens on the world; the gaze promises a home and keeps it (S8's world after).
+- **Keep the oath**: the shards go back to the peoples who trust the player; the road goes on.
+- **Close the Eye**: whoever steps into the frame first is the one (S5); the Eye closes.
+
+**F3 After.** Each door's world (S8) and its last line; "Build a home" where a door gives one.
+
+**Edge cases.** A team that never learned `close_words` sees Close the Eye closed, with the line that says what would open it; the same for Keep the oath. Dying in the hold sends the player back to the stronghold's entrance; the hold keeps its wave. A team that already set the shards into the frame by hand before F2 has chosen Blind it.
+
+**Why:** The last act of the story is the oldest one of the game: the frame, the Eye, the dragon. The doors are the doors S8 settled, opened by what the road did, and F1 gives the man whose voice the player carried the last word that was really his.
+
+### S50 Act 2's side quests in detail
+
+The side quests of Act 2's evenings that read what the main road decided (S6). Every line is a placeholder for the `lore` skill.
+
+- **T2 Night Fishing** (after 2.3): Morwen asks the player out with the Tide Folk's boats. If any of the bay's shards was taken, their boats are seen now: a hold on the bay at night. If none was taken, a night's fishing among friends, and a share of the catch.
+- **T3 The Raiders** (after 2.6): Sefa sends word. If the worm was killed, raiders come down on the Sand Singers' camp: a hold of the heir's men. If it was spared, they sing the player the worm's song, and the second time the man with the coal turns round.
+- **W1 The Burning** (after 2.5): the nearest village to the caravan, doors barred; the gaze comes for it at night: a hold, and in the morning half its roofs are gone.
+- **W3 The Quarrel** (after C3, while Nell is with the caravan): Nell against Corin at the fire. Settle it and both stay; side with one and the other leaves the caravan (and so is not there at the Hollow).
+- **W6 The Settled Wayfarer** (after 2.4): the ember pulls to a village where Oswin, an old Wayfarer, stopped for a woman with a garden; his ember is the size of a seed. Talk him back onto the road, or sit with him until it goes out.
+
+**Edge cases.** A quest whose people are gone (Nell away, the Tide Folk's bay never reached) waits in the journal and never begins; a hold's usual rules apply (M37); a village the quests need is the nearest grown one, or one raised ahead.
+
+**Why:** Act 2's decisions cost people the player has met; these evenings let the player see the cost (or the thanks) on a night of its own, with the verbs the act already taught.
+
+### S51 Act 3's side quests in detail
+
+Every line is a placeholder for the `lore` skill.
+
+- **T4 Through the Lines** (after 3.4): the warden asks the player to carry word through the heir's camp that the kingdom stands; in the grey robe they pass, and on the far side the heir's sister takes the message: she lives inside the kingdom's land.
+- **W10 The Pilgrims** (after 3.6): Hesper, a pilgrim, asks to walk with the player to the Keepers; at the stronghold they turn her away, as they turned Wend.
+- The rest of the side quests are in S52.
+
+**Why:** Both show the far ring's people the player is walking towards: the kingdom that trusts them and the Keepers who bar their door to everyone.
+
+### S52 The remaining side quests in detail
+
+Every line is a placeholder for the `lore` skill. Each is built from the step kinds the main road already uses; every place goes up out of sight, ahead of the caravan, as the errands' places do (S47).
+
+| Quest | Opens | Steps | Outcome |
+|---|---|---|---|
+| C4 Bram's Son | After 1.3 | A herder with two dogs walks in at the caravan's fire (`visit`): the Gazebound took his son Davy to an outpost a day ahead. Reach the outpost, hold against its men, then talk with the boy at its foot: he carries the scar, and the night's creatures pass him by. At the caravan Bram takes him in and cannot look at him | Bram and Davy join the caravan, a lean-to at the edge |
+| C8 The Road, stage 2: Tracks | After 2.2 | Pip asks to learn tracking. The player takes Pip to a fox's den half a day ahead, and Pip reads the den and the two prints leading on from it. At the fire Pip tells Tamsin what the prints said | Pip has learned to read the ground |
+| C8 The Road, stage 3: Pip's Ember | After 3.3 | At the fire Pip asks what happens to the ember if the player dies. Answers: "If it comes to that, it's yours." or "It goes in the ground with me." | The choice is kept; Close the Eye (F3) has Pip's line follow it |
+| W2 The Scar of the Searched | After 2.5 | Corin hears of a rite at an outpost ahead. Reach it: the rite is over, a novice lies dead at its foot. Look at the burnt circle and the boy's opened coat (two clues). At the fire Corin names him, if Corin lives: Tobin, fifteen | The cost of the scar, seen once |
+| W4 The First Gate | After 3.2 | The gaze says the Cities are under the player's feet here. Dig down to the Ancient City raised ahead and read the book on the lectern at its centre; the Warden is the city's own | The one book that hints at the silence (S21) |
+| W7 Maren's Gifts, stages 2 and 3 | With 1.2's gift | After 2.2 a bundle waits ahead (a barrel), with bread, dried fish and a note; after 3.2 a last one, whose note says "He never ate enough either" | Two more of Maren's notes in Pages |
+| W8 Captains' Pages, stages 2 and 3 | With the first page | Pages 4 and 5 lie in the outposts beyond the sea (only once 2.2 is done); page 6, in Wend's own hand, lies on a lectern in the Shadow Circle's house (3.5). Corin reads them at the fire, if he lives | The heir's orders came from Wend's hand, years before |
+| W9 The Horse That Never Sleeps | After 2.6 | Pip has heard from the Sand Singers of a horse on the grass that never sleeps. Find it on the nearest grassland or savanna ahead: it turns its head to the nearest player and never looks away. Tame it and bring it to the fire | The player's own horse, fast and unsleeping |
+| W11 The Dice, stage 2 | With the first game | After 3.2, win one game in any tavern: the dicer bets a chart | A chart with the Keepers' door marked on it, far out where the maps end |
+| W12 The Phantom Nest | After 3.2 | At dawn the phantoms drop away towards one height ahead. Reach their nest and kill the nest's mother, a phantom four times the size | The nest burns: half as many phantoms hunt a full veil |
+
+Edge cases:
+
+- **Walking off.** Every place stays where it was put; the compass keeps pointing at it, and the step waits.
+- **Alone.** Nothing waits for a second player; the hold at Bram's outpost scales with the team online.
+- **Death.** In the hold, the hold's retry applies (M37). Killed by the nest's mother, the duel's foe keeps its health and waits at the nest.
+- **The horse dies untamed.** A new one is put down at the same place the next time it is out of sight.
+- **Corin or Pip lost at the Hollow.** Their lines are skipped and the step finishes on the narrator's line; Pip's Ember never opens without Pip.
+- **Reload.** Places, the horse and the bundles are kept in the save; the duel's foe is found by its tag.
+- **A teammate.** The first to tame the horse owns it; the dicer's map goes to whoever won it. Everything else the story gives, every player claims for themselves (D11).
+- **Read early.** A page read before its step is reached counts when the step begins.
+
+**Why:** Each closes a thread the main road opened and leaves to the side: a child taken, a scar's cost, the Cities' fall, Maren's care, the plan's author, the gaze's beasts.
 
 ## Open
 

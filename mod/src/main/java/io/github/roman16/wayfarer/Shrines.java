@@ -1,6 +1,7 @@
 package io.github.roman16.wayfarer;
 
 import io.github.roman16.wayfarer.story.Engine;
+import io.github.roman16.wayfarer.story.Memories;
 import io.github.roman16.wayfarer.story.Pages;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
@@ -95,6 +97,9 @@ public final class Shrines {
     }
 
     public static void claim(ServerPlayer player, BlockPos pedestal) {
+        if (Memories.touch(player, pedestal, ItemStack.EMPTY) || Engine.touches(player, pedestal)) {
+            return;
+        }
         Optional<ResourceLocation> found = player.level().getBlockEntity(pedestal) instanceof ShrinePedestalBlockEntity entity
                 ? entity.shrine()
                 : Optional.empty();
@@ -103,9 +108,12 @@ public final class Shrines {
             return;
         }
         ResourceLocation shrine = found.get();
-        if (Engine.asks(player, pedestal, shrine)) {
-            return;
+        if (!Engine.asks(player, pedestal, shrine)) {
+            take(player, shrine);
         }
+    }
+
+    public static void take(ServerPlayer player, ResourceLocation shrine) {
         if (!Journey.of(player.server).claim(shrine)) {
             player.displayClientMessage(Component.translatable("wayfarer.shrine.spent", eyeName(shrine)).withStyle(ChatFormatting.GRAY), true);
             return;

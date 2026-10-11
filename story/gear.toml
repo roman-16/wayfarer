@@ -1,5 +1,23 @@
 opens = { claimed = "ash/evening" }
 
+[forge]
+already = "It's frost iron already."
+book_no_hammer = "Pretty book. Useless in your hands. And in mine, with this hammer."
+book_wont = "It won't take what's in that book."
+half = "That's better than this hammer leaves it."
+here = "Here. Mind the edge."
+leave = "Leave it with me tonight."
+leave_half = "Leave it with me tonight. Halfway is the best this hammer does."
+lumps = { axe = 3, boots = 4, chestplate = 8, helmet = 5, hoe = 2, leggings = 7, pickaxe = 3, shovel = 1, sword = 2 }
+no_hammer = "Not till I've a hammer for it."
+not_mine = "That's not mine to make again. Hold it out with nothing in your other hand, and I'll mend it."
+not_yet = "Not till morning."
+numbers = ["none", "one", "two", "three", "four", "five", "six", "seven", "eight"]
+room = "Make room. I'll not drop it in the mud."
+short = "{wants} {need}. You've {have}."
+whole = "It's whole. Nothing for me to do."
+wants = { axe = "An axe wants", boots = "Boots want", chestplate = "A chestplate wants", helmet = "A helmet wants", hoe = "A hoe wants", leggings = "Leggings want", pickaxe = "A pickaxe wants", shovel = "A shovel wants", sword = "A sword wants" }
+
 [[lines]]
 by = "hob"
 id = "hob_metal"
@@ -33,9 +51,16 @@ made = "Hob made it for a man who didn't live to fetch it."
 name = "Hob's Blade"
 
 [[rows.things]]
+good = "Holds its edge, and wears half again as long as iron."
+have = [{ gear = "tool", material = "wayfarer:frost_iron" }]
 id = "frost_metal"
+made = "Hob made it, overnight."
+make = "In the evening, hold your sword out to Hob with the frost iron in your other hand. It's ready at dawn."
 name = "The Frost Walkers' metal"
 named_by = "hob_metal"
+needs = [
+  { count = 2, item = "wayfarer:raw_frost_iron", name = "lumps of frost iron", where = "dug where the Frost Walkers dug it" },
+]
 
 [[rows]]
 appears = { claimed = "ash/evening" }
@@ -100,9 +125,16 @@ needs = [
 ]
 
 [[rows.things]]
+good = "Digs a little faster than iron, and wears half again as long."
+have = [{ gear = "tool", material = "wayfarer:frost_iron" }]
 id = "frost_metal"
+made = "Hob made it, overnight."
+make = "In the evening, hold your pickaxe out to Hob with the frost iron in your other hand. It's ready at dawn."
 name = "The Frost Walkers' metal"
 named_by = "hob_metal"
+needs = [
+  { count = 3, item = "wayfarer:raw_frost_iron", name = "lumps of frost iron", where = "dug where the Frost Walkers dug it" },
+]
 
 [[rows.things]]
 apart = true
@@ -169,9 +201,16 @@ needs = [
 ]
 
 [[rows.things]]
+good = "Keeps a blow out a little better than iron, and wears half again as long."
+have = [{ gear = "armour", material = "wayfarer:frost_iron" }]
 id = "frost_metal"
+made = "Hob made it, overnight."
+make = "In the evening, hold your chestplate out to Hob with the frost iron in your other hand. It's ready at dawn."
 name = "The Frost Walkers' metal"
 named_by = "hob_metal"
+needs = [
+  { count = 8, item = "wayfarer:raw_frost_iron", name = "lumps of frost iron", where = "dug where the Frost Walkers dug it" },
+]
 
 [[rows]]
 appears = { claimed = "the_last_fire" }
@@ -364,7 +403,10 @@ needs = [
 ]
 
 [[rows.things]]
+good = "Carry you over powder snow, and faster over snow."
+have = [{ item = "artifacts:snowshoes" }]
 id = "snowshoes"
+made = "Nell's mother made them."
 name = "The Frost Walkers' snowshoes"
 named_by = "agna_cold"
 

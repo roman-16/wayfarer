@@ -1,0 +1,100 @@
+{
+  "values": [
+    {
+      "id": "betterdungeons:skeleton_dungeon",
+      "required": false
+    },
+    {
+      "id": "betterdungeons:small_dungeon",
+      "required": false
+    },
+    {
+      "id": "betterdungeons:spider_dungeon",
+      "required": false
+    },
+    {
+      "id": "betterdungeons:zombie_dungeon",
+      "required": false
+    },
+    {
+      "id": "dungeons_arise:foundry",
+      "required": false
+    },
+    {
+      "id": "minecraft:buried_treasure",
+      "required": false
+    },
+    {
+      "id": "nova_structures:bunker",
+      "required": false
+    },
+    {
+      "id": "nova_structures:deepslate_camp",
+      "required": false
+    },
+    {
+      "id": "nova_structures:underground_house",
+      "required": false
+    },
+    {
+      "id": "spelunkery:cinnabar_wire",
+      "required": false
+    },
+    {
+      "id": "structory:taiga_ruin_underground",
+      "required": false
+    },
+    {
+      "id": "terralith:underground/frosted_dungeon",
+      "required": false
+    },
+    {
+      "id": "terralith:underground/giant_bee_hive",
+      "required": false
+    },
+    {
+      "id": "terralith:underground/oak_cabin",
+      "required": false
+    },
+    {
+      "id": "terralith:underground/old_refinery",
+      "required": false
+    },
+    {
+      "id": "terralith:underground/sunken_tower",
+      "required": false
+    },
+    {
+      "id": "trek:monster_room/lower/deep_dark",
+      "required": false
+    },
+    {
+      "id": "trek:monster_room/lower/default",
+      "required": false
+    },
+    {
+      "id": "trek:monster_room/lower/dripstone",
+      "required": false
+    },
+    {
+      "id": "trek:monster_room/lower/lush",
+      "required": false
+    },
+    {
+      "id": "trek:monster_room/upper/default",
+      "required": false
+    },
+    {
+      "id": "trek:monster_room/upper/dripstone",
+      "required": false
+    },
+    {
+      "id": "trek:monster_room/upper/lush",
+      "required": false
+    },
+    {
+      "id": "trek:monster_room/upper/oak",
+      "required": false
+    }
+  ]
+}

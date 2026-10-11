@@ -38,6 +38,7 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.ModList;
@@ -117,10 +118,12 @@ public final class JournalScreen extends Screen {
     public static void show(String view) {
         latest = view;
         Recap.remember(view);
+        Gifts.remember(view);
     }
 
     public static void forget() {
         latest = "{}";
+        Gifts.forget();
         MARKED.clear();
         firstPage();
     }
@@ -592,7 +595,11 @@ public final class JournalScreen extends Screen {
     }
 
     private int entryTop(@Nullable Entry entry) {
-        return pagesTop() + PAD + (entry == null ? 0 : Stamp.DISPLAY_HEIGHT + TITLE_GAP + Stamp.DIVIDER_HEIGHT + 2);
+        return pagesTop() + PAD + (entry == null ? 0 : titleLines(entry).size() * Stamp.DISPLAY_HEIGHT + TITLE_GAP + Stamp.DIVIDER_HEIGHT + 2);
+    }
+
+    private List<FormattedCharSequence> titleLines(Entry entry) {
+        return font.split(Stamp.display(entry.label().getString()), pageWidth() - PAD * 2);
     }
 
     private int listBottom() {
@@ -624,8 +631,11 @@ public final class JournalScreen extends Screen {
         Entry chosen = chosen();
         if (chosen != null) {
             int color = chosen.kind() == Kind.REWARD && chosen.color() == GOLD ? GOLD : TITLE_INK;
-            String title = font.substrByWidth(Stamp.display(chosen.label().getString()), pageWidth() - PAD * 2).getString();
-            Stamp.title(graphics, font, title, x, pagesTop() + PAD, color, false);
+            int titleY = pagesTop() + PAD;
+            for (FormattedCharSequence line : titleLines(chosen)) {
+                Stamp.title(graphics, font, line, x, titleY, color, false);
+                titleY += Stamp.DISPLAY_HEIGHT;
+            }
             Stamp.divider(graphics, x, entryTop(chosen) - Stamp.DIVIDER_HEIGHT - 2, pageWidth() - PAD * 2, true);
         }
         int pageTop = entryTop(chosen);

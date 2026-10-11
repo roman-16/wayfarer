@@ -1,0 +1,82 @@
+{
+  "animations": {
+    "standing_bowing": {
+      "bones": {
+        "Body": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            18,
+            0,
+            0
+          ]
+        },
+        "Head": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            52,
+            0,
+            0
+          ]
+        },
+        "LeftArm": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            -20,
+            0,
+            -4
+          ]
+        },
+        "LeftLeg": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        "RightArm": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            -20,
+            0,
+            4
+          ]
+        },
+        "RightLeg": {
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "loop": "hold_on_last_frame"
+    }
+  },
+  "format_version": "1.8.0"
+}

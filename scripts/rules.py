@@ -19,6 +19,11 @@ SIDES = {"both", "client"}
 SIGN_LINES = 4
 SIGN_WIDTH = 15
 SLIDERS = {"ambient", "blocks", "hostile", "master", "music", "neutral", "players", "record", "voice", "weather"}
+CHASE_OUTCOMES = {"caught"}
+DUEL_OUTCOMES = {"won"}
+ESCORT_OUTCOMES = {"arrived", "late"}
+SEA_OUTCOMES = {"held", "sunk"}
+WORM_OUTCOMES = {"killed", "spared"}
 SOUND_KINDS = {"frequent", "loop", "rare"}
 TRANSLATION = re.compile(r'"(wayfarer\.[a-z_.]+[a-z_])"')
 INTERFACE = MOD / "main/java/io/github/roman16/wayfarer/client"
@@ -100,47 +105,152 @@ def books():
                 yield f"story/books.toml: a page of {entry['title']!r} is {len(page)} characters; a book page holds about {PAGE_LIMIT}"
 
 
+FATES = {"away", "lives", "lost"}
 KINDS = {
+    "board",
     "bury",
     "camp",
     "caravan",
+    "chase",
     "clues",
     "dawn",
+    "duel",
     "dusk",
+    "escort",
+    "gather",
+    "give",
     "hold",
+    "home",
     "horse",
+    "locks",
     "memory",
     "reach",
+    "read",
     "rest",
+    "sail",
+    "say",
+    "sea",
     "shard",
+    "slay",
     "sleep",
     "talk",
-    "wait",
+    "vision",
     "visit",
+    "wait",
     "walk",
+    "wins",
+    "worm",
 }
-MEMORY_KINDS = {"cook", "gather", "lay", "light", "notch", "talk"}
+MEMORY_KINDS = {"away", "cast", "climb", "cook", "gather", "lay", "light", "notch", "say", "take", "talk"}
 PLACES = {
+    "airfield",
     "bell",
     "bell_agna",
     "bell_hob",
     "bell_pip",
+    "bram_outpost",
+    "bram_son",
+    "brannoc",
     "brother",
+    "bundle",
+    "burning",
     "cache",
+    "cairns",
+    "cairns_nell",
     "caravan",
     "cellar",
+    "den",
+    "dice",
     "diggers",
     "diggers_hall",
+    "dry",
+    "dry_stone",
+    "errand_outpost",
+    "far_shore",
+    "fire_1",
+    "fire_2",
     "first_camp",
+    "first_gate",
+    "first_village",
+    "first_village_melt",
+    "first_village_stone",
     "ford",
     "ford_far",
+    "frost",
+    "frost_hall",
+    "frost_inside",
+    "frost_lake",
+    "frost_lake_stone",
+    "frost_mine",
+    "frost_mine_cart",
+    "frost_mine_deep",
+    "frost_rim",
+    "frost_roof",
+    "frost_shore",
+    "frost_stair",
+    "frost_stone",
+    "frost_tracks",
+    "graveyard",
+    "graveyard_stone",
+    "hollow",
+    "home",
+    "keepers",
+    "keepers_oldest",
+    "last_bundle",
     "last_camp",
+    "locks",
+    "locks_heir",
+    "locks_stone",
+    "mansion",
+    "mansion_captive_1",
+    "mansion_captive_2",
+    "mansion_captive_3",
+    "mansion_chair",
+    "mansion_hall",
+    "mansion_stand",
     "maren",
     "marsh",
     "marsh_cellar",
     "marsh_fisher",
     "marsh_hall",
+    "missing",
+    "nest",
+    "never_sleeps",
+    "novice",
+    "reading_house",
+    "reading_house_stair",
+    "reading_house_vault",
+    "rite",
+    "sand",
+    "sand_lair",
+    "sand_sefa",
+    "scribes",
+    "scribes_stone",
+    "seal",
+    "settled",
+    "settled_wayfarer",
+    "shipyard",
+    "shipyard_hull",
+    "shipyard_jetty",
+    "shipyard_launch",
+    "shipyard_quay",
+    "shipyard_wreck",
+    "tamsins_bell",
+    "tide",
+    "tide_hall",
+    "tide_inside",
+    "tide_morwen",
+    "tide_warden_1",
+    "tide_warden_2",
     "tollbridge",
+    "ward",
+    "ward_champion",
+    "ward_lines",
+    "ward_stone",
+    "ward_warden",
+    "wend_camp",
+    "wend_camp_chair",
+    "wil",
 }
 KNOWN = {"feeling"}
 TASKS = {
@@ -150,15 +260,18 @@ TASKS = {
     "enter",
     "fire",
     "horse",
+    "hull",
     "look",
     "map",
     "marks",
     "pack",
     "rest",
+    "sail",
     "search",
     "stone",
     "sweep",
     "tent",
+    "tracks",
 }
 
 
@@ -169,10 +282,15 @@ def story():
     for memory in memories.values():
         if memory["place"] not in PLACES:
             yield f"story/quests.toml: the memory {memory['id']} happens at {memory['place']}; the story builds {', '.join(sorted(PLACES))}"
+    people = set(tomllib.loads((ROOT / "story/people.toml").read_text()))
+    for memory in memories.values():
         for step in memory["steps"]:
             if step["kind"] not in MEMORY_KINDS:
                 yield f"story/quests.toml: the memory {memory['id']} has a {step['kind']} step; a memory knows {', '.join(sorted(MEMORY_KINDS))}"
-    people = set(tomllib.loads((ROOT / "story/people.toml").read_text()))
+            said = step.get("lines", []) + step.get("done", [])
+            for person in [line["by"] for line in said if "by" in line] + ([step["meets"]] if "meets" in step else []):
+                if person not in people:
+                    yield f"story/quests.toml: the memory {memory['id']}/{step['id']} names {person}, who is not in story/people.toml"
     lang = json.loads((MOD / "main/resources/assets/wayfarer/lang/en_us.json").read_text())
     sounds = tomllib.loads((ROOT / "story/sounds.toml").read_text())
     for piece in sounds["music"]:
@@ -193,6 +311,21 @@ def story():
         for line in [line for key in ("ask", "hid", "won") for line in spec.get(key, [])]:
             if "by" in line and line["by"] not in people:
                 yield f"story/scenes.toml: the {scene} scene has {line['by']} speak, who is not in story/people.toml"
+    outcomes = {
+        f"{quest['id']}/{step['id']}": {choice["id"] for choice in step.get("choices", [])}
+        | (CHASE_OUTCOMES if step["kind"] == "chase" else set())
+        | (DUEL_OUTCOMES if step["kind"] == "duel" else set())
+        | (ESCORT_OUTCOMES if step["kind"] == "escort" else set())
+        | (SEA_OUTCOMES if step["kind"] == "sea" else set())
+        | (WORM_OUTCOMES if step["kind"] == "worm" else set())
+        for quest in quests
+        for step in quest["steps"]
+    } | {
+        f"{quest['id']}/{person}": FATES
+        for quest in quests
+        for step in quest["steps"]
+        for person in step.get("fates", {})
+    }
     for quest in quests:
         if "found" in quest and quest["found"] not in PLACES:
             yield f"story/quests.toml: {quest['id']} opens when {quest['found']} is found; the story builds {', '.join(sorted(PLACES))}"
@@ -203,6 +336,13 @@ def story():
         for after in quest.get("after", []):
             if after not in ids:
                 yield f"story/quests.toml: {quest['id']} comes after {after}, which is not a quest"
+        for condition in quest.get("when", []):
+            asked, _, answer = condition.lstrip("!").partition("=")
+            if answer not in outcomes.get(asked, set()):
+                yield f"story/quests.toml: {quest['id']} opens when {asked} chose {answer}, which that step never offers"
+        for word in quest.get("renamed", {}):
+            if f"wayfarer.word.{word}" not in lang and word not in people:
+                yield f"story/quests.toml: {quest['id']} is renamed once {word} is named, which is neither a person nor a word in the language file"
         for line in quest.get("road", []):
             if "by" in line and line["by"] not in people:
                 yield f"story/quests.toml: {quest['id']} has {line['by']} speak on the road, who is not in story/people.toml"
@@ -220,6 +360,7 @@ def story():
             named = [line["by"] for line in said if "by" in line]
             named += [step[key] for key in ("whom", "with") if key in step]
             named += [line["vanishes"] for line in said if "vanishes" in line]
+            named += step.get("faces", []) + step.get("figures", [])
             named += (
                 list(step.get("people", {}))
                 + list(step.get("poses", {}))
@@ -228,6 +369,8 @@ def story():
                 + step.get("keep", [])
                 + step.get("leaves", [])
                 + ([step["joins"]] if "joins" in step else [])
+                + ([step["shoots"]] if "shoots" in step else [])
+                + [choice["leaves"] for choice in step.get("choices", []) if "leaves" in choice]
             )
             for person in named:
                 if person not in people:
@@ -241,18 +384,23 @@ def story():
                 if "needs" in choice and choice["needs"] not in ids:
                     yield f"{where} offers {choice['id']} once {choice['needs']} has begun, which is not a quest"
             for line in said:
+                if "when" in line and not line["when"].lstrip("!").startswith(("gift:", "trusted:")):
+                    asked, _, answer = line["when"].lstrip("!").partition("=")
+                    if answer not in outcomes.get(asked, set()):
+                        yield f"{where} says a line when {asked} chose {answer}, which that step never offers"
                 if "sound" in line and line["sound"] not in sounds["effects"]:
                     yield f"{where} plays the sound {line['sound']}, which story/sounds.toml does not have"
                 if "music" in line and line["music"] not in sounds["music"]:
                     yield f"{where} plays the piece {line['music']}, which story/sounds.toml does not have"
             if "music" in step and not sounds["music"].get(step["music"], {}).get("loop"):
                 yield f"{where} loops the piece {step['music']}, which story/sounds.toml does not mark loop = true"
-            if step["kind"] == "shard" and "gift" in step and f"wayfarer.gift.{step['gift']}" not in lang:
-                yield f"{where} gives the gift {step['gift']}; add wayfarer.gift.{step['gift']} to the language file"
+            for gift in step.get("gifts", {}).values():
+                if f"wayfarer.gift.{gift}" not in lang:
+                    yield f"{where} gives the gift {gift}; add wayfarer.gift.{gift} to the language file"
             for word in step.get("words", {}):
                 if f"wayfarer.word.{word}" not in lang:
                     yield f"{where} teaches the word {word}; add wayfarer.word.{word} to the language file"
-            places = [step[key] for key in ("from", "place", "at", "toward") if key in step]
+            places = [step[key] for key in ("at", "builds", "from", "place", "toward") if key in step]
             places += [move["place"] for move in step.get("moves", {}).values()]
             for place in places:
                 if place not in PLACES:

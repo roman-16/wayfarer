@@ -50,6 +50,17 @@ final class Clues {
                 box(level, Vec3.atBottomCenterOf(ground), clue));
     }
 
+    static Entity mark(ServerLevel level, Vec3 at, BlockState state, float width, float length, Vec3 along, String clue) {
+        double turn = Math.atan2(along.x, along.z);
+        float sin = (float) Math.sin(turn);
+        float cos = (float) Math.cos(turn);
+        CompoundTag tag = tag(state);
+        CompoundTag transformation = transformation(width, PRINT_HEIGHT, length, -(width / 2 * cos + length / 2 * sin), 0, width / 2 * sin - length / 2 * cos);
+        transformation.put("left_rotation", floats(0, (float) Math.sin(turn / 2), 0, (float) Math.cos(turn / 2)));
+        tag.put("transformation", transformation);
+        return spawn(level, tag, at, clue);
+    }
+
     static Entity display(ServerLevel level, BlockPos at, float scale, String clue) {
         BlockState state = level.getBlockState(at);
         CompoundTag tag = tag(state);

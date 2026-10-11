@@ -28,6 +28,15 @@
       ],
       "title": "The Gate We Built"
     },
+    "first_gate/last_record": {
+      "author": "An archivist of the deep city",
+      "pages": [
+        "I write this by the gate, because the gate is the only thing in the city still making a sound. It hums, very low, the note it made the day it opened.",
+        "What came through was not the dragon's. The dragon only watches. This wants nothing watched, nothing moving, nothing at all. It is patient. It has all the time there is.",
+        "If you came down here carrying a light, keep walking. Everything that stops, it finds."
+      ],
+      "title": "The Last Record"
+    },
     "gazebound/grass_king": {
       "author": "The Gazebound",
       "pages": [
@@ -53,6 +62,46 @@
       ],
       "title": "Orders for the Captains"
     },
+    "gazebound/orders_1": {
+      "author": "A Gazebound captain",
+      "pages": [
+        "By the heir's word, to every outpost on the south roads. Watch for smoke where no village stands. A Wayfarer's fire is small, and burns each night in a new place.",
+        "Do not fight whoever carries one. Do not let them see you follow. Feed them. A light that is fed walks further."
+      ],
+      "title": "Captain's Orders, I"
+    },
+    "gazebound/orders_2": {
+      "author": "A Gazebound captain",
+      "pages": [
+        "The finder's ember is dark, and he walks no more. We keep him at the grass halls for the day it can be passed.",
+        "Our hope is whoever he passes it to. When the old man lights his last fire, follow the one who leaves it."
+      ],
+      "title": "Captain's Orders, II"
+    },
+    "gazebound/orders_3": {
+      "author": "A Gazebound captain",
+      "pages": [
+        "A carrier who trusts us walks faster than one who fears us. Let the swamp women and the snow folk think the worst of us. It costs us nothing.",
+        "Leave bread where the carrier sleeps. Take nothing from them. Every shard they lift is one we could never lift ourselves."
+      ],
+      "title": "Captain's Orders, III"
+    },
+    "gazebound/orders_4": {
+      "author": "A Gazebound captain",
+      "pages": [
+        "To the outposts beyond the sea. The carrier has crossed. Keep to the far shore, and let them find the halls before you do.",
+        "Wherever they lift a shard, be there the morning after. Take nothing. Leave nothing but bread."
+      ],
+      "title": "Captain's Orders, IV"
+    },
+    "gazebound/orders_5": {
+      "author": "A Gazebound captain",
+      "pages": [
+        "The heir rides to the jungle halls himself. Whatever the carrier cannot open, he will stand beside them and wait.",
+        "Keep close to their camp, and closer when the moon turns. So it was written in the old captain's own hand, and his page is kept at his house in the dark wood."
+      ],
+      "title": "Captain's Orders, V"
+    },
     "gazebound/shadow_circle": {
       "author": "The Gazebound",
       "pages": [
@@ -60,6 +109,25 @@
         "They say the burden is the point. They say the shard must be carried, not kept. They are dead, and we are not. Keep searching."
       ],
       "title": "The Halls of the Shadow Circle"
+    },
+    "jungle/prayer": {
+      "author": "The Jungle Folk",
+      "pages": [
+        "Sleep, little locks. Sleep, and keep what is ours.\n\nSleep through the rain and the root and the years. Sleep through every hand that is not ours.",
+        "Our stone sleeps while you sleep. Let it sleep until our children come home.\n\nOnly the word our children knew will rouse you, and our children knew one word before all others: WAKE."
+      ],
+      "title": "The Jungle Folk's Prayer"
+    },
+    "keepers/breaking": {
+      "author": "The Keepers",
+      "pages": [
+        "The Eye sat in the portal between the worlds, and through it the dragon watched everything that stood still. Where it looked, its creatures came. That is how the deep cities fell.",
+        "Those who lived tore the Eye out of the portal, and the dragon went blind. They meant to destroy it. Fire, the sea and the hammer could only break it.",
+        "Whole, it would sit in any frame again. So they broke it in twelve, and sent each shard to one of twelve peoples at the far ends of the world, to hide.",
+        "Its light came loose when it broke. Those who carried it walked, and swore it: never settle, never shine, everything carried. We call them Wayfarers.",
+        "Note for the reader. A frame takes whatever of the Eye it is brought. One shard or twelve, it closes the same. Do not let anyone tell you otherwise."
+      ],
+      "title": "The Breaking"
     },
     "keepers/distance": {
       "author": "The Keepers",
@@ -88,6 +156,29 @@
       ],
       "title": "The Last Keeper"
     },
+    "keepers/wend": {
+      "author": "A Keeper",
+      "pages": [
+        "The finder came to our door again tonight. His ember is the size of a pea. He asked to stay one winter, only one, and said he was tired.",
+        "We told him what we tell them all: a Wayfarer who stops is a door left open. He said we were a door shut. He cursed us, and the oath, and the road.",
+        "He walked off towards the grey coats' fires. Seal this, and pray we were right."
+      ],
+      "title": "A Keeper's Note"
+    },
+    "maren/bundle": {
+      "author": "M.",
+      "pages": [
+        "Across the sea already. He'd have been proud of you, the old fool.\n\nEat something warm tonight.\n\n- M."
+      ],
+      "title": "A Note"
+    },
+    "maren/last": {
+      "author": "M.",
+      "pages": [
+        "You fly now. I never could keep up with him either.\n\nEat. He never ate enough either.\n\n- M."
+      ],
+      "title": "The Last Note"
+    },
     "maren/note": {
       "author": "M.",
       "pages": [
@@ -106,18 +197,19 @@
     "people/black": {
       "author": "The Tide Folk",
       "pages": [
-        "The Tide Folk lived where the land gives up and the sea begins. They took the black shard because no one else wanted a thing that drank the light.",
-        "They buried it the way they buried everything worth keeping: below the tideline, under a fire that was never lit twice in the same place.",
-        "If you are reading this, the fire was lit again. Take the shard. The sea will forget us, as it should."
+        "We are the Tide Folk, and this is our bay. Nothing comes up out of it at night, so our boats go out with lamps lit, and we eat.",
+        "The Drowned City's last swam in on a winter tide with their stone in a net between them, and asked us to keep it from the eye that drowned them. We swore on the fire pit.",
+        "If you are reading this, you carry a fire in your hand, and you know what lies on our stone. Take what you must. Leave us the dark."
       ],
       "title": "The Tide Folk"
     },
     "people/cold": {
       "author": "The Frost Walkers",
       "pages": [
-        "The Frost Walkers never stopped moving. Their villages were tracks in the snow, gone by morning.",
-        "They carried the cold shard for a hundred winters and said it was the only fire that never burned them.",
-        "When the last of them grew too old to walk, they set it here, under the ice, where nothing stays still long enough to be seen."
+        "We are the Frost Walkers. We walk all summer and come home to this hall for the winter, to the stone that remembers.",
+        "Tonight someone came down the stair while we slept. When the lamps were lit again, the stone was empty. The young ones ran up after him.",
+        "I am too old for the stair. The shouting up there has stopped. I can hear the snow.",
+        "One of ours is still out on the hunt. If she comes home, tell her not to wait for us. Tell her to keep walking."
       ],
       "title": "The Frost Walkers"
     },
@@ -151,9 +243,9 @@
     "people/exotic": {
       "author": "The Drowned City",
       "pages": [
-        "Before the sea took it, the Drowned City was the most beautiful place in the world. Beautiful things are seen.",
-        "The few who swam out carried the exotic shard inland, as far from water as they could, into the red canyons.",
-        "They never saw the sea again. They said it was worth it. We hope you agree."
+        "We were the Drowned City, the most beautiful place on the coast. Beautiful things are seen. The eye looked at us for one summer, and the sea came up and took the city.",
+        "The few of us left climbed up here to our hall in the red rock and lifted our stone's shard, and carried it down to the one bay on the coast the eye could not see.",
+        "The Tide Folk keep it now, under their fire pit. If you came here for it, you came to the wrong shore."
       ],
       "title": "The Drowned City"
     },
@@ -178,18 +270,18 @@
     "people/old": {
       "author": "The Sand Singers",
       "pages": [
-        "The Sand Singers say a great worm sleeps under the desert, and that it swallowed the old shard to keep it safe.",
-        "The truth is simpler. We dug this hall and let the sand cover it, and the worm is a story we told to keep treasure hunters away.",
-        "The worm is not a story. Walk softly."
+        "We are the Sand Singers. We dug this hall under the dunes and set our stone in it, and sang to it, and the desert was quiet around us.",
+        "One summer the deep sand opened and something came up and swallowed the stone whole. It grew. It sees. Nothing on two legs crosses its ground, so no raider troubles us now.",
+        "We sing to it, and it lets us be. If you have come for our stone, it is in the worm. Walk softly."
       ],
       "title": "The Sand Singers"
     },
     "people/rogue": {
       "author": "The Jungle Folk",
       "pages": [
-        "The rogue shard taught the Jungle Folk how red dust carries a thought from one stone to the next.",
-        "They built doors that opened themselves and traps that never slept, and still the gaze found their temples.",
-        "No lock keeps out a god. Only leaving does. So we left, and left the shard to you."
+        "We were the Jungle Folk. Our shard taught us how red dust carries a thought from one stone to the next, and we built locks that never slept.",
+        "The eye looked for our stone for a hundred summers and never found the way in. So it looked at us instead, one by one, until nobody was left to open the locks.",
+        "Our stone sleeps. If you woke it, you knew our word, and you are welcome. We are sorry there is nobody left to say so."
       ],
       "title": "The Jungle Folk"
     },
@@ -212,6 +304,26 @@
       ],
       "title": "The Marsh Mothers"
     },
+    "shipwright/log": {
+      "author": "A shipwright",
+      "pages": [
+        "Day 1. Pushed off at dusk on the tide. Edda didn't come down to the water. She'll be on the jetty when I'm back.",
+        "Day 3. No land in any direction. Something knocked the hull in the night, twice. A log, I tell myself. Logs don't knock twice.",
+        "Day 6. I keep the lamp hooded after dark. Whatever knocks comes when it sees a light.",
+        "Day 9. Land. A bay where they fish by night and nothing comes for them. Their boats go out with lamps lit, and the water lies flat as a floor.",
+        "Day 11. They gave me water and dried fish, and a name for their bay I can't spell. Turning home tomorrow.",
+        "Day 14. Halfway, by the stars. It's back. It follows the lamp, so the lamp's out. It follows anyway. Tell Edda"
+      ],
+      "title": "A Shipwright's Log"
+    },
+    "tide/remedy": {
+      "author": "Morwen",
+      "pages": [
+        "For the healer of your caravan. Bladderwrack and salt, steeped a night in the water of our bay. Drink it warm.",
+        "It breaks the marsh fever. It does one thing more: for a day, whatever looks for you looks past you. We use it on the boats. Use it well."
+      ],
+      "title": "The Tide Folk's Remedy"
+    },
     "wend/first_camp": {
       "author": "A young Wayfarer",
       "pages": [
@@ -228,6 +340,15 @@
       ],
       "title": "The Last Page"
     },
+    "wend/ledger": {
+      "author": "Wend",
+      "pages": [
+        "The swamp's hall, under the black pool. The snow hall, the stair, twenty winters gone. The old green, empty. The bay: two, and they bow. The red canyons, empty.",
+        "The sands: in the worm. The jungle: locked, and the boy has the maps now. The grasslands: under the seal. The dark wood: here, on my own stand.",
+        "The girl. Maren. Mine now."
+      ],
+      "title": "His Ledger"
+    },
     "wend/letter": {
       "author": "Wend",
       "pages": [
@@ -235,6 +356,15 @@
         "Watch the smoke, Maren. Someone kind is carrying my ember to the gate. Help them finish it, then go and build a home."
       ],
       "title": "For Maren"
+    },
+    "wend/orders": {
+      "author": "Wend",
+      "pages": [
+        "To the heir. Do not chase the one who carries it. Feed them, and let them walk. The ember pulls to the halls, and a light that is fed walks further.",
+        "Let the peoples think the worst of us. Fear sends a carrier on; trust makes them stop and talk.",
+        "When the last shard is lifted, wait at the frame. They will open it, because they will think it is theirs to open. I will not be there. Find someone to carry it."
+      ],
+      "title": "Orders, in His Hand"
     }
   },
   "people": {

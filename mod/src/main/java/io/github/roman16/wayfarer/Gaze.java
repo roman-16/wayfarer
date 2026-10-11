@@ -1,5 +1,7 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Doors;
+import io.github.roman16.wayfarer.story.Progress;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.List;
 import net.minecraft.core.registries.Registries;
@@ -26,6 +28,7 @@ public final class Gaze {
     private static final int SYNC_TICKS = 10;
     private static final int TICKS_PER_SECOND = 20;
     private static final int PHANTOM_HEIGHT = 20;
+    private static final String NEST_BURNED = "nest_burned";
     private static final int PHANTOM_SPREAD = 16;
     private static final int SLAYER_REACH = 256;
 
@@ -74,8 +77,10 @@ public final class Gaze {
             return;
         }
         boolean witnessed = !level.getPlayers(player -> player.distanceToSqr(dragon) < SLAYER_REACH * SLAYER_REACH).isEmpty();
-        if (witnessed && Journey.of(level.getServer()).slay()) {
-            Talk.notice(Component.translatable("wayfarer.gaze.lifted"));
+        if (witnessed && Journey.of(level.getServer()).end()) {
+            if (!Doors.blinding(level.getServer())) {
+                Talk.notice(Component.translatable("wayfarer.gaze.lifted"));
+            }
             for (ServerPlayer member : level.getServer().getPlayerList().getPlayers()) {
                 Nights.sync(member);
             }
@@ -87,7 +92,7 @@ public final class Gaze {
         if (!(event.getEntity() instanceof ServerPlayer player)) {
             return;
         }
-        if (Journey.slain(player.server)) {
+        if (Journey.over(player.server)) {
             if (player.getData(Wayfarer.GAZE) != 0) {
                 player.setData(Wayfarer.GAZE, 0);
                 PacketDistributor.sendToPlayer(player, GazePayload.CLOSED);
@@ -101,7 +106,7 @@ public final class Gaze {
         player.setData(Wayfarer.GAZE, filled);
         Balance.Gaze balance = Balance.get().gaze();
         if (airborne && filled >= capacity && player.tickCount % (balance.huntIntervalSeconds() * TICKS_PER_SECOND) == 0) {
-            hunt(player, balance.huntPhantoms());
+            hunt(player, Progress.of(player.server).gift(NEST_BURNED) ? balance.huntPhantoms() / 2 : balance.huntPhantoms());
         }
         if (player.tickCount % SYNC_TICKS == 0) {
             float fill = capacity == 0 ? 0 : (float) filled / capacity;

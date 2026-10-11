@@ -1,6 +1,8 @@
 package io.github.roman16.wayfarer;
 
 import com.teamremastered.endrem.block.AncientPortalFrameEntity;
+import io.github.roman16.wayfarer.story.Doors;
+import io.github.roman16.wayfarer.story.Engine;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashSet;
@@ -20,8 +22,12 @@ import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EndPortalFrameBlock;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.pattern.BlockPattern;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -45,9 +51,11 @@ public final class Gate {
         ServerLevel level = player.serverLevel();
         List<ResourceLocation> claimed = Journey.claimed(player.server);
         int needed = Shrines.count(level);
-        if (claimed.size() < needed) {
+        boolean blinding = Doors.blinding(player.server);
+        if (claimed.size() < needed && !blinding) {
             player.displayClientMessage(
-                    Component.translatable("wayfarer.gate.incomplete", claimed.size(), needed).withStyle(ChatFormatting.GRAY), true);
+                    Component.translatable(Engine.running(player.server) ? "wayfarer.gate.closed" : "wayfarer.gate.incomplete", claimed.size(), needed)
+                            .withStyle(ChatFormatting.GRAY), true);
             return;
         }
         BlockPos center = event.getPos();
@@ -68,16 +76,41 @@ public final class Gate {
                 set.add(entity.getEyeItem());
             }
         }
-        for (ResourceLocation shrine : claimed) {
-            Item eye = Shrines.eye(shrine);
-            if (empty.isEmpty() || set.contains(eye)) {
-                continue;
+        List<Item> brought = claimed.stream().map(Shrines::eye).filter(eye -> !set.contains(eye)).toList();
+        if (blinding) {
+            while (empty.size() > brought.size()) {
+                BlockPos pos = empty.poll();
+                level.setBlock(pos, level.getBlockState(pos).setValue(BlockStateProperties.EYE, true), Block.UPDATE_ALL);
+            }
+        }
+        for (Item eye : brought) {
+            if (empty.isEmpty()) {
+                break;
             }
             BlockPos pos = empty.poll();
-            BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false);
-            eye.useOn(new UseOnContext(level, player, InteractionHand.MAIN_HAND, new ItemStack(eye), hit));
+            if (level.getBlockState(pos).is(Blocks.END_PORTAL_FRAME)) {
+                level.setBlock(pos, level.getBlockState(pos).setValue(BlockStateProperties.EYE, true), Block.UPDATE_ALL);
+            } else {
+                BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos, false);
+                eye.useOn(new UseOnContext(level, player, InteractionHand.MAIN_HAND, new ItemStack(eye), hit));
+            }
             set.add(eye);
         }
+        open(level, center);
+    }
+
+    private static void open(ServerLevel level, BlockPos frame) {
+        BlockPattern.BlockPatternMatch match = EndPortalFrameBlock.getOrCreatePortalShape().find(level, frame);
+        if (match == null) {
+            return;
+        }
+        BlockPos origin = match.getFrontTopLeft().offset(-3, 0, -3);
+        for (int dx = 0; dx < 3; dx++) {
+            for (int dz = 0; dz < 3; dz++) {
+                level.setBlock(origin.offset(dx, 0, dz), Blocks.END_PORTAL.defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+        }
+        level.globalLevelEvent(LevelEvent.SOUND_END_PORTAL_SPAWN, origin.offset(1, 0, 1), 0);
     }
 
     public static boolean guarded(ServerLevel level, BlockPos frame) {

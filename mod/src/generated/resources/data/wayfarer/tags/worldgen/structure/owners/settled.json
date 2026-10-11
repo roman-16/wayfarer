@@ -1,0 +1,528 @@
+{
+  "values": [
+    {
+      "id": "dungeons_arise:bathhouse",
+      "required": false
+    },
+    {
+      "id": "dungeons_arise:greenwood_pub",
+      "required": false
+    },
+    {
+      "id": "dungeons_arise:jungle_tree_house",
+      "required": false
+    },
+    {
+      "id": "dungeons_arise:mushroom_house",
+      "required": false
+    },
+    {
+      "id": "dungeons_arise:wishing_well",
+      "required": false
+    },
+    {
+      "id": "explorify:farmstead",
+      "required": false
+    },
+    {
+      "id": "explorify:guide_post_cold",
+      "required": false
+    },
+    {
+      "id": "explorify:guide_post_warm",
+      "required": false
+    },
+    {
+      "id": "explorify:mangrove_hut",
+      "required": false
+    },
+    {
+      "id": "explorify:watchtower/plains",
+      "required": false
+    },
+    {
+      "id": "explorify:watchtower/savanna",
+      "required": false
+    },
+    {
+      "id": "explorify:watchtower/taiga",
+      "required": false
+    },
+    {
+      "id": "mvs:acacia_well",
+      "required": false
+    },
+    {
+      "id": "mvs:azelea_house",
+      "required": false
+    },
+    {
+      "id": "mvs:barn",
+      "required": false
+    },
+    {
+      "id": "mvs:bee_dome",
+      "required": false
+    },
+    {
+      "id": "mvs:bench",
+      "required": false
+    },
+    {
+      "id": "mvs:birch_well",
+      "required": false
+    },
+    {
+      "id": "mvs:blue_stall",
+      "required": false
+    },
+    {
+      "id": "mvs:cart",
+      "required": false
+    },
+    {
+      "id": "mvs:cartographer_tower",
+      "required": false
+    },
+    {
+      "id": "mvs:dark_oak_well",
+      "required": false
+    },
+    {
+      "id": "mvs:deepslate_house",
+      "required": false
+    },
+    {
+      "id": "mvs:desert_house",
+      "required": false
+    },
+    {
+      "id": "mvs:desert_pump",
+      "required": false
+    },
+    {
+      "id": "mvs:desert_well",
+      "required": false
+    },
+    {
+      "id": "mvs:diorite_and_deepslate_house",
+      "required": false
+    },
+    {
+      "id": "mvs:diorite_tower",
+      "required": false
+    },
+    {
+      "id": "mvs:fox_hut",
+      "required": false
+    },
+    {
+      "id": "mvs:gallows",
+      "required": false
+    },
+    {
+      "id": "mvs:haystack",
+      "required": false
+    },
+    {
+      "id": "mvs:horse_pen",
+      "required": false
+    },
+    {
+      "id": "mvs:house",
+      "required": false
+    },
+    {
+      "id": "mvs:jungle_tower",
+      "required": false
+    },
+    {
+      "id": "mvs:jungle_well",
+      "required": false
+    },
+    {
+      "id": "mvs:lamp_chest",
+      "required": false
+    },
+    {
+      "id": "mvs:large_cart_1",
+      "required": false
+    },
+    {
+      "id": "mvs:large_cart_2",
+      "required": false
+    },
+    {
+      "id": "mvs:lecturn_garden",
+      "required": false
+    },
+    {
+      "id": "mvs:lil_house",
+      "required": false
+    },
+    {
+      "id": "mvs:medium_bamboo_cart",
+      "required": false
+    },
+    {
+      "id": "mvs:medium_oak_lantern",
+      "required": false
+    },
+    {
+      "id": "mvs:mud_brick_house_1",
+      "required": false
+    },
+    {
+      "id": "mvs:mushroom_well",
+      "required": false
+    },
+    {
+      "id": "mvs:oak_well",
+      "required": false
+    },
+    {
+      "id": "mvs:orange_stall",
+      "required": false
+    },
+    {
+      "id": "mvs:out_house",
+      "required": false
+    },
+    {
+      "id": "mvs:paths",
+      "required": false
+    },
+    {
+      "id": "mvs:pink_stall",
+      "required": false
+    },
+    {
+      "id": "mvs:railway",
+      "required": false
+    },
+    {
+      "id": "mvs:rare_well",
+      "required": false
+    },
+    {
+      "id": "mvs:red_stall",
+      "required": false
+    },
+    {
+      "id": "mvs:red_tower",
+      "required": false
+    },
+    {
+      "id": "mvs:rocky_well",
+      "required": false
+    },
+    {
+      "id": "mvs:shed",
+      "required": false
+    },
+    {
+      "id": "mvs:small_acacia_lantern",
+      "required": false
+    },
+    {
+      "id": "mvs:small_bamboo_lantern",
+      "required": false
+    },
+    {
+      "id": "mvs:small_birch_lantern",
+      "required": false
+    },
+    {
+      "id": "mvs:small_campfire_lantern",
+      "required": false
+    },
+    {
+      "id": "mvs:small_cherry_lantern",
+      "required": false
+    },
+    {
+      "id": "mvs:small_copper_well",
+      "required": false
+    },
+    {
+      "id": "mvs:small_dark_oak_lantern",
+      "required": false
+    },
+    {
+      "id": "mvs:small_jungle_lantern",
+      "required": false
+    },
+    {
+      "id": "mvs:small_mangrove_lantern",
+      "required": false
+    },
+    {
+      "id": "mvs:small_oak_lantern",
+      "required": false
+    },
+    {
+      "id": "mvs:small_spruce_lantern",
+      "required": false
+    },
+    {
+      "id": "mvs:small_swamp_house",
+      "required": false
+    },
+    {
+      "id": "mvs:small_tower_well",
+      "required": false
+    },
+    {
+      "id": "mvs:small_well",
+      "required": false
+    },
+    {
+      "id": "mvs:snowy_dog_hut",
+      "required": false
+    },
+    {
+      "id": "mvs:snowy_well",
+      "required": false
+    },
+    {
+      "id": "mvs:spruce_well",
+      "required": false
+    },
+    {
+      "id": "mvs:stone_fountain",
+      "required": false
+    },
+    {
+      "id": "mvs:tall_house",
+      "required": false
+    },
+    {
+      "id": "mvs:well",
+      "required": false
+    },
+    {
+      "id": "mvs:wheat_grain_bin",
+      "required": false
+    },
+    {
+      "id": "mvs:windmill",
+      "required": false
+    },
+    {
+      "id": "mvs:wooden_wheat_farm",
+      "required": false
+    },
+    {
+      "id": "nova_structures:badlands_miner_outpost",
+      "required": false
+    },
+    {
+      "id": "nova_structures:firewatch_tower_birch",
+      "required": false
+    },
+    {
+      "id": "nova_structures:firewatch_tower_cherry",
+      "required": false
+    },
+    {
+      "id": "nova_structures:firewatch_tower_dark_oak",
+      "required": false
+    },
+    {
+      "id": "nova_structures:firewatch_tower_forest",
+      "required": false
+    },
+    {
+      "id": "nova_structures:firewatch_tower_jungle",
+      "required": false
+    },
+    {
+      "id": "nova_structures:firewatch_tower_mangrove",
+      "required": false
+    },
+    {
+      "id": "nova_structures:firewatch_tower_savanna",
+      "required": false
+    },
+    {
+      "id": "nova_structures:firewatch_tower_swamp",
+      "required": false
+    },
+    {
+      "id": "nova_structures:firewatch_tower_taiga",
+      "required": false
+    },
+    {
+      "id": "nova_structures:well_birch",
+      "required": false
+    },
+    {
+      "id": "nova_structures:well_dark_oak",
+      "required": false
+    },
+    {
+      "id": "nova_structures:well_jungle",
+      "required": false
+    },
+    {
+      "id": "nova_structures:well_oak",
+      "required": false
+    },
+    {
+      "id": "nova_structures:well_savana",
+      "required": false
+    },
+    {
+      "id": "nova_structures:well_spruce",
+      "required": false
+    },
+    {
+      "id": "structory:firetower",
+      "required": false
+    },
+    {
+      "id": "structory:graveyard",
+      "required": false
+    },
+    {
+      "id": "supplementaries:road_sign",
+      "required": false
+    },
+    {
+      "id": "terralith:valley_lodge",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/common/mushroom_house",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/common/well",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/base_1",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/base_2",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/beehive_house",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/church",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/cold_red_trade",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/dark_oak_trade",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/desert_ranch",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/dirt_hut",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/explorer_cabin",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/farm",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/graveyard",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/jungle_trade",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/jungle_treehouse",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/maison",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/mangrove_watchtower",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/oasis",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/plains_cottage",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/railroad",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/small_red_trade",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/snow_cottage",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/spruce_cottage",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/square_tower",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/stelzen",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/strange_house",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/street_vendor_stall",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/tour",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/tour_desert",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/tower",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/wandering_trader_dark_oak",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/wandering_trader_oak",
+      "required": false
+    },
+    {
+      "id": "trek:overworld/medium/wandering_trader_spruce",
+      "required": false
+    }
+  ]
+}

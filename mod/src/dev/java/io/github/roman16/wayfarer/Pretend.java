@@ -32,6 +32,7 @@ import net.minecraft.util.StringUtil;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.connection.ConnectionType;
 import net.neoforged.neoforge.network.registration.NetworkRegistry;
@@ -59,6 +60,11 @@ public final class Pretend {
                                 .then(Commands.argument("answer", IntegerArgumentType.integer(1))
                                         .executes(context -> answer(context.getSource(), StringArgumentType.getString(context, "name"),
                                                 IntegerArgumentType.getInteger(context, "answer"))))))));
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        connections.clear();
     }
 
     @SubscribeEvent

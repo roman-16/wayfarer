@@ -4,27 +4,40 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import io.github.roman16.wayfarer.client.Books;
 import io.github.roman16.wayfarer.client.Conversation;
+import io.github.roman16.wayfarer.client.Ending;
 import io.github.roman16.wayfarer.client.Flash;
 import io.github.roman16.wayfarer.client.JournalScreen;
 import io.github.roman16.wayfarer.client.MusicPlayer;
 import io.github.roman16.wayfarer.client.PickUps;
+import io.github.roman16.wayfarer.story.After;
 import io.github.roman16.wayfarer.story.Banners;
+import io.github.roman16.wayfarer.story.Bell;
+import io.github.roman16.wayfarer.story.CaptainsPages;
 import io.github.roman16.wayfarer.story.Caravan;
+import io.github.roman16.wayfarer.story.Dice;
+import io.github.roman16.wayfarer.story.Duel;
 import io.github.roman16.wayfarer.story.Engine;
+import io.github.roman16.wayfarer.story.Errands;
 import io.github.roman16.wayfarer.story.Fallen;
+import io.github.roman16.wayfarer.story.Frost;
 import io.github.roman16.wayfarer.story.Gear;
 import io.github.roman16.wayfarer.story.Hold;
 import io.github.roman16.wayfarer.story.Journal;
+import io.github.roman16.wayfarer.story.Marks;
 import io.github.roman16.wayfarer.story.Memories;
+import io.github.roman16.wayfarer.story.Mine;
 import io.github.roman16.wayfarer.story.Pages;
 import io.github.roman16.wayfarer.story.People;
 import io.github.roman16.wayfarer.story.Places;
+import io.github.roman16.wayfarer.story.Robes;
+import io.github.roman16.wayfarer.story.SandSingers;
 import io.github.roman16.wayfarer.story.Scenes;
 import io.github.roman16.wayfarer.story.Sense;
 import io.github.roman16.wayfarer.story.Talk;
 import io.github.roman16.wayfarer.story.Tasks;
 import io.github.roman16.wayfarer.story.Tollbridge;
 import io.github.roman16.wayfarer.story.Wards;
+import io.github.roman16.wayfarer.worm.GreatWorms;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -37,6 +50,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.monster.Guardian;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -61,6 +75,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -110,6 +125,8 @@ public final class Wayfarer {
             PROCESSORS.register("nether_swap", () -> () -> NetherSwap.CODEC);
     public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<ContainerLoot>> CONTAINER_LOOT =
             LOOT_MODIFIERS.register("container_loot", () -> ContainerLoot.CODEC);
+    public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<CaptainsPages>> CAPTAINS_PAGES =
+            LOOT_MODIFIERS.register("captains_pages", () -> CaptainsPages.CODEC);
     public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<Cuts.Loot>> CUT_LOOT =
             LOOT_MODIFIERS.register("cut", () -> Cuts.Loot.CODEC);
 
@@ -142,6 +159,14 @@ public final class Wayfarer {
                     .isViewBlocking((state, level, pos) -> false)
                     .isSuffocating((state, level, pos) -> false)
                     .noLootTable());
+
+    public static final DeferredBlock<FrostIronOre> FROST_IRON_ORE = BLOCKS.registerBlock("frost_iron_ore", FrostIronOre::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.DEEPSLATE)
+                    .instrument(NoteBlockInstrument.BASEDRUM)
+                    .requiresCorrectToolForDrops()
+                    .strength(4.5f, 3)
+                    .sound(SoundType.DEEPSLATE));
 
     public static final DeferredBlock<Hearthstone> HEARTHSTONE = BLOCKS.registerBlock("hearthstone", Hearthstone::new,
             BlockBehaviour.Properties.of()
@@ -182,17 +207,21 @@ public final class Wayfarer {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ShrinePedestalBlockEntity>> SHRINE_PEDESTAL_ENTITY =
             BLOCK_ENTITIES.register("shrine_pedestal", () -> BlockEntityType.Builder.of(ShrinePedestalBlockEntity::new, SHRINE_PEDESTAL.get()).build(null));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<Deep>> DEEP = ENTITY_TYPES.register("deep",
+            () -> EntityType.Builder.<Deep>of(Deep::new, MobCategory.MONSTER).sized(0.85F, 0.85F).eyeHeight(0.425F).clientTrackingRange(16).build("deep"));
     public static final DeferredHolder<EntityType<?>, EntityType<Fallen>> FALLEN = ENTITY_TYPES.register("fallen",
             () -> EntityType.Builder.<Fallen>of(Fallen::new, MobCategory.MISC).sized(1.25F, 0.5F).clientTrackingRange(8).build("fallen"));
 
     public static final DeferredItem<Item> COLD_EMBER = ITEMS.registerSimpleItem("cold_ember", new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> EMBER = ITEMS.registerSimpleItem("ember", new Item.Properties().stacksTo(1));
+    public static final DeferredItem<RawFrostIron> RAW_FROST_IRON = ITEMS.registerItem("raw_frost_iron", RawFrostIron::new);
 
     public static final List<DeferredItem<Item>> VEILS = IntStream.rangeClosed(1, 3)
             .mapToObj(level -> ITEMS.registerSimpleItem("ember_veil_" + level, new Item.Properties().stacksTo(1).rarity(Rarity.values()[level])))
             .toList();
 
     static {
+        ITEMS.registerSimpleBlockItem(FROST_IRON_ORE);
         ITEMS.registerSimpleBlockItem(SHRINE_PEDESTAL);
     }
 
@@ -205,6 +234,9 @@ public final class Wayfarer {
         ITEMS.register(modBus);
         LOOT_MODIFIERS.register(modBus);
         PIECES.register(modBus);
+        if (ModList.get().isLoaded("geckolib")) {
+            GreatWorms.register(modBus);
+        }
         if (ModList.get().isLoaded("silentgear")) {
             NeoForge.EVENT_BUS.register(Patterns.class);
             RECIPE_SERIALIZERS.register(FIRE_REPAIR.getId().getPath(), () -> new SimpleCraftingRecipeSerializer<>(FireRepair::new));
@@ -215,21 +247,30 @@ public final class Wayfarer {
         PROCESSORS.register(modBus);
         STRUCTURES.register(modBus);
         modBus.addListener(Wayfarer::registerPayloads);
+        modBus.addListener(EntityAttributeCreationEvent.class, event -> event.put(DEEP.get(), Guardian.createAttributes().build()));
         modBus.addListener(Ember::setup);
         if (ModList.get().isLoaded("toughasnails")) {
             modBus.addListener(Heat::setup);
         }
         modBus.addListener(Shards::setup);
+        NeoForge.EVENT_BUS.register(After.class);
+        NeoForge.EVENT_BUS.register(Bell.class);
         NeoForge.EVENT_BUS.register(Caravan.class);
         NeoForge.EVENT_BUS.register(Clock.class);
         NeoForge.EVENT_BUS.register(Compass.class);
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, ServerAboutToStartEvent.class, event -> Bundled.forget());
         NeoForge.EVENT_BUS.register(Cuts.class);
         NeoForge.EVENT_BUS.register(Daylight.class);
+        NeoForge.EVENT_BUS.register(Dice.class);
+        NeoForge.EVENT_BUS.register(Dragon.class);
+        NeoForge.EVENT_BUS.register(Duel.class);
         NeoForge.EVENT_BUS.register(Ember.class);
         NeoForge.EVENT_BUS.register(Engine.class);
+        NeoForge.EVENT_BUS.register(Errands.class);
         NeoForge.EVENT_BUS.register(Fire.class);
         NeoForge.EVENT_BUS.register(Firsts.class);
+        NeoForge.EVENT_BUS.register(Frost.class);
+        NeoForge.EVENT_BUS.register(FrostIronOre.class);
         NeoForge.EVENT_BUS.register(Gate.class);
         NeoForge.EVENT_BUS.register(Gaze.class);
         NeoForge.EVENT_BUS.register(Gear.class);
@@ -238,6 +279,7 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Joining.class);
         NeoForge.EVENT_BUS.register(LastUse.class);
         NeoForge.EVENT_BUS.register(Memories.class);
+        NeoForge.EVENT_BUS.register(Mine.class);
         NeoForge.EVENT_BUS.register(Music.class);
         NeoForge.EVENT_BUS.register(Nights.class);
         NeoForge.EVENT_BUS.register(Pages.class);
@@ -245,8 +287,11 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Places.class);
         NeoForge.EVENT_BUS.register(Respawn.class);
         NeoForge.EVENT_BUS.register(Rowing.class);
+        NeoForge.EVENT_BUS.register(Robes.class);
         NeoForge.EVENT_BUS.register(Rules.class);
+        NeoForge.EVENT_BUS.register(SandSingers.class);
         NeoForge.EVENT_BUS.register(Scenes.class);
+        NeoForge.EVENT_BUS.register(Sea.class);
         NeoForge.EVENT_BUS.register(Sense.class);
         NeoForge.EVENT_BUS.register(Shards.class);
         NeoForge.EVENT_BUS.register(Shine.class);
@@ -255,6 +300,8 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Sounds.class);
         Sounds.loop("camp", Caravan::standing);
         Sounds.loop("town_burning", Tollbridge::burning);
+        NeoForge.EVENT_BUS.register(Stare.class);
+        NeoForge.EVENT_BUS.register(Veils.class);
         NeoForge.EVENT_BUS.register(Stillness.class);
         NeoForge.EVENT_BUS.register(Talk.class);
         NeoForge.EVENT_BUS.register(Tasks.class);
@@ -306,9 +353,12 @@ public final class Wayfarer {
         registrar.playToClient(Tasks.Panel.TYPE, Tasks.Panel.STREAM_CODEC, (payload, context) -> HudState.panel = payload);
         registrar.playToServer(Caravan.HeadIn.TYPE, Caravan.HeadIn.STREAM_CODEC, (payload, context) -> Caravan.headIn((ServerPlayer) context.player()));
         registrar.playToServer(Tasks.Did.TYPE, Tasks.Did.STREAM_CODEC, (payload, context) -> Tasks.told((ServerPlayer) context.player(), payload.task()));
+        registrar.playToServer(Marks.Mark.TYPE, Marks.Mark.STREAM_CODEC, (payload, context) -> Marks.mark((ServerPlayer) context.player(), payload.at()));
         registrar.playToClient(CompassPayload.TYPE, CompassPayload.STREAM_CODEC, (payload, context) -> HudState.compass = payload);
         registrar.playToClient(GazePayload.TYPE, GazePayload.STREAM_CODEC, (payload, context) -> HudState.gaze = payload);
         registrar.playToClient(NightPayload.TYPE, NightPayload.STREAM_CODEC, (payload, context) -> HudState.night = payload);
+        registrar.playToClient(After.Ending.TYPE, After.Ending.STREAM_CODEC, (payload, context) -> Ending.show(payload.lines()));
+        registrar.playToClient(After.Skin.TYPE, After.Skin.STREAM_CODEC, (payload, context) -> Ending.skin(payload.player(), payload.texture()));
         registrar.playToClient(Memories.Flash.TYPE, Memories.Flash.STREAM_CODEC, (payload, context) -> Flash.show(payload));
         registrar.playToClient(Music.Play.TYPE, Music.Play.STREAM_CODEC, (payload, context) -> MusicPlayer.play(payload));
         registrar.playToClient(Notices.Given.TYPE, Notices.Given.STREAM_CODEC, (payload, context) -> PickUps.given(payload));

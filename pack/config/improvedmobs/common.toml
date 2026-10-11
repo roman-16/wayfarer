@@ -2,4 +2,4 @@
 	"Difficulty Increase" = ["0.0;difficulty"]
 
 [features]
-	"Entity Configs" = ["#improvedmobs:non_hostile_mobs", "easy_npc"]
+	"Entity Configs" = ["#improvedmobs:non_hostile_mobs", "easy_npc", "minecraft:ender_dragon", "wayfarer:deep", "wayfarer:great_worm"]

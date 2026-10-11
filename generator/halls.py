@@ -96,7 +96,7 @@ def shrine(room, eye, spec, pedestal, reading, facing):
     room.set(
         pedestal,
         "wayfarer:shrine_pedestal",
-        entity={"id": "wayfarer:shrine_pedestal", "shrine": f"wayfarer:shrine/{eye}"},
+        entity={"id": "wayfarer:shrine_pedestal"} | ({} if spec.get("empty") else {"shrine": f"wayfarer:shrine/{eye}"}),
     )
     for y in range(pedestal[1] + 1, pedestal[1] + 4):
         room.air((pedestal[0], y, pedestal[2]))

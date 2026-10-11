@@ -9,14 +9,6 @@
       "required": false
     },
     {
-      "id": "minecraft:buried_treasures",
-      "required": false
-    },
-    {
-      "id": "minecraft:mineshafts",
-      "required": false
-    },
-    {
       "id": "wayfarer:shrines/act_three",
       "required": false
     },

@@ -3,7 +3,6 @@ package io.github.roman16.wayfarer.story;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
-import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Library;
 import io.github.roman16.wayfarer.Stones;
 import io.github.roman16.wayfarer.Wayfarer;
@@ -98,7 +97,7 @@ public final class Journal {
             }
             JsonObject entry = new JsonObject();
             entry.addProperty("id", quest.id());
-            entry.addProperty("title", quest.title());
+            entry.addProperty("title", Engine.title(progress, quest));
             entry.addProperty("kind", quest.kind());
             entry.addProperty("prologue", quest.act().equals(Engine.PROLOGUE));
             entry.addProperty("summary", quest.summary());
@@ -138,7 +137,7 @@ public final class Journal {
         progress.told.forEach((quest, lines) -> {
             JsonObject chapter = new JsonObject();
             chapter.addProperty("key", quest);
-            chapter.addProperty("title", Story.get().quest(quest).map(Story.Quest::title).orElse(quest));
+            chapter.addProperty("title", Story.get().quest(quest).map(found -> Engine.title(progress, found)).orElse(quest));
             JsonArray text = new JsonArray();
             lines.forEach(text::add);
             chapter.add("lines", text);
@@ -149,7 +148,7 @@ public final class Journal {
         progress.fire.forEach((key, heard) -> {
             JsonObject talk = new JsonObject();
             talk.addProperty("key", key);
-            talk.addProperty("title", Story.get().quest(key).map(Story.Quest::title).orElse(""));
+            talk.addProperty("title", Story.get().quest(key).map(found -> Engine.title(progress, found)).orElse(""));
             JsonArray lines = new JsonArray();
             heard.forEach(line -> {
                 JsonObject said = new JsonObject();
@@ -174,10 +173,13 @@ public final class Journal {
         }));
         view.add("pages", pages);
         view.add("gear", Gear.view(player));
-        view.add("people", entries(progress.people, person -> Story.get().person(person).name()));
+        view.add("people", entries(progress.people, person -> People.label(player.server, person)));
         view.add("words", entries(progress.words, word -> word));
         JsonArray places = new JsonArray();
         PLACES.forEach((name, key) -> progress.place(name).ifPresent(pos -> places.add(place(key, pos))));
+        for (int mark = 0; mark < Marks.count(); mark++) {
+            progress.place(Marks.MARK + mark).ifPresent(pos -> places.add(place("place.mark", pos)));
+        }
         view.add("places", places);
         view.addProperty("headIn", Caravan.canHeadIn(server));
         Engine.tracked(player).ifPresent(active -> view.addProperty("tracked", active.quest().id()));
@@ -191,6 +193,9 @@ public final class Journal {
             stones.add(entry);
         }
         view.add("stones", stones);
+        JsonArray gifts = new JsonArray();
+        progress.gifts.forEach(gifts::add);
+        view.add("gifts", gifts);
         return view;
     }
 
@@ -198,10 +203,21 @@ public final class Journal {
         Story.Step step = active.step();
         String objective = step.objective().replace("{found}", String.valueOf(Engine.found(active.scratch()).size()))
                 .replace("{needed}", step.spec().has("needed") ? step.text("needed") : "");
+        if (step.kind().equals("wins")) {
+            objective = objective.replace("{won}", String.valueOf(Math.min(Steps.won(player.server, active), step.number("count")))).replace("{count}", step.text("count"));
+        }
+        if (step.kind().equals("read")) {
+            objective = objective.replace("{read}", String.valueOf(Steps.read(player.server, step)))
+                    .replace("{pages}", String.valueOf(step.spec().getAsJsonArray("pages").size()));
+        }
+        if (step.kind().equals("gather") || step.kind().equals("give")) {
+            objective = objective.replace("{carried}", String.valueOf(Math.min(Steps.carried(player, step), step.number("count"))))
+                    .replace("{count}", step.text("count"));
+        }
         if (step.kind().equals("walk")) {
             BlockPos from = Engine.at(player.server, step.text("from"));
             double walked = Math.sqrt(Math.pow(player.getX() - from.getX(), 2) + Math.pow(player.getZ() - from.getZ(), 2));
-            int left = Math.max(0, Balance.get().prologue().awayBlocks() - (int) walked);
+            int left = Math.max(0, Places.leaving(step.text("from")) - (int) walked);
             objective = objective.replace("{left}", String.valueOf(Math.ceilDiv(left, COUNT_BLOCKS) * COUNT_BLOCKS));
         }
         return objective;

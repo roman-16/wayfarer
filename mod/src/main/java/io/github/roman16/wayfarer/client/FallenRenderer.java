@@ -18,8 +18,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 
 public final class FallenRenderer extends EntityRenderer<Fallen> {
+    public static final ModelLayerLocation GOAT = new ModelLayerLocation(Wayfarer.id("fallen_goat"), "main");
     public static final ModelLayerLocation MULE = new ModelLayerLocation(Wayfarer.id("fallen_mule"), "main");
-    private static final float HORSE_MODEL_HEIGHT = 1.501F;
+    private static final float MODEL_HEIGHT = 1.501F;
+    private static final float GOAT_BODY_CENTRE = 12.5F / 16;
+    private static final float GOAT_BODY_HALF_WIDTH = 5.55F / 16;
+    private static final float GOAT_SCALE = 1;
     private static final float HORSE_BODY_CENTRE = 8 / 16F;
     private static final float HORSE_BODY_HALF_WIDTH = 5.05F / 16;
     private static final float MULE_SCALE = 0.92F;
@@ -41,8 +45,11 @@ public final class FallenRenderer extends EntityRenderer<Fallen> {
         HIDDEN_ROOT.forEach(name -> mule.getChild(name).visible = false);
         HIDDEN_BODY.forEach(name -> mule.getChild("body").getChild(name).visible = false);
         HIDDEN_HEAD.forEach(name -> mule.getChild("head_parts").getChild(name).visible = false);
-        looks = Map.of(EntityType.MULE, new Look(mule, ResourceLocation.withDefaultNamespace("textures/entity/horse/mule.png"),
-                Wayfarer.id("textures/entity/fallen/mule_eyes.png"), MULE_SCALE));
+        looks = Map.of(
+                EntityType.GOAT, new Look(context.bakeLayer(GOAT), ResourceLocation.withDefaultNamespace("textures/entity/goat/goat.png"),
+                        Wayfarer.id("textures/entity/fallen/goat_eyes.png"), GOAT_SCALE, GOAT_BODY_CENTRE, GOAT_BODY_HALF_WIDTH, FallenRenderer::goat),
+                EntityType.MULE, new Look(mule, ResourceLocation.withDefaultNamespace("textures/entity/horse/mule.png"),
+                        Wayfarer.id("textures/entity/fallen/mule_eyes.png"), MULE_SCALE, HORSE_BODY_CENTRE, HORSE_BODY_HALF_WIDTH, FallenRenderer::horse));
     }
 
     @Override
@@ -52,14 +59,14 @@ public final class FallenRenderer extends EntityRenderer<Fallen> {
             return;
         }
         float down = body.leftDown() ? 1 : -1;
-        horse(look.model(), down, RandomSource.create(body.getUUID().getLeastSignificantBits()));
+        look.pose().pose(look.model(), down, RandomSource.create(body.getUUID().getLeastSignificantBits()));
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(180 - body.getYRot()));
-        poseStack.translate(0, HORSE_BODY_HALF_WIDTH * look.scale(), 0);
+        poseStack.translate(0, look.halfWidth() * look.scale(), 0);
         poseStack.mulPose(Axis.ZP.rotationDegrees(down * QUARTER_TURN));
-        poseStack.translate(0, -(HORSE_MODEL_HEIGHT - HORSE_BODY_CENTRE) * look.scale(), 0);
+        poseStack.translate(0, -(MODEL_HEIGHT - look.centre()) * look.scale(), 0);
         poseStack.scale(-look.scale(), -look.scale(), look.scale());
-        poseStack.translate(0, -HORSE_MODEL_HEIGHT, 0);
+        poseStack.translate(0, -MODEL_HEIGHT, 0);
         look.model().render(poseStack, buffers.getBuffer(RenderType.entityCutoutNoCull(look.texture())), light, OverlayTexture.NO_OVERLAY);
         look.model().render(poseStack, buffers.getBuffer(RenderType.entityCutoutNoCull(look.eyes())), light, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
@@ -84,6 +91,16 @@ public final class FallenRenderer extends EntityRenderer<Fallen> {
         model.getChild("body").getChild("tail").setRotation(1.1F + jitter(random), 0, -down * 0.5F);
     }
 
+    private static void goat(ModelPart model, float down, RandomSource random) {
+        String lower = down > 0 ? "left" : "right";
+        String upper = down > 0 ? "right" : "left";
+        leg(model.getChild(lower + "_front_leg"), -0.5F, 0, random);
+        leg(model.getChild(lower + "_hind_leg"), 0.4F, 0, random);
+        leg(model.getChild(upper + "_front_leg"), -0.2F, -down * 0.7F, random);
+        leg(model.getChild(upper + "_hind_leg"), 0.55F, -down * 0.7F, random);
+        model.getChild("head").setRotation(-0.35F + jitter(random), -down * 0.25F, 0);
+    }
+
     private static void leg(ModelPart leg, float swing, float sag, RandomSource random) {
         leg.setRotation(swing + jitter(random), 0, sag + jitter(random));
     }
@@ -98,5 +115,9 @@ public final class FallenRenderer extends EntityRenderer<Fallen> {
         return look == null ? ResourceLocation.withDefaultNamespace("textures/entity/horse/mule.png") : look.texture();
     }
 
-    private record Look(ModelPart model, ResourceLocation texture, ResourceLocation eyes, float scale) {}
+    private interface Pose {
+        void pose(ModelPart model, float down, RandomSource random);
+    }
+
+    private record Look(ModelPart model, ResourceLocation texture, ResourceLocation eyes, float scale, float centre, float halfWidth, Pose pose) {}
 }

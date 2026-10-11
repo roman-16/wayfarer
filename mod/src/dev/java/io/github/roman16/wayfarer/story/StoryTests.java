@@ -17,6 +17,9 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(Wayfarer.MODID)
 @PrefixGameTestTemplate(false)
 public final class StoryTests {
+    private static final Map<String, List<String>> OUTCOMES = Map.of("chase", List.of("caught"), "duel", List.of("won"), "escort", List.of("arrived", "late"),
+            "sea", List.of("held", "sunk"), "worm", List.of("killed", "spared"));
+
     private StoryTests() {}
 
     private static void check(GameTestHelper helper, boolean condition, String message) {
@@ -89,12 +92,13 @@ public final class StoryTests {
     public static void everyStepThatWaitsOnAChoiceNamesOneOffered(GameTestHelper helper) {
         for (Story.Quest quest : Story.get().quests()) {
             for (Story.Step step : quest.steps()) {
-                if (step.spec().has("when")) {
+                if (step.spec().has("when") && !step.text("when").startsWith("!") && !step.text("when").contains("/") && !step.text("when").contains(":")) {
                     String[] when = step.text("when").split("=", -1);
                     Story.Step chooser = quest.steps().stream().filter(earlier -> earlier.id().equals(when[0])).findFirst().orElse(null);
                     check(helper, chooser != null && quest.steps().indexOf(chooser) < quest.steps().indexOf(step),
                             quest.id() + "/" + step.id() + " waits on " + when[0] + ", which comes no earlier in the quest");
-                    check(helper, when[1].isEmpty() || chooser.choices().stream().anyMatch(choice -> choice.id().equals(when[1])),
+                    check(helper, when[1].isEmpty() || chooser.choices().stream().anyMatch(choice -> choice.id().equals(when[1]))
+                            || OUTCOMES.getOrDefault(chooser.kind(), List.of()).contains(when[1]),
                             quest.id() + "/" + step.id() + " waits on the choice " + when[1] + ", which " + when[0] + " does not offer");
                 }
                 if (step.spec().has("asks")) {

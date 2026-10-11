@@ -74,11 +74,12 @@ The user sees the work through `gallery/`, which git keeps, so a commit shows wh
 
 | Kind | Pictures |
 |---|---|
-| `screen` | A screen over the world, such as the journal, as PNG at interface scales 2, 3 and 4 (`<id>-2.png` and so on) |
-| `hud` | The world with the HUD as JPEG at scales 2, 3 and 4 |
-| `world` | The world as the player sees it, one JPEG at scale 3 |
+| `screen` | A screen over the world, such as the journal, one PNG at interface scale 3 (`<id>.png`) |
+| `hud` | The world with the HUD as the player sees it, one JPEG at scale 3 (`<id>.jpg`) |
 | `views` | Everything the steps put in the workshop, from the front, the side, above and three-quarters (`<id>/<side>.jpg`) |
 | `tour` | A shrine or the Last Camp (`subject`) through the tour's cameras (`<id>/<camera>.jpg`) |
+
+One shot of each screen layout and HUD element also lists `scales = [2, 3, 4]` and is taken at each of those interface scales (`<id>-2.png` and so on), so the gallery shows once that the layout fits at every size; every other shot of it is one picture at scale 3. A folder holds two or more pictures: a shot that would stand alone in one takes the folder's name as its `id` instead.
 
 Every change to something a player sees adds or updates its shots, one for each facet the player can meet: each ribbon and entry of a screen, each state it shows (empty, waiting, done, unfolded), each side of a thing, and each step of the story that shows it. Then `just gallery` shoots only what the scope can show, named one by one or by the narrowest folder, since a story state's shot takes 20 to 30 s and the whole gallery about half an hour:
 

@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.roman16.wayfarer.story.After;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -127,13 +129,16 @@ public final class Cuts {
 
     @SubscribeEvent
     public static void onBreed(BabyEntitySpawnEvent event) {
+        if (event.getParentA().level() instanceof ServerLevel level && After.free(level.getServer(), event.getParentA().blockPosition())) {
+            return;
+        }
         event.setCanceled(true);
         tell(event.getCausedByPlayer(), "wayfarer.cut.breed");
     }
 
     @SubscribeEvent
     public static void onPlace(BlockEvent.EntityPlaceEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || After.free(player.server, event.getPos())) {
             return;
         }
         if (event.getPlacedBlock().is(ROOTLESS)) {
@@ -151,7 +156,7 @@ public final class Cuts {
 
     @SubscribeEvent
     public static void onSleep(CanPlayerSleepEvent event) {
-        if (!Tents.isTent(event.getLevel().dimension())) {
+        if (!Tents.isTent(event.getLevel().dimension()) && !(event.getEntity() instanceof ServerPlayer player && After.free(player.server, event.getPos()))) {
             event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
             tell(event.getEntity(), "wayfarer.cut.sleep");
         }

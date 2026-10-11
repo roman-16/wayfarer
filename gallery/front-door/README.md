@@ -20,9 +20,7 @@
 
 **Loading a new world, or a server joined for the first time: the line that leads into the first scene**, in the showroom
 
-| Scale 2 | Scale 3 | Scale 4 |
-| --- | --- | --- |
-| ![Scale 2](loading-first-2.png) | ![Scale 3](loading-first-3.png) | ![Scale 4](loading-first-4.png) |
+![Loading a new world, or a server joined for the first time: the line that leads into the first scene](loading-first.png)
 
 ## Create world
 
@@ -36,9 +34,7 @@
 
 **Create New World's World tab: the pack's land, with vanilla's options where they always are**, in the showroom
 
-| Scale 2 | Scale 3 | Scale 4 |
-| --- | --- | --- |
-| ![Scale 2](create-world-land-2.png) | ![Scale 3](create-world-land-3.png) | ![Scale 4](create-world-land-4.png) |
+![Create New World's World tab: the pack's land, with vanilla's options where they always are](create-world-land.png)
 
 ## Pause
 

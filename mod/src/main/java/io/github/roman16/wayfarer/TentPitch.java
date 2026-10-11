@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.Arrays;
 import java.util.List;
@@ -163,10 +164,17 @@ public final class TentPitch {
                 }
             }
             fire = Fire.nearest(inside.getSpawnDimension(), inside.getSpawnpoint(), reach);
+            if (fire.isEmpty()) {
+                Caravan.standing(player.server).ifPresent(camp -> inside.getSpawnDimension().getChunk(camp));
+                if (Caravan.within(player.server, inside.getSpawnDimension(), inside.getSpawnpoint())) {
+                    fire = Caravan.fire(player.server);
+                }
+            }
         }
         if (fire.isEmpty()) {
             event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
-            player.displayClientMessage(Component.translatable("wayfarer.tent.fire").withStyle(ChatFormatting.GRAY), true);
+            String refusal = Caravan.met(player.server) ? "wayfarer.tent.fire_caravan" : "wayfarer.tent.fire";
+            player.displayClientMessage(Component.translatable(refusal).withStyle(ChatFormatting.GRAY), true);
         } else if (Talk.busy()) {
             event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
             player.displayClientMessage(Component.translatable("wayfarer.tent.story").withStyle(ChatFormatting.GRAY), true);

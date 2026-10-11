@@ -38,7 +38,8 @@ def question(structure, at):
         found = FOUND.search(said)
         if found and found.group(1) == structure:
             return int(found.group(4)), int(found.group(2)), int(found.group(3))
-        if MISSING.search(said) and structure in said:
+        missing = MISSING.search(said)
+        if missing and missing.group(1) == structure:
             return ()
         return None
 

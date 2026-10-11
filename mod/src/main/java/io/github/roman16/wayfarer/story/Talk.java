@@ -33,6 +33,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public final class Talk {
     public static final String ROAD = "road";
@@ -41,8 +42,10 @@ public final class Talk {
     private static final Deque<Speech> queue = new ArrayDeque<>();
     private static final Set<UUID> answering = new HashSet<>();
     private static final Map<UUID, Integer> votes = new HashMap<>();
+    private static final Map<UUID, Personal> personal = new HashMap<>();
     private static long clock;
     private static long next;
+    private static long waiting;
     @Nullable
     private static String speaking;
     @Nullable
@@ -61,6 +64,8 @@ public final class Talk {
     private record Then(Runnable run) implements Speech {}
 
     private record Ask(Offer offer) implements Speech {}
+
+    private record Personal(List<Story.Choice> choices, Answer answer) {}
 
     public record Offer(@Nullable String fire, @Nullable String speaker, List<Story.Choice> choices, @Nullable Vec3 at, Answer answer, boolean vote) {
         public Offer(@Nullable String fire, @Nullable String speaker, List<Story.Choice> choices, @Nullable Vec3 at, Answer answer) {
@@ -107,7 +112,11 @@ public final class Talk {
     }
 
     public static void say(@Nullable String fire, @Nullable Vec3 at, List<Story.Line> lines, Placeholders placeholders) {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         for (Story.Line line : lines) {
+            if (line.when() != null && server != null && !Engine.holds(Progress.of(server), line.when())) {
+                continue;
+            }
             if (line.pause()) {
                 queue.add(new Pause());
             }
@@ -148,7 +157,21 @@ public final class Talk {
         return !queue.isEmpty() || offer != null;
     }
 
+    static void offerTo(ServerPlayer player, List<Story.Choice> choices, Answer answer) {
+        personal.put(player.getUUID(), new Personal(choices, answer));
+        PacketDistributor.sendToPlayer(player, new Answers(choices.stream().map(Story.Choice::text).toList()));
+    }
+
+    static void withdraw(ServerPlayer player) {
+        if (personal.remove(player.getUUID()) != null) {
+            PacketDistributor.sendToPlayer(player, new Answers(List.of()));
+        }
+    }
+
     public static boolean answering(ServerPlayer player) {
+        if (personal.containsKey(player.getUUID())) {
+            return true;
+        }
         return offer != null && near(player, offer.at());
     }
 
@@ -181,7 +204,7 @@ public final class Talk {
         }
     }
 
-    private static int reading(String text) {
+    static int reading(String text) {
         Balance.Talk talk = Balance.get().talk();
         return Math.max(talk.leastSeconds(), Math.ceilDiv(text.length(), talk.charactersPerSecond())) * TICKS_PER_SECOND;
     }
@@ -201,7 +224,11 @@ public final class Talk {
             return;
         }
         clock++;
-        while (offer == null && !queue.isEmpty() && clock >= next && listened(server, queue.peek())) {
+        if (queue.isEmpty() || listened(server, queue.peek())) {
+            waiting = clock;
+        }
+        while (offer == null && !queue.isEmpty() && clock >= next
+                && (listened(server, queue.peek()) || clock - waiting >= (long) Balance.get().talk().waitSeconds() * TICKS_PER_SECOND)) {
             Speech speech = queue.poll();
             switch (speech) {
                 case Said said -> {
@@ -230,9 +257,20 @@ public final class Talk {
     public static void onServerStopped(ServerStoppedEvent event) {
         reset();
         answering.clear();
+        personal.clear();
     }
 
     public static void pick(ServerPlayer player, int index) {
+        Personal own = personal.get(player.getUUID());
+        if (own != null) {
+            if (index >= 0 && index < own.choices().size()) {
+                personal.remove(player.getUUID());
+                PacketDistributor.sendToPlayer(player, new Answers(List.of()));
+                Sounds.play(player.server, ANSWER_CHOSEN);
+                own.answer().chosen(player, own.choices().get(index));
+            }
+            return;
+        }
         if (offer == null || index < 0 || index >= offer.choices().size() || !near(player, offer.at())) {
             return;
         }
@@ -266,6 +304,9 @@ public final class Talk {
 
     private static void offer(MinecraftServer server) {
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+            if (personal.containsKey(player.getUUID())) {
+                continue;
+            }
             boolean shown = offer != null && near(player, offer.at());
             if (shown && answering.add(player.getUUID())) {
                 PacketDistributor.sendToPlayer(player, new Answers(answers(server, offer)));

@@ -1,3 +1,14 @@
+[after]
+home_blocks = 256
+
+[chase]
+caught_blocks = 4
+far_blocks = 128
+fast_sixteenths = 4
+near_blocks = 32
+slow_sixteenths = 2
+start_blocks = 8
+
 [clock]
 afternoon_seconds = 32
 caravan_blocks = 256
@@ -34,6 +45,25 @@ health_per_player = 128
 health_per_shard = 32
 sight_shards = 6
 
+[duel]
+health_base = 128
+health_per_player = 64
+
+[errands]
+ahead_blocks = 1024
+airship_coal = 32
+search_chunks = 32
+snow_reach_blocks = 4096
+
+[escort]
+follow_blocks = 4
+leash_blocks = 24
+
+[far_sight]
+mark_blocks = 512
+marks = 4
+zoom_sixteenths = 6
+
 [fire]
 circle_blocks = 32
 line_seconds = 3
@@ -42,6 +72,10 @@ rest_blocks = 4
 [first_camp]
 ahead_blocks = 3072
 lake_blocks = 512
+
+[first_village]
+ahead_blocks = 2048
+search_blocks = 2048
 
 [flare]
 charges = 1
@@ -57,6 +91,29 @@ side_blocks = 512
 widest_river_blocks = 32
 width_blocks = 8
 
+[forge]
+vein_lumps = 64
+
+[frost]
+ahead_blocks = 1024
+dark_sight_sixteenths = 2
+drift_every_blocks = 32
+hall_blocks = 512
+house_blocks = 24
+lake_blocks = 2048
+leave_blocks = 64
+mine_blocks = 256
+mine_floor = -16
+mine_wall_blocks = 12
+search_blocks = 4096
+shore_blocks = 16
+side_blocks = 1024
+snow_radius_blocks = 96
+stair_blocks = 16
+stone_blocks = 24
+trail_blocks = 256
+trail_past_blocks = 48
+
 [gate]
 reach_blocks = 48
 
@@ -71,6 +128,10 @@ far_view_chunks = [64, 128, 256, 512]
 held_light = ["fastest", "fast", "fancy", "fancy"]
 profiles = ["LOW", "MEDIUM", "HIGH", "ULTRA"]
 render_chunks = [8, 10, 12, 16]
+
+[halls]
+nearest_blocks = 1024
+reach_blocks = 8192
 
 [hold]
 blow_ticks = 32
@@ -92,6 +153,9 @@ away_blocks = 256
 
 [loot]
 kept_share = 0.5
+
+[shipyard]
+wreck_blocks = 256
 
 [shrines]
 act_three_from_blocks = 24576
@@ -128,6 +192,10 @@ redstone = 0.125
 [prologue]
 away_blocks = 512
 
+[reading_house]
+ahead_blocks = 1024
+search_blocks = 256
+
 [scenes]
 ask_blocks = 48
 every_seconds = 300
@@ -140,9 +208,11 @@ voice_gap_seconds = 150
 wolves_seconds = 120
 
 [sea]
+beast_health = 128
 beast_one_in = 32
 beast_one_in_least = 4
 check_seconds = 8
+flinch_seconds = 8
 open_water_blocks = 64
 ram_damage = 8
 ram_seconds = 2
@@ -154,6 +224,8 @@ reach_blocks = 24
 
 [shine]
 act = [0, 16, 32]
+bell_found = 2
+found_shine = 128
 notice_blocks_per_shine = 0.5
 per_shard = 4
 spawn_every_seconds = 8
@@ -162,13 +234,18 @@ spawn_shine = 16
 
 [sight]
 reach_blocks = 32
-shards = 7
 
 [sleep]
 players_percentage = 66
 
 [spawns]
 creature_cap = 20
+
+[stare]
+cone_degrees = 16
+flee_blocks = 16
+flee_seconds = 8
+reach_blocks = 16
 
 [stillness]
 dimming_days = 1
@@ -184,20 +261,21 @@ radius_blocks = 35000
 [structures]
 spread_factor = 6
 spread_features = ["campsite_structures", "yungsextras"]
-unspread = [
-  "betterstrongholds:stronghold",
-  "minecraft:ancient_cities",
-  "minecraft:buried_treasures",
-  "minecraft:mineshafts",
-]
+unspread = ["betterstrongholds:stronghold", "minecraft:ancient_cities"]
 
 [structures.every_blocks]
 campsite = 384
 capital = 12288
 fort = 6144
+land = 256
+mine = 256
 outpost = 1536
 ruin = 384
+sea = 1024
+settled = 512
+tavern = 1536
 town = 3072
+underground = 512
 village = 768
 
 [story]
@@ -212,9 +290,13 @@ least_seconds = 4
 pause_seconds = 16
 reach_blocks = 32
 start_blocks = 8
+wait_seconds = 32
 
 [tent]
 fire_blocks = 8
+
+[tide]
+stone_blocks = 8
 
 [tollbridge]
 ahead_blocks = 256
@@ -345,15 +427,27 @@ rolls = [1, 1]
 [tool_gate]
 slowdown = 8
 
-[unlocks]
-aircraft_eyes = 6
-sailing_ship_eyes = 4
+[voyage]
+beside_blocks = 8
+calm_seconds = 16
+first_wave = 2
+landfall_blocks = 256
+left_seconds = 32
+listing_damage = 192
+reach_blocks = 96
+rise_blocks = 16
+wave_growth = 2
+wave_seconds = 64
+waves = 3
 
 [waystones]
 blocks_per_food = 256
 
 [weather]
 rain_most_seconds = 576
+
+[wend_camp]
+ahead_blocks = 2048
 
 [world]
 coast_blocks = 4096
@@ -367,3 +461,17 @@ sea_blocks = 3072
 sea_floor = -0.5
 sea_sink = 1.25
 shore_blocks = 1024
+
+[worm]
+bite_blocks = 3
+bite_damage = 8
+bite_seconds = 2
+down_seconds = 8
+flee_blocks = 64
+ground_blocks = 32
+health = 192
+health_per_player = 64
+lair_blocks = 256
+leave_seconds = 64
+scale = 2.0
+up_seconds = 8

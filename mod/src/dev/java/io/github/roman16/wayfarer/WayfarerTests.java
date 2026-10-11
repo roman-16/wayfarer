@@ -131,6 +131,20 @@ public final class WayfarerTests {
     }
 
     @GameTest(template = "empty")
+    public static void frostIronWantsIron(GameTestHelper helper) {
+        Player player = helper.makeMockPlayer(GameType.SURVIVAL);
+        BlockPos at = helper.absolutePos(BlockPos.ZERO);
+        helper.getLevel().setBlockAndUpdate(at, Wayfarer.FROST_IRON_ORE.get().defaultBlockState());
+        BlockState ore = helper.getLevel().getBlockState(at);
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.STONE_PICKAXE));
+        check(helper, ore.getDestroyProgress(player, helper.getLevel(), at) == 0, "a stone pick does not move frost iron");
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.IRON_PICKAXE));
+        check(helper, ore.getDestroyProgress(player, helper.getLevel(), at) > 0 && player.hasCorrectToolForDrops(ore, helper.getLevel(), at),
+                "an iron pick digs frost iron");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
     public static void inventoriesSortByKind(GameTestHelper helper) {
         Player player = helper.makeMockPlayer(GameType.SURVIVAL);
         Inventory inventory = player.getInventory();
@@ -206,7 +220,7 @@ public final class WayfarerTests {
         check(helper, progress.claim(Wayfarer.id("shrine/test")), "the first claim takes the eye");
         check(helper, !progress.claim(Wayfarer.id("shrine/test")), "the second claim finds the shrine spent");
         check(helper, progress.claim(Wayfarer.id("shrine/second")), "a second shrine adds a second shard");
-        check(helper, progress.slay() && !progress.slay(), "the world slays the dragon once");
+        check(helper, progress.end() && !progress.end(), "the gaze ends once");
         check(helper, progress.wake() && !progress.wake(), "the world's ember wakes once");
         helper.succeed();
     }
@@ -248,6 +262,15 @@ public final class WayfarerTests {
     public static void theRoadEndsWithTheDragon(GameTestHelper helper) {
         check(helper, Nights.sleepless(false, true) && !Nights.sleepless(false, false), "only the gaze finding those who stay makes a sleepless night");
         check(helper, !Nights.sleepless(true, true), "once the dragon is dead the night is quiet");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void theBellDrawsTheGaze(GameTestHelper helper) {
+        check(helper, Nights.found(0, true) == 0, "a team that does not shine is never found by chance");
+        check(helper, Nights.found(16, false) > 0 && Nights.found(16, false) < Nights.found(32, false), "the brighter the shine, the likelier the gaze finds the caravan");
+        check(helper, Nights.found(16, true) == Balance.get().shine().bellFound() * Nights.found(16, false) && Nights.found(16, true) > Nights.found(16, false),
+                "the bell travelling with the caravan makes the gaze find it more often");
         helper.succeed();
     }
 }

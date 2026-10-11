@@ -50,7 +50,7 @@ public final class Shine {
     private Shine() {}
 
     public static int of(MinecraftServer server) {
-        if (Journey.slain(server)) {
+        if (Journey.over(server)) {
             return 0;
         }
         Balance.Shine balance = Balance.get().shine();
@@ -78,7 +78,7 @@ public final class Shine {
         }
         MinecraftServer server = player.server;
         String name = player.getScoreboardName();
-        String command = Journey.slain(server) ? "improvedmobs difficulty pause player " + name : "improvedmobs difficulty player %s set %d".formatted(name, shine);
+        String command = Journey.over(server) ? "improvedmobs difficulty pause player " + name : "improvedmobs difficulty player %s set %d".formatted(name, shine);
         server.getCommands().performPrefixedCommand(server.createCommandSourceStack().withSuppressedOutput(), command);
     }
 

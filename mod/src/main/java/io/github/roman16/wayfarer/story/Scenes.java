@@ -798,7 +798,7 @@ public final class Scenes {
         if (text.has("voice") && !Journey.claimed(server).isEmpty() && (story || now - ledger.voiceAt >= gap)) {
             JsonArray voice = text.getAsJsonArray("voice");
             List<String> names = text.has("names") ? text.getAsJsonArray("names").asList().stream().map(JsonElement::getAsString).toList() : List.of();
-            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(STRANGER, voice.get(server.overworld().getRandom().nextInt(voice.size())).getAsString(), names, null, null, false, null, null));
+            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(STRANGER, voice.get(server.overworld().getRandom().nextInt(voice.size())).getAsString(), names, null, null, false, null, null, null));
             ledger.voiceAt = now;
         }
         if (story) {

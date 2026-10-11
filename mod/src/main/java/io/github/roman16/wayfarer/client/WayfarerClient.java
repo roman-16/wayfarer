@@ -14,6 +14,8 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.model.ChestedHorseModel;
+import net.minecraft.client.model.GoatModel;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -22,8 +24,10 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
 import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
@@ -62,13 +66,24 @@ public final class WayfarerClient {
             event.registerAboveAll(Wayfarer.id("flash"), Flash::render);
         });
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, event -> Conversation.tick(Minecraft.getInstance()));
-        modBus.addListener(EntityRenderersEvent.RegisterLayerDefinitions.class,
-                event -> event.registerLayerDefinition(FallenRenderer.MULE, ChestedHorseModel::createBodyLayer));
+        modBus.addListener(EntityRenderersEvent.RegisterLayerDefinitions.class, event -> {
+            event.registerLayerDefinition(FallenRenderer.GOAT, GoatModel::createBodyLayer);
+            event.registerLayerDefinition(FallenRenderer.MULE, ChestedHorseModel::createBodyLayer);
+        });
         modBus.addListener(EntityRenderersEvent.RegisterRenderers.class, event -> {
             event.registerBlockEntityRenderer(Wayfarer.SHRINE_PEDESTAL_ENTITY.get(), ShrinePedestalRenderer::new);
+            event.registerEntityRenderer(Wayfarer.DEEP.get(), DeepRenderer::new);
             event.registerEntityRenderer(Wayfarer.FALLEN.get(), FallenRenderer::new);
+            if (ModList.get().isLoaded("geckolib")) {
+                WormLook.register(event);
+            }
         });
+        modBus.addListener(RegisterClientReloadListenersEvent.class, event -> event.registerReloadListener((ResourceManagerReloadListener) DeepRenderer::reload));
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> HeldLight.tick());
+        NeoForge.EVENT_BUS.addListener(ComputeFovModifierEvent.class, FarSight::zoom);
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, FarSight::mark);
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, Ending::tick);
+        NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingOut.class, Ending::leave);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> OwnInventory.tick(Minecraft.getInstance()));
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Closing.class, event -> HeldLight.follow());
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Sight.tick(Minecraft.getInstance()));

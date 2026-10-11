@@ -62,7 +62,7 @@ final class Marsh {
     private static final String ORIGIN = "marsh_origin";
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/marsh.json");
-    private static final TagKey<Biome> SWAMPS = TagKey.create(Registries.BIOME, Wayfarer.id("has_structure/shrine/witch"));
+    static final TagKey<Biome> SWAMPS = TagKey.create(Registries.BIOME, Wayfarer.id("has_structure/shrine/witch"));
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_marsh", Comparator.comparingLong(ChunkPos::toLong));
     private static final String[] PEOPLE = {"rue", "sedge", "tansy"};
     private static final String FISHER = "fisher";
@@ -94,7 +94,7 @@ final class Marsh {
         }
         ServerLevel level = Engine.overworld(server);
         Balance.Marsh balance = Balance.get().marsh();
-        Home.Aim aim = Home.aim(progress.place(Caravan.NAME).orElseGet(level::getSharedSpawnPos), Caravan.way(server), balance.searchBlocks());
+        Home.Aim aim = Home.aim(Caravan.last(server), Caravan.way(server), balance.searchBlocks());
         BlockPos from = aim.from();
         Vec3 way = aim.way();
         Unseen.Heights heights = new Unseen.Heights(level);

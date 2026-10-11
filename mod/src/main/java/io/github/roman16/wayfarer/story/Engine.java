@@ -10,10 +10,12 @@ import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.OwnStone;
 import io.github.roman16.wayfarer.RestEvent;
+import io.github.roman16.wayfarer.Shrines;
 import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
@@ -32,7 +34,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.Filterable;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -41,10 +42,14 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MapItem;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.component.ItemLore;
-import net.minecraft.world.item.component.WrittenBookContent;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -55,6 +60,10 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class Engine {
+    private static final byte CHART_SCALE = 2;
+    private static final int HEX = 16;
+    private static final String GIFT = "gift:";
+    private static final String TRUSTED = "trusted:";
     private static final int CHECK_TICKS = 10;
     private static final String EMBER = "ember";
     private static final String MAIN = "main";
@@ -152,7 +161,9 @@ public final class Engine {
             return;
         }
         for (Active active : active(server)) {
-            if (Steps.entered(active)) {
+            if (!Steps.started(active) && !holds(Progress.of(server), active.quest(), active.step())) {
+                pass(server, active);
+            } else if (Steps.entered(active)) {
                 Steps.tick(server, active);
             } else if (!Talk.busy() && pursued(server, active.quest())) {
                 begin(server, active);
@@ -160,9 +171,22 @@ public final class Engine {
         }
     }
 
+    private static void pass(MinecraftServer server, Active active) {
+        Progress progress = Progress.of(server);
+        Story.Quest quest = active.quest();
+        int next = progress.step(quest.id()) + 1;
+        while (next < quest.steps().size() && !holds(progress, quest, quest.steps().get(next))) {
+            next++;
+        }
+        progress.steps.put(quest.id(), next);
+        progress.scratch.remove(quest.id());
+        progress.setDirty();
+        Journal.syncAll(server);
+    }
+
     private static void begin(MinecraftServer server, Active active) {
         if (active.quest().steps().indexOf(active.step()) == 0) {
-            Banners.show(Component.translatable("wayfarer.banner.begun"), Component.literal(active.quest().title()));
+            Banners.show(Component.translatable("wayfarer.banner.begun"), Component.literal(title(Progress.of(server), active.quest())));
             Sounds.play(server, QUEST_BEGUN);
         }
         Steps.enter(server, active);
@@ -184,7 +208,7 @@ public final class Engine {
                 return;
             }
         }
-        if (!Scenes.interact(player, target)) {
+        if (!Forge.interact(player, target) && !Dice.interact(player, target) && !Scenes.interact(player, target)) {
             Remarks.answer(player, target);
         }
     }
@@ -270,12 +294,13 @@ public final class Engine {
         List<Active> opened = new ArrayList<>();
         for (Story.Quest quest : Story.get().quests()) {
             if (!progress.steps.containsKey(quest.id()) && quest.after().stream().allMatch(progress::done) && halls(progress, quest.act()) >= quest.halls()
-                    && (quest.found() == null || progress.place(quest.found()).isPresent())) {
+                    && (quest.found() == null || progress.place(quest.found()).isPresent()) && (quest.read() == null || progress.pages.contains(quest.read()))
+                    && quest.when().stream().allMatch(condition -> holds(progress, condition))) {
                 progress.steps.put(quest.id(), 0);
                 progress.scratch.remove(quest.id());
                 progress.setDirty();
                 if (!pursued(server, quest)) {
-                    Banners.show(Component.translatable("wayfarer.banner.new", Tasks.key(Tasks.JOURNAL_KEY)), Component.literal(quest.title()));
+                    Banners.show(Component.translatable("wayfarer.banner.new", Tasks.key(Tasks.JOURNAL_KEY)), Component.literal(title(progress, quest)));
                     Sounds.play(server, QUEST_BEGUN);
                 }
                 opened.add(new Active(quest, quest.steps().getFirst(), progress.scratch(quest.id())));
@@ -283,6 +308,30 @@ public final class Engine {
         }
         Journal.syncAll(server);
         return opened;
+    }
+
+    static boolean holds(Progress progress, String when) {
+        return when.startsWith("!") ? !met(progress, when.substring(1)) : met(progress, when);
+    }
+
+    private static boolean met(Progress progress, String condition) {
+        if (condition.startsWith(GIFT)) {
+            return progress.gift(condition.substring(GIFT.length()));
+        }
+        if (condition.startsWith(TRUSTED)) {
+            return Doors.trusting(progress) >= Integer.parseInt(condition.substring(TRUSTED.length()));
+        }
+        return chose(progress, condition);
+    }
+
+    static boolean chose(Progress progress, String chose) {
+        String[] step = chose.split("=", -1);
+        return progress.choices.getOrDefault(step[0], "").equals(step[1]);
+    }
+
+    public static String title(Progress progress, Story.Quest quest) {
+        return quest.renamed().entrySet().stream().filter(entry -> progress.named(entry.getKey())).map(Map.Entry::getValue).reduce((first, second) -> second)
+                .orElse(quest.title());
     }
 
     static long halls(Progress progress, String act) {
@@ -308,6 +357,9 @@ public final class Engine {
             return;
         }
         Vec3 anchor = Steps.anchor(server, active.step());
+        if (active.step().spec().has("shoots")) {
+            People.shoot(server, active.step().text("shoots"));
+        }
         Talk.say(active.quest().id(), anchor, active.step().done(), fill(progress));
         if (active.step().spec().has("finds")) {
             Talk.then(() -> open(server));
@@ -322,6 +374,7 @@ public final class Engine {
         Story.Quest quest = active.quest();
         Story.Step step = active.step();
         Steps.poses(server, step);
+        Steps.faces(server, step);
         if (step.spec().has(Steps.MUSIC)) {
             Music.stop(server);
         }
@@ -333,6 +386,14 @@ public final class Engine {
         }
         if (step.spec().has("joins")) {
             progress.joined.add(step.text("joins"));
+            Caravan.join(server, step.text("joins"));
+        }
+        if (step.spec().has("teaches") && (!step.spec().has("teaches_when")
+                || step.spec().getAsJsonArray("teaches_when").asList().stream().anyMatch(when -> holds(progress, when.getAsString())))) {
+            progress.gifts.add(step.text("teaches"));
+        }
+        if (step.spec().has("page")) {
+            Pages.read(server, step.text("page"));
         }
         progress.trust(Story.trusts(step.spec()));
         if (step.spec().has("clears")) {
@@ -358,7 +419,7 @@ public final class Engine {
         if (quest.reward() != null) {
             grant(server, quest.reward());
         }
-        Banners.show(Component.translatable("wayfarer.banner.done"), Component.literal(quest.title()));
+        Banners.show(Component.translatable("wayfarer.banner.done"), Component.literal(title(progress, quest)));
         Sounds.play(server, QUEST_DONE);
         return Optional.empty();
     }
@@ -370,7 +431,11 @@ public final class Engine {
         if (!step.spec().has(WHEN)) {
             return true;
         }
-        String[] when = step.text(WHEN).split("=", -1);
+        String condition = step.text(WHEN);
+        if (condition.startsWith("!") || condition.contains("/") || condition.contains(":")) {
+            return holds(progress, condition);
+        }
+        String[] when = condition.split("=", -1);
         return progress.choice(quest.id(), when[0]).orElse("").equals(when[1]);
     }
 
@@ -395,6 +460,10 @@ public final class Engine {
         });
     }
 
+    public static boolean touches(ServerPlayer player, BlockPos pedestal) {
+        return running(player.server) && (DryCity.touch(player, pedestal) || Locks.asleep(player, pedestal));
+    }
+
     public static boolean asks(ServerPlayer player, BlockPos pedestal, ResourceLocation shrine) {
         MinecraftServer server = player.server;
         if (!running(server)) {
@@ -403,13 +472,17 @@ public final class Engine {
         Progress progress = Progress.of(server);
         for (Active active : active(server)) {
             Story.Step step = active.step();
-            if (step.kind().equals("shard") && shrine.equals(Wayfarer.id("shrine/" + step.text("eye"))) && !step.choices().isEmpty()
-                    && step.spec().has(ASKS) && progress.done(step.text(ASKS)) && progress.choice(active.quest().id(), step.id()).isEmpty()) {
+            if (step.kind().equals("shard") && Steps.eyes(step).contains(Shrines.eyeKey(shrine)) && asking(progress, step)
+                    && progress.choice(active.quest().id(), step.id()).isEmpty()) {
                 Steps.ask(server, active, pedestal);
                 return true;
             }
         }
         return false;
+    }
+
+    static boolean asking(Progress progress, Story.Step step) {
+        return !step.choices().isEmpty() && (!step.spec().has(ASKS) || progress.done(step.text(ASKS)));
     }
 
     static Talk.Placeholders fill(Progress progress) {
@@ -430,6 +503,10 @@ public final class Engine {
             progress.told.computeIfAbsent(quest, key -> new ArrayList<>()).add(choice.story());
         }
         progress.trust(choice.trusts());
+        if (choice.leaves() != null) {
+            progress.joined.remove(choice.leaves());
+            People.leave(server, choice.leaves());
+        }
         progress.setDirty();
         if (choice.reward() != null) {
             grant(server, choice.reward());
@@ -440,7 +517,9 @@ public final class Engine {
         MinecraftServer server = player.server;
         Progress progress = Progress.of(server);
         choose(server, questId, stepId, choice);
-        Talk.say(questId, player.position(), new Story.Line(choice.narrated() ? null : speaker, choice.reply()));
+        if (!choice.reply().isEmpty()) {
+            Talk.say(questId, player.position(), new Story.Line(choice.narrated() ? null : speaker, choice.reply()));
+        }
         Story.get().quest(questId).ifPresent(quest -> quest.steps().stream().filter(step -> step.id().equals(stepId)).findFirst()
                 .ifPresent(step -> Talk.then(() -> Steps.chosen(player, new Active(quest, step, progress.scratch(quest.id())), choice))));
     }
@@ -503,13 +582,13 @@ public final class Engine {
         if (item.own()) {
             return OwnStone.stone(player);
         }
+        if (item.map() != null) {
+            return chart(player, item);
+        }
         if (item.book() != null) {
             Library.Book book = Library.get().book(item.book()).orElseThrow(() -> new IllegalStateException(key + " gives the book " + item.book()
                     + ", which story/books.toml does not have"));
-            ItemStack written = new ItemStack(Items.WRITTEN_BOOK);
-            written.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(Filterable.passThrough(book.title()), book.author(), 0,
-                    book.pages().stream().map(page -> Filterable.<Component>passThrough(Component.literal(page))).toList(), true));
-            return written;
+            return book.written();
         }
         ItemStack stack = new ItemStack(item.tag() == null ? BuiltInRegistries.ITEM.get(item.id())
                 : BuiltInRegistries.ITEM.getTag(TagKey.create(Registries.ITEM, item.tag()))
@@ -521,11 +600,40 @@ public final class Engine {
         if (item.tooltip() != null) {
             stack.set(DataComponents.LORE, new ItemLore(List.of(Component.literal(item.tooltip()).withStyle(ChatFormatting.GRAY))));
         }
+        if (item.instrument() != null) {
+            stack.set(DataComponents.INSTRUMENT, BuiltInRegistries.INSTRUMENT.getHolder(item.instrument())
+                    .orElseThrow(() -> new IllegalStateException(key + " gives the instrument " + item.instrument() + ", which is not in this game")));
+        }
+        if (item.dyed() != null) {
+            stack.set(DataComponents.DYED_COLOR, new DyedItemColor(Integer.parseInt(item.dyed().substring(1), HEX), false));
+        }
+        if (item.mark() != null) {
+            CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putString(Robes.MARK, item.mark()));
+        }
         if (item.potion() != null) {
             stack.set(DataComponents.POTION_CONTENTS, new PotionContents(BuiltInRegistries.POTION.getHolder(item.potion())
                     .orElseThrow(() -> new IllegalStateException(key + " gives the potion " + item.potion() + ", which is not in this game"))));
         }
         return stack;
+    }
+
+    private static ItemStack chart(ServerPlayer player, Story.Item item) {
+        Places.build(player.server, item.map());
+        Optional<BlockPos> at = Places.place(player.server, item.map());
+        ServerLevel level = overworld(player.server);
+        ItemStack chart = at.map(target -> {
+            ItemStack drawn = MapItem.create(level, target.getX(), target.getZ(), CHART_SCALE, true, true);
+            MapItem.renderBiomePreviewMap(level, drawn);
+            MapItemSavedData.addTargetDecoration(drawn, target, "+", MapDecorationTypes.RED_X);
+            return drawn;
+        }).orElseGet(() -> new ItemStack(Items.MAP));
+        if (item.name() != null) {
+            chart.set(DataComponents.CUSTOM_NAME, Component.literal(item.name()).withStyle(style -> style.withItalic(false)));
+        }
+        if (item.tooltip() != null) {
+            chart.set(DataComponents.LORE, new ItemLore(List.of(Component.literal(item.tooltip()).withStyle(ChatFormatting.GRAY))));
+        }
+        return chart;
     }
 
     static List<Story.Reward> rewards() {

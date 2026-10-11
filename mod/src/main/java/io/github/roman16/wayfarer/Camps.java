@@ -1,8 +1,11 @@
 package io.github.roman16.wayfarer;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.minecraft.core.BlockPos;
@@ -18,13 +21,21 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 
 public final class Camps {
     private static final int CLEARANCE = 10;
+
+    private static final int SAMPLE = 2;
+    private static final int HALF_TURN = 180;
+    private static final int TURN_STEP = 30;
+    private static final int DRY_STEP = 3;
+    private static final int FARTHER = 4;
 
     private Camps() {}
 
@@ -43,8 +54,60 @@ public final class Camps {
         int x = centre.getX() - size.getX() / 2;
         int z = centre.getZ() - size.getZ() / 2;
         level.getChunk(centre);
-        int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, centre.getX(), centre.getZ());
-        return build(level, template, new BlockPos(x, y - 1, z), rotation);
+        List<Integer> grounds = new ArrayList<>();
+        for (int dx = 0; dx < size.getX(); dx += SAMPLE) {
+            for (int dz = 0; dz < size.getZ(); dz += SAMPLE) {
+                grounds.add(ground(level, x + dx, z + dz));
+            }
+        }
+        Collections.sort(grounds);
+        return build(level, template, new BlockPos(x, grounds.get(grounds.size() / 2), z), rotation);
+    }
+
+    public static BlockPos dryBeside(ServerLevel level, BlockPos top, Vec3 out, double distance, int reach) {
+        BlockPos driest = BlockPos.containing(Vec3.atLowerCornerOf(top).add(out.scale(distance)));
+        int least = Integer.MAX_VALUE;
+        for (int further = 0; further < FARTHER; further++) {
+            for (int turned = 0; turned <= HALF_TURN; turned += TURN_STEP) {
+                for (int sign : turned == 0 || turned == HALF_TURN ? new int[] {1} : new int[] {1, -1}) {
+                    Vec3 way = out.yRot((float) Math.toRadians(turned * sign));
+                    BlockPos centre = BlockPos.containing(Vec3.atLowerCornerOf(top).add(way.scale(distance + further * reach)));
+                    int wet = wet(level, centre, reach);
+                    if (wet == 0) {
+                        return centre;
+                    }
+                    if (wet < least) {
+                        least = wet;
+                        driest = centre;
+                    }
+                }
+            }
+        }
+        return driest;
+    }
+
+    private static int wet(ServerLevel level, BlockPos centre, int reach) {
+        int wet = 0;
+        for (int dx = -reach; dx <= reach; dx += DRY_STEP) {
+            for (int dz = -reach; dz <= reach; dz += DRY_STEP) {
+                BlockPos at = centre.offset(dx, 0, dz);
+                level.getChunk(at);
+                BlockPos surface = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at);
+                if (!level.getFluidState(surface.below()).isEmpty() || !level.getFluidState(surface).isEmpty()) {
+                    wet++;
+                }
+            }
+        }
+        return wet;
+    }
+
+    private static int ground(ServerLevel level, int x, int z) {
+        BlockPos.MutableBlockPos ground = new BlockPos.MutableBlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1, z);
+        while (ground.getY() > level.getMinBuildHeight() && level.getFluidState(ground).isEmpty()
+                && (tree(level.getBlockState(ground)) || level.getBlockState(ground).canBeReplaced())) {
+            ground.move(0, -1, 0);
+        }
+        return ground.getY();
     }
 
     public static BlockPos build(ServerLevel level, ResourceLocation template, BlockPos origin, Rotation rotation) {
@@ -81,6 +144,63 @@ public final class Camps {
             }
         }
         return ground;
+    }
+
+    public static void clearing(ServerLevel level, BlockPos centre, int radius, boolean stumps) {
+        int top = centre.getY();
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dz = -radius; dz <= radius; dz++) {
+                if (dx * dx + dz * dz > radius * radius) {
+                    continue;
+                }
+                int x = centre.getX() + dx;
+                int z = centre.getZ() + dz;
+                int crown = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z);
+                top = Math.max(top, crown);
+                BlockPos stump = null;
+                for (BlockPos at = new BlockPos(x, crown - 1, z); at.getY() > level.getMinBuildHeight(); at = at.below()) {
+                    BlockState state = level.getBlockState(at);
+                    if (state.is(BlockTags.LOGS)) {
+                        stump = at.immutable();
+                    } else if (!tree(state) && !state.isAir() && !state.canBeReplaced()) {
+                        break;
+                    }
+                }
+                BlockState wood = stump == null || !stumps ? null : level.getBlockState(stump);
+                fell(level, new BlockPos(x, crown, z));
+                if (wood != null) {
+                    level.setBlock(stump, wood, Block.UPDATE_CLIENTS);
+                }
+            }
+        }
+        BlockPos low = centre.offset(-radius - LeavesBlock.DECAY_DISTANCE, 0, -radius - LeavesBlock.DECAY_DISTANCE);
+        BlockPos high = new BlockPos(centre.getX() + radius + LeavesBlock.DECAY_DISTANCE, top, centre.getZ() + radius + LeavesBlock.DECAY_DISTANCE);
+        prune(level, low, high);
+        for (BlockPos at : BlockPos.betweenClosed(low, high)) {
+            if (level.getBlockState(at).is(Blocks.SNOW) && level.getBlockState(at.below()).isAir()) {
+                level.setBlock(at, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+        }
+        snow(level, centre, radius);
+    }
+
+    public static void snow(ServerLevel level, BlockPos centre, int radius) {
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dz = -radius; dz <= radius; dz++) {
+                if (dx * dx + dz * dz > radius * radius) {
+                    continue;
+                }
+                BlockPos open = new BlockPos(centre.getX() + dx, level.getHeight(Heightmap.Types.MOTION_BLOCKING, centre.getX() + dx, centre.getZ() + dz),
+                        centre.getZ() + dz);
+                BlockState below = level.getBlockState(open.below());
+                if ((below.hasProperty(SnowyDirtBlock.SNOWY) || below.is(BlockTags.LOGS)) && level.getBiome(open).value().shouldSnow(level, open)) {
+                    level.setBlock(open, Blocks.SNOW.defaultBlockState(), Block.UPDATE_CLIENTS);
+                    if (below.hasProperty(SnowyDirtBlock.SNOWY)) {
+                        level.setBlock(open.below(), below.setValue(SnowyDirtBlock.SNOWY, true), Block.UPDATE_CLIENTS);
+                    }
+                }
+            }
+        }
     }
 
     private static void level(ServerLevel level, BlockPos foot, int crown) {

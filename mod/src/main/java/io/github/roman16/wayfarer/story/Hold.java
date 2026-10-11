@@ -68,6 +68,8 @@ public final class Hold {
     private static final String FAILED = "failed";
     private static final String RETRY = "retry";
     private static final String TABLE = Wayfarer.MODID + ":gaze";
+    private static final String TABLE_KEY = "table";
+    private static final String KEEP_KEY = "keep";
     private static final String FROM = "from";
     private static final String FOES = "foes";
     private static final String CROSSED = "crossed";
@@ -164,7 +166,7 @@ public final class Hold {
         BlockPos at = Engine.at(server, active.step().text("at"));
         ServerLevel level = Engine.overworld(server);
         CompoundTag scratch = active.scratch();
-        if (!scratch.contains(DOOR)) {
+        if (!scratch.contains(DOOR) && active.step().spec().has(DOOR)) {
             BlockPos.findClosestMatch(at, DOOR_SEARCH, DOOR_SEARCH, pos -> level.getBlockState(pos).is(BlockTags.DOORS)).map(pos -> lower(level, pos)).ifPresent(door -> {
                 scratch.putLong(DOOR, door.asLong());
                 scratch.put(DOOR_STATE, NbtUtils.writeBlockState(level.getBlockState(door).setValue(DoorBlock.OPEN, false)));
@@ -239,7 +241,8 @@ public final class Hold {
                     cross(server, active, level, wave, crossing);
                 } else {
                     long team = Math.max(1, Engine.players(server).stream().filter(member -> member.level().dimension() == Level.OVERWORLD).count());
-                    command(server, "hordes spawnWave %s %d %s".formatted(player.getScoreboardName(), (hold.firstWave() + hold.waveGrowth() * wave) * team, TABLE));
+                    command(server, "hordes spawnWave %s %d %s".formatted(player.getScoreboardName(), (hold.firstWave() + hold.waveGrowth() * wave) * team,
+                            active.step().spec().has(TABLE_KEY) ? Wayfarer.MODID + ":" + active.step().text(TABLE_KEY) : TABLE));
                 }
             });
             return;
@@ -422,8 +425,10 @@ public final class Hold {
         Progress.of(server).setDirty();
         if (crossing(active)) {
             Ford.lay(server);
-        } else {
+        } else if (active.step().spec().has(DOOR)) {
             Tollbridge.survivors(server);
+        } else {
+            Steps.moves(server, active.step());
         }
         start(server, active);
     }
@@ -494,7 +499,7 @@ public final class Hold {
         monster.goalSelector.addGoal(BESIEGE_PRIORITY, new Besiege(monster));
     }
 
-    private static void outline(Entity monster, boolean on) {
+    static void outline(Entity monster, boolean on) {
         Scoreboard scoreboard = monster.level().getScoreboard();
         PlayerTeam team = scoreboard.getPlayerTeam(OUTLINED);
         if (team == null) {
@@ -558,7 +563,9 @@ public final class Hold {
 
     private static List<String> keep(Engine.Active active) {
         List<String> keep = new ArrayList<>();
-        active.step().spec().getAsJsonArray("keep").forEach(person -> keep.add(person.getAsString()));
+        if (active.step().spec().has(KEEP_KEY)) {
+            active.step().spec().getAsJsonArray(KEEP_KEY).forEach(person -> keep.add(person.getAsString()));
+        }
         return keep;
     }
 

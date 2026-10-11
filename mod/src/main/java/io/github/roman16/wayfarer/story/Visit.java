@@ -1,11 +1,13 @@
 package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Fire;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -34,6 +36,10 @@ final class Visit {
     private static final String SEAT = "seat";
     private static final String LEFT = Wayfarer.MODID + "_left";
     private static final String SITTING = "sitting";
+    private static final String VISITS = "visits";
+    private static final String EVENING = "evening";
+    private static final String MAIN = "main";
+    private static final Set<String> FIRESIDE = Set.of("talk", "visit");
     private static final int ACROSS_BLOCKS = 3;
     private static final int SEAT_REACH = 4;
     private static final float FLAT = (float) Math.sqrt(0.5);
@@ -52,9 +58,23 @@ final class Visit {
             arrive(server, active, visitor, fire.get());
             return;
         }
-        if (!Talk.busy() && Engine.pursued(server, active.quest()) && Engine.most(server, Engine.players(server).stream().filter(player -> sitting(player, fire.get())).count())) {
+        if (Clock.evening() && !Talk.busy() && !visited(server, active) && Engine.pursued(server, active.quest())
+                && Engine.most(server, Engine.players(server).stream().filter(player -> sitting(player, fire.get())).count())) {
             come(server, active, visitor, fire.get());
         }
+    }
+
+    private static boolean visited(MinecraftServer server, Engine.Active active) {
+        if (Progress.of(server).scratch(VISITS).getLong(EVENING) == today(server)) {
+            return true;
+        }
+        boolean side = !active.quest().kind().equals(MAIN);
+        return Engine.active(server).stream().anyMatch(other -> other.quest() != active.quest() && FIRESIDE.contains(other.step().kind())
+                && (other.step().kind().equals("visit") && other.scratch().getBoolean(COMING) || Steps.started(other) || side && other.quest().kind().equals(MAIN) && FIRESIDE.contains(other.step().kind())));
+    }
+
+    private static long today(MinecraftServer server) {
+        return Math.floorDiv(Engine.overworld(server).getDayTime(), Clock.DAY) + 1;
     }
 
     private static boolean sitting(ServerPlayer player, BlockPos fire) {
@@ -73,6 +93,7 @@ final class Visit {
         People.walk(server, visitor, seat);
         active.scratch().putBoolean(COMING, true);
         active.scratch().put(SEAT, position(seat));
+        Progress.of(server).scratch(VISITS).putLong(EVENING, today(server));
         Progress.of(server).setDirty();
     }
 

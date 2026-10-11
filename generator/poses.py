@@ -93,6 +93,7 @@ POSES = {
         lower_arm=(-90, 32, -90), upper_arm=(-80, 0, -90), lower_leg=(-8, 0, -90), upper_leg=(-16, 0, -90)
     ),
     "fallen_slumped": seated(head=(32, 0, 28), body=(8, 0, 12), right_arm=(-8, 0, 20), left_arm=(-12, 0, -16), lean=-1),
+    "laid_out": on_back((-90, 4, 0), (-90, -4, 0), right_leg=(-90, 2, 0), left_leg=(-90, -2, 0)),
     "sitting_crossed": seated(
         right_arm=(-40, 8, 0), left_arm=(-40, -8, 0), right_leg=(-90, -32, 0), left_leg=(-90, 32, 0)
     ),
@@ -103,8 +104,10 @@ POSES = {
         head=(24, 0, 0), body=(16, 0, 0), right_arm=(-56, 12, 0), left_arm=(-56, -12, 0), lean=-2
     ),
     "sitting_leaning": seated(head=(-8, 0, 0), body=(-20, 0, 0), right_arm=(24, 0, 12), left_arm=(24, 0, -12), lean=3),
+    "standing_aiming": standing(head=(4, 8, 0), right_arm=(-88, -8, 0), left_arm=(-88, 36, 0)),
     "standing_arms_crossed": standing(right_arm=(-76, -44, 0), left_arm=(-70, 44, 0)),
     "standing_behind_back": standing(head=(-4, 0, 0), right_arm=(24, 0, 8), left_arm=(24, 0, -8)),
+    "standing_bowing": standing(head=(52, 0, 0), body=(18, 0, 0), right_arm=(-20, 0, 4), left_arm=(-20, 0, -4)),
     "standing_head_down": standing(head=(36, 0, 0), body=(6, 0, 0), right_arm=(-12, 0, 4), left_arm=(-12, 0, -4)),
     "standing_looking_up": standing(head=(-28, 12, 0), right_arm=(4, 0, 6), left_arm=(-4, 0, -6)),
     "standing_weight": standing(

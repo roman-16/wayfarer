@@ -16,6 +16,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -48,6 +50,13 @@ final class Inspect {
         pos.add(nearest.getY());
         pos.add(nearest.getZ());
         result.add("pos", pos);
+        if (nearest instanceof Mob mob) {
+            result.addProperty("target", mob.getTarget() == null ? "none" : mob.getTarget().getName().getString());
+            JsonArray goals = new JsonArray();
+            mob.goalSelector.getAvailableGoals().stream().filter(WrappedGoal::isRunning).forEach(goal -> goals.add(goal.getGoal().getClass().getName()));
+            mob.targetSelector.getAvailableGoals().stream().filter(WrappedGoal::isRunning).forEach(goal -> goals.add(goal.getGoal().getClass().getName()));
+            result.add("goals", goals);
+        }
         result.add("nbt", json(nearest.saveWithoutId(new CompoundTag())));
         return result.toString();
     }

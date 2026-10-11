@@ -1,9 +1,12 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Engine;
 import io.github.roman16.wayfarer.story.Memories;
+import io.github.roman16.wayfarer.story.Progress;
 import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import toughasnails.api.temperature.ITemperature;
 import toughasnails.api.temperature.TemperatureHelper;
@@ -13,11 +16,20 @@ import toughasnails.api.thirst.ThirstHelper;
 
 public final class Heat {
     private static final int FULL_THIRST = 20;
+    private static final String WARMTH = "warmth";
 
     private Heat() {}
 
     public static void setup(FMLCommonSetupEvent event) {
-        TemperatureHelper.registerPlayerTemperatureModifier((player, level) -> Memories.dreaming(player) ? TemperatureLevel.NEUTRAL : level);
+        TemperatureHelper.registerPlayerTemperatureModifier((player, level) -> Memories.dreaming(player) ? TemperatureLevel.NEUTRAL : warmed(player, level));
+    }
+
+    private static TemperatureLevel warmed(Player player, TemperatureLevel level) {
+        if (!(player instanceof ServerPlayer carrier) || level.ordinal() >= TemperatureLevel.NEUTRAL.ordinal() || !Engine.running(carrier.server)
+                || !Progress.of(carrier.server).gift(WARMTH)) {
+            return level;
+        }
+        return TemperatureLevel.values()[level.ordinal() + 1];
     }
 
     public static CompoundTag keep(ServerPlayer player) {

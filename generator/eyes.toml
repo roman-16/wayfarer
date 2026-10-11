@@ -14,9 +14,9 @@ biomes = [
 ]
 people = "The Tide Folk"
 lore = [
-  "The Tide Folk lived where the land gives up and the sea begins. They took the black shard because no one else wanted a thing that drank the light.",
-  "They buried it the way they buried everything worth keeping: below the tideline, under a fire that was never lit twice in the same place.",
-  "If you are reading this, the fire was lit again. Take the shard. The sea will forget us, as it should.",
+  "We are the Tide Folk, and this is our bay. Nothing comes up out of it at night, so our boats go out with lamps lit, and we eat.",
+  "The Drowned City's last swam in on a winter tide with their stone in a net between them, and asked us to keep it from the eye that drowned them. We swore on the fire pit.",
+  "If you are reading this, you carry a fire in your hand, and you know what lies on our stone. Take what you must. Leave us the dark.",
 ]
 
 
@@ -26,9 +26,10 @@ story = true
 biomes = ["#c:is_snowy", "#c:is_icy"]
 people = "The Frost Walkers"
 lore = [
-  "The Frost Walkers never stopped moving. Their villages were tracks in the snow, gone by morning.",
-  "They carried the cold shard for a hundred winters and said it was the only fire that never burned them.",
-  "When the last of them grew too old to walk, they set it here, under the ice, where nothing stays still long enough to be seen.",
+  "We are the Frost Walkers. We walk all summer and come home to this hall for the winter, to the stone that remembers.",
+  "Tonight someone came down the stair while we slept. When the lamps were lit again, the stone was empty. The young ones ran up after him.",
+  "I am too old for the stair. The shouting up there has stopped. I can hear the snow.",
+  "One of ours is still out on the hunt. If she comes home, tell her not to wait for us. Tell her to keep walking.",
 ]
 
 
@@ -74,11 +75,12 @@ lore = [
 [eyes.exotic]
 act = 2
 biomes = ["#c:is_badlands", "#minecraft:is_badlands"]
+empty = true
 people = "The Drowned City"
 lore = [
-  "Before the sea took it, the Drowned City was the most beautiful place in the world. Beautiful things are seen.",
-  "The few who swam out carried the exotic shard inland, as far from water as they could, into the red canyons.",
-  "They never saw the sea again. They said it was worth it. We hope you agree.",
+  "We were the Drowned City, the most beautiful place on the coast. Beautiful things are seen. The eye looked at us for one summer, and the sea came up and took the city.",
+  "The few of us left climbed up here to our hall in the red rock and lifted our stone's shard, and carried it down to the one bay on the coast the eye could not see.",
+  "The Tide Folk keep it now, under their fire pit. If you came here for it, you came to the wrong shore.",
 ]
 
 
@@ -108,11 +110,12 @@ lore = [
 [eyes.old]
 act = 2
 biomes = ["#c:is_desert", "minecraft:desert"]
+empty = true
 people = "The Sand Singers"
 lore = [
-  "The Sand Singers say a great worm sleeps under the desert, and that it swallowed the old shard to keep it safe.",
-  "The truth is simpler. We dug this hall and let the sand cover it, and the worm is a story we told to keep treasure hunters away.",
-  "The worm is not a story. Walk softly.",
+  "We are the Sand Singers. We dug this hall under the dunes and set our stone in it, and sang to it, and the desert was quiet around us.",
+  "One summer the deep sand opened and something came up and swallowed the stone whole. It grew. It sees. Nothing on two legs crosses its ground, so no raider troubles us now.",
+  "We sing to it, and it lets us be. If you have come for our stone, it is in the worm. Walk softly.",
 ]
 
 
@@ -121,9 +124,9 @@ act = 2
 biomes = ["#c:is_jungle", "#minecraft:is_jungle"]
 people = "The Jungle Folk"
 lore = [
-  "The rogue shard taught the Jungle Folk how red dust carries a thought from one stone to the next.",
-  "They built doors that opened themselves and traps that never slept, and still the gaze found their temples.",
-  "No lock keeps out a god. Only leaving does. So we left, and left the shard to you.",
+  "We were the Jungle Folk. Our shard taught us how red dust carries a thought from one stone to the next, and we built locks that never slept.",
+  "The eye looked for our stone for a hundred summers and never found the way in. So it looked at us instead, one by one, until nobody was left to open the locks.",
+  "Our stone sleeps. If you woke it, you knew our word, and you are welcome. We are sorry there is nobody left to say so.",
 ]
 
 

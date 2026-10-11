@@ -64,6 +64,7 @@ import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -103,6 +104,7 @@ import org.slf4j.Logger;
 
 @EventBusSubscriber(modid = Wayfarer.MODID, value = Dist.CLIENT)
 public final class Driver {
+    private static final int SCROLL_TURNS = 32;
     private static final boolean SHOWROOM = Boolean.getBoolean(Wayfarer.MODID + ".showroom");
     private static final String WORLD_SUFFIX = Boolean.getBoolean(Wayfarer.MODID + ".lean") ? "-lean" : "";
     private static final String PLAY_WORLD = "play" + WORLD_SUFFIX;
@@ -135,7 +137,7 @@ public final class Driver {
     private static final Method MOUSE_PRESS = mouse("onPress", long.class, int.class, int.class, int.class);
     private static final String EXPERIMENTAL_WARNING = "selectWorld.backupQuestion.experimental";
     private static final String LOAD_WITHOUT_BACKUP = "selectWorld.backupJoinSkipButton";
-    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "distance", "fly", "hud", "inspect", "interact", "key", "panorama", "person", "place", "sky", "spawn",
+    private static final Set<String> PLAYER_STEPS = Set.of("beside", "clear", "distance", "fly", "hold", "hud", "inspect", "interact", "key", "panorama", "person", "place", "sky", "spawn",
             "state", "story", "workshop");
     private static final double INTERACT_REACH = 8;
     private static final int IDLE_FPS = 5;
@@ -678,6 +680,7 @@ public final class Driver {
                     minecraft.screen.onClose();
                 }
             }
+            case "face" -> face(minecraft, argument);
             case "far" -> far();
             case "find" -> find(minecraft, argument);
             case "forget" -> JournalScreen.firstPage();
@@ -699,6 +702,7 @@ public final class Driver {
                 }
             }
             case "join" -> join(minecraft, argument);
+            case "hold" -> hold(minecraft, argument);
             case "key" -> key(minecraft, argument);
             case "leave" -> leave(minecraft);
             case "loading" -> {
@@ -1050,6 +1054,13 @@ public final class Driver {
                 && (minecraft.screen == null || minecraft.screen instanceof DeathScreen) && loaded(minecraft);
     }
 
+    private static void hold(Minecraft minecraft, String argument) {
+        String[] parts = argument.split(" ");
+        boolean on = parts.length > 1 && parts[1].equals("on");
+        Arrays.stream(minecraft.options.keyMappings).filter(mapping -> mapping.getName().equals(parts[0])).findFirst()
+                .ifPresentOrElse(mapping -> mapping.setDown(on), () -> note("error: no key mapping " + parts[0]));
+    }
+
     private static void key(Minecraft minecraft, String name) {
         if (name.equals("escape")) {
             if (minecraft.screen != null) {
@@ -1119,6 +1130,13 @@ public final class Driver {
         return text.startsWith(RELATIVE) ? from + (text.length() > 1 ? Integer.parseInt(text.substring(1)) : 0) : Integer.parseInt(text);
     }
 
+    private static void face(Minecraft minecraft, String argument) {
+        String[] xyz = argument.split(" ");
+        BlockPos here = minecraft.player.blockPosition();
+        Vec3 target = Vec3.atCenterOf(new BlockPos(coordinate(xyz[0], here.getX()), coordinate(xyz[1], here.getY()), coordinate(xyz[2], here.getZ())));
+        minecraft.player.lookAt(EntityAnchorArgument.Anchor.EYES, target);
+    }
+
     private static void use(Minecraft minecraft, String argument) {
         String[] xyz = argument.split(" ");
         BlockPos here = minecraft.player.blockPosition();
@@ -1142,6 +1160,13 @@ public final class Driver {
             if (widget == null) {
                 note("error: no widget labelled " + label);
                 return;
+            }
+            for (int turn = 0; turn < SCROLL_TURNS && minecraft.screen != null && widget.getY() + widget.getHeight() > minecraft.screen.height * 3 / 4; turn++) {
+                int before = widget.getY();
+                minecraft.screen.mouseScrolled(widget.getX() + 1, Math.min(widget.getY(), minecraft.screen.height - 1), 0, -1);
+                if (widget.getY() == before) {
+                    break;
+                }
             }
             click(minecraft, widget.getX() + widget.getWidth() / 2.0, widget.getY() + widget.getHeight() / 2.0, "left");
         };

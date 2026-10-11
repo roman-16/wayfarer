@@ -7,11 +7,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.network.Filterable;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.WrittenBookContent;
 
 public record Library(Map<String, Book> books, Map<ResourceLocation, String> people) {
 
-    public record Book(String author, List<String> pages, String title) {}
+    public record Book(String author, List<String> pages, String title) {
+        public ItemStack written() {
+            ItemStack written = new ItemStack(Items.WRITTEN_BOOK);
+            written.set(DataComponents.WRITTEN_BOOK_CONTENT, new WrittenBookContent(Filterable.passThrough(title), author, 0,
+                    pages.stream().map(page -> Filterable.<Component>passThrough(Component.literal(page))).toList(), true));
+            return written;
+        }
+    }
 
     private static final Bundled<Library> LIBRARY = Bundled.json("/wayfarer/library.json", Library::load);
 

@@ -35,6 +35,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -42,7 +43,9 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Tasks {
-    public static final Set<String> STEP_TASKS = Set.of("bed", "bury", "ember", "enter", "fire", "horse", "look", "map", "marks", "pack", "rest", "search", "stone", "sweep", "tent");
+    private static final String SAIL = "key.smallships.ship_sail";
+    public static final Set<String> STEP_TASKS = Set.of("bed", "bury", "ember", "enter", "fire", "horse", "hull", "look", "map", "marks", "pack", "rest", "sail", "search", "stone", "sweep",
+            "tent", "tracks");
     private static final Set<String> TOLD_BY_CLIENT = Set.of("charms", "gear", "journal", "map");
     private static final Set<String> QUIET = Set.of("evening", "waiting");
     static final String FIRST = "task.";
@@ -184,7 +187,7 @@ public final class Tasks {
         } else if (tracked.isPresent()) {
             Engine.Active active = tracked.get();
             kind = Component.translatable("wayfarer.journal." + active.quest().kind());
-            title = Component.literal(active.quest().title());
+            title = Component.literal(Engine.title(Progress.of(player.server), active.quest()));
             if (Steps.entered(active)) {
                 objective = Component.literal(Journal.objective(player, active));
             }
@@ -240,7 +243,10 @@ public final class Tasks {
             case "marks" -> Optional.of(task("marks", key(Sense.KEY)));
             case "sweep" -> Optional.of(task("sweep", key(Sense.KEY)));
             case "search" -> Optional.of(task("search", key(Sense.KEY)));
+            case "tracks" -> Optional.of(task("tracks", key(Sense.KEY)));
             case "horse" -> Optional.of(task("horse"));
+            case "hull" -> Optional.of(task("hull"));
+            case "sail" -> Optional.of(player.getVehicle() instanceof Boat ? task("sail", key(SAIL)) : task("sail.board"));
             case "map" -> unless(Firsts.seen(player, FIRST + "map") || !ModList.get().isLoaded("journeymap"),
                     task("map", key("key.wayfarer.map")));
             case "pack" -> unless(!pitchedAway(player), task("pack"));
@@ -272,7 +278,8 @@ public final class Tasks {
     }
 
     private static boolean campfire(ServerLevel level, BlockPos near) {
-        return Fire.nearest(level, near.getCenter(), NEAR).filter(fire -> Tents.pitchedNear(level, fire, Balance.get().tent().fireBlocks())).isPresent();
+        return Fire.nearest(level, near.getCenter(), NEAR).filter(fire -> Tents.pitchedNear(level, fire, Balance.get().tent().fireBlocks())).isPresent()
+                || Caravan.within(level.getServer(), level, near.getCenter()) && Tents.pitchedNear(level, near, NEAR);
     }
 
     private static Predicate<ServerPlayer> rested(Engine.Active active) {

@@ -5,6 +5,10 @@
   "band_tick": {
     "slider": "master"
   },
+  "bell_toll": {
+    "reach": 64,
+    "slider": "blocks"
+  },
   "camp": {
     "loop_ticks": 300,
     "reach": 64,

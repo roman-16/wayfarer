@@ -32,6 +32,174 @@
 | --- | --- | --- | --- |
 | ![Front](the-grave/front.jpg) | ![Side](the-grave/side.jpg) | ![Above](the-grave/above.jpg) | ![Three quarters](the-grave/three-quarters.jpg) |
 
+## Marsh hut
+
+**The Marsh Mothers' hut on stilts**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](marsh-hut/front.jpg) | ![Side](marsh-hut/side.jpg) | ![Above](marsh-hut/above.jpg) | ![Three quarters](marsh-hut/three-quarters.jpg) |
+
+## Frost house
+
+**The Frost Walkers' winter house**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](frost-house/front.jpg) | ![Side](frost-house/side.jpg) | ![Above](frost-house/above.jpg) | ![Three quarters](frost-house/three-quarters.jpg) |
+
+## Frost lake
+
+**The frozen lake where the shard was sunk**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](frost-lake/front.jpg) | ![Side](frost-lake/side.jpg) | ![Above](frost-lake/above.jpg) | ![Three quarters](frost-lake/three-quarters.jpg) |
+
+## Frost mine head
+
+**The Frost Walkers' mine head**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](frost-mine-head/front.jpg) | ![Side](frost-mine-head/side.jpg) | ![Above](frost-mine-head/above.jpg) | ![Three quarters](frost-mine-head/three-quarters.jpg) |
+
+## Reading house
+
+**The Keepers' reading house**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](reading-house/front.jpg) | ![Side](reading-house/side.jpg) | ![Above](reading-house/above.jpg) | ![Three quarters](reading-house/three-quarters.jpg) |
+
+## First village house
+
+**A house of the First Village**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](first-village-house/front.jpg) | ![Side](first-village-house/side.jpg) | ![Above](first-village-house/above.jpg) | ![Three quarters](first-village-house/three-quarters.jpg) |
+
+## First village pit
+
+**The First Village's pit**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](first-village-pit/front.jpg) | ![Side](first-village-pit/side.jpg) | ![Above](first-village-pit/above.jpg) | ![Three quarters](first-village-pit/three-quarters.jpg) |
+
+## Shipyard
+
+**Edda's shipyard**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](shipyard/front.jpg) | ![Side](shipyard/side.jpg) | ![Above](shipyard/above.jpg) | ![Three quarters](shipyard/three-quarters.jpg) |
+
+## Shipyard wreck
+
+**The wreck of Edda's husband's ship**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](shipyard-wreck/front.jpg) | ![Side](shipyard-wreck/side.jpg) | ![Above](shipyard-wreck/above.jpg) | ![Three quarters](shipyard-wreck/three-quarters.jpg) |
+
+## Tide village
+
+**The Tide Folk's village on the bay**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](tide-village/front.jpg) | ![Side](tide-village/side.jpg) | ![Above](tide-village/above.jpg) | ![Three quarters](tide-village/three-quarters.jpg) |
+
+## Wend last camp
+
+**Wend's last camp, as the team finds it**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](wend-last-camp/front.jpg) | ![Side](wend-last-camp/side.jpg) | ![Above](wend-last-camp/above.jpg) | ![Three quarters](wend-last-camp/three-quarters.jpg) |
+
+## Wend last camp then
+
+**Wend's last camp in the memory**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](wend-last-camp-then/front.jpg) | ![Side](wend-last-camp-then/side.jpg) | ![Above](wend-last-camp-then/above.jpg) | ![Three quarters](wend-last-camp-then/three-quarters.jpg) |
+
+## Sand camp
+
+**The Sand Singers' camp**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](sand-camp/front.jpg) | ![Side](sand-camp/side.jpg) | ![Above](sand-camp/above.jpg) | ![Three quarters](sand-camp/three-quarters.jpg) |
+
+## Lock house
+
+**The Jungle Folk's lock house**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](lock-house/front.jpg) | ![Side](lock-house/side.jpg) | ![Above](lock-house/above.jpg) | ![Three quarters](lock-house/three-quarters.jpg) |
+
+## Sealed house
+
+**The Keepers' sealed house**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](sealed-house/front.jpg) | ![Side](sealed-house/side.jpg) | ![Above](sealed-house/above.jpg) | ![Three quarters](sealed-house/three-quarters.jpg) |
+
+## Cairns
+
+**The Frost Walkers' cairn ring**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](cairns/front.jpg) | ![Side](cairns/side.jpg) | ![Above](cairns/above.jpg) | ![Three quarters](cairns/three-quarters.jpg) |
+
+## Phantom nest
+
+**The phantoms' nest**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](phantom-nest/front.jpg) | ![Side](phantom-nest/side.jpg) | ![Above](phantom-nest/above.jpg) | ![Three quarters](phantom-nest/three-quarters.jpg) |
+
+## Airfield
+
+**The airfield on the heights**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](airfield/front.jpg) | ![Side](airfield/side.jpg) | ![Above](airfield/above.jpg) | ![Three quarters](airfield/three-quarters.jpg) |
+
+## Gatehouse
+
+**The Grass Kingdom's gatehouse**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](gatehouse/front.jpg) | ![Side](gatehouse/side.jpg) | ![Above](gatehouse/above.jpg) | ![Three quarters](gatehouse/three-quarters.jpg) |
+
+## Graveyard
+
+**The Grave Keepers' graveyard**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](graveyard/front.jpg) | ![Side](graveyard/side.jpg) | ![Above](graveyard/above.jpg) | ![Three quarters](graveyard/three-quarters.jpg) |
+
+## Gazebound house
+
+**The Gazebound house in the dark wood**, in the showroom
+
+| Front | Side | Above | Three quarters |
+| --- | --- | --- | --- |
+| ![Front](gazebound-house/front.jpg) | ![Side](gazebound-house/side.jpg) | ![Above](gazebound-house/above.jpg) | ![Three quarters](gazebound-house/three-quarters.jpg) |
+
 ## Road scenes
 
 **The Cache**, in the showroom

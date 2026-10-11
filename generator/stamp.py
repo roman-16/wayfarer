@@ -8,37 +8,17 @@ CLEAR = (0, 0, 0, 0)
 SPRITES = "assets/wayfarer/textures/gui/sprites/stamp"
 VANILLA = "assets/minecraft/textures/gui/sprites"
 JEI = "assets/jei/textures/gui/sprites"
-COMBAT_ROLL = "assets/combat_roll/textures/hud"
-ROLL_ARROW = [
-    "....##.......",
-    "....###......",
-    ".....###.....",
-    "......###....",
-    "##.....###...",
-    "###.....###..",
-    ".###.....###.",
-    "..###.....###",
-    ".###.....###.",
-    "###.....###..",
-    "##.....###...",
-    "......###....",
-    ".....###.....",
+ROLL = [
+    "##....",
+    "###...",
+    ".###..",
+    "..###.",
+    "...###",
+    "..###.",
+    ".###..",
+    "###...",
+    "##....",
 ]
-MOUSE = [
-    ".########.",
-    "#LLLLMRRR#",
-    "#LLLLMRRR#",
-    "#LLLLMRRR#",
-    "##########",
-    "S........#",
-    "S........#",
-    "#........#",
-    "#........#",
-    "#........#",
-    "#........#",
-    ".########.",
-]
-MOUSE_BUTTONS = {(0, 0): "L", (16, 0): "R", (32, 0): "M", (0, 16): "S", (16, 16): "S"}
 MARK = ["..#..", ".###.", "#.#.#", "#.#.#", "#.#.#", ".###.", "..#.."]
 RING = [".###.", "#...#", "#...#", "#...#", ".###."]
 DISC = [".###.", "#####", "#####", "#####", ".###."]
@@ -861,34 +841,6 @@ def jei(tokens):
     return sprites
 
 
-def roll_widgets(tokens):
-    canvas = Canvas(256, 256)
-    cap, _ = keycap(tokens, "roll-key")
-    for y in range(12):
-        for x in range(3):
-            canvas.set(x, 32 + y, cap.get(x, y))
-            canvas.set(13 + x, 32 + y, cap.get(9 + x, y))
-        for x in range(16):
-            canvas.set(16 + x, 32 + y, cap.get(3 + x % 6, y))
-    outline = tokens.text["bone"]
-    lit = tokens("ember", 3)
-    for (left, top), pressed in MOUSE_BUTTONS.items():
-        for y, row in enumerate(MOUSE):
-            for x, cell in enumerate(row):
-                if cell == "#" or cell == "S" and pressed != "S":
-                    canvas.set(left + x, top + y, outline)
-                elif cell == pressed:
-                    canvas.set(left + x, top + y, lit)
-    return canvas
-
-
-def combat_roll(main, tokens):
-    arrow, _ = glyph(ROLL_ARROW, WHITE)
-    background = inset(tokens, "roll-background", 15, 15)
-    for name, canvas in (("arrow", arrow), ("arrow_background", background), ("widgets", roll_widgets(tokens))):
-        png.write(main / COMBAT_ROLL / f"{name}.png", canvas.pixels)
-
-
 def jade(main, spec):
     text = spec["text"]
     palette = {
@@ -931,6 +883,7 @@ def write(main, spec, glyphs):
         "ribbon_active": ribbon(tokens, "ribbon_active", True),
         "ring": glyph(RING, WHITE),
         "ring_done": glyph(DISC, WHITE),
+        "roll": glyph(ROLL, WHITE),
         "slot": (inset(tokens, "slot", 18, 18), None),
         "spine": spine(tokens, "spine"),
         "strip": strip(tokens, "strip"),
@@ -981,7 +934,6 @@ def write(main, spec, glyphs):
     for kind in ("advancement", "recipe", "system", "tutorial"):
         vanilla[f"toast/{kind}"] = toast(tokens, f"toast-{kind}")
     jade(main, spec)
-    combat_roll(main, tokens)
     png.write(main / "assets/minecraft/textures/gui/book.png", book_screen(tokens).pixels)
     png.write(main / "assets/wayfarer/textures/gui/title/logo.png", logo(tokens, glyphs).pixels)
     for folder, sprites in ((SPRITES, own), (VANILLA, vanilla), (JEI, jei(tokens))):

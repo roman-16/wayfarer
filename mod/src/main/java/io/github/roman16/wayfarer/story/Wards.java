@@ -160,7 +160,8 @@ public final class Wards {
 
     @SubscribeEvent
     public static void onPotentialSpawns(LevelEvent.PotentialSpawns event) {
-        if (event.getMobCategory() == MobCategory.MONSTER && at(event.getLevel(), event.getPos()).filter(ward -> ward.place().equals(Diggers.NAME) || ward.place().equals(Marsh.NAME)).isPresent()) {
+        if (event.getMobCategory() == MobCategory.MONSTER && at(event.getLevel(), event.getPos()).filter(ward -> ward.place().equals(Diggers.NAME) || ward.place().equals(Frost.HALL) || ward.place().equals(Marsh.NAME)
+                || ward.place().equals(ReadingHouse.NAME)).isPresent()) {
             event.setCanceled(true);
         }
     }

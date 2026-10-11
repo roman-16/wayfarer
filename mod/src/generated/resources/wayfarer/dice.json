@@ -1,0 +1,51 @@
+{
+  "bank": "You bank {pot}. That makes {mine}.",
+  "bank_it": "Bank it.",
+  "lose": "The dicer reaches {theirs} and sweeps the stakes in. \"Better luck, traveller.\"",
+  "no": "Not now.",
+  "offer": "Bones, traveller? Stakes on the table, and the first to {target} takes them.",
+  "one": "You throw {a} and {b}. A one: your pot is lost.",
+  "play": "Play, for what's in my hand.",
+  "play_empty": "Play, for nothing.",
+  "purse": [
+    {
+      "count": 3,
+      "item": "minecraft:bread",
+      "words": "three loaves"
+    },
+    {
+      "count": 16,
+      "item": "minecraft:arrow",
+      "words": "sixteen arrows"
+    },
+    {
+      "count": 8,
+      "item": "minecraft:torch",
+      "words": "eight torches"
+    },
+    {
+      "count": 6,
+      "item": "minecraft:iron_nugget",
+      "words": "six iron nuggets"
+    },
+    {
+      "count": 2,
+      "item": "minecraft:cooked_mutton",
+      "words": "two cuts of mutton"
+    },
+    {
+      "count": 4,
+      "item": "minecraft:leather",
+      "words": "four hides"
+    }
+  ],
+  "stake": "Your {stake} against my {theirs}. You throw first.",
+  "stake_empty": "Nothing in your hand? Then we play for the fun of it. You throw first.",
+  "their_bank": "The dicer banks {pot}. That makes {theirs}.",
+  "their_one": "The dicer throws {a} and {b}. A one: their pot is lost.",
+  "their_throw": "The dicer throws {a} and {b}. Their pot: {pot}.",
+  "throw": "You throw {a} and {b}. Your pot: {pot}. Banked: you {mine}, the dicer {theirs}.",
+  "throw_again": "Throw again.",
+  "walked": "The dicer gathers up the bones. \"Come back when you mean it.\"",
+  "win": "You reach {mine}. The dicer pushes the stakes across. \"Fair's fair.\""
+}

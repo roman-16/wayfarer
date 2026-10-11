@@ -1,0 +1,64 @@
+{
+  "houses": [
+    {
+      "offset": [
+        9,
+        13
+      ],
+      "template": "first_village/house_0",
+      "turn": 0
+    },
+    {
+      "offset": [
+        15,
+        -1
+      ],
+      "template": "first_village/house_1",
+      "turn": 3
+    },
+    {
+      "offset": [
+        7,
+        -12
+      ],
+      "template": "first_village/house_2",
+      "turn": 2
+    },
+    {
+      "offset": [
+        -6,
+        -12
+      ],
+      "template": "first_village/house_3",
+      "turn": 2
+    },
+    {
+      "offset": [
+        -13,
+        0
+      ],
+      "template": "first_village/house_4",
+      "turn": 1
+    },
+    {
+      "offset": [
+        -6,
+        11
+      ],
+      "template": "first_village/house_5",
+      "turn": 0
+    }
+  ],
+  "melt": [
+    2,
+    0,
+    2
+  ],
+  "pit": {
+    "offset": [
+      0,
+      8
+    ],
+    "template": "first_village/pit"
+  }
+}

@@ -16,6 +16,16 @@ licence = "CC0 1.0"
 page = "https://freesound.org/people/Sawuare/sounds/500926"
 slider = "master"
 
+[effects.bell_toll]
+credit = "Church Bell 10, by nomiqbomi"
+cut = { fade_out = 3 }
+downloaded = "10.10.2026"
+kind = "rare"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/nomiqbomi/sounds/578542"
+reach = 64
+slider = "blocks"
+
 [effects.camp]
 credit = "Bonfire, by Electroviolence"
 downloaded = "06.10.2026"
@@ -281,12 +291,26 @@ downloaded = "09.10.2026"
 licence = "CC BY 4.0"
 page = "https://www.scottbuckley.com.au/library/amberlight/"
 
+[music.first_morning]
+credit = "White Dawn, by Scott Buckley"
+cut = { fade_in = 2, fade_out = 16, length = 96, start = 4 }
+downloaded = "10.10.2026"
+licence = "CC BY 4.0"
+page = "https://www.scottbuckley.com.au/library/white-dawn/"
+
 [music.hold]
 credit = "Heartfelt Battle (loop), by request"
 downloaded = "05.10.2026"
 licence = "CC0 1.0"
 loop = true
 page = "https://opengameart.org/content/heartfelt-battle-loopable-fantasy-stringspianohorn"
+
+[music.wend_camp]
+credit = "A Dragon's Lullabye, by Scott Buckley"
+cut = { fade_in = 2, fade_out = 8 }
+downloaded = "10.10.2026"
+licence = "CC BY 4.0"
+page = "https://www.scottbuckley.com.au/library/a-dragons-lullabye/"
 
 [music.last_fire]
 credit = "What We Don't Say, by Scott Buckley"
@@ -303,6 +327,28 @@ downloaded = "09.10.2026"
 gain = -3
 licence = "CC BY 4.0"
 page = "https://freesound.org/people/Magmi.Soundtracks/sounds/522207"
+
+[music.the_bell]
+credit = "Memories of a Lost Autumn, by InspectorJ"
+cut = { fade_in = 2, fade_out = 8 }
+downloaded = "10.10.2026"
+licence = "CC BY 3.0"
+page = "https://opengameart.org/content/memories-of-a-lost-autumn-rpg-orchestral-essentials-conversation-music"
+
+[music.the_name]
+credit = "Forget Me Not, by Kistol"
+cut = { fade_in = 2, fade_out = 16, length = 160 }
+downloaded = "10.10.2026"
+licence = "CC0 1.0"
+page = "https://opengameart.org/content/forget-me-not"
+
+[music.the_theft]
+credit = "Desolate (Part II), by Matthew Pablo"
+cut = { fade_in = 2, fade_out = 16, length = 160 }
+downloaded = "10.10.2026"
+gain = -4
+licence = "CC BY 3.0"
+page = "https://opengameart.org/content/desolate"
 
 [music.title]
 credit = "Emotional Original Soundtrack - FORGIVENESS, by Magmi.Soundtracks"

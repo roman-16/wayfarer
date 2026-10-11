@@ -3,20 +3,192 @@
     "model": "easy_npc:humanoid_slim",
     "scale": 1.0
   },
+  "bram": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "bram_son": {
+    "model": "easy_npc:humanoid",
+    "scale": 0.75
+  },
+  "brannoc": {
+    "model": "easy_npc:vindicator",
+    "scale": 1.0
+  },
+  "captive_1": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 0.75
+  },
+  "captive_2": {
+    "model": "easy_npc:humanoid",
+    "scale": 0.75
+  },
+  "captive_3": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 0.75
+  },
   "corin": {
     "model": "easy_npc:vindicator",
+    "scale": 1.0
+  },
+  "drowned_1": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "drowned_2": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "drowned_3": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "edda": {
+    "model": "easy_npc:humanoid_slim",
     "scale": 1.0
   },
   "fisher": {
     "model": "easy_npc:humanoid",
     "scale": 1.0
   },
+  "founder_01": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "founder_02": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "founder_03": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "founder_04": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "founder_05": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 0.75
+  },
+  "frost_01": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "frost_02": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "frost_03": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "frost_04": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "frost_dead_01": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "frost_dead_02": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "frost_dead_03": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "frost_dead_04": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "frost_dead_05": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "frost_dead_06": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "frost_dead_07": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "frost_dead_08": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "frost_dead_09": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "frost_dead_10": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "frost_dead_11": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "frost_dead_12": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "frost_elder": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "heir": {
+    "model": "easy_npc:vindicator",
+    "scale": 1.0
+  },
+  "heirs_sister": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
   "hob": {
     "model": "easy_npc:humanoid",
     "scale": 1.0
   },
+  "ilse": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "keeper_ansel": {
+    "model": "easy_npc:humanoid",
+    "scale": 0.95
+  },
   "maren": {
     "model": "easy_npc:illusioner",
+    "scale": 1.0
+  },
+  "maren_child": {
+    "model": "easy_npc:illusioner",
+    "scale": 0.75
+  },
+  "morwen": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "nell": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "newcomer": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "novice": {
+    "model": "easy_npc:humanoid",
+    "scale": 0.75
+  },
+  "oldest_keeper": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 0.95
+  },
+  "pilgrim": {
+    "model": "easy_npc:humanoid_slim",
     "scale": 1.0
   },
   "pip": {
@@ -83,8 +255,28 @@
     "model": "easy_npc:witch",
     "scale": 1.0
   },
+  "sand_01": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "sand_02": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "sand_03": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
   "sedge": {
     "model": "easy_npc:witch",
+    "scale": 1.0
+  },
+  "sefa": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
+  "settled_wayfarer": {
+    "model": "easy_npc:humanoid",
     "scale": 1.0
   },
   "stranger": {
@@ -98,6 +290,14 @@
   "tansy": {
     "model": "easy_npc:witch",
     "scale": 0.9375
+  },
+  "tide_warden_1": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "tide_warden_2": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
   },
   "townsfolk_01": {
     "model": "easy_npc:humanoid",
@@ -224,6 +424,22 @@
     "scale": 0.75
   },
   "townsfolk_32": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 0.75
+  },
+  "warden": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "wend_reading": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "wil": {
+    "model": "easy_npc:humanoid",
+    "scale": 1.0
+  },
+  "wren": {
     "model": "easy_npc:humanoid_slim",
     "scale": 0.75
   }

@@ -37,6 +37,7 @@ at = "the_last_fire/the_stranger"
 caption = "Answers numbered beside the crosshair; the task panel says to press a number, the first time"
 id = "talk/answers"
 kind = "hud"
+scales = [2, 3, 4]
 steps = [
   "/execute at @e[tag=wayfarer_person_stranger,limit=1] run tp @s ~0.5 ~ ~1.8 165 20",
   "settle",
@@ -64,8 +65,22 @@ steps = [
 
 [[shots]]
 at = "the_last_fire/the_stranger"
-caption = "Conversation Size: Small"
+caption = "HUD Size: Small"
 id = "talk/small"
+kind = "hud"
+steps = [
+  "/execute at @e[tag=wayfarer_person_stranger,limit=1] run tp @s ~0.5 ~ ~1.8 165 20",
+  "settle",
+  "interact easy_npc:humanoid",
+  "/tick rate 80",
+  "await answers: Who are you",
+  "/tick rate 20",
+]
+
+[[shots]]
+at = "the_last_fire/the_stranger"
+caption = "HUD Size: Normal"
+id = "talk/normal"
 kind = "hud"
 steps = [
   "/execute at @e[tag=wayfarer_person_stranger,limit=1] run tp @s ~0.5 ~ ~1.8 165 20",
@@ -77,8 +92,7 @@ steps = [
   "pause",
   "press Options...",
   "press Accessibility Settings...",
-  "press Conversation Size: Normal",
-  "press Conversation Size: Large",
+  "press HUD Size: Small",
   "close",
   "close",
   "close",
@@ -87,7 +101,8 @@ after = [
   "pause",
   "press Options...",
   "press Accessibility Settings...",
-  "press Conversation Size: Small",
+  "press HUD Size: Normal",
+  "press HUD Size: Large",
   "close",
   "close",
   "close",
@@ -95,7 +110,7 @@ after = [
 
 [[shots]]
 at = "the_last_fire/the_stranger"
-caption = "Conversation Size: Large"
+caption = "HUD Size: Large"
 id = "talk/large"
 kind = "hud"
 steps = [
@@ -108,7 +123,8 @@ steps = [
   "pause",
   "press Options...",
   "press Accessibility Settings...",
-  "press Conversation Size: Normal",
+  "press HUD Size: Small",
+  "press HUD Size: Normal",
   "close",
   "close",
   "close",
@@ -117,8 +133,7 @@ after = [
   "pause",
   "press Options...",
   "press Accessibility Settings...",
-  "press Conversation Size: Large",
-  "press Conversation Size: Small",
+  "press HUD Size: Large",
   "close",
   "close",
   "close",
@@ -126,7 +141,7 @@ after = [
 
 [[shots]]
 at = "the_last_fire/the_stranger"
-caption = "Options, Accessibility Settings: Conversation Size beside Show Subtitles"
+caption = "Options, Accessibility Settings: HUD Size beside Show Subtitles"
 id = "talk/size-option"
 kind = "screen"
 steps = ["pause", "press Options...", "press Accessibility Settings..."]
@@ -156,6 +171,7 @@ at = "the_last_fire/the_stranger"
 caption = "Waking at the stranger's fire: the task panel and the compass band"
 id = "hud/first-night"
 kind = "hud"
+scales = [2, 3, 4]
 
 [[shots]]
 at = "ash/the_town"
@@ -168,6 +184,7 @@ at = "the_first_day/dusk"
 caption = "A quest begun: the parchment banner under the compass"
 id = "hud/banner-begun"
 kind = "hud"
+scales = [2, 3, 4]
 steps = ["story ash/the_town"]
 
 [[shots]]
@@ -219,7 +236,7 @@ steps = ["key key.wayfarer.journal", "press At the Fire", "press Ash"]
 [[shots]]
 at = "the_pull/the_fireside"
 caption = "Pages: a book read at a lectern, kept in full"
-id = "journal/pages/a-journal"
+id = "journal/pages"
 kind = "screen"
 steps = [
   "/setblock ~2 ~ ~ lectern[has_book=true]{Book:{id:\"minecraft:written_book\",count:1,components:{\"minecraft:written_book_content\":{title:\"A Journal\",author:\"A Wayfarer\",pages:['\"x\"']}}}}",
@@ -254,6 +271,7 @@ at = "the_pull/the_fireside"
 caption = "Gear, Tools: the first tier not yet made is chosen, with How it's made and Track"
 id = "journal/gear/tools"
 kind = "screen"
+scales = [2, 3, 4]
 steps = ["key key.wayfarer.journal", "press Gear", "press Tools"]
 
 [[shots]]
@@ -398,7 +416,7 @@ id = "journal/quests/his-brother"
 kind = "screen"
 steps = [
   "/wayfarer story next",
-  "await at the end",
+  "await keep to the back",
   "key key.wayfarer.journal",
   "press Quests",
   "press His Brother",
@@ -429,6 +447,7 @@ at = "ash/the_cellar"
 caption = "The tracked quest, with its story, objective and tasks"
 id = "journal/quests/tracked"
 kind = "screen"
+scales = [2, 3, 4]
 steps = ["key key.wayfarer.journal", "press Quests", "press Ash"]
 
 [[shots]]
@@ -465,7 +484,7 @@ steps = ["key key.wayfarer.journal", "press Quests", "press The Road"]
 [[shots]]
 at = "ash/the_cellar"
 caption = "The story so far: one chapter per quest, told as I"
-id = "journal/story-so-far/the-last-fire"
+id = "journal/story-so-far"
 kind = "screen"
 steps = [
   "key key.wayfarer.journal",
@@ -483,7 +502,7 @@ steps = ["key key.wayfarer.journal", "press People", "press The stranger"]
 [[shots]]
 at = "ash/the_cellar"
 caption = "Words: the ember, as the player has learned it"
-id = "journal/words/the-ember"
+id = "journal/words"
 kind = "screen"
 steps = ["key key.wayfarer.journal", "press Words", "press The ember"]
 
@@ -505,80 +524,80 @@ steps = ["key key.inventory"]
 at = "showroom"
 caption = "The showroom's item frame wall"
 id = "items/item-wall"
-kind = "world"
+kind = "hud"
 steps = ["/execute in wayfarer:showroom run tp @s 0.5 1 -5.5 180 0"]
 
 [[shots]]
 at = "the_last_fire/the_stranger"
 caption = "The Last Camp at night: the stranger dying by his fire"
 id = "story/the-last-fire/the-stranger"
-kind = "world"
+kind = "hud"
 
 [[shots]]
 at = "the_last_fire/the_grave"
 caption = "The stranger dead by his fire, before the burial"
 id = "story/the-last-fire/the-grave"
-kind = "world"
+kind = "hud"
 
 [[shots]]
 at = "the_first_day/dusk"
 caption = "Dusk on the first day: the smoke over the ridge"
-id = "story/the-first-day/dusk"
-kind = "world"
+id = "story/the-first-day"
+kind = "hud"
 
 [[shots]]
 at = "ash/the_town"
 caption = "Tollbridge burning at dusk"
 id = "story/ash/the-town"
-kind = "world"
+kind = "hud"
 
 [[shots]]
 at = "ash/the_dead"
 caption = "Tollbridge's dead"
 id = "story/ash/the-dead"
-kind = "world"
+kind = "hud"
 
 [[shots]]
 at = "ash/the_cellar"
 caption = "The bell tower's cellar"
 id = "story/ash/the-cellar"
-kind = "world"
+kind = "hud"
 
 [[shots]]
 at = "ash/evening"
 caption = "The caravan's first fire"
 id = "story/ash/evening"
-kind = "world"
+kind = "hud"
 
 [[shots]]
 at = "the_pull/tunnels"
 caption = "The Diggers' tunnels: the entrance in the hillside"
 id = "story/the-pull/tunnels"
-kind = "world"
+kind = "hud"
 
 [[shots]]
 at = "the_pull/shard"
 caption = "The Diggers' hall: the shard on its stone"
 id = "story/the-pull/shard"
-kind = "world"
+kind = "hud"
 
 [[shots]]
 at = "the_pull/the_fireside"
 caption = "The caravan's camp in the evening"
 id = "story/the-pull/the-fireside"
-kind = "world"
+kind = "hud"
 
 [[shots]]
 at = "his_first_camp/the_lake"
 caption = "The morning after the voice spoke: making for his first camp"
 id = "story/his-first-camp/the-lake"
-kind = "world"
+kind = "hud"
 
 [[shots]]
 at = "his_first_camp/his_things"
 caption = "His first camp as the team finds it, what he left glowing under Trail-sight"
 id = "story/his-first-camp/his-things"
-kind = "world"
+kind = "hud"
 
 [[shots]]
 at = "his_first_camp/the_memory"
@@ -586,9 +605,9 @@ caption = "The first memory: his camp fifty summers ago at sunset, and the memor
 id = "story/his-first-camp/the-memory"
 kind = "hud"
 steps = [
-  "/tp @s -60.5 64 3916.5 90 20",
+  "/execute at @e[tag=wayfarer_clue_hearthstone,limit=1] run tp @s ~3 ~1 ~ 90 20",
   "settle",
-  "use -63 63 3916",
+  "use ~-3 ~-1 ~",
   "await Fifty summers ago",
   "settle",
 ]
@@ -599,9 +618,9 @@ caption = "The refused choice: one more summer, and the answers offered again"
 id = "story/his-first-camp/the-refusal"
 kind = "hud"
 steps = [
-  "/tp @s -60.5 64 3916.5 90 20",
+  "/execute at @e[tag=wayfarer_clue_hearthstone,limit=1] run tp @s ~3 ~1 ~ 90 20",
   "settle",
-  "use -63 63 3916",
+  "use ~-3 ~-1 ~",
   "await Fifty summers ago",
   "/wayfarer story memory summer",
   "await answers:",
@@ -615,7 +634,7 @@ caption = "Maren's first gift: the sack under the lean-to, and The Gifts begun"
 id = "story/his-first-camp/the-gift"
 kind = "hud"
 steps = [
-  "/tp @s -62.5 64 3920.5 90 30",
+  "/execute at @e[tag=wayfarer_clue_sack,limit=1] run tp @s ~1.5 ~1 ~ 90 30",
   "settle",
   "interact minecraft:interaction",
   "await A sack",
@@ -636,10 +655,10 @@ steps = ["await come across the ford: 1"]
 
 [[shots]]
 at = "the_deserter/corin"
-caption = "Corin knows the ember's light"
+caption = "Corin at the ford, shown the ember's light, and what to tell him"
 id = "story/the-deserter/corin"
 kind = "hud"
-steps = ["await I know that light"]
+steps = ["await answers:"]
 
 [[shots]]
 at = "the_deserter/the_fireside"
@@ -1217,6 +1236,417 @@ steps = ["place wayfarer:last_camp/grave"]
 
 [[shots]]
 at = "showroom"
+caption = "Bram the herder"
+id = "people/the-caravan/bram"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person bram"]
+
+[[shots]]
+at = "showroom"
+caption = "Davy, Bram's son, in Gazebound grey"
+id = "people/the-caravan/bram-son"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person bram_son"]
+
+[[shots]]
+at = "showroom"
+caption = "Brannoc, Corin's brother"
+id = "people/the-road/brannoc"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person brannoc"]
+
+[[shots]]
+at = "showroom"
+caption = "A child in the Gazebound house's cage (1 of 3)"
+id = "people/act-three/captive-1"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person captive_1"]
+
+[[shots]]
+at = "showroom"
+caption = "A child in the Gazebound house's cage (2 of 3)"
+id = "people/act-three/captive-2"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person captive_2"]
+
+[[shots]]
+at = "showroom"
+caption = "A child in the Gazebound house's cage (3 of 3)"
+id = "people/act-three/captive-3"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person captive_3"]
+
+[[shots]]
+at = "showroom"
+caption = "One of the Drowned City's last people (1 of 3)"
+id = "people/act-two/drowned-1"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person drowned_1"]
+
+[[shots]]
+at = "showroom"
+caption = "One of the Drowned City's last people (2 of 3)"
+id = "people/act-two/drowned-2"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person drowned_2"]
+
+[[shots]]
+at = "showroom"
+caption = "One of the Drowned City's last people (3 of 3)"
+id = "people/act-two/drowned-3"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person drowned_3"]
+
+[[shots]]
+at = "showroom"
+caption = "Edda the shipwright"
+id = "people/act-two/edda"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person edda"]
+
+[[shots]]
+at = "showroom"
+caption = "The fevered fisher"
+id = "people/act-one/fisher"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person fisher"]
+
+[[shots]]
+at = "showroom"
+caption = "A founder of the First Village"
+id = "people/act-one/founder"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person founder_01"]
+
+[[shots]]
+at = "showroom"
+caption = "The Frost Walkers' elder"
+id = "people/act-one/frost-elder"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person frost_elder"]
+
+[[shots]]
+at = "showroom"
+caption = "The Grass King's heir"
+id = "people/act-two/heir"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person heir"]
+
+[[shots]]
+at = "showroom"
+caption = "Ilse, the Keeper's apprentice"
+id = "people/the-caravan/ilse"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person ilse"]
+
+[[shots]]
+at = "showroom"
+caption = "Maren, the hooded woman"
+id = "people/act-one/maren"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person maren"]
+
+[[shots]]
+at = "showroom"
+caption = "Maren as a girl in grey"
+id = "people/act-three/maren-child"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person maren_child"]
+
+[[shots]]
+at = "showroom"
+caption = "Morwen of the Tide Folk"
+id = "people/act-two/morwen"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person morwen"]
+
+[[shots]]
+at = "showroom"
+caption = "Nell, the last Frost Walker"
+id = "people/the-caravan/nell"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person nell"]
+
+[[shots]]
+at = "showroom"
+caption = "Tobin, the novice who died in the rite"
+id = "people/act-two/novice"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person novice"]
+
+[[shots]]
+at = "showroom"
+caption = "The oldest Keeper"
+id = "people/act-three/oldest-keeper"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person oldest_keeper"]
+
+[[shots]]
+at = "showroom"
+caption = "Hesper the pilgrim"
+id = "people/act-three/pilgrim"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person pilgrim"]
+
+[[shots]]
+at = "showroom"
+caption = "Rue of the Marsh Mothers"
+id = "people/act-one/rue"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person rue"]
+
+[[shots]]
+at = "showroom"
+caption = "Sedge of the Marsh Mothers"
+id = "people/act-one/sedge"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person sedge"]
+
+[[shots]]
+at = "showroom"
+caption = "Sefa of the Sand Singers"
+id = "people/act-two/sefa"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person sefa"]
+
+[[shots]]
+at = "showroom"
+caption = "Oswin, the Wayfarer who settled"
+id = "people/act-two/settled-wayfarer"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person settled_wayfarer"]
+
+[[shots]]
+at = "showroom"
+caption = "Tansy of the Marsh Mothers"
+id = "people/act-one/tansy"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person tansy"]
+
+[[shots]]
+at = "showroom"
+caption = "A warden of the Tide Folk (1 of 2)"
+id = "people/act-two/tide-warden-1"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person tide_warden_1"]
+
+[[shots]]
+at = "showroom"
+caption = "A warden of the Tide Folk (2 of 2)"
+id = "people/act-two/tide-warden-2"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person tide_warden_2"]
+
+[[shots]]
+at = "showroom"
+caption = "The Grass Kingdom's warden"
+id = "people/act-three/warden"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person warden"]
+
+[[shots]]
+at = "showroom"
+caption = "Wend at the Scribes' lectern"
+id = "people/act-three/wend-reading"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person wend_reading"]
+
+[[shots]]
+at = "showroom"
+caption = "Wil the cooper"
+id = "people/the-caravan/wil"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person wil"]
+
+[[shots]]
+at = "showroom"
+caption = "Wren, the potter's girl"
+id = "people/act-two/wren"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person wren"]
+
+[[shots]]
+at = "showroom"
+caption = "The Marsh Mothers' hut on stilts"
+id = "places/marsh-hut"
+kind = "views"
+steps = ["place wayfarer:marsh/hut"]
+
+[[shots]]
+at = "showroom"
+caption = "The Frost Walkers' winter house"
+id = "places/frost-house"
+kind = "views"
+steps = ["place wayfarer:frost/house"]
+
+[[shots]]
+at = "showroom"
+caption = "The frozen lake where the shard was sunk"
+id = "places/frost-lake"
+kind = "views"
+steps = ["place wayfarer:frost/lake"]
+
+[[shots]]
+at = "showroom"
+caption = "The Frost Walkers' mine head"
+id = "places/frost-mine-head"
+kind = "views"
+steps = ["place wayfarer:frost/mine_head"]
+
+[[shots]]
+at = "showroom"
+caption = "The Keepers' reading house"
+id = "places/reading-house"
+kind = "views"
+steps = ["place wayfarer:reading_house/house"]
+
+[[shots]]
+at = "showroom"
+caption = "A house of the First Village"
+id = "places/first-village-house"
+kind = "views"
+steps = ["place wayfarer:first_village/house_0"]
+
+[[shots]]
+at = "showroom"
+caption = "The First Village's pit"
+id = "places/first-village-pit"
+kind = "views"
+steps = ["place wayfarer:first_village/pit"]
+
+[[shots]]
+at = "showroom"
+caption = "Edda's shipyard"
+id = "places/shipyard"
+kind = "views"
+steps = ["place wayfarer:shipyard/yard"]
+
+[[shots]]
+at = "showroom"
+caption = "The wreck of Edda's husband's ship"
+id = "places/shipyard-wreck"
+kind = "views"
+steps = ["place wayfarer:shipyard/wreck"]
+
+[[shots]]
+at = "showroom"
+caption = "The Tide Folk's village on the bay"
+id = "places/tide-village"
+kind = "views"
+steps = ["place wayfarer:tide/village"]
+
+[[shots]]
+at = "showroom"
+caption = "Wend's last camp, as the team finds it"
+id = "places/wend-last-camp"
+kind = "views"
+steps = ["place wayfarer:wend_camp/now"]
+
+[[shots]]
+at = "showroom"
+caption = "Wend's last camp in the memory"
+id = "places/wend-last-camp-then"
+kind = "views"
+steps = ["place wayfarer:wend_camp/then"]
+
+[[shots]]
+at = "showroom"
+caption = "The Sand Singers' camp"
+id = "places/sand-camp"
+kind = "views"
+steps = ["place wayfarer:sand/camp"]
+
+[[shots]]
+at = "showroom"
+caption = "The Jungle Folk's lock house"
+id = "places/lock-house"
+kind = "views"
+steps = ["place wayfarer:locks/house"]
+
+[[shots]]
+at = "showroom"
+caption = "The Keepers' sealed house"
+id = "places/sealed-house"
+kind = "views"
+steps = ["place wayfarer:errands/seal"]
+
+[[shots]]
+at = "showroom"
+caption = "The Frost Walkers' cairn ring"
+id = "places/cairns"
+kind = "views"
+steps = ["place wayfarer:errands/cairns"]
+
+[[shots]]
+at = "showroom"
+caption = "The phantoms' nest"
+id = "places/phantom-nest"
+kind = "views"
+steps = ["place wayfarer:errands/nest"]
+
+[[shots]]
+at = "showroom"
+caption = "The airfield on the heights"
+id = "places/airfield"
+kind = "views"
+steps = ["place wayfarer:act3/airfield"]
+
+[[shots]]
+at = "showroom"
+caption = "The Grass Kingdom's gatehouse"
+id = "places/gatehouse"
+kind = "views"
+steps = ["place wayfarer:act3/gatehouse"]
+
+[[shots]]
+at = "showroom"
+caption = "The Grave Keepers' graveyard"
+id = "places/graveyard"
+kind = "views"
+steps = ["place wayfarer:act3/graves"]
+
+[[shots]]
+at = "showroom"
+caption = "The Gazebound house in the dark wood"
+id = "places/gazebound-house"
+kind = "views"
+steps = ["place wayfarer:act3/house"]
+
+[[shots]]
+at = "showroom"
 caption = "The Cache"
 id = "places/road-scenes/the-cache"
 kind = "views"
@@ -1475,6 +1905,7 @@ at = "showroom"
 caption = "The style board: the stamp's ramps and text colours, the display face, the running face with its German letters, tracked labels and key caps"
 id = "interface/board/type"
 kind = "screen"
+scales = [2, 3, 4]
 steps = ["board type"]
 
 [[shots]]
@@ -1482,6 +1913,7 @@ at = "showroom"
 caption = "The style board: the compass band, its plates, the task panel, the answers, a notice strip, the conversation panel and the gaze's meter"
 id = "interface/board/hud"
 kind = "screen"
+scales = [2, 3, 4]
 steps = ["board hud"]
 
 [[shots]]
@@ -1489,6 +1921,7 @@ at = "showroom"
 caption = "The style board: buttons pointed at and disabled, text fields, sliders, check boxes, tabs, slots and the selection, tooltips, icons and the divider"
 id = "interface/board/widgets"
 kind = "screen"
+scales = [2, 3, 4]
 steps = ["board widgets"]
 
 [[shots]]
@@ -1496,6 +1929,7 @@ at = "showroom"
 caption = "The style board: the book, its cover, pages, spine, ribbons with their icons, ink, marks and rings"
 id = "interface/board/book"
 kind = "screen"
+scales = [2, 3, 4]
 steps = ["board book"]
 
 [[shots]]
@@ -1586,6 +2020,7 @@ caption = "The title: the Wayfarer's mark over WAYFARER in gilt letters, the Las
 id = "front-door/title"
 kind = "screen"
 outside = true
+scales = [2, 3, 4]
 steps = ["leave"]
 
 [[shots]]
@@ -1594,6 +2029,7 @@ caption = "Loading a world: the last page of the story so far on the journal's p
 id = "front-door/loading"
 kind = "screen"
 outside = true
+scales = [2, 3, 4]
 steps = ["leave", "loading"]
 
 [[shots]]
@@ -1610,6 +2046,7 @@ caption = "Create New World opens on Survival, Normal difficulty and commands of
 id = "front-door/create-world"
 kind = "screen"
 outside = true
+scales = [2, 3, 4]
 steps = ["leave", "press Singleplayer", "press Create New World"]
 
 [[shots]]
@@ -1625,4 +2062,135 @@ at = "showroom"
 caption = "The pause menu: Journal and Map where Advancements and Statistics stood"
 id = "front-door/pause"
 kind = "screen"
+scales = [2, 3, 4]
 steps = ["pause"]
+
+[[shots]]
+at = "ships_for_everyone/edda"
+caption = "Act 2 opens on the home land's coast: Edda the shipwright at her yard"
+id = "story/ships-for-everyone"
+kind = "hud"
+
+[[shots]]
+at = "the_crossing/the_night"
+caption = "The night on the open sea beside Tamsin's boat"
+id = "story/the-crossing"
+kind = "hud"
+
+[[shots]]
+at = "the_tide_folk/morwen"
+caption = "The Tide Folk's bay, where the wardens bow"
+id = "story/the-tide-folk"
+kind = "hud"
+
+[[shots]]
+at = "the_dry_city/the_stone"
+caption = "The Drowned City's empty stone in the red canyons"
+id = "story/the-dry-city"
+kind = "hud"
+
+[[shots]]
+at = "his_last_camp/the_memory"
+caption = "His last camp: the lean-to grown into a hut, and the hearthstone"
+id = "story/his-last-camp"
+kind = "hud"
+
+[[shots]]
+at = "the_worm/sefa"
+caption = "The Sand Singers' camp and Sefa"
+id = "story/the-worm"
+kind = "hud"
+
+[[shots]]
+at = "your_eyes/the_eyes"
+caption = "Corin stares at the player's eyes across the fire"
+id = "story/your-eyes"
+kind = "hud"
+
+[[shots]]
+at = "the_locks/the_locks"
+caption = "The Jungle Folk's lock house, standing over their hall"
+id = "story/the-locks"
+kind = "hud"
+steps = [
+  "/setblock ~10 ~11 ~-12 minecraft:barrier",
+  "/tp @s ~10 ~12 ~-12",
+  "face ~-14 ~-13 ~20",
+  "settle",
+]
+
+[[shots]]
+at = "marens_warning/the_visit"
+caption = "The hooded woman comes to the fire without bread"
+id = "story/marens-warning"
+kind = "hud"
+
+[[shots]]
+at = "the_hollow/the_night"
+caption = "The Hollow under Act 2's red moon"
+id = "story/the-hollow"
+kind = "hud"
+
+[[shots]]
+at = "morning_after/the_wounded"
+caption = "The morning after the Hollow: the burnt camp, the wounded and the graves"
+id = "story/morning-after"
+kind = "hud"
+
+[[shots]]
+at = "wings/the_field"
+caption = "The airfield on the heights, its grey airship moored"
+id = "story/wings"
+kind = "hud"
+
+[[shots]]
+at = "the_ward/the_warden"
+caption = "Inside the Grass Kingdom's gate, after the duel: the warden by the stone"
+id = "story/the-ward"
+kind = "hud"
+
+[[shots]]
+at = "the_mansion/the_house"
+caption = "The Gazebound house in the dark wood"
+id = "story/the-mansion"
+kind = "hud"
+
+[[shots]]
+at = "the_scribes/the_stone"
+caption = "The Scribes' hall near a peak, its shelves and stone"
+id = "story/the-scribes"
+kind = "hud"
+
+[[shots]]
+at = "the_empty_grave/his_grave"
+caption = "The Grave Keepers' graveyard and the empty grave"
+id = "story/the-empty-grave"
+kind = "hud"
+
+[[shots]]
+at = "keepers_door/the_thirteenth"
+caption = "The Keepers at the frame, and the oldest of them"
+id = "story/keepers-door"
+kind = "hud"
+
+[[shots]]
+at = "the_doors/the_doors"
+caption = "The doors at the frame, as many as the road opened"
+id = "story/the-doors"
+kind = "hud"
+
+[[shots]]
+at = "showroom"
+caption = "Linnet, the heir's sister"
+id = "people/act-three/heirs-sister"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person heirs_sister"]
+
+[[shots]]
+at = "showroom"
+caption = "The face on the road in his last memory"
+id = "people/act-three/newcomer"
+kind = "views"
+sides = ["front", "side", "three-quarters"]
+steps = ["person newcomer"]

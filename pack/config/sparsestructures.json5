@@ -10,14 +10,6 @@
     },
     {
       "factor": 1,
-      "structure": "minecraft:buried_treasures"
-    },
-    {
-      "factor": 1,
-      "structure": "minecraft:mineshafts"
-    },
-    {
-      "factor": 1,
       "structure": "wayfarer:shrines/act_three"
     },
     {

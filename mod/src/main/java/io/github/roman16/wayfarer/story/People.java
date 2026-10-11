@@ -26,9 +26,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Arrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
@@ -45,10 +51,15 @@ public final class People {
     private static final Map<String, Long> leaving = new HashMap<>();
     private static final Map<String, Vec3> walking = new HashMap<>();
     private static final double STRIDE = 0.12;
+    private static final int CLIMB = 2;
     private static final int AWAY_BLOCKS = 32;
     private static final int GONE_BLOCKS = 48;
     private static final int LEAVE_SECONDS = 64;
     private static final int TICKS_PER_SECOND = 20;
+    private static final double ARROW_SHORT = 2;
+    private static final double ARROW_DROP = 0.1;
+    private static final double ARROW_LIFT = 0.2;
+    private static final float ARROW_SPEED = 1.6f;
 
     private People() {}
 
@@ -92,6 +103,8 @@ public final class People {
     public static Entity person(ServerLevel level, String person, Vec3 at, float yaw, String pose) {
         Progress progress = Progress.of(level.getServer());
         find(level.getServer(), person).ifPresent(Entity::discard);
+        leaving.remove(person);
+        walking.remove(person);
         Entity body = spawn(level, person, at, yaw, pose, TAG + "_" + person);
         body.setCustomName(Component.literal(label(level.getServer(), person)));
         name(body, NameVisibilityType.MOUSE_OVER);
@@ -111,7 +124,9 @@ public final class People {
 
     public static String label(MinecraftServer server, String person) {
         Story.Person spec = Story.get().person(person);
-        return spec.unnamed() == null || Progress.of(server).named(person) ? spec.name() : spec.unnamed();
+        Progress progress = Progress.of(server);
+        return spec.renamed().entrySet().stream().filter(entry -> progress.named(entry.getKey())).map(Map.Entry::getValue).reduce((first, second) -> second)
+                .orElse(spec.unnamed() == null || progress.named(person) ? spec.name() : spec.unnamed());
     }
 
     static void introduce(MinecraftServer server, List<String> things) {
@@ -154,6 +169,28 @@ public final class People {
         walking.put(person, to);
     }
 
+    static void shoot(MinecraftServer server, String person) {
+        find(server, person).ifPresent(body -> Engine.players(server).stream().filter(player -> player.level() == body.level())
+                .min(Comparator.comparingDouble(player -> player.distanceToSqr(body))).ifPresent(target -> {
+                    Vec3 feet = target.position().add(body.position().subtract(target.position()).multiply(1, 0, 1).normalize().scale(ARROW_SHORT));
+                    Arrow arrow = new Arrow(body.level(), body.getX(), body.getEyeY() - ARROW_DROP, body.getZ(), new ItemStack(Items.ARROW), null);
+                    arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
+                    arrow.setOwner(body);
+                    Vec3 toward = feet.subtract(arrow.position());
+                    arrow.shoot(toward.x, toward.y + toward.horizontalDistance() * ARROW_LIFT, toward.z, ARROW_SPEED, 0);
+                    body.level().addFreshEntity(arrow);
+                    body.level().playSound(null, body, SoundEvents.ARROW_SHOOT, SoundSource.NEUTRAL, 1, 1);
+                }));
+    }
+
+    static boolean skinned(String skin) {
+        return SKINS.get().has(skin);
+    }
+
+    static boolean leaving(String person) {
+        return leaving.containsKey(person);
+    }
+
     static boolean walking(String person) {
         return walking.containsKey(person);
     }
@@ -182,7 +219,7 @@ public final class People {
                 continue;
             }
             Vec3 next = body.position().add(left.normalize().scale(STRIDE));
-            int floor = floor(body.level(), BlockPos.containing(next));
+            int floor = floor(body.level(), BlockPos.containing(next), body.getY());
             float yaw = (float) Math.toDegrees(Math.atan2(-left.x, left.z));
             body.moveTo(next.x, floor, next.z, yaw, 0);
             body.setYHeadRot(yaw);
@@ -190,7 +227,15 @@ public final class People {
         }
     }
 
-    private static int floor(Level level, BlockPos at) {
+    private static int floor(Level level, BlockPos at, double from) {
+        int top = (int) Math.floor(from);
+        for (int y = top + CLIMB; y >= top - CLIMB * 2; y--) {
+            BlockPos feet = new BlockPos(at.getX(), y, at.getZ());
+            if (level.getBlockState(feet).canBeReplaced() && level.getFluidState(feet).isEmpty() && level.getBlockState(feet.above()).canBeReplaced()
+                    && !level.getBlockState(feet.below()).canBeReplaced()) {
+                return y;
+            }
+        }
         BlockPos.MutableBlockPos feet = new BlockPos.MutableBlockPos(at.getX(), level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at.getX(), at.getZ()), at.getZ());
         while (feet.getY() > level.getMinBuildHeight() && (!level.getFluidState(feet.below()).isEmpty() || level.getBlockState(feet.below()).canBeReplaced())) {
             feet.move(0, -1, 0);

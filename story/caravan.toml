@@ -1,20 +1,56 @@
 [[households]]
 piece = "large_tent"
 people = [{ at = "fire", person = "tamsin", pose = "sitting_leaning" }]
+unless = "the_hollow/tamsin=lost"
 
 [[households]]
 piece = "bell_cart"
+place = "tamsins_bell"
+unless = "the_bell/the_bell=melt"
 
 [[households]]
 piece = "healer_tent"
-people = [{ at = "fire", person = "agna", pose = "sitting_crossed" }, { at = "fire", person = "pip", pose = "sitting_crossed" }]
+people = [
+  { at = "fire", person = "agna", pose = "sitting_crossed", unless = "the_hollow/agna=lost" },
+  { at = "fire", person = "pip", pose = "sitting_crossed", unless = "the_hollow/pip=lost" },
+]
 
 [[households]]
 apart = true
 joins = "corin"
 people = [{ at = "piece", person = "corin", pose = "sitting" }]
 piece = "tent"
+unless = "the_hollow/corin=lost"
 
 [[households]]
-piece = "forge_wagon"
+apart = true
+joins = "nell"
+people = [{ at = "piece", person = "nell", pose = "standing" }]
+piece = "hide_shelter"
+unless = "the_hollow/nell=lost"
+
+[[households]]
+joins = "ilse"
+people = [{ at = "fire", person = "ilse", pose = "sitting_crossed" }]
+piece = "book_tent"
+unless = "the_hollow/ilse=lost"
+
+[[households]]
 people = [{ at = "fire", person = "hob", pose = "sitting" }]
+piece = "forge_wagon"
+unless = "the_hollow/hob=lost"
+
+[[households]]
+apart = true
+joins = "wil"
+people = [{ at = "fire", person = "wil", pose = "sitting" }]
+piece = "tent"
+
+[[households]]
+apart = true
+joins = "bram"
+people = [
+  { at = "fire", person = "bram", pose = "sitting" },
+  { at = "piece", person = "bram_son", pose = "sitting" },
+]
+piece = "lean_to"

@@ -15,11 +15,11 @@ public class Journey extends SavedData {
     private static final String NAME = "wayfarer_journey";
     private static final String AWAKE = "awake";
     private static final String CLAIMS = "claims";
-    private static final String SLAIN = "slain";
+    private static final String OVER = "over";
 
     private final List<ResourceLocation> claims = new ArrayList<>();
     private boolean awake;
-    private boolean slain;
+    private boolean over;
 
     public static Journey of(MinecraftServer server) {
         return server.overworld().getDataStorage().computeIfAbsent(new Factory<>(Journey::new, Journey::load, null), NAME);
@@ -33,8 +33,8 @@ public class Journey extends SavedData {
         return of(server).awake;
     }
 
-    public static boolean slain(MinecraftServer server) {
-        return of(server).slain;
+    public static boolean over(MinecraftServer server) {
+        return of(server).over;
     }
 
     public boolean claim(ResourceLocation shrine) {
@@ -55,11 +55,11 @@ public class Journey extends SavedData {
         return true;
     }
 
-    public boolean slay() {
-        if (slain) {
+    public boolean end() {
+        if (over) {
             return false;
         }
-        slain = true;
+        over = true;
         setDirty();
         return true;
     }
@@ -68,7 +68,7 @@ public class Journey extends SavedData {
         Journey journey = new Journey();
         tag.getList(CLAIMS, Tag.TAG_STRING).forEach(shrine -> journey.claims.add(ResourceLocation.parse(shrine.getAsString())));
         journey.awake = tag.getBoolean(AWAKE);
-        journey.slain = tag.getBoolean(SLAIN);
+        journey.over = tag.getBoolean(OVER);
         return journey;
     }
 
@@ -78,7 +78,7 @@ public class Journey extends SavedData {
         claims.stream().map(ResourceLocation::toString).map(StringTag::valueOf).forEach(claimed::add);
         tag.put(CLAIMS, claimed);
         tag.putBoolean(AWAKE, awake);
-        tag.putBoolean(SLAIN, slain);
+        tag.putBoolean(OVER, over);
         return tag;
     }
 }

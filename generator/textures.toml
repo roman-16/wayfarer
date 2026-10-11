@@ -208,6 +208,17 @@ s = "#7a7a7a"
 
 [cold_ember.variants.cold_ember]
 
+[goat_eyes]
+folder = "entity/fallen"
+marks = { l = [[37, 58], [55, 58]], s = [[37, 59], [55, 59]] }
+size = [64, 64]
+
+[goat_eyes.colors]
+l = "#c0ac90"
+s = "#343332"
+
+[goat_eyes.variants.goat_eyes]
+
 [mule_eyes]
 folder = "entity/fallen"
 marks = { e = [[3, 21], [16, 21]] }
@@ -351,3 +362,70 @@ h = "#a0a0a0"
 k = "#383838"
 
 [hearthstone_marked.variants.hearthstone_marked]
+
+[frost_iron_ore]
+folder = "block"
+rows = [
+  "fdccccbbdddccbcc",
+  "cbaabbbbcdeggecb",
+  "ddghgbaaabfghfbb",
+  "bghifccbcddffddc",
+  "abffbbbgghhgddcb",
+  "ffcdghiijihfcghd",
+  "fddcffhiiffbaabc",
+  "dcbbbbfffdcbabcc",
+  "cbcghbcfdeghebbc",
+  "bbehhiidcchifaab",
+  "dcdfijfbbaffccff",
+  "ddcbffffcbcegcfd",
+  "dcbbghfdeghiihgd",
+  "bghaffddchijhffb",
+  "ffgecbbabdfffddf",
+  "ddffdccacdddccdd",
+]
+
+[frost_iron_ore.colors]
+a = "#2f2f37"
+b = "#3d3d43"
+c = "#515151"
+d = "#646464"
+e = "#4f6878"
+f = "#797979"
+g = "#678a9b"
+h = "#8fb6c7"
+i = "#b9dae8"
+j = "#daeef6"
+
+[frost_iron_ore.variants.frost_iron_ore]
+
+[raw_frost_iron]
+rows = [
+  "................",
+  "..bbbbb.........",
+  ".beggfebbb......",
+  ".bghghgfgebbb...",
+  "bfhhhghghggfeb..",
+  "bfefhhggfgfefeb.",
+  "afddfeddccdedeb.",
+  "aecdedddcbbcddb.",
+  "aecceddcbbbbbca.",
+  "adcccbbbbghfdda.",
+  "addccbbbfffgedca",
+  ".adcccaadffecbba",
+  "..aaaa..adddcbba",
+  ".........addbba.",
+  "..........aaaa..",
+  "................",
+]
+
+[raw_frost_iron.colors]
+a = "#28333a"
+b = "#3a4f59"
+c = "#5c7f8f"
+d = "#84adbe"
+e = "#acd1e0"
+f = "#c6e2ee"
+g = "#e0f1f8"
+h = "#f3fafd"
+
+[raw_frost_iron.variants.raw_frost_iron]

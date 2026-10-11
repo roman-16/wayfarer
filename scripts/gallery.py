@@ -4,7 +4,7 @@ import shutil
 import subprocess
 import sys
 from concurrent.futures import ThreadPoolExecutor
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import client
 import states
@@ -22,7 +22,7 @@ JPEG_QUALITY = "90"
 FUZZ = "2%"
 SHOT_SECONDS = 900
 PICTURES = (".jpg", ".png")
-KINDS = {"hud", "screen", "tour", "views", "world"}
+KINDS = {"hud", "screen", "tour", "views"}
 QUIET = {
     "chat",
     "close",
@@ -56,6 +56,17 @@ def spec():
     for shot in shots:
         if shot["kind"] not in KINDS:
             sys.exit(f"gallery failed: {shot['id']}: kind is {shot['kind']!r}, not one of {', '.join(sorted(KINDS))}")
+        scales = shot.get("scales")
+        if scales is not None and (
+            shot["kind"] not in ("hud", "screen")
+            or len(scales) < 2
+            or sorted(set(scales)) != scales
+            or set(scales) - set(SCALES)
+        ):
+            sys.exit(
+                f"gallery failed: {shot['id']}: scales lists two or more of {', '.join(map(str, SCALES))} in order, "
+                "on a hud or screen shot"
+            )
         unknown = set(shot.get("sides", [])) - set(client.SIDES)
         if unknown:
             sys.exit(
@@ -80,21 +91,19 @@ def pictures(shot):
     name, kind = shot["id"], shot["kind"]
     if kind in ("hud", "screen"):
         extension = "png" if kind == "screen" else "jpg"
+        if "scales" not in shot:
+            return [(f"{name}.{extension}", f"gallery-{slug(shot)}", "", USUAL_SCALE)]
         return [
             (f"{name}-{scale}.{extension}", f"gallery-{slug(shot)}-{scale}", f"Scale {scale}", scale)
-            for scale in SCALES
+            for scale in shot["scales"]
         ]
     if kind == "views":
         return [
             (f"{name}/{side}.jpg", f"workshop-{slug(shot)}-{side}", title(side), None)
             for side in shot.get("sides", client.SIDES)
         ]
-    if kind == "tour":
-        subject = shot["subject"]
-        return [
-            (f"{name}/{camera}.jpg", f"tour-{subject}-{camera}", title(camera), None) for camera in cameras(subject)
-        ]
-    return [(f"{name}.jpg", f"gallery-{slug(shot)}", "", None)]
+    subject = shot["subject"]
+    return [(f"{name}/{camera}.jpg", f"tour-{subject}-{camera}", title(camera), None) for camera in cameras(subject)]
 
 
 def title(segment):
@@ -132,7 +141,7 @@ def quiet(shot):
     return (
         shot["at"] != "showroom"
         and not shot.get("outside")
-        and shot["kind"] in ("hud", "screen", "world")
+        and shot["kind"] in ("hud", "screen")
         and all(not step.startswith("/") and step.split(" ", 1)[0] in QUIET for step in steps)
     )
 
@@ -245,6 +254,14 @@ def differing(first, second):
     return int(float(result.stderr.split()[0]))
 
 
+def alone(shots):
+    named = [PurePosixPath(picture) for shot in shots for picture, _, _, _ in pictures(shot)]
+    folders = {folder for picture in named for folder in picture.parents if len(folder.parts) > 1}
+    return sorted(
+        folder.as_posix() for folder in folders if sum(1 for picture in named if folder in picture.parents) == 1
+    )
+
+
 def stray(shots):
     named = {picture for shot in shots for picture, _, _, _ in pictures(shot)}
     return sorted(
@@ -285,7 +302,7 @@ def page(folder, members):
         lines += [f"**{shot['caption']}**, in {where}", ""]
         taken = pictures(shot)
         relative = [(picture.removeprefix(folder + "/"), label) for picture, _, label, _ in taken]
-        if shot["kind"] == "world":
+        if len(relative) == 1:
             lines += [f"![{shot['caption']}]({relative[0][0]})", ""]
             continue
         columns = TOUR_COLUMNS if shot["kind"] == "tour" else len(relative)
@@ -309,6 +326,10 @@ def problems():
                 )
     found += [
         f"gallery/{picture}: no shot in gallery/shots.toml names it; run just gallery" for picture in stray(shots)
+    ]
+    found += [
+        f"gallery/{folder}: holds a single picture; name its shot {folder} instead of putting it in a folder"
+        for folder in alone(shots)
     ]
     for path, text in pages(shots).items():
         if not (GALLERY / path).exists() or (GALLERY / path).read_text() != text:

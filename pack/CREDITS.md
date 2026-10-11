@@ -4,15 +4,21 @@ Music in the Wayfarer mod:
 
 - Home Was You, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/home-was-you/
 - Amberlight, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/amberlight/
+- White Dawn, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/white-dawn/
 - Heartfelt Battle (loop), by request. CC0 1.0. https://opengameart.org/content/heartfelt-battle-loopable-fantasy-stringspianohorn
 - What We Don't Say, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/what-we-dont-say/
 - Emotional Original Soundtrack - BETTER LIFE, by Magmi.Soundtracks. CC BY 4.0. https://freesound.org/people/Magmi.Soundtracks/sounds/522207
+- Memories of a Lost Autumn, by InspectorJ. CC BY 3.0. https://opengameart.org/content/memories-of-a-lost-autumn-rpg-orchestral-essentials-conversation-music
+- Forget Me Not, by Kistol. CC0 1.0. https://opengameart.org/content/forget-me-not
+- Desolate (Part II), by Matthew Pablo. CC BY 3.0. https://opengameart.org/content/desolate
 - Emotional Original Soundtrack - FORGIVENESS, by Magmi.Soundtracks. CC0 1.0. https://freesound.org/people/Magmi.Soundtracks/sounds/478246
+- A Dragon's Lullabye, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/a-dragons-lullabye/
 
 Sounds in the Wayfarer mod:
 
 - aturax_leatherBookUI_92, by GeoffAturax. CC BY 4.0. https://freesound.org/people/GeoffAturax/sounds/532189
 - Wood Click 1.wav, by Sawuare. CC0 1.0. https://freesound.org/people/Sawuare/sounds/500926
+- Church Bell 10, by nomiqbomi. CC0 1.0. https://freesound.org/people/nomiqbomi/sounds/578542
 - Bonfire, by Electroviolence. CC0 1.0. https://freesound.org/people/Electroviolence/sounds/234542
 - Shiny Object of Value - Rare Loot Find, by LilMati. CC0 1.0. https://freesound.org/people/LilMati/sounds/659677
 - Hand Crank Music Box (E5 Note), by moodyfingers. CC0 1.0. https://freesound.org/people/moodyfingers/sounds/732942

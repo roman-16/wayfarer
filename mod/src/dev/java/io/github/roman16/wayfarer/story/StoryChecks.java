@@ -64,7 +64,8 @@ public final class StoryChecks {
         }
         Story.Step step = active.step();
         return switch (step.kind()) {
-            case "caravan" -> Clock.evening() && Places.ready(server, Caravan.NAME) ? Optional.of("the evening has come at the caravan") : Optional.empty();
+            case "caravan" -> Clock.evening() && Places.ready(server, Caravan.NAME) && Steps.home(server) ? Optional.of("the evening has come at the caravan")
+                    : Optional.empty();
             case "dawn" -> Clock.passed() ? Optional.of("the night has passed") : Optional.empty();
             case "dusk" -> Clock.passed() && Engine.players(server).stream().anyMatch(Fire::resting) ? Optional.of("the dusk has come and someone rests")
                     : Optional.empty();
@@ -79,7 +80,7 @@ public final class StoryChecks {
 
     private static void speaker(MinecraftServer server) {
         Optional<String> speaker = Talk.speaker();
-        if (speaker.isEmpty()) {
+        if (speaker.isEmpty() || StoryDev.playing()) {
             lastSpeaker = "";
             return;
         }

@@ -130,7 +130,7 @@ key_key.simplyswords.mainhand_ability:key.keyboard.unknown
 key_key.simplyswords.offhand_ability:key.keyboard.unknown
 key_key.simplytooltips.capture_gif:key.keyboard.unknown
 key_key.simplytooltips.cycle_tab:key.keyboard.g
-key_key.smallships.ship_sail:key.keyboard.unknown
+key_key.smallships.ship_sail:key.keyboard.x
 key_key.sneak:key.keyboard.left.control
 key_key.solonion.open_food_book:key.keyboard.unknown
 key_key.sophisticatedbackpacks.inventory_interaction:key.keyboard.unknown

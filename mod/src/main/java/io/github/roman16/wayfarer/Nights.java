@@ -1,5 +1,9 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.After;
+import io.github.roman16.wayfarer.story.Bell;
+import io.github.roman16.wayfarer.story.Engine;
+import io.github.roman16.wayfarer.story.Hold;
 import io.github.roman16.wayfarer.story.Talk;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
@@ -22,13 +26,18 @@ import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Nights {
+    private static final String AWAKE = "awake";
     private static final String HARD_NIGHT = "hard_night";
     private static final String HORDE_MUSIC = "hold";
     private static final String NAME = "wayfarer_nights";
     private static final String HORDES = "hordes";
+    private static final String CELESTIALS = "enhancedcelestials2core";
+    private static final String RED_MOON = "enhancedcelestials2defaultlunarevents:blood_moon";
     private static final long TICKS_PER_DAY = 24000;
     private static final long DUSK = 12000;
     private static final long MIDNIGHT = 18000;
+    private static final long MOONRISE = 12500;
+    private static final long MOON_FADE = 100;
     private static final int CHECK_TICKS = 20;
 
     private Nights() {}
@@ -37,12 +46,18 @@ public final class Nights {
         long dawn = -1;
         long dusk = -1;
         long horde = -1;
+        long red = -1;
+        long rolled = -1;
+        long hunted = -1;
 
         static State load(CompoundTag tag, HolderLookup.Provider registries) {
             State state = new State();
             state.dawn = tag.getLong("dawn");
             state.dusk = tag.getLong("dusk");
             state.horde = tag.getLong("horde");
+            state.red = tag.contains("red") ? tag.getLong("red") : -1;
+            state.rolled = tag.contains("rolled") ? tag.getLong("rolled") : -1;
+            state.hunted = tag.contains("hunted") ? tag.getLong("hunted") : -1;
             return state;
         }
 
@@ -51,16 +66,32 @@ public final class Nights {
             tag.putLong("dawn", dawn);
             tag.putLong("dusk", dusk);
             tag.putLong("horde", horde);
+            tag.putLong("red", red);
+            tag.putLong("rolled", rolled);
+            tag.putLong("hunted", hunted);
             return tag;
         }
     }
 
     public static boolean sleepless(ServerPlayer player) {
-        return sleepless(Journey.slain(player.server), Stillness.found(player));
+        return sleepless(Journey.over(player.server), Stillness.found(player) || hunted(player.server));
     }
 
-    public static boolean sleepless(boolean slain, boolean found) {
-        return !slain && found;
+    public static boolean hard(MinecraftServer server) {
+        return server.getPlayerList().getPlayers().stream().anyMatch(Nights::sleepless);
+    }
+
+    private static boolean hunted(MinecraftServer server) {
+        ServerLevel level = server.overworld();
+        return state(level).hunted == level.getDayTime() / TICKS_PER_DAY;
+    }
+
+    private static State state(ServerLevel level) {
+        return level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(State::new, State::load, null), NAME);
+    }
+
+    public static boolean sleepless(boolean over, boolean found) {
+        return !over && found;
     }
 
     public static boolean night(Level overworld) {
@@ -76,7 +107,22 @@ public final class Nights {
     }
 
     public static boolean tentsShut(ServerPlayer player) {
-        return sleepless(player) && night(player.server.overworld());
+        return (sleepless(player) || Hold.active(player.server)) && night(player.server.overworld());
+    }
+
+    public static void redMoon(MinecraftServer server) {
+        ServerLevel level = server.overworld();
+        State state = state(level);
+        long day = level.getDayTime() / TICKS_PER_DAY;
+        if (state.red == day || !ModList.get().isLoaded(CELESTIALS)) {
+            return;
+        }
+        state.red = day;
+        state.setDirty();
+        command(server, "enhancedcelestials2core scheduleLunarEvent insert " + RED_MOON + " 0");
+        if (level.getDayTime() % TICKS_PER_DAY >= MOONRISE) {
+            level.setDayTime(level.getDayTime() + MOON_FADE);
+        }
     }
 
     public static void sync(ServerPlayer player) {
@@ -89,9 +135,18 @@ public final class Nights {
             return;
         }
         MinecraftServer server = level.getServer();
-        State state = level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(State::new, State::load, null), NAME);
+        State state = state(level);
         long day = level.getDayTime() / TICKS_PER_DAY;
         long time = level.getDayTime() % TICKS_PER_DAY;
+        if (Clock.evening() && state.rolled != day && !Talk.busy()) {
+            state.rolled = day;
+            state.setDirty();
+            boolean told = Engine.main(server).filter(active -> active.step().spec().has(AWAKE)).isPresent();
+            if (state.red != day && !told && !Hold.active(server) && !Journey.over(server) && (After.hunted(server) || level.getRandom().nextDouble() < found(server))) {
+                state.hunted = day;
+                server.getPlayerList().getPlayers().stream().filter(player -> !After.sheltered(player)).forEach(Nights::uneasy);
+            }
+        }
         if (state.dawn != day) {
             state.dawn = day;
             state.setDirty();
@@ -153,6 +208,28 @@ public final class Nights {
         if (event.getProblem() == null && sleepless(player)) {
             event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
             player.displayClientMessage(Component.translatable("wayfarer.night.no_sleep").withStyle(ChatFormatting.RED), true);
+        }
+    }
+
+    private static double found(MinecraftServer server) {
+        return found(Shine.of(server), Bell.present(server));
+    }
+
+    public static double found(int shine, boolean bell) {
+        Balance.Shine balance = Balance.get().shine();
+        return (double) shine / balance.foundShine() * (bell ? balance.bellFound() : 1);
+    }
+
+    private static void uneasy(ServerPlayer player) {
+        player.connection.send(new ClientboundSetTitlesAnimationPacket(20, 80, 30));
+        player.connection.send(new ClientboundSetSubtitleTextPacket(Component.translatable("wayfarer.night.uneasy")));
+        player.connection.send(new ClientboundSetTitleTextPacket(Component.translatable("wayfarer.night.title").withStyle(ChatFormatting.RED)));
+        Talk.tell(player, Component.translatable("wayfarer.night.uneasy_chat").withStyle(ChatFormatting.DARK_RED));
+        Sounds.play(player, HARD_NIGHT);
+        sync(player);
+        Firsts.first(player, "horde");
+        if (Tents.isTent(player.level().dimension())) {
+            Tents.eject(player);
         }
     }
 

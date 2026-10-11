@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "3d5fba614e5c366f1fbe7f28a3d85e7a9356c4138e00b3e3577d12566916b7e3"
+hash = "5e422a1fb644e2af73e2492d2afe3f7bebef315fe15c09186714a9ddf61ea907"
 
 [[files]]
 file = "config/DistantHorizons.toml"
@@ -65,6 +65,10 @@ file = "config/ReactiveMusic.json5"
 hash = "22a454b1606bbaa2ac1d4fec11b220be81059c5bd493a155b7478177ba4852cc"
 
 [[files]]
+file = "config/artifacts/items.toml"
+hash = "a3bbc015d42dfbb28a8180360f94458c13b305446e6e5207589b4f37b9c0d065"
+
+[[files]]
 file = "config/asynclocator.toml"
 hash = "bd946e5d04c34cb73cddf39a43aa62364a043c83a7d0dfd05171544c0449bd41"
 
@@ -77,12 +81,8 @@ file = "config/carryon-common.toml"
 hash = "00fd7cd1cc4dc55a9cedad03e7942c738011e90ceebc8604ba29888be52d02ee"
 
 [[files]]
-file = "config/combat_roll/client.json5"
-hash = "c1179a453927031df79775fcef10e00cfc8a1e5bd02f02273d8e6cbeb3a394af"
-
-[[files]]
 file = "config/defaultoptions/keybindings.txt"
-hash = "4bea4a9a3578976390beddc38a09c0f703bc268ee46c87953393ca53aad17c5c"
+hash = "2aed16732ac8260e7987a02c395a040475f0a959e53e9699099a28cf5e740ca2"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
@@ -122,7 +122,7 @@ hash = "4ff0c1634c0549f0a91dfcc1f53ca780cadb6655302e195fb6ec2278d57b3948"
 
 [[files]]
 file = "config/improvedmobs/common.toml"
-hash = "7aff14a9a4821e4b01fae617c57ac1a066b33ffd5871fc797fc6105d0d56bfd8"
+hash = "a21384a476c1cf7773d7b23e54a1ef22e7d07e89d2e9496275ffc38689b4e8bc"
 
 [[files]]
 file = "config/improvedmobs/equipment.json"
@@ -151,6 +151,10 @@ hash = "2ea17f07c1e0ac86f1e325a160a8503652fbe8a1f1c3226a29ae0bf7173032d8"
 [[files]]
 file = "config/kiwi-client.yaml"
 hash = "cda675a661efe4de11d0292127b19f664dd08552b8b5cfcd65bef99f66ec9444"
+
+[[files]]
+file = "config/more_darkness.json"
+hash = "ffb408b92616a3c90d346ade5f1a79a4e75579fd8cdc5633326b608e8a182ced"
 
 [[files]]
 file = "config/nohostilesaroundcampfire.json5"
@@ -202,7 +206,7 @@ hash = "b2ce9644c74ba7c36ce239b281ac1193e1db015f1546e5faaf17cf54b47d0d4c"
 
 [[files]]
 file = "config/sparsestructures.json5"
-hash = "ddd34de558bc0cccf5ebb00ee806a944883122d67c7fe50253cf7941f605fba6"
+hash = "2d9497885d1d19e22ef3b9bb9add6b9768c10f93c847c7eafc3a3e79f0d6b27a"
 
 [[files]]
 file = "config/streamsreflowing-common.toml"

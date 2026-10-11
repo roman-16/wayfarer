@@ -15,6 +15,15 @@
     ],
     "subtitle": "subtitles.wayfarer.band_tick"
   },
+  "bell_toll": {
+    "sounds": [
+      {
+        "attenuation_distance": 64,
+        "name": "wayfarer:effects/bell_toll"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.bell_toll"
+  },
   "camp": {
     "sounds": [
       {
@@ -204,6 +213,14 @@
       }
     ]
   },
+  "story_music.first_morning": {
+    "sounds": [
+      {
+        "name": "wayfarer:music/first_morning",
+        "stream": true
+      }
+    ]
+  },
   "story_music.hold": {
     "sounds": [
       {
@@ -228,10 +245,42 @@
       }
     ]
   },
+  "story_music.the_bell": {
+    "sounds": [
+      {
+        "name": "wayfarer:music/the_bell",
+        "stream": true
+      }
+    ]
+  },
+  "story_music.the_name": {
+    "sounds": [
+      {
+        "name": "wayfarer:music/the_name",
+        "stream": true
+      }
+    ]
+  },
+  "story_music.the_theft": {
+    "sounds": [
+      {
+        "name": "wayfarer:music/the_theft",
+        "stream": true
+      }
+    ]
+  },
   "story_music.title": {
     "sounds": [
       {
         "name": "wayfarer:music/title",
+        "stream": true
+      }
+    ]
+  },
+  "story_music.wend_camp": {
+    "sounds": [
+      {
+        "name": "wayfarer:music/wend_camp",
         "stream": true
       }
     ]

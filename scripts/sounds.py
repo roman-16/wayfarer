@@ -23,8 +23,10 @@ QUALITY = 5
 
 def page_audio(page):
     html = urllib.request.urlopen(urllib.request.Request(page + "/", headers=AGENT)).read().decode()
-    found = re.search(r'og:audio" content="([^"]+)"', html) or re.search(
-        r'href="(https://[^"]+\.(?:mp3|ogg|flac))"', html
+    found = (
+        re.search(r'og:audio" content="([^"]+)"', html)
+        or re.search(r'href="(https?://[^"]+\.(?:mp3|ogg|flac))"', html)
+        or re.search(r"data-mp3-url='(https://[^']+)'", html)
     )
     if not found:
         raise SystemExit(f"sounds failed: {page} names no preview and links no audio file")

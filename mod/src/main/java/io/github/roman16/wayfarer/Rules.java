@@ -1,8 +1,11 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Engine;
+import io.github.roman16.wayfarer.story.Progress;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
@@ -17,7 +20,10 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 public final class Rules {
     public static final TagKey<EntityType<?>> SAILING_SHIPS = TagKey.create(Registries.ENTITY_TYPE, Wayfarer.id("sailing_ships"));
 
+    public static final String MOORED = Wayfarer.MODID + "_moored";
     private static final int PORTAL_WITNESS_BLOCKS = 8;
+    private static final String FLIGHT_OPEN = "wings";
+    private static final String SHIPS_OPEN = "the_name";
 
     private Rules() {}
 
@@ -40,27 +46,31 @@ public final class Rules {
             return;
         }
         Entity vehicle = event.getEntityBeingMounted();
-        int needed = vehicle.getType().is(Gaze.AIRCRAFT) ? Balance.get().unlocks().aircraftEyes()
-                : vehicle.getType().is(SAILING_SHIPS) ? Balance.get().unlocks().sailingShipEyes()
-                : 0;
-        if (claimed(player) >= needed) {
+        if (vehicle.getType().is(SAILING_SHIPS) && player instanceof ServerPlayer sailor && !shipsOpen(sailor.server)) {
+            event.setCanceled(true);
+            player.displayClientMessage(Component.translatable("wayfarer.unlock.sailing_ships").withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
+        if (!vehicle.getType().is(Gaze.AIRCRAFT) || vehicle.getTags().contains(MOORED) || !(player instanceof ServerPlayer flier) || flightOpen(flier.server)) {
             return;
         }
         event.setCanceled(true);
-        String key = vehicle.getType().is(Gaze.AIRCRAFT) ? "wayfarer.unlock.aircraft" : "wayfarer.unlock.sailing_ships";
-        player.displayClientMessage(Component.translatable(key, needed).withStyle(ChatFormatting.GRAY), true);
+        player.displayClientMessage(Component.translatable("wayfarer.unlock.aircraft").withStyle(ChatFormatting.GRAY), true);
+    }
+
+    public static boolean flightOpen(MinecraftServer server) {
+        return !Engine.running(server) || Progress.of(server).done(FLIGHT_OPEN);
+    }
+
+    public static boolean shipsOpen(MinecraftServer server) {
+        return !Engine.running(server) || Progress.of(server).done(SHIPS_OPEN);
     }
 
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
-        int needed = Balance.get().unlocks().aircraftEyes();
-        if (event.getEntity() instanceof ServerPlayer player && player.isFallFlying() && claimed(player) < needed) {
+        if (event.getEntity() instanceof ServerPlayer player && player.isFallFlying() && !flightOpen(player.server)) {
             player.stopFallFlying();
-            player.displayClientMessage(Component.translatable("wayfarer.unlock.aircraft", needed).withStyle(ChatFormatting.GRAY), true);
+            player.displayClientMessage(Component.translatable("wayfarer.unlock.aircraft").withStyle(ChatFormatting.GRAY), true);
         }
-    }
-
-    private static int claimed(Player player) {
-        return player instanceof ServerPlayer serverPlayer ? Journey.claimed(serverPlayer.server).size() : HudState.compass.claimed().size();
     }
 }

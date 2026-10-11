@@ -30,8 +30,8 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   id = "tell_nell"
   talk = "nell"
   choices = [
-    { id = "told", text = "Tell her it was Wend", remember = "nell_knows" },
-    { id = "hid", text = "Say you didn't see", remember = "nell_lied_to" },
+    { id = "told", text = "The man whose fire I carry.", remember = "nell_knows" },
+    { id = "hid", text = "I didn't see his face.", remember = "nell_lied_to" },
   ]
   ```
 
@@ -230,7 +230,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 - By day, danger is shade, storms, people and the land: dense forests and caves keep the gaze's creatures alive in daylight, a thunderstorm darkens the sky enough for them to walk, the Gazebound are people and the sun means nothing to them, predators hunt, and the cold, the heat and the water are the land's gates.
 - A quest gets no exception from the stillness rule, which already allows two nights in one place; a quest that keeps the player longer happens on a living people's hallowed land (S6), where the gaze cannot see them.
 - No night event comes from a calendar. A night the story already holds (a hold, a scripted hard night) takes no other with it, and every horde ends when the sun rises. While the story holds a night, no bed takes anyone, and the refusal says why: "Not tonight. The sky over the ridge is red."
-- The gaze finds the caravan when a quest calls for it (The Bell, The Hollow, The Empty Grave), when the caravan has slept three nights in one place, or by a chance each night that grows with the player's shine, and more while Tamsin's bell is with the caravan. When the camp goes up that evening the ember warns: "The ember is uneasy tonight." The red moon comes only when the story wants it, once an act, on its climax (`story.md`, S25).
+- The gaze finds the caravan when a quest calls for it (The Bell, The Hollow, The Empty Grave), when the caravan has slept three nights in one place, or by a chance each night that grows with the player's shine, and more while Tamsin's bell is with the caravan: the chance is the shine over 128, doubled while the bell travels with it (`balance.toml` `[shine]`), rolled once as the camp's evening begins, and never on a night the story already holds (a hold, a red moon, a visit at the fire). When it falls, the ember warns as the camp goes up: "The ember is uneasy tonight." That night nobody sleeps, no tent opens, the fire's circle holds nothing back, the clock runs on at its own speed instead of waiting at 20:00, the horde comes at midnight, and the next day begins on the road at 6:00. The red moon comes only when the story wants it, once an act, on its climax (`story.md`, S25).
 
 **Why:** A clock the story drives lets every night land where the people are and every hard night land as a set piece, and easing out keeps the sky moving so time never visibly stops. Counting days in nights slept cannot be cheated, and daylight that is safe only in the open keeps the forest, the storm and the Gazebound dangerous on a long day's road.
 
@@ -395,7 +395,7 @@ Act 3:
 
 **Why:** Thirst would be a second bar to refill all day beside the ember's hunger, which is upkeep and not play, so the land's danger is heat and cold, and only the land's: a fire is the cure for cold, so it never burns a player who sits by it, and the first playtest found every lantern and oven overheating players on temperate land. Hunts need creatures no mod has, and GeckoLib is how mods animate them. Attract to Sound already makes stealth real, and its licence (GPL-3.0) lets it be changed. Heist roles are GTA V's heists for a team of up to four, with the caravan making them work alone.
 
-**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/WarmthSpike.java`, `ActsSpike.java` and `WormSpike.java`, dev code that never ships, with Tough As Nails, GeckoLib and Attract to Sound in the pack): thirst is off (`pack/config/toughasnails/thirst.toml`), and on icy land at night a player who was cold and heading for icy stays neutral with the Warmth gift; a pillager walks to the clang of an anvil 8 blocks away, with Attract to Sound's own raids off (`pack/config/soundattract/raid.toml`); an Easy NPC person follows a player 21 blocks; and a worm whose model, animation and texture the generator writes (`generator/creatures.py`) crawls in the workshop, its five segments swaying on sine curves. What it showed:
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/WarmthSpike.java`, `ActsSpike.java`, dev code that never ships, with Tough As Nails, GeckoLib and Attract to Sound in the pack): thirst is off (`pack/config/toughasnails/thirst.toml`), and on icy land at night a player who was cold and heading for icy stays neutral with the Warmth gift; a pillager walks to the clang of an anvil 8 blocks away, with Attract to Sound's own raids off (`pack/config/soundattract/raid.toml`); an Easy NPC person follows a player 21 blocks; and a worm whose model, animation and texture the generator writes (`generator/creatures.py`) sways on sine curves; it is built as the Sand Singers' great worm (`mod/src/main/java/io/github/roman16/wayfarer/worm/`). What it showed:
 
 | Finding | For the engine |
 |---|---|
@@ -501,7 +501,7 @@ What it showed:
 ### M13 What goes
 
 - **The Last Sea.** The land ends 4,096 blocks past the ring's radius, and the sea runs on to Minecraft's own world edge, with no border of the pack's own. Its cold, through Tough As Nails, starts once the player is out on it and grows with every block: freezing about 1,024 blocks out, deadly within a minute after that, so nobody reaches the edge. A player who falls on the Last Sea leaves their stone on the nearest land.
-- **Enchanting.** Enchanted books stay in loot, and only a smith can put one on: the peoples' smiths for goods, Hob once his side quest is done (C7). Mending and every enchantment that runs on XP go, since repair is the fire's and the smith's (M12).
+- **Enchanting.** Enchanted books stay in loot, and only a smith can put one on, overnight: the peoples' smiths for goods, Hob once his side quest is done (C7, `story.md` S33). Mending and every enchantment that runs on XP go, since repair is the fire's and the smith's (M12).
 - **Ore.**
 
   | Ore | In plain stone | In places: old mines and the deep stone around the Ancient Cities |
@@ -547,6 +547,7 @@ What it showed:
 
 - **When the world is gone**, in Close the Eye with Pip dead (S8), the world ends: the last scene, the line in the deep dark (S21), the credits. After that it cannot be played again; joining shows only the ending and its last line, then "Start a new road". The save stays on disk, untouched.
 - **Playing on as Pip**, every player keeps their inventory and gear, their skin becomes grown Pip, and the journal's "I" becomes Pip's from one new entry on.
+- **Give it its sight** makes the caravan's last camp the home: within `[after]` `home_blocks` of it nothing spawns at night and what D7 cut comes back, and everywhere else every night is a hunted one. **Blind it** and **Close the Eye** end the road's rules everywhere: no hordes, no stillness, no ember's hunger, and planting, breeding, beds and chests come back. Each door's world opens its last quest: Build a Home after Blind it and, as Pip, after Close the Eye; The Promised Home after Give it its sight.
 
   ```text
   Journal › The story so far
@@ -556,7 +557,7 @@ What it showed:
 
 **Why:** A dragon that fights with the sight it was given makes every shard left behind count in the last fight. Gone has to mean gone, or Pip's death would cost nothing, and watching the world as a spectator is the one thing the closed Eye no longer does. The same journal in a new voice carries the merciful door into what comes after.
 
-**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/EndingSpike.java` and `EndingClient.java`, dev code that never ships, with its numbers in `balance.toml` `[dragon]`): set to 12 shards with two players online, the dragon rose with 768 health and every crystal stood; set to 3, it had 480, three crystals stood, its fireballs flew about 6 blocks wide of the player where at 12 most flew 0.1 wide, its charges went 5 to 12 blocks wide, and it lost the player when a pillar stood between them. A world marked gone shows every player a black screen with the ending's lines and "Start a new road", which Escape does not close; the button leaves for the title screen, and opening the world again shows the ending again and nothing else, the save untouched on disk. Playing on as Pip changed the player's skin, seen from behind, added "I carry his ember now" to the journal after the earlier entries, and from then on wrote a quest's journal entry in Pip's words. What it showed:
+**Built and shown in the game** (the dragon in `Dragon.java`, the worlds after the doors in `story/After.java` and `client/Ending.java`, with their numbers in `balance.toml` `[dragon]` and `[after]`): set to 12 shards with two players online, the dragon rose with 768 health and every crystal stood; set to 3, it had 480, three crystals stood, its fireballs flew about 6 blocks wide of the player where at 12 most flew 0.1 wide, its charges went 5 to 12 blocks wide, and it lost the player when a pillar stood between them. A world marked gone shows every player a black screen with the ending's lines and "Start a new road", which Escape does not close; the button leaves for the title screen, and opening the world again shows the ending again and nothing else, the save untouched on disk. Playing on as Pip changed the player's skin, seen from behind, added "I carry his ember now" to the journal after the earlier entries, and from then on wrote a quest's journal entry in Pip's words. What it showed:
 
 | Finding | For the engine |
 |---|---|
@@ -643,11 +644,11 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   ○ Make a tool head: one of Hob's patterns and its copper or iron in a crafting grid
   ```
 
-- A smith's tier is forged overnight: the work is left at a forge in the evening and collected at dawn. The player's own bench stays instant.
+- A smith's tier is forged overnight: the work is handed to the smith in the evening and collected from dawn on, each player's by that player alone. The player's own bench stays instant. Hob's forge works as `story.md` S33 has it: right-clicking him with a piece in hand hands it over, and the other hand says what for, nothing to mend it, frost iron to make it again in that, an enchanted book to set it in; before C7 he mends only to half, with a hammer cracked the night Tollbridge burned, and from C7 on he restores fully, forges frost iron and sets books.
 
   ```text
-  Hob takes the frost iron and your old blade. "Leave it with me tonight."
-  Morning: a sword the colour of river ice lies on the anvil.
+  You hold out your old blade, the frost iron in your other hand. <Hob> Leave it with me tonight.
+  Morning. <Hob> Here. Mind the edge. A sword the colour of river ice.
   ```
 
 - The journal's Gear page shows the road. It has a row for every kind the player can grow into, each appearing when it first matters: weapons; tools (the spyglass among them); armour; against the cold (wool clothes, the fur cloak, snowshoes, Warmth); against the heat (leaf clothes, the drinks that cool, the Sand Singers' shade); under water (the snorkel, the flippers, Deep-sight); in the dark (torches, lanterns, glowsticks, the night-vision goggles, Dark-sight); carrying (backpacks and their upgrades, lunchboxes); the camp (tents from tiny to mega, the crossbeams and shovels that make the inside bigger, the cooking pot); getting about (grappling hooks, the hang glider, ziplines, a horse with its saddle and armour, the stone of one's own); ships, with Act 2; aircraft, with Act 3; food and health (more hearts from food eaten in variety, the meals); and charms (the trinkets and the shards' gifts).
@@ -667,7 +668,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 **Why:** Silent Gear is already the deepest gear system for 1.21.1, and Tinkers' Construct has not reached it; its materials as data let the peoples' metals join it. Tiers tied to places send the player down the road for better gear, an overnight forge makes the smiths matter without a waiting bar, and a page instead of "have item X" quests keeps "No quest is a chore". The top within the story lets a player who works for it face the end at their best. A page that says where the next tier is and who knows it, with JEI for the recipe and a Track the player chooses, guides the way Monster Hunter's upgrade tree and Horizon's jobs do without becoming the checklist the old quest book was.
 
-**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/GearSpike.java` and `SilentGearSword.java`, dev code that never ships, with frost iron as data in `mod/src/dev/resources/data/wayfarer/silentgear_materials/frost_iron.json` and the Gear page in `mod/src/dev/resources/wayfarer/spike/gear.json`): frost iron is a Silent Gear material written only as data, pale blue, harder-wearing than iron and with the Chilled trait, made from a stand-in ingot that looks like iron. A player who leaves two frost iron at an anvil hears "Leave it with me tonight"; half a minute later nothing is there, and at the next dawn a Silent Gear sword with a frost iron blade and an oak handle lies on the anvil. The journal's Gear page lists iron as known from the start and frost iron as "needs ?, from ?, made by ?", fills in "frost iron, from the Frost Walkers' old mine" once a player carries some, and "a smith, overnight" once one has left it with a smith. What it showed:
+**The spike worked**, and the forge now runs in `mod/src/main/java/io/github/roman16/wayfarer/story/Forge.java`, with frost iron as data in `mod/src/main/resources/data/wayfarer/silentgear_materials/frost_iron.json` and the Gear page in `story/gear.toml`: frost iron is a Silent Gear material written only as data, pale blue, harder-wearing than iron and Sturdy, made from raw frost iron dug in the Frost Walkers' old mine, and blacklisted for every gear type at the bench, so only the smith's forge builds it, through Silent Gear's own API. What the spike showed:
 
 | Finding | For the engine |
 |---|---|
@@ -675,7 +676,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | A material file missing one key, `part_substitutes`, stopped the world's data packs from loading, and the world did not open | `just lint` checks every material file against Silent Gear's format before any launch |
 | A dawn is a day boundary of the overworld's clock, whether the night passes, is slept or is skipped | An order finishes when the overworld's day count moves past the day it was left on |
 | What the player learns comes from things they do, carrying a metal or leaving it with a smith | Each tier on the Gear page names the events that fill in its fields, as the journal's other entries do |
-| An item lying on the anvil can be picked up by anyone | Not settled: whether only the player who left the work can take the finished piece |
+| An item lying on the anvil can be picked up by anyone | The smith keeps each player's work and hands it only to the player who left it (`story.md` S33) |
 
 ### M19 A camp in plain sight
 
@@ -739,13 +740,13 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 **Why:** One beast that comes only on the open sea, at night or in rain, makes the crossing the gate without making every swim a fight, as Valheim's serpent does, and a boat that breaks where a ship holds keeps ships the key (M11). Minecraft has one weather for the whole world, so a storm called for the sailors would rain on everyone ashore.
 
-**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/SeaSpike.java`, dev code that never ships, with its numbers in `balance.toml` `[sea]`): a player in a boat 64 blocks from the nearest land is on open water and one by the coast is not; there the beast, for now a guardian four times its size, comes one check in 32 (every 8 s) at night or in rain, one check in 12 at the shine of act 3 with every shard, and only while none is near. It rose on its own under a player's boat in daytime rain, broke a vanilla boat with its first ram, rammed a Small Ships cog every 2 s from 8 to 344 damage until it sank after about 75 s with nobody fighting back, and dived when dawn came. What it showed:
+**Built** (`mod/src/main/java/io/github/roman16/wayfarer/Sea.java`, with its numbers in `balance.toml` `[sea]`; the beast is the Wayfarer mod's `deep`, a guardian's shape four times its size, gone the black of deep water with one pale violet eye, and it comes only once the story's ships are open): a player in a boat 64 blocks from the nearest land is on open water and one by the coast is not; there the beast, comes one check in 32 (every 8 s) at night or in rain, one check in 12 at the shine of act 3 with every shard, and only while none is near. It rose on its own under a player's boat in daytime rain, broke a vanilla boat with its first ram, rammed a Small Ships cog every 2 s from 8 to 344 damage until it sank after about 75 s with nobody fighting back, and dived when dawn came. What it showed:
 
 | Finding | For the engine |
 |---|---|
 | Open water is read from the heights of the loaded chunks around the player, every 8 blocks out to 64, and land in any of them ends it | The rule needs no world data of its own; a coast in an unloaded chunk counts as sea, which the view distance makes rare |
 | Small Ships' ships are boats to the game, with the hull's health in their own config (a cog has 300) | A ship's damage from the beast is tuned against its hull: at 8 every 2 s a cog lasts about 75 s against a beast nobody fights, which is judged in play |
-| Riding a Small Ships ship is refused before 4 shards by the mod as it ships (`Rules`, `[unlocks]`) | The tests stood the player on the deck; ships open with Act 2's quest (D15) |
+| Riding a Small Ships ship is refused until 1.11 The Name is done (`Rules`) | The tests stood the player on the deck; ships open as Act 1 ends (D15) |
 | `/weather rain` takes some seconds to fade in, and only then does the game count it as raining | The beast follows the rain the world shows, not the forecast |
 | Improved Mobs 1.16.0.b crashed the server when a drowned swam at night: its pathfinding reads a search's context outside any search (`SwimNodeEvaluator`). It is the newest build | The Wayfarer mod gives that call a context of its own (`ImprovedMobsPathContextMixin`); a hundred drowned round a boat at night then ran without a crash. Reported upstream as [ImprovedMobs#364](https://github.com/Flemmli97/ImprovedMobs/issues/364); the mixin goes once a fixed build is in the pack |
 | The beast's look is a stand-in | It is made with the art skill, as the worm was (T3) |
@@ -832,6 +833,71 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   ```
 
 **Why:** D2 promises that the team heads in when the day's quests are done or whenever it chooses, and a day whose quest runs long must still end: without a way in, the sun would wait at 17:30 for good, as it did in the first playtest's evening.
+
+### M33 Room for the team's tents at the caravan's fire
+
+- The caravan's fire is the camp's fire: a tent pitched anywhere inside its circle, 32 blocks from it (`[fire]` `circle_blocks`), sleeps by it, as a tent within 8 blocks of any other lit fire does (M12). The camp keeps no pitches of its own; the team finds flat ground among or beyond the wagons.
+
+  ```text
+  Evening at the caravan. Task panel:  Sleep in your tent by their fire
+  You walk past the forge wagon to a flat patch 20 blocks out, place the tent, go in, lie down. Morning.
+  Far from the caravan, a tent with no fire beside it:
+    No fire burns near the tent. Pitch it inside the caravan's camp, or light a fire beside it.
+  ```
+
+- The task panel's fire task counts done for a tent inside the camp. Before the caravan is first met, the refusal says only that no fire burns beside the tent, since the word comes with the story.
+- **Edge cases.** The caravan packed up and gone: its fire is out, so a tent left where it stood wants a fire of its own. A tent beyond 32 blocks: its own fire within 8. A teammate's tent: the same rule. A hard night or a hold: no tent opens anyway (M6). Underground or on a cliff above the camp: the distance counts in three dimensions, so a tent in a cave under the fire still counts within 32.
+
+**Why:** The fire's circle already marks the camp, as a hearth's warmth reaches farther than a campfire's in Valheim (12 m against about 5); reserving pitches would fight every camp's ground and still leave a team of four short of room.
+
+### M26 How often the other owners' places stand
+
+- Every owner's places share one placement per kind, as M13's do, so the world's small places are spread by what they are rather than by how each mod spread them:
+
+  | Owner | Kind | About one every |
+  |---|---|---|
+  | The settled world | Small places: farms, wells, stalls, watchtowers, graveyards | 512 blocks |
+  | | Taverns, where W11's dicers sit | 1,536 blocks |
+  | The land | Trees, boulders, log piles, ponds | 256 blocks |
+  | The sea | Wrecks, sunken ruins, islands, lighthouses | 1,024 blocks |
+  | Under the ground | Dungeons, buried rooms, old refineries | 512 blocks |
+  | | Old mines, where M13's rich ore lies | 256 blocks, about vanilla's mineshafts |
+  | The Twelve Peoples | Temples, monuments, crypts | As their mods spread them, until each act's halls set them near their hall (built with Acts 2 and 3) |
+
+  ```text
+  Measured on a fresh world from four points of the home land: a tavern within 800 to 1,600 blocks,
+  one of the settled world's small places within 150 to 830, something of the land's own within 80 to 450.
+  ```
+
+- **Edge cases.** A kind that finds no fitting ground in a cell, such as a wreck inland, tries its other places there and else leaves the cell empty, so no place stands out of its land. `/locate` finds each kind by its tag (`#wayfarer:owners/<kind>`).
+
+**Why:** One spacing per owner keeps the world's places telling its story (M13) and gives the dice and the rich ore a place within a day's walk, while the land's small pieces stay common enough that the road never runs bare.
+
+### M17 Distant Horizons SeedGen
+
+- The far view is drawn by Distant Horizons SeedGen, on the client in singleplayer and on the server in multiplayer: the far land's hills, coasts, rivers and trees come from the world's seed, so the horizon fills in fast wherever the team goes. SeedGen draws no buildings (`pack/config/seedgen.json`), so nothing on the horizon is a place that is not there.
+- On a server a client's own SeedGen cannot read the server's worldgen and stands aside, and Distant Horizons takes the far view from the server, whose SeedGen draws it from the real land. SeedGen's lines about that in chat are hidden by the pack, since they name mods the player can do nothing about; its log keeps them.
+
+  ```text
+  You join the server. No yellow lines about worldgen data in chat. Hills fill in to the edge of sight within a minute or two.
+  ```
+
+- **Edge cases.** A server without Distant Horizons: the client's far view stops at its render distance. A player who turns the far view off: the same. A graphics card SeedGen cannot use: Distant Horizons still draws, more slowly.
+
+**Why:** The far view is what makes the world feel vast, and the server's SeedGen reads the same land the server makes, so a team sees one horizon; the chat lines are noise for a player who cannot act on them.
+
+**The test** (SeedGen 0.8.0, a beta under All Rights Reserved, in dev clients started with `--far`, which keeps Distant Horizons on with a far view of 1,024 blocks; the dev step `/wayfarer far phantom` in `mod/src/dev/java/io/github/roman16/wayfarer/spike/FarSpike.java`): SeedGen's own measuring commands against the real generator, then the far view photographed from 150 to 170 blocks away before and after the real land there loaded. What it showed:
+
+| Finding | For the engine |
+|---|---|
+| SeedGen is on as soon as it is installed, and turns its own structures back on unless its settings carry the mark of its newest defaults | `pack/config/seedgen.json` carries that mark beside `structures` off |
+| Terrain heights from the seed match the real world in 90% of 4,096 columns over 4,096 blocks, off by 1.8 blocks on average, 15 blocks for the worst twentieth, 115 at most | The far view's hills, coasts and rivers sit where they really are |
+| Near a shore only 47% of the ground blocks match: SeedGen draws grass, stone or sand where Terralith's brushland and gravel beaches lay gravel, dirt and clay | Far land can look greener than it is, and its colour changes when the player comes near |
+| Photographed before and after the real land loaded, snowy hills and a lake under cliffs looked nearly the same; the trees stood in other places | The far view is close enough not to be noticed on the move |
+| SeedGen draws towns, villages, outposts and the pack's own places from their real definitions, but six vanilla kinds (desert and jungle temples, witch huts, igloos, woodland mansions, ocean monuments) from copies of its own at vanilla spacing (read in its code, not seen in game: the one tried stood in snow) | With the pack's structures spread 8.5 times wider, a far view would show such buildings about seventy times as often as they stand, gone when the player comes near; a pack whose places are quest goals cannot show places that are not there |
+| Around a new spot the far view out to 1,024 blocks filled in 91 to 129 s with the graphics card and much slower on the hidden screen; Distant Horizons' own generator was not measured beside it | Fast enough on foot; whether it keeps up with a ship or an aircraft is for the playtest |
+| Three launches with C2ME in the pack, which SeedGen warns about, ran without a crash | No change needed |
+| On the first server playtest each client's SeedGen could not read Geophilic's worldgen data, stood aside and said so twice in chat, and Distant Horizons downloaded the far view from the server | The pack hides SeedGen's chat lines (`SeedGenSharingMixin`); the far view on a server is the server's |
 
 ### M34 Waking after a fall
 
@@ -990,45 +1056,39 @@ It raises, for its build: keeping each act's foes out of the world until their a
   - A team that walks far before tracking an Act 1 quest: its hall is placed from where the team stands when the quest is tracked (D6), still on the home land.
   - A team that has left the home land by boat: an Act 1 quest still picks its ground on the home land, searching from the home land's side nearest the team, and the compass points back.
   - A team that sails early and finds an Act 2 or Act 3 hall: it stands there, and what they take counts (D6).
-  - A kind of land missing from its band: none of the seeds measured lacked one; a hall grows only inside its band, so an Act 2 or Act 3 quest's pull, when it is built, looks past the band for it.
+  - A kind of land missing from its band, or a hall of the kind a quest needs lying far off: an Act 2 or Act 3 quest takes the nearest of its halls the world grew within 8,192 blocks of the caravan (`balance.toml` `[halls]`); with none that near, it raises one of that kind on the nearest fitting land within reach, out of sight, as Act 1 puts its halls down. On the states' seed the nearest Drowned City hall lay 26,000 blocks off.
   - With two thirds sea, a band's halls stand farther apart, so each act's spacing is measured with `just survey` (AGENTS.md); its legs are walked from the inner edge of the band, and their targets are `balance.toml` `[shrines]` `act_two_leg_blocks` (8,192) and `act_three_leg_blocks` (12,288), Act 2 crossed by ship and Act 3 by air.
 
 **Why:** Act 1 is walked, and its quests already lay down the first two halls a day ahead, so the other two follow suit and the act's pace stays a day a hall whatever the seed; Acts 2 and 3 are travelled by ship and by air, where a hall found on a far coast is the reward of the voyage. The census of the land under the shape (`ShapeSpike`, on four seeds) found every Act 1 land on the home land, snow and ice 6 to 52% of it, forest 10 to 18%, plains 13 to 17%, swamp 1 to 4%, and every Act 2 and Act 3 land in both bands, mountains the rarest at 0.3 to 0.6%; dark forest is not counted by its tag, so its share is not yet measured.
 
 **Built and surveyed** (`BandPlacement`, `generator/eyes.toml` `[acts]`): three surveys of five seeds walked 80 legs an act; at spacings of 125 and 189 chunks the median leg was 8,314 blocks in Act 2 and 11,892 in Act 3, against targets of 8,192 and 12,288.
 
-## Open
+### M41 Leaving the End after Blind it
 
-### M26 How often the other owners' places stand
-
-M13 spaces the Gazebound's, the settled world's towns and villages, the ruins and the campsites. The rest of the pack's places have an owner in `generator/owners.toml` but no spacing of their own, and stand as their mods spread them, 8.5 times wider than the mods made them: the settled world's small places (farms, wells, taverns, watchtowers, stalls, about 140 kinds), the land's own (trees, boulders, log piles, ponds, about 40), the sea's (wrecks, sunken ruins, islands, about 20), what lies under the ground (dungeons, mines, about 40), and the Twelve Peoples' temples, monuments and crypts (about 80) until the generator sets them near their halls. To decide: how often each of these stands, and whether the taverns (W11's dice) and the old mines (M13's rich ore) need a spacing of their own.
-
-### M33 Room for the team's tents at the caravan's fire
-
-The prologue ends with "Sleep in your tent by their fire", and a tent sleeps only with a lit campfire within 8 blocks of it (M12). In the walkthrough the caravan's households filled the ground around its fire, and most spots within a few blocks of it had no room for a small yurt, so the team pitched further out with a campfire of their own, which the task panel teaches. To decide: whether the camp keeps pitches free for the team's tents beside its fire, how many and how big, or whether a tent near the camp counts the caravan's fire from further away.
-
-### M17 Distant Horizons SeedGen
-
-Reopened by the first playtest on a server: on each client SeedGen could not read Geophilic's worldgen data (unbound configured features such as `geophilic:biome_specific/cherry_grove/pond`), worked from vanilla's instead, turned itself off for the server and posted two lines in chat about it, and Distant Horizons downloaded the far view from the server. To decide: whether SeedGen can be made to read the pack's worldgen on a client, or leaves the pack, and what a player sees of it either way. The decision as it stood:
-
-- The far view is drawn by Distant Horizons SeedGen, on the client and on the server: the far land's hills, coasts, rivers and trees come from the world's seed, so the horizon fills in fast wherever the team goes.
-- SeedGen draws no buildings. A town, a temple or a shrine shows in the far view only once the land around it has really been made, as it does in vanilla, so nothing on the horizon is a place that is not there.
+- When the dragon falls, its lines end on the sculk, and the exit portal opens on the island as in vanilla. Stepping into it takes each player straight home, to their bed or the world's spawn: vanilla's End Poem and credits never play in a world where the story runs.
 
   ```text
-  You crest the ridge. Hills roll out to the edge of sight, a river shining between them.
-  Nothing tells you yet that a village waits behind the third hill.
+  Far below, in the deep dark, the sculk creeps one block further. Nobody hears it.
+  You step into the dark at the island's heart, and wake at home.
   ```
 
-**Why:** The far view is what makes the world feel vast, and SeedGen fills it fast with land that matches the real one. Its own copies of vanilla buildings ignore the pack's spread and would show temples that vanish on approach, which a pack whose places are quest goals cannot afford.
+- A player who comes to the End later, or a teammate who was never there, goes home the same way; in a world with the story off the End is vanilla's, poem and all.
 
-**The test** (SeedGen 0.8.0, a beta under All Rights Reserved, in dev clients started with `--far`, which keeps Distant Horizons on with a far view of 1,024 blocks; the dev step `/wayfarer far phantom` in `mod/src/dev/java/io/github/roman16/wayfarer/spike/FarSpike.java`): SeedGen's own measuring commands against the real generator, then the far view photographed from 150 to 170 blocks away before and after the real land there loaded. What it showed:
+**Why:** The pack's last word is the sculk's line, and Mojang's two voices speaking of the player as a dreamer tell another story straight after it; credits of the pack's own would belong at every door, not only at this one.
 
-| Finding | For the engine |
-|---|---|
-| SeedGen is on as soon as it is installed, and turns its own structures back on unless its settings carry the mark of its newest defaults | `pack/config/seedgen.json` carries that mark beside `structures` off |
-| Terrain heights from the seed match the real world in 90% of 4,096 columns over 4,096 blocks, off by 1.8 blocks on average, 15 blocks for the worst twentieth, 115 at most | The far view's hills, coasts and rivers sit where they really are |
-| Near a shore only 47% of the ground blocks match: SeedGen draws grass, stone or sand where Terralith's brushland and gravel beaches lay gravel, dirt and clay | Far land can look greener than it is, and its colour changes when the player comes near |
-| Photographed before and after the real land loaded, snowy hills and a lake under cliffs looked nearly the same; the trees stood in other places | The far view is close enough not to be noticed on the move |
-| SeedGen draws towns, villages, outposts and the pack's own places from their real definitions, but six vanilla kinds (desert and jungle temples, witch huts, igloos, woodland mansions, ocean monuments) from copies of its own at vanilla spacing (read in its code, not seen in game: the one tried stood in snow) | With the pack's structures spread 8.5 times wider, a far view would show such buildings about seventy times as often as they stand, gone when the player comes near; a pack whose places are quest goals cannot show places that are not there |
-| Around a new spot the far view out to 1,024 blocks filled in 91 to 129 s with the graphics card and much slower on the hidden screen; Distant Horizons' own generator was not measured beside it | Fast enough on foot; whether it keeps up with a ship or an aircraft is for the playtest |
-| Three launches with C2ME in the pack, which SeedGen warns about, ran without a crash | No change needed |
+### M42 A team that stays at the morning's camp
+
+- The morning's camp stands until the team has walked out of sight of it (M21). If 17:00 comes and it still stands, because someone stayed in sight of it all day (building, crafting, in a tent at the fire or away from the keys), the caravan stays a second night where it stood: "Nobody took the tents down. Tonight the caravan camps where it stood." It calls the team in as on any evening (M28), the dusk run starts for whoever is near, and the evening comes at its fire, without the welcome back, since nobody left.
+- A teammate who walked off meanwhile gets "Make for the caravan" pointing back to the same fire; one who leaves after 17:00 finds the camp standing until the next morning. Nobody online means nothing ticks, as on any day. The road's rules hold as on any night: a player who stays still is found by the gaze as anywhere else (S18).
+
+**Why:** A day must end even when nobody leaves (M28), and packing up in sight breaks the caravan's one rule (D14), so the camp that never got to leave simply stays.
+
+### M43 What stays open after the doors
+
+- After every door the side quests the team left open stay in the journal and can still be finished, and the caravan keeps its days, packing each morning and setting up ahead again. Under Blind it and Close the Eye it no longer calls the team in at 17:00, since the road's rules are over, so each door's last quest stands in the task panel; a player can still head in from the journal. Under Give it its sight it calls them in as before, since every night outside home is hunted.
+
+**Why:** The world goes on after the doors, and taking away a quest the team chose to leave open takes away a choice; each door's last quest already says what that world is for.
+
+## Open
+
+Nothing is open.
