@@ -1,0 +1,217 @@
+{
+  "biomes": "#wayfarer:has_structure/hall/lost",
+  "layout": {
+    "cover": 3,
+    "door": [
+      12,
+      2,
+      28
+    ]
+  },
+  "pieces": {
+    "entrance": "wayfarer:hall/lost/entrance",
+    "hall": "wayfarer:hall/lost/hall"
+  },
+  "shaft": {
+    "landing": [
+      {
+        "Name": "minecraft:cobbled_deepslate"
+      },
+      {
+        "Name": "minecraft:cobbled_deepslate"
+      },
+      {
+        "Name": "minecraft:cobbled_deepslate"
+      },
+      {
+        "Name": "minecraft:cobbled_deepslate"
+      },
+      {
+        "Name": "minecraft:cobbled_deepslate"
+      },
+      {
+        "Name": "minecraft:cobbled_deepslate"
+      },
+      {
+        "Name": "minecraft:cobbled_deepslate"
+      },
+      {
+        "Name": "minecraft:gravel"
+      },
+      {
+        "Name": "minecraft:gravel"
+      },
+      {
+        "Name": "minecraft:gravel"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      },
+      {
+        "Name": "minecraft:andesite"
+      },
+      {
+        "Name": "minecraft:andesite"
+      },
+      {
+        "Name": "minecraft:coarse_dirt"
+      },
+      {
+        "Name": "minecraft:coarse_dirt"
+      }
+    ],
+    "light": {
+      "Name": "minecraft:waxed_exposed_copper_bulb",
+      "Properties": {
+        "lit": "true"
+      }
+    },
+    "pillar": [
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:stripped_spruce_log"
+      },
+      {
+        "Name": "minecraft:spruce_log"
+      },
+      {
+        "Name": "minecraft:spruce_log"
+      },
+      {
+        "Name": "minecraft:spruce_log"
+      },
+      {
+        "Name": "minecraft:spruce_log"
+      },
+      {
+        "Name": "minecraft:spruce_log"
+      },
+      {
+        "Name": "minecraft:spruce_log"
+      }
+    ],
+    "stairs": {
+      "Name": "minecraft:cobbled_deepslate_stairs"
+    },
+    "style": "switchback",
+    "wall": [
+      {
+        "Name": "minecraft:stone"
+      },
+      {
+        "Name": "minecraft:stone"
+      },
+      {
+        "Name": "minecraft:stone"
+      },
+      {
+        "Name": "minecraft:stone"
+      },
+      {
+        "Name": "minecraft:stone"
+      },
+      {
+        "Name": "minecraft:stone"
+      },
+      {
+        "Name": "minecraft:andesite"
+      },
+      {
+        "Name": "minecraft:andesite"
+      },
+      {
+        "Name": "minecraft:andesite"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      },
+      {
+        "Name": "minecraft:cobblestone"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:cobbled_deepslate"
+      },
+      {
+        "Name": "minecraft:cobbled_deepslate"
+      },
+      {
+        "Name": "minecraft:deepslate"
+      },
+      {
+        "Name": "minecraft:deepslate"
+      },
+      {
+        "Name": "minecraft:mossy_cobblestone"
+      }
+    ]
+  },
+  "spawn_overrides": {},
+  "step": "underground_structures",
+  "terrain_adaptation": "none",
+  "type": "wayfarer:hall"
+}

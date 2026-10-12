@@ -37,7 +37,7 @@ public enum Graphics {
         Balance.Graphics steps = Balance.get().graphics();
         Minecraft.getInstance().options.renderDistance().set(steps.renderChunks().get(step.ordinal()));
         if (ModList.get().isLoaded(FAR_VIEW)) {
-            FarViewSetting.set(steps.farViewChunks().get(step.ordinal()));
+            FarViewSetting.set(steps.farViewChunks().get(step.ordinal()), steps.farViewThreads().get(step.ordinal()));
         }
         if (ModList.get().isLoaded(SHADERS)) {
             ShaderProfile.choose(steps.profiles().get(step.ordinal()));

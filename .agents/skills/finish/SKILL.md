@@ -77,7 +77,7 @@ The user sees the work through `gallery/`, which git keeps, so a commit shows wh
 | `screen` | A screen over the world, such as the journal, one PNG at interface scale 3 (`<id>.png`) |
 | `hud` | The world with the HUD as the player sees it, one JPEG at scale 3 (`<id>.jpg`) |
 | `views` | Everything the steps put in the workshop, from the front, the side, above and three-quarters (`<id>/<side>.jpg`) |
-| `tour` | A shrine or the Last Camp (`subject`) through the tour's cameras (`<id>/<camera>.jpg`) |
+| `tour` | A hall or the Last Camp (`subject`) through the tour's cameras (`<id>/<camera>.jpg`) |
 
 One shot of each screen layout and HUD element also lists `scales = [2, 3, 4]` and is taken at each of those interface scales (`<id>-2.png` and so on), so the gallery shows once that the layout fits at every size; every other shot of it is one picture at scale 3. A folder holds two or more pictures: a shot that would stand alone in one takes the folder's name as its `id` instead.
 
@@ -89,7 +89,7 @@ Every change to something a player sees adds or updates its shots, one for each 
 | The journal's frame, ribbons or list | `journal` |
 | One HUD element | The `hud` shots that show it |
 | A creature, block, item or model | Its `views` shot |
-| A shrine or the Last Camp | Its `tour` shot |
+| A hall or the Last Camp | Its `tour` shot |
 | A story line or step | The shots at the states that show it |
 | The stamp (`style.toml`, the fonts, its sprites) | Every screen and HUD shot |
 | Code, data or text no screen shows; tools, tests, documents | Nothing |

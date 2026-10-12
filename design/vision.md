@@ -13,9 +13,9 @@ Each hour you walk from camp to camp on a road that keeps offering something (pe
 The pack ships as a journey to twelve eye shards, and it bores:
 
 - **One verb, twelve times.** The only goal is the next shard, reached the same way each time: follow the ember for about 19 minutes on foot (a 5,000 block leg, tier one) or about 31 (8,000 blocks, tier two), take a stair down, take the shard, read two pages. About five hours of straight-line walking in all.
-- **The road asks nothing.** Nothing between two shrines needs anything from the player, so better gear has nothing to answer.
+- **The road asks nothing.** Nothing between two halls needs anything from the player, so better gear has nothing to answer.
 - **The quest book is a checklist.** 52 of its 63 quests are "have item X", and most pay XP levels.
-- **The story waits at the end of the walk.** It comes as book pages at the pedestal and one talk a day at the fire.
+- **The story waits at the end of the walk.** It comes as book pages at the calling stone and one talk a day at the fire.
 
 ## Ground truths
 
@@ -26,7 +26,7 @@ What every decision here and in later phases has to respect.
 3. **A gate sends you somewhere.** Whatever opens a way comes from another place on the map, never from grinding in one spot, which the ember's stillness rule punishes anyway.
 4. **Story and play decide each other.** Every mechanic needs a reason in the lore, and every story beat needs something to do.
 5. **One to four players, and alone as often as not.** About half the players play alone, so everything is built for one player first and works the same for a team of up to four: a team shares one ember, singleplayer behaves like a server, and every quest, fight, vote and twist works for one as well as for four.
-6. **What ships is a toolbox.** The ember, nights, stillness, fire, tents, the compass, the shrines and the generator each get a verdict in phase 3; none is kept for having been built.
+6. **What ships is a toolbox.** The ember, nights, stillness, fire, tents, the compass, the halls and the generator each get a verdict in phase 3; none is kept for having been built.
 7. **Fun is found in play.** Act 1 is built and played before the other acts are written in detail.
 8. **Minecraft is the base plate.** The pack is designed the way The Witcher, GTA or Cyberpunk would design it, not the way vanilla plays: anything missing is added with a mod found or written, a mod that does not fit is changed or removed, and anything in the way is taken out of vanilla or the mods, from caves to the endless world. What vanilla cannot do only says what a thing costs to build, never whether it is in.
 
@@ -333,10 +333,10 @@ What opens the closed doors, the shards' part and the world after each door are 
 
 ### D10 The shards: twelve fates, and not all of them taken
 
-- The ember still leads to twelve hidden halls, but what is in a hall starts its main quest instead of ending it. Every shard has met its own fate since the breaking, and no two are found the same way: one still waits behind a seal, one was taken by the Gazebound, two lie on one pedestal, one has grown into a beast that sees, one warms a living people's children.
+- The ember still leads to twelve hidden halls, but what is in a hall starts its main quest instead of ending it. Every shard has met its own fate since the breaking, and no two are found the same way: one still waits behind a seal, one was taken by the Gazebound, two lie on one calling stone, one has grown into a beast that sees, one warms a living people's children.
 
   ```text
-  The ember draws you down a stair under a dead oak. The pedestal is cracked and bare.
+  The ember draws you down a stair under a dead oak. The calling stone is cracked and bare.
   Scratched into the lectern: "Taken north by the Salt Folk, to warm their children. Forgive us."
   [Main] The Salt Road - the caravan that carries it, north of the dry lake
   ```

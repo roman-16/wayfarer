@@ -82,7 +82,7 @@ hash = "00fd7cd1cc4dc55a9cedad03e7942c738011e90ceebc8604ba29888be52d02ee"
 
 [[files]]
 file = "config/defaultoptions/keybindings.txt"
-hash = "2aed16732ac8260e7987a02c395a040475f0a959e53e9699099a28cf5e740ca2"
+hash = "1488305f42b8fdb1daf40d47d7f36d242f58331d099b1b0435275f66d442dc8d"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
@@ -142,11 +142,11 @@ hash = "55af2f0e56f3dbce98b158543e375f9cffd7c3233311f15c57fe66bc347bc4f4"
 
 [[files]]
 file = "config/jade/jade.json"
-hash = "e47ed5f9ce7f86575224e3475a6afa607ee8e60503293c82e0451feffade4dc4"
+hash = "c3fa9fcfa893305388cd2659d95257c1fc53196761ed06051bd444971ff7bba2"
 
 [[files]]
 file = "config/jade/plugins.json"
-hash = "2ea17f07c1e0ac86f1e325a160a8503652fbe8a1f1c3226a29ae0bf7173032d8"
+hash = "28be28d88022dd91981ce243d63b7e743f83372fe0de162dd061ee47f414ff7e"
 
 [[files]]
 file = "config/kiwi-client.yaml"
@@ -193,6 +193,10 @@ file = "config/silentgear-common.toml"
 hash = "2416be04d3f29cde1e428e3f34deed8c59ee527253d0b25b11a0dcc8de22c760"
 
 [[files]]
+file = "config/simplyswords/loot.toml"
+hash = "7e0203de5c0d20913fc1485b0872a9d1ae33e0af411caade3ed776462a39410d"
+
+[[files]]
 file = "config/sodium-options.json"
 hash = "d8c6c5843af8a5ebd1f2ef3f853ba4045a1dde73a0648765e4d0b254122a3790"
 
@@ -206,7 +210,11 @@ hash = "b2ce9644c74ba7c36ce239b281ac1193e1db015f1546e5faaf17cf54b47d0d4c"
 
 [[files]]
 file = "config/sparsestructures.json5"
-hash = "2d9497885d1d19e22ef3b9bb9add6b9768c10f93c847c7eafc3a3e79f0d6b27a"
+hash = "5b1408ff2d4bc43a27dc6d05b3dee196f6cbef127ed3e74f1e48ddc5c7d304d0"
+
+[[files]]
+file = "config/spyglass-improvements/settings.json"
+hash = "02782990a801ccaca00739e58ff6c026a2f84925f8490c26e4a12c11dda33c6b"
 
 [[files]]
 file = "config/streamsreflowing-common.toml"
@@ -231,6 +239,10 @@ hash = "45c7e32ed5789e958f102422f029beab1007b5f02d0359c3c9fbbd1e02f820c2"
 [[files]]
 file = "config/travelerstitles-neoforge-1_21.toml"
 hash = "50ea5ddc9894b778fd39f550b4f2cbbcd4515e35d2cf615bd4176f7af2b653bd"
+
+[[files]]
+file = "config/treechop-client.toml"
+hash = "bdf7a496677d9b8fab9f8cbb8655d9f7dce1ef65057783f5aa74157739710e2a"
 
 [[files]]
 file = "config/voicechat/voicechat-client.properties"
@@ -368,6 +380,11 @@ metafile = true
 [[files]]
 file = "mods/corgilib.pw.toml"
 hash = "2b8c5286980b8d864085d02a6b2153cefa401a965833139ffac8e7661a322f7c"
+metafile = true
+
+[[files]]
+file = "mods/coroutil.pw.toml"
+hash = "d901f874a1e09747b8d0d072c38c426eceead1f29c8ba36680f8f0082996b152"
 metafile = true
 
 [[files]]
@@ -911,6 +928,11 @@ hash = "6d22056366c7d5e3a8a79a8549a4b7209702d021590d8b3003de525f1bf29a63"
 metafile = true
 
 [[files]]
+file = "mods/spyglass-improvements.pw.toml"
+hash = "03c32079e39cf21efb8d0b5f0d24f004b9221c1455d460fdcb621821f7285239"
+metafile = true
+
+[[files]]
 file = "mods/streams-reflowing.pw.toml"
 hash = "edfee65caf18a07742eee36865643bd63d071a4419b8c0f6452980228dea8e65"
 metafile = true
@@ -981,6 +1003,11 @@ hash = "01cab903b1a7f77aa4f28c7fab24e7fa09b376b18c77b487b7ba34e0afc57813"
 metafile = true
 
 [[files]]
+file = "mods/treechop.pw.toml"
+hash = "da1c1cf28e8d5ffe377998d29d59eae29a2020f2de7a0aea7f7253acdc695cfd"
+metafile = true
+
+[[files]]
 file = "mods/trek.pw.toml"
 hash = "856519bd5d0f0736c86a2ebbc833b8499075be4b1d6613988f4e5104ba2d9a32"
 metafile = true
@@ -1001,8 +1028,8 @@ hash = "2dad5577c5ec5e73bb3d5cec8da606e3b72e384207c9291a25e1ae96fd20bb70"
 metafile = true
 
 [[files]]
-file = "mods/when-dungeons-arise.pw.toml"
-hash = "485906ff55a5d6ad06070abb80663d6adadc3e4b32f8b52240d8596e7aaef9fa"
+file = "mods/what-are-they-up-to.pw.toml"
+hash = "9ce52d07c0c3d146a2a44f8bc187138ce7a5558a4e3ab540c86234702b6de274"
 metafile = true
 
 [[files]]
@@ -1089,6 +1116,10 @@ metafile = true
 file = "resourcepacks/fresh-animations.pw.toml"
 hash = "6a1556a0e4fcb411b33efafc3382b4abd9a6e671f140dc0d42e9aad2808e24f3"
 metafile = true
+
+[[files]]
+file = "shaderpacks/ComplementaryReimagined_r5.9.3 + EuphoriaPatches_1.10.5.txt"
+hash = "7ca6e469bf7c2fbb9beacf89369bdc9b5649a19c28fb7677aa032580d421f7cc"
 
 [[files]]
 file = "shaderpacks/complementary-reimagined.pw.toml"

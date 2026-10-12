@@ -1268,7 +1268,6 @@
               "text": "Hold out your hand."
             },
             {
-              "sound": "ember_given",
               "text": "He presses something into your palm: a coal no bigger than a thumb, grey and cold as a stone."
             },
             {
@@ -1618,7 +1617,8 @@
             {
               "by": "tamsin",
               "names": [
-                "tamsin"
+                "tamsin",
+                "tollbridge"
               ],
               "text": "Tamsin. I was Tollbridge's elder. It stood three hundred years. One night."
             },
@@ -1931,19 +1931,13 @@
             "tamsin": "She made me their scout: I walk ahead, and they follow my marks."
           },
           "reward": {
-            "claimed": "You take Hob's patterns: one for every tool he makes, and one for its rod.",
+            "claimed": "You take Hob's patterns: one for every tool he makes.",
             "items": [
               {
                 "id": "silentgear:axe_blueprint"
               },
               {
-                "id": "silentgear:hoe_blueprint"
-              },
-              {
                 "id": "silentgear:pickaxe_blueprint"
-              },
-              {
-                "id": "silentgear:rod_blueprint"
               },
               {
                 "id": "silentgear:shovel_blueprint"
@@ -9403,6 +9397,12 @@
       "id": "the_cache",
       "kind": "side",
       "steps": [
+        {
+          "id": "the_old_camp",
+          "kind": "reach",
+          "objective": "Go and look at the old camp.",
+          "place": "cache"
+        },
         {
           "clues": [
             {

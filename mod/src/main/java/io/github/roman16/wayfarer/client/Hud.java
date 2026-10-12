@@ -18,8 +18,12 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -32,6 +36,7 @@ public final class Hud {
     private static final String[] HEAT = {"guttering", "fading", "listening", "glowing", "flaring"};
     private static final String[] NUMERALS = {"", "I", "II", "III"};
     private static final int BAR_CELLS = 8;
+    private static final int FACE = 8;
     private static final int CELL_WIDTH = 4;
     private static final int CELL_HEIGHT = 6;
     private static final int HALF_WIDTH = 90;
@@ -149,6 +154,10 @@ public final class Hud {
         graphics.pose().popPose();
     }
 
+    private static String ember = "";
+    private static long emberAt;
+    private static long sensedAt = Long.MIN_VALUE / 2;
+
     private record Run(Component text, int color) {}
 
     private record Urgent(List<Run> runs, float meter, @Nullable Component after) {}
@@ -163,7 +172,7 @@ public final class Hud {
         if (HudState.night.sleepless()) {
             return new Urgent(List.of(new Run(Component.translatable("wayfarer.night.title"), Stamp.DANGER)), -1, null);
         }
-        if (!compass) {
+        if (!compass || !lingers(reading)) {
             return null;
         }
         return switch (reading.mode()) {
@@ -172,6 +181,20 @@ public final class Hud {
             case FAR -> new Urgent(List.of(new Run(Component.translatable("wayfarer.compass.ember"), Stamp.LABEL), new Run(Component.literal(" · "), Stamp.DIM),
                     new Run(Component.translatable("wayfarer.compass." + HEAT[reading.heat() + 2]), heatColor(reading.heat()))), -1, null);
         };
+    }
+
+    public static void sensed() {
+        sensedAt = Util.getMillis();
+    }
+
+    private static boolean lingers(CompassPayload reading) {
+        long now = Util.getMillis();
+        String shown = reading.mode() + ":" + reading.heat();
+        if (!shown.equals(ember)) {
+            ember = shown;
+            emberAt = now;
+        }
+        return now - emberAt < Stamp.LINGER_MILLIS || now - sensedAt < Stamp.LINGER_MILLIS;
     }
 
     private static String caption(CompassPayload.Mode mode) {
@@ -402,7 +425,7 @@ public final class Hud {
         ResourceLocation hallowed = switch (reading.shelter()) {
             case FIRE -> Stamp.compass("fire");
             case NONE -> null;
-            case SHRINE -> Stamp.compass("hall");
+            case HALL -> Stamp.compass("hall");
         };
         if (hallowed != null) {
             int cap = center + BAND_SIDE - BAND_CAP;
@@ -416,13 +439,16 @@ public final class Hud {
         return switch (marker.kind()) {
             case GOAL, LEAD -> Stamp.MARK_WIDTH;
             case GRAVE -> 5;
-            case TEAMMATE -> font.width(initial(marker));
+            case TEAMMATE -> FACE + 2;
             case TENT -> 7;
         };
     }
 
-    private static String initial(CompassPayload.Marker marker) {
-        return marker.name().isEmpty() ? "?" : marker.name().substring(0, 1).toUpperCase(Locale.ROOT);
+    private static void face(GuiGraphics graphics, String name, int x, int y) {
+        ClientPacketListener connection = Minecraft.getInstance().getConnection();
+        PlayerInfo info = connection == null ? null : connection.getPlayerInfo(name);
+        graphics.fill(x - 1, y - 1, x + FACE + 1, y + FACE + 1, Stamp.ramp("iron", 0));
+        PlayerFaceRenderer.draw(graphics, info == null ? DefaultPlayerSkin.getDefaultTexture() : info.getSkin().texture(), x, y, FACE);
     }
 
     private static void marker(GuiGraphics graphics, Font font, CompassPayload.Marker marker, float relative, int center, int y) {
@@ -436,7 +462,7 @@ public final class Hud {
         switch (marker.kind()) {
             case GOAL, LEAD -> Stamp.mark(graphics, x - Stamp.MARK_WIDTH / 2, y, false);
             case GRAVE -> Stamp.tinted(graphics, Stamp.compass("grave"), x - 2, y + 1, 5, 6, Stamp.BONE);
-            case TEAMMATE -> graphics.drawString(font, initial(marker), x - font.width(initial(marker)) / 2 + 1, y, Stamp.BONE, true);
+            case TEAMMATE -> face(graphics, marker.name(), x - FACE / 2, y - 1);
             case TENT -> Stamp.tinted(graphics, Stamp.compass("tent"), x - 3, y + 2, 7, 5, Stamp.BONE);
         }
     }

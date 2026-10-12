@@ -18,15 +18,15 @@ final class HallSite {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final String FAILED = "_failed";
     private final String prefix;
-    private final ResourceLocation shrine;
+    private final ResourceLocation hall;
     private final String goal;
     private final int act;
     @Nullable
     private CompletableFuture<Optional<BlockPos>> searching;
 
-    HallSite(String prefix, ResourceLocation shrine, String goal, int act) {
+    HallSite(String prefix, ResourceLocation hall, String goal, int act) {
         this.prefix = prefix;
-        this.shrine = shrine;
+        this.hall = hall;
         this.goal = goal;
         this.act = act;
     }
@@ -49,15 +49,15 @@ final class HallSite {
             return;
         }
         ServerLevel level = Engine.overworld(server);
-        Optional<Halls.Found> near = Halls.nearest(level, shrine, from);
+        Optional<HallSearch.Found> near = HallSearch.nearest(level, hall, from);
         if (near.isPresent()) {
             record(server, near.get());
             return;
         }
-        LOGGER.info("no {} grows within reach of {}; the quest looks for fitting ground to raise one", shrine, from.toShortString());
+        LOGGER.info("no {} grows within reach of {}; the quest looks for fitting ground to raise one", hall, from.toShortString());
         Balance.World world = Balance.get().world();
-        searching = Halls.ground(level, shrine, from, act == 2 ? world.homeBlocks() + world.seaBlocks() - world.shoreBlocks() : Balance.get().shrines().actThreeFromBlocks(),
-                act == 2 ? Balance.get().shrines().actThreeFromBlocks() : Balance.get().strongholds().radiusBlocks() + world.lastSeaPastRingBlocks(),
+        searching = HallSearch.ground(level, hall, from, act == 2 ? world.homeBlocks() + world.seaBlocks() - world.shoreBlocks() : Balance.get().halls().actThreeFromBlocks(),
+                act == 2 ? Balance.get().halls().actThreeFromBlocks() : Balance.get().strongholds().radiusBlocks() + world.lastSeaPastRingBlocks(),
                 progress.place(prefix + FAILED));
     }
 
@@ -69,25 +69,25 @@ final class HallSite {
             try {
                 site = searching.join();
             } catch (CompletionException failure) {
-                LOGGER.error("the search for ground to raise {} failed: {}", shrine, failure.getCause().toString());
+                LOGGER.error("the search for ground to raise {} failed: {}", hall, failure.getCause().toString());
                 searching = null;
                 return;
             }
             searching = null;
             if (site.isEmpty()) {
-                server.getPlayerList().broadcastSystemMessage(Component.literal("the search for ground to raise " + shrine + " failed: no fitting land within reach"),
+                server.getPlayerList().broadcastSystemMessage(Component.literal("the search for ground to raise " + hall + " failed: no fitting land within reach"),
                         false);
                 return;
             }
             progress.place(prefix + "_raise", site.get());
             progress.place(goal, site.get());
             progress.setDirty();
-            LOGGER.info("{} will be raised at {}", shrine, site.get());
+            LOGGER.info("{} will be raised at {}", hall, site.get());
         }
-        progress.place(prefix + "_raise").filter(site -> entrance(progress).isEmpty() && Halls.loaded(level, site)).ifPresent(site -> {
-            Halls.release(level, site);
+        progress.place(prefix + "_raise").filter(site -> entrance(progress).isEmpty() && HallSearch.loaded(level, site)).ifPresent(site -> {
+            HallSearch.release(level, site);
             try {
-                record(server, Halls.raise(level, shrine, site));
+                record(server, HallSearch.raise(level, hall, site));
             } catch (IllegalStateException failure) {
                 LOGGER.warn("{}; the quest looks for other ground", failure.getMessage());
                 progress.place(prefix + FAILED, site);
@@ -102,7 +102,7 @@ final class HallSite {
         searching = null;
     }
 
-    private void record(MinecraftServer server, Halls.Found found) {
+    private void record(MinecraftServer server, HallSearch.Found found) {
         Progress progress = Progress.of(server);
         BoundingBox box = found.box();
         progress.place(prefix + "_entrance", found.entrance());
@@ -110,7 +110,7 @@ final class HallSite {
         progress.place(prefix + "_box_low", new BlockPos(box.minX(), box.minY(), box.minZ()));
         progress.place(prefix + "_box_high", new BlockPos(box.maxX(), box.maxY(), box.maxZ()));
         progress.setDirty();
-        LOGGER.info("{} is at {}, its way down at {}", shrine, box, found.entrance());
+        LOGGER.info("{} is at {}, its way down at {}", hall, box, found.entrance());
         Journal.syncAll(server);
     }
 }

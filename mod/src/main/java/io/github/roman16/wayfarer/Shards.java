@@ -65,10 +65,10 @@ public final class Shards {
         }
     }
 
-    private static ItemStack shard(ResourceLocation shrine) {
-        ItemStack shard = new ItemStack(Shrines.eye(shrine));
+    private static ItemStack shard(ResourceLocation hall) {
+        ItemStack shard = new ItemStack(Halls.eye(hall));
         List<Component> lore = new ArrayList<>();
-        gift(Shrines.eyeKey(shrine)).ifPresent(gift -> lore.add(Component.translatable("wayfarer.gift." + gift).withStyle(ChatFormatting.GOLD)));
+        gift(Halls.eyeKey(hall)).ifPresent(gift -> lore.add(Component.translatable("wayfarer.gift." + gift).withStyle(ChatFormatting.GOLD)));
         shard.set(DataComponents.LORE, new ItemLore(lore));
         return shard;
     }
@@ -93,8 +93,8 @@ public final class Shards {
                 }
             }
         });
-        for (ResourceLocation shrine : claimed) {
-            AdvancementHolder advancement = player.server.getAdvancements().get(Wayfarer.id("shards/" + Shrines.eyeKey(shrine)));
+        for (ResourceLocation hall : claimed) {
+            AdvancementHolder advancement = player.server.getAdvancements().get(Wayfarer.id("shards/" + Halls.eyeKey(hall)));
             if (advancement != null && !player.getAdvancements().getOrStartProgress(advancement).isDone()) {
                 player.getAdvancements().award(advancement, TAKEN);
             }

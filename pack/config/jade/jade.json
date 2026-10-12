@@ -36,10 +36,7 @@
     "overlayPosY": 0.99
   },
   "formatting": {
-    "itemModNameStyle": {
-      "italic": true,
-      "color": "blue"
-    }
+    "itemModNameStyle": {}
   },
   "history": {
     "themesHash": -328442023

@@ -18,12 +18,14 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.DecoratedPotBlock;
 import net.minecraft.world.level.block.piston.PistonStructureResolver;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityMobGriefingEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -78,7 +80,7 @@ public final class Wards {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onBreak(BlockEvent.BreakEvent event) {
         if (!event.getPlayer().isCreative() && !Graves.grave(event.getState())) {
             at(event.getLevel(), event.getPos()).ifPresent(ward -> {
@@ -108,6 +110,18 @@ public final class Wards {
             at(event.getLevel(), event.getPos()).ifPresent(ward -> {
                 event.setCanceled(true);
                 refuse(event.getPlayer(), ward);
+            });
+        }
+    }
+
+    @SubscribeEvent
+    public static void onUseBlock(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getEntity() instanceof ServerPlayer player && !player.isCreative() && !event.getItemStack().isEmpty()
+                && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof DecoratedPotBlock) {
+            at(event.getLevel(), event.getPos()).ifPresent(ward -> {
+                event.setCanceled(true);
+                event.setCancellationResult(InteractionResult.FAIL);
+                refuse(player, ward);
             });
         }
     }

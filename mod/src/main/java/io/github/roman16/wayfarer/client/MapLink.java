@@ -14,8 +14,11 @@ import journeymap.api.v2.common.JourneyMapPlugin;
 import journeymap.client.JourneymapClient;
 import journeymap.client.properties.CoreProperties;
 import journeymap.client.ui.UIManager;
+import journeymap.client.ui.fullscreen.Fullscreen;
 import journeymap.common.Journeymap;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -60,6 +63,10 @@ public final class MapLink implements IClientPlugin {
                 LOGGER.error("JourneyMap refused the place {}", place, exception);
             }
         }
+    }
+
+    static boolean shown(Screen screen) {
+        return screen instanceof Fullscreen && !(screen.getFocused() instanceof EditBox);
     }
 
     static void open() {

@@ -73,6 +73,7 @@ public final class Stamp {
     public static final int FAINT = alpha("faint");
     public static final int KINDLE_MILLIS = TOKENS.getAsJsonObject("motion").get("kindle").getAsInt();
     public static final int BURN_OUT_MILLIS = TOKENS.getAsJsonObject("motion").get("burn_out").getAsInt();
+    public static final int LINGER_MILLIS = TOKENS.getAsJsonObject("motion").get("linger").getAsInt();
 
     private Stamp() {
     }
@@ -115,6 +116,19 @@ public final class Stamp {
 
     public static int ramp(String ramp, int shade) {
         return OPAQUE | Integer.parseInt(TOKENS.getAsJsonObject("ramps").getAsJsonArray(ramp).get(shade).getAsString().substring(1), 16);
+    }
+
+    public static int speaker(String tone) {
+        JsonElement token = TOKENS.getAsJsonObject("speakers").get(tone);
+        if (token == null) {
+            return GOLD;
+        }
+        String value = token.getAsString();
+        if (value.startsWith("#")) {
+            return OPAQUE | Integer.parseInt(value.substring(1), 16);
+        }
+        int dot = value.indexOf('.');
+        return dot < 0 ? text(value) : ramp(value.substring(0, dot), Integer.parseInt(value.substring(dot + 1)));
     }
 
     public static JsonObject tokens() {

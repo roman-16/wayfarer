@@ -2,9 +2,13 @@ package io.github.roman16.wayfarer.client.stamp;
 
 import io.github.roman16.wayfarer.Wayfarer;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 public final class Tooltips {
     private static final int MARGIN = 4;
@@ -12,6 +16,14 @@ public final class Tooltips {
     private static final int SINGLE_LINE = -2;
 
     private Tooltips() {
+    }
+
+    public static void maker(ItemTooltipEvent event) {
+        if (!event.getItemStack().isEmpty() && Screen.hasShiftDown()) {
+            String namespace = BuiltInRegistries.ITEM.getKey(event.getItemStack().getItem()).getNamespace();
+            String name = ModList.get().getModContainerById(namespace).map(mod -> mod.getModInfo().getDisplayName()).orElse(namespace);
+            event.getToolTip().add(Component.literal(name).withColor(Stamp.rgb(Stamp.QUIET)));
+        }
     }
 
     public static void color(RenderTooltipEvent.Color event) {

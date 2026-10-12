@@ -217,9 +217,9 @@ public final class WayfarerTests {
     @GameTest(template = "empty")
     public static void eachEyeOnce(GameTestHelper helper) {
         Journey progress = new Journey();
-        check(helper, progress.claim(Wayfarer.id("shrine/test")), "the first claim takes the eye");
-        check(helper, !progress.claim(Wayfarer.id("shrine/test")), "the second claim finds the shrine spent");
-        check(helper, progress.claim(Wayfarer.id("shrine/second")), "a second shrine adds a second shard");
+        check(helper, progress.claim(Wayfarer.id("hall/test")), "the first claim takes the eye");
+        check(helper, !progress.claim(Wayfarer.id("hall/test")), "the second claim finds the hall spent");
+        check(helper, progress.claim(Wayfarer.id("hall/second")), "a second hall adds a second shard");
         check(helper, progress.end() && !progress.end(), "the gaze ends once");
         check(helper, progress.wake() && !progress.wake(), "the world's ember wakes once");
         helper.succeed();

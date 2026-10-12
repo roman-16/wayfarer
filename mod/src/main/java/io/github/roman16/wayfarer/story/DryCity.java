@@ -1,7 +1,7 @@
 package io.github.roman16.wayfarer.story;
 
 import com.mojang.logging.LogUtils;
-import io.github.roman16.wayfarer.ShrinePedestalBlockEntity;
+import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +20,7 @@ final class DryCity {
     static final String STONE = "dry_stone";
     private static final String SEEN = "vision_seen";
     private static final String UNTIL = "vision_until";
-    private static final HallSite SITE = new HallSite(NAME, Wayfarer.id("shrine/exotic"), NAME, 2);
+    private static final HallSite SITE = new HallSite(NAME, Wayfarer.id("hall/exotic"), NAME, 2);
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final double AROUND = 1.5;
     private static final int TICKS_PER_SECOND = 20;
@@ -46,27 +46,27 @@ final class DryCity {
         SITE.tick(server);
         Progress progress = Progress.of(server);
         ServerLevel level = Engine.overworld(server);
-        SITE.entrance(progress).filter(top -> progress.place(STONE).isEmpty() && Halls.loaded(level, top)).ifPresent(top -> {
-            BlockPos stone = Halls.stone(level, SITE.low(progress).orElseThrow(), SITE.high(progress).orElseThrow()).orElse(top);
-            if (level.getBlockEntity(stone) instanceof ShrinePedestalBlockEntity pedestal) {
-                pedestal.hold(Optional.empty());
+        SITE.entrance(progress).filter(top -> progress.place(STONE).isEmpty() && HallSearch.loaded(level, top)).ifPresent(top -> {
+            BlockPos stone = HallSearch.stone(level, SITE.low(progress).orElseThrow(), SITE.high(progress).orElseThrow()).orElse(top);
+            if (level.getBlockEntity(stone) instanceof CallingStoneBlockEntity calling) {
+                calling.hold(Optional.empty());
             }
             progress.place(STONE, stone);
             progress.setDirty();
-            Halls.release(level, top);
+            HallSearch.release(level, top);
             LOGGER.info("the Drowned City's empty stone is at {}", stone);
         });
     }
 
-    static boolean touch(ServerPlayer player, BlockPos pedestal) {
+    static boolean touch(ServerPlayer player, BlockPos stone) {
         MinecraftServer server = player.server;
         for (Engine.Active active : Engine.active(server)) {
             Story.Step step = active.step();
             if (!step.kind().equals("vision") || !Steps.entered(active) || active.scratch().getBoolean(SEEN)
-                    || !Places.place(server, step.text("at")).filter(pedestal::equals).isPresent()) {
+                    || !Places.place(server, step.text("at")).filter(stone::equals).isPresent()) {
                 continue;
             }
-            see(server, active, pedestal);
+            see(server, active, stone);
             return true;
         }
         return false;

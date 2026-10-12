@@ -36,7 +36,7 @@ public record CompassPayload(
     public enum Shelter {
         FIRE,
         NONE,
-        SHRINE
+        HALL
     }
 
     public record Marker(Kind kind, String name, int x, int z) {}

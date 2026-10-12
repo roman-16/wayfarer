@@ -83,8 +83,8 @@ def cameras(subject):
     plan = json.loads(client.TOUR.read_text())
     if subject == "camp":
         return [camera["name"] for camera in plan["camp"]["cameras"]]
-    shrine = next(shrine for shrine in plan["shrines"] if shrine["eye"] == subject)
-    return [*client.SHAFT_CAMERAS, *(camera["name"] for camera in shrine["cameras"])]
+    hall = next(hall for hall in plan["halls"] if hall["eye"] == subject)
+    return [*client.SHAFT_CAMERAS, *(camera["name"] for camera in hall["cameras"])]
 
 
 def pictures(shot):

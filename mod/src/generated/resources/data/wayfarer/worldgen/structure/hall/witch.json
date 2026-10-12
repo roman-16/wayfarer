@@ -1,0 +1,217 @@
+{
+  "biomes": "#wayfarer:has_structure/hall/witch",
+  "layout": {
+    "cover": 3,
+    "door": [
+      6,
+      2,
+      12
+    ]
+  },
+  "pieces": {
+    "entrance": "wayfarer:hall/witch/entrance",
+    "hall": "wayfarer:hall/witch/hall"
+  },
+  "shaft": {
+    "landing": [
+      {
+        "Name": "minecraft:packed_mud"
+      },
+      {
+        "Name": "minecraft:packed_mud"
+      },
+      {
+        "Name": "minecraft:packed_mud"
+      },
+      {
+        "Name": "minecraft:packed_mud"
+      },
+      {
+        "Name": "minecraft:packed_mud"
+      },
+      {
+        "Name": "minecraft:packed_mud"
+      },
+      {
+        "Name": "minecraft:mud_bricks"
+      },
+      {
+        "Name": "minecraft:mud_bricks"
+      },
+      {
+        "Name": "minecraft:mud_bricks"
+      },
+      {
+        "Name": "minecraft:muddy_mangrove_roots"
+      },
+      {
+        "Name": "minecraft:muddy_mangrove_roots"
+      },
+      {
+        "Name": "minecraft:muddy_mangrove_roots"
+      },
+      {
+        "Name": "minecraft:mud"
+      },
+      {
+        "Name": "minecraft:mud"
+      },
+      {
+        "Name": "minecraft:mud"
+      },
+      {
+        "Name": "minecraft:rooted_dirt"
+      },
+      {
+        "Name": "minecraft:rooted_dirt"
+      },
+      {
+        "Name": "minecraft:moss_block"
+      },
+      {
+        "Name": "minecraft:moss_block"
+      },
+      {
+        "Name": "minecraft:moss_block"
+      }
+    ],
+    "light": {
+      "Name": "minecraft:waxed_exposed_copper_bulb",
+      "Properties": {
+        "lit": "true"
+      }
+    },
+    "pillar": [
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:mangrove_log"
+      },
+      {
+        "Name": "minecraft:stripped_mangrove_log"
+      },
+      {
+        "Name": "minecraft:stripped_mangrove_log"
+      },
+      {
+        "Name": "minecraft:stripped_mangrove_log"
+      },
+      {
+        "Name": "minecraft:stripped_mangrove_log"
+      },
+      {
+        "Name": "minecraft:stripped_mangrove_log"
+      },
+      {
+        "Name": "minecraft:stripped_mangrove_log"
+      }
+    ],
+    "stairs": {
+      "Name": "minecraft:mud_brick_stairs"
+    },
+    "style": "ladder",
+    "wall": [
+      {
+        "Name": "minecraft:mud_bricks"
+      },
+      {
+        "Name": "minecraft:mud_bricks"
+      },
+      {
+        "Name": "minecraft:mud_bricks"
+      },
+      {
+        "Name": "minecraft:mud_bricks"
+      },
+      {
+        "Name": "minecraft:mud_bricks"
+      },
+      {
+        "Name": "minecraft:mud_bricks"
+      },
+      {
+        "Name": "minecraft:mud_bricks"
+      },
+      {
+        "Name": "minecraft:packed_mud"
+      },
+      {
+        "Name": "minecraft:packed_mud"
+      },
+      {
+        "Name": "minecraft:packed_mud"
+      },
+      {
+        "Name": "minecraft:packed_mud"
+      },
+      {
+        "Name": "minecraft:muddy_mangrove_roots"
+      },
+      {
+        "Name": "minecraft:muddy_mangrove_roots"
+      },
+      {
+        "Name": "minecraft:muddy_mangrove_roots"
+      },
+      {
+        "Name": "minecraft:mud"
+      },
+      {
+        "Name": "minecraft:mud"
+      },
+      {
+        "Name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "Name": "minecraft:mossy_cobblestone"
+      },
+      {
+        "Name": "minecraft:dirt"
+      },
+      {
+        "Name": "minecraft:dirt"
+      }
+    ]
+  },
+  "spawn_overrides": {},
+  "step": "underground_structures",
+  "terrain_adaptation": "none",
+  "type": "wayfarer:hall"
+}

@@ -6,8 +6,8 @@ import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Camps;
-import io.github.roman16.wayfarer.ShrinePedestalBlockEntity;
-import io.github.roman16.wayfarer.Shrines;
+import io.github.roman16.wayfarer.CallingStoneBlockEntity;
+import io.github.roman16.wayfarer.Halls;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -84,7 +84,7 @@ public final class Frost {
     private static final String PRINTS = "frost_prints";
     private static final String SLEEPER = "sleeper";
     private static final String GREY_COAT = "grey_coat";
-    private static final ResourceLocation COLD = Wayfarer.id("shrine/cold");
+    private static final ResourceLocation COLD = Wayfarer.id("hall/cold");
     private static final ResourceLocation HOUSE_TEMPLATE = Wayfarer.id("frost/house");
     private static final ResourceLocation LAKE_TEMPLATE = Wayfarer.id("frost/lake");
     private static final String[] DEAD = {"frost_dead_01", "frost_dead_02", "frost_dead_03", "frost_dead_04", "frost_dead_05", "frost_dead_06",
@@ -493,7 +493,7 @@ public final class Frost {
         Camps.build(level, LAKE_TEMPLATE, origin, turn);
         StructurePlaceSettings settings = Camps.settings(level, LAKE_TEMPLATE, turn);
         BlockPos shore = origin.offset(StructureTemplate.calculateRelativePosition(settings, local(plan.getAsJsonArray("shore"))));
-        BlockPos stone = origin.offset(StructureTemplate.calculateRelativePosition(settings, local(plan.getAsJsonArray("pedestal"))));
+        BlockPos stone = origin.offset(StructureTemplate.calculateRelativePosition(settings, local(plan.getAsJsonArray("stone"))));
         progress.place(LAKE_ORIGIN, origin);
         progress.place(LAKE, shore);
         progress.place(LAKE_STONE, stone);
@@ -657,8 +657,8 @@ public final class Frost {
             return false;
         }
         BlockPos stone = progress.place(STONE).orElseThrow();
-        if (dream.getBlockEntity(stone) instanceof ShrinePedestalBlockEntity pedestal) {
-            pedestal.hold(Optional.of(COLD));
+        if (dream.getBlockEntity(stone) instanceof CallingStoneBlockEntity calling) {
+            calling.hold(Optional.of(COLD));
         }
         BoundingBox shaft = BoundingBox.fromCorners(progress.place(SHAFT_LOW).orElseThrow(), progress.place(SHAFT_HIGH).orElseThrow());
         List<Dead> sleepers = dead(dream, box, stone, shaft);
@@ -700,7 +700,7 @@ public final class Frost {
         }
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.SUCCESS);
-        Shrines.openBook(player, COLD);
+        Halls.openBook(player, COLD);
     }
 
     static int top(Level level, int x, int z) {

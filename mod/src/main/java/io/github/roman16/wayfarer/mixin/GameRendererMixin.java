@@ -2,7 +2,7 @@ package io.github.roman16.wayfarer.mixin;
 
 import io.github.roman16.wayfarer.client.DarkSight;
 import io.github.roman16.wayfarer.client.DeepSight;
-import io.github.roman16.wayfarer.client.PedestalAim;
+import io.github.roman16.wayfarer.client.StoneAim;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,7 +22,7 @@ abstract class GameRendererMixin {
 
     @Inject(method = "pick(F)V", at = @At("TAIL"))
     private void wayfarer$aimAtEye(float partialTick, CallbackInfo info) {
-        PedestalAim.aim(minecraft, partialTick);
+        StoneAim.aim(minecraft, partialTick);
     }
 
     @Inject(method = "getNightVisionScale(Lnet/minecraft/world/entity/LivingEntity;F)F", at = @At("HEAD"), cancellable = true)

@@ -38,16 +38,16 @@ def sides():
             yield f"{meta.relative_to(ROOT)}: side is {side!r}; singleplayer runs the server inside the client, so a mod is either client or both"
 
 
-def shrine_eyes():
+def hall_eyes():
     return tomllib.loads((ROOT / "generator/eyes.toml").read_text())["eyes"]
 
 
 def eyes():
-    for eye, spec in sorted(shrine_eyes().items()):
+    for eye, spec in sorted(hall_eyes().items()):
         if not spec.get("lore") or not spec.get("people"):
             yield f"the {eye} eye has no people or lore in generator/eyes.toml"
-        if not (MOD / f"generated/resources/data/wayfarer/structure/shrine/{eye}/hall.nbt").exists():
-            yield f"the {eye} eye has no shrine; run just generate"
+        if not (MOD / f"generated/resources/data/wayfarer/structure/hall/{eye}/hall.nbt").exists():
+            yield f"the {eye} eye has no hall; run just generate"
 
 
 def translations():
@@ -61,7 +61,7 @@ def translations():
 def titles():
     lang = json.loads(LANG.read_text())
     shown = {key: text for key, text in lang.items() if key.startswith("wayfarer.night.")}
-    shown |= {f"the people of the {eye} eye": spec["people"] for eye, spec in shrine_eyes().items()}
+    shown |= {f"the people of the {eye} eye": spec["people"] for eye, spec in hall_eyes().items()}
     for key, text in sorted(shown.items()):
         limit = (
             TITLE_LIMIT
@@ -92,7 +92,7 @@ def story_books():
 
 def books():
     entries = story_books()
-    titles = [entry["title"] for entry in entries] + [spec["people"] for spec in shrine_eyes().values()]
+    titles = [entry["title"] for entry in entries] + [spec["people"] for spec in hall_eyes().values()]
     for title in titles:
         if len(title) > BOOK_TITLE_LIMIT:
             yield f"the book title {title!r} is {len(title)} characters; Minecraft allows {BOOK_TITLE_LIMIT}"

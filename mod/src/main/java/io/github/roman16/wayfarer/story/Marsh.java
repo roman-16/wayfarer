@@ -62,7 +62,7 @@ final class Marsh {
     private static final String ORIGIN = "marsh_origin";
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/marsh.json");
-    static final TagKey<Biome> SWAMPS = TagKey.create(Registries.BIOME, Wayfarer.id("has_structure/shrine/witch"));
+    static final TagKey<Biome> SWAMPS = TagKey.create(Registries.BIOME, Wayfarer.id("has_structure/hall/witch"));
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_marsh", Comparator.comparingLong(ChunkPos::toLong));
     private static final String[] PEOPLE = {"rue", "sedge", "tansy"};
     private static final String FISHER = "fisher";
@@ -218,7 +218,7 @@ final class Marsh {
         clear(level, hut.getBoundingBox(settings, rest));
         level(level, hall, settings, pool.getY());
         template(level, "marsh/way").placeInWorld(level, rest, rest, settings, level.random, FLAGS);
-        template(level, "shrine/witch/hall").placeInWorld(level, hall, hall, settings, level.random, FLAGS);
+        template(level, "hall/witch/hall").placeInWorld(level, hall, hall, settings, level.random, FLAGS);
         hut.placeInWorld(level, rest, rest, settings, level.random, FLAGS);
         progress.place(ORIGIN, hall);
         record(server, level, hall, settings, turn);
@@ -231,7 +231,7 @@ final class Marsh {
         Progress progress = Progress.of(server);
         JsonObject plan = PLAN.get();
         float yaw = turn.ordinal() * 90f;
-        progress.place(HALL, hall.offset(turned(settings, local(plan.getAsJsonArray("pedestal")))));
+        progress.place(HALL, hall.offset(turned(settings, local(plan.getAsJsonArray("stone")))));
         progress.place(CELLAR, world(server, "cellar"));
         for (String person : PEOPLE) {
             progress.place("seat_" + person, world(server, person));

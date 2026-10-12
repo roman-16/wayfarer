@@ -641,7 +641,7 @@ def layout(hall, carved):
         + [[x0 - 1, y, z0 + 1] for y in (CELLAR_FLOOR + 1, CELLAR_FLOOR + 2)],
         "marks": [[6 + bend(z), TUNNEL_FLOOR, z] for z in MARKS],
         "origin": list(LOW),
-        "pedestal": hall["pedestal"],
+        "stone": hall["stone"],
         "places": places(),
         "under": WATER - 1,
         "ward": {"from": list(LOW), "to": [HIGH[0], GROUND, HIGH[2]]},

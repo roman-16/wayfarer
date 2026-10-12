@@ -73,7 +73,7 @@ kind = "talk"
 lines = [
   { text = "He fumbles at his belt and holds out a closed fist. It shakes." },
   { by = "stranger", text = "Hold out your hand." },
-  { sound = "ember_given", text = "He presses something into your palm: a coal no bigger than a thumb, grey and cold as a stone." },
+  { text = "He presses something into your palm: a coal no bigger than a thumb, grey and cold as a stone." },
   { by = "stranger", names = [
     "ember",
   ], text = "That's an ember. Mine. It's been cold for years." },
@@ -291,6 +291,7 @@ lines = [
   { by = "agna", text = "You've seen them out there. They never take anything. They only open the chest." },
   { by = "tamsin", names = [
     "tamsin",
+    "tollbridge",
   ], text = "Tamsin. I was Tollbridge's elder. It stood three hundred years. One night." },
   { by = "pip", names = [
     "pip",
@@ -483,12 +484,10 @@ story = "Pip asked me to teach the way of a Wayfarer. I said it isn't like the s
 text = "It isn't like the stories."
 
 [quests.steps.reward]
-claimed = "You take Hob's patterns: one for every tool he makes, and one for its rod."
+claimed = "You take Hob's patterns: one for every tool he makes."
 items = [
   { id = "silentgear:axe_blueprint" },
-  { id = "silentgear:hoe_blueprint" },
   { id = "silentgear:pickaxe_blueprint" },
-  { id = "silentgear:rod_blueprint" },
   { id = "silentgear:shovel_blueprint" },
   { id = "silentgear:sword_blueprint" },
 ]
@@ -4961,6 +4960,12 @@ id = "the_cache"
 kind = "side"
 summary = "An old camp by the road, and the voice wants me to look at it. Somebody sat there too long."
 title = "The Cache"
+
+[[quests.steps]]
+id = "the_old_camp"
+kind = "reach"
+objective = "Go and look at the old camp."
+place = "cache"
 
 [[quests.steps]]
 done = [

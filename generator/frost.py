@@ -204,8 +204,8 @@ def lake():
         t.set((centre, y, centre), "minecraft:stone")
     t.set(
         (centre, stone, centre),
-        "wayfarer:shrine_pedestal",
-        entity={"id": "wayfarer:shrine_pedestal", "shrine": "wayfarer:shrine/cold"},
+        "wayfarer:calling_stone",
+        entity={"id": "wayfarer:calling_stone", "hall": "wayfarer:hall/cold"},
     )
     rock = (centre, LAKE_DEPTH, 0)
     for dx, dy in ((0, 0), (1, 0), (-1, 0), (0, 1)):
@@ -225,7 +225,7 @@ def positions():
             "size": list(HOUSE),
         },
         "lake": {
-            "pedestal": [centre, LAKE_DEPTH - ICE, centre],
+            "stone": [centre, LAKE_DEPTH - ICE, centre],
             "rim": [centre + 2, LAKE_DEPTH + 1, centre],
             "shore": [centre + 2, LAKE_DEPTH + 1, 1],
             "sign": [centre, LAKE_DEPTH, 1],

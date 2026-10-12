@@ -1,6 +1,7 @@
 package io.github.roman16.wayfarer.mixin;
 
 import com.mojang.serialization.Lifecycle;
+import io.github.roman16.wayfarer.WorldSetup;
 import io.github.roman16.wayfarer.client.Recap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.worldselection.CreateWorldScreen;
@@ -14,12 +15,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 abstract class WorldOpenFlowsMixin {
     @Inject(method = "openWorld", at = @At("HEAD"))
     private void wayfarer$recap(String world, Runnable onFail, CallbackInfo info) {
-        Recap.begin(Recap.WORLD + world);
+        Recap.begin(WorldSetup.id(Minecraft.getInstance().getLevelSource().getBaseDir().resolve(world)));
     }
 
     @Inject(method = {"createFreshLevel", "createLevelFromExistingSettings"}, at = @At("HEAD"))
     private void wayfarer$first(CallbackInfo info) {
-        Recap.begin(null);
+        Recap.begin("");
     }
 
     @Inject(method = "confirmWorldCreation", at = @At("HEAD"), cancellable = true)

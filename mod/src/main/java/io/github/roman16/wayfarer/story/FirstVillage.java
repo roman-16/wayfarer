@@ -7,7 +7,7 @@ import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Camps;
-import io.github.roman16.wayfarer.ShrinePedestalBlockEntity;
+import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -66,8 +66,8 @@ final class FirstVillage {
     private static final String RUINS_HIGH = "first_village_ruins_high";
     private static final String FOUNDER = "founder";
     private static final String RIDER = "rider";
-    private static final ResourceLocation EVIL = Wayfarer.id("shrine/evil");
-    private static final TagKey<Biome> PLAINS = TagKey.create(Registries.BIOME, Wayfarer.id("has_structure/shrine/evil"));
+    private static final ResourceLocation EVIL = Wayfarer.id("hall/evil");
+    private static final TagKey<Biome> PLAINS = TagKey.create(Registries.BIOME, Wayfarer.id("has_structure/hall/evil"));
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/first_village.json");
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_first_village", Comparator.comparingLong(ChunkPos::toLong));
@@ -318,8 +318,8 @@ final class FirstVillage {
             return false;
         }
         progress.place(GREEN).ifPresent(any -> green(dream, well));
-        if (dream.getBlockEntity(progress.place(STONE).orElseThrow()) instanceof ShrinePedestalBlockEntity pedestal) {
-            pedestal.hold(Optional.of(EVIL));
+        if (dream.getBlockEntity(progress.place(STONE).orElseThrow()) instanceof CallingStoneBlockEntity stone) {
+            stone.hold(Optional.of(EVIL));
         }
         BlockPos melt = progress.place(MELT).orElseThrow();
         dream.setBlock(melt, Blocks.LAVA_CAULDRON.defaultBlockState(), Block.UPDATE_ALL);

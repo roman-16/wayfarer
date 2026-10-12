@@ -41,8 +41,8 @@ public record Library(Map<String, Book> books, Map<ResourceLocation, String> peo
                 .map(Map.Entry::getKey).findFirst();
     }
 
-    public Optional<Book> people(ResourceLocation shrine) {
-        return Optional.ofNullable(people.get(shrine)).map(books::get);
+    public Optional<Book> people(ResourceLocation hall) {
+        return Optional.ofNullable(people.get(hall)).map(books::get);
     }
 
     private static Library load(JsonObject json) {

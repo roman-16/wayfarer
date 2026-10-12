@@ -152,7 +152,7 @@ public final class Nights {
             state.setDirty();
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 if (ModList.get().isLoaded(HORDES)) {
-                    command(server, "hordes stop " + player.getGameProfile().getName());
+                    Hordes.stop(player);
                 }
                 if (HORDE_MUSIC.equals(Music.looping(player))) {
                     Music.stop(player);

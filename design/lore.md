@@ -53,7 +53,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Why does the ember pull? | Light seeks its body. It does not feel shards from afar; it hears calling stones |
 | What does the ember show when I hold it up? | It is the Eye's light, and light is sight: held up, it shows for a moment what has passed by, tracks and traces and what was dropped |
 | Why does a fire fill the Flare again? | The Flare spends the ember's light all at once, and a fire, the ember's kin, fills it again |
-| What is a calling stone? | The pedestal of every hall. The first Wayfarers set it there, kin to their waystones, so Wayfarers could find the halls and look after them. Only an ember hears it: from afar it only flares when I walk towards the stone and gutters when I walk away; within about 256 blocks it knows its place |
+| What is a calling stone? | The calling stone of every hall. The first Wayfarers set it there, kin to their waystones, so Wayfarers could find the halls and look after them. Only an ember hears it: from afar it only flares when I walk towards the stone and gutters when I walk away; within about 256 blocks it knows its place |
 | Why does an empty hall still call? | The stone stays when the shard is gone, and it shows what happened there, because it saw |
 | What does a shard do in its hall? | It hallows the land around it, so the gaze cannot see there. The living peoples live on such land |
 | And outside a hall? | It shines, and draws the gaze |

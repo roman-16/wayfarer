@@ -92,16 +92,16 @@ def done(eye, room, door, **extra):
     return room, {"door": door, "shaft": shaft(eye, room)} | extra
 
 
-def shrine(room, eye, spec, pedestal, reading, facing):
+def calling_stone(room, eye, spec, stone, reading, facing):
     room.set(
-        pedestal,
-        "wayfarer:shrine_pedestal",
-        entity={"id": "wayfarer:shrine_pedestal"} | ({} if spec.get("empty") else {"shrine": f"wayfarer:shrine/{eye}"}),
+        stone,
+        "wayfarer:calling_stone",
+        entity={"id": "wayfarer:calling_stone"} | ({} if spec.get("empty") else {"hall": f"wayfarer:hall/{eye}"}),
     )
-    for y in range(pedestal[1] + 1, pedestal[1] + 4):
-        room.air((pedestal[0], y, pedestal[2]))
+    for y in range(stone[1] + 1, stone[1] + 4):
+        room.air((stone[0], y, stone[2]))
     lectern(room, reading, facing, f"people/{eye}", spec["people"], spec["people"], spec["lore"])
-    for x, _, z in (pedestal, reading):
+    for x, _, z in (stone, reading):
         room.reserve((x - 1, z - 1), (x + 1, z + 1))
 
 
@@ -216,7 +216,7 @@ def black(eye, spec):
             )
     room.set((cx, room.top(cx, cz, 3), cz), "minecraft:sea_lantern")
     room.set((cx + 2, 3, cz + 1), "minecraft:campfire", facing="north", lit=False, signal_fire=False, waterlogged=False)
-    shrine(room, eye, spec, (cx, 3, cz - 1), (cx - 2, 3, cz + 1), "south")
+    calling_stone(room, eye, spec, (cx, 3, cz - 1), (cx - 2, 3, cz + 1), "south")
     door = doorway(room, cx, 4)
     detail.skirting(room, "minecraft:deepslate_tile_stairs")
     detail.rubble(room, wall, 0.3)
@@ -277,7 +277,7 @@ def cold(eye, spec):
     for x in (12, 14):
         candle(room, (x, top, 1), "minecraft:light_blue_candle", 3)
     room.reserve((11, 8), (15, 34))
-    shrine(room, eye, spec, (13, top, 3), (11, top, 3), "south")
+    calling_stone(room, eye, spec, (13, top, 3), (11, top, 3), "south")
     door = doorway(room, 13, 1)
     detail.moss(room, 0.5, "drift", "minecraft:snow")
     detail.rubble(room, floor, 0.12)
@@ -349,7 +349,7 @@ def corrupted(eye, spec):
         room.set((x, top + 1, 1), "minecraft:red_wall_banner", facing="south")
     arch.collapse(room, 3, 28, 2, FLOOR, wall)
     room.reserve((9, 9), (13, 36))
-    shrine(room, eye, spec, (11, top, 4), (9, top, 4), "south")
+    calling_stone(room, eye, spec, (11, top, 4), (9, top, 4), "south")
     door = doorway(room, 11, 1)
     detail.cornice(room, "minecraft:acacia_stairs")
     detail.skirting(room, "minecraft:acacia_stairs")
@@ -434,7 +434,7 @@ def cryptic(eye, spec):
     top = arch.dais(room, 8, 14, 9, 14, FLOOR, 2, "minecraft:stone_brick_stairs", "minecraft:polished_andesite")
     room.air((11, room.top(11, 11, top + 1), 11))
     room.reserve((10, 9), (12, 28))
-    shrine(room, eye, spec, (11, top, 11), (9, top, 12), "south")
+    calling_stone(room, eye, spec, (11, top, 11), (9, top, 12), "south")
     door = doorway(room, 11, 1)
     detail.cornice(room, "minecraft:polished_diorite_stairs")
     detail.rubble(room, floor, 0.12)
@@ -491,7 +491,7 @@ def evil(eye, spec):
     room.set((9, top, 2), "minecraft:bell", attachment="floor", facing="south", powered=False)
     arch.collapse(room, 9, 13, 2, FLOOR, wall)
     room.reserve((5, 5), (7, 20))
-    shrine(room, eye, spec, (6, top + 1, 2), (3, top, 3), "south")
+    calling_stone(room, eye, spec, (6, top + 1, 2), (3, top, 3), "south")
     door = doorway(room, 6, 2)
     detail.cornice(room, "minecraft:stone_brick_stairs")
     detail.roots(room, 0.2)
@@ -590,7 +590,7 @@ def exotic(eye, spec):
     for x, z in ring_points(cx, cz, 2.8, 4, math.pi / 4):
         room.set((x, 2, z), "minecraft:sea_lantern")
     room.reserve((cx - 1, cz + 2), (cx + 1, 28))
-    shrine(room, eye, spec, (cx, 3, cz), (cx - 2, 3, cz + 1), "south")
+    calling_stone(room, eye, spec, (cx, 3, cz), (cx - 2, 3, cz + 1), "south")
     door = doorway(room, cx, 1)
     detail.cornice(room, "minecraft:red_sandstone_stairs")
     detail.skirting(room, "minecraft:smooth_red_sandstone_stairs")
@@ -658,7 +658,7 @@ def lost(eye, spec):
         room.fill((x, 3, 1), (x, 4, 1), "minecraft:stripped_spruce_log", axis="y")
         lantern(room, (x, 5, 1), hanging=False)
     room.reserve((11, 6), (13, 28))
-    shrine(room, eye, spec, (12, 3, 3), (10, 3, 4), "south")
+    calling_stone(room, eye, spec, (12, 3, 3), (10, 3, 4), "south")
     door = doorway(room, 12, 1)
     detail.rubble(room, rock, 0.35)
     detail.webs(room, 0.5)
@@ -740,7 +740,7 @@ def magical(eye, spec):
     for x, z in ring_points(cx, cz, 5.4, 8, math.pi / 8):
         room.set((x, 2, z), "minecraft:potted_allium")
     room.reserve((cx - 1, cz + 3), (cx + 1, 26))
-    shrine(room, eye, spec, (cx, 3, cz), (cx - 2, 2, cz + 2), "south")
+    calling_stone(room, eye, spec, (cx, 3, cz), (cx - 2, 2, cz + 2), "south")
     door = doorway(room, cx, 3)
     detail.cornice(room, "minecraft:dark_oak_stairs")
     detail.rubble(room, wall, 0.25)
@@ -814,7 +814,7 @@ def old(eye, spec):
         hanging(room, 10, z, room.top(10, z, 3) - 1, 3)
     room.air((10, room.top(10, 4, 3), 4))
     room.reserve((9, 9), (11, 40))
-    shrine(room, eye, spec, (10, 2, 4), (8, 2, 10), "south")
+    calling_stone(room, eye, spec, (10, 2, 4), (8, 2, 10), "south")
     door = doorway(room, 10, 1)
     detail.cornice(room, "minecraft:sandstone_stairs")
     detail.rubble(room, wall, 0.3)
@@ -924,7 +924,7 @@ def rogue(eye, spec):
         room.set((x, 7, 2), "minecraft:fern")
     arch.collapse(room, 21, 10, 2, 5, wall)
     room.reserve((9, 1), (15, 32))
-    shrine(room, eye, spec, (12, 6, 2), (10, 6, 3), "south")
+    calling_stone(room, eye, spec, (12, 6, 2), (10, 6, 3), "south")
     door = doorway(room, 12, 1)
     detail.cornice(room, "minecraft:mossy_stone_brick_stairs")
     detail.moss(room, 0.5)
@@ -974,7 +974,7 @@ def undead(eye, spec):
             else:
                 candle(room, (back, 3, z), "minecraft:white_candle", 1)
     arch.collapse(room, 6, 7, 1, FLOOR, wall)
-    shrine(room, eye, spec, (4, 2, 2), (2, 2, 3), "south")
+    calling_stone(room, eye, spec, (4, 2, 2), (2, 2, 3), "south")
     door = doorway(room, 4, 1)
     detail.roots(room, 0.3)
     detail.moss(room, 0.4)
@@ -1037,7 +1037,7 @@ def witch(eye, spec):
     room.set((3, 2, 9), "minecraft:barrel", facing="up", open=False)
     room.set((9, 2, 9), "minecraft:brewing_stand", has_bottle_0=False, has_bottle_1=False, has_bottle_2=False)
     candle(room, (3, 3, 9), "minecraft:green_candle", 2)
-    shrine(room, eye, spec, (cx, 3, cz), (cx - 2, 2, cz + 3), "south")
+    calling_stone(room, eye, spec, (cx, 3, cz), (cx - 2, 2, cz + 3), "south")
     door = doorway(room, 6, 2)
     hidden = stairway(room, HIDDEN_ROW)
     detail.moss(room, 0.45)

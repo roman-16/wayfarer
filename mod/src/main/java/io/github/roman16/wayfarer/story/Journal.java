@@ -20,8 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Journal {
-    private static final Map<String, String> PLACES = Map.of(Prologue.LAST_CAMP, "place.last_camp", Tollbridge.NAME, "place.tollbridge",
-            Caravan.NAME, "place.caravan");
+    private static final List<String> PLACES = List.of(Caravan.NAME, Prologue.LAST_CAMP, Tollbridge.NAME);
 
     private static final int COUNT_BLOCKS = 16;
 
@@ -144,8 +143,8 @@ public final class Journal {
             chapters.add(chapter);
         });
         view.add("story", chapters);
-        JsonArray fire = new JsonArray();
-        progress.fire.forEach((key, heard) -> {
+        JsonArray conversations = new JsonArray();
+        progress.conversations.forEach((key, heard) -> {
             JsonObject talk = new JsonObject();
             talk.addProperty("key", key);
             talk.addProperty("title", Story.get().quest(key).map(found -> Engine.title(progress, found)).orElse(""));
@@ -157,9 +156,9 @@ public final class Journal {
                 lines.add(said);
             });
             talk.add("lines", lines);
-            fire.add(talk);
+            conversations.add(talk);
         });
-        view.add("fire", fire);
+        view.add("conversations", conversations);
         JsonArray pages = new JsonArray();
         progress.pages.forEach(id -> Library.get().book(id).ifPresent(book -> {
             JsonObject entry = new JsonObject();
@@ -176,7 +175,7 @@ public final class Journal {
         view.add("people", entries(progress.people, person -> People.label(player.server, person)));
         view.add("words", entries(progress.words, word -> word));
         JsonArray places = new JsonArray();
-        PLACES.forEach((name, key) -> progress.place(name).ifPresent(pos -> places.add(place(key, pos))));
+        PLACES.forEach(name -> progress.place(name).ifPresent(pos -> places.add(named(Places.label(server, name), pos))));
         for (int mark = 0; mark < Marks.count(); mark++) {
             progress.place(Marks.MARK + mark).ifPresent(pos -> places.add(place("place.mark", pos)));
         }
@@ -202,7 +201,7 @@ public final class Journal {
     static String objective(ServerPlayer player, Engine.Active active) {
         Story.Step step = active.step();
         String objective = step.objective().replace("{found}", String.valueOf(Engine.found(active.scratch()).size()))
-                .replace("{needed}", step.spec().has("needed") ? step.text("needed") : "");
+                .replace("{needed}", step.spec().has("needed") ? String.valueOf(Steps.needed(player.server, active)) : "");
         if (step.kind().equals("wins")) {
             objective = objective.replace("{won}", String.valueOf(Math.min(Steps.won(player.server, active), step.number("count")))).replace("{count}", step.text("count"));
         }
@@ -238,8 +237,12 @@ public final class Journal {
     }
 
     private static JsonObject place(String key, BlockPos pos) {
+        return named("wayfarer." + key, pos);
+    }
+
+    private static JsonObject named(String name, BlockPos pos) {
         JsonObject place = new JsonObject();
-        place.addProperty("name", "wayfarer." + key);
+        place.addProperty("name", name);
         place.addProperty("x", pos.getX());
         place.addProperty("z", pos.getZ());
         return place;

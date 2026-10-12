@@ -50,7 +50,7 @@ public final class Gate {
         event.setCancellationResult(InteractionResult.SUCCESS);
         ServerLevel level = player.serverLevel();
         List<ResourceLocation> claimed = Journey.claimed(player.server);
-        int needed = Shrines.count(level);
+        int needed = Halls.count(level);
         boolean blinding = Doors.blinding(player.server);
         if (claimed.size() < needed && !blinding) {
             player.displayClientMessage(
@@ -76,7 +76,7 @@ public final class Gate {
                 set.add(entity.getEyeItem());
             }
         }
-        List<Item> brought = claimed.stream().map(Shrines::eye).filter(eye -> !set.contains(eye)).toList();
+        List<Item> brought = claimed.stream().map(Halls::eye).filter(eye -> !set.contains(eye)).toList();
         if (blinding) {
             while (empty.size() > brought.size()) {
                 BlockPos pos = empty.poll();

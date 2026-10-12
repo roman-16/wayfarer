@@ -1,0 +1,214 @@
+{
+  "biomes": "#wayfarer:has_structure/hall/exotic",
+  "layout": {
+    "cover": 3,
+    "door": [
+      14,
+      2,
+      28
+    ]
+  },
+  "pieces": {
+    "entrance": "wayfarer:hall/exotic/entrance",
+    "hall": "wayfarer:hall/exotic/hall"
+  },
+  "shaft": {
+    "landing": [
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:red_sandstone"
+      },
+      {
+        "Name": "minecraft:red_sandstone"
+      },
+      {
+        "Name": "minecraft:red_sandstone"
+      },
+      {
+        "Name": "minecraft:red_sandstone"
+      },
+      {
+        "Name": "minecraft:orange_terracotta"
+      },
+      {
+        "Name": "minecraft:orange_terracotta"
+      }
+    ],
+    "light": {
+      "Name": "minecraft:sea_lantern"
+    },
+    "pillar": [
+      {
+        "Name": "minecraft:chiseled_red_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_red_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_red_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_red_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_red_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_red_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_red_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_red_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_red_sandstone"
+      },
+      {
+        "Name": "minecraft:chiseled_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      }
+    ],
+    "stairs": {
+      "Name": "minecraft:red_sandstone_stairs"
+    },
+    "style": "switchback",
+    "wall": [
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:cut_red_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:smooth_red_sandstone"
+      },
+      {
+        "Name": "minecraft:red_sandstone"
+      },
+      {
+        "Name": "minecraft:red_sandstone"
+      },
+      {
+        "Name": "minecraft:red_sandstone"
+      },
+      {
+        "Name": "minecraft:red_sandstone"
+      },
+      {
+        "Name": "minecraft:orange_terracotta"
+      },
+      {
+        "Name": "minecraft:orange_terracotta"
+      },
+      {
+        "Name": "minecraft:red_terracotta"
+      },
+      {
+        "Name": "minecraft:red_terracotta"
+      }
+    ]
+  },
+  "spawn_overrides": {},
+  "step": "underground_structures",
+  "terrain_adaptation": "none",
+  "type": "wayfarer:hall"
+}

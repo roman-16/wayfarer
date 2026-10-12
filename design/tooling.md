@@ -11,7 +11,7 @@ How the pack is seen, tried and built. Coding agents build most of it, so the to
   | World | Holds | Started by |
   |---|---|---|
   | The workshop | One design at a time: put in, photographed, tried, refined, put in again | `just showroom` |
-  | The showroom | Everything finished, on show: the shrines, the camps, the items, every creature and structure | `just showroom` |
+  | The showroom | Everything finished, on show: the halls, the camps, the items, every creature and structure | `just showroom` |
   | A fresh world | The singleplayer experience as a player meets it | `just play` |
 
 - Designs get in with driver steps in `scripts/client.py`, each returning when done:
@@ -22,7 +22,7 @@ How the pack is seen, tried and built. Coding agents build most of it, so the to
   | `place <structure>` | Places a structure or piece the generator built at the next free spot, with its name sign |
   | `spawn <creature>` | Brings in a creature, standing still to be photographed, or walking to be tried |
   | `beside <vanilla thing>` | Puts a vanilla creature, item or block next to it, to judge size and style against Minecraft's own |
-  | `views <name>` | Photographs it from the front, the side, above and three-quarters into one labelled sheet, as `tour` does for the shrines |
+  | `views <name>` | Photographs it from the front, the side, above and three-quarters into one labelled sheet, as `tour` does for the halls |
   | `clear` | Empties the workshop |
 
   ```text

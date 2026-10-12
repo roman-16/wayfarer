@@ -151,7 +151,7 @@
       "author": "The Keepers",
       "pages": [
         "The last entry. The others have gone down to sleep with the old Keepers. I stay to write, because someone should.",
-        "Years ago a Wayfarer came to our door, the only one in my lifetime. His ember was dim, and he wore the grass crown of the Gazebound under his cloak. He asked where the twelve shrines lie. No Wayfarer asks that.",
+        "Years ago a Wayfarer came to our door, the only one in my lifetime. His ember was dim, and he wore the grass crown of the Gazebound under his cloak. He asked where the twelve halls lie. No Wayfarer asks that.",
         "We sent him away. If he found someone to carry what he could not, and it is you: do not open this gate for them. Open it for yourself, finish it, and then go home."
       ],
       "title": "The Last Keeper"
@@ -368,17 +368,17 @@
     }
   },
   "people": {
-    "wayfarer:shrine/black": "people/black",
-    "wayfarer:shrine/cold": "people/cold",
-    "wayfarer:shrine/corrupted": "people/corrupted",
-    "wayfarer:shrine/cryptic": "people/cryptic",
-    "wayfarer:shrine/evil": "people/evil",
-    "wayfarer:shrine/exotic": "people/exotic",
-    "wayfarer:shrine/lost": "people/lost",
-    "wayfarer:shrine/magical": "people/magical",
-    "wayfarer:shrine/old": "people/old",
-    "wayfarer:shrine/rogue": "people/rogue",
-    "wayfarer:shrine/undead": "people/undead",
-    "wayfarer:shrine/witch": "people/witch"
+    "wayfarer:hall/black": "people/black",
+    "wayfarer:hall/cold": "people/cold",
+    "wayfarer:hall/corrupted": "people/corrupted",
+    "wayfarer:hall/cryptic": "people/cryptic",
+    "wayfarer:hall/evil": "people/evil",
+    "wayfarer:hall/exotic": "people/exotic",
+    "wayfarer:hall/lost": "people/lost",
+    "wayfarer:hall/magical": "people/magical",
+    "wayfarer:hall/old": "people/old",
+    "wayfarer:hall/rogue": "people/rogue",
+    "wayfarer:hall/undead": "people/undead",
+    "wayfarer:hall/witch": "people/witch"
   }
 }

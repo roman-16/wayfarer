@@ -45,7 +45,7 @@ A moment that matters is played as a scene on the band, line by line, never told
 
 - **Say what to do, where the player looks.** Every step's objective is one instruction, shown in the task panel (`design/interface.md`, I1); a player who never opens the journal still knows what to do next.
 - **Name every key the first time.** A step that needs a key or a click lists its task in the panel, worded with the key itself (`Open your journal %s`, filled by the key the player has bound through `Tasks.key` and drawn in a key cap, so never in brackets), the first time it is needed. How-to lines never go to chat, which keeps the story.
-- **Count what takes time.** Walking, resting and waiting show how far along they are: blocks to go, seconds rested, whom the team waits for.
+- **Count what takes long.** Walking and waiting show how far along they are: blocks to go, whom the team waits for. A short rest shows no countdown.
 - **Every refusal says why and what to do.** "It will not stand here: a Wayfarer keeps no hoard in the world, only in a tent." names the rule, the reason and the way.
 
 ## Where text lives
@@ -56,7 +56,7 @@ A moment that matters is played as a scene on the band, line by line, never told
 | A step's tasks in the task panel (`design/interface.md`, I1): which ones a step shows | `story/quests.toml`, `tasks` on the step |
 | What a person answers when right-clicked with nothing to say in the story (M27): their lines for a step | `story/quests.toml`, `remarks.<person>` on the step |
 | The people's names, and the lines they answer with on any day on the road | `story/people.toml` |
-| Shrine books (per eye) | `generator/eyes.toml`, `people` and `lore` |
+| Hall books (per eye) | `generator/eyes.toml`, `people` and `lore` |
 | Books: the memories' pages, the loot books, the pages found on the road | `story/books.toml` |
 | Mod messages, HUD, item names, and the task panel's tasks (`wayfarer.task.<id>`) | `mod/src/main/resources/assets/wayfarer/lang/en_us.json` |
 | Another mod's text the pack rewords | `mod/src/main/resources/assets/<that mod's namespace>/lang/en_us.json`; only a file in the same namespace reliably wins |

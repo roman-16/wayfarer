@@ -6,7 +6,7 @@ import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.Journey;
-import io.github.roman16.wayfarer.ShrinePedestalBlockEntity;
+import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -31,8 +31,8 @@ final class TideFolk {
     private static final String SECOND = "tide_second";
     private static final String[] WARDENS = {"tide_warden_1", "tide_warden_2"};
     private static final ResourceLocation TEMPLATE = Wayfarer.id("tide/village");
-    private static final HallSite SITE = new HallSite(NAME, Wayfarer.id("shrine/black"), NAME, 2);
-    private static final ResourceLocation SECOND_SHRINE = Wayfarer.id("shrine/exotic");
+    private static final HallSite SITE = new HallSite(NAME, Wayfarer.id("hall/black"), NAME, 2);
+    private static final ResourceLocation SECOND_HALL = Wayfarer.id("hall/exotic");
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/tide.json");
     private static final int BESIDE = 20;
@@ -61,14 +61,14 @@ final class TideFolk {
         SITE.tick(server);
         Progress progress = Progress.of(server);
         ServerLevel level = Engine.overworld(server);
-        SITE.entrance(progress).filter(top -> (progress.place(VILLAGE).isEmpty() || progress.place(HALL).isEmpty()) && Halls.loaded(level, top)).ifPresent(top -> {
+        SITE.entrance(progress).filter(top -> (progress.place(VILLAGE).isEmpty() || progress.place(HALL).isEmpty()) && HallSearch.loaded(level, top)).ifPresent(top -> {
             if (progress.place(VILLAGE).isEmpty()) {
                 village(server, level, top);
             }
             if (progress.place(HALL).isEmpty()) {
                 hall(server, level);
             }
-            Halls.release(level, top);
+            HallSearch.release(level, top);
         });
     }
 
@@ -129,18 +129,18 @@ final class TideFolk {
         Progress progress = Progress.of(server);
         BlockPos low = SITE.low(progress).orElseThrow();
         BlockPos high = SITE.high(progress).orElseThrow();
-        Optional<BlockPos> stone = Halls.stone(level, low, high);
-        if (stone.isEmpty()) {
+        Optional<BlockPos> found = HallSearch.stone(level, low, high);
+        if (found.isEmpty()) {
             LOGGER.error("the Tide Folk failed: their hall between {} and {} has no calling stone", low, high);
             progress.place(HALL, SITE.entrance(progress).orElse(low));
             progress.setDirty();
             return;
         }
-        BlockPos pedestal = stone.get();
+        BlockPos stone = found.get();
         BlockPos beside = null;
         for (Direction side : Direction.Plane.HORIZONTAL) {
             for (int out : DAIS) {
-                BlockPos at = pedestal.relative(side, out);
+                BlockPos at = stone.relative(side, out);
                 if (beside == null && level.getBlockState(at).isAir() && level.getBlockState(at.above()).isAir()
                         && level.getBlockState(at.below()).isFaceSturdy(level, at.below(), Direction.UP)) {
                     beside = at;
@@ -148,19 +148,19 @@ final class TideFolk {
             }
         }
         if (beside != null) {
-            level.setBlock(beside, Wayfarer.SHRINE_PEDESTAL.get().defaultBlockState(), Block.UPDATE_ALL);
-            if (level.getBlockEntity(beside) instanceof ShrinePedestalBlockEntity second) {
-                second.hold(Journey.claimed(server).contains(SECOND_SHRINE) ? Optional.empty() : Optional.of(SECOND_SHRINE));
+            level.setBlock(beside, Wayfarer.CALLING_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
+            if (level.getBlockEntity(beside) instanceof CallingStoneBlockEntity second) {
+                second.hold(Journey.claimed(server).contains(SECOND_HALL) ? Optional.empty() : Optional.of(SECOND_HALL));
             }
             progress.place(SECOND, beside);
         }
-        Vec3 inward = Vec3.atLowerCornerOf(SITE.entrance(progress).orElse(pedestal).subtract(pedestal)).multiply(1, 0, 1).normalize();
-        Vec3 aside = beside != null ? Vec3.atLowerCornerOf(pedestal.subtract(beside)).normalize() : new Vec3(-inward.z, 0, inward.x);
-        BlockPos seat = BlockPos.containing(Vec3.atLowerCornerOf(pedestal).add(aside.scale(HALL_SEAT)));
+        Vec3 inward = Vec3.atLowerCornerOf(SITE.entrance(progress).orElse(stone).subtract(stone)).multiply(1, 0, 1).normalize();
+        Vec3 aside = beside != null ? Vec3.atLowerCornerOf(stone.subtract(beside)).normalize() : new Vec3(-inward.z, 0, inward.x);
+        BlockPos seat = BlockPos.containing(Vec3.atLowerCornerOf(stone).add(aside.scale(HALL_SEAT)));
         progress.place("seat_tide_inside", seat);
         progress.yaws.put("seat_tide_inside", Frost.yaw(inward));
-        progress.place(HALL, pedestal);
+        progress.place(HALL, stone);
         progress.setDirty();
-        LOGGER.info("the Tide Folk's stone is at {}, the Drowned City's beside it at {}", pedestal, beside);
+        LOGGER.info("the Tide Folk's stone is at {}, the Drowned City's beside it at {}", stone, beside);
     }
 }

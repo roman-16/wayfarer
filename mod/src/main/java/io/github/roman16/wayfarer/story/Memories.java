@@ -7,7 +7,7 @@ import io.github.roman16.wayfarer.Heat;
 import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.NotchedLog;
 import io.github.roman16.wayfarer.Notices;
-import io.github.roman16.wayfarer.ShrinePedestalBlockEntity;
+import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
@@ -468,10 +468,10 @@ public final class Memories {
     }
 
     private static void take(ServerPlayer player, BlockPos pos) {
-        if (!pos.equals(dream.stone) || dream.taken || !(dream.level.getBlockEntity(pos) instanceof ShrinePedestalBlockEntity pedestal)) {
+        if (!pos.equals(dream.stone) || dream.taken || !(dream.level.getBlockEntity(pos) instanceof CallingStoneBlockEntity stone)) {
             return;
         }
-        pedestal.hold(Optional.empty());
+        stone.hold(Optional.empty());
         dream.taken = true;
         Sounds.play(player, SHARD_TAKEN);
     }

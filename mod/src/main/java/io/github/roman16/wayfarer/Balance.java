@@ -45,7 +45,6 @@ public record Balance(
         Sense sense,
         Shine shine,
         Shipyard shipyard,
-        Shrines shrines,
         Sight sight,
         Sleep sleep,
         Spawns spawns,
@@ -99,7 +98,7 @@ public record Balance(
 
     public record Gaze(List<Integer> capacitySeconds, int drainFactor, int huntIntervalSeconds, int huntPhantoms) {}
 
-    public record Graphics(List<Integer> farViewChunks, List<String> heldLight, List<String> profiles, List<Integer> renderChunks) {}
+    public record Graphics(List<Integer> farViewChunks, List<String> farViewThreads, List<String> heldLight, List<String> profiles, List<Integer> renderChunks) {}
 
     public record Hold(int blowTicks, int calmSeconds, int doorStrength, int firstWave, int keepHealth, int waveGrowth, int waveSeconds, int waves) {}
 
@@ -110,7 +109,7 @@ public record Balance(
     public record Loot(double keptShare) {}
 
 
-    public record Prologue(int awayBlocks) {}
+    public record Prologue(int awayBlocks, int campSearchBlocks, int campStepBlocks) {}
 
     public record Sea(int beastHealth, int beastOneIn, int beastOneInLeast, int checkSeconds, int flinchSeconds, int openWaterBlocks, int ramDamage, int ramSeconds,
             int shinePerStep) {}
@@ -120,7 +119,7 @@ public record Balance(
 
     public record Sense(int glowSeconds, int reachBlocks) {}
 
-    public record Halls(int nearestBlocks, int reachBlocks) {}
+    public record Halls(int actThreeFromBlocks, int actThreeLegBlocks, int actTwoLegBlocks, int nearestBlocks, int reachBlocks) {}
 
     public record FarSight(int markBlocks, int marks, int zoomSixteenths) {}
 
@@ -140,8 +139,6 @@ public record Balance(
 
     public record Shine(List<Integer> act, int bellFound, int foundShine, double noticeBlocksPerShine, int perShard, int spawnEverySeconds, int spawnLimit,
             int spawnShine) {}
-
-    public record Shrines(int actThreeFromBlocks, int actThreeLegBlocks, int actTwoLegBlocks) {}
 
     public record Sight(int reachBlocks) {}
 
@@ -177,9 +174,9 @@ public record Balance(
 
     public record Structures(double spreadFactor, List<String> spreadFeatures) {}
 
-    public record Talk(int charactersPerSecond, int leastSeconds, int pauseSeconds, int reachBlocks, int startBlocks, int waitSeconds) {}
+    public record Talk(int againSeconds, int charactersPerSecond, int leastSeconds, int pauseSeconds, int reachBlocks, int startBlocks, int waitSeconds) {}
 
-    public record Tent(int fireBlocks) {}
+    public record Tent(int fireBlocks, int reminderBlocks) {}
 
     public record Tollbridge(int aheadBlocks, int clearBlocks, int leastBuildings, int radiusBlocks, int waitSeconds) {}
 
@@ -255,10 +252,12 @@ public record Balance(
                         toml.getInt("gaze.hunt_phantoms")),
                 new Graphics(
                         toml.<List<Number>>get("graphics.far_view_chunks").stream().map(Number::intValue).toList(),
+                        toml.get("graphics.far_view_threads"),
                         toml.get("graphics.held_light"),
                         toml.get("graphics.profiles"),
                         toml.<List<Number>>get("graphics.render_chunks").stream().map(Number::intValue).toList()),
-                new Halls(toml.getInt("halls.nearest_blocks"), toml.getInt("halls.reach_blocks")),
+                new Halls(toml.getInt("halls.act_three_from_blocks"), toml.getInt("halls.act_three_leg_blocks"), toml.getInt("halls.act_two_leg_blocks"),
+                        toml.getInt("halls.nearest_blocks"), toml.getInt("halls.reach_blocks")),
                 new Hold(
                         toml.getInt("hold.blow_ticks"),
                         toml.getInt("hold.calm_seconds"),
@@ -281,7 +280,7 @@ public record Balance(
                         toml.getInt("memory.together_blocks")),
                 new Ore(toml.<Config>get("ore").entrySet().stream()
                         .collect(Collectors.toUnmodifiableMap(UnmodifiableConfig.Entry::getKey, entry -> entry.<Number>getValue().doubleValue()))),
-                new Prologue(toml.getInt("prologue.away_blocks")),
+                new Prologue(toml.getInt("prologue.away_blocks"), toml.getInt("prologue.camp_search_blocks"), toml.getInt("prologue.camp_step_blocks")),
                 new ReadingHouse(toml.getInt("reading_house.ahead_blocks"), toml.getInt("reading_house.search_blocks")),
                 new Scenes(toml.getInt("scenes.ask_blocks"), toml.getInt("scenes.every_seconds"), toml.getInt("scenes.farthest_blocks"),
                         toml.getInt("scenes.gone_blocks"), toml.getInt("scenes.group_blocks"), toml.getInt("scenes.jitter_seconds"),
@@ -307,7 +306,6 @@ public record Balance(
                         toml.getInt("shine.spawn_limit"),
                         toml.getInt("shine.spawn_shine")),
                 new Shipyard(toml.getInt("shipyard.wreck_blocks")),
-                new Shrines(toml.getInt("shrines.act_three_from_blocks"), toml.getInt("shrines.act_three_leg_blocks"), toml.getInt("shrines.act_two_leg_blocks")),
                 new Sight(toml.getInt("sight.reach_blocks")),
                 new Sleep(toml.getInt("sleep.players_percentage")),
                 new Spawns(toml.getInt("spawns.creature_cap")),
@@ -319,13 +317,14 @@ public record Balance(
                         toml.getInt("strongholds.radius_blocks")),
                 new Structures(toml.<Number>get("structures.spread_factor").doubleValue(), toml.<List<String>>get("structures.spread_features")),
                 new Talk(
+                        toml.getInt("talk.again_seconds"),
                         toml.getInt("talk.characters_per_second"),
                         toml.getInt("talk.least_seconds"),
                         toml.getInt("talk.pause_seconds"),
                         toml.getInt("talk.reach_blocks"),
                         toml.getInt("talk.start_blocks"),
                         toml.getInt("talk.wait_seconds")),
-                new Tent(toml.getInt("tent.fire_blocks")),
+                new Tent(toml.getInt("tent.fire_blocks"), toml.getInt("tent.reminder_blocks")),
                 new Tide(toml.getInt("tide.stone_blocks")),
                 new Tollbridge(toml.getInt("tollbridge.ahead_blocks"), toml.getInt("tollbridge.clear_blocks"), toml.getInt("tollbridge.least_buildings"),
                         toml.getInt("tollbridge.radius_blocks"),

@@ -138,6 +138,10 @@ public final class JournalScreen extends Screen {
         return latest;
     }
 
+    static boolean knows(String row) {
+        return view().getAsJsonArray("gear").asList().stream().anyMatch(entry -> entry.getAsJsonObject().get("id").getAsString().equals(row));
+    }
+
     public static JsonArray places() {
         return view().getAsJsonArray("places");
     }
@@ -153,7 +157,7 @@ public final class JournalScreen extends Screen {
         PEOPLE("wayfarer.journal.people"),
         WORDS("wayfarer.journal.words"),
         PAGES("wayfarer.journal.pages"),
-        FIRE("wayfarer.journal.fire"),
+        CONVERSATIONS("wayfarer.journal.conversations"),
         STONES("wayfarer.journal.stones"),
         MAP("wayfarer.journal.map"),
         GEAR("wayfarer.journal.gear");
@@ -371,11 +375,11 @@ public final class JournalScreen extends Screen {
                 JsonObject book = element.getAsJsonObject();
                 found.add(new Entry(Kind.BOOK, "page:" + book.get("key").getAsString(), Component.literal(book.get("title").getAsString()), INK, book));
             });
-            case FIRE -> view.getAsJsonArray("fire").forEach(element -> {
+            case CONVERSATIONS -> view.getAsJsonArray("conversations").asList().reversed().forEach(element -> {
                 JsonObject talk = element.getAsJsonObject();
                 String title = talk.get("title").getAsString();
-                Component label = title.isEmpty() ? Component.translatable("wayfarer.journal.fire.road") : Component.literal(title);
-                String key = "fire:" + talk.get("key").getAsString() + ":" + talk.getAsJsonArray("lines").size();
+                Component label = title.isEmpty() ? Component.translatable("wayfarer.journal.conversations.road") : Component.literal(title);
+                String key = "conversation:" + talk.get("key").getAsString() + ":" + talk.getAsJsonArray("lines").size();
                 found.add(new Entry(Kind.TALK, key, label, INK, talk));
             });
             case STONES -> view.getAsJsonArray("stones").forEach(element -> {
@@ -581,6 +585,8 @@ public final class JournalScreen extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
         Stamp.title(graphics, font, Component.translatable(open.key).getString(), listLeft() + PAD, pagesTop() + PAD, TITLE_INK, false);
+        graphics.drawString(font, font.substrByWidth(Component.translatable(open.key + ".about"), pageWidth() - PAD * 2).getString(), listLeft() + PAD,
+                pagesTop() + PAD + Stamp.DISPLAY_HEIGHT + TITLE_GAP / 2, QUIET_INK, false);
         Stamp.divider(graphics, listLeft() + PAD, listTop() - Stamp.DIVIDER_HEIGHT - 2, pageWidth() - PAD * 2, true);
         graphics.enableScissor(listLeft(), listTop(), listLeft() + pageWidth(), listBottom());
         rows.forEach(row -> row.render(graphics, mouseX, mouseY, partialTick));
@@ -591,7 +597,7 @@ public final class JournalScreen extends Screen {
     }
 
     private int listTop() {
-        return pagesTop() + PAD + Stamp.DISPLAY_HEIGHT + TITLE_GAP + Stamp.DIVIDER_HEIGHT + 2;
+        return pagesTop() + PAD + Stamp.DISPLAY_HEIGHT + TITLE_GAP + LINE + Stamp.DIVIDER_HEIGHT + 2;
     }
 
     private int entryTop(@Nullable Entry entry) {
@@ -697,7 +703,7 @@ public final class JournalScreen extends Screen {
 
     private static boolean news(Entry entry) {
         return switch (entry.kind()) {
-            case DONE, FOLD, TALK -> false;
+            case BOOK, DONE, FOLD, TALK -> false;
             case LINES -> !entry.key().startsWith(CHAPTER + ":");
             default -> true;
         };
@@ -963,7 +969,7 @@ public final class JournalScreen extends Screen {
 
     private static JsonObject view() {
         JsonObject view = JsonParser.parseString(latest).getAsJsonObject();
-        for (String key : new String[] {"fire", "gear", "pages", "people", "places", "quests", "rewards", "seen", "stones", "story", "words"}) {
+        for (String key : new String[] {"conversations", "gear", "pages", "people", "places", "quests", "rewards", "seen", "stones", "story", "words"}) {
             if (!view.has(key)) {
                 view.add(key, new JsonArray());
             }

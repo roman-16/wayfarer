@@ -3,8 +3,13 @@
     "minecraft:player"
   ],
   "slots": [
+    "boots",
     "charm",
+    "coat",
     "ember",
-    "shard"
+    "hood",
+    "shard",
+    "spyglass",
+    "trousers"
   ]
 }

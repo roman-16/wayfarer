@@ -99,7 +99,7 @@
       -7
     ]
   },
-  "shrines": [
+  "halls": [
     {
       "cameras": [
         {
@@ -139,7 +139,7 @@
             4.2,
             10.5
           ],
-          "name": "pedestal"
+          "name": "stone"
         },
         {
           "at": [
@@ -191,16 +191,16 @@
         24
       ],
       "eye": "black",
-      "pedestal": [
-        11,
-        3,
-        10
-      ],
       "shaft": "ladder",
       "size": [
         23,
         14,
         25
+      ],
+      "stone": [
+        11,
+        3,
+        10
       ]
     },
     {
@@ -242,7 +242,7 @@
             6.2,
             3.5
           ],
-          "name": "pedestal"
+          "name": "stone"
         },
         {
           "at": [
@@ -294,16 +294,16 @@
         34
       ],
       "eye": "cold",
-      "pedestal": [
-        13,
-        5,
-        3
-      ],
       "shaft": "switchback",
       "size": [
         27,
         22,
         35
+      ],
+      "stone": [
+        13,
+        5,
+        3
       ]
     },
     {
@@ -345,7 +345,7 @@
             6.2,
             4.5
           ],
-          "name": "pedestal"
+          "name": "stone"
         },
         {
           "at": [
@@ -397,16 +397,16 @@
         36
       ],
       "eye": "corrupted",
-      "pedestal": [
-        11,
-        5,
-        4
-      ],
       "shaft": "switchback",
       "size": [
         23,
         18,
         37
+      ],
+      "stone": [
+        11,
+        5,
+        4
       ]
     },
     {
@@ -448,7 +448,7 @@
             5.2,
             11.5
           ],
-          "name": "pedestal"
+          "name": "stone"
         },
         {
           "at": [
@@ -500,16 +500,16 @@
         28
       ],
       "eye": "cryptic",
-      "pedestal": [
-        11,
-        4,
-        11
-      ],
       "shaft": "spiral",
       "size": [
         23,
         24,
         29
+      ],
+      "stone": [
+        11,
+        4,
+        11
       ]
     },
     {
@@ -551,7 +551,7 @@
             5.2,
             2.5
           ],
-          "name": "pedestal"
+          "name": "stone"
         },
         {
           "at": [
@@ -603,16 +603,16 @@
         20
       ],
       "eye": "evil",
-      "pedestal": [
-        6,
-        4,
-        2
-      ],
       "shaft": "ladder",
       "size": [
         13,
         11,
         21
+      ],
+      "stone": [
+        6,
+        4,
+        2
       ]
     },
     {
@@ -654,7 +654,7 @@
             4.2,
             14.5
           ],
-          "name": "pedestal"
+          "name": "stone"
         },
         {
           "at": [
@@ -706,16 +706,16 @@
         28
       ],
       "eye": "exotic",
-      "pedestal": [
-        14,
-        3,
-        14
-      ],
       "shaft": "switchback",
       "size": [
         29,
         20,
         29
+      ],
+      "stone": [
+        14,
+        3,
+        14
       ]
     },
     {
@@ -757,7 +757,7 @@
             4.2,
             3.5
           ],
-          "name": "pedestal"
+          "name": "stone"
         },
         {
           "at": [
@@ -809,16 +809,16 @@
         28
       ],
       "eye": "lost",
-      "pedestal": [
-        12,
-        3,
-        3
-      ],
       "shaft": "switchback",
       "size": [
         25,
         12,
         29
+      ],
+      "stone": [
+        12,
+        3,
+        3
       ]
     },
     {
@@ -860,7 +860,7 @@
             4.2,
             12.5
           ],
-          "name": "pedestal"
+          "name": "stone"
         },
         {
           "at": [
@@ -912,16 +912,16 @@
         26
       ],
       "eye": "magical",
-      "pedestal": [
-        12,
-        3,
-        12
-      ],
       "shaft": "ladder",
       "size": [
         25,
         16,
         27
+      ],
+      "stone": [
+        12,
+        3,
+        12
       ]
     },
     {
@@ -963,7 +963,7 @@
             3.2,
             4.5
           ],
-          "name": "pedestal"
+          "name": "stone"
         },
         {
           "at": [
@@ -1015,16 +1015,16 @@
         40
       ],
       "eye": "old",
-      "pedestal": [
-        10,
-        2,
-        4
-      ],
       "shaft": "switchback",
       "size": [
         21,
         16,
         41
+      ],
+      "stone": [
+        10,
+        2,
+        4
       ]
     },
     {
@@ -1066,7 +1066,7 @@
             7.2,
             2.5
           ],
-          "name": "pedestal"
+          "name": "stone"
         },
         {
           "at": [
@@ -1118,16 +1118,16 @@
         32
       ],
       "eye": "rogue",
-      "pedestal": [
-        12,
-        6,
-        2
-      ],
       "shaft": "spiral",
       "size": [
         25,
         18,
         33
+      ],
+      "stone": [
+        12,
+        6,
+        2
       ]
     },
     {
@@ -1169,7 +1169,7 @@
             3.2,
             2.5
           ],
-          "name": "pedestal"
+          "name": "stone"
         },
         {
           "at": [
@@ -1221,16 +1221,16 @@
         10
       ],
       "eye": "undead",
-      "pedestal": [
-        4,
-        2,
-        2
-      ],
       "shaft": "ladder",
       "size": [
         9,
         7,
         11
+      ],
+      "stone": [
+        4,
+        2,
+        2
       ]
     },
     {
@@ -1272,7 +1272,7 @@
             4.2,
             5.5
           ],
-          "name": "pedestal"
+          "name": "stone"
         },
         {
           "at": [
@@ -1324,16 +1324,16 @@
         12
       ],
       "eye": "witch",
-      "pedestal": [
-        6,
-        3,
-        5
-      ],
       "shaft": "ladder",
       "size": [
         13,
         8,
         13
+      ],
+      "stone": [
+        6,
+        3,
+        5
       ]
     }
   ],

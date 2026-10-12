@@ -9,11 +9,11 @@
       "required": false
     },
     {
-      "id": "wayfarer:shrines/act_three",
+      "id": "wayfarer:halls/act_three",
       "required": false
     },
     {
-      "id": "wayfarer:shrines/act_two",
+      "id": "wayfarer:halls/act_two",
       "required": false
     }
   ]

@@ -219,31 +219,31 @@ public final class Errands {
         Progress progress = Progress.of(server);
         ServerLevel level = Engine.overworld(server);
         for (String name : new String[] {MISSING, SETTLED, BURNING}) {
-            progress.place(name + SITE).filter(site -> progress.place(name + BUILT).isEmpty() && Halls.loaded(level, site)).ifPresent(site -> {
+            progress.place(name + SITE).filter(site -> progress.place(name + BUILT).isEmpty() && HallSearch.loaded(level, site)).ifPresent(site -> {
                 village(server, level, name, site);
-                Halls.release(level, site);
+                HallSearch.release(level, site);
             });
         }
         for (Outpost outpost : RAISED_OUTPOSTS) {
-            progress.place(outpost.name() + SITE).filter(site -> progress.place("seat_" + outpost.person()).isEmpty() && Halls.loaded(level, site)).ifPresent(site -> {
+            progress.place(outpost.name() + SITE).filter(site -> progress.place("seat_" + outpost.person()).isEmpty() && HallSearch.loaded(level, site)).ifPresent(site -> {
                 outpost(server, level, outpost, site);
-                Halls.release(level, site);
+                HallSearch.release(level, site);
             });
         }
         for (Wayside wayside : WAYSIDES) {
-            progress.place(wayside.name() + SITE).filter(site -> progress.place(wayside.name() + BUILT).isEmpty() && Halls.loaded(level, site)).ifPresent(site -> {
+            progress.place(wayside.name() + SITE).filter(site -> progress.place(wayside.name() + BUILT).isEmpty() && HallSearch.loaded(level, site)).ifPresent(site -> {
                 if (wayside(server, level, wayside.name(), site)) {
-                    Halls.release(level, site);
+                    HallSearch.release(level, site);
                 }
             });
         }
-        progress.place(CAIRNS_SITE).filter(site -> progress.place(CAIRNS_ORIGIN).isEmpty() && Halls.loaded(level, site)).ifPresent(site -> {
+        progress.place(CAIRNS_SITE).filter(site -> progress.place(CAIRNS_ORIGIN).isEmpty() && HallSearch.loaded(level, site)).ifPresent(site -> {
             cairns(server, level, site);
-            Halls.release(level, site);
+            HallSearch.release(level, site);
         });
-        progress.place(SEAL_SITE).filter(site -> progress.place(SEAL_ORIGIN).isEmpty() && Halls.loaded(level, site)).ifPresent(site -> {
+        progress.place(SEAL_SITE).filter(site -> progress.place(SEAL_ORIGIN).isEmpty() && HallSearch.loaded(level, site)).ifPresent(site -> {
             seal(server, level, site);
-            Halls.release(level, site);
+            HallSearch.release(level, site);
         });
         if (progress.place(SEAL_ORIGIN).isPresent() && progress.place(SEAL_OPEN).isEmpty() && opened(progress)
                 && level.isLoaded(progress.place(SEAL_ORIGIN).get())) {

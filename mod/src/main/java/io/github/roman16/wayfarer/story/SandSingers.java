@@ -66,8 +66,8 @@ public final class SandSingers {
     private static final String KILLED = "killed";
     private static final ResourceLocation TEMPLATE = Wayfarer.id("sand/camp");
     private static final String EYE = "old";
-    private static final ResourceLocation SHRINE = Wayfarer.id("shrine/" + EYE);
-    private static final HallSite SITE = new HallSite(NAME, SHRINE, NAME, 2);
+    private static final ResourceLocation HALL = Wayfarer.id("hall/" + EYE);
+    private static final HallSite SITE = new HallSite(NAME, HALL, NAME, 2);
     private static final ResourceLocation SING = ResourceLocation.withDefaultNamespace("sing_goat_horn");
     private static final String GECKOLIB = "geckolib";
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -113,13 +113,13 @@ public final class SandSingers {
             progress.place(LAIR, lair);
             progress.setDirty();
         });
-        SITE.entrance(progress).filter(top -> progress.place(CAMP_ORIGIN).isEmpty() && Halls.loaded(level, top)).ifPresent(top -> {
+        SITE.entrance(progress).filter(top -> progress.place(CAMP_ORIGIN).isEmpty() && HallSearch.loaded(level, top)).ifPresent(top -> {
             camp(server, level, top);
-            Halls.release(level, top);
+            HallSearch.release(level, top);
         });
-        progress.place(LAIR_SITE).filter(site -> progress.place(LAIR_BUILT).isEmpty() && Halls.loaded(level, site)).ifPresent(site -> {
+        progress.place(LAIR_SITE).filter(site -> progress.place(LAIR_BUILT).isEmpty() && HallSearch.loaded(level, site)).ifPresent(site -> {
             lair(server, level, site);
-            Halls.release(level, site);
+            HallSearch.release(level, site);
         });
     }
 
@@ -387,7 +387,7 @@ public final class SandSingers {
         MinecraftServer server = level.getServer();
         Engine.active(server).stream().filter(active -> active.step().kind().equals("worm")).findFirst().ifPresent(active -> {
             dust(level, event.getEntity().position());
-            Journey.of(server).claim(SHRINE);
+            Journey.of(server).claim(HALL);
             server.getPlayerList().getPlayers().forEach(Shards::sync);
             Steps.gifts(Progress.of(server), active.step(), List.of(EYE));
             end(server, active, KILLED);

@@ -3,30 +3,43 @@ package io.github.roman16.wayfarer;
 import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import nomadictents.NTSavedData;
 import nomadictents.block.TentDoorBlock;
+import nomadictents.dimension.DimensionFactory;
 import nomadictents.dimension.DynamicDimensionHelper;
 import nomadictents.item.TentItem;
 import nomadictents.registries.NTDataComponents;
@@ -37,6 +50,12 @@ import nomadictents.util.TentSize;
 
 public final class TentPitch {
     private static final BlockPos INSIDE_DOOR = Tent.calculatePos(0);
+    private static final Map<UUID, Long> REMINDED = new HashMap<>();
+    private static final Set<ResourceKey<Level>> KEPT = new HashSet<>();
+    private static final ChunkPos INSIDE = new ChunkPos(INSIDE_DOOR);
+    private static final TicketType<ChunkPos> KEEP = TicketType.create("wayfarer_tent", Comparator.comparingLong(ChunkPos::toLong));
+    private static final int KEEP_RADIUS = 3;
+    private static final int KEEP_TICKS = 64;
     private static final String TENT_PACKED = "tent_packed";
     private static final String TENT_PITCHED = "tent_pitched";
 
@@ -132,6 +151,20 @@ public final class TentPitch {
         return Joining.State.of(player.server).tents.stream().filter(tent -> tent.owner().equals(player.getUUID())).toList();
     }
 
+    public static void remind(ServerPlayer player) {
+        long today = player.server.overworld().getDayTime() / Clock.DAY;
+        if (Tents.isTent(player.level().dimension()) || !Clock.morning(player.serverLevel()) || REMINDED.getOrDefault(player.getUUID(), -1L) == today) {
+            return;
+        }
+        int reach = Balance.get().tent().reminderBlocks();
+        if (mine(player).stream().anyMatch(tent -> tent.place().dimension().equals(player.level().dimension())
+                && tent.place().pos().distSqr(player.blockPosition()) > (double) reach * reach
+                && !Caravan.within(player.server, player.level(), Vec3.atCenterOf(tent.place().pos())))) {
+            REMINDED.put(player.getUUID(), today);
+            Talk.tell(player, Component.translatable("wayfarer.tent.behind"));
+        }
+    }
+
     public static boolean pitched(ServerPlayer player) {
         return !mine(player).isEmpty();
     }
@@ -145,6 +178,38 @@ public final class TentPitch {
                 Talk.tell(player, Component.translatable("wayfarer.tent.brought"));
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onServerTick(ServerTickEvent.Post event) {
+        MinecraftServer server = event.getServer();
+        if (server.getTickCount() % KEEP_TICKS != 0) {
+            return;
+        }
+        NTSavedData tents = NTSavedData.get(server);
+        Set<ResourceKey<Level>> pitched = new HashSet<>();
+        for (Joining.Pitched tent : Joining.State.of(server).tents) {
+            ResourceKey<Level> key = tents.getOrCreateKey(server, tent.id());
+            pitched.add(key);
+            if (KEPT.add(key)) {
+                ServerLevel inside = DynamicDimensionHelper.getOrCreateWorld(server, key, DimensionFactory::createDimension);
+                inside.getChunkSource().addRegionTicket(KEEP, INSIDE, KEEP_RADIUS, INSIDE);
+            }
+        }
+        for (ResourceKey<Level> key : List.copyOf(KEPT)) {
+            if (!pitched.contains(key)) {
+                KEPT.remove(key);
+                ServerLevel inside = server.getLevel(key);
+                if (inside != null) {
+                    inside.getChunkSource().removeRegionTicket(KEEP, INSIDE, KEEP_RADIUS, INSIDE);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        KEPT.clear();
     }
 
     @SubscribeEvent

@@ -36,6 +36,7 @@ FLIMSY = (
 PARTIAL = (
     "bell",
     "brewing_stand",
+    "calling_stone",
     "campfire",
     "cauldron",
     "chain",
@@ -43,7 +44,6 @@ PARTIAL = (
     "decorated_pot",
     "flower_pot",
     "lectern",
-    "pedestal",
     "sea_pickle",
     "skull",
     "snow",

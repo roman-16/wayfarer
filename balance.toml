@@ -70,7 +70,7 @@ line_seconds = 3
 rest_blocks = 4
 
 [first_camp]
-ahead_blocks = 3072
+ahead_blocks = 2048
 lake_blocks = 512
 
 [first_village]
@@ -124,12 +124,16 @@ hunt_interval_seconds = 10
 hunt_phantoms = 2
 
 [graphics]
-far_view_chunks = [64, 128, 256, 512]
+far_view_chunks = [0, 128, 256, 512]
+far_view_threads = ["MINIMAL_IMPACT", "LOW_IMPACT", "BALANCED", "BALANCED"]
 held_light = ["fastest", "fast", "fancy", "fancy"]
 profiles = ["LOW", "MEDIUM", "HIGH", "ULTRA"]
 render_chunks = [8, 10, 12, 16]
 
 [halls]
+act_three_from_blocks = 24576
+act_three_leg_blocks = 12288
+act_two_leg_blocks = 8192
 nearest_blocks = 1024
 reach_blocks = 8192
 
@@ -156,11 +160,6 @@ kept_share = 0.5
 
 [shipyard]
 wreck_blocks = 256
-
-[shrines]
-act_three_from_blocks = 24576
-act_three_leg_blocks = 12288
-act_two_leg_blocks = 8192
 
 [marsh]
 ahead_blocks = 2048
@@ -191,6 +190,8 @@ redstone = 0.125
 
 [prologue]
 away_blocks = 512
+camp_search_blocks = 2048
+camp_step_blocks = 64
 
 [reading_house]
 ahead_blocks = 1024
@@ -264,18 +265,18 @@ spread_features = ["campsite_structures", "yungsextras"]
 unspread = ["betterstrongholds:stronghold", "minecraft:ancient_cities"]
 
 [structures.every_blocks]
-campsite = 384
+campsite = 512
 capital = 12288
 fort = 6144
-land = 256
-mine = 256
+land = 384
+mine = 384
 outpost = 1536
-ruin = 384
+ruin = 512
 sea = 1024
-settled = 512
+settled = 768
 tavern = 1536
 town = 3072
-underground = 512
+underground = 768
 village = 768
 
 [story]
@@ -285,6 +286,7 @@ rest_seconds = 30
 visit_blocks = 24
 
 [talk]
+again_seconds = 16
 characters_per_second = 8
 least_seconds = 4
 pause_seconds = 16
@@ -294,6 +296,7 @@ wait_seconds = 32
 
 [tent]
 fire_blocks = 8
+reminder_blocks = 64
 
 [tide]
 stone_blocks = 8

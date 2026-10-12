@@ -10,7 +10,7 @@ import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.OwnStone;
 import io.github.roman16.wayfarer.RestEvent;
-import io.github.roman16.wayfarer.Shrines;
+import io.github.roman16.wayfarer.Halls;
 import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
@@ -257,7 +257,7 @@ public final class Engine {
         for (Active side : active(server)) {
             if (tracked.map(active -> active.quest() != side.quest()).orElse(true) && Steps.entered(side) && pursued(server, side.quest())) {
                 Steps.goal(side).ifPresent(name -> Progress.of(server).place(name).ifPresent(pos -> event.markers()
-                        .add(new CompassPayload.Marker(CompassPayload.Kind.LEAD, "wayfarer.place." + name, pos.getX(), pos.getZ()))));
+                        .add(new CompassPayload.Marker(CompassPayload.Kind.LEAD, Places.label(server, name), pos.getX(), pos.getZ()))));
             }
         }
         Optional<String> goal = Caravan.heading(event.player()) ? Optional.of(Caravan.NAME) : tracked.flatMap(Steps::goal);
@@ -265,7 +265,7 @@ public final class Engine {
             if (felt(server, event.player(), pos)) {
                 event.aim(new Compass.Aim(pos));
             } else {
-                event.markers().add(new CompassPayload.Marker(CompassPayload.Kind.GOAL, "wayfarer.place." + name, pos.getX(), pos.getZ()));
+                event.markers().add(new CompassPayload.Marker(CompassPayload.Kind.GOAL, Places.label(server, name), pos.getX(), pos.getZ()));
             }
         }));
     }
@@ -460,11 +460,11 @@ public final class Engine {
         });
     }
 
-    public static boolean touches(ServerPlayer player, BlockPos pedestal) {
-        return running(player.server) && (DryCity.touch(player, pedestal) || Locks.asleep(player, pedestal));
+    public static boolean touches(ServerPlayer player, BlockPos stone) {
+        return running(player.server) && (DryCity.touch(player, stone) || Locks.asleep(player, stone));
     }
 
-    public static boolean asks(ServerPlayer player, BlockPos pedestal, ResourceLocation shrine) {
+    public static boolean asks(ServerPlayer player, BlockPos stone, ResourceLocation hall) {
         MinecraftServer server = player.server;
         if (!running(server)) {
             return false;
@@ -472,9 +472,9 @@ public final class Engine {
         Progress progress = Progress.of(server);
         for (Active active : active(server)) {
             Story.Step step = active.step();
-            if (step.kind().equals("shard") && Steps.eyes(step).contains(Shrines.eyeKey(shrine)) && asking(progress, step)
+            if (step.kind().equals("shard") && Steps.eyes(step).contains(Halls.eyeKey(hall)) && asking(progress, step)
                     && progress.choice(active.quest().id(), step.id()).isEmpty()) {
-                Steps.ask(server, active, pedestal);
+                Steps.ask(server, active, stone);
                 return true;
             }
         }

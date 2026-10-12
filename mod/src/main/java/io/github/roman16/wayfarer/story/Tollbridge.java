@@ -59,6 +59,7 @@ import org.slf4j.Logger;
 
 public final class Tollbridge {
     static final String NAME = "tollbridge";
+    static final String BURNING = "burning_town";
     static final String QUEST = "ash";
     static final String CELLAR = "cellar";
     private static final String BURNS_UNTIL = "morning";
@@ -103,6 +104,9 @@ public final class Tollbridge {
     private static final int TALLEST = 8;
     private static final int TOWER_TOP = 24;
     private static final int TRACKS = 8;
+    private static final int TRAIL = 2 + TRACKS * 2;
+    private static final int SEA_LEVEL = 63;
+    private static final int HIGH = 4;
     private static final int TREE_REACH = 32;
     private static final int WELL = 6;
     @Nullable
@@ -143,6 +147,7 @@ public final class Tollbridge {
         private final Set<Long> square = new HashSet<>();
         private final List<Long> main = new ArrayList<>();
         private final List<Cell> approach = new ArrayList<>();
+        private final List<Cell> trail = new ArrayList<>();
         private final List<Lot> lots = new ArrayList<>();
         private final List<BoundingBox> taken = new ArrayList<>();
         @Nullable
@@ -267,8 +272,8 @@ public final class Tollbridge {
                 boolean river = river(heights, x, z, radius);
                 boolean crowded = neighbours.near(heights, x, z);
                 double sunk = (wet * DRY > samples.size() || heights.wet(x, z) ? SUNK : 0) + (crowded ? SUNK * 2 : 0);
-                sites.add(new Site(x, z, crowded,
-                        -sunk - spread * 4 - wet + (river ? radius / (double) SAMPLE : 0) - Math.abs(angle) / 8.0 - Math.abs(nudge) / 16.0));
+                sites.add(new Site(x, z, crowded, -sunk - spread * 4 - wet - Math.max(0, mean - SEA_LEVEL) / HIGH + (river ? radius / (double) SAMPLE : 0)
+                        - Math.abs(angle) / 8.0 - Math.abs(nudge) / 16.0));
             }
         }
         sites.sort(Comparator.comparingDouble(Site::score).reversed());
@@ -423,7 +428,13 @@ public final class Tollbridge {
                 }
             }
         }
-        town.well = settle(level, town, "well", centre.relative(front, WELL + 4).relative(side, WELL), front, true);
+        for (Direction toward : List.of(front, front.getOpposite())) {
+            for (Direction aside : List.of(side, side.getOpposite())) {
+                if (town.well == null) {
+                    town.well = settle(level, town, "well", centre.relative(toward, WELL + 4).relative(aside, WELL), front, true);
+                }
+            }
+        }
         for (int stall = 0; stall < STALLS; stall++) {
             settle(level, town, "stall", centre.relative(side.getOpposite(), SQUARE - 4).relative(front, stall * 4 - (STALLS - 1) * 2), side, true);
         }
@@ -436,6 +447,7 @@ public final class Tollbridge {
             street.forEach(cell -> town.main.add(cell.at().asLong()));
             streets.add(street);
         }
+        town.trail.addAll(town.approach.size() >= TRAIL ? town.approach : streets.stream().max(Comparator.comparingInt(List::size)).orElse(List.of()));
         List<List<Cell>> lanes = branch(level, town, streets, 3);
         streets.addAll(lanes);
         streets.addAll(branch(level, town, lanes, 2));
@@ -1025,11 +1037,13 @@ public final class Tollbridge {
             progress.yaws.put("seat_" + entry.getKey(), (float) yaw(at, fire));
         });
         survivors(server);
-        dead(level, town);
+        dead(level, town, progress);
         build.placed.stream().filter(placed -> placed.lot().piece().equals("inn")).findFirst()
-                .ifPresent(inn -> Clues.marker(level, world(inn, PLAN.get().getAsJsonArray("strongbox")), "strongbox"));
+                .ifPresentOrElse(inn -> Clues.marker(level, world(inn, PLAN.get().getAsJsonArray("strongbox")), "strongbox"), () -> unlaid(progress, "strongbox"));
         Clues.door(level, world(tower, tower().getAsJsonArray("clue")), "cellar");
-        tracks(level, town);
+        if (tracks(level, town) == 0) {
+            unlaid(progress, "tracks");
+        }
         progress.place(NAME, surface(level, town.centre));
         progress.places.remove(SITE);
         int reach = town.radius + SAMPLE;
@@ -1048,7 +1062,12 @@ public final class Tollbridge {
                 .ifPresent(seat -> People.person(level, entry.getKey(), seat.at(), seat.yaw(), entry.getValue().getAsJsonArray().get(3).getAsString())));
     }
 
-    private static void dead(ServerLevel level, Town town) {
+    private static void unlaid(Progress progress, String clue) {
+        progress.unlaid.add(Steps.unlaid(QUEST, clue));
+        LOGGER.warn("Tollbridge has no room for its sign {}; the step needs one sign fewer", clue);
+    }
+
+    private static void dead(ServerLevel level, Town town, Progress progress) {
         JsonObject dead = PLAN.get().getAsJsonObject("dead");
         List<String> skins = new ArrayList<>(dead.getAsJsonArray("others").asList().stream().map(JsonElement::getAsString).toList());
         List<BlockPos> laid = new ArrayList<>();
@@ -1056,11 +1075,15 @@ public final class Tollbridge {
             BoundingBox box = box(town.well);
             lay(level, town, surface(level, new BlockPos(box.minX() - 1, 0, box.minZ() + (box.maxZ() - box.minZ()) / 2)).above(), dead.get("well").getAsString(),
                     "well", laid);
+        } else {
+            unlaid(progress, "well");
         }
         List<Placed> homes = new ArrayList<>(build.placed.stream().filter(placed -> !placed.lot().paths().isEmpty()).toList());
         Collections.shuffle(homes, new Random(town.random.nextLong()));
         if (!homes.isEmpty()) {
             lay(level, town, surface(level, BlockPos.of(homes.getFirst().lot().paths().getFirst())).above(), dead.get("doorway").getAsString(), "doorway", laid);
+        } else {
+            unlaid(progress, "doorway");
         }
         int indoors = skins.size() * INDOORS / EIGHTHS;
         for (int round = 0; round < 2 && indoors > 0; round++) {
@@ -1118,12 +1141,14 @@ public final class Tollbridge {
         laid.add(at);
     }
 
-    private static void tracks(ServerLevel level, Town town) {
-        List<Cell> street = town.approach;
-        for (int print = 0; print < TRACKS && 2 + print * 2 < street.size(); print++) {
+    private static int tracks(ServerLevel level, Town town) {
+        List<Cell> street = town.trail;
+        int print = 0;
+        for (; print < TRACKS && 2 + print * 2 < street.size(); print++) {
             Cell cell = street.get(2 + print * 2);
             Clues.print(level, surface(level, cell.at().relative(cell.way().getClockWise(), print % 2)).above(), "tracks");
         }
+        return print;
     }
 
     private static Optional<BlockPos> standing(ServerLevel level, BlockPos bell, List<BlockPos> taken) {

@@ -1,0 +1,28 @@
+{
+  "placement": {
+    "from_blocks": 24576,
+    "salt": 792893244,
+    "separation": 141,
+    "spacing": 189,
+    "to_blocks": 39096,
+    "type": "wayfarer:band"
+  },
+  "structures": [
+    {
+      "structure": "wayfarer:hall/corrupted",
+      "weight": 1
+    },
+    {
+      "structure": "wayfarer:hall/cryptic",
+      "weight": 1
+    },
+    {
+      "structure": "wayfarer:hall/magical",
+      "weight": 1
+    },
+    {
+      "structure": "wayfarer:hall/undead",
+      "weight": 1
+    }
+  ]
+}

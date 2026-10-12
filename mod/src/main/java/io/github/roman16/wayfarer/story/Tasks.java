@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer.story;
 
+import net.minecraft.nbt.CompoundTag;
 import com.google.gson.JsonElement;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
@@ -55,7 +56,7 @@ public final class Tasks {
     static final String JOURNAL_KEY = "key.wayfarer.journal";
     private static final String HOTBAR = "key.hotbar.";
     private static final int CHECK_TICKS = 20;
-    private static final int TICKS_PER_SECOND = 20;
+    private static final String DONE = "done";
     private static final int FADE_TICKS = 60;
     private static final int NEAR = 32;
     private static final int FOLLOWED = 64;
@@ -101,6 +102,23 @@ public final class Tasks {
         }
     }
 
+    public static void done(ServerPlayer player, String task) {
+        Engine.tracked(player).ifPresent(active -> {
+            CompoundTag done = active.scratch().getCompound(DONE);
+            if (done.getBoolean(task + "/" + player.getUUID())) {
+                return;
+            }
+            done.putBoolean(task + "/" + player.getUUID(), true);
+            active.scratch().put(DONE, done);
+            Progress.of(player.server).setDirty();
+            refresh(player);
+        });
+    }
+
+    private static boolean done(ServerPlayer player, Engine.Active active, String task) {
+        return active.scratch().getCompound(DONE).getBoolean(task + "/" + player.getUUID());
+    }
+
     public static void did(ServerPlayer player, String task) {
         if (Firsts.first(player, FIRST + task)) {
             refresh(player);
@@ -111,6 +129,9 @@ public final class Tasks {
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         if (event.getEntity() instanceof ServerPlayer player && player.tickCount % CHECK_TICKS == 0) {
             refresh(player);
+            if (ModList.get().isLoaded("nomadictents") && Engine.running(player.server)) {
+                TentPitch.remind(player);
+            }
         }
     }
 
@@ -182,7 +203,8 @@ public final class Tasks {
         if (Caravan.heading(player) && tracked.map(active -> !active.step().kind().equals("caravan")).orElse(true)) {
             kind = Component.translatable("wayfarer.journal.main");
             title = Component.translatable("wayfarer.caravan.title");
-            objective = Component.translatable("wayfarer.caravan.objective");
+            objective = tracked.map(active -> Component.translatable("wayfarer.caravan.waits", Engine.title(Progress.of(server), active.quest())))
+                    .orElse(Component.translatable("wayfarer.caravan.objective"));
             rest(player, "caravan", Clock::rested, open);
         } else if (tracked.isPresent()) {
             Engine.Active active = tracked.get();
@@ -197,6 +219,13 @@ public final class Tasks {
         }
         if (OwnStone.carried(player) && !Firsts.seen(player, FIRST + "stone_set")) {
             open.put("stone_set", task("stone_set"));
+        }
+        Component pack = open.remove("pack");
+        if (pack != null) {
+            Map<String, Component> rest = new LinkedHashMap<>(open);
+            open.clear();
+            open.put("pack", pack);
+            open.putAll(rest);
         }
         int now = server.getTickCount();
         Map<String, Fading> fading = FADING.computeIfAbsent(player.getUUID(), key -> new LinkedHashMap<>());
@@ -221,8 +250,7 @@ public final class Tasks {
         }
         for (JsonElement task : active.step().spec().getAsJsonArray("tasks")) {
             if (task.getAsString().equals("rest") && active.step().kind().equals("rest")) {
-                int left = Balance.get().story().restSeconds() - active.scratch().getInt(Steps.RESTED_TICKS) / TICKS_PER_SECOND;
-                open.put("rest", task("rest_while", Math.max(1, left)));
+                open.put("rest", task("rest_while"));
             } else if (task.getAsString().equals("rest")) {
                 rest(player, active.step().kind(), rested(active), open);
             } else {
@@ -238,12 +266,12 @@ public final class Tasks {
             case "bury" -> unless(active.scratch().contains(Steps.BURIED), task("bury"));
             case "tent" -> unless(inTent || Tents.pitchedNear(level, player.blockPosition(), NEAR), task("tent"));
             case "fire" -> unless(inTent || campfire(level, player.blockPosition()), task("fire", Balance.get().tent().fireBlocks()));
-            case "ember" -> Optional.of(task("ember", key(Sense.KEY)));
+            case "ember" -> unless(done(player, active, "ember"), task("ember", key(Sense.KEY)));
             case "look" -> unless(Firsts.seen(player, FIRST + "look"), task("look"));
-            case "marks" -> Optional.of(task("marks", key(Sense.KEY)));
-            case "sweep" -> Optional.of(task("sweep", key(Sense.KEY)));
-            case "search" -> Optional.of(task("search", key(Sense.KEY)));
-            case "tracks" -> Optional.of(task("tracks", key(Sense.KEY)));
+            case "marks" -> unless(done(player, active, "ember"), task("marks", key(Sense.KEY)));
+            case "sweep" -> unless(done(player, active, "sweep"), task("sweep", key(Sense.KEY)));
+            case "search" -> unless(done(player, active, "ember"), task("search", key(Sense.KEY)));
+            case "tracks" -> unless(done(player, active, "ember"), task("tracks", key(Sense.KEY)));
             case "horse" -> Optional.of(task("horse"));
             case "hull" -> Optional.of(task("hull"));
             case "sail" -> Optional.of(player.getVehicle() instanceof Boat ? task("sail", key(SAIL)) : task("sail.board"));

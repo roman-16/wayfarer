@@ -11,7 +11,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import top.theillusivec4.curios.api.CuriosApi;
 
 public final class Marks {
     static final String MARK = "mark_";
@@ -34,7 +36,7 @@ public final class Marks {
     public static void mark(ServerPlayer player, BlockPos at) {
         Progress progress = Progress.of(player.server);
         int reach = Balance.get().farSight().markBlocks();
-        if (!Engine.running(player.server) || !progress.gift(GIFT) || !player.isScoping() || player.level().dimension() != Level.OVERWORLD
+        if (!Engine.running(player.server) || !progress.gift(GIFT) || !spyglass(player) || player.level().dimension() != Level.OVERWORLD
                 || player.blockPosition().distSqr(at) > (double) reach * reach) {
             return;
         }
@@ -46,6 +48,10 @@ public final class Marks {
         Talk.tell(player, Component.translatable("wayfarer.far_sight.marked", (int) Math.sqrt(player.blockPosition().distSqr(at))));
         player.level().playSound(null, player.blockPosition(), SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.PLAYERS, 1, 1);
         Journal.syncAll(player.server);
+    }
+
+    private static boolean spyglass(ServerPlayer player) {
+        return player.isHolding(Items.SPYGLASS) || CuriosApi.getCuriosInventory(player).map(curios -> curios.isEquipped(Items.SPYGLASS)).orElse(false);
     }
 
     static int count() {

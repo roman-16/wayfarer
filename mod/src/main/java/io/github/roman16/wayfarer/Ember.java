@@ -23,6 +23,7 @@ public final class Ember {
     private static final String NAME = "ember";
     private static final int LIT = 1;
     private static final int SYNC_TICKS = 20;
+    private static final String GIVEN = "ember_given";
 
     private Ember() {}
 
@@ -62,6 +63,7 @@ public final class Ember {
             if (!ItemStack.isSameItemSameComponents(stacks.getStackInSlot(0), ember)) {
                 if (stacks.getStackInSlot(0).isEmpty()) {
                     Notices.given(player, List.of(ember));
+                    Sounds.play(player, GIVEN);
                 }
                 stacks.setStackInSlot(0, ember);
             }

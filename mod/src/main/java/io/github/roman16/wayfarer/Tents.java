@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer;
 
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 import net.minecraft.ChatFormatting;
@@ -13,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.MobCategory;
@@ -25,6 +27,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerWakeUpEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
 
 public final class Tents {
     private static final String NAMESPACE = "nomadictents";
@@ -49,6 +52,33 @@ public final class Tents {
                 player.getAdvancements().award(advancement, SLEPT);
             }
             Firsts.first(player, "tent");
+        }
+    }
+
+    public static List<ServerPlayer> sleepers(MinecraftServer server) {
+        return server.getPlayerList().getPlayers().stream().filter(player -> player.level().dimension() == Level.OVERWORLD || isTent(player.level().dimension()))
+                .toList();
+    }
+
+    @SubscribeEvent
+    public static void onSleepFinished(SleepFinishedTimeEvent event) {
+        if (!(event.getLevel() instanceof ServerLevel tent) || !isTent(tent.dimension())) {
+            return;
+        }
+        MinecraftServer server = tent.getServer();
+        ServerLevel overworld = server.overworld();
+        long next = overworld.getDayTime() + Clock.DAY;
+        long morning = next - next % Clock.DAY;
+        overworld.setDayTime(morning);
+        event.setTimeAddition(morning);
+        for (ServerLevel level : server.getAllLevels()) {
+            if (level != tent && (level == overworld || isTent(level.dimension()))) {
+                if (level != overworld) {
+                    level.setDayTime(morning);
+                }
+                level.players().stream().filter(ServerPlayer::isSleeping).forEach(player -> player.stopSleepInBed(false, false));
+                level.updateSleepingPlayerList();
+            }
         }
     }
 

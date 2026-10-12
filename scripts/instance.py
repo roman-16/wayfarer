@@ -15,9 +15,10 @@ PACK = ROOT / "pack"
 DEFAULT_OPTIONS = PACK / "config/defaultoptions/options.txt"
 DEFAULT_KEYS = PACK / "config/defaultoptions/keybindings.txt"
 CACHE = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "wayfarer"
+IRIS = "iris.properties"
 CLIENT_CONFIGS = {
     "dynamic_fps.json": {"enabled": False},
-    "iris.properties": {"enableShaders": "false"},
+    IRIS: {"enableShaders": "false"},
     "wayfarer-client.toml": {"hud_size": "SMALL"},
 }
 FAR_VIEW_CONFIG = {"client": {"advanced": {"graphics": {"quality": {"lodChunkRenderDistanceRadius": 64}}}}}
@@ -172,13 +173,17 @@ def client(target, mode):
         target,
         "client",
         {"resourcepacks", "shaderpacks"} if mode == "lean" else {"mods", "resourcepacks", "shaderpacks"},
-        frozenset() if mode == "far" else FAR_VIEW,
+        frozenset() if mode in ("far", "shipped") else FAR_VIEW,
     )
     settings(target)
     for name, overrides in CLIENT_CONFIGS.items():
-        configure(target / "config" / name, overrides)
+        if not (mode == "shipped" and name == IRIS):
+            configure(target / "config" / name, overrides)
     if mode == "far":
         configure(target / "config/DistantHorizons.toml", FAR_VIEW_CONFIG)
+    if mode == "shipped":
+        for options_file in (PACK / "shaderpacks").glob("*.txt"):
+            shutil.copyfile(options_file, target / "shaderpacks" / options_file.name)
     options(target)
 
 
@@ -206,7 +211,7 @@ def server(target, jar):
     files(target, "server", {"mods"})
     shutil.copyfile(jar, target / "mods" / jar.name)
     settings(target)
-    properties(target, {"level-seed": tomllib.loads(STATES.read_text())["seed"]})
+    properties(target, {})
     (target / "user_jvm_args.txt").unlink()
     (target / "user_jvm_args.txt").write_text("-Xms4G\n-Xmx8G\n")
 
@@ -235,7 +240,11 @@ def main():
     parser = argparse.ArgumentParser(description="Assemble the pack as a dev client instance or a dedicated server")
     sides = parser.add_subparsers(dest="side", required=True)
     for side, text, modes in (
-        ("client", "mods, packs and configs for the dev client; keeps saves and options", ["far", "full", "lean"]),
+        (
+            "client",
+            "mods, packs and configs for the dev client; keeps saves and options",
+            ["far", "full", "lean", "shipped"],
+        ),
         (
             "devserver",
             "mods, configs and properties for the dev server, which brings the Wayfarer mod itself; keeps the world",
@@ -249,14 +258,14 @@ def main():
             choices=modes,
             default="full",
             help="lean leaves the mods folder empty: only the Wayfarer mod and what it needs, from the dev classpath; "
-            "far keeps Distant Horizons' far view on, out to 1,024 blocks",
+            "far keeps Distant Horizons' far view on, out to 1,024 blocks; shipped keeps the far view and the shader as the pack ships them",
         )
     fresh_parser = sides.add_parser(
         "fresh", help="clear what the dev client builds anew: the play world, or the showroom and the workshop"
     )
     fresh_parser.add_argument("target", type=Path)
     fresh_parser.add_argument("world", choices=["play", "showroom"])
-    fresh_parser.add_argument("--mode", choices=["far", "full", "lean"], default="full")
+    fresh_parser.add_argument("--mode", choices=["far", "full", "lean", "shipped"], default="full")
     server_parser = sides.add_parser("server", help="a complete dedicated server, rebuilt from nothing")
     server_parser.add_argument("target", type=Path)
     server_parser.add_argument("jar", type=Path)

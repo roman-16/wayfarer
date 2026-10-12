@@ -22,7 +22,7 @@ final class Remarks {
         }
         String person = who.get();
         List<String> lines = lines(player.server, person);
-        if (lines.isEmpty()) {
+        if (lines.isEmpty() || !Talk.again(player.server, person)) {
             return;
         }
         String key = person + "\n" + lines.getFirst();
@@ -31,7 +31,7 @@ final class Remarks {
         int reach = Balance.get().talk().reachBlocks();
         Talk.tell(player.server.getPlayerList().getPlayers().stream()
                 .filter(listener -> listener.level() == body.level() && listener.distanceToSqr(body) <= (double) reach * reach).toList(),
-                People.label(player.server, person), Component.literal(lines.get(next)));
+                person, Component.literal(lines.get(next)));
     }
 
     private static List<String> lines(MinecraftServer server, String person) {

@@ -134,7 +134,7 @@ public final class Shine {
             return;
         }
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-            if (player.isSpectator() || Shrines.inside(player)) {
+            if (player.isSpectator() || Halls.inside(player)) {
                 continue;
             }
             ServerLevel level = player.serverLevel();

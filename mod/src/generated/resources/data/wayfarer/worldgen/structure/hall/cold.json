@@ -1,0 +1,217 @@
+{
+  "biomes": "#wayfarer:has_structure/hall/cold",
+  "layout": {
+    "cover": 3,
+    "door": [
+      13,
+      2,
+      34
+    ]
+  },
+  "pieces": {
+    "entrance": "wayfarer:hall/cold/entrance",
+    "hall": "wayfarer:hall/cold/hall"
+  },
+  "shaft": {
+    "landing": [
+      {
+        "Name": "minecraft:polished_diorite"
+      },
+      {
+        "Name": "minecraft:polished_diorite"
+      },
+      {
+        "Name": "minecraft:polished_diorite"
+      },
+      {
+        "Name": "minecraft:polished_diorite"
+      },
+      {
+        "Name": "minecraft:polished_diorite"
+      },
+      {
+        "Name": "minecraft:polished_diorite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:snow_block"
+      },
+      {
+        "Name": "minecraft:snow_block"
+      },
+      {
+        "Name": "minecraft:snow_block"
+      },
+      {
+        "Name": "minecraft:snow_block"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:diorite"
+      },
+      {
+        "Name": "minecraft:diorite"
+      }
+    ],
+    "light": {
+      "Name": "minecraft:waxed_exposed_copper_bulb",
+      "Properties": {
+        "lit": "true"
+      }
+    },
+    "pillar": [
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      }
+    ],
+    "stairs": {
+      "Name": "minecraft:polished_diorite_stairs"
+    },
+    "style": "switchback",
+    "wall": [
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:packed_ice"
+      },
+      {
+        "Name": "minecraft:blue_ice"
+      },
+      {
+        "Name": "minecraft:blue_ice"
+      },
+      {
+        "Name": "minecraft:blue_ice"
+      },
+      {
+        "Name": "minecraft:snow_block"
+      },
+      {
+        "Name": "minecraft:snow_block"
+      },
+      {
+        "Name": "minecraft:snow_block"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:calcite"
+      },
+      {
+        "Name": "minecraft:diorite"
+      },
+      {
+        "Name": "minecraft:diorite"
+      },
+      {
+        "Name": "minecraft:andesite"
+      }
+    ]
+  },
+  "spawn_overrides": {},
+  "step": "underground_structures",
+  "terrain_adaptation": "none",
+  "type": "wayfarer:hall"
+}

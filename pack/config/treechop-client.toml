@@ -1,0 +1,3 @@
+[visuals]
+	[visuals.choppingIndicator]
+		enabled = false

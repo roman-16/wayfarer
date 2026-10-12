@@ -93,6 +93,7 @@ MAIN = ROOT / "mod/src/generated/resources"
 DEV = ROOT / "mod/src/generated/dev"
 ENDREM_EYES = ROOT / "pack/config/EndRemastered-NeoForge/Eyes"
 IRIS = ROOT / "pack/config/iris.properties"
+SHADERPACKS = ROOT / "pack/shaderpacks"
 LANG = ROOT / "mod/src/main/resources/assets/wayfarer/lang/en_us.json"
 SPARSE_STRUCTURES = ROOT / "pack/config/sparsestructures.json5"
 CAMPFIRE_SPAWNS = ROOT / "pack/config/nohostilesaroundcampfire.json5"
@@ -161,14 +162,14 @@ def opening(room, pos, look=None):
 def cameras(room, layout):
     width, height, length = room.size
     door_x, floor, door_z = layout["door"]
-    pedestal = next(pos for pos, block in room.t.blocks.items() if block[0] == "wayfarer:shrine_pedestal")
-    target = (pedestal[0] + 0.5, pedestal[1] + 1.2, pedestal[2] + 0.5)
+    stone = next(pos for pos, block in room.t.blocks.items() if block[0] == "wayfarer:calling_stone")
+    target = (stone[0] + 0.5, stone[1] + 1.2, stone[2] + 0.5)
     middle = length // 2
     wall = next((x for x in range(width // 2, -1, -1) if (x, floor + 1, middle) not in room.open), 0)
     looks = {
         "hall": ((door_x, floor, door_z - 1), target),
         "high": ((door_x, floor + height - 7, length - 4), target),
-        "pedestal": ((pedestal[0], pedestal[1], pedestal[2] + 3), target),
+        "stone": ((stone[0], stone[1], stone[2] + 3), target),
         "wall": ((wall + 4, floor, middle), (wall + 0.5, floor + 2, middle + 0.5)),
         "corner": ((width // 2, floor + 1, middle), (width - 1.5, floor + height - 4, 1.5)),
         "ceiling": ((width // 2, floor, middle), (width // 2 + 0.5, height, middle - 3.5)),
@@ -180,29 +181,29 @@ def cameras(room, layout):
     ]
 
 
-def shrines(eyes):
+def halls(eyes):
     for eye, spec in eyes.items():
         room, layout = HALLS[eye](eye, spec)
-        pedestal = next(pos for pos, block in room.t.blocks.items() if block[0] == "wayfarer:shrine_pedestal")
-        layout = layout | {"cameras": cameras(room, layout), "pedestal": list(pedestal), "size": list(room.size)}
-        room.save(MAIN / f"data/wayfarer/structure/shrine/{eye}/hall.nbt")
+        stone = next(pos for pos, block in room.t.blocks.items() if block[0] == "wayfarer:calling_stone")
+        layout = layout | {"cameras": cameras(room, layout), "stone": list(stone), "size": list(room.size)}
+        room.save(MAIN / f"data/wayfarer/structure/hall/{eye}/hall.nbt")
         cover = Cover(layout["shaft"]["style"], eye)
         ENTRANCES[eye](cover, room.shell)
-        cover.save(MAIN / f"data/wayfarer/structure/shrine/{eye}/entrance.nbt")
+        cover.save(MAIN / f"data/wayfarer/structure/hall/{eye}/entrance.nbt")
         if "oculus" in layout:
             seal = Template()
             seal.set((0, 0, 0), room.shell)
-            seal.save(MAIN / f"data/wayfarer/structure/shrine/{eye}/skylight_seal.nbt")
+            seal.save(MAIN / f"data/wayfarer/structure/hall/{eye}/skylight_seal.nbt")
             cap = Template()
             for y, block in enumerate(layout["oculus"]["cap"]):
                 cap.set(
                     (0, y, 0), block, east="none", north="none", south="none", up=True, waterlogged=False, west="none"
                 )
-            cap.save(MAIN / f"data/wayfarer/structure/shrine/{eye}/skylight_cap.nbt")
+            cap.save(MAIN / f"data/wayfarer/structure/hall/{eye}/skylight_cap.nbt")
         yield eye, layout
     column = Template()
     column.set((0, 0, 0), "minecraft:air")
-    column.save(MAIN / "data/wayfarer/structure/shrine/skylight.nbt")
+    column.save(MAIN / "data/wayfarer/structure/hall/skylight.nbt")
 
 
 def empty():
@@ -255,7 +256,7 @@ def showroom(eyes):
         lines += [
             f"/tp @s {center} {y + 20} {row}",
             "settle",
-            f"/place structure wayfarer:shrine/{eye} {x} {y} {SHOWROOM_ROW_Z}",
+            f"/place structure wayfarer:hall/{eye} {x} {y} {SHOWROOM_ROW_Z}",
             f"/setblock {center} {y} {row - SHOWROOM_SIGN_OFFSET} minecraft:oak_sign[rotation=8]"
             + f"{{front_text:{{messages:[{blank},{name},{blank},{blank}]}}}}",
         ]
@@ -320,13 +321,13 @@ def tour(eyes, layouts):
                 ],
                 "origin": camp_origin,
             },
-            "shrines": [
+            "halls": [
                 {
                     "cameras": layouts[eye]["cameras"],
                     "centre": [SHOWROOM_SPACING * (index + 1) + CHUNK // 2, SHOWROOM_ROW_Z + CHUNK // 2],
                     "door": list(layouts[eye]["door"]),
                     "eye": eye,
-                    "pedestal": layouts[eye]["pedestal"],
+                    "stone": layouts[eye]["stone"],
                     "shaft": layouts[eye]["shaft"]["style"],
                     "size": layouts[eye]["size"],
                 }
@@ -597,7 +598,7 @@ def books(spec, eyes, entries):
                 identifier: {"author": entry["author"], "pages": entry["pages"], "title": entry["title"]}
                 for identifier, entry in entries.items()
             },
-            "people": {f"wayfarer:shrine/{eye}": f"people/{eye}" for eye in sorted(eyes)},
+            "people": {f"wayfarer:hall/{eye}": f"people/{eye}" for eye in sorted(eyes)},
         },
     )
 
@@ -612,6 +613,10 @@ def shaders():
     patches = patcher.split("-")[1]
     pack = f"{shader.removesuffix('.zip')} + EuphoriaPatches_{patches}"
     IRIS.write_text(f"disableUpdateMessage=true\nenableShaders=true\nshaderPack={pack}\n")
+    for stale in SHADERPACKS.glob("*.txt"):
+        stale.unlink()
+    options = tomllib.loads((ROOT / "generator/shader.toml").read_text())
+    (SHADERPACKS / f"{pack}.txt").write_text("".join(f"{key}={value}\n" for key, value in sorted(options.items())))
 
 
 def write_json(path, data):
@@ -631,7 +636,7 @@ def states(value):
 
 def acts_bands(balance):
     world = balance["world"]
-    far = balance["shrines"]["act_three_from_blocks"]
+    far = balance["halls"]["act_three_from_blocks"]
     coast = balance["strongholds"]["radius_blocks"] + world["last_sea_past_ring_blocks"]
     return {2: (world["home_blocks"] + world["sea_blocks"], far), 3: (far, coast)}
 
@@ -642,27 +647,27 @@ def worldgen(eyes, layouts, acts, balance):
         if "oculus" in layouts[eye]:
             layout["oculus"] = {
                 "at": list(layouts[eye]["oculus"]["at"]),
-                "cap": f"wayfarer:shrine/{eye}/skylight_cap",
-                "column": "wayfarer:shrine/skylight",
-                "seal": f"wayfarer:shrine/{eye}/skylight_seal",
+                "cap": f"wayfarer:hall/{eye}/skylight_cap",
+                "column": "wayfarer:hall/skylight",
+                "seal": f"wayfarer:hall/{eye}/skylight_seal",
             }
         write_json(
-            MAIN / f"data/wayfarer/tags/worldgen/biome/has_structure/shrine/{eye}.json",
+            MAIN / f"data/wayfarer/tags/worldgen/biome/has_structure/hall/{eye}.json",
             {"values": [{"id": biome, "required": False} for biome in spec["biomes"]]},
         )
         write_json(
-            MAIN / f"data/wayfarer/worldgen/structure/shrine/{eye}.json",
+            MAIN / f"data/wayfarer/worldgen/structure/hall/{eye}.json",
             {
-                "biomes": f"#wayfarer:has_structure/shrine/{eye}",
+                "biomes": f"#wayfarer:has_structure/hall/{eye}",
                 "layout": layout,
-                "pieces": {"entrance": f"wayfarer:shrine/{eye}/entrance", "hall": f"wayfarer:shrine/{eye}/hall"},
+                "pieces": {"entrance": f"wayfarer:hall/{eye}/entrance", "hall": f"wayfarer:hall/{eye}/hall"},
                 "shaft": {
                     key: value if key == "style" else states(value) for key, value in layouts[eye]["shaft"].items()
                 },
                 "spawn_overrides": {},
                 "step": "underground_structures",
                 "terrain_adaptation": "none",
-                "type": "wayfarer:shrine",
+                "type": "wayfarer:hall",
             },
         )
         write_json(
@@ -680,23 +685,21 @@ def worldgen(eyes, layouts, acts, balance):
         )
     names = sorted(eyes)
     write_json(
-        MAIN / "data/wayfarer/tags/worldgen/structure/shrines.json",
-        {"values": [f"wayfarer:shrine/{eye}" for eye in names]},
+        MAIN / "data/wayfarer/tags/worldgen/structure/halls.json",
+        {"values": [f"wayfarer:hall/{eye}" for eye in names]},
     )
     bands = acts_bands(balance)
     for act, name in ACT_NAMES.items():
-        members = [f"wayfarer:shrine/{eye}" for eye in names if eyes[eye]["act"] == act]
-        write_json(MAIN / f"data/wayfarer/tags/worldgen/structure/shrines/{name}.json", {"values": members})
-        members = [
-            member for member in members if not eyes[member.removeprefix("wayfarer:shrine/")].get("story", False)
-        ]
+        members = [f"wayfarer:hall/{eye}" for eye in names if eyes[eye]["act"] == act]
+        write_json(MAIN / f"data/wayfarer/tags/worldgen/structure/halls/{name}.json", {"values": members})
+        members = [member for member in members if not eyes[member.removeprefix("wayfarer:hall/")].get("story", False)]
         spacing = acts[str(act)]["spacing"]
         write_json(
-            MAIN / f"data/wayfarer/worldgen/structure_set/shrines/{name}.json",
+            MAIN / f"data/wayfarer/worldgen/structure_set/halls/{name}.json",
             {
                 "placement": {
                     "from_blocks": bands[act][0],
-                    "salt": salt(f"wayfarer:shrines/{name}"),
+                    "salt": salt(f"wayfarer:halls/{name}"),
                     "separation": spacing * 3 // 4,
                     "spacing": spacing,
                     "to_blocks": bands[act][1],
@@ -733,7 +736,7 @@ def worldgen(eyes, layouts, acts, balance):
 
 def spread(balance):
     structures = balance["structures"]
-    unspread = sorted(structures["unspread"] + [f"wayfarer:shrines/{name}" for name in ACT_NAMES.values()])
+    unspread = sorted(structures["unspread"] + [f"wayfarer:halls/{name}" for name in ACT_NAMES.values()])
     write_json(
         SPARSE_STRUCTURES,
         {
@@ -836,7 +839,7 @@ def main():
     written = tomllib.loads((ROOT / "story/books.toml").read_text())
     for directory in (DEV, ENDREM_EYES, MAIN):
         shutil.rmtree(directory, ignore_errors=True)
-    layouts = dict(shrines(eyes))
+    layouts = dict(halls(eyes))
     worldgen(eyes, layouts, source["acts"], balance)
     tour(eyes, layouts)
     spread(balance)

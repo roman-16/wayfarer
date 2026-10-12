@@ -54,6 +54,8 @@ HIDES = [
     ["#3e3226", "#4c3e30", "#5a4a3a"],
 ]
 RIME = ["#b8c8d0", "#d0dee6", "#e8f0f4"]
+IRISES = ["#3e5a78", "#4a3020", "#4a6a3a", "#5a4632", "#5a6268"]
+WHITE_OF_EYE = "#e4dcd2"
 WOUNDS = [
     ["clOc", "Xxlc", "lxXc", "cxlc"],
     ["clcc", "lxXc", "Xxlc", "cXcc"],
@@ -84,6 +86,14 @@ def darker(color, amount=0.82):
 
 def pick(seed, options):
     return options[int(noise(seed) * len(options)) % len(options)]
+
+
+def eyes(fate):
+    return "WEssEW" if fate == "living" else "EEssEE"
+
+
+def iris(seed, fate, shadow):
+    return pick(f"{seed}/eyes", IRISES) if fate == "living" else darker(shadow, 0.9)
 
 
 def head(style, eyes, beard):
@@ -244,7 +254,7 @@ def person(seed, kind, fate, cloths=CLOTHS, legs=TROUSERS):
         style, beard = "messy", False
     else:
         style, beard = pick(f"{seed}/style", ["long", "long", "short"] if kind != "girl" else ["long", "messy"]), False
-    spec = head(style, "EEssEE", beard)
+    spec = head(style, eyes(fate), beard)
     if woman:
         spec |= dress(
             wound, noise(f"{seed}/apron") > 0.6 and kind != "girl", kind == "old_woman", noise(f"{seed}/ring") > 0.5
@@ -254,9 +264,10 @@ def person(seed, kind, fate, cloths=CLOTHS, legs=TROUSERS):
     light = cloth[2]
     palette = {
         "B": BOOTS,
-        "E": darker(shadow, 0.9),
+        "E": iris(seed, fate, shadow),
         "H": darker(hair[0]),
         "S": shadow,
+        "W": WHITE_OF_EYE,
         "X": "#5c2620",
         "b": "#4a3a2c",
         "h": hair,
@@ -384,18 +395,19 @@ def walker(seed, kind, fate, hooded=True, quiver=False, look=None):
     beard = not woman and noise(f"{seed}/beard") > (0.3 if old else 0.5)
     wound = int(noise(f"{seed}/wound") * len(WOUNDS)) % len(WOUNDS) if fate != "living" else None
     if hooded:
-        spec = hood("EEssEE", beard)
+        spec = hood(eyes(fate), beard)
     else:
-        spec = head("long" if woman else pick(f"{seed}/style", ["short", "messy"]), "EEssEE", beard)
+        spec = head("long" if woman else pick(f"{seed}/style", ["short", "messy"]), eyes(fate), beard)
     spec |= parka(wound, woman, quiver)
     palette = {
         "B": BOOTS,
-        "E": darker(shadow, 0.9),
+        "E": iris(seed, fate, shadow),
         "F": darker(fur[0]),
         "H": darker(hair[0]),
         "M": darker(hide[0], 0.9),
         "P": "#c8b89c",
         "S": shadow,
+        "W": WHITE_OF_EYE,
         "U": darker(trim[0], 0.86),
         "X": "#5c2620",
         "f": fur,
@@ -501,16 +513,17 @@ def keeper(seed, kind, fate, look):
     hair = look["hair"]
     beard = look.get("beard", False)
     wound = int(noise(f"{seed}/wound") * len(WOUNDS)) % len(WOUNDS) if fate != "living" else None
-    spec = head(look["style"], "EEssEE", beard)
+    spec = head(look["style"], eyes(fate), beard)
     spec |= robe(wound, woman, look.get("satchel", False), True)
     palette = {
         "B": BOOTS,
         "D": darker(WOOL[0], 0.86),
-        "E": darker(shadow, 0.9),
+        "E": iris(seed, fate, shadow),
         "H": darker(hair[0]),
         "P": darker("#70502e", 0.8),
         "R": look["hood"],
         "S": shadow,
+        "W": WHITE_OF_EYE,
         "X": "#5c2620",
         "d": WOOL,
         "h": hair,
@@ -562,7 +575,7 @@ ROLLED = 5
 def shipwright(look):
     tone, shadow = look["tone"]
     cloth = look["cloth"]
-    spec = head(look["style"], "EEssEE", False) | dress(None, True, False, False)
+    spec = head(look["style"], eyes("living"), False) | dress(None, True, False, False)
     for key in ("arm", "arm_side"):
         spec[key] = spec[key][:ROLLED] + ["s" * len(spec[key][0])] * (len(spec[key]) - ROLLED)
     front = list(spec["body_front"])
@@ -573,9 +586,10 @@ def shipwright(look):
         "A": darker(LEATHER[0]),
         "B": BOOTS,
         "D": darker(cloth[0]),
-        "E": darker(shadow, 0.9),
+        "E": IRISES[1],
         "H": darker(look["hair"][0]),
         "S": shadow,
+        "W": WHITE_OF_EYE,
         "a": LEATHER,
         "d": cloth,
         "h": look["hair"],

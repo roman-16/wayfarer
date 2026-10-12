@@ -271,8 +271,8 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 ### M8 The memories: a dream world of their own
 
 - A memory happens in a small dream world of its own, as the tents' insides do, and the player is taken in and brought back to the same spot. While they dream they are gone from the real world, so nothing can hurt them.
-- The dream rebuilds the place from the world's own seed, exactly as the world first made it: the same hills, rivers and hall, and nothing the players built or broke since, since that is the past. The memory then changes only what it needs, the hall whole and newer, the shard lit on its pedestal, the Frost Walkers on the stair, the grass halls young, and places again what the pack sets down by code, such as the Last Camp; whatever the memory needs no change to stays as the world made it.
-- Everyone within about 32 blocks of the stone dreams it together, every one of them as Wend. A player who was not there can dream it again later from the journal, at a fire: once a memory has been dreamt, its quest's page (under Quests, later under Done) carries a Dream it again button beside Track. It works while the player stands within 4 blocks of a lit campfire, the caravan's included; anywhere else it is greyed and the page says to sit by a fire. Pressing it closes the journal, the ember flares, and the player, with anyone within 32 blocks of them, dreams it from its beginning at the place as it was, standing round its stone, and wakes at the fire where they stood. Dreaming it again changes nothing in the quest and adds nothing to At the Fire; alone, it is the one player.
+- The dream rebuilds the place from the world's own seed, exactly as the world first made it: the same hills, rivers and hall, and nothing the players built or broke since, since that is the past. The memory then changes only what it needs, the hall whole and newer, the shard lit on its calling stone, the Frost Walkers on the stair, the grass halls young, and places again what the pack sets down by code, such as the Last Camp; whatever the memory needs no change to stays as the world made it.
+- Everyone within about 32 blocks of the stone dreams it together, every one of them as Wend. A player who was not there can dream it again later from the journal, at a fire: once a memory has been dreamt, its quest's page (under Quests, later under Done) carries a Dream it again button beside Track. It works while the player stands within 4 blocks of a lit campfire, the caravan's included; anywhere else it is greyed and the page says to sit by a fire. Pressing it closes the journal, the ember flares, and the player, with anyone within 32 blocks of them, dreams it from its beginning at the place as it was, standing round its stone, and wakes at the fire where they stood. Dreaming it again changes nothing in the quest and adds nothing to Conversations; alone, it is the one player.
 
   ```text
   Kai touches the calling stone. The ember flares, in all of you.
@@ -283,7 +283,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 **Why:** Rebuilt from the seed, the dream is recognisably the place the players stand in, down to the last hill, without copying the present and without tracking which blocks players changed; a world apart leaves the real one untouched for friends who stay in it (D11). Dreaming together keeps nobody watching, and replaying from the journal means nobody misses Wend's life for being away; the button sits on the quest's own page, where its story already is, and any lit campfire counts, so a player alone on the road dreams it again at their own camp.
 
-**The spike worked**, and the memories now run in `mod/src/main/java/io/github/roman16/wayfarer/story/Memories.java`: touching a hall's pedestal makes a dream world with the overworld's own generator and seed and takes everyone within 32 blocks into it, at the same spot; the hall comes back as the world made it, its pillar of planks and torch, which a player had put there, gone, and the memory makes it newer, 805 mossy, cracked and cobwebbed blocks made clean, and walks a Frost Walker to the stair, where she kneels. A pretend player killed in the dream wakes at its beginning with full health and nothing lost, and at the end everyone wakes where they stood and the dream world is let go and deleted. What it showed:
+**The spike worked**, and the memories now run in `mod/src/main/java/io/github/roman16/wayfarer/story/Memories.java`: touching a hall's calling stone makes a dream world with the overworld's own generator and seed and takes everyone within 32 blocks into it, at the same spot; the hall comes back as the world made it, its pillar of planks and torch, which a player had put there, gone, and the memory makes it newer, 805 mossy, cracked and cobwebbed blocks made clean, and walks a Frost Walker to the stair, where she kneels. A pretend player killed in the dream wakes at its beginning with full health and nothing lost, and at the end everyone wakes where they stood and the dream world is let go and deleted. What it showed:
 
 | Finding | For the engine |
 |---|---|
@@ -433,7 +433,7 @@ Act 3:
   | Warmth | The ember warms the player like a fire | The cold lands |
   | Deep-sight | Clear sight far under water | Underwater passages, such as a hall's side door |
   | Stare | The weaker of the gaze's creatures flee the player's look | Holding without fighting |
-  | Far-sight | Zoom far, and mark a place on the map from far off | Finding places sooner |
+  | Far-sight | Through the spyglass, in the hand or its own slot, the view zooms further, and a strike marks a place on the map from far off | Finding places sooner |
   | Sky-veil | Phantoms do not see the player | Safe flight |
   | Night-walk | At night, creatures do not notice the player unless they run | The road by night |
   | The Flare | A burst of the ember's light that crumbles the gaze's creatures within 16 blocks, once until the player rests at a fire | Breaking a horde |
@@ -472,7 +472,7 @@ What it showed:
 ### M12 The camp and the gear
 
 - Nomadic Tents is changed so that placing a tent builds the whole tent at once, without a frame or a mallet; packing it up is one click. Its own `enter_when_safe` and `pickup_when_safe` are switched on, so nobody enters or packs up a tent while monsters are near (D13). It stays the pack's tent because it is the one whose inside is a folded space: Let's Do Camping and Simply Tents pitch an ordinary tent in the world, and both are All Rights Reserved.
-- A bed inside a tent sleeps only when a lit campfire burns within 8 blocks of the tent outside (D13, `[tent]` `fire_blocks`), room enough to find flat ground for a tent beside the fire.
+- A bed inside a tent sleeps only when a lit campfire burns within 8 blocks of the tent outside (D13, `[tent]` `fire_blocks`), room enough to find flat ground for a tent beside the fire. Every tent is a world of its own, but the night is the team's: a player lies down in their tent and stays lying until two thirds of the team sleep, in their tents or out, and then it is morning for everyone at once (`[sleep]` `players_percentage`). A pitched tent's inside keeps running while its owner is out, so a furnace in it finishes its work; a packed tent stops.
 - A lit fire's circle reaches 32 blocks (`[fire]` `circle_blocks`): no monster spawns inside it, and one that wanders in turns away and lets the team be, so the caravan's whole camp lies inside and a tent beside the fire is never kept shut by monsters at its door. A hold switches the circle off around its own fight.
 - Resting is being by a lit fire: a player within 4 blocks of one rests at once, with nothing to wait for and no need to stand still. The camp, the afternoon at the caravan's fire, the Warm effect and the Flare all count that rest.
 - The fire's stories stay. If a night has one, the voice's long talk, a person's scene or Maren's visit, it plays once most of the team sits at the caravan's fire, and sleep waits until it is over; a night without one goes straight to sleep. Resting half a minute at a fire still warms the ember, so the player eats like a settled person until the next dusk.
@@ -527,8 +527,8 @@ What it showed:
   | The settled world | Villages | 768 blocks |
   | | Towns | 3,072 blocks |
   | | Capitals | 12,288 blocks, a few in the world |
-  | | Ruins of burnt towns | 384 blocks |
-  | Wayfarers and travellers | Campsites | 384 blocks |
+  | | Ruins of burnt towns | 512 blocks |
+  | Wayfarers and travellers | Campsites | 512 blocks |
   | The first civilisation | Ancient Cities | As rare as vanilla's, deep |
 
   Every one of the pack's structure kinds gets its owner or is cut in `generator/owners.toml`, and the kinds this table spaces share one placement each.
@@ -576,7 +576,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | Part | What it does today | Verdict |
 |---|---|---|
 | The ember (`Ember`) | Wakes after the first day, one per team | Kept, changed: wakes at the end of P2, and a shared fire's light is one for the world (D11) |
-| Shrines and shards (`Shrines`, `Shards`, the pedestal, the halls) | Twelve halls in two distance tiers, a shard on each pedestal | Kept, changed: the pedestal is the calling stone, the halls have their fates (S6), the two tiers become the three acts' rings, and the Diggers' and the Marsh Mothers' halls are put down ahead by their quests (S24, S29); halls stay free of spawns, now as hallowed ground |
+| Halls and shards (`Halls`, `Shards`, the calling stone, the halls) | Twelve halls in two distance tiers, a shard on each calling stone | Kept, changed: the calling stone is the calling stone, the halls have their fates (S6), the two tiers become the three acts' rings, and the Diggers' and the Marsh Mothers' halls are put down ahead by their quests (S24, S29); halls stay free of spawns, now as hallowed ground |
 | The compass (`Compass`) | Points at shards, friends and the grave | Kept, changed: the tracked quest's goal as the player knows it (D6), friends and stones (M2) |
 | Leads (`Leads`) | Places someone told the player of | Folded into the quest engine: a lead is a goal someone told of (S7) |
 | The fire (`Fire`, `Warm`) | The circle keeps monsters off, resting warms the ember, the voice speaks at rest | Kept, changed: the circle and the warming stay, and the voice's long talks and the night's stories play at the caravan's fire (S4, M12) |
@@ -610,7 +610,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 ### M16 Balance: start, measure, tune
 
-- Each system starts its numbers in `balance.toml`, as powers of two (AGENTS.md). What a tool can measure gets one, the way `just survey` measures the shrines' legs: how long a day on the road runs, how often a road scene comes, how bright the shine grows. What only a player can judge goes into the `playtest` skill's checklist for the Act 1 slice.
+- Each system starts its numbers in `balance.toml`, as powers of two (AGENTS.md). What a tool can measure gets one, the way `just survey` measures the halls' legs: how long a day on the road runs, how often a road scene comes, how bright the shine grows. What only a player can judge goes into the `playtest` skill's checklist for the Act 1 slice.
 - No side of a hard decision is a trap: each side's reward shows within the same act, and its cost no later than the next. The starting point to play and tune:
 
   | Decision | Taking the shard | Leaving it |
@@ -623,7 +623,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   | The Grass Kingdom's ward (3.4) | Sky-veil, which makes flight safe, and a step of shine; the walls fall unless the player holds them, and the heir has his land back | The kingdom stands and trusts the player, which counts towards Keep the oath; the heir looks for another way in |
   | The shard or the children (3.5) | Night-walk and a step of shine; the children stay captive | No gift; the children join the caravan and help at the gate (F1) |
 
-**Why:** Numbers that start from a reason and are then measured are how the pack already tunes its shrines, and leave the player only what a tool cannot judge. A decision is hard only if both ways cost something the player feels soon enough to remember why.
+**Why:** Numbers that start from a reason and are then measured are how the pack already tunes its halls, and leave the player only what a tool cannot judge. A decision is hard only if both ways cost something the player feels soon enough to remember why.
 
 ### M18 Gear and its road
 
@@ -1057,7 +1057,7 @@ It raises, for its build: keeping each act's foes out of the world until their a
   - A team that has left the home land by boat: an Act 1 quest still picks its ground on the home land, searching from the home land's side nearest the team, and the compass points back.
   - A team that sails early and finds an Act 2 or Act 3 hall: it stands there, and what they take counts (D6).
   - A kind of land missing from its band, or a hall of the kind a quest needs lying far off: an Act 2 or Act 3 quest takes the nearest of its halls the world grew within 8,192 blocks of the caravan (`balance.toml` `[halls]`); with none that near, it raises one of that kind on the nearest fitting land within reach, out of sight, as Act 1 puts its halls down. On the states' seed the nearest Drowned City hall lay 26,000 blocks off.
-  - With two thirds sea, a band's halls stand farther apart, so each act's spacing is measured with `just survey` (AGENTS.md); its legs are walked from the inner edge of the band, and their targets are `balance.toml` `[shrines]` `act_two_leg_blocks` (8,192) and `act_three_leg_blocks` (12,288), Act 2 crossed by ship and Act 3 by air.
+  - With two thirds sea, a band's halls stand farther apart, so each act's spacing is measured with `just survey` (AGENTS.md); its legs are walked from the inner edge of the band, and their targets are `balance.toml` `[halls]` `act_two_leg_blocks` (8,192) and `act_three_leg_blocks` (12,288), Act 2 crossed by ship and Act 3 by air.
 
 **Why:** Act 1 is walked, and its quests already lay down the first two halls a day ahead, so the other two follow suit and the act's pace stays a day a hall whatever the seed; Acts 2 and 3 are travelled by ship and by air, where a hall found on a far coast is the reward of the voyage. The census of the land under the shape (`ShapeSpike`, on four seeds) found every Act 1 land on the home land, snow and ice 6 to 52% of it, forest 10 to 18%, plains 13 to 17%, swamp 1 to 4%, and every Act 2 and Act 3 land in both bands, mountains the rarest at 0.3 to 0.6%; dark forest is not counted by its tag, so its share is not yet measured.
 
@@ -1088,6 +1088,30 @@ It raises, for its build: keeping each act's foes out of the world until their a
 - After every door the side quests the team left open stay in the journal and can still be finished, and the caravan keeps its days, packing each morning and setting up ahead again. Under Blind it and Close the Eye it no longer calls the team in at 17:00, since the road's rules are over, so each door's last quest stands in the task panel; a player can still head in from the journal. Under Give it its sight it calls them in as before, since every night outside home is hunted.
 
 **Why:** The world goes on after the doors, and taking away a quest the team chose to leave open takes away a choice; each door's last quest already says what that world is for.
+
+### M44 What is worn: the Curios panel
+
+- The Curios panel holds what a player wears beside their armour, each in a slot of its own: the ember, the shards, the spyglass, one charm (the totem of undying, Friends & Foes' totems or an Ember Veil) and four clothes, Hood, Coat, Trousers and Boots, which take only Tough As Nails' wool clothes against the cold and leaf clothes against the heat.
+- Clothes in their slots count for warmth or coolness as if worn as armour, on top of whatever armour is worn, so a player in iron with a wool hood and coat is a step warmer, and wool both as armour and as clothes is the warmest there is. They are not drawn on the body.
+- The spyglass in its slot is looked through with C (Spyglass Improvements), from the hotbar too; from deeper in the bag C does nothing. Far-sight works from the slot as from the hand (M11). Everything worn counts as had on the Gear page (M18), and everything worn goes into the grave and comes back with it.
+
+  ```text
+  Inventory › Curios   Ember [ember]  Spyglass [spyglass]  Charm [totem]  Hood [wool hood]  Coat [wool coat]  Trousers [ ]  Boots [ ]
+  ```
+
+**Why:** Clothes under armour let a player keep their best gear on in the snow and the desert instead of trading it for wool, and a slot for each worn kind keeps the spyglass and the totem from pushing each other out.
+
+### M45 The Last Camp stands out of the snow
+
+- When the world's spawn lies where it snows, the Last Camp moves to the nearest dry land within 2,048 blocks where it does not snow (`[prologue]` `camp_search_blocks`), and the world's spawn moves with it, so the first night never begins in a blizzard with nothing to wear. With no such ground within reach it stands where the spawn is.
+
+**Why:** A newcomer meets the story at the fire; freezing there before the stranger has said a word teaches only that the start is unfair.
+
+### M46 Loot: a unique now and then
+
+- Simply Swords' unique weapons come about once in 64 chests a player opens, never in a village: its pity starts after 32 chests without one and makes one certain by the 128th (`pack/config/simplyswords/loot.toml`). When Dungeons Arise, whose chests held diamond gear and high enchantments from the first days, is cut (`mods.md`).
+
+**Why:** A unique is the road's rare reward; one in every chest makes it the road's floor.
 
 ## Open
 

@@ -18,6 +18,7 @@ import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
@@ -68,6 +69,7 @@ public final class Sense {
             stop(player, now);
         }
         Tasks.did(player, "ember");
+        Tasks.done(player, "ember");
         glow(player, true);
     }
 
@@ -131,6 +133,15 @@ public final class Sense {
         team.setColor(ChatFormatting.GOLD);
         glowing.forEach(entity -> team.getPlayers().add(entity.getStringUUID()));
         return team;
+    }
+
+    static void unglow(ServerLevel level, Entity entity) {
+        sensing.forEach((uuid, held) -> {
+            ServerPlayer player = level.getServer().getPlayerList().getPlayer(uuid);
+            if (player != null && held.glowing().contains(entity)) {
+                glow(player, entity, false);
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")

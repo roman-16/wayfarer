@@ -246,6 +246,6 @@ final class Forge {
         int reach = Balance.get().talk().reachBlocks();
         Talk.tell(player.server.getPlayerList().getPlayers().stream()
                 .filter(listener -> listener.level() == body.level() && listener.distanceToSqr(body) <= (double) reach * reach).toList(),
-                People.label(player.server, SMITH), Component.literal(text));
+                SMITH, Component.literal(text));
     }
 }

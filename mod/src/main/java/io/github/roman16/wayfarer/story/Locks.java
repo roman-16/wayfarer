@@ -51,7 +51,7 @@ final class Locks {
     private static final String HEIR = "heir";
     private static final String GIFT = "stone_sight";
     private static final ResourceLocation TEMPLATE = Wayfarer.id("locks/house");
-    private static final HallSite SITE = new HallSite("locks_hall", Wayfarer.id("shrine/rogue"), NAME, 2);
+    private static final HallSite SITE = new HallSite("locks_hall", Wayfarer.id("hall/rogue"), NAME, 2);
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/locks.json");
     private static final int AWAY = 32;
@@ -80,7 +80,7 @@ final class Locks {
         SITE.tick(server);
         Progress progress = Progress.of(server);
         ServerLevel level = Engine.overworld(server);
-        SITE.entrance(progress).filter(top -> (progress.place(ORIGIN).isEmpty() || progress.place(STONE).isEmpty()) && Halls.loaded(level, top))
+        SITE.entrance(progress).filter(top -> (progress.place(ORIGIN).isEmpty() || progress.place(STONE).isEmpty()) && HallSearch.loaded(level, top))
                 .ifPresent(top -> {
                     if (progress.place(ORIGIN).isEmpty()) {
                         house(server, level, top);
@@ -88,7 +88,7 @@ final class Locks {
                     if (progress.place(STONE).isEmpty()) {
                         hall(server, level);
                     }
-                    Halls.release(level, top);
+                    HallSearch.release(level, top);
                 });
         progress.place(STONE).filter(stone -> level.areEntitiesLoaded(ChunkPos.asLong(stone))).ifPresent(stone -> keep(server, level, stone));
     }
@@ -164,27 +164,27 @@ final class Locks {
         Progress progress = Progress.of(server);
         BlockPos low = SITE.low(progress).orElseThrow();
         BlockPos high = SITE.high(progress).orElseThrow();
-        Optional<BlockPos> stone = Halls.stone(level, low, high);
-        if (stone.isEmpty()) {
+        Optional<BlockPos> found = HallSearch.stone(level, low, high);
+        if (found.isEmpty()) {
             LOGGER.error("the locks failed: the Jungle Folk's hall between {} and {} has no calling stone", low, high);
             progress.place(STONE, SITE.entrance(progress).orElse(low));
             progress.setDirty();
             return;
         }
-        BlockPos pedestal = stone.get();
-        Vec3 toward = Vec3.atLowerCornerOf(SITE.entrance(progress).orElse(pedestal).subtract(pedestal)).multiply(1, 0, 1);
+        BlockPos stone = found.get();
+        Vec3 toward = Vec3.atLowerCornerOf(SITE.entrance(progress).orElse(stone).subtract(stone)).multiply(1, 0, 1);
         Vec3 inward = toward.lengthSqr() < 1 ? new Vec3(0, 0, 1) : toward.normalize();
-        BlockPos seat = BlockPos.containing(Vec3.atLowerCornerOf(pedestal).add(inward.scale(BESIDE)));
+        BlockPos seat = BlockPos.containing(Vec3.atLowerCornerOf(stone).add(inward.scale(BESIDE)));
         progress.place("seat_locks_heir", seat);
         progress.yaws.put("seat_locks_heir", Frost.yaw(inward));
-        progress.place(STONE, pedestal);
+        progress.place(STONE, stone);
         progress.setDirty();
-        LOGGER.info("the Jungle Folk's stone is at {}; the heir will wait at {}", pedestal, seat);
+        LOGGER.info("the Jungle Folk's stone is at {}; the heir will wait at {}", stone, seat);
     }
 
-    static boolean asleep(ServerPlayer player, BlockPos pedestal) {
+    static boolean asleep(ServerPlayer player, BlockPos stone) {
         MinecraftServer server = player.server;
-        if (!Progress.of(server).place(STONE).filter(pedestal::equals).isPresent() || step(server).filter(id -> !id.equals(SHARD_STEP)).isEmpty()) {
+        if (!Progress.of(server).place(STONE).filter(stone::equals).isPresent() || step(server).filter(id -> !id.equals(SHARD_STEP)).isEmpty()) {
             return false;
         }
         player.displayClientMessage(Component.translatable(step(server).filter(HEIR_STEP::equals).isPresent() ? "wayfarer.locks.watched" : "wayfarer.locks.asleep")

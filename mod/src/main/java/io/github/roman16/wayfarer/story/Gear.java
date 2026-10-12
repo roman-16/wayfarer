@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -36,6 +37,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import top.theillusivec4.curios.api.CuriosApi;
 
 public final class Gear {
     private static final String TASK = "gear";
@@ -350,7 +352,10 @@ public final class Gear {
     }
 
     private static Stream<ItemStack> inventory(ServerPlayer player) {
-        return Stream.of(player.getInventory().items, player.getInventory().armor, player.getInventory().offhand).flatMap(List::stream);
+        Stream<ItemStack> carried = Stream.of(player.getInventory().items, player.getInventory().armor, player.getInventory().offhand).flatMap(List::stream);
+        Stream<ItemStack> worn = CuriosApi.getCuriosInventory(player).map(curios -> curios.getEquippedCurios()).stream()
+                .flatMap(curios -> IntStream.range(0, curios.getSlots()).mapToObj(curios::getStackInSlot));
+        return Stream.concat(carried, worn);
     }
 
     private static Data load(JsonObject json) {

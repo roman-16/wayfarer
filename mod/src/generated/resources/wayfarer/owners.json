@@ -1,9 +1,5 @@
 {
   "cut": [
-    "dungeons_arise:heavenly_challenger",
-    "dungeons_arise:heavenly_conqueror",
-    "dungeons_arise:heavenly_rider",
-    "dungeons_arise:small_blimp",
     "minecraft:ruined_portal",
     "minecraft:ruined_portal_desert",
     "minecraft:ruined_portal_jungle",
@@ -45,10 +41,9 @@
   "kinds": {
     "campsite": {
       "salt": 833296063,
-      "separation": 12,
-      "spacing": 24,
+      "separation": 16,
+      "spacing": 32,
       "structures": [
-        "dungeons_arise:merchant_campsite",
         "explorify:campsite",
         "explorify:supply_cache/birch",
         "explorify:supply_cache/dark",
@@ -89,8 +84,6 @@
       "separation": 192,
       "spacing": 384,
       "structures": [
-        "dungeons_arise:bandit_village",
-        "dungeons_arise:illager_fort",
         "friendsandfoes:citadel",
         "minecraft:mansion",
         "nova_structures:illager_manor",
@@ -99,8 +92,8 @@
     },
     "land": {
       "salt": 1445683055,
-      "separation": 8,
-      "spacing": 16,
+      "separation": 12,
+      "spacing": 24,
       "structures": [
         "mvs:acacia_log_pile",
         "mvs:acacia_tree",
@@ -143,8 +136,8 @@
     },
     "mine": {
       "salt": 1125437840,
-      "separation": 8,
-      "spacing": 16,
+      "separation": 12,
+      "spacing": 24,
       "structures": [
         "bettermineshafts:mineshaft_acacia",
         "bettermineshafts:mineshaft_desert",
@@ -159,9 +152,6 @@
         "bettermineshafts:mineshaft_red_desert",
         "bettermineshafts:mineshaft_spruce",
         "bettermineshafts:mineshaft_spruce_snowy",
-        "dungeons_arise:mining_complex",
-        "dungeons_arise:mushroom_mines",
-        "dungeons_arise:scorched_mines",
         "minecraft:mineshaft",
         "minecraft:mineshaft_mesa",
         "terralith:underground/mining_outpost"
@@ -183,11 +173,6 @@
         "ctov:pillager_outpost_snowy",
         "ctov:pillager_outpost_swamp",
         "ctov:pillager_outpost_taiga",
-        "dungeons_arise:bandit_towers",
-        "dungeons_arise:illager_campsite",
-        "dungeons_arise:illager_corsair",
-        "dungeons_arise:illager_galley",
-        "dungeons_arise:illager_windmill",
         "friendsandfoes:iceologer_cabin",
         "friendsandfoes:illusioner_shack",
         "friendsandfoes:illusioner_training_grounds",
@@ -248,8 +233,8 @@
     },
     "ruin": {
       "salt": 615953233,
-      "separation": 12,
-      "spacing": 24,
+      "separation": 16,
+      "spacing": 32,
       "structures": [
         "explorify:ruins",
         "minecraft:trail_ruins",
@@ -315,10 +300,6 @@
       "separation": 32,
       "spacing": 64,
       "structures": [
-        "dungeons_arise:fishing_hut",
-        "dungeons_arise:lighthouse",
-        "dungeons_arise:typhon",
-        "dungeons_arise:undead_pirate_ship",
         "minecraft:ocean_ruin_cold",
         "minecraft:ocean_ruin_warm",
         "minecraft:shipwreck",
@@ -342,14 +323,9 @@
     },
     "settled": {
       "salt": 1827015942,
-      "separation": 16,
-      "spacing": 32,
+      "separation": 24,
+      "spacing": 48,
       "structures": [
-        "dungeons_arise:bathhouse",
-        "dungeons_arise:greenwood_pub",
-        "dungeons_arise:jungle_tree_house",
-        "dungeons_arise:mushroom_house",
-        "dungeons_arise:wishing_well",
         "explorify:farmstead",
         "explorify:guide_post_cold",
         "explorify:guide_post_warm",
@@ -529,14 +505,13 @@
     },
     "underground": {
       "salt": 1211631780,
-      "separation": 16,
-      "spacing": 32,
+      "separation": 24,
+      "spacing": 48,
       "structures": [
         "betterdungeons:skeleton_dungeon",
         "betterdungeons:small_dungeon",
         "betterdungeons:spider_dungeon",
         "betterdungeons:zombie_dungeon",
-        "dungeons_arise:foundry",
         "minecraft:buried_treasure",
         "nova_structures:bunker",
         "nova_structures:deepslate_camp",
@@ -605,7 +580,6 @@
         "ctov:small/village_swamp_fortified",
         "ctov:small/village_taiga",
         "ctov:small/village_taiga_fortified",
-        "dungeons_arise:mushroom_village",
         "explorify:dark_forest_settlement",
         "nova_structures:village_birch",
         "nova_structures:village_jungle",

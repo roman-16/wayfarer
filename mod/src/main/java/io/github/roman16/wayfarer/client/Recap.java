@@ -33,18 +33,13 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.gui.screens.worldselection.SelectWorldScreen;
-import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import org.slf4j.Logger;
 
 public final class Recap {
-    public static final String SERVER = "server:";
-    public static final String WORLD = "world:";
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final String FILE = "recaps.json";
@@ -53,6 +48,8 @@ public final class Recap {
     private static final String TITLE = "title";
     private static final Component TERRAIN = Component.translatable("multiplayer.downloadingTerrain");
     private static final Page FIRST = new Page("", List.of(Component.translatable("wayfarer.recap.first")));
+    private static final Page WAITING = new Page("", List.of());
+    private static String world = "";
     private static final int MARGIN = 12;
     private static final int MAX_WIDTH = 224;
     private static final int PERCENT = 100;
@@ -65,24 +62,29 @@ public final class Recap {
     private Recap() {
     }
 
-    public static void begin(@Nullable String key) {
-        JsonElement page = key == null ? null : kept().get(key);
+    public static void begin(String world) {
+        JsonElement page = kept().get(world);
         loading = page == null ? FIRST : Page.of(page.getAsJsonObject());
     }
 
-    @Nullable
-    public static String key(Minecraft minecraft) {
-        IntegratedServer server = minecraft.getSingleplayerServer();
-        if (server != null) {
-            return WORLD + server.getWorldPath(LevelResource.ROOT).normalize().getFileName();
+    public static void connecting() {
+        loading = WAITING;
+    }
+
+    public static String world() {
+        return world;
+    }
+
+    public static void world(String id) {
+        world = id;
+        if (loading != null) {
+            begin(id);
         }
-        ServerData data = minecraft.getCurrentServer();
-        return data == null ? null : SERVER + data.ip;
     }
 
     static void remember(String view) {
-        String key = key(Minecraft.getInstance());
-        if (key == null) {
+        String key = world;
+        if (key.isEmpty()) {
             return;
         }
         JsonArray story = JsonParser.parseString(view).getAsJsonObject().getAsJsonArray(STORY);

@@ -1,0 +1,217 @@
+{
+  "biomes": "#wayfarer:has_structure/hall/corrupted",
+  "layout": {
+    "cover": 3,
+    "door": [
+      11,
+      2,
+      36
+    ]
+  },
+  "pieces": {
+    "entrance": "wayfarer:hall/corrupted/entrance",
+    "hall": "wayfarer:hall/corrupted/hall"
+  },
+  "shaft": {
+    "landing": [
+      {
+        "Name": "minecraft:acacia_planks"
+      },
+      {
+        "Name": "minecraft:acacia_planks"
+      },
+      {
+        "Name": "minecraft:acacia_planks"
+      },
+      {
+        "Name": "minecraft:acacia_planks"
+      },
+      {
+        "Name": "minecraft:acacia_planks"
+      },
+      {
+        "Name": "minecraft:acacia_planks"
+      },
+      {
+        "Name": "minecraft:acacia_planks"
+      },
+      {
+        "Name": "minecraft:acacia_planks"
+      },
+      {
+        "Name": "minecraft:red_terracotta"
+      },
+      {
+        "Name": "minecraft:red_terracotta"
+      },
+      {
+        "Name": "minecraft:red_terracotta"
+      },
+      {
+        "Name": "minecraft:red_terracotta"
+      },
+      {
+        "Name": "minecraft:terracotta"
+      },
+      {
+        "Name": "minecraft:terracotta"
+      },
+      {
+        "Name": "minecraft:terracotta"
+      },
+      {
+        "Name": "minecraft:coarse_dirt"
+      },
+      {
+        "Name": "minecraft:coarse_dirt"
+      },
+      {
+        "Name": "minecraft:coarse_dirt"
+      },
+      {
+        "Name": "minecraft:rooted_dirt"
+      },
+      {
+        "Name": "minecraft:rooted_dirt"
+      }
+    ],
+    "light": {
+      "Name": "minecraft:waxed_exposed_copper_bulb",
+      "Properties": {
+        "lit": "true"
+      }
+    },
+    "pillar": [
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:stripped_acacia_log"
+      },
+      {
+        "Name": "minecraft:acacia_log"
+      },
+      {
+        "Name": "minecraft:acacia_log"
+      },
+      {
+        "Name": "minecraft:acacia_log"
+      },
+      {
+        "Name": "minecraft:acacia_log"
+      },
+      {
+        "Name": "minecraft:acacia_log"
+      },
+      {
+        "Name": "minecraft:acacia_log"
+      }
+    ],
+    "stairs": {
+      "Name": "minecraft:acacia_stairs"
+    },
+    "style": "switchback",
+    "wall": [
+      {
+        "Name": "minecraft:terracotta"
+      },
+      {
+        "Name": "minecraft:terracotta"
+      },
+      {
+        "Name": "minecraft:terracotta"
+      },
+      {
+        "Name": "minecraft:terracotta"
+      },
+      {
+        "Name": "minecraft:terracotta"
+      },
+      {
+        "Name": "minecraft:terracotta"
+      },
+      {
+        "Name": "minecraft:orange_terracotta"
+      },
+      {
+        "Name": "minecraft:orange_terracotta"
+      },
+      {
+        "Name": "minecraft:orange_terracotta"
+      },
+      {
+        "Name": "minecraft:orange_terracotta"
+      },
+      {
+        "Name": "minecraft:red_terracotta"
+      },
+      {
+        "Name": "minecraft:red_terracotta"
+      },
+      {
+        "Name": "minecraft:red_terracotta"
+      },
+      {
+        "Name": "minecraft:brown_terracotta"
+      },
+      {
+        "Name": "minecraft:brown_terracotta"
+      },
+      {
+        "Name": "minecraft:brown_terracotta"
+      },
+      {
+        "Name": "minecraft:packed_mud"
+      },
+      {
+        "Name": "minecraft:packed_mud"
+      },
+      {
+        "Name": "minecraft:coarse_dirt"
+      },
+      {
+        "Name": "minecraft:coarse_dirt"
+      }
+    ]
+  },
+  "spawn_overrides": {},
+  "step": "underground_structures",
+  "terrain_adaptation": "none",
+  "type": "wayfarer:hall"
+}

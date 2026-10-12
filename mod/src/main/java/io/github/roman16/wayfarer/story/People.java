@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -38,6 +39,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -70,7 +72,8 @@ public final class People {
         }
         Entity body = EntityType.byString(look.get("model").getAsString()).map(type -> type.create(level))
                 .orElseThrow(() -> new IllegalStateException(look.get("model").getAsString() + " is not in this game"));
-        body.moveTo(at.x, at.y, at.z, yaw, 0);
+        Vec3 seat = surface(level, at);
+        body.moveTo(seat.x, seat.y, seat.z, yaw, 0);
         body.setYHeadRot(yaw);
         body.setYBodyRot(yaw);
         body.setInvulnerable(true);
@@ -98,6 +101,12 @@ public final class People {
         if (body instanceof DisplayAttributeDataCapable<?> display) {
             display.setDisplayAttribute(DisplayAttributeType.NAME_VISIBILITY, visibility);
         }
+    }
+
+    private static Vec3 surface(ServerLevel level, Vec3 at) {
+        BlockPos pos = BlockPos.containing(at);
+        VoxelShape shape = level.getBlockState(pos).getCollisionShape(level, pos);
+        return shape.isEmpty() ? at : new Vec3(at.x, Math.max(at.y, pos.getY() + shape.max(Direction.Axis.Y)), at.z);
     }
 
     public static Entity person(ServerLevel level, String person, Vec3 at, float yaw, String pose) {

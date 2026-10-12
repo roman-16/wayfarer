@@ -206,6 +206,7 @@ def say(world, state, start, took, visible, mode, report):
         "far": ", with Distant Horizons' far view",
         "full": "",
         "lean": ", with only the Wayfarer mod",
+        "shipped": ", with the far view and the shader as shipped",
     }[mode]
     stopped = [line for line in errors if FAILED_AT_ONCE in line]
     if stopped:
@@ -469,14 +470,14 @@ def descent(style, exit):
     return ((2.5, 2.5), (2.5, 3.5))
 
 
-def shrine_cameras(shrine, pedestal, surface):
-    origin = [pedestal[axis] - shrine["pedestal"][axis] for axis in range(3)]
-    door_x, door_y, door_z = shrine["door"]
+def hall_cameras(hall, stone, surface):
+    origin = [stone[axis] - hall["stone"][axis] for axis in range(3)]
+    door_x, door_y, door_z = hall["door"]
     floor = origin[1] + door_y
-    size = SHAFTS[shrine["shaft"]]
+    size = SHAFTS[hall["shaft"]]
     shaft = [origin[0] + door_x - size // 2, 0, origin[2] + door_z + 1]
-    ex, ez = exit_of(shrine["shaft"], surface - floor)
-    (top_x, top_z), (down_x, down_z) = descent(shrine["shaft"], (ex, ez))
+    ex, ez = exit_of(hall["shaft"], surface - floor)
+    (top_x, top_z), (down_x, down_z) = descent(hall["shaft"], (ex, ez))
     middle = size / 2
     centre = [shaft[0] + middle, surface + 2, shaft[2] + middle]
     side = (-ez, ex)
@@ -492,7 +493,7 @@ def shrine_cameras(shrine, pedestal, surface):
         ([shaft[0] + middle, floor, shaft[2] + 2.5], [shaft[0] + middle, floor + 1.5, shaft[2] - 6]),
     )
     cameras = dict(zip(SHAFT_CAMERAS, views, strict=True))
-    for camera in shrine["cameras"]:
+    for camera in hall["cameras"]:
         cameras[camera["name"]] = (offset(origin, camera["at"]), offset(origin, camera["look"]))
     return cameras
 
@@ -532,21 +533,21 @@ def tour(arguments):
 def photograph(chosen, timeout):
     plan = json.loads(TOUR.read_text())
     surface = plan["surface"]
-    shrines = [shrine for shrine in plan["shrines"] if not chosen or shrine["eye"] in chosen]
+    halls = [hall for hall in plan["halls"] if not chosen or hall["eye"] in chosen]
     locate = ["gui off", "/gamemode spectator"]
-    for shrine in shrines:
-        x, z = shrine["centre"]
+    for hall in halls:
+        x, z = hall["centre"]
         locate += [
             f"/execute in wayfarer:showroom run tp @s {x + 0.5} {surface + 10} {z + 0.5}",
             "settle",
-            "find wayfarer:shrine_pedestal 16",
+            "find wayfarer:calling_stone 16",
         ]
     found = [tuple(int(value) for value in match.groups()) for match in FOUND.finditer(batch(locate, timeout))]
-    if len(found) != len(shrines):
-        sys.exit(f"found {len(found)} pedestals for {len(shrines)} shrines; the showroom does not match the generator")
+    if len(found) != len(halls):
+        sys.exit(f"found {len(found)} stones for {len(halls)} halls; the showroom does not match the generator")
     subjects = {}
-    for shrine, pedestal in zip(shrines, found, strict=True):
-        subjects[shrine["eye"]] = shrine_cameras(shrine, pedestal, surface)
+    for hall, stone in zip(halls, found, strict=True):
+        subjects[hall["eye"]] = hall_cameras(hall, stone, surface)
     if not chosen or "camp" in chosen:
         origin = plan["camp"]["origin"]
         subjects["camp"] = {
@@ -562,7 +563,7 @@ def photograph(chosen, timeout):
 
 
 def panorama(arguments):
-    ensure("play", START_SECONDS, False, "full", seed=PANORAMA_SEED)
+    ensure("play", START_SECONDS, True, "shipped", seed=PANORAMA_SEED)
     x, y, z, yaw = PANORAMA_CAMERA
     report = batch(
         [
@@ -576,6 +577,7 @@ def panorama(arguments):
             f"/time set {PANORAMA_TIME}",
             "/tick freeze",
             "settle",
+            "far",
             "panorama title",
             "/tick unfreeze",
             "/gamemode creative",
@@ -677,15 +679,15 @@ def main():
     )
     panorama_parser = commands.add_parser(
         "panorama",
-        help="grow the panorama's world from its seed, photograph the title's panorama from its camera at dawn and "
-        "write its six faces into the mod",
+        help="grow the panorama's world from its seed, photograph the title's panorama from its camera at dawn on the "
+        "user's screen, with the far view and the shader as shipped, and write its six faces into the mod",
     )
     panorama_parser.add_argument("--timeout", type=int, default=START_SECONDS)
     stop_parser = commands.add_parser("stop", help="quit the client; returns once it has exited")
     stop_parser.add_argument("--timeout", type=int, default=STOP_SECONDS)
     tour_parser = commands.add_parser(
         "tour",
-        help="open the showroom as start does, photograph every shrine and the Last Camp; "
+        help="open the showroom as start does, photograph every hall and the Last Camp; "
         "prints one contact sheet per subject",
     )
     tour_parser.add_argument("subjects", nargs="*", help="eyes (and camp) to photograph; all when none are named")

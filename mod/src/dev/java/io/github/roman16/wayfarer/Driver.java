@@ -160,7 +160,7 @@ public final class Driver {
     private static boolean opened;
     private static boolean running;
     @Nullable
-    private static String left;
+    private static String left = "";
     private static boolean synced = true;
     private static boolean sentinelSent;
     private static int waiting;
@@ -402,7 +402,7 @@ public final class Driver {
 
     private static void leave(Minecraft minecraft) {
         if (minecraft.level != null) {
-            left = Recap.key(minecraft);
+            left = Recap.world();
             boolean local = minecraft.isLocalServer();
             minecraft.level.disconnect();
             if (local) {
@@ -706,7 +706,7 @@ public final class Driver {
             case "key" -> key(minecraft, argument);
             case "leave" -> leave(minecraft);
             case "loading" -> {
-                Recap.begin(argument.equals("new") ? null : left);
+                Recap.begin(argument.equals("new") ? "" : left);
                 minecraft.setScreen(new GenericMessageScreen(Component.translatable("multiplayer.downloadingTerrain")));
             }
             case "listeners" -> Arrays.stream(argument.split(" ")).map(Swapped::listen).forEach(Driver::note);
@@ -955,28 +955,17 @@ public final class Driver {
     }
 
     private static void panorama(Minecraft minecraft, String name) {
-        Window window = minecraft.getWindow();
-        int width = window.getWidth();
-        int height = window.getHeight();
         float yaw = minecraft.player.getYRot();
-        window.setWindowed(PANORAMA_SIZE, PANORAMA_SIZE);
-        until = () -> window.getWidth() == PANORAMA_SIZE && window.getHeight() == PANORAMA_SIZE;
-        then = () -> {
-            minecraft.resizeDisplay();
-            minecraft.gameRenderer.setPanoramicMode(true);
-            minecraft.gameRenderer.setRenderBlockOutline(false);
-            bare = true;
-            face(minecraft, name, 0, yaw, () -> {
-                bare = false;
-                minecraft.gameRenderer.setPanoramicMode(false);
-                minecraft.gameRenderer.setRenderBlockOutline(true);
-                minecraft.player.setYRot(yaw);
-                minecraft.player.setXRot(0);
-                window.setWindowed(width, height);
-                until = () -> window.getWidth() == width && window.getHeight() == height;
-                then = minecraft::resizeDisplay;
-            });
-        };
+        minecraft.gameRenderer.setPanoramicMode(true);
+        minecraft.gameRenderer.setRenderBlockOutline(false);
+        bare = true;
+        face(minecraft, name, 0, yaw, () -> {
+            bare = false;
+            minecraft.gameRenderer.setPanoramicMode(false);
+            minecraft.gameRenderer.setRenderBlockOutline(true);
+            minecraft.player.setYRot(yaw);
+            minecraft.player.setXRot(0);
+        });
     }
 
     private static void face(Minecraft minecraft, String name, int face, float yaw, Runnable done) {
@@ -990,9 +979,12 @@ public final class Driver {
         then = () -> {
             Path path = minecraft.gameDirectory.toPath().resolve("screenshots/panorama").resolve(name).resolve("panorama_" + face + ".png")
                     .toAbsolutePath().normalize();
-            try (NativeImage image = Screenshot.takeScreenshot(minecraft.getMainRenderTarget())) {
+            try (NativeImage image = Screenshot.takeScreenshot(minecraft.getMainRenderTarget());
+                    NativeImage square = new NativeImage(PANORAMA_SIZE, PANORAMA_SIZE, false)) {
+                int side = Math.min(image.getWidth(), image.getHeight());
+                image.resizeSubRectTo((image.getWidth() - side) / 2, (image.getHeight() - side) / 2, side, side, square);
                 Files.createDirectories(path.getParent());
-                image.writeToFile(path);
+                square.writeToFile(path);
                 note("screenshot: " + path);
             } catch (IOException exception) {
                 note("error: cannot save " + path + ": " + exception.getMessage());
@@ -1058,7 +1050,12 @@ public final class Driver {
         String[] parts = argument.split(" ");
         boolean on = parts.length > 1 && parts[1].equals("on");
         Arrays.stream(minecraft.options.keyMappings).filter(mapping -> mapping.getName().equals(parts[0])).findFirst()
-                .ifPresentOrElse(mapping -> mapping.setDown(on), () -> note("error: no key mapping " + parts[0]));
+                .ifPresentOrElse(mapping -> {
+                    mapping.setDown(on);
+                    if (on) {
+                        KeyMapping.click(mapping.getKey());
+                    }
+                }, () -> note("error: no key mapping " + parts[0]));
     }
 
     private static void key(Minecraft minecraft, String name) {
@@ -1072,6 +1069,12 @@ public final class Driver {
                 .filter(mapping -> mapping.getName().equals(name))
                 .findFirst()
                 .ifPresentOrElse(mapping -> {
+                    if (minecraft.screen != null) {
+                        long window = minecraft.getWindow().getWindow();
+                        minecraft.keyboardHandler.keyPress(window, mapping.getKey().getValue(), 0, GLFW.GLFW_PRESS, 0);
+                        minecraft.keyboardHandler.keyPress(window, mapping.getKey().getValue(), 0, GLFW.GLFW_RELEASE, 0);
+                        return;
+                    }
                     KeyMapping.click(mapping.getKey());
                     until = () -> clicks(mapping) == 0;
                 }, () -> note("error: no key mapping " + name));

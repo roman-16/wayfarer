@@ -1,10 +1,6 @@
 {
   "values": [
     {
-      "id": "dungeons_arise:merchant_campsite",
-      "required": false
-    },
-    {
       "id": "explorify:campsite",
       "required": false
     },

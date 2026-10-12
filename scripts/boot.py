@@ -61,9 +61,9 @@ def check(server):
     )
     kinds = balance["structures"]["every_blocks"]
     cut = tomllib.loads((ROOT / "generator/owners.toml").read_text())["cut"]
-    shrines = {eye: f"wayfarer:shrine/{eye}" for eye in eyes}
+    halls = {eye: f"wayfarer:hall/{eye}" for eye in eyes}
     owners = {kind: f"#wayfarer:owners/{kind}" for kind in kinds}
-    found = locate(server, ["betterstrongholds:stronghold", *shrines.values(), *owners.values(), *cut])
+    found = locate(server, ["betterstrongholds:stronghold", *halls.values(), *owners.values(), *cut])
     failures = []
     ring = found["betterstrongholds:stronghold"][0] if found["betterstrongholds:stronghold"] else None
     low = strongholds["radius_blocks"] - strongholds["jitter_blocks"] - BIOME_SHIFT_BLOCKS * 4
@@ -71,10 +71,10 @@ def check(server):
     print(f"nearest stronghold: {ring} blocks")
     if ring is None or not low <= ring <= high:
         failures.append(f"the nearest stronghold is {ring} blocks from spawn, not {low}-{high}")
-    for eye, structure in shrines.items():
-        print(f"nearest {eye} shrine: {found[structure][0] if found[structure] else None} blocks")
+    for eye, structure in halls.items():
+        print(f"nearest {eye} hall: {found[structure][0] if found[structure] else None} blocks")
         if found[structure] is None:
-            failures.append(f"no {eye} shrine was found")
+            failures.append(f"no {eye} hall was found")
     for kind, structure in owners.items():
         print(f"nearest {kind}: {found[structure][0] if found[structure] else None} blocks")
         if found[structure] is None:
@@ -116,8 +116,8 @@ def journey(server, eyes, start, act, legs):
     pos = start
     remaining = [eye for eye in sorted(eyes) if eyes[eye]["act"] == act and not eyes[eye].get("story", False)]
     while remaining:
-        hits = locate(server, [f"wayfarer:shrine/{eye}" for eye in remaining], pos)
-        found = [(hit, eye) for eye in remaining if (hit := hits[f"wayfarer:shrine/{eye}"])]
+        hits = locate(server, [f"wayfarer:hall/{eye}" for eye in remaining], pos)
+        found = [(hit, eye) for eye in remaining if (hit := hits[f"wayfarer:hall/{eye}"])]
         if not found:
             break
         (distance, x, z), eye = min(found)
@@ -132,13 +132,13 @@ def minutes(blocks):
 
 def survey(server, count, apply):
     balance = tomllib.loads((ROOT / "balance.toml").read_text())
-    targets = {2: balance["shrines"]["act_two_leg_blocks"], 3: balance["shrines"]["act_three_leg_blocks"]}
+    targets = {2: balance["halls"]["act_two_leg_blocks"], 3: balance["halls"]["act_three_leg_blocks"]}
     shores = {
         2: balance["world"]["home_blocks"] + balance["world"]["sea_blocks"],
-        3: balance["shrines"]["act_three_from_blocks"],
+        3: balance["halls"]["act_three_from_blocks"],
     }
     eyes_path = ROOT / "generator/eyes.toml"
-    shrines = tomllib.loads(eyes_path.read_text())
+    halls = tomllib.loads(eyes_path.read_text())
 
     def walk(seed):
         legs = {act: [] for act in targets}
@@ -146,7 +146,7 @@ def survey(server, count, apply):
         def measure(server):
             for act, shore in shores.items():
                 for start in points(count, shore):
-                    journey(server, shrines["eyes"], start, act, legs)
+                    journey(server, halls["eyes"], start, act, legs)
             return []
 
         boot(world(server, seed), measure)
@@ -162,7 +162,7 @@ def survey(server, count, apply):
         f"{'act':<4} {'legs':>5} {'spacing':>7} {'median':>7} {'walk':>7} {'shortest':>8} {'target':>7} {'walk':>7} {'tuned':>6}"
     )
     for act, target in targets.items():
-        spacing = shrines["acts"][str(act)]["spacing"]
+        spacing = halls["acts"][str(act)]["spacing"]
         found = legs[act]
         median = statistics.median(found) if found else 0
         ratio = min(MAX_STEP, max(1 / MAX_STEP, math.sqrt(target / median))) if median else 1
@@ -208,26 +208,27 @@ def boot(directory, action):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Boot the pack's dedicated server headless and check the world, or survey shrine distances"
+        description="Boot the pack's dedicated server headless and check the world, or survey hall distances"
     )
     parser.add_argument("server", type=Path)
     parser.add_argument(
         "--survey",
         type=int,
         metavar="JOURNEYS",
-        help="in each survey world at once, walk this many journeys to the nearest shrine not yet taken, instead of checking",
+        help="in each survey world at once, walk this many journeys to the nearest hall not yet taken, instead of checking",
     )
     parser.add_argument("--apply", action="store_true", help="write the survey's tuned spacings to generator/eyes.toml")
     arguments = parser.parse_args()
     server = arguments.server.resolve()
+    seed = tomllib.loads((ROOT / "story/states.toml").read_text())["seed"]
     try:
         if arguments.survey:
             survey(server, arguments.survey, arguments.apply)
             return
+        configure(server, {"level-seed": seed})
         seconds, log = boot(server, check)
     except Failure as failure:
         sys.exit(str(failure))
-    seed = tomllib.loads((ROOT / "story/states.toml").read_text())["seed"]
     print(f"the whole pack booted in {seconds:.0f} s on seed {seed}; log in {log}")
 
 

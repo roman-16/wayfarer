@@ -5,6 +5,7 @@ Everything in Wayfarer that speaks in words is to be read aloud: books, chat, si
 ## How it plays
 
 - **Chat waits for its voice.** A line in chat is read aloud as it appears, and the next line comes only once the line before has been spoken: a line whose audio runs three seconds holds the chat for three seconds. This holds for the voice, Maren and every person the player talks to.
+- **A voice comes from where its speaker stands.** A person's line sounds from their body in the world, quieter and to one side as the player stands farther off or turns, as every other sound does; the voice in the ember, the narrator and a book read in the hand sound from the player.
 - **A book reads the page that is open.** Opening a page plays its narration; turning to the next page stops it and plays the next one. A page plays only once: turning back to a page already heard does not play it again, but a small play button on the page plays it again on purpose. This holds at a lectern, from the inventory and in the journal.
 - **A sign reads itself when right-clicked.** Every sign the pack places is waxed, so a right-click reads it instead of opening it for editing.
 - **One voice at a time.** When two things would speak at once, such as the voice on the road while a person is talking, the second waits for the first.

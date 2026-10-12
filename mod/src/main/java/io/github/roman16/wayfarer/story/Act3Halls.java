@@ -1,12 +1,12 @@
 package io.github.roman16.wayfarer.story;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Camps;
-import io.github.roman16.wayfarer.ShrinePedestalBlockEntity;
+import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -41,11 +41,11 @@ final class Act3Halls {
     private static final ResourceLocation HOUSE = Wayfarer.id("act3/house");
     private static final ResourceLocation GRAVES = Wayfarer.id("act3/graves");
     private static final ResourceLocation TENT = Wayfarer.id("caravan/tent");
-    private static final ResourceLocation SHADOW = Wayfarer.id("shrine/magical");
-    private static final HallSite WARD_SITE = new HallSite(WARD, Wayfarer.id("shrine/corrupted"), WARD, 3);
+    private static final ResourceLocation SHADOW = Wayfarer.id("hall/magical");
+    private static final HallSite WARD_SITE = new HallSite(WARD, Wayfarer.id("hall/corrupted"), WARD, 3);
     private static final HallSite MANSION_SITE = new HallSite(MANSION_HALL, SHADOW, MANSION_HALL, 3);
-    private static final HallSite SCRIBES_SITE = new HallSite(SCRIBES, Wayfarer.id("shrine/cryptic"), SCRIBES, 3);
-    private static final HallSite GRAVEYARD_SITE = new HallSite(GRAVEYARD, Wayfarer.id("shrine/undead"), GRAVEYARD, 3);
+    private static final HallSite SCRIBES_SITE = new HallSite(SCRIBES, Wayfarer.id("hall/cryptic"), SCRIBES, 3);
+    private static final HallSite GRAVEYARD_SITE = new HallSite(GRAVEYARD, Wayfarer.id("hall/undead"), GRAVEYARD, 3);
     private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/act3.json");
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final String BUILT = "_built";
@@ -118,12 +118,12 @@ final class Act3Halls {
 
     private static void build(MinecraftServer server, ServerLevel level, HallSite site, String name, Builder builder) {
         Progress progress = Progress.of(server);
-        site.entrance(progress).filter(top -> progress.place(name + BUILT).isEmpty() && Halls.loaded(level, top)).ifPresent(top -> {
-            BlockPos stone = Halls.stone(level, site.low(progress).orElseThrow(), site.high(progress).orElseThrow()).orElse(top);
+        site.entrance(progress).filter(top -> progress.place(name + BUILT).isEmpty() && HallSearch.loaded(level, top)).ifPresent(top -> {
+            BlockPos stone = HallSearch.stone(level, site.low(progress).orElseThrow(), site.high(progress).orElseThrow()).orElse(top);
             builder.build(server, level, top, stone);
             progress.place(name + BUILT, top);
             progress.setDirty();
-            Halls.release(level, top);
+            HallSearch.release(level, top);
             Journal.syncAll(server);
         });
     }
@@ -218,9 +218,9 @@ final class Act3Halls {
         StructurePlaceSettings settings = Camps.settings(level, HOUSE, turn);
         JsonObject plan = PLAN.get().getAsJsonObject("house");
         BlockPos stand = local(origin, settings, plan, "stand");
-        level.setBlock(stand, Wayfarer.SHRINE_PEDESTAL.get().defaultBlockState(), Block.UPDATE_ALL);
-        if (level.getBlockEntity(stand) instanceof ShrinePedestalBlockEntity pedestal) {
-            pedestal.hold(Optional.of(SHADOW));
+        level.setBlock(stand, Wayfarer.CALLING_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
+        if (level.getBlockEntity(stand) instanceof CallingStoneBlockEntity calling) {
+            calling.hold(Optional.of(SHADOW));
         }
         progress.place(MANSION, local(origin, settings, plan, "front"));
         progress.place(MANSION_STAND, stand);

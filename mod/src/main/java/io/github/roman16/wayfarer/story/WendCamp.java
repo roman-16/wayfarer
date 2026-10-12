@@ -91,7 +91,7 @@ final class WendCamp {
         Progress progress = Progress.of(server);
         Optional<BlockPos> spot = progress.place(SPOT);
         ServerLevel level = Engine.overworld(server);
-        if (spot.isEmpty() || progress.place(ORIGIN).isPresent() || !Halls.loaded(level, spot.get())) {
+        if (spot.isEmpty() || progress.place(ORIGIN).isPresent() || !HallSearch.loaded(level, spot.get())) {
             return;
         }
         Rotation turn = turn(server);
@@ -101,7 +101,7 @@ final class WendCamp {
         progress.place(CHAIR, world(server, "chair"));
         progress.ward(NAME, level.getStructureManager().getOrCreate(NOW).getBoundingBox(Camps.settings(level, NOW, turn), origin));
         progress.setDirty();
-        Halls.release(level, spot.get());
+        HallSearch.release(level, spot.get());
         Clues.marker(level, world(server, "chair"), "journal");
         Clues.marker(level, world(server, "hearth"), "hearthstone");
         LOGGER.info("his last camp stands at {}, turned {}", origin, turn);

@@ -7,8 +7,10 @@ import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Wayfarer;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -49,6 +51,7 @@ final class Diggers {
     private static final int CLEAR = 16;
     private static final int DECLINE = 48;
     private static final int FLAGS = Block.UPDATE_CLIENTS;
+    private static final int SLICE = 16;
     private static final int FOREST = 64;
     private static final int SAMPLE = 8;
     private static final float TRACK_SCALE = 1.0625f;
@@ -66,6 +69,11 @@ final class Diggers {
         private Site site;
         private ChunkPos ticket = ChunkPos.ZERO;
         private int radius;
+        private final Deque<BoundingBox> slices = new ArrayDeque<>();
+        @Nullable
+        private StructurePlaceSettings settings;
+        private BlockPos tunnelsAt = BlockPos.ZERO;
+        private BlockPos entranceAt = BlockPos.ZERO;
     }
 
     static void begin(MinecraftServer server) {
@@ -85,8 +93,10 @@ final class Diggers {
         ServerLevel level = Engine.overworld(server);
         if (build.site == null) {
             search(server, level);
+        } else if (build.settings != null) {
+            slice(server, level);
         } else if (loaded(level)) {
-            place(server, level);
+            place(level);
         }
     }
 
@@ -172,24 +182,42 @@ final class Diggers {
         return true;
     }
 
-    private static void place(MinecraftServer server, ServerLevel level) {
+    private static void place(ServerLevel level) {
         Site site = build.site;
         StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(site.turn());
         JsonObject entrance = PLAN.get().getAsJsonObject("entrance");
         JsonObject tunnels = PLAN.get().getAsJsonObject("tunnels");
         int surface = ground(level, site.centre().getX(), site.centre().getZ());
         BlockPos centre = vector(entrance.getAsJsonArray("centre"));
-        BlockPos entranceAt = new BlockPos(site.centre().getX(), surface - centre.getY(), site.centre().getZ())
+        build.entranceAt = new BlockPos(site.centre().getX(), surface - centre.getY(), site.centre().getZ())
                 .subtract(turned(settings, centre.atY(0)));
-        BlockPos tunnelsAt = entranceAt.offset(turned(settings, vector(entrance.getAsJsonArray("join")).subtract(vector(tunnels.getAsJsonArray("join")))));
-        StructureTemplate mouth = template(level, "entrance");
-        clear(level, mouth.getBoundingBox(settings, entranceAt));
-        template(level, "tunnels").placeInWorld(level, tunnelsAt, tunnelsAt, settings, level.random, FLAGS);
-        mouth.placeInWorld(level, entranceAt, entranceAt, settings, level.random, FLAGS);
+        build.tunnelsAt = build.entranceAt.offset(turned(settings, vector(entrance.getAsJsonArray("join")).subtract(vector(tunnels.getAsJsonArray("join")))));
+        build.settings = settings;
+        clear(level, template(level, "entrance").getBoundingBox(settings, build.entranceAt));
+        BoundingBox whole = template(level, "tunnels").getBoundingBox(settings, build.tunnelsAt);
+        for (int x = whole.minX(); x <= whole.maxX(); x += SLICE) {
+            for (int z = whole.minZ(); z <= whole.maxZ(); z += SLICE) {
+                build.slices.add(new BoundingBox(x, whole.minY(), z, Math.min(x + SLICE - 1, whole.maxX()), whole.maxY(), Math.min(z + SLICE - 1, whole.maxZ())));
+            }
+        }
+    }
+
+    private static void slice(MinecraftServer server, ServerLevel level) {
+        StructurePlaceSettings settings = build.settings;
+        BlockPos tunnelsAt = build.tunnelsAt;
+        BlockPos entranceAt = build.entranceAt;
+        BoundingBox slice = build.slices.poll();
+        if (slice != null) {
+            template(level, "tunnels").placeInWorld(level, tunnelsAt, tunnelsAt, settings.copy().setBoundingBox(slice), level.random, FLAGS);
+            return;
+        }
+        JsonObject entrance = PLAN.get().getAsJsonObject("entrance");
+        JsonObject tunnels = PLAN.get().getAsJsonObject("tunnels");
+        template(level, "entrance").placeInWorld(level, entranceAt, entranceAt, settings, level.random, FLAGS);
         Progress progress = Progress.of(server);
         BlockPos door = entranceAt.offset(turned(settings, vector(entrance.getAsJsonArray("mouth"))));
         progress.place(NAME, door);
-        progress.place(HALL, tunnelsAt.offset(turned(settings, vector(tunnels.getAsJsonArray("pedestal")))));
+        progress.place(HALL, tunnelsAt.offset(turned(settings, vector(tunnels.getAsJsonArray("stone")))));
         JsonObject hall = tunnels.getAsJsonObject("hall");
         progress.ward(NAME, BoundingBox.fromCorners(tunnelsAt.offset(turned(settings, vector(hall.getAsJsonArray("from")))),
                 tunnelsAt.offset(turned(settings, vector(hall.getAsJsonArray("to"))))));

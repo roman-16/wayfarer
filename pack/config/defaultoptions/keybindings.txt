@@ -145,6 +145,7 @@ key_key.sophisticatedcore.sort:key.mouse.middle
 key_key.sophisticatedcore.transfer_to_inventory:key.keyboard.right.bracket
 key_key.sophisticatedcore.transfer_to_storage:key.keyboard.left.bracket
 key_key.sprint:key.keyboard.left.shift
+key_key.spyglass-improvements.use:key.keyboard.c
 key_key.startStop:key.keyboard.unknown
 key_key.voice_chat:key.keyboard.v
 key_key.voice_chat_adjust_volumes:key.keyboard.unknown
@@ -167,3 +168,6 @@ key_keybinds.bettercombat.toggle_mine_with_weapons:key.keyboard.unknown
 key_keybinds.combat_roll.roll:key.keyboard.r
 key_legendarytooltips.key.scrollTooltips:key.keyboard.left.shift
 key_supplementaries.keybind.quiver:key.keyboard.unknown
+key_treechop.key.cycle_sneak_behavior:key.keyboard.unknown
+key_treechop.key.open_settings_overlay:key.keyboard.unknown
+key_treechop.key.toggle_chopping:key.keyboard.unknown

@@ -41,6 +41,7 @@ public final class Talk {
     private static final int TICKS_PER_SECOND = 20;
     private static final Deque<Speech> queue = new ArrayDeque<>();
     private static final Set<UUID> answering = new HashSet<>();
+    private static final Map<String, Long> AGAIN = new HashMap<>();
     private static final Map<UUID, Integer> votes = new HashMap<>();
     private static final Map<UUID, Personal> personal = new HashMap<>();
     private static long clock;
@@ -77,10 +78,11 @@ public final class Talk {
         void chosen(ServerPlayer player, Story.Choice choice);
     }
 
-    public record Subtitle(String by, Component text, int ticks) implements CustomPacketPayload {
+    public record Subtitle(String by, String tone, Component text, int ticks) implements CustomPacketPayload {
         public static final Type<Subtitle> TYPE = new Type<>(Wayfarer.id("subtitle"));
         public static final StreamCodec<RegistryFriendlyByteBuf, Subtitle> STREAM_CODEC = StreamCodec.composite(
                 ByteBufCodecs.STRING_UTF8, Subtitle::by,
+                ByteBufCodecs.STRING_UTF8, Subtitle::tone,
                 ComponentSerialization.TRUSTED_STREAM_CODEC, Subtitle::text,
                 ByteBufCodecs.VAR_INT, Subtitle::ticks,
                 Subtitle::new);
@@ -88,6 +90,11 @@ public final class Talk {
         @Override
         public Type<Subtitle> type() {
             return TYPE;
+        }
+
+        static Subtitle of(MinecraftServer server, @Nullable String person, Component text) {
+            return person == null ? new Subtitle("", "", text, reading(text.getString()))
+                    : new Subtitle(People.label(server, person), Story.get().person(person).color().getName(), text, reading(text.getString()));
         }
     }
 
@@ -128,6 +135,16 @@ public final class Talk {
         say(fire, at, List.of(line), Placeholders.NONE);
     }
 
+    public static boolean again(MinecraftServer server, String who) {
+        long now = server.overworld().getGameTime();
+        Long last = AGAIN.get(who);
+        if (last != null && now - last < (long) Balance.get().talk().againSeconds() * TICKS_PER_SECOND) {
+            return false;
+        }
+        AGAIN.put(who, now);
+        return true;
+    }
+
     public static void notice(Component line) {
         queue.add(new Notice(line));
     }
@@ -141,11 +158,14 @@ public final class Talk {
     }
 
     public static void tell(ServerPlayer listener, Component text) {
-        tell(List.of(listener), "", text);
+        tell(List.of(listener), null, text);
     }
 
-    public static void tell(List<ServerPlayer> listeners, String by, Component text) {
-        Subtitle subtitle = new Subtitle(by, text, reading(text.getString()));
+    public static void tell(List<ServerPlayer> listeners, @Nullable String by, Component text) {
+        if (listeners.isEmpty()) {
+            return;
+        }
+        Subtitle subtitle = Subtitle.of(listeners.getFirst().server, by, text);
         listeners.forEach(listener -> PacketDistributor.sendToPlayer(listener, subtitle));
     }
 
@@ -233,16 +253,16 @@ public final class Talk {
             switch (speech) {
                 case Said said -> {
                     Optional<Vec3> at = where(server, said);
-                    String by = said.line().by() == null ? "" : People.label(server, said.line().by());
                     Component text = Component.literal(said.text());
-                    deliver(server, new Subtitle(by, text, reading(said.text())), at.orElse(null), at.isPresent() ? line(server, said.line().by(), text) : null);
+                    boolean road = ROAD.equals(said.fire());
+                    deliver(server, Subtitle.of(server, said.line().by(), text), at.orElse(null), at.isPresent() && !road ? line(server, said.line().by(), text) : null);
                     heard(server, said);
                     speaking = said.line().by();
                     next = clock + reading(said.text());
                 }
                 case Notice notice -> {
                     speaking = null;
-                    deliver(server, new Subtitle("", notice.line(), reading(notice.line().getString())), null, null);
+                    deliver(server, Subtitle.of(server, null, notice.line()), null, null);
                     next = clock + reading(notice.line().getString());
                 }
                 case Pause pause -> next = clock + (long) Balance.get().talk().pauseSeconds() * TICKS_PER_SECOND;
@@ -281,7 +301,7 @@ public final class Talk {
             long agreed = votes.values().stream().filter(vote -> vote == index).count();
             if (!Engine.most(player.server, agreed)) {
                 Component chose = Component.translatable("wayfarer.talk.chose", player.getDisplayName(), picked.text());
-                deliver(player.server, new Subtitle("", chose, reading(chose.getString())), answered.at(), null);
+                deliver(player.server, Subtitle.of(player.server, null, chose), answered.at(), null);
                 answering.clear();
                 offer(player.server);
                 return;
@@ -297,7 +317,7 @@ public final class Talk {
         Tasks.did(player, "answer");
         Sounds.play(player.server, ANSWER_CHOSEN);
         Component chose = Component.translatable("wayfarer.talk.chose", player.getDisplayName(), picked.text());
-        deliver(player.server, new Subtitle("", chose, reading(chose.getString())), answered.at(),
+        deliver(player.server, Subtitle.of(player.server, null, chose), answered.at(),
                 answered.at() == null ? null : chose.copy().withStyle(ChatFormatting.DARK_GRAY));
         answered.answer().chosen(player, picked);
     }
@@ -336,6 +356,9 @@ public final class Talk {
 
     private static Optional<Vec3> where(MinecraftServer server, Said said) {
         String by = said.line().by();
+        if (ROAD.equals(said.fire()) && said.at() != null) {
+            return Optional.of(said.at());
+        }
         if (by == null || Story.get().person(by).voice()) {
             return Optional.empty();
         }

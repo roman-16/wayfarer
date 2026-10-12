@@ -111,7 +111,7 @@ Act 2, across the sea:
 
 | Hall | People now | What is in the hall | Wend's hand | Gift | Decision |
 |---|---|---|---|---|---|
-| The Tide Folk's (coast) | Living, few, on the far shore | Two shards on one pedestal: theirs and the Drowned City's. Together they hallow the bay, so the gaze cannot see the Tide Folk's last boats when they fish at night, and the Drowned City's last gave theirs under an oath | He learned the sea from them | Deep-sight (theirs): far under water shows; Stare (the Drowned City's): creatures flee the player's gaze | Take both, and their boats are seen and they starve; take one; or leave both |
+| The Tide Folk's (coast) | Living, few, on the far shore | Two shards on one calling stone: theirs and the Drowned City's. Together they hallow the bay, so the gaze cannot see the Tide Folk's last boats when they fish at night, and the Drowned City's last gave theirs under an oath | He learned the sea from them | Deep-sight (theirs): far under water shows; Stare (the Drowned City's): creatures flee the player's gaze | Take both, and their boats are seen and they starve; take one; or leave both |
 | The Drowned City's (badlands) | Gone | Empty: its last people carried the shard to the sea, to the Tide Folk | | | |
 | The Sand Singers' (desert) | Living nomads | The great worm swallowed the shard and grew into a beast that sees; the Sand Singers worship it, because it keeps raiders away | He fought the worm and fled; the scars are in their songs | Far-sight: places far off show and can be marked | Kill the worm, and the Sand Singers lose their protector; or leave it |
 | The Jungle Folk's (jungle) | Gone | Behind locks that never sleep, and the Grass King's heir is already inside, cracking them with Wend's old maps: a race | His maps of the halls, from his years as the Gazebound's finder | None; here the Eye in the player first sees through stone (D15) | |
@@ -122,7 +122,7 @@ Act 3, the far ring, by air:
 |---|---|---|---|---|---|
 | The Grass Kingdom's (savanna) | Living: they tore the shard from their king's crown and sealed it | Under the seal, where it powers the ward that keeps the heir's army outside their walls | He was the heir's captain | Sky-veil: phantoms do not see the player | Take it, and the ward falls, the army pours in and the kingdom burns unless the player holds its walls, and the heir has his ancestors' land back; leave it, and the ward holds and the kingdom trusts the player, which helps open Keep the oath, while the heir looks for another way in |
 | The Shadow Circle's (dark forest) | Gone | Taken by the Gazebound into a mansion the Illagers copied from the Circle's halls: a heist | His band carried it there, and his room and ledger are in the mansion | Night-walk: monsters do not notice the player at night unless they run | The Gazebound hold captives there too, children of a burnt town, and there is time to get only one out: the shard, or them |
-| The Scribes' (mountains) | Gone | On its pedestal among their books, which wrote down everything the shard whispered; the books speak of a thirteenth | He read them, and that is how he knew what the player is | The Flare: a burst of the ember's light that crumbles the gaze's creatures | |
+| The Scribes' (mountains) | Gone | On its calling stone among their books, which wrote down everything the shard whispered; the books speak of a thirteenth | He read them, and that is how he knew what the player is | The Flare: a burst of the ember's light that crumbles the gaze's creatures | |
 | The Grave Keepers' (old-growth taiga) | Gone | Among the Wayfarers they buried: taking it wakes the dead, and the player holds the graveyard through the night | His own name is carved on an empty grave there | Hush: while the player crouches, their heart's light sinks like a dead man's, and the gaze's creatures lose them | |
 
 **Why:** Each hall turns on what Wend did there, so the main quests are one man's trail read backwards, and the four living peoples carry the decisions that cost someone the player can see. Two decisions an act keep the hard choices heavy without making every hall one, and every decision weighs a shard and its gift against people the player has met.
@@ -287,7 +287,7 @@ How brightly the player shines and what it does are settled in `systems.md` (M9)
 ```text
 Now      The hall is empty. Nell, behind you: "Someone took it. I want a name."
          You touch the calling stone. The ember flares.
-Memory   Twenty winters ago. The hall is lit, the shard on its pedestal. Your hands are Wend's,
+Memory   Twenty winters ago. The hall is lit, the shard on its calling stone. Your hands are Wend's,
          and your ember still burns. The Frost Walkers block the stair.
          [Memory] The Theft - lift the shard, fight your way out through the snow
          An old woman grabs your arm: "Please." (Spare her - you can't; he didn't.)
@@ -381,8 +381,8 @@ Act 2, the sea:
 |---|---|---|---|---|---|
 | 2.1 | Ships for Everyone | A coastal village | Earn: work for the shipwrights until they build the caravan's boats | Trust | The voice makes its promise: "There's a valley past the sea where nothing comes at night. Bring them." Tamsin: "Ask him again how far" |
 | 2.2 | The Crossing | The open sea | Sail, then Hold a night on the water | Travel | On open water the ember shines like a beacon; something comes up from below, and a boat is lost unless the player holds it |
-| 2.3 | The Tide Folk | The far shore, their bay | Talk | Trust | Their guardians bow to the player, and nobody knows why. Two shards lie on one pedestal and hallow the bay. Decision: take both, one, or none. Deep-sight, Stare |
-| 2.4 | The Dry City | The badlands, the Drowned City's hall | Survive the badlands' heat | Land: the heat, until the Sand Singers' shade | The hall is empty, and the calling stone shows its last people carrying the shard to the sea: it is the second on the Tide Folk's pedestal |
+| 2.3 | The Tide Folk | The far shore, their bay | Talk | Trust | Their guardians bow to the player, and nobody knows why. Two shards lie on one calling stone and hallow the bay. Decision: take both, one, or none. Deep-sight, Stare |
+| 2.4 | The Dry City | The badlands, the Drowned City's hall | Survive the badlands' heat | Land: the heat, until the Sand Singers' shade | The hall is empty, and the calling stone shows its last people carrying the shard to the sea: it is the second on the Tide Folk's calling stone |
 | 2.5 | His Last Camp | Wend's last camp, a lead from the voice | Investigate, then a memory | | The player plays the night he gave in: the Gazebound's bread, the hall, the end of walking. The hand that held out the bread was a child's, Maren's, and the memory remembers what the team did with her bread at 1.5 (S30) |
 | 2.6 | The Worm | The desert, the Sand Singers' hall | Hunt: their songs, what it hates, its lair; then a memory of Wend fleeing it | Strength, Knowledge | The worm swallowed the shard and sees, and it keeps the raiders off the Sand Singers. Decision: kill it, or leave it. Far-sight |
 | 2.7 | Your Eyes | The caravan's fire, by count after the second hall | Talk | | Corin: "Your eyes. Did you know they do that?" Agna stops laughing |
@@ -484,7 +484,7 @@ Mother Agna, over a body on the road: "Look. They never take anything. They only
 - Light is sight, and it lives on what is new: a still life shows it nothing new, so it starves and dims, which is also why varied food keeps it strong. A dying ember's light seeks its body and flies home to the Eye, and the dragon sees a little more. Carrying the ember and walking is the guarding itself, which is what the oath protects, and the dragon grew stronger as Wayfarers settled and their embers went out.
 - Light seeks its body, so the ember pulls towards the shards, and a shard can be lifted only by the light it came from. The Gazebound therefore need a living ember: Wend carried shards for them while his burned, what he left lies where he left it, and the heir wants the player's.
 - Wend gave the player the ember so its light would not go home. His ember had been dark for twenty years and he was dying; a dying ember's light flies home to the Eye, and only the Eye's own body could light it again. So he gave it to the one thing the gaze grew to carry its Eye home, and bet that the player would choose otherwise.
-- The ember finds halls, not shards. On every pedestal the first Wayfarers set a calling stone, kin to their waystones, which only an ember hears, so Wayfarers could find the halls and look after them. Far off the ember only feels whether the player walks towards the stone or away, flaring and guttering; within about 256 blocks it knows the stone's place; and the stone stays when the shard is gone, so in an empty hall it shows what happened, because it saw.
+- The ember finds halls, not shards. On every calling stone the first Wayfarers set a calling stone, kin to their waystones, which only an ember hears, so Wayfarers could find the halls and look after them. Far off the ember only feels whether the player walks towards the stone or away, flaring and guttering; within about 256 blocks it knows the stone's place; and the stone stays when the shard is gone, so in an empty hall it shows what happened, because it saw.
 - The player is the thirteenth splinter. When the Eye was broken, a splinter fell unnoticed; it grew over the centuries, as a shard grew the Sand Singers' worm, and the gaze shaped it into a person, because only a heart that keeps walking can carry the ember home. That is why the ember woke in them: the light found its body. With every shard they take, more of the Eye comes together in them, which is the clock inside (S12) and what Close the Eye spends.
 
 **Why:** One thing, the Eye's light, explains the pull, the carrying, the oath, the stillness, the splitting at a fire and why the gaze needs the player, so the rules of the road are the story's rules too. A calling stone lets an empty hall still be found and still tell its tale.
@@ -660,7 +660,7 @@ The gear teaches itself when tried, through the first-time hints, as the prologu
 4. In the hall the calling stone hums with the shard on it, and the mark is cut beside it. The shard sinks into the ember, and the voice speaks for the first time and finishes the stranger's charge (S22). Trail-sight comes with it, for every player (M11), and the team shines its first step (M9).
 5. Make for the caravan: its camp goes up out of sight ahead, on the main quest's way (M5, M19), and the evening runs as every evening does (M6, M20). On the way the voice makes its first short remarks (M4).
 6. At the caravan Tamsin sees a change, and Pip asks for a horse (C8). Once most of the team sits at the fire, the voice gives its first long talk as the night's story, heard only by the players: who it says it is, the ember, and the lead to Wend's first camp, which opens 1.2 with its exact mark. Sleep waits until it is over (M12).
-7. Wend's first camp is put down ahead, as the town was: at the talk the quest picks a spot about 3,072 blocks on along the way the team has been walking, by a lake if there is one, and the voice names its direction from where they sit. The compass marks it at once. The camp itself goes up out of sight when the team comes near it, in 1.2.
+7. Wend's first camp is put down ahead, as the town was: at the talk the quest picks a spot about 2,048 blocks on along the way the team has been walking, by a lake if there is one, and the voice names its direction from where they sit. The compass marks it at once. The camp itself goes up out of sight when the team comes near it, in 1.2.
 
 ```text
 Morning  <Tamsin> Go on. We'll follow your marks.
@@ -673,7 +673,7 @@ Hall     The shard sinks into the ember. A warmth, then a voice you last heard d
          <The stranger> You heard me at the fire. Bring them to a frame, and we put its eye out for good. No more burning towns.
 Evening  <Tamsin> You came back different. What's in that hand now?
          <The stranger> I made my first camp by a lake, under three pines. North-east of here. I'd like to see it again.
-         [Main] His First Camp   Compass ◆ 3,072 blocks
+         [Main] His First Camp   Compass ◆ 2,048 blocks
 ```
 
 **W5 The Cache** (an old campsite; Investigate). The first old campsite ahead of the team after the first hall holds it. As they pass, the voice: "That camp. Somebody sat there too long. Go and look." The compass marks it. With the ember sense the player finds a cold black ember in a tin, a journal signed only with the circle mark, telling how its writer built a cabin, how the ember dimmed and how one winter it went out, and, wrapped in cloth, their stone of one's own (M23), which waits in the journal for each player.
@@ -727,7 +727,7 @@ The typical road (the later halls of each act come in any order, and the by-coun
 | 4 | Late summer, the leaves turning | 1.6 The Last Frost Walker, 1.7 The Theft, 1.8 Under the Ice | C1 The Missing, W7 Maren's Gifts | Revelation: the thief was the man whose voice the player trusts; then Nell's shard | The caravan | The theft's theme |
 | 5 | Early autumn | 1.9 The Keeper's Apprentice, 1.10 The Bell, 1.11 The Name | C7 The Lost Ore, W8 Captains' Pages | Fight, then the act's revelation: Wend | Red moon: the gaze comes for the bell | The bell's theme, the battle piece, the Name at the fire |
 | 6 | Mid autumn | 2.1 Ships for Everyone, 2.2 The Crossing | C2 His Brother, C3 The Burial | Fight: the thing below, in the first autumn storm | A night held on the water | Act 2's first morning, the battle piece at sea |
-| 7 | Mid autumn | 2.3 The Tide Folk, 2.7 Your Eyes | T2 Night Fishing, C5 The Seal | Decision: two shards on one pedestal | The hallowed bay, safe | |
+| 7 | Mid autumn | 2.3 The Tide Folk, 2.7 Your Eyes | T2 Night Fishing, C5 The Seal | Decision: two shards on one calling stone | The hallowed bay, safe | |
 | 8 | Mid autumn | 2.4 The Dry City, 2.6 The Worm | T3 The Raiders, W9 The Horse That Never Sleeps | Fight: the worm's lair, then whether it lives | The caravan | The battle piece in the lair |
 | 9 | Late autumn | 2.5 His Last Camp, 2.8 The Locks That Never Sleep | C6 The Fever, W6 The Settled Wayfarer, W2 The Scar of the Searched | Revelation: Maren's hand, and the Eye first sees through stone | The caravan | The last camp's theme |
 | 10 | Late autumn | 2.9 Maren's Warning, 2.10 The Hollow | W1 The Burning, W3 The Quarrel, C4 Bram's Son | Fight, then loss, then the first reveal | Red moon: the breaking | The battle piece; a death piece for the nine wagons at dawn |
@@ -752,7 +752,7 @@ The typical road (the later halls of each act come in any order, and the by-coun
 - A memory is only ever Wend's life, played where it happened (S13).
 - Each hall's lectern holds its people's own book, written to whoever finds their hall, and it tells that hall's fate (S6): it is written with the hall's quest. Where the people are gone and someone else was there, the lectern holds what they left, such as the Frost Walkers' last account of the theft.
 
-**Why:** Twelve books handed out at the pedestal were the old pack's whole story, the very "story at the end of the walk" this design leaves behind (ground truth 1), and by count they told Wend, the voice and the thirteenth out of place, ahead of the quests that reveal them, and never reached a team that left a shard with its people. The breaking still needs telling, and Ilse, alone in the Keepers' ashes with their records, is the one person who would know it.
+**Why:** Twelve books handed out at the calling stone were the old pack's whole story, the very "story at the end of the walk" this design leaves behind (ground truth 1), and by count they told Wend, the voice and the thirteenth out of place, ahead of the quests that reveal them, and never reached a team that left a shard with its people. The breaking still needs telling, and Ilse, alone in the Keepers' ashes with their records, is the one person who would know it.
 
 ### S27 1.2 His First Camp in detail
 
@@ -936,7 +936,7 @@ Fire     Someone walks out of the dark and sits across the fire, hood up. Grey c
 
 **Alone and in a team.** A player alone plays it the same: the talk waits until they sit at the fire. In a team everyone at the fire sees the same subtitles and answers, the first answer decides each choice, and teammates far from the fire read it in chat (I4).
 
-**Where it lives.** The journal: People, "A hooded woman in Gazebound grey. She knew the stranger's smoke, and that he was dead. She left us bread."; The Story So Far, what she answered ("She wouldn't give her name. Names are for people who stay, she said."); At the Fire, the whole talk; the bread, kept, as Her Bread in the inventory, its tooltip "Dark and sweet, an open eye pressed into the crust. She left it at our fire."
+**Where it lives.** The journal: People, "A hooded woman in Gazebound grey. She knew the stranger's smoke, and that he was dead. She left us bread."; The Story So Far, what she answered ("She wouldn't give her name. Names are for people who stay, she said."); Conversations, the whole talk; the bread, kept, as Her Bread in the inventory, its tooltip "Dark and sweet, an open eye pressed into the crust. She left it at our fire."
 
 **Sound.** No story piece plays, since evening 3's is the ford's (S25): only the fire and the voices, and a soft rush of smoke as she leaves, chosen by ear with the `sound` skill.
 
@@ -986,7 +986,7 @@ Fire     <Corin> She looked at my coat for a long time.
 
 **Alone and in a team.** A player alone plays it the same; nothing in it waits for a second player.
 
-**Where it lives.** The journal: People, "Nell, the last of the Frost Walkers. She came home from a hunt twenty winters ago to find her people dead on their hall's stair. She wants a name."; Words, the Frost Walkers; The Story So Far; At the Fire. The snowshoes, with their tooltip, and their row on the Gear page.
+**Where it lives.** The journal: People, "Nell, the last of the Frost Walkers. She came home from a hunt twenty winters ago to find her people dead on their hall's stair. She wants a name."; Words, the Frost Walkers; The Story So Far; Conversations. The snowshoes, with their tooltip, and their row on the Gear page.
 
 **Sound.** No story piece plays, since evening 4's is the theft's (S25): the wind in the snow, the arrow's thud, the voices.
 
@@ -1052,7 +1052,7 @@ Lake     <Nell> Give it to me. I'll bury it with them.
 - Logging out mid-vote keeps the player's vote; a player who joins late can vote (M3).
 - Untracking either quest: the hall, the lake and Nell stay, and nothing moves on until it is tracked again (D6).
 
-**Where it lives.** The journal: People, Nell's entry grows with what she was told; The Story So Far; At the Fire, both talks; Pages, the Frost Walkers' last account. Dark-sight on the Shards page for a team that kept it.
+**Where it lives.** The journal: People, Nell's entry grows with what she was told; The Story So Far; Conversations, both talks; Pages, the Frost Walkers' last account. Dark-sight on the Shards page for a team that kept it.
 
 What 1.7 and 1.8 ask of the systems, at their minimum:
 
@@ -1120,7 +1120,7 @@ Morning  <Hob> There. A hammer worth the name. Bring me anything.
 
 **Alone and in a team.** A player alone plays it the same; nothing in it waits for a second player.
 
-**Where it lives.** The journal: The Story So Far; At the Fire, Hob's word; People, Hob's entry grows ("His hammer cracked the night Tollbridge burned."); Words, frost iron. The Gear page: the Frost Walkers' metal in weapons, tools and armour, with what it needs, where it lies and who makes it (M18), trackable, its task saying how to hand it to Hob. Raw frost iron's tooltip says no common fire melts it.
+**Where it lives.** The journal: The Story So Far; Conversations, Hob's word; People, Hob's entry grows ("His hammer cracked the night Tollbridge burned."); Words, frost iron. The Gear page: the Frost Walkers' metal in weapons, tools and armour, with what it needs, where it lies and who makes it (M18), trackable, its task saying how to hand it to Hob. Raw frost iron's tooltip says no common fire melts it.
 
 **Sound.** No story piece plays: evening 5's are the bell's and the Name's (S25). The mine sounds as vanilla's deep dark does: the sculk's clicks and the shriek.
 
@@ -1174,7 +1174,7 @@ Fire     <Tamsin> A Keeper's girl. My grandmother said the Keepers were a story 
 
 **Alone and in a team.** A player alone plays it the same; nothing in it waits for a second player.
 
-**Where it lives.** The journal: People, "Ilse, a Keeper's apprentice. Her master died holding the door of their reading-house. She reads the old script."; Words, the Keepers and the old script; Pages, The Breaking; The Story So Far; At the Fire, Ilse's talk. The scorched book can be read again at the lectern while the house stands.
+**Where it lives.** The journal: People, "Ilse, a Keeper's apprentice. Her master died holding the door of their reading-house. She reads the old script."; Words, the Keepers and the old script; Pages, The Breaking; The Story So Far; Conversations, Ilse's talk. The scorched book can be read again at the lectern while the house stands.
 
 **Sound.** No story piece plays: evening 5's are the bell's and the Name's (S25). The house sounds of its smouldering fires and the wind.
 
@@ -1216,7 +1216,7 @@ The three pages, in the heir's words as his captains copied them:
 - A team that never raids an outpost never opens W8; nothing in the main road needs it.
 - Corin gone or not yet joined: Corin is always with the caravan in Act 1 after 1.3, which comes before any outpost's page matters; if he is not there yet, the talk waits for him.
 
-**Where it lives.** The journal: Pages, the three Captain's Pages; W8 in Quests with its count; At the Fire, Corin's reading.
+**Where it lives.** The journal: Pages, the three Captain's Pages; W8 in Quests with its count; Conversations, Corin's reading.
 
 **Sound.** None of its own: the outposts' own fights.
 
@@ -1297,7 +1297,7 @@ Dawn     <Tamsin> It's still ringing in my head. Tell me what's in it.
 
 **Alone and in a team.** A player alone plays it the same: the hold's waves are sized for one, and the decision is theirs alone.
 
-**Where it lives.** The journal: The Story So Far; At the Fire, Tamsin at dawn; Words, the First Village; People, Tamsin's entry grows with what was chosen; the Shards page holds Warmth for a team that melted the bell.
+**Where it lives.** The journal: The Story So Far; Conversations, Tamsin at dawn; Words, the First Village; People, Tamsin's entry grows with what was chosen; the Shards page holds Warmth for a team that melted the bell.
 
 **Sound.** The bell's theme in the memory, the battle piece in the hold (S25); the bell's own toll at dusk while it stays.
 
@@ -1342,7 +1342,7 @@ Dawn     <Tamsin> The voice says past the sea. Then we need boats.
 
 **Alone and in a team.** A player alone plays it the same.
 
-**Where it lives.** The journal: People, the stranger's entry renamed Wend and grown; the hooded woman's entry grows; At the Fire; The Story So Far. The voice's label in every later line.
+**Where it lives.** The journal: People, the stranger's entry renamed Wend and grown; the hooded woman's entry grows; Conversations; The Story So Far. The voice's label in every later line.
 
 **Sound.** The Name at the fire (S25), a story piece chosen by ear, from her first line to her leaving.
 

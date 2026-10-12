@@ -351,7 +351,7 @@ public final class Caravan {
 
     static List<BoundingBox> boxes(MinecraftServer server) {
         Camp camp = Camp.of(server);
-        return camp.phase == Phase.STANDING ? List.copyOf(camp.boxes) : List.of();
+        return camp.phase == Phase.STANDING || camp.phase == Phase.PACKING ? List.copyOf(camp.boxes) : List.of();
     }
 
     static boolean campedToday(MinecraftServer server) {
@@ -966,11 +966,11 @@ public final class Caravan {
         }
         if (placed == null) {
             for (JsonObject person : people(level.getServer(), household)) {
-                BlockPos spot = seats.isEmpty() ? level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                        camp.centre.offset((int) Math.round(Math.cos(Math.toRadians(angle)) * STANDBY), 0, (int) Math.round(Math.sin(Math.toRadians(angle)) * STANDBY)))
-                        : seats.removeFirst().above();
+                boolean sits = !seats.isEmpty();
+                BlockPos spot = sits ? seats.removeFirst().above() : level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                        camp.centre.offset((int) Math.round(Math.cos(Math.toRadians(angle)) * STANDBY), 0, (int) Math.round(Math.sin(Math.toRadians(angle)) * STANDBY)));
                 double yaw = Math.toDegrees(Math.atan2(camp.centre.getZ() - spot.getZ(), camp.centre.getX() - spot.getX())) - 90;
-                People.person(level, person.get("person").getAsString(), Vec3.atBottomCenterOf(spot), (float) yaw, "standing");
+                People.person(level, person.get("person").getAsString(), Vec3.atBottomCenterOf(spot), (float) yaw, sits ? "sitting" : "standing");
             }
             landmark(level, household, camp.centre, camp.centre.above());
             LOGGER.info("the caravan found no room for its {}, so its people stay by the fire", piece);

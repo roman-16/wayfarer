@@ -20,7 +20,7 @@ import net.minecraft.world.phys.Vec3;
 final class Clues {
     static final String VEIL = Wayfarer.MODID + "_veil";
     private static final float MARKER_SCALE = 1.02f;
-    private static final int FOUND_REACH = 2;
+    private static final int FOUND_REACH = 64;
     private static final String DOOR = Wayfarer.MODID + "_door_glow";
     private static final float PRINT_DEPTH = 0.45f;
     private static final float PRINT_HEIGHT = 0.02f;
@@ -36,11 +36,18 @@ final class Clues {
         display(level, lower, MARKER_SCALE, clue).addTag(DOOR);
         display(level, lower.above(), MARKER_SCALE, clue).addTag(DOOR);
         box(level, Vec3.atBottomCenterOf(lower), clue);
+        box(level, Vec3.atBottomCenterOf(lower.above()), clue);
     }
 
     static void found(ServerLevel level, Entity found, String clue) {
-        level.getEntities((Entity) null, found.getBoundingBox().inflate(FOUND_REACH),
-                entity -> entity.getTags().contains(DOOR) && entity.getTags().contains(Steps.CLUE + clue)).forEach(Entity::discard);
+        for (Entity entity : level.getEntities((Entity) null, found.getBoundingBox().inflate(FOUND_REACH), entity -> entity.getTags().contains(Steps.CLUE + clue))) {
+            if (entity.getTags().contains(DOOR)) {
+                entity.discard();
+            } else {
+                entity.removeTag(Steps.CLUE + clue);
+                Sense.unglow(level, entity);
+            }
+        }
     }
 
     static List<Entity> print(ServerLevel level, BlockPos ground, String clue) {

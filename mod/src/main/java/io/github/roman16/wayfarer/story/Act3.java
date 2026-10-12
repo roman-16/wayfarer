@@ -132,22 +132,22 @@ final class Act3 {
     static void tick(MinecraftServer server) {
         Progress progress = Progress.of(server);
         ServerLevel level = Engine.overworld(server);
-        progress.place(HOLLOW).filter(centre -> progress.place(HOLLOW_MARKED).isEmpty() && Halls.loaded(level, centre)).ifPresent(centre -> {
+        progress.place(HOLLOW).filter(centre -> progress.place(HOLLOW_MARKED).isEmpty() && HallSearch.loaded(level, centre)).ifPresent(centre -> {
             mark(server, level, centre);
-            Halls.release(level, centre);
+            HallSearch.release(level, centre);
         });
-        progress.place(AIRFIELD_SITE).filter(site -> progress.place(AIRFIELD_ORIGIN).isEmpty() && Halls.loaded(level, site)).ifPresent(site -> {
+        progress.place(AIRFIELD_SITE).filter(site -> progress.place(AIRFIELD_ORIGIN).isEmpty() && HallSearch.loaded(level, site)).ifPresent(site -> {
             field(server, level, site);
-            Halls.release(level, site);
+            HallSearch.release(level, site);
         });
         progress.place(KEEPERS_FRAME).filter(frame -> progress.place(FRAME_MARKED).isEmpty() && level.isLoaded(frame)).ifPresent(frame -> {
             Clues.marker(level, frame.above(), FRAME_CLUE);
             progress.place(FRAME_MARKED, frame);
             progress.setDirty();
         });
-        progress.place(KEEPERS_SITE).filter(site -> progress.place(KEEPERS_FRAME).isEmpty() && Halls.loaded(level, site)).ifPresent(site -> {
+        progress.place(KEEPERS_SITE).filter(site -> progress.place(KEEPERS_FRAME).isEmpty() && HallSearch.loaded(level, site)).ifPresent(site -> {
             frame(server, level, site);
-            Halls.release(level, site);
+            HallSearch.release(level, site);
         });
         progress.place(AIRFIELD_ORIGIN).filter(origin -> !progress.done(WINGS) && level.areEntitiesLoaded(ChunkPos.asLong(origin))).ifPresent(origin -> moor(server, level));
     }

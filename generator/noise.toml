@@ -49,6 +49,11 @@ mod = "Entity Model Features"
 why = "Fresh Animations' player models use animation lines it does not read"
 
 [[noise]]
+match = '\[EMF\]: model attempted creation more than 64 times \{minecraft:player_head#main\]'
+mod = "Easy NPC"
+why = "Its skull layer makes the skull models anew for every person it draws, so Entity Model Features stops animating vanilla's player head after 64"
+
+[[noise]]
 match = 'Found 0 weight, make sure this is intentional!'
 mod = "Minecraft"
 why = "A mod's data gives a weighted entry no weight"

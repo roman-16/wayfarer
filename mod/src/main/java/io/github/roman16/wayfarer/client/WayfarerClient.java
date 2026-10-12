@@ -12,11 +12,11 @@ import io.github.roman16.wayfarer.story.Tasks;
 import java.util.List;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.model.ChestedHorseModel;
 import net.minecraft.client.model.GoatModel;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
@@ -24,7 +24,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
 import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
@@ -33,8 +32,10 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 import top.theillusivec4.curios.api.client.ICuriosScreen;
@@ -71,7 +72,7 @@ public final class WayfarerClient {
             event.registerLayerDefinition(FallenRenderer.MULE, ChestedHorseModel::createBodyLayer);
         });
         modBus.addListener(EntityRenderersEvent.RegisterRenderers.class, event -> {
-            event.registerBlockEntityRenderer(Wayfarer.SHRINE_PEDESTAL_ENTITY.get(), ShrinePedestalRenderer::new);
+            event.registerBlockEntityRenderer(Wayfarer.CALLING_STONE_ENTITY.get(), CallingStoneRenderer::new);
             event.registerEntityRenderer(Wayfarer.DEEP.get(), DeepRenderer::new);
             event.registerEntityRenderer(Wayfarer.FALLEN.get(), FallenRenderer::new);
             if (ModList.get().isLoaded("geckolib")) {
@@ -80,7 +81,7 @@ public final class WayfarerClient {
         });
         modBus.addListener(RegisterClientReloadListenersEvent.class, event -> event.registerReloadListener((ResourceManagerReloadListener) DeepRenderer::reload));
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> HeldLight.tick());
-        NeoForge.EVENT_BUS.addListener(ComputeFovModifierEvent.class, FarSight::zoom);
+        NeoForge.EVENT_BUS.addListener(ViewportEvent.ComputeFov.class, FarSight::zoom);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, FarSight::mark);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, Ending::tick);
         NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingOut.class, Ending::leave);
@@ -88,19 +89,24 @@ public final class WayfarerClient {
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Closing.class, event -> HeldLight.follow());
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Sight.tick(Minecraft.getInstance()));
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Opening.class, event -> {
-            if (event.getNewScreen() instanceof TitleScreen) {
-                MusicPlayer.play(new Music.Play(TITLE, true));
-            }
             if (event.getNewScreen() instanceof ICuriosScreen) {
                 PacketDistributor.sendToServer(new Tasks.Did("charms"));
+            }
+        });
+        NeoForge.EVENT_BUS.addListener(ScreenEvent.KeyPressed.Pre.class, event -> {
+            if (MAP.matches(event.getKeyCode(), event.getScanCode()) && ModList.get().isLoaded(JOURNEYMAP) && MapLink.shown(event.getScreen())) {
+                event.getScreen().onClose();
+                event.setCanceled(true);
             }
         });
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Init.Post.class, FrontDoor::init);
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Init.Post.class, RecipeBooks::hide);
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Init.Pre.class, RecipeBooks::close);
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Render.Pre.class, Recap::render);
+        NeoForge.EVENT_BUS.addListener(ScreenEvent.Render.Post.class, CraftingHint::render);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Recap.tick(Minecraft.getInstance()));
         NeoForge.EVENT_BUS.addListener(RenderTooltipEvent.Color.class, Tooltips::color);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, ItemTooltipEvent.class, Tooltips::maker);
         NeoForge.EVENT_BUS.addListener(RenderGuiLayerEvent.Pre.class, Hud::beforeLayer);
         NeoForge.EVENT_BUS.addListener(CustomizeGuiOverlayEvent.BossEventProgress.class, Hud::bossBar);
         NeoForge.EVENT_BUS.addListener(RenderGuiLayerEvent.Pre.class, event -> {
@@ -112,6 +118,8 @@ public final class WayfarerClient {
             Minecraft minecraft = Minecraft.getInstance();
             if (minecraft.level != null && minecraft.screen == null && MusicPlayer.playing(TITLE)) {
                 MusicPlayer.play(new Music.Play("", false));
+            } else if (minecraft.level == null && minecraft.screen != null && !MusicPlayer.playing(TITLE)) {
+                MusicPlayer.play(new Music.Play(TITLE, true));
             }
         });
         NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingOut.class, event -> {
@@ -140,6 +148,7 @@ public final class WayfarerClient {
             }
         }
         while (SENSE.consumeClick()) {
+            Hud.sensed();
             PacketDistributor.sendToServer(new Sense.Payload());
         }
         if (journeymap) {

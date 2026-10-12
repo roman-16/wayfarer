@@ -60,7 +60,7 @@ public final class Conversation {
 
     private Conversation() {}
 
-    private record Shown(String by, Component text, long from, int ticks) {}
+    private record Shown(String by, String tone, Component text, long from, int ticks) {}
 
     public record Logged(long seq, String text) {}
 
@@ -68,7 +68,7 @@ public final class Conversation {
         if (quiet()) {
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvent.createVariableRangeEvent(Wayfarer.id(TICK_SOUND)), 1, 1));
         }
-        lines.addLast(new Shown(subtitle.by(), subtitle.text(), clock, subtitle.ticks()));
+        lines.addLast(new Shown(subtitle.by(), subtitle.tone(), subtitle.text(), clock, subtitle.ticks()));
         while (lines.size() > KEPT) {
             lines.removeFirst();
         }
@@ -200,7 +200,7 @@ public final class Conversation {
         if (shown.by().isEmpty()) {
             return shown.text().copy().withColor(Stamp.rgb(Stamp.QUIET));
         }
-        MutableComponent named = Component.literal(shown.by().toUpperCase(Locale.ROOT)).withColor(Stamp.rgb(Stamp.GOLD));
+        MutableComponent named = Component.literal(shown.by().toUpperCase(Locale.ROOT)).withColor(Stamp.rgb(Stamp.speaker(shown.tone())));
         return named.append(Component.literal(NAME_SPACE)).append(shown.text());
     }
 

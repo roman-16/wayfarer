@@ -448,7 +448,7 @@ public final class StoryDev {
                     choice.ifPresent(first -> Engine.choose(server, active.quest().id(), step.id(), first));
                 }
                 List<String> taking = choice.map(Story.Choice::takes).orElseGet(() -> Steps.eyes(step));
-                taking.forEach(eye -> Journey.of(server).claim(Steps.shrine(eye)));
+                taking.forEach(eye -> Journey.of(server).claim(Steps.hall(eye)));
                 server.getPlayerList().getPlayers().forEach(Shards::sync);
                 Steps.gifts(progress, step, taking);
                 run.here = Engine.at(server, step.text("at"));
@@ -579,7 +579,7 @@ public final class StoryDev {
         Progress progress = Progress.of(server);
         Talk.Placeholders fill = Engine.fill(progress);
         String quest = active.quest().id();
-        List<Progress.Heard> heard = List.copyOf(progress.fire.getOrDefault(quest, List.of()));
+        List<Progress.Heard> heard = List.copyOf(progress.conversations.getOrDefault(quest, List.of()));
         step.lines().stream().map(line -> new Progress.Heard(label(server, line.by()), fill.fill(line.text()))).filter(line -> !heard.contains(line))
                 .forEach(line -> progress.hear(quest, line.by(), line.text()));
         String asker = step.kind().equals("talk") || step.kind().equals("visit") ? step.lines().stream().map(Story.Line::by).filter(Objects::nonNull).reduce((first, second) -> second)
@@ -598,6 +598,7 @@ public final class StoryDev {
 
     private static void arrive(MinecraftServer server, Engine.Active active) {
         stand(server, active);
+        Talk.reset();
         follow(server, active);
         if (run.save != null) {
             save(server, run.save);

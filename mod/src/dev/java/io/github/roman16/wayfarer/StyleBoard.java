@@ -14,7 +14,7 @@ import net.minecraft.world.item.Items;
 
 final class StyleBoard extends Screen {
     static final List<String> PAGES = List.of("book", "hud", "type", "widgets");
-    private static final List<String> ICONS = List.of("quests", "story", "people", "words", "pages", "fire", "stones", "map", "gear");
+    private static final List<String> ICONS = List.of("quests", "story", "people", "words", "pages", "conversations", "stones", "map", "gear");
     private static final List<String> MARKS = List.of("fire", "grave", "hall", "left", "pointer", "right", "tent");
     private static final Map<String, Integer> TEXT = Map.of("bone", Stamp.BONE, "label", Stamp.LABEL, "quiet", Stamp.QUIET, "dim", Stamp.DIM, "gold",
             Stamp.GOLD, "gaze", Stamp.GAZE, "danger", Stamp.DANGER);

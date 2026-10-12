@@ -18,7 +18,8 @@ Unreleased and in development: nothing is published yet, and a world made with o
   |---|---|---|---|---|
   | Shader profile | Low | Medium | High | Ultra |
   | Draw distance | 8 chunks | 10 | 12 | 16 |
-  | Far view | 64 chunks, about 1 km | 128, about 2 km | 256, about 4 km | 512, about 8 km |
+  | Far view | Off | 128 chunks, about 2 km | 256, about 4 km | 512, about 8 km |
+  | Far view's share of the processor | Least | Low | Balanced | Balanced |
 
   ```text
   Options › Video Settings › Wayfarer › Graphics
@@ -26,7 +27,7 @@ Unreleased and in development: nothing is published yet, and a world made with o
     Shaders   [x]
   ```
 
-**Why:** The pack is made for the friends who play it, on the machines they have, and limiting it for weaker ones would cost the atmosphere it is built for. One shader means every look is judged once, and one Preset with four steps lets a newcomer pick how hard their machine works without knowing Iris, Distant Horizons and a dozen video settings. It lives where players already look for graphics, in Sodium's Video Settings, and is named Preset because Sodium already has a Graphics option (Fast or Fancy).
+**Why:** The pack is made for the friends who play it, on the machines they have, and limiting it for weaker ones would cost the atmosphere it is built for. Low is the exception: on a gaming laptop (RTX 2070, i7-10750H) the far view alone took the game from 130 frames a second to 20 to 37, so the lowest step turns it off. One shader means every look is judged once, and one Preset with four steps lets a newcomer pick how hard their machine works without knowing Iris, Distant Horizons and a dozen video settings. It lives where players already look for graphics, in Sodium's Video Settings, and is named Preset because Sodium already has a Graphics option (Fast or Fancy).
 
 
 ### R3 Blind players and the play record

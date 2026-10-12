@@ -1,14 +1,14 @@
 # Journal
 
-## At the fire
+## Conversations
 
-**At the Fire: every line of the stranger's talk, as it was said**, in the story at `the_pull/the_fireside`
+**Conversations: every line of the stranger's talk, as it was said**, in the story at `the_pull/the_fireside`
 
-![At the Fire: every line of the stranger's talk, as it was said](at-the-fire/the-last-fire.png)
+![Conversations: every line of the stranger's talk, as it was said](conversations/the-last-fire.png)
 
-**At the Fire: Tollbridge's talks, each speaker as they were known then**, in the story at `the_pull/the_fireside`
+**Conversations: Tollbridge's talks, each speaker as they were known then**, in the story at `the_pull/the_fireside`
 
-![At the Fire: Tollbridge's talks, each speaker as they were known then](at-the-fire/ash.png)
+![Conversations: Tollbridge's talks, each speaker as they were known then](conversations/ash.png)
 
 ## Pages
 

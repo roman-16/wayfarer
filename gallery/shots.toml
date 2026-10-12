@@ -221,17 +221,21 @@ kind = "hud"
 
 [[shots]]
 at = "the_pull/the_fireside"
-caption = "At the Fire: every line of the stranger's talk, as it was said"
-id = "journal/at-the-fire/the-last-fire"
+caption = "Conversations: every line of the stranger's talk, as it was said"
+id = "journal/conversations/the-last-fire"
 kind = "screen"
-steps = ["key key.wayfarer.journal", "press At the Fire", "press The Last Fire"]
+steps = [
+  "key key.wayfarer.journal",
+  "press Conversations",
+  "press The Last Fire",
+]
 
 [[shots]]
 at = "the_pull/the_fireside"
-caption = "At the Fire: Tollbridge's talks, each speaker as they were known then"
-id = "journal/at-the-fire/ash"
+caption = "Conversations: Tollbridge's talks, each speaker as they were known then"
+id = "journal/conversations/ash"
 kind = "screen"
-steps = ["key key.wayfarer.journal", "press At the Fire", "press Ash"]
+steps = ["key key.wayfarer.journal", "press Conversations", "press Ash"]
 
 [[shots]]
 at = "the_pull/the_fireside"
@@ -416,7 +420,7 @@ id = "journal/quests/his-brother"
 kind = "screen"
 steps = [
   "/wayfarer story next",
-  "await keep to the back",
+  "await The ember tugs again",
   "key key.wayfarer.journal",
   "press Quests",
   "press His Brother",
@@ -658,7 +662,7 @@ at = "the_deserter/corin"
 caption = "Corin at the ford, shown the ember's light, and what to tell him"
 id = "story/the-deserter/corin"
 kind = "hud"
-steps = ["await answers:"]
+steps = ["await I brought them", "await six winters", "await answers:"]
 
 [[shots]]
 at = "the_deserter/the_fireside"
@@ -1818,85 +1822,85 @@ subject = "camp"
 
 [[shots]]
 at = "showroom"
-caption = "The black eye's shrine, from its cover down the shaft into the hall"
-id = "shrines/black"
+caption = "The black eye's hall, from its cover down the shaft into the hall"
+id = "halls/black"
 kind = "tour"
 subject = "black"
 
 [[shots]]
 at = "showroom"
-caption = "The cold eye's shrine, from its cover down the shaft into the hall"
-id = "shrines/cold"
+caption = "The cold eye's hall, from its cover down the shaft into the hall"
+id = "halls/cold"
 kind = "tour"
 subject = "cold"
 
 [[shots]]
 at = "showroom"
-caption = "The corrupted eye's shrine, from its cover down the shaft into the hall"
-id = "shrines/corrupted"
+caption = "The corrupted eye's hall, from its cover down the shaft into the hall"
+id = "halls/corrupted"
 kind = "tour"
 subject = "corrupted"
 
 [[shots]]
 at = "showroom"
-caption = "The cryptic eye's shrine, from its cover down the shaft into the hall"
-id = "shrines/cryptic"
+caption = "The cryptic eye's hall, from its cover down the shaft into the hall"
+id = "halls/cryptic"
 kind = "tour"
 subject = "cryptic"
 
 [[shots]]
 at = "showroom"
-caption = "The evil eye's shrine, from its cover down the shaft into the hall"
-id = "shrines/evil"
+caption = "The evil eye's hall, from its cover down the shaft into the hall"
+id = "halls/evil"
 kind = "tour"
 subject = "evil"
 
 [[shots]]
 at = "showroom"
-caption = "The exotic eye's shrine, from its cover down the shaft into the hall"
-id = "shrines/exotic"
+caption = "The exotic eye's hall, from its cover down the shaft into the hall"
+id = "halls/exotic"
 kind = "tour"
 subject = "exotic"
 
 [[shots]]
 at = "showroom"
-caption = "The lost eye's shrine, from its cover down the shaft into the hall"
-id = "shrines/lost"
+caption = "The lost eye's hall, from its cover down the shaft into the hall"
+id = "halls/lost"
 kind = "tour"
 subject = "lost"
 
 [[shots]]
 at = "showroom"
-caption = "The magical eye's shrine, from its cover down the shaft into the hall"
-id = "shrines/magical"
+caption = "The magical eye's hall, from its cover down the shaft into the hall"
+id = "halls/magical"
 kind = "tour"
 subject = "magical"
 
 [[shots]]
 at = "showroom"
-caption = "The old eye's shrine, from its cover down the shaft into the hall"
-id = "shrines/old"
+caption = "The old eye's hall, from its cover down the shaft into the hall"
+id = "halls/old"
 kind = "tour"
 subject = "old"
 
 [[shots]]
 at = "showroom"
-caption = "The rogue eye's shrine, from its cover down the shaft into the hall"
-id = "shrines/rogue"
+caption = "The rogue eye's hall, from its cover down the shaft into the hall"
+id = "halls/rogue"
 kind = "tour"
 subject = "rogue"
 
 [[shots]]
 at = "showroom"
-caption = "The undead eye's shrine, from its cover down the shaft into the hall"
-id = "shrines/undead"
+caption = "The undead eye's hall, from its cover down the shaft into the hall"
+id = "halls/undead"
 kind = "tour"
 subject = "undead"
 
 [[shots]]
 at = "showroom"
-caption = "The witch eye's shrine, from its cover down the shaft into the hall"
-id = "shrines/witch"
+caption = "The witch eye's hall, from its cover down the shaft into the hall"
+id = "halls/witch"
 kind = "tour"
 subject = "witch"
 

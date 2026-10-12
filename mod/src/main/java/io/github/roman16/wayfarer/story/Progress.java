@@ -26,7 +26,7 @@ public final class Progress extends SavedData {
     final Map<String, CompoundTag> scratch = new LinkedHashMap<>();
     final Map<String, String> choices = new LinkedHashMap<>();
     final Map<String, List<String>> told = new LinkedHashMap<>();
-    final Map<String, List<Heard>> fire = new LinkedHashMap<>();
+    final Map<String, List<Heard>> conversations = new LinkedHashMap<>();
     final Set<String> pages = new LinkedHashSet<>();
     final Set<String> gear = new LinkedHashSet<>();
     final Map<String, Long> gearMet = new LinkedHashMap<>();
@@ -43,6 +43,7 @@ public final class Progress extends SavedData {
     final Set<String> gifts = new LinkedHashSet<>();
     final Set<String> joined = new LinkedHashSet<>();
     final Set<String> named = new LinkedHashSet<>();
+    final Set<String> unlaid = new LinkedHashSet<>();
     final Map<UUID, Set<String>> seen = new LinkedHashMap<>();
     final Map<UUID, String> tracking = new LinkedHashMap<>();
     final Map<String, Integer> trust = new LinkedHashMap<>();
@@ -51,7 +52,7 @@ public final class Progress extends SavedData {
     record Heard(String by, String text) {}
 
     void hear(String key, String by, String text) {
-        fire.computeIfAbsent(key, any -> new ArrayList<>()).add(new Heard(by, text));
+        conversations.computeIfAbsent(key, any -> new ArrayList<>()).add(new Heard(by, text));
         setDirty();
     }
 
@@ -144,13 +145,13 @@ public final class Progress extends SavedData {
         CompoundTag choices = tag.getCompound("choices");
         choices.getAllKeys().forEach(key -> progress.choices.put(key, choices.getString(key)));
         lines(tag.getList("told", Tag.TAG_COMPOUND), progress.told);
-        for (Tag entry : tag.getList("fire", Tag.TAG_COMPOUND)) {
+        for (Tag entry : tag.getList("conversations", Tag.TAG_COMPOUND)) {
             CompoundTag talk = (CompoundTag) entry;
             List<Heard> heard = new ArrayList<>();
             for (Tag line : talk.getList("lines", Tag.TAG_COMPOUND)) {
                 heard.add(new Heard(((CompoundTag) line).getString("by"), ((CompoundTag) line).getString("text")));
             }
-            progress.fire.put(talk.getString("key"), heard);
+            progress.conversations.put(talk.getString("key"), heard);
         }
         progress.pages.addAll(strings(tag.getList("pages", Tag.TAG_STRING)));
         progress.gear.addAll(strings(tag.getList("gear", Tag.TAG_STRING)));
@@ -182,6 +183,7 @@ public final class Progress extends SavedData {
         progress.gifts.addAll(strings(tag.getList("gifts", Tag.TAG_STRING)));
         progress.joined.addAll(strings(tag.getList("joined", Tag.TAG_STRING)));
         progress.named.addAll(strings(tag.getList("named", Tag.TAG_STRING)));
+        progress.unlaid.addAll(strings(tag.getList("unlaid", Tag.TAG_STRING)));
         progress.stone = tag.getString("stone");
         CompoundTag seen = tag.getCompound("seen");
         seen.getAllKeys().forEach(key -> progress.seen.put(UUID.fromString(key), new LinkedHashSet<>(strings(seen.getList(key, Tag.TAG_STRING)))));
@@ -204,8 +206,8 @@ public final class Progress extends SavedData {
         this.choices.forEach(choices::putString);
         tag.put("choices", choices);
         tag.put("told", lines(told));
-        ListTag fire = new ListTag();
-        this.fire.forEach((key, heard) -> {
+        ListTag conversations = new ListTag();
+        this.conversations.forEach((key, heard) -> {
             CompoundTag talk = new CompoundTag();
             talk.putString("key", key);
             ListTag lines = new ListTag();
@@ -216,9 +218,9 @@ public final class Progress extends SavedData {
                 lines.add(said);
             });
             talk.put("lines", lines);
-            fire.add(talk);
+            conversations.add(talk);
         });
-        tag.put("fire", fire);
+        tag.put("conversations", conversations);
         tag.put("pages", list(List.copyOf(pages)));
         tag.put("gear", list(List.copyOf(gear)));
         CompoundTag met = new CompoundTag();
@@ -253,6 +255,7 @@ public final class Progress extends SavedData {
         tag.put("gifts", list(List.copyOf(gifts)));
         tag.put("joined", list(List.copyOf(joined)));
         tag.put("named", list(List.copyOf(named)));
+        tag.put("unlaid", list(List.copyOf(unlaid)));
         CompoundTag seen = new CompoundTag();
         this.seen.forEach((player, keys) -> seen.put(player.toString(), list(List.copyOf(keys))));
         tag.put("seen", seen);

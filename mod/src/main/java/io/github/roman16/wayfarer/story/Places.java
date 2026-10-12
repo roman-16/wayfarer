@@ -2,7 +2,7 @@ package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.ShaftPiece;
-import io.github.roman16.wayfarer.ShrinePedestalBlockEntity;
+import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -32,10 +32,10 @@ public final class Places {
 
     record Hall(BoundingBox box, BoundingBox shaft, BlockPos stair, BlockPos stone) {}
 
-    static Hall raise(ServerLevel level, ResourceLocation shrine, BlockPos site) {
-        Structure hall = level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(shrine);
+    static Hall raise(ServerLevel level, ResourceLocation id, BlockPos site) {
+        Structure hall = level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(id);
         if (hall == null) {
-            throw new IllegalStateException("the game has no structure " + shrine);
+            throw new IllegalStateException("the game has no structure " + id);
         }
         StructureStart start = StructureStart.INVALID_START;
         ChunkPos middle = new ChunkPos(site);
@@ -51,7 +51,7 @@ public final class Places {
             }
         }
         if (!start.isValid()) {
-            throw new IllegalStateException(shrine + " would stand nowhere near " + site);
+            throw new IllegalStateException(hall + " would stand nowhere near " + site);
         }
         StructureStart standing = start;
         BoundingBox box = standing.getBoundingBox();
@@ -61,15 +61,15 @@ public final class Places {
                         new BoundingBox(chunk.getMinBlockX(), level.getMinBuildHeight(), chunk.getMinBlockZ(), chunk.getMaxBlockX(), level.getMaxBuildHeight(),
                                 chunk.getMaxBlockZ()), chunk));
         BoundingBox shaft = standing.getPieces().stream().filter(piece -> piece instanceof ShaftPiece).map(StructurePiece::getBoundingBox).findFirst()
-                .orElseThrow(() -> new IllegalStateException(shrine + " at " + box + " has no stair"));
-        BlockPos stone = BlockPos.betweenClosedStream(box).filter(pos -> level.getBlockState(pos).is(Wayfarer.SHRINE_PEDESTAL)).findFirst()
-                .map(BlockPos::immutable).orElseThrow(() -> new IllegalStateException(shrine + " at " + box + " has no calling stone"));
+                .orElseThrow(() -> new IllegalStateException(hall + " at " + box + " has no stair"));
+        BlockPos stone = BlockPos.betweenClosedStream(box).filter(pos -> level.getBlockState(pos).is(Wayfarer.CALLING_STONE)).findFirst()
+                .map(BlockPos::immutable).orElseThrow(() -> new IllegalStateException(hall + " at " + box + " has no calling stone"));
         return new Hall(box, shaft, new BlockPos(shaft.getCenter().getX(), shaft.maxY() + 1, shaft.getCenter().getZ()), stone);
     }
 
     static void empty(ServerLevel level, BlockPos stone) {
-        if (level.getBlockEntity(stone) instanceof ShrinePedestalBlockEntity pedestal) {
-            pedestal.hold(Optional.empty());
+        if (level.getBlockEntity(stone) instanceof CallingStoneBlockEntity calling) {
+            calling.hold(Optional.empty());
         }
     }
 
@@ -103,6 +103,10 @@ public final class Places {
                     Act3Halls.SCRIBES_STONE, Act3Halls.GRAVEYARD, Act3Halls.GRAVEYARD_STONE -> Act3Halls.find(server, name);
             default -> throw new IllegalArgumentException("the story has no way to build " + name);
         }
+    }
+
+    static String label(MinecraftServer server, String name) {
+        return "wayfarer.place." + (name.equals(Tollbridge.NAME) && !Progress.of(server).named(Tollbridge.NAME) ? Tollbridge.BURNING : name);
     }
 
     static boolean ready(MinecraftServer server, String name) {

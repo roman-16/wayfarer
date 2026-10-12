@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import io.github.roman16.wayfarer.Wayfarer;
+import java.util.List;
 import java.util.Optional;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -17,6 +18,10 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 
 public final class FrontDoor {
     private static final String ADVANCEMENTS = "gui.advancements";
+    private static final List<String> FEEDBACK = List.of("menu.feedback", "menu.sendFeedback");
+    private static final int GAP = 8;
+    private static final String OPTIONS = "menu.options";
+    private static final String PLAYER_REPORTING = "menu.playerReporting";
     private static final String JOURNEYMAP = "journeymap";
     private static final String REALMS = "menu.online";
     private static final String STATISTICS = "gui.stats";
@@ -47,6 +52,19 @@ public final class FrontDoor {
             button(event, STATISTICS).ifPresent(statistics -> {
                 Button map = replace(event, statistics, Component.translatable("wayfarer.journal.map"), () -> MapLink.open());
                 map.active = ModList.get().isLoaded(JOURNEYMAP);
+            });
+            FEEDBACK.stream().map(key -> button(event, key)).flatMap(Optional::stream).findFirst().ifPresent(row -> {
+                for (GuiEventListener listener : List.copyOf(event.getListenersList())) {
+                    if (listener instanceof AbstractWidget widget && widget.getY() == row.getY()) {
+                        event.removeListener(widget);
+                    } else if (listener instanceof AbstractWidget widget && widget.getY() > row.getY()) {
+                        widget.setY(widget.getY() - ROW);
+                    }
+                }
+            });
+            button(event, PLAYER_REPORTING).ifPresent(reporting -> {
+                event.removeListener(reporting);
+                button(event, OPTIONS).ifPresent(options -> options.setWidth(options.getWidth() + reporting.getWidth() + GAP));
             });
         }
     }

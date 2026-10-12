@@ -255,7 +255,7 @@ public final class Dice {
         int reach = Balance.get().talk().reachBlocks();
         Talk.tell(server.getPlayerList().getPlayers().stream()
                 .filter(listener -> listener.level() == game.dicer.level() && listener.distanceToSqr(game.dicer) <= (double) reach * reach).toList(),
-                by == null ? "" : People.label(server, by), Component.literal(text));
+                by, Component.literal(text));
     }
 
     static int won(MinecraftServer server) {

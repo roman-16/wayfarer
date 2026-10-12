@@ -3,7 +3,7 @@ import math
 import architecture as arch
 import detail
 from blocks import AIR, Material, Room, Template, bears, coherent, hanging, lantern, noise
-from halls import shrine
+from halls import calling_stone
 
 SIZE = [48, 40, 120]
 TOP = 36
@@ -290,7 +290,7 @@ def hall(room, spec, walk):
     for x in range(6, 15):
         for y in range(HALL_FLOOR + 1, HALL_FLOOR + 8):
             room.set((x, y, 114), "minecraft:chiseled_deepslate" if (x + y) % 4 == 0 else WORKED)
-    shrine(room, "lost", spec, (cx, HALL_FLOOR + 2, 112), (cx - 2, HALL_FLOOR + 2, 111), "east")
+    calling_stone(room, "lost", spec, (cx, HALL_FLOOR + 2, 112), (cx - 2, HALL_FLOOR + 2, 111), "east")
     for side in (cx - 3, cx + 3):
         room.fill((side, HALL_FLOOR + 2, 112), (side, HALL_FLOOR + 3, 112), "minecraft:stripped_spruce_log", axis="y")
         lantern(room, (side, HALL_FLOOR + 4, 112), hanging=False)
@@ -320,7 +320,7 @@ def layout():
             "hall": {"from": [0, HALL_FLOOR - 1, 94], "to": [SIZE[0] // 2 - 4, HALL_FLOOR + 9, SIZE[2] - 1]},
             "join": [24, TOP, 0],
             "marks": [list(pos) for pos in MARKS],
-            "pedestal": [10, HALL_FLOOR + 2, 112],
+            "stone": [10, HALL_FLOOR + 2, 112],
         },
     }
 

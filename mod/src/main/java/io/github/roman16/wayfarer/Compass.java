@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer;
 import io.github.roman16.wayfarer.story.Engine;
 import io.github.roman16.wayfarer.story.Progress;
 import io.github.roman16.wayfarer.story.Sense;
+import io.github.roman16.wayfarer.story.Tasks;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,6 +78,9 @@ public final class Compass {
     private static void heard(ServerPlayer player, CompassPayload before, CompassPayload now) {
         if (before.mode() == CompassPayload.Mode.FAR && now.mode() == CompassPayload.Mode.FAR && now.heat() != before.heat()) {
             Sounds.play(player, now.heat() > before.heat() ? EMBER_FLARES : EMBER_GUTTERS);
+            if (now.heat() > before.heat() && Sense.held(player)) {
+                Tasks.done(player, "sweep");
+            }
         }
         if (leads(now).stream().anyMatch(lead -> !leads(before).contains(lead))) {
             Sounds.play(player, COMPASS_MARK);
@@ -140,8 +144,8 @@ public final class Compass {
     }
 
     private static CompassPayload.Shelter shelter(ServerPlayer player) {
-        if (Shrines.inside(player)) {
-            return CompassPayload.Shelter.SHRINE;
+        if (Halls.inside(player)) {
+            return CompassPayload.Shelter.HALL;
         }
         return Fire.sheltered(player) ? CompassPayload.Shelter.FIRE : CompassPayload.Shelter.NONE;
     }

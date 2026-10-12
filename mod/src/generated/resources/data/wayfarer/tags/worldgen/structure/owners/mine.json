@@ -53,18 +53,6 @@
       "required": false
     },
     {
-      "id": "dungeons_arise:mining_complex",
-      "required": false
-    },
-    {
-      "id": "dungeons_arise:mushroom_mines",
-      "required": false
-    },
-    {
-      "id": "dungeons_arise:scorched_mines",
-      "required": false
-    },
-    {
       "id": "minecraft:mineshaft",
       "required": false
     },

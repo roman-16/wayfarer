@@ -73,7 +73,7 @@ public final class ShapeSpike {
 
     private static int shape(CommandSourceStack source, long seed, int radius, int step) {
         WorldShape shape = WorldShape.around(DensityFunctions.zero());
-        int far = Balance.get().shrines().actThreeFromBlocks();
+        int far = Balance.get().halls().actThreeFromBlocks();
         int[] rings = {shape.home(), shape.home() + shape.sea(), far, Balance.get().strongholds().radiusBlocks(), shape.lastSea()};
         ServerLevel level = source.getServer().overworld();
         if (!(level.getChunkSource().getGenerator() instanceof NoiseBasedChunkGenerator generator)) {

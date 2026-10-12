@@ -1,22 +1,6 @@
 {
   "values": [
     {
-      "id": "dungeons_arise:fishing_hut",
-      "required": false
-    },
-    {
-      "id": "dungeons_arise:lighthouse",
-      "required": false
-    },
-    {
-      "id": "dungeons_arise:typhon",
-      "required": false
-    },
-    {
-      "id": "dungeons_arise:undead_pirate_ship",
-      "required": false
-    },
-    {
       "id": "minecraft:ocean_ruin_cold",
       "required": false
     },

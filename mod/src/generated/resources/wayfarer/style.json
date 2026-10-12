@@ -6,7 +6,8 @@
   },
   "motion": {
     "burn_out": 256,
-    "kindle": 256
+    "kindle": 256,
+    "linger": 8192
   },
   "ramps": {
     "ash": [
@@ -77,6 +78,20 @@
     "#8B8B8B": "ash.1",
     "#C6C6C6": "ash.2",
     "#FFFFFF": "iron.3"
+  },
+  "speakers": {
+    "aqua": "frost.3",
+    "blue": "frost.2",
+    "dark_aqua": "#5FA9A0",
+    "dark_green": "moss.2",
+    "dark_purple": "gaze.2",
+    "gold": "ember.3",
+    "gray": "label",
+    "green": "moss.3",
+    "light_purple": "gaze.3",
+    "red": "red.4",
+    "white": "bone",
+    "yellow": "ember.4"
   },
   "text": {
     "bone": "#EEE6D6",

@@ -9,6 +9,7 @@ import io.github.roman16.wayfarer.client.Flash;
 import io.github.roman16.wayfarer.client.JournalScreen;
 import io.github.roman16.wayfarer.client.MusicPlayer;
 import io.github.roman16.wayfarer.client.PickUps;
+import io.github.roman16.wayfarer.client.Recap;
 import io.github.roman16.wayfarer.story.After;
 import io.github.roman16.wayfarer.story.Banners;
 import io.github.roman16.wayfarer.story.Bell;
@@ -77,6 +78,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.network.event.RegisterConfigurationTasksEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -137,14 +139,14 @@ public final class Wayfarer {
     public static final DeferredHolder<MapCodec<? extends DensityFunction>, MapCodec<WorldShape>> WORLD_SHAPE =
             DENSITY_FUNCTIONS.register("world_shape", () -> WorldShape.CODEC);
 
-    public static final DeferredHolder<StructureType<?>, StructureType<ShrineStructure>> SHRINE =
-            STRUCTURES.register("shrine", () -> () -> ShrineStructure.CODEC);
+    public static final DeferredHolder<StructureType<?>, StructureType<HallStructure>> HALL =
+            STRUCTURES.register("hall", () -> () -> HallStructure.CODEC);
 
     public static final DeferredHolder<StructurePieceType, StructurePieceType> ENTRANCE_PIECE =
             PIECES.register("entrance", () -> (StructurePieceType.StructureTemplateType) EntrancePiece::new);
 
-    public static final DeferredHolder<StructurePieceType, StructurePieceType> SHRINE_PIECE =
-            PIECES.register("shrine", () -> (StructurePieceType.StructureTemplateType) ShrinePiece::new);
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> HALL_PIECE =
+            PIECES.register("hall", () -> (StructurePieceType.StructureTemplateType) HallPiece::new);
 
     public static final DeferredHolder<StructurePieceType, StructurePieceType> SHAFT_PIECE =
             PIECES.register("shaft", () -> ShaftPiece::new);
@@ -183,7 +185,7 @@ public final class Wayfarer {
                     .ignitedByLava()
                     .noLootTable());
 
-    public static final DeferredBlock<ShrinePedestalBlock> SHRINE_PEDESTAL = BLOCKS.registerBlock("shrine_pedestal", ShrinePedestalBlock::new,
+    public static final DeferredBlock<CallingStoneBlock> CALLING_STONE = BLOCKS.registerBlock("calling_stone", CallingStoneBlock::new,
             BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE)
                     .strength(-1, 3_600_000)
@@ -204,8 +206,8 @@ public final class Wayfarer {
                     .instabreak()
                     .noLootTable()
                     .sound(SoundType.STONE));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ShrinePedestalBlockEntity>> SHRINE_PEDESTAL_ENTITY =
-            BLOCK_ENTITIES.register("shrine_pedestal", () -> BlockEntityType.Builder.of(ShrinePedestalBlockEntity::new, SHRINE_PEDESTAL.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CallingStoneBlockEntity>> CALLING_STONE_ENTITY =
+            BLOCK_ENTITIES.register("calling_stone", () -> BlockEntityType.Builder.of(CallingStoneBlockEntity::new, CALLING_STONE.get()).build(null));
 
     public static final DeferredHolder<EntityType<?>, EntityType<Deep>> DEEP = ENTITY_TYPES.register("deep",
             () -> EntityType.Builder.<Deep>of(Deep::new, MobCategory.MONSTER).sized(0.85F, 0.85F).eyeHeight(0.425F).clientTrackingRange(16).build("deep"));
@@ -222,7 +224,7 @@ public final class Wayfarer {
 
     static {
         ITEMS.registerSimpleBlockItem(FROST_IRON_ORE);
-        ITEMS.registerSimpleBlockItem(SHRINE_PEDESTAL);
+        ITEMS.registerSimpleBlockItem(CALLING_STONE);
     }
 
     public Wayfarer(IEventBus modBus) {
@@ -247,6 +249,7 @@ public final class Wayfarer {
         PROCESSORS.register(modBus);
         STRUCTURES.register(modBus);
         modBus.addListener(Wayfarer::registerPayloads);
+        modBus.addListener(RegisterConfigurationTasksEvent.class, event -> event.register(new WorldSetup.Telling(event.getListener())));
         modBus.addListener(EntityAttributeCreationEvent.class, event -> event.put(DEEP.get(), Guardian.createAttributes().build()));
         modBus.addListener(Ember::setup);
         if (ModList.get().isLoaded("toughasnails")) {
@@ -259,6 +262,9 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Clock.class);
         NeoForge.EVENT_BUS.register(Compass.class);
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, ServerAboutToStartEvent.class, event -> Bundled.forget());
+        if (ModList.get().isLoaded("distanthorizons")) {
+            NeoForge.EVENT_BUS.addListener(ServerAboutToStartEvent.class, event -> FarViewServer.limit());
+        }
         NeoForge.EVENT_BUS.register(Cuts.class);
         NeoForge.EVENT_BUS.register(Daylight.class);
         NeoForge.EVENT_BUS.register(Dice.class);
@@ -295,7 +301,7 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Sense.class);
         NeoForge.EVENT_BUS.register(Shards.class);
         NeoForge.EVENT_BUS.register(Shine.class);
-        NeoForge.EVENT_BUS.register(Shrines.class);
+        NeoForge.EVENT_BUS.register(Halls.class);
         NeoForge.EVENT_BUS.register(Sorting.class);
         NeoForge.EVENT_BUS.register(Sounds.class);
         Sounds.loop("camp", Caravan::standing);
@@ -333,6 +339,7 @@ public final class Wayfarer {
 
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar("1");
+        registrar.configurationToClient(WorldSetup.WorldId.TYPE, WorldSetup.WorldId.STREAM_CODEC, (payload, context) -> Recap.world(payload.id()));
         registrar.playToClient(Banners.Payload.TYPE, Banners.Payload.STREAM_CODEC, (payload, context) -> HudState.banners.add(payload));
         registrar.playToClient(BookPayload.TYPE, BookPayload.STREAM_CODEC, (payload, context) -> Books.open(payload));
         registrar.playToClient(Talk.Answers.TYPE, Talk.Answers.STREAM_CODEC, (payload, context) -> Conversation.ask(payload));

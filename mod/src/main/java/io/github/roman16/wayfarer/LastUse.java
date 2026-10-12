@@ -1,6 +1,5 @@
 package io.github.roman16.wayfarer;
 
-import io.github.roman16.wayfarer.story.People;
 import io.github.roman16.wayfarer.story.Progress;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.List;
@@ -37,7 +36,7 @@ public final class LastUse {
         }
         Talk.tell(player, Component.translatable("wayfarer.gear.worn", stack.getHoverName()));
         if (Progress.of(player.server).met(SMITH)) {
-            Talk.tell(List.of(player), People.label(player.server, SMITH), Component.translatable("wayfarer.gear.smith"));
+            Talk.tell(List.of(player), SMITH, Component.translatable("wayfarer.gear.smith"));
         }
     }
 

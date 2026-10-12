@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class FarSight {
@@ -28,9 +28,10 @@ public final class FarSight {
         }
     }
 
-    public static void zoom(ComputeFovModifierEvent event) {
-        if (event.getPlayer().isScoping() && Gifts.has(GIFT)) {
-            event.setNewFovModifier(event.getNewFovModifier() * Balance.get().farSight().zoomSixteenths() / SIXTEENTHS);
+    public static void zoom(ViewportEvent.ComputeFov event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (event.usedConfiguredFov() && minecraft.player != null && minecraft.player.isScoping() && Gifts.has(GIFT)) {
+            event.setFOV(event.getFOV() * Balance.get().farSight().zoomSixteenths() / SIXTEENTHS);
         }
     }
 }

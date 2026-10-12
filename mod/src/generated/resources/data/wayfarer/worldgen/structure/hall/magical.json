@@ -1,0 +1,220 @@
+{
+  "biomes": "#wayfarer:has_structure/hall/magical",
+  "layout": {
+    "cover": 3,
+    "door": [
+      12,
+      2,
+      26
+    ]
+  },
+  "pieces": {
+    "entrance": "wayfarer:hall/magical/entrance",
+    "hall": "wayfarer:hall/magical/hall"
+  },
+  "shaft": {
+    "landing": [
+      {
+        "Name": "minecraft:dark_oak_planks"
+      },
+      {
+        "Name": "minecraft:dark_oak_planks"
+      },
+      {
+        "Name": "minecraft:dark_oak_planks"
+      },
+      {
+        "Name": "minecraft:dark_oak_planks"
+      },
+      {
+        "Name": "minecraft:dark_oak_planks"
+      },
+      {
+        "Name": "minecraft:dark_oak_planks"
+      },
+      {
+        "Name": "minecraft:dark_oak_planks"
+      },
+      {
+        "Name": "minecraft:dark_oak_planks"
+      },
+      {
+        "Name": "minecraft:dark_oak_planks"
+      },
+      {
+        "Name": "minecraft:dark_oak_planks"
+      },
+      {
+        "Name": "minecraft:dark_oak_planks"
+      },
+      {
+        "Name": "minecraft:stripped_dark_oak_wood"
+      },
+      {
+        "Name": "minecraft:stripped_dark_oak_wood"
+      },
+      {
+        "Name": "minecraft:stripped_dark_oak_wood"
+      },
+      {
+        "Name": "minecraft:stripped_dark_oak_wood"
+      },
+      {
+        "Name": "minecraft:deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:cracked_deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:cracked_deepslate_bricks"
+      }
+    ],
+    "light": {
+      "Name": "minecraft:waxed_exposed_copper_bulb",
+      "Properties": {
+        "lit": "true"
+      }
+    },
+    "pillar": [
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:dark_oak_log"
+      },
+      {
+        "Name": "minecraft:stripped_dark_oak_log"
+      },
+      {
+        "Name": "minecraft:stripped_dark_oak_log"
+      },
+      {
+        "Name": "minecraft:stripped_dark_oak_log"
+      },
+      {
+        "Name": "minecraft:stripped_dark_oak_log"
+      },
+      {
+        "Name": "minecraft:stripped_dark_oak_log"
+      },
+      {
+        "Name": "minecraft:stripped_dark_oak_log"
+      }
+    ],
+    "stairs": {
+      "Name": "minecraft:dark_oak_stairs"
+    },
+    "style": "ladder",
+    "wall": [
+      {
+        "Name": "minecraft:deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:deepslate_tiles"
+      },
+      {
+        "Name": "minecraft:deepslate_tiles"
+      },
+      {
+        "Name": "minecraft:deepslate_tiles"
+      },
+      {
+        "Name": "minecraft:deepslate_tiles"
+      },
+      {
+        "Name": "minecraft:polished_deepslate"
+      },
+      {
+        "Name": "minecraft:polished_deepslate"
+      },
+      {
+        "Name": "minecraft:cracked_deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:cracked_deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:cracked_deepslate_bricks"
+      },
+      {
+        "Name": "minecraft:cracked_deepslate_tiles"
+      },
+      {
+        "Name": "minecraft:cracked_deepslate_tiles"
+      },
+      {
+        "Name": "minecraft:tuff"
+      },
+      {
+        "Name": "minecraft:tuff"
+      }
+    ]
+  },
+  "spawn_overrides": {},
+  "step": "underground_structures",
+  "terrain_adaptation": "none",
+  "type": "wayfarer:hall"
+}

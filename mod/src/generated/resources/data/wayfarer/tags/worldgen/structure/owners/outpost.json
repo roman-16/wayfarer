@@ -45,26 +45,6 @@
       "required": false
     },
     {
-      "id": "dungeons_arise:bandit_towers",
-      "required": false
-    },
-    {
-      "id": "dungeons_arise:illager_campsite",
-      "required": false
-    },
-    {
-      "id": "dungeons_arise:illager_corsair",
-      "required": false
-    },
-    {
-      "id": "dungeons_arise:illager_galley",
-      "required": false
-    },
-    {
-      "id": "dungeons_arise:illager_windmill",
-      "required": false
-    },
-    {
       "id": "friendsandfoes:iceologer_cabin",
       "required": false
     },

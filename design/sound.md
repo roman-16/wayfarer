@@ -18,7 +18,7 @@ Every sound effect and piece of music the pack chooses and ships itself is free 
 
 ### How a piece plays
 
-The Wayfarer mod plays a story piece itself, in the Music category, and Reactive Music fades its own music out over a few seconds while it plays and back in after (its `soundsMuteMusicIgnoreDistance`). A piece started by a line plays once to its end; a piece that belongs to a step, such as a hold, loops until the step ends and then fades out.
+The Wayfarer mod plays a story piece itself, in the Music category, and Reactive Music fades its own music out over a few seconds while it plays and back in after (its `soundsMuteMusicIgnoreDistance`). A piece started by a line plays once to its end; a piece that belongs to a step, such as a hold, loops until the step ends and then fades out. Stepping into a tent or another world carries a playing piece through the door; only leaving the game stops it.
 
 ```text
 <The stranger> Don't let it... the shards. I took them.   ♪ What We Don't Say swelling in, Reactive Music fading out

@@ -325,7 +325,7 @@ public final class Scenes {
                         }
                     }
                 }
-            } else {
+            } else if (Talk.again(player.server, "herder")) {
                 JsonArray again = text.getAsJsonArray("again");
                 Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line("herder", again.get(player.getRandom().nextInt(again.size())).getAsString()));
             }
@@ -580,7 +580,11 @@ public final class Scenes {
 
     private static boolean sees(ServerLevel level, ServerPlayer player, List<Vec3> points) {
         Vec3 eye = player.getEyePosition();
+        int farthest = Balance.get().scenes().farthestBlocks();
         for (Vec3 point : points) {
+            if (point.distanceToSqr(eye) > (double) farthest * farthest || !level.isLoaded(BlockPos.containing(point))) {
+                continue;
+            }
             BlockHitResult hit = level.clip(new ClipContext(eye, point, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, player));
             if (hit.getType() == HitResult.Type.MISS || hit.getLocation().distanceToSqr(point) < 2.25) {
                 return true;

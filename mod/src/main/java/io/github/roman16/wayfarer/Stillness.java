@@ -57,7 +57,6 @@ public final class Stillness {
             next.putInt(STAGE, MOVING);
             player.setData(Wayfarer.STILLNESS, next);
             if (before != MOVING) {
-                Talk.tell(player, Component.translatable("wayfarer.stillness.brightens"));
                 Nights.sync(player);
             }
             return;
