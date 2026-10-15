@@ -63,6 +63,7 @@ Each quest adds its moments here as it is built, along the road's curve (`story.
 | Stepping into a lit fire's circle | Fire, Campfire, Bonfire, a campfire's crackle swelling in, cut to about 3 s | yaros_nov, CC0, [Freesound](https://freesound.org/people/yaros_nov/sounds/434026) |
 | A quest begun: the parchment banner under the compass (`interface.md`, I2) | Magic 3.Glitter+Arrival, a glittering arrival | gsb1039, CC0, [Freesound](https://freesound.org/people/gsb1039/sounds/430893) |
 | A quest done: the banner | Level Up/Mission Complete (Fantasy) | SilverIllusionist, CC BY 4.0, [Freesound](https://freesound.org/people/SilverIllusionist/sounds/665203) |
+| A deed earned: its banner (`systems.md`, M38) | 004-Kankles-C4, one Baltic zither pluck left to ring out, 6 dB under the quest done | tarane468, CC0, [Freesound](https://freesound.org/people/tarane468/sounds/466516) |
 | A task ticked in the panel (I1) | Tarea completa, its first second | valeulloam97, CC0, [Freesound](https://freesound.org/people/valeulloam97/sounds/541389) |
 | A friend marks a spot for the team (Ping Wheel's mark), from the mark's direction, in place of Ping Wheel's digital chime | Kalimba C3, one warm pluck, 2 dB under the other frequent sounds | dvdfu, CC0, [Freesound](https://freesound.org/people/dvdfu/sounds/536549) |
 | A new person, word or page in the journal: the gold dot on its ribbon (I3) | Pencil, Writing, Close, A, cut to 4 s and eased out | InspectorJ, CC BY 4.0, [Freesound](https://freesound.org/people/InspectorJ/sounds/398271) |

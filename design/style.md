@@ -78,7 +78,7 @@ The dev client's style board (driver step `board`, gallery `interface/board/`) s
 
 ### L7 Motion and sound
 
-- Things kindle in and burn out: a notice slides in and fades over a quarter of a second (`style.toml` `[motion]`), and nothing in the interface bounces, spins or flashes.
+- Things kindle in and burn out: a notice slides in and fades over a quarter of a second (`style.toml` `[motion]`), and nothing in the interface bounces, spins or flashes. Text that turns on its own, such as the ending's pages, stays as long as it takes to read.
 - The interface's sounds are A6's (`sound.md`): a quest begun or done, a task ticked, a journal page, an answer chosen.
 
 **Why:** Motion that comes and goes like fire light fits the stamp; anything livelier pulls the eye from the world.

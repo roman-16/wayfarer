@@ -314,6 +314,7 @@ public final class Scenes {
         if (scene.kind.equals("herder") && People.who(target).filter(role -> role.equals("herder")).isPresent()) {
             if (scene.greeted.add(player.getUUID())) {
                 boolean gift = scene.state.equals("gift");
+                Deeds.herder(player, gift ? "gift" : "warning");
                 Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line("herder", text.get(gift ? "gift" : "warning").getAsString()));
                 if (gift) {
                     for (JsonElement item : text.getAsJsonArray("gifts")) {
@@ -769,7 +770,11 @@ public final class Scenes {
 
     private static void watch(MinecraftServer server, ServerLevel level, Ledger ledger, Scene scene, List<ServerPlayer> players) {
         List<Vec3> corners = corners(scene.centre, radius(level, scene.kind));
-        boolean visible = players.stream().anyMatch(player -> sees(level, player, corners));
+        List<ServerPlayer> seeing = players.stream().filter(player -> sees(level, player, corners)).toList();
+        boolean visible = !seeing.isEmpty();
+        if (ROAD.contains(scene.kind)) {
+            seeing.forEach(player -> Deeds.scene(player, scene.centre));
+        }
         if (visible && !scene.seen) {
             scene.seen = true;
             seen(server, ledger, scene);

@@ -22,6 +22,7 @@ Sounds in the Wayfarer mod:
 - Bonfire, by Electroviolence. CC0 1.0. https://freesound.org/people/Electroviolence/sounds/234542
 - Shiny Object of Value - Rare Loot Find, by LilMati. CC0 1.0. https://freesound.org/people/LilMati/sounds/659677
 - Hand Crank Music Box (E5 Note), by moodyfingers. CC0 1.0. https://freesound.org/people/moodyfingers/sounds/732942
+- 004-Kankles-C4, by tarane468. CC0 1.0. https://freesound.org/people/tarane468/sounds/466516
 - Door Hits; multiple, by RossBell. CC0 1.0. https://freesound.org/people/RossBell/sounds/389418
 - Fire.wav, by danielpodlovics. CC0 1.0. https://freesound.org/people/danielpodlovics/sounds/530355
 - mystic 2, by Zixem. CC0 1.0. https://freesound.org/people/Zixem/sounds/69506
@@ -51,3 +52,7 @@ Fonts in the Wayfarer mod:
 
 - m5x7, by Daniel Linssen. CC0 1.0. https://managore.itch.io/m5x7
 - Alagard, by Pix3M. CC BY 3.0. https://opengameart.org/content/pixel-fonts-by-pix3m
+
+Textures and recipes in the Wayfarer mod:
+
+- Vanilla Tweaks: https://vanillatweaks.net/

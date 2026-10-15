@@ -36,6 +36,11 @@
       "why": "Supplementaries ships its held light for candle holders in older formats and for mods the pack leaves out, and LambDynamicLights skips them"
     },
     {
+      "match": "Failed to load item light source \"simplyswords:dynamiclights/item/shadowmist\"",
+      "mod": "LambDynamicLights",
+      "why": "Simply Swords ships a held light for shadowmist, an item it no longer registers, and LambDynamicLights skips it"
+    },
+    {
       "match": "Failed to load function spawnanimations:internal/entity/ehs/pehkui/",
       "mod": "Spawn Animations",
       "why": "Its functions for Pehkui, which the pack leaves out"

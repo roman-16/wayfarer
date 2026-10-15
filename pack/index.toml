@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "d1a34e1a9692adc9c0dd7a16f243f55bc27935483cb5877b7c7605b09d8d52b8"
+hash = "e574c8279465f83a9460f8e416dfb85d33a7c47c1af6d0c00903f7343af549c9"
 
 [[files]]
 file = "config/DistantHorizons.toml"
@@ -82,7 +82,7 @@ hash = "f6ebb7133a2b349eb37a44e14f747d1dc3b6dab453586eecf8c1b3b9252b3391"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
-hash = "6144b6b6e67fc2b1c148a14314bbbda026716b3e7602467af6c117b8ed3007af"
+hash = "69ce126f400f3bc97946b5ae30464510a3a388424c1bd106ca13998fd768acab"
 
 [[files]]
 file = "config/dynamic_fps.json"
@@ -604,7 +604,7 @@ metafile = true
 
 [[files]]
 file = "mods/immediatelyfast.pw.toml"
-hash = "2863a3b187723e1f69ed2ad2b2c3d834e8442468a1347c80df5b310e243c8753"
+hash = "4601b9be31b6e131dca8a148c974d015444bcac7c82fcb66fbd8751a67933a5d"
 metafile = true
 
 [[files]]
@@ -714,7 +714,7 @@ metafile = true
 
 [[files]]
 file = "mods/modernfix.pw.toml"
-hash = "c84140c66f233909b392bd7253ca33c59903ffda51beff558d9a2a4a8c6bc269"
+hash = "d10fbef1555f5277563b9cbf7683811ac0f38c1af41646e6ce5c3aaa2149425d"
 metafile = true
 
 [[files]]
@@ -763,8 +763,8 @@ hash = "cedc6b74fe2e5abe044c0166642655edd1fdea9b32b36ccbe33dddc307a323a0"
 metafile = true
 
 [[files]]
-file = "mods/noisium.pw.toml"
-hash = "b3e831b3e4d6ddbf23806b0fec6087eca264af1ebc04e747c89024972aaa8607"
+file = "mods/noisiumed.pw.toml"
+hash = "d38b97da42ffdb3f14f6a3d02da73926f2804717dcac62d58bbf8425134fd534"
 metafile = true
 
 [[files]]
@@ -780,6 +780,11 @@ metafile = true
 [[files]]
 file = "mods/nullscape.pw.toml"
 hash = "dcfbfa39abeaba554c2c5323f9b9a3ec58dfc386aca2d237f73948abdbdc7125"
+metafile = true
+
+[[files]]
+file = "mods/packet-fixer.pw.toml"
+hash = "84cb0dcad9ac46d22adba4fb7924951affa6ac5e46027a3b25fa9a0db8d91b2b"
 metafile = true
 
 [[files]]
@@ -1158,8 +1163,23 @@ hash = "11ca7ee74121279438d839d89d1507f05db78cac8d1a39faf7311283d36e2536"
 metafile = true
 
 [[files]]
+file = "resourcepacks/enchant-icons-countxd.pw.toml"
+hash = "bb2b6a511327bc8782c7c12c6be81c11fa3fcb7fa4fd10d4093a5170862e1ad5"
+metafile = true
+
+[[files]]
 file = "resourcepacks/fresh-animations.pw.toml"
 hash = "6a1556a0e4fcb411b33efafc3382b4abd9a6e671f140dc0d42e9aad2808e24f3"
+metafile = true
+
+[[files]]
+file = "resourcepacks/leggings-fix.pw.toml"
+hash = "27896b53b896cc48ad2e3a30e41caefa3d568be9537f525f22687eea16c8136a"
+metafile = true
+
+[[files]]
+file = "resourcepacks/simple-grass-flowers.pw.toml"
+hash = "6576e0f2a199e626872973b61fa925d6055c90442901e88e705815d1ef48888d"
 metafile = true
 
 [[files]]

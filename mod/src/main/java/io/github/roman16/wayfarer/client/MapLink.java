@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Wayfarer;
+import io.github.roman16.wayfarer.client.stamp.Stamp;
 import io.github.roman16.wayfarer.story.Tasks;
 import journeymap.api.v2.client.IClientAPI;
 import journeymap.api.v2.client.IClientPlugin;
@@ -29,6 +30,7 @@ import org.slf4j.Logger;
 @JourneyMapPlugin(apiVersion = "2.0.0")
 public final class MapLink implements IClientPlugin {
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final ResourceLocation CAMPFIRE = ResourceLocation.withDefaultNamespace("textures/item/campfire.png");
     private static final ResourceLocation ICON = ResourceLocation.withDefaultNamespace("textures/item/filled_map.png");
     private static final int ICON_SIZE = 16;
     private static IClientAPI api;
@@ -53,10 +55,17 @@ public final class MapLink implements IClientPlugin {
         for (JsonElement element : places) {
             JsonObject place = element.getAsJsonObject();
             BlockPos at = new BlockPos(place.get("x").getAsInt(), 0, place.get("z").getAsInt());
-            String name = Component.translatable(place.get("name").getAsString()).getString();
-            MapImage icon = new MapImage(ICON, ICON_SIZE, ICON_SIZE).setAnchorX(ICON_SIZE / 2.0).setAnchorY(ICON_SIZE / 2.0);
+            boolean old = place.has("day");
+            String key = place.get("name").getAsString();
+            String name = (old ? Component.translatable(key, place.get("day").getAsLong()) : Component.translatable(key)).getString();
+            MapImage icon = new MapImage(place.has("camp") ? CAMPFIRE : ICON, ICON_SIZE, ICON_SIZE).setAnchorX(ICON_SIZE / 2.0).setAnchorY(ICON_SIZE / 2.0);
             MarkerOverlay marker = new MarkerOverlay(Wayfarer.MODID, at, icon);
-            marker.setDimension(Level.OVERWORLD).setTitle(name).setLabel(name);
+            marker.setDimension(Level.OVERWORLD).setTitle(name);
+            if (old) {
+                icon.setOpacity(Stamp.FAINT / 255f);
+            } else {
+                marker.setLabel(name);
+            }
             try {
                 api.show(marker);
             } catch (Exception exception) {

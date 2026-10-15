@@ -538,6 +538,9 @@ public final class Driver {
         if (verb.equals("await")) {
             return heard(step.substring(verb.length()).strip()) != null;
         }
+        if (verb.equals("opens")) {
+            return minecraft.screen != null && minecraft.screen.getTitle().getString().contains(step.substring(verb.length()).strip());
+        }
         if (verb.equals("hud")) {
             if (minecraft.player == null) {
                 return false;
@@ -736,6 +739,7 @@ public final class Driver {
             case "perf" -> perf(minecraft, argument.isEmpty() ? 1 : Integer.parseInt(argument));
             case "pos" -> note("pos: %.1f %.1f %.1f facing %.0f %.0f in %s".formatted(minecraft.player.getX(), minecraft.player.getY(),
                     minecraft.player.getZ(), minecraft.player.getYRot(), minecraft.player.getXRot(), minecraft.level.dimension().location()));
+            case "opens" -> note("opens: " + minecraft.screen.getClass().getName() + " \"" + minecraft.screen.getTitle().getString() + "\"");
             case "pause" -> minecraft.pauseGame(false);
             case "point" -> {
                 if (minecraft.screen == null) {

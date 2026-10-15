@@ -78,7 +78,6 @@ BENCH_SETTLED = (
     "/gamemode creative",
     "/time set 6000",
     "/gamerule doDaylightCycle false",
-    "/weather clear",
     "/gamerule doWeatherCycle false",
     "vsync off",
 )
@@ -689,7 +688,7 @@ def bench(arguments):
                 ["sudo", "--non-interactive", nvidia, f"--lock-gpu-clocks={MINIMUM_MHZ},{MINIMUM_MHZ}"], check=True
             )
             print(f"nobody is at the PC: the graphics card is locked at {MINIMUM_MHZ:,} MHz until the bench ends")
-        measure(minimum, cpus, steps, places)
+        measure(minimum, cpus, steps, places, "/weather thunder" if arguments.storm else "/weather clear")
     finally:
         if locking:
             subprocess.run(["sudo", "--non-interactive", nvidia, "--reset-gpu-clocks"], check=False)
@@ -713,7 +712,7 @@ def at_pc():
     return False
 
 
-def measure(minimum, cpus, steps, places):
+def measure(minimum, cpus, steps, places, weather):
     try:
         if minimum:
             others = sorted(set(range(os.cpu_count())) - set(expand(cpus)))
@@ -739,7 +738,9 @@ def measure(minimum, cpus, steps, places):
         )
         for where, joining in places:
             first, shaders = steps[0]
-            report = batch([*joining, *BENCH_SETTLED, f"graphics {first} shaders {shaders}", "pos"], RUN_SECONDS)
+            report = batch(
+                [*joining, *BENCH_SETTLED, weather, f"graphics {first} shaders {shaders}", "pos"], RUN_SECONDS
+            )
             spawn = [float(value) for value in STANDING.search(report).groups()]
             print(opening(where, spawn), flush=True)
             for index, (step, shaders) in enumerate(steps):
@@ -972,6 +973,11 @@ def main():
         "Low and Medium with the shader off",
     )
     bench_parser.add_argument("--cpus", help="the cores to hold the game to, as taskset lists them, such as 12-19")
+    bench_parser.add_argument(
+        "--storm",
+        action="store_true",
+        help="measure under a thunderstorm, where the particles are thickest, not a clear sky",
+    )
     stop_parser = commands.add_parser("stop", help="quit the client; returns once it has exited")
     stop_parser.add_argument("--timeout", type=int, default=STOP_SECONDS)
     tour_parser = commands.add_parser(

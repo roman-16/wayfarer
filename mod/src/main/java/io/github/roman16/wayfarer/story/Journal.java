@@ -8,9 +8,11 @@ import io.github.roman16.wayfarer.Shine;
 import io.github.roman16.wayfarer.Stones;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -176,9 +178,26 @@ public final class Journal {
         view.add("people", entries(progress.people, person -> People.label(player.server, person)));
         view.add("words", entries(progress.words, word -> word));
         JsonArray places = new JsonArray();
-        PLACES.forEach(name -> progress.place(name).ifPresent(pos -> places.add(named(Places.label(server, name), pos))));
-        progress.visited.stream().filter(name -> !PLACES.contains(name))
-                .forEach(name -> progress.place(name).ifPresent(pos -> places.add(named(Places.label(server, name), pos))));
+        List<BlockPos> named = new ArrayList<>();
+        Stream.concat(PLACES.stream(), progress.visited.stream().filter(name -> !PLACES.contains(name))).forEach(name -> progress.place(name).ifPresent(pos -> {
+            JsonObject place = named(Places.label(server, name), pos);
+            if (name.equals(Caravan.NAME)) {
+                place.addProperty("camp", true);
+            } else {
+                named.add(pos);
+            }
+            places.add(place);
+        }));
+        List<Caravan.Camped> camps = Caravan.camps(server);
+        double near = (double) Places.VISIT_BLOCKS * Places.VISIT_BLOCKS;
+        camps.subList(0, Math.max(0, camps.size() - 1)).stream()
+                .filter(camped -> named.stream().noneMatch(pos -> Steps.horizontal(pos, camped.centre()) <= near))
+                .forEach(camped -> {
+                    JsonObject camp = place("place.camp", camped.centre());
+                    camp.addProperty("camp", true);
+                    camp.addProperty("day", camped.day() + 1);
+                    places.add(camp);
+                });
         for (int mark = 0; mark < Marks.count(); mark++) {
             progress.place(Marks.MARK + mark).ifPresent(pos -> places.add(place("place.mark", pos)));
         }
@@ -195,6 +214,8 @@ public final class Journal {
             stones.add(entry);
         }
         view.add("stones", stones);
+        view.add("afterwards", Afterwards.view(player.server));
+        view.add("deeds", Deeds.view(player));
         JsonArray gifts = new JsonArray();
         progress.gifts.forEach(gifts::add);
         view.add("gifts", gifts);

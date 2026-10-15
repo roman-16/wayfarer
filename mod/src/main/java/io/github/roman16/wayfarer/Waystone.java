@@ -8,6 +8,7 @@ import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.MutableWaystone;
 import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystonesAPI;
+import io.github.roman16.wayfarer.story.Deeds;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -117,6 +118,7 @@ public final class Waystone {
         if (!(event.getContext().getEntity() instanceof ServerPlayer player)) {
             return;
         }
+        Deeds.folded(player);
         Vec3 from = leaving.remove(player.getUUID());
         if (from != null) {
             int cost = (int) Math.round(from.distanceTo(player.position()) / Balance.get().waystones().blocksPerFood());

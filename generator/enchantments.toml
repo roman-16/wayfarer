@@ -1,0 +1,163 @@
+hidden = [
+  "nova_structures:boss_behaviour",
+  "nova_structures:shulker_boss",
+  "nova_structures:shulker_miniboss",
+]
+
+[enchantments."combat_roll:acrobat"]
+colour = "3"
+icon = "chestplate"
+key = "enchantment.combat_roll.acrobat"
+name = "Acrobat"
+
+[enchantments."combat_roll:longfooted"]
+colour = "3"
+icon = "boots"
+key = "enchantment.combat_roll.longfooted"
+name = "Longfooted"
+
+[enchantments."combat_roll:multi_roll"]
+colour = "3"
+icon = "helmet"
+key = "enchantment.combat_roll.multi_roll"
+name = "Multi-Roll"
+
+[enchantments."farmersdelight:backstabbing"]
+colour = "c"
+icon = "sword"
+key = "enchantment.farmersdelight.backstabbing"
+name = "Backstabbing"
+
+[enchantments."nova_structures:antidote"]
+colour = "2"
+icon = "chestplate"
+key = "enchantment.dnt.antidote"
+name = "Antidote"
+
+[enchantments."nova_structures:conductivity_curse"]
+colour = "4"
+icon = "skull"
+key = "enchantment.dnt.conductivity_curse"
+name = "Curse of Conductivity"
+
+[enchantments."nova_structures:ghasted"]
+colour = "c"
+icon = "crossbow"
+key = "enchantment.dnt.ghasted"
+name = "Ghasted"
+
+[enchantments."nova_structures:gravity"]
+colour = "5"
+icon = "crossbow"
+key = "enchantment.dnt.gravity"
+name = "Gravity"
+
+[enchantments."nova_structures:illagers_bane"]
+colour = "6"
+icon = "sword"
+key = "enchantment.dnt.illagers_bane"
+name = "Illagers Bane"
+
+[enchantments."nova_structures:multishot"]
+colour = "d"
+icon = "bow"
+key = "enchantment.dnt.multishot"
+name = "Tri-Shot"
+
+[enchantments."nova_structures:outreach"]
+colour = "3"
+icon = "chestplate"
+key = "enchantment.dnt.outreach"
+name = "Outreach"
+
+[enchantments."nova_structures:photosynthesis"]
+colour = "a"
+icon = "star"
+key = "enchantment.dnt.photosynthesis"
+name = "Photosynthesis"
+
+[enchantments."nova_structures:piercing"]
+colour = "6"
+icon = "bow"
+key = "enchantment.dnt.piercing"
+name = "Blowthrough"
+
+[enchantments."nova_structures:power"]
+colour = "6"
+icon = "crossbow"
+key = "enchantment.dnt.power"
+name = "Might"
+
+[enchantments."nova_structures:traveler"]
+colour = "3"
+icon = "boots"
+key = "enchantment.dnt.traveler"
+name = "Traveler"
+
+[enchantments."nova_structures:wax_wings"]
+colour = "e"
+icon = "chestplate"
+key = "enchantment.dnt.wax_wings"
+name = "Wax Wings"
+
+[enchantments."nova_structures:wither_coated"]
+colour = "8"
+icon = "sword"
+key = "enchantment.dnt.wither_coated"
+name = "Wither Coated"
+
+[enchantments."soundattract:conceal"]
+colour = "8"
+icon = "star"
+key = "enchantment.soundattract.conceal"
+name = "Conceal"
+
+[enchantments."supplementaries:stasis"]
+colour = "b"
+icon = "star"
+key = "enchantment.supplementaries.stasis"
+name = "Stasis"
+
+[enchantments."toughasnails:thermal_tuning"]
+colour = "e"
+icon = "chestplate"
+key = "enchantment.toughasnails.thermal_tuning"
+name = "Thermal Tuning"
+
+[enchantments."toughasnails:water_cleansing"]
+colour = "b"
+icon = "star"
+key = "enchantment.toughasnails.water_cleansing"
+name = "Water Cleansing"
+
+[enchantments."yo_hooks:agility"]
+colour = "b"
+icon = "fishing"
+key = "enchantment.yo_hooks.agility"
+name = "Agility"
+
+[enchantments."yo_hooks:gentle_touch"]
+colour = "a"
+icon = "fishing"
+key = "enchantment.yo_hooks.gentle_touch"
+name = "Gentle Touch"
+
+[enchantments."yo_hooks:long_reach"]
+colour = "3"
+icon = "fishing"
+key = "enchantment.yo_hooks.long_reach"
+name = "Long Reach"
+
+[icons]
+boots = "\uefe4"
+bow = "\uefe8"
+chestplate = "\uefe2"
+crossbow = "\uefe9"
+fishing = "\ueef1"
+helmet = "\uefe1"
+mace = "\ueef4"
+pickaxe = "\uefe6"
+skull = "\ueef3"
+star = "\ueef2"
+sword = "\uefe5"
+trident = "\uefe7"

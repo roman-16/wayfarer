@@ -20,6 +20,9 @@
   "compass_mark": {
     "slider": "players"
   },
+  "deed": {
+    "slider": "master"
+  },
   "door_blow": {
     "reach": 32,
     "slider": "hostile"

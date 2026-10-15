@@ -201,11 +201,12 @@ def shoot(shot):
     else:
         frozen = [] if shot.get("outside") else ["still", "settle"]
         steps = [*prepare, *shot.get("steps", []), *frozen]
-        if kind == "screen":
-            steps.append("point 0 0")
+        pointed = [step for step in shot.get("steps", []) if step.startswith("point ")][-1:]
         for _, name, _, scale in pictures(shot):
             if scale:
                 steps.append(f"scale {scale}")
+            if kind == "screen":
+                steps += ["point 0 0", *pointed]
             steps.append(f"shot {name}")
         run(shot, steps)
     client.batch([*restore(shot), *shot.get("after", [])], SHOT_SECONDS)

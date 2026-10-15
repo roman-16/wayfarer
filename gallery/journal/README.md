@@ -68,6 +68,18 @@
 
 ![Gear, Against the heat: before Agna's line](gear/heat.png)
 
+## Afterwards
+
+**Afterwards: a page for every people met, what you did at their hall and what the door did to their land**, in the story at `a_home/the_bed`
+
+![Afterwards: a page for every people met, what you did at their hall and what the door did to their land](afterwards.png)
+
+## Deeds
+
+**Deeds: what nobody asked of you, each with its line and the day it was earned**, in the story at `the_pull/the_fireside`
+
+![Deeds: what nobody asked of you, each with its line and the day it was earned](deeds.png)
+
 ## Quests
 
 **The first night: only Quests, The story so far, People and the Map**, in the story at `the_last_fire/the_stranger`

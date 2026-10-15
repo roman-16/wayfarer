@@ -51,6 +51,7 @@ public final class Stamp {
     public static final int KEYCAP_HEIGHT = 12;
     public static final int DIVIDER_HEIGHT = 5;
     public static final int ICON_SIZE = 9;
+    public static final int FAINTEST_TEXT = 4;
     public static final int DISPLAY_HEIGHT = 15;
     private static final int DISPLAY_RISE = 5;
     private static final int KEYCAP_PADDING = 3;
@@ -74,6 +75,7 @@ public final class Stamp {
     public static final int KINDLE_MILLIS = TOKENS.getAsJsonObject("motion").get("kindle").getAsInt();
     public static final int BURN_OUT_MILLIS = TOKENS.getAsJsonObject("motion").get("burn_out").getAsInt();
     public static final int LINGER_MILLIS = TOKENS.getAsJsonObject("motion").get("linger").getAsInt();
+    public static final int READ_MILLIS = TOKENS.getAsJsonObject("motion").get("read").getAsInt();
 
     private Stamp() {
     }

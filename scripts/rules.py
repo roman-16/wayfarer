@@ -1,8 +1,10 @@
 import json
 import re
 import sys
+import zipfile
 from pathlib import Path
 
+import instance
 import tomllib
 
 import gallery
@@ -474,6 +476,62 @@ def interface():
     return found
 
 
+def packed(meta):
+    spec = tomllib.loads(meta.read_text())
+    download = spec["download"]
+    return zipfile.ZipFile(
+        instance.download(instance.source(spec), download["hash-format"], download["hash"], spec["name"])
+    )
+
+
+def enchantments():
+    spec = tomllib.loads((ROOT / "generator/enchantments.toml").read_text())
+    with packed(PACK / "resourcepacks/enchant-icons-countxd.pw.toml") as icons:
+        drawn = {
+            char
+            for provider in json.loads(icons.read("assets/minecraft/font/default.json"))["providers"]
+            for char in provider["chars"]
+        }
+    for icon, char in sorted(spec["icons"].items()):
+        if char not in drawn:
+            yield f"generator/enchantments.toml: the {icon} icon is no character of Enchant Icons' font"
+    found = {}
+    lines = {}
+    for meta in sorted(PACK.glob("mods/*.pw.toml")):
+        if tomllib.loads(meta.read_text()).get("side") not in SIDES:
+            continue
+        with packed(meta) as archive:
+            for name in archive.namelist():
+                parts = name.split("/")
+                if (
+                    parts[0] == "data"
+                    and len(parts) > 3
+                    and parts[2] == "enchantment"
+                    and name.endswith(".json")
+                    and parts[1] != "minecraft"
+                ):
+                    found[f"{parts[1]}:{'/'.join(parts[3:])[:-5]}"] = json.loads(archive.read(name)).get("description")
+                elif parts[0] == "assets" and name.endswith("lang/en_us.json"):
+                    lines.update(json.loads(archive.read(name).decode("utf-8-sig"), strict=False))
+    for enchantment, description in sorted(found.items()):
+        if enchantment in spec["hidden"]:
+            continue
+        entry = spec["enchantments"].get(enchantment)
+        if entry is None:
+            yield f"{enchantment} has no icon: add it to generator/enchantments.toml"
+            continue
+        namespace, path = enchantment.split(":")
+        translated = description.get("translate") if isinstance(description, dict) else None
+        keys = [f"enchantment.{namespace}.{path}.{kind}" for kind in ("desc", "description")]
+        keys += [f"{translated}.{kind}" for kind in ("desc", "description")] if translated else []
+        if "description" not in entry and not any(key in lines for key in keys):
+            yield f"{enchantment} has no description: give it one in generator/enchantments.toml"
+        if entry["key"] != translated:
+            yield f"generator/enchantments.toml names {enchantment} by {entry['key']}, but the game asks for {translated}"
+    for enchantment in sorted(set(spec["enchantments"]) - set(found)):
+        yield f"generator/enchantments.toml lists {enchantment}, which no mod in the pack has"
+
+
 def main():
     findings = [
         *sides(),
@@ -486,6 +544,7 @@ def main():
         *gear(),
         *interface(),
         *gallery.problems(),
+        *enchantments(),
     ]
     for finding in findings:
         print(finding)

@@ -75,7 +75,6 @@ public final class Hud {
     private static final int BANNER_TITLE = 17;
     private static final long BANNER_MILLIS = 4000;
     private static final int BANNER_DROP = 8;
-    private static final int OPAQUE_TEXT = 4;
     private static int bossBottom;
     private static int high;
     private static int wide;
@@ -258,7 +257,7 @@ public final class Hud {
         int width = Math.max(labelWidth, Stamp.titleWidth(font, title)) + (BANNER_CAP + BANNER_PAD) * 2;
         int x = wide / 2 - width / 2;
         int top = y + Math.round((eased - 1) * BANNER_DROP);
-        int alpha = Math.max(OPAQUE_TEXT, Math.round(eased * 255));
+        int alpha = Math.max(Stamp.FAINTEST_TEXT, Math.round(eased * 255));
         graphics.flush();
         graphics.setColor(1, 1, 1, eased);
         graphics.blitSprite(Stamp.STRIP, x, top, width, BANNER_HEIGHT);

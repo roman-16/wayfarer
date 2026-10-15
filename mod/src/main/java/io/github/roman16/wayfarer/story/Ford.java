@@ -5,7 +5,6 @@ import io.github.roman16.wayfarer.Balance;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -33,16 +32,10 @@ final class Ford {
     static final String WOUNDED = "corin";
     private static final String NEAR_BANK = "ford_near_bank";
     private static final String FAR_BANK = "ford_far_bank";
-    private static final String CREEK = "ford_creek";
     private static final String WAY = "ford_way";
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_ford", Comparator.comparingLong(ChunkPos::toLong));
     private static final int STEP = 16;
-    private static final int SAMPLE = 4;
-    private static final int WIDEST_SCAN = 64;
-    private static final int BANK_STEP = 2;
-    private static final int BANK_INLAND = 8;
-    private static final int SIDE_STEP = 128;
     private static final int LOAD_RADIUS = 2;
     private static final int INLAND = 3;
     private static final int PATH = 6;
@@ -61,7 +54,7 @@ final class Ford {
     private static final String SITTING = "sitting";
     private static boolean crossing;
 
-    private record Banks(BlockPos near, BlockPos far, boolean creek) {}
+    private record Banks(BlockPos near, BlockPos far) {}
 
     private Ford() {}
 
@@ -82,44 +75,18 @@ final class Ford {
         Vec3 way = Unseen.warm(heights, from, toward, ahead) ? toward
                 : Home.aim(from, toward, ahead, (origin, bent) -> Unseen.warm(heights, origin, bent, ahead)).way();
         Vec3 start = Vec3.atLowerCornerOf(from);
-        Banks banks = river(heights, level, start, way, balance, true)
-                .or(() -> dry(heights, level, start, way, balance, true))
-                .or(() -> river(heights, level, start, way, balance, false))
-                .or(() -> dry(heights, level, start, way, balance, false))
+        Banks banks = dry(heights, start, way, balance, true)
+                .or(() -> dry(heights, start, way, balance, false))
                 .orElseGet(() -> creek(heights, start.add(way.scale(balance.aheadBlocks())), way, balance));
-        BlockPos near = banks.near();
-        BlockPos far = banks.far();
-        boolean creek = banks.creek();
-        progress.place(NEAR_BANK, near);
-        progress.place(FAR_BANK, far);
+        progress.place(NEAR_BANK, banks.near());
+        progress.place(FAR_BANK, banks.far());
         progress.yaws.put(WAY, (float) Math.toDegrees(Math.atan2(-way.x, way.z)));
-        if (creek) {
-            progress.place(CREEK, near);
-        }
         progress.setDirty();
-        LOGGER.info("the ford lies between {} and {}{}, the way turned {} degrees from the hall's, found in {} ms", near, far,
-                creek ? ", a creek the quest cuts" : ", across a river", Home.degrees(toward, way), (System.nanoTime() - started) / NANOS_PER_MILLI);
+        LOGGER.info("the ford lies between {} and {}, the way turned {} degrees from the hall's, found in {} ms", banks.near(), banks.far(),
+                Home.degrees(toward, way), (System.nanoTime() - started) / NANOS_PER_MILLI);
     }
 
-    @Nullable
-    private static BlockPos bank(Unseen.Heights heights, ServerLevel level, Vec3 at, Vec3 step, int widest, boolean warm) {
-        int sea = level.getChunkSource().getGenerator().getSeaLevel();
-        for (int along = BANK_STEP; along <= widest; along += BANK_STEP) {
-            Vec3 there = at.add(step.scale(along));
-            if (!heights.biome((int) Math.round(there.x), sea, (int) Math.round(there.z)).is(BiomeTags.IS_RIVER)) {
-                for (int inland = 0; inland <= BANK_INLAND; inland += BANK_STEP) {
-                    Vec3 dry = there.add(step.scale(inland));
-                    if (land(heights, level, dry, warm)) {
-                        return column(heights, dry);
-                    }
-                }
-                return null;
-            }
-        }
-        return null;
-    }
-
-    private static boolean land(Unseen.Heights heights, ServerLevel level, Vec3 at, boolean warm) {
+    private static boolean land(Unseen.Heights heights, Vec3 at, boolean warm) {
         int x = (int) Math.round(at.x);
         int z = (int) Math.round(at.z);
         int y = heights.surface(x, z);
@@ -139,36 +106,12 @@ final class Ford {
         return true;
     }
 
-    private static Optional<Banks> river(Unseen.Heights heights, ServerLevel level, Vec3 from, Vec3 way, Balance.Ford balance, boolean warm) {
-        Vec3 side = new Vec3(-way.z, 0, way.x);
-        int sea = level.getChunkSource().getGenerator().getSeaLevel();
-        for (int offset = 0; offset <= balance.sideBlocks(); offset += SIDE_STEP) {
-            for (int sign : offset == 0 ? new int[] {1} : new int[] {1, -1}) {
-                for (int ahead = balance.aheadBlocks(); ahead <= balance.searchBlocks(); ahead += SAMPLE) {
-                    Vec3 at = from.add(way.scale(ahead)).add(side.scale(offset * sign));
-                    int x = (int) Math.round(at.x);
-                    int z = (int) Math.round(at.z);
-                    Holder<Biome> river = heights.biome(x, sea, z);
-                    if (!river.is(BiomeTags.IS_RIVER) || warm && Unseen.snowy(river, new BlockPos(x, sea, z))) {
-                        continue;
-                    }
-                    BlockPos back = bank(heights, level, at, way.scale(-1), balance.widestRiverBlocks(), warm);
-                    BlockPos front = bank(heights, level, at, way, balance.widestRiverBlocks(), warm);
-                    if (back != null && front != null && back.distSqr(front) <= (double) balance.widestRiverBlocks() * balance.widestRiverBlocks()) {
-                        return Optional.of(new Banks(back, front, false));
-                    }
-                }
-            }
-        }
-        return Optional.empty();
-    }
-
-    private static Optional<Banks> dry(Unseen.Heights heights, ServerLevel level, Vec3 from, Vec3 way, Balance.Ford balance, boolean warm) {
+    private static Optional<Banks> dry(Unseen.Heights heights, Vec3 from, Vec3 way, Balance.Ford balance, boolean warm) {
         int half = balance.widthBlocks() / 2 + 1;
         for (int back = 0; back < balance.aheadBlocks(); back += STEP) {
             for (int sign : back == 0 ? new int[] {1} : new int[] {-1, 1}) {
                 Vec3 at = from.add(way.scale(balance.aheadBlocks() + back * sign));
-                if (land(heights, level, at.add(way.scale(-half)), warm) && land(heights, level, at, warm) && land(heights, level, at.add(way.scale(half)), warm)
+                if (land(heights, at.add(way.scale(-half)), warm) && land(heights, at, warm) && land(heights, at.add(way.scale(half)), warm)
                         && flat(heights, at, way, half)) {
                     return Optional.of(creek(heights, at, way, balance));
                 }
@@ -179,7 +122,7 @@ final class Ford {
 
     private static Banks creek(Unseen.Heights heights, Vec3 at, Vec3 way, Balance.Ford balance) {
         int half = balance.widthBlocks() / 2 + 1;
-        return new Banks(column(heights, at.add(way.scale(-half))), column(heights, at.add(way.scale(half))), true);
+        return new Banks(column(heights, at.add(way.scale(-half))), column(heights, at.add(way.scale(half))));
     }
 
     private static BlockPos column(Unseen.Heights heights, Vec3 at) {
@@ -195,7 +138,7 @@ final class Ford {
 
     static void forget(MinecraftServer server) {
         Progress progress = Progress.of(server);
-        List.of(NEAR_BANK, FAR_BANK, CREEK, NAME, FAR, OUTPOST, "seat_" + NAME).forEach(progress.places::remove);
+        List.of(NEAR_BANK, FAR_BANK, NAME, FAR, OUTPOST, "seat_" + NAME).forEach(progress.places::remove);
         progress.yaws.remove(WAY);
         progress.yaws.remove("seat_" + NAME);
         progress.witnesses.remove(NAME);
@@ -241,14 +184,7 @@ final class Ford {
         Balance.Ford balance = Balance.get().ford();
         Vec3 way = way(server);
         Vec3 side = new Vec3(-way.z, 0, way.x);
-        if (progress.place(CREEK).isPresent()) {
-            creek(level, near, far, way, side, balance);
-        } else {
-            BlockPos middle = new BlockPos((near.getX() + far.getX()) / 2, near.getY(), (near.getZ() + far.getZ()) / 2);
-            near = shore(level, middle, way.scale(-1)).orElse(near);
-            far = shore(level, middle, way).orElse(far);
-            ford(level, near, far, way, side, balance);
-        }
+        creek(level, near, far, way, side, balance);
         path(level, near, way.scale(-1), side, balance);
         path(level, far, way, side, balance);
         BlockPos corin = ashore(level, near, way.scale(-1)).above();
@@ -270,29 +206,6 @@ final class Ford {
         Standing.keep(server, NAME);
         Standing.keep(server, OUTPOST);
         LOGGER.info("the ford stands at {}, the Gazebound's outpost at {}", corin, outpost);
-    }
-
-    private static void ford(ServerLevel level, BlockPos near, BlockPos far, Vec3 way, Vec3 side, Balance.Ford balance) {
-        int length = (int) Math.ceil(Math.sqrt(near.distSqr(far)));
-        for (int along = -1; along <= length + 1; along++) {
-            for (int across = -balance.widthBlocks() / 2; across < balance.widthBlocks() / 2; across++) {
-                Vec3 at = Vec3.atLowerCornerOf(near).add(way.scale(along)).add(side.scale(across));
-                int x = (int) Math.floor(at.x);
-                int z = (int) Math.floor(at.z);
-                int top = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) - 1;
-                BlockPos surface = new BlockPos(x, top, z);
-                if (!level.getFluidState(surface).isSource() || !level.getBlockState(surface).is(Blocks.WATER)) {
-                    continue;
-                }
-                BlockPos bed = surface.below();
-                while (bed.getY() > level.getMinBuildHeight() && !level.getFluidState(bed).isEmpty()) {
-                    bed = bed.below();
-                }
-                for (BlockPos fill = bed.above(); fill.getY() < surface.getY(); fill = fill.above()) {
-                    level.setBlock(fill, gravel(fill), FLAGS);
-                }
-            }
-        }
     }
 
     private static void creek(ServerLevel level, BlockPos near, BlockPos far, Vec3 way, Vec3 side, Balance.Ford balance) {
@@ -352,16 +265,6 @@ final class Ford {
                 }
             }
         }
-    }
-
-    private static Optional<BlockPos> shore(ServerLevel level, BlockPos middle, Vec3 step) {
-        for (int along = 0; along <= WIDEST_SCAN; along++) {
-            BlockPos top = surface(level, BlockPos.containing(Vec3.atLowerCornerOf(middle).add(step.scale(along))));
-            if (level.getFluidState(top).isEmpty()) {
-                return Optional.of(top);
-            }
-        }
-        return Optional.empty();
     }
 
     private static BlockPos ashore(ServerLevel level, BlockPos bank, Vec3 inland) {

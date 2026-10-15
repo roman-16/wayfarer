@@ -195,6 +195,13 @@ kind = "hud"
 steps = ["story the_pull/pull"]
 
 [[shots]]
+at = "the_pull/the_fireside"
+caption = "A deed earned: its banner under the compass, to that player alone"
+id = "hud/banner-deed"
+kind = "hud"
+steps = ["/wayfarer story deed the_long_road"]
+
+[[shots]]
 at = "the_pull/pull"
 caption = "Following the pull: no mark yet, the ember's feeling under the band"
 id = "hud/feeling"
@@ -410,6 +417,27 @@ steps = [
   "key key.wayfarer.journal",
   "press Gear",
   "press Against the heat",
+]
+
+[[shots]]
+at = "a_home/the_bed"
+caption = "Afterwards: a page for every people met, what you did at their hall and what the door did to their land"
+id = "journal/afterwards"
+kind = "screen"
+steps = ["key key.wayfarer.journal", "press Afterwards", "press The Tide Folk"]
+
+[[shots]]
+at = "the_pull/the_fireside"
+caption = "Deeds: what nobody asked of you, each with its line and the day it was earned"
+id = "journal/deeds"
+kind = "screen"
+steps = [
+  "/wayfarer story deed the_long_road",
+  "/wayfarer story deed many_fires",
+  "/wayfarer story deed held",
+  "key key.wayfarer.journal",
+  "press Deeds",
+  "press Many Fires",
 ]
 
 [[shots]]
@@ -1996,6 +2024,22 @@ steps = ["key key.inventory"]
 
 [[shots]]
 at = "showroom"
+after = [
+  "/item replace entity @s hotbar.8 with minecraft:air",
+  "/gamemode creative",
+]
+caption = "An enchanted book's tooltip: each enchantment with the gear it fits, its own colour, a plain number and what it does, a mod's too"
+id = "interface/vanilla/enchanted-book"
+kind = "screen"
+steps = [
+  "/gamemode survival",
+  '/item replace entity @s hotbar.8 with minecraft:enchanted_book[minecraft:stored_enchantments={levels:{"minecraft:feather_falling":4,"nova_structures:outreach":3,"minecraft:sharpness":1,"farmersdelight:backstabbing":2}}]',
+  "key key.inventory",
+  "point 285 187",
+]
+
+[[shots]]
+at = "showroom"
 after = ["/setblock ~2 ~ ~ minecraft:air"]
 caption = "A chest, recoloured into the stamp"
 id = "interface/vanilla/chest"
@@ -2035,6 +2079,19 @@ caption = "JourneyMap's full map in its Victorian theme"
 id = "interface/mods/map"
 kind = "screen"
 steps = ["key key.wayfarer.map"]
+
+[[shots]]
+after = ["key key.wayfarer.map", "press Zoom In", "press Zoom In", "close"]
+at = "the_marsh_mothers/the_way"
+caption = "The map after a few evenings: the caravan's camp, the faint campfires of its old camps, and one named under the pointer"
+id = "interface/mods/map-camps"
+kind = "screen"
+steps = [
+  "key key.wayfarer.map",
+  "press Zoom Out",
+  "press Zoom Out",
+  "point 204 101",
+]
 
 [[shots]]
 at = "showroom"
@@ -2254,6 +2311,21 @@ at = "the_doors/the_doors"
 caption = "The doors at the frame, as many as the road opened"
 id = "story/the-doors"
 kind = "hud"
+
+[[shots]]
+at = "the_gate/the_memory"
+caption = "Close the Eye with Pip lost: the dark screen turns a page for every people met before the sculk's line and Start a new road"
+id = "story/the-end"
+kind = "screen"
+steps = [
+  "/wayfarer story gift close_words",
+  "story the_doors/the_doors",
+  "await answers:",
+  "key key.hotbar.4",
+  "await sculk creeps",
+  "opens The end",
+  "click 200 60",
+]
 
 [[shots]]
 at = "showroom"

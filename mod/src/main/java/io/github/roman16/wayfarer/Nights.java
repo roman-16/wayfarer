@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer;
 
 import io.github.roman16.wayfarer.story.After;
 import io.github.roman16.wayfarer.story.Bell;
+import io.github.roman16.wayfarer.story.Deeds;
 import io.github.roman16.wayfarer.story.Engine;
 import io.github.roman16.wayfarer.story.Hold;
 import io.github.roman16.wayfarer.story.Talk;
@@ -150,6 +151,7 @@ public final class Nights {
         if (state.dawn != day) {
             state.dawn = day;
             state.setDirty();
+            Deeds.dawn(server);
             for (ServerPlayer player : server.getPlayerList().getPlayers()) {
                 if (ModList.get().isLoaded(HORDES)) {
                     Hordes.stop(player);
@@ -182,6 +184,7 @@ public final class Nights {
             if (ModList.get().isLoaded(HORDES)) {
                 for (ServerPlayer player : level.players()) {
                     if (sleepless(player)) {
+                        Deeds.hardNight(player);
                         command(server, "hordes start " + player.getGameProfile().getName() + " " + (TICKS_PER_DAY - time));
                         Music.play(player, HORDE_MUSIC, true);
                     }

@@ -1,0 +1,42 @@
+credit = "Vanilla Tweaks: https://vanillatweaks.net/"
+version = "1.21"
+
+[crafting]
+craftables = ["craftable gravel"]
+quality-of-life = [
+  "back to blocks",
+  "charcoal to black dye",
+  "coal to black dye",
+  "copper powered rails",
+  "double slabs",
+  "dropper to dispenser",
+  "powder to glass",
+  "sandstone dyeing",
+  "straight to shapeless",
+  "universal dyeing",
+]
+unpackables = ["unpackable wool"]
+
+[resources]
+aesthetic = ["AnimatedCampfireItem"]
+gui = ["PingColorIndicator"]
+unobtrusive = ["LowerFire", "LowerShield", "TransparentPumpkin"]
+utility = ["StickyPistonSides"]
+variation = [
+  "RandomCoarseDirtRotation",
+  "RandomMossRotation",
+  "RandomSunflowerRotation",
+  "VariatedBookshelves",
+  "VariatedBricks",
+  "VariatedCobblestone",
+  "VariatedDirt",
+  "VariatedEndStone",
+  "VariatedGravel",
+  "VariatedLogs",
+  "VariatedMushroomBlocks",
+  "VariatedPlanks",
+  "VariatedPumpkins",
+  "VariatedStone",
+  "VariatedTerracotta",
+  "VariatedUnpolishedStones",
+]

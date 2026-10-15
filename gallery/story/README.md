@@ -195,3 +195,9 @@
 **The doors at the frame, as many as the road opened**, in the story at `the_doors/the_doors`
 
 ![The doors at the frame, as many as the road opened](the-doors.jpg)
+
+## The end
+
+**Close the Eye with Pip lost: the dark screen turns a page for every people met before the sculk's line and Start a new road**, in the story at `the_gate/the_memory`
+
+![Close the Eye with Pip lost: the dark screen turns a page for every people met before the sculk's line and Start a new road](the-end.png)

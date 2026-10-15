@@ -76,15 +76,15 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Tab | Holds |
   |---|---|
   | Quests | Main and side, each with its current step and any clock; the tracked one marked, done and failed apart, and rewards waiting to be claimed |
+  | Map | The world map |
+  | Stones | Where the player fell, with what each stone holds |
   | The story so far | What happened, act by act, as "I" |
   | People | Everyone met, what they did and said |
   | Words | Every word of the world: the gaze, the Gazebound, the oath, the scar |
   | Pages | Every book and letter read, to read again |
-  | At the fire | Every talk with the voice, Maren and the people |
-  | Stones | Where the player fell, with what each stone holds |
-  | Map | The world map |
+  | Conversations | Every talk with the voice, Maren and the people |
 
-- The map is JourneyMap's world map, opened from its tab in the journal or with M. There is no minimap anywhere on screen, no cave mapping, no radar and no waypoints of the player's own; the places they have found are added by the Wayfarer mod: the Last Camp, Tollbridge and the caravan from the start, and every place a quest leads to once a player has stood within 64 blocks of it, his first camp, the old tunnels, the ford and the rest, so the map keeps where the team has been. Map Atlases leaves the pack.
+- The map is JourneyMap's world map, opened from its tab in the journal or with M. There is no minimap anywhere on screen, no cave mapping, no radar and no waypoints of the player's own; the places they have found are added by the Wayfarer mod: the Last Camp, Tollbridge and the caravan from the start, and every place a quest leads to once a player has stood within 64 blocks of it, his first camp, the old tunnels, the ford and the rest, so the map keeps where the team has been. The caravan's newest camp is a lit campfire named The caravan, and every camp it made before is a faint campfire whose name shows only under the pointer ("The caravan's camp, day 7"), so a long road reads as a trail without burying the places' names; a camp within 64 blocks of a named place is left to that place. Map Atlases leaves the pack.
 - The compass is on screen from the first moment of the world, before the ember wakes: until then it reads "the ember is cold" and shows only friends, the player's own tent (▲) and their stones. A tent standing more than 256 blocks away gets its own line under the compass, so a tent left at an old camp is never lost. The first time a goal shows, the task panel says to follow its mark at the top of the screen.
 - The compass shows the tracked quest's goal, the player's friends and their stones. A goal known by feeling shows only the ember's flaring, in gold, and its guttering, in blue, with no distance until the exact mark within 256 blocks (D6). Every fall leaves its own stone where the player fell; the compass shows all of them, the one holding the most the strongest. In the journal a stone can be tracked, so the compass points at it like a quest, or let go, which takes it off the compass, as when a player gives their old things up and starts afresh.
 
@@ -384,7 +384,7 @@ Act 3:
 
 | Activity | System | Source |
 |---|---|---|
-| Sneak | Creatures and Gazebound see and hear: light, weather, stance and movement decide how visible the player is, and noise draws them | Attract to Sound |
+| Sneak | Creatures and Gazebound see and hear: light, weather, stance and movement decide how visible the player is, and noise draws them, a voice in voice chat as much as a clang; a voice also sets off sculk sensors and the Warden as a footstep does, unless it whispers, talks while sneaking or speaks only to its group | Attract to Sound; the Wayfarer mod, through Simple Voice Chat |
 | Disguise | Gazebound robes make their people take the player for one of them, unless one looks too long or too close; True-sight (S6) shows others' disguises | The Wayfarer mod |
 | Heist | Planned at the camp, quiet or loud, with roles, then carried through by sneaking, disguise or a raid | The Wayfarer mod, on Sneak and Disguise |
 | Duel | One against one in a ring the quest marks, which the others watch and cannot step into | Better Combat and Combat Roll, and a GeckoLib champion |
@@ -732,6 +732,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   A ring of stones round a cold pit, paths worn through the grass, a split log by the path. The caravan camped here.
   ```
 
+- Every old camp keeps its campfire on the map (M2), so the way back to it is never lost.
 - This is the caravan's camp only. A camp the player makes on their own out on the road is theirs, and stays or goes as they leave it.
 - The caravan takes back only what it set down. A block anyone placed or broke in its camp since it stood, a tent pitched by its fire above all, stays as the team left it when the camp packs up, and no trace is laid over it.
 - In the morning the camp stands until the team has walked out of sight of it. A player inside a tent counts as standing at the tent's door, so nobody wakes to find the caravan gone; the first player to step out at the camp gets the morning's line from someone there ("Eat something before you go. Then go on; we'll follow."), and the camp packs once they are on their way.
@@ -986,26 +987,28 @@ It raises, for its build: keeping each act's foes out of the world until their a
 
   | Deed | Earned when | Its line |
   |---|---|---|
-  | The Long Road | 65,536 blocks walked | "I have walked far enough to cross the world and back. My boots have stopped complaining." |
+  | The Long Road | 65,536 blocks walked, sprinted or crept | "I have walked far enough to cross the world and back. My boots have stopped complaining." |
   | Many Fires | Slept by 64 different fires, each 256 blocks from the others | "Sixty-four fires, and not one of them home." |
-  | Every Village | Walked into 16 villages | "Sixteen villages. In every one, somebody asked me to stay." |
-  | The Edge of the Map | Sailed out on the Last Sea until the ember went cold | "There is nothing past the fog. I went to see." |
-  | Held | Came through 8 hard nights that no quest called | "Eight nights the gaze found us, and eight mornings we were still there." |
+  | Every Village | Walked into 16 villages or towns | "Sixteen villages. In every one somebody shut a door on me, and somebody else left bread on the step." |
+  | The Edge of the Map | Afloat on the Last Sea 1,024 blocks past its coast | "There is nothing past the fog. I went to see." |
+  | Held | Came through 8 hard nights that no quest called, alive at dawn | "Eight nights the gaze found us, and eight mornings we were still there." |
   | Known on the Road | Met 32 of the road's scenes | "The road has started to recognise me." |
-  | Old Friends | Met the herder in every one of his variants | "His dogs come running now." |
+  | Old Friends | Had both the herder's bread and his warning | "The herder's bread one day, his warning the next. His sheep don't scatter from me any more." |
   | The Dice | Won 8 games of dice in the taverns | "The peoples' dice like me. The peoples don't." |
-  | Untouched | Won the champion's duel without being hit | "He never touched me." |
-  | Hands Clean | Went a whole act without killing a person | "Not one of them by my hand, this whole season." |
-  | Deep Quiet | Crossed an Ancient City without waking its guard | "I walked through their city, and the guard never woke." |
-  | The Slow Way | Reached the frame without folding to a waystone | "Every step of it, walked." |
+  | Untouched | Within 32 blocks when the heir's champion fell, never hit by him | "The heir's champion went down in the grass, and he never touched me." |
+  | Hands Clean | Finished an act's main road with no person killed by the team while it ran | "Not one of them by our hands, this whole season." |
+  | Deep Quiet | Came within 32 blocks of an Ancient City's heart and left it with no Warden risen | "I walked through the old city in the deep, and its guard never woke." |
+  | The Slow Way | Reached the frame without folding to a waystone | "Every step of it walked. I never let a stone fold the road for me." |
   | Light Pockets | Reached the frame with four shards or fewer | "I came to the gate nearly empty-handed, and lighter for it." |
   | All Twelve | Reached the frame with all twelve | "All twelve. It can see so much now." |
   | Nobody Left Behind | The Hollow took no one from the caravan | "It took the wagons. It didn't take one of us." |
   | Alone | Reached the frame with nobody left in the caravan | "There is nobody left to follow my marks." |
 
 - No deed is listed before it is earned. When one is, a banner like the quests' slides in under the compass, "A deed: The Long Road", with a sound of its own (`sound.md`), and the deed stands on the journal's Deeds ribbon with its line and the day it was earned; the ribbon appears with the first deed.
-- What a body does is its player's own: walking, sleeping, the duel, the dice, the city crept through. What the story decides goes to everyone on the team: the frame with four shards or all twelve, the Hollow, Alone, a whole act's clean hands (D11).
+- What a body does is its player's own: walking, sleeping, the villages, the sea, the hard nights, the scenes, the herder, the duel, the dice, the city crept through, the road walked without a fold. What the story decides goes to everyone on the team, joiners included: the frame with four shards or all twelve, the Hollow, Alone, a whole act's clean hands (D11).
+- A person is a player, an Illager, a villager, a wandering trader, a witch or one of the story's people. A hard night counts for whoever was awake at its midnight and did not die before dawn. A scene counts once for each player who saw it, a village once for each village.
 - A deed gives nothing but its line and its place in the journal.
+- Deeds and their counts outlast deaths, logouts and restarts, except what is still under way: a hard night is counted at dawn only for whoever was online at its midnight and at its dawn, and a city crept through counts only if the player leaves it in one visit.
 
 **Why:** Lucas Blair's research on achievements finds that goals announced ahead push players to chase them and change how they play, while unexpected ones reward play that already happened; a deed hidden until earned is a surprise, never a chore, and one that gives nothing is not worth grinding, which the pack takes away everywhere else (D7).
 

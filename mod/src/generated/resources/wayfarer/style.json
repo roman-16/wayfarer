@@ -7,7 +7,8 @@
   "motion": {
     "burn_out": 256,
     "kindle": 256,
-    "linger": 8192
+    "linger": 8192,
+    "read": 64
   },
   "ramps": {
     "ash": [

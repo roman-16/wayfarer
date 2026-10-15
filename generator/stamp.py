@@ -48,6 +48,17 @@ MARKS = {
 }
 WHITE = (255, 254, 253, 255)
 ICONS = {
+    "afterwards": [
+        "#...#...#",
+        ".#.....#.",
+        "...###...",
+        "..#####..",
+        ".#######.",
+        "#########",
+        ".........",
+        ".#######.",
+        "...###...",
+    ],
     "conversations": [
         "....#....",
         "....##...",
@@ -58,6 +69,17 @@ ICONS = {
         ".##...##.",
         "..#####..",
         "#########",
+    ],
+    "deeds": [
+        "....#....",
+        "...###...",
+        "...###...",
+        "#########",
+        ".#######.",
+        "..#####..",
+        "..#####..",
+        ".###.###.",
+        ".##...##.",
     ],
     "gear": [
         ".#######.",
@@ -452,9 +474,10 @@ def ribbon(tokens, name, active):
             shade = fill[1] + (-1 if roll < 0.08 else 1 if roll > 0.92 and fill[1] < 4 else 0)
             canvas.set(x, y, tokens(fill[0], shade))
         canvas.set(end, y, tokens("leather", 0))
-    for x in range(width - height // 2):
+    for x in range(width - 1):
         canvas.set(x, 0, tokens("leather", 0))
         canvas.set(x, height - 1, tokens("leather", 0))
+    for x in range(width - 2):
         canvas.set(x, 1, tokens(fill[0], min(4, fill[1] + 1)))
         canvas.set(x, height - 2, tokens(fill[0], fill[1] - 1))
     return canvas, {

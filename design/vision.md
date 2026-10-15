@@ -316,7 +316,7 @@ At the frame the ending asks whom the player believes and what they are, with fo
 | Close the Eye | Accepts what they are | They step into the frame and the Eye, with them in it, closes for good: the dragon finally sleeps, and the gaze ends | Themselves |
 
 - Blind it and Give it its sight are always open. The road opens the other two: Keep the oath needs peoples who trust the player, such as ones they left a shard with, and Close the Eye needs the whole truth of what they are.
-- The journal closes with a page for every people the player met and what became of them.
+- The journal closes with a page for every people the player met and what became of them (`interface.md`, I9).
 - A team makes one choice, because the frame takes the Eye once.
 
 ```text

@@ -44,6 +44,10 @@
 
 ![The inventory, recoloured into the stamp: char, iron bevels, labels in bone](vanilla/inventory.png)
 
+**An enchanted book's tooltip: each enchantment with the gear it fits, its own colour, a plain number and what it does, a mod's too**, in the showroom
+
+![An enchanted book's tooltip: each enchantment with the gear it fits, its own colour, a plain number and what it does, a mod's too](vanilla/enchanted-book.png)
+
 **A chest, recoloured into the stamp**, in the showroom
 
 ![A chest, recoloured into the stamp](vanilla/chest.png)
@@ -65,6 +69,10 @@
 **JourneyMap's full map in its Victorian theme**, in the showroom
 
 ![JourneyMap's full map in its Victorian theme](mods/map.png)
+
+**The map after a few evenings: the caravan's camp, the faint campfires of its old camps, and one named under the pointer**, in the story at `the_marsh_mothers/the_way`
+
+![The map after a few evenings: the caravan's camp, the faint campfires of its old camps, and one named under the pointer](mods/map-camps.png)
 
 **A spot marked with Ping Wheel's side button, its distance under the mark**, in the showroom
 

@@ -35,6 +35,19 @@ waves = 3
 [daylight]
 crumble_seconds = 60
 
+[deeds]
+city_heart_blocks = 32
+dice_wins = 8
+duel_blocks = 32
+edge_blocks = 1024
+fire_apart_blocks = 256
+fires = 64
+hard_nights = 8
+light_shards = 4
+scenes = 32
+villages = 16
+walked_blocks = 65536
+
 [diggers]
 ahead_blocks = 2048
 
@@ -86,9 +99,6 @@ ahead_blocks = 1024
 creek_reach_blocks = 64
 notice_blocks = 64
 outpost_blocks = 48
-search_blocks = 2048
-side_blocks = 512
-widest_river_blocks = 32
 width_blocks = 8
 
 [forge]
@@ -444,6 +454,10 @@ rolls = [1, 1]
 
 [tool_gate]
 slowdown = 8
+
+[voice]
+quietest_decibels = -48
+vibration_ticks = 16
 
 [voyage]
 beside_blocks = 8

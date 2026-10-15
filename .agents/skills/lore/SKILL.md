@@ -59,6 +59,7 @@ A moment that matters is played as a scene on the band, line by line, never told
 | Hall books (per eye) | `generator/eyes.toml`, `people` and `lore` |
 | Books: the memories' pages, the loot books, the pages found on the road | `story/books.toml` |
 | Mod messages, HUD, item names, and the task panel's tasks (`wayfarer.task.<id>`) | `mod/src/main/resources/assets/wayfarer/lang/en_us.json` |
+| An enchantment's name with its icon, and a description for one that has none | `generator/enchantments.toml` |
 | Another mod's text the pack rewords | `mod/src/main/resources/assets/<that mod's namespace>/lang/en_us.json`; only a file in the same namespace reliably wins |
 
 All text is English. After editing, run `just generate` for generated text; `just lint`, run by the `finish` skill, fails on a translation key the code uses but the language file does not name, and on a book title or page too long for Minecraft.

@@ -111,6 +111,10 @@ hear *arguments:
 sounds *names:
     python3 scripts/sounds.py {{ names }}
 
+[doc("Fetch the Vanilla Tweaks resource and crafting tweaks listed in generator/tweaks.toml into generator/tweaks/, which just generate writes into the mod")]
+tweaks:
+    python3 scripts/tweaks.py
+
 [doc("Unpack Minecraft's and NeoForge's code with Parchment names and every mod decompiled with Vineflower into build/sources/, for searching with rg; only what changed is redone")]
 sources:
     cd mod && ./gradlew createMinecraftArtifacts vineflower

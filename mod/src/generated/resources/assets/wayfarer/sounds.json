@@ -49,6 +49,14 @@
     ],
     "subtitle": "subtitles.wayfarer.compass_mark"
   },
+  "deed": {
+    "sounds": [
+      {
+        "name": "wayfarer:effects/deed"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.deed"
+  },
   "door_blow": {
     "sounds": [
       {

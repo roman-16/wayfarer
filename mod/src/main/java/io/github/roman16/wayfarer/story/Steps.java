@@ -69,8 +69,8 @@ final class Steps {
     private static final String AWAITS = "awaits";
     private static final String LOSSES = "losses";
     private static final String AWAY = "away";
-    private static final String LIVES = "lives";
-    private static final String LOST = "lost";
+    static final String LIVES = "lives";
+    static final String LOST = "lost";
     static final String BUILDS = "builds";
     private static final double KEPT = 1.5;
 
@@ -103,6 +103,9 @@ final class Steps {
             Places.build(server, step.text(BUILDS));
         }
         toll(server, active);
+        if (active.quest().steps().indexOf(step) == 0) {
+            Deeds.begun(server, active.quest());
+        }
         switch (step.kind()) {
             case "talk" -> {}
             case "dusk" -> {

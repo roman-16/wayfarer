@@ -57,6 +57,7 @@ public final class JournalScreen extends Screen {
     private static final int TASK_LINE = 12;
     private static final int RIBBON_HEIGHT = 13;
     private static final int RIBBON_GAP = 2;
+    private static final int RIBBON_SHELF_GAP = 4;
     private static final int RIBBON_PULL = 6;
     private static final int RIBBON_NOTCH = 5;
     private static final int RIBBON_TUCK = 6;
@@ -117,6 +118,11 @@ public final class JournalScreen extends Screen {
         turn();
     }
 
+    public static void afterwards() {
+        open = Tab.AFTERWARDS;
+        open();
+    }
+
     public static void show(String view) {
         latest = view;
         Recap.remember(view);
@@ -155,27 +161,39 @@ public final class JournalScreen extends Screen {
                 .play(SimpleSoundInstance.forUI(SoundEvent.createVariableRangeEvent(Wayfarer.id(PAGE_SOUND)), 1, 1));
     }
 
+    private enum Shelf {
+        ACT,
+        KNOW,
+        RECORD
+    }
+
     private enum Tab {
-        QUESTS("wayfarer.journal.quests"),
-        STORY("wayfarer.journal.story"),
-        PEOPLE("wayfarer.journal.people"),
-        WORDS("wayfarer.journal.words"),
-        PAGES("wayfarer.journal.pages"),
-        CONVERSATIONS("wayfarer.journal.conversations"),
-        STONES("wayfarer.journal.stones"),
-        MAP("wayfarer.journal.map"),
-        GEAR("wayfarer.journal.gear");
+        QUESTS("wayfarer.journal.quests", Shelf.ACT),
+        GEAR("wayfarer.journal.gear", Shelf.ACT),
+        MAP("wayfarer.journal.map", Shelf.ACT),
+        STONES("wayfarer.journal.stones", Shelf.ACT),
+        STORY("wayfarer.journal.story", Shelf.KNOW),
+        PEOPLE("wayfarer.journal.people", Shelf.KNOW),
+        WORDS("wayfarer.journal.words", Shelf.KNOW),
+        PAGES("wayfarer.journal.pages", Shelf.KNOW),
+        CONVERSATIONS("wayfarer.journal.conversations", Shelf.KNOW),
+        DEEDS("wayfarer.journal.deeds", Shelf.RECORD),
+        AFTERWARDS("wayfarer.journal.afterwards", Shelf.RECORD);
 
         private final String key;
+        private final Shelf shelf;
 
-        Tab(String key) {
+        Tab(String key, Shelf shelf) {
             this.key = key;
+            this.shelf = shelf;
         }
     }
 
     private enum Kind {
+        AFTERWARD,
         BOOK,
         CARAVAN,
+        DEED,
         DONE,
         FOLD,
         GEAR,
@@ -228,7 +246,12 @@ public final class JournalScreen extends Screen {
         page = page(chosen);
         slots = chosen != null && chosen.kind() == Kind.REWARD ? stacks(chosen.data()) : List.of();
         int ribbonY = top + COVER_EDGE + RIBBON_GAP * 2;
+        Shelf shelf = ribbons.getFirst().shelf;
         for (Tab tab : ribbons) {
+            if (tab.shelf != shelf) {
+                ribbonY += RIBBON_SHELF_GAP;
+                shelf = tab.shelf;
+            }
             addRenderableWidget(new Ribbon(tab, left + bookWidth, ribbonY));
             ribbonY += RIBBON_HEIGHT + RIBBON_GAP;
         }
@@ -408,6 +431,15 @@ public final class JournalScreen extends Screen {
                 found.add(new Entry(Kind.STONE, key, Component.translatable("wayfarer.journal.stone", stone.get("things").getAsInt()), INK, stone));
             });
             case MAP -> {}
+            case AFTERWARDS -> view.getAsJsonArray("afterwards").forEach(element -> {
+                JsonObject afterward = element.getAsJsonObject();
+                found.add(new Entry(Kind.AFTERWARD, "afterwards:" + afterward.get("people").getAsString(), Afterward.title(afterward), INK, afterward));
+            });
+            case DEEDS -> view.getAsJsonArray("deeds").forEach(element -> {
+                JsonObject deed = element.getAsJsonObject();
+                String key = deed.get("key").getAsString();
+                found.add(new Entry(Kind.DEED, "deed:" + key, Component.translatable("wayfarer.deed." + key), INK, deed));
+            });
             case GEAR -> view.getAsJsonArray("gear").forEach(element -> {
                 JsonObject row = element.getAsJsonObject();
                 long known = row.getAsJsonArray("things").asList().stream().filter(thing -> thing.getAsJsonObject().get("known").getAsBoolean()).count();
@@ -519,6 +551,16 @@ public final class JournalScreen extends Screen {
                 add(lines, Component.literal(line.getAsString()), 0, INK, width);
                 lines.add(Line.BLANK);
             });
+            case AFTERWARD -> {
+                add(lines, Afterward.hall(data), 0, INK, width);
+                lines.add(Line.BLANK);
+                add(lines, Afterward.door(data), 0, INK, width);
+            }
+            case DEED -> {
+                add(lines, Component.translatable("wayfarer.deed." + data.get("key").getAsString() + ".line"), 0, INK, width);
+                lines.add(Line.BLANK);
+                add(lines, Component.translatable("wayfarer.deed.day", data.get("day").getAsLong()), 0, QUIET_INK, width);
+            }
             case STONE -> add(lines, Component.translatable("wayfarer.journal.stone.at", data.get("x").getAsInt(), data.get("z").getAsInt()), 0, INK, width);
             case BOOK -> {
                 add(lines, Component.translatable("wayfarer.journal.book.by", data.get("author").getAsString()), 0, QUIET_INK, width);

@@ -40,6 +40,12 @@
 
 ![A quest done: the parchment banner as Ash ends](banner-done.jpg)
 
+## Banner deed
+
+**A deed earned: its banner under the compass, to that player alone**, in the story at `the_pull/the_fireside`
+
+![A deed earned: its banner under the compass, to that player alone](banner-deed.jpg)
+
 ## Feeling
 
 **Following the pull: no mark yet, the ember's feeling under the band**, in the story at `the_pull/pull`

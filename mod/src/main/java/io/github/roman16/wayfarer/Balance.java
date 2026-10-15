@@ -14,6 +14,7 @@ public record Balance(
         Compass compass,
         Crossing crossing,
         Daylight daylight,
+        Deeds deeds,
         Diggers diggers,
         Dragon dragon,
         Duel duel,
@@ -59,6 +60,7 @@ public record Balance(
         Tide tide,
         Tollbridge tollbridge,
         ToolGate toolGate,
+        Voice voice,
         Voyage voyage,
         Waystones waystones,
         Weather weather,
@@ -76,6 +78,9 @@ public record Balance(
     public record Compass(int exactBlocks, int refreshTicks, int trailBlocks) {}
 
     public record Daylight(int crumbleSeconds) {}
+
+    public record Deeds(int cityHeartBlocks, int diceWins, int duelBlocks, int edgeBlocks, int fireApartBlocks, int fires, int hardNights, int lightShards, int scenes, int villages,
+            int walkedBlocks) {}
 
     public record Diggers(int aheadBlocks) {}
 
@@ -152,8 +157,7 @@ public record Balance(
 
     public record Crossing(int firstWave, int retreatSeconds, int waveGrowth, int waveSeconds, int waves) {}
 
-    public record Ford(int aheadBlocks, int creekReachBlocks, int noticeBlocks, int outpostBlocks, int searchBlocks, int sideBlocks, int widestRiverBlocks,
-            int widthBlocks) {}
+    public record Ford(int aheadBlocks, int creekReachBlocks, int noticeBlocks, int outpostBlocks, int widthBlocks) {}
 
     public record Marsh(int aheadBlocks, int bogBlocks, int bogRadiusBlocks, int cellarBlocks, int hallBlocks, int nearBlocks, int noticeBlocks, int searchBlocks,
             int shunnedSeconds, int sideBlocks) {}
@@ -186,6 +190,8 @@ public record Balance(
                              int waitSeconds) {}
 
     public record ToolGate(int slowdown) {}
+
+    public record Voice(int quietestDecibels, int vibrationTicks) {}
 
     public record Waystones(int blocksPerFood) {}
 
@@ -222,6 +228,9 @@ public record Balance(
                 new Crossing(toml.getInt("crossing.first_wave"), toml.getInt("crossing.retreat_seconds"), toml.getInt("crossing.wave_growth"),
                         toml.getInt("crossing.wave_seconds"), toml.getInt("crossing.waves")),
                 new Daylight(toml.getInt("daylight.crumble_seconds")),
+                new Deeds(toml.getInt("deeds.city_heart_blocks"), toml.getInt("deeds.dice_wins"), toml.getInt("deeds.duel_blocks"), toml.getInt("deeds.edge_blocks"), toml.getInt("deeds.fire_apart_blocks"),
+                        toml.getInt("deeds.fires"), toml.getInt("deeds.hard_nights"), toml.getInt("deeds.light_shards"), toml.getInt("deeds.scenes"),
+                        toml.getInt("deeds.villages"), toml.getInt("deeds.walked_blocks")),
                 new Diggers(toml.getInt("diggers.ahead_blocks")),
                 new Dragon(
                         toml.getInt("dragon.blind_aim_blocks"),
@@ -241,8 +250,7 @@ public record Balance(
                 new FirstVillage(toml.getInt("first_village.ahead_blocks"), toml.getInt("first_village.search_blocks")),
                 new Flare(toml.getInt("flare.charges"), toml.getInt("flare.reach_blocks")),
                 new Ford(toml.getInt("ford.ahead_blocks"), toml.getInt("ford.creek_reach_blocks"), toml.getInt("ford.notice_blocks"),
-                        toml.getInt("ford.outpost_blocks"), toml.getInt("ford.search_blocks"), toml.getInt("ford.side_blocks"),
-                        toml.getInt("ford.widest_river_blocks"), toml.getInt("ford.width_blocks")),
+                        toml.getInt("ford.outpost_blocks"), toml.getInt("ford.width_blocks")),
                 new Forge(toml.getInt("forge.vein_lumps")),
                 new Frost(toml.getInt("frost.ahead_blocks"), toml.getInt("frost.dark_sight_sixteenths"), toml.getInt("frost.drift_every_blocks"),
                         toml.getInt("frost.hall_blocks"), toml.getInt("frost.house_blocks"), toml.getInt("frost.lake_blocks"), toml.getInt("frost.leave_blocks"),
@@ -340,6 +348,7 @@ public record Balance(
                         toml.getInt("tollbridge.radius_blocks"),
                         toml.getInt("tollbridge.wait_seconds")),
                 new ToolGate(toml.getInt("tool_gate.slowdown")),
+                new Voice(toml.getInt("voice.quietest_decibels"), toml.getInt("voice.vibration_ticks")),
                 new Voyage(
                         toml.getInt("voyage.beside_blocks"),
                         toml.getInt("voyage.calm_seconds"),

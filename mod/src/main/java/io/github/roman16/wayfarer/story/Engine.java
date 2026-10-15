@@ -424,6 +424,7 @@ public final class Engine {
         }
         Banners.show(Component.translatable("wayfarer.banner.done"), Component.literal(title(progress, quest)));
         Sounds.play(server, QUEST_DONE);
+        Deeds.done(server, quest);
         return Optional.empty();
     }
 

@@ -804,7 +804,7 @@ The third day of Act 1 step by step, as the slice builds it (`slice.md`, step 6)
 
 **1.3 The Deserter** (a ford below a Gazebound outpost; Hold; Strength):
 
-1. About 1,024 blocks out, the quest puts the ford down out of sight where the way first crosses a river on land where no snow lies, since the cold is 1.6's gate: a knee-deep crossing of gravel, about 8 blocks wide, and on the high ground across it a Gazebound outpost. It looks on up to 2,048 blocks along the way and up to 512 either side of it; with no river there, it cuts a stream across the way at about 1,024 blocks, a knee-deep creek about 8 wide with gravel banks, running far enough either side to read as one the land always had.
+1. About 1,024 blocks out, the quest puts the ford down out of sight on flat land where no snow lies, since the cold is 1.6's gate: it cuts a stream across the way, a knee-deep creek about 8 blocks wide with gravel banks and a ford of gravel, running far enough either side to read as one the land always had, and on the high ground across it a Gazebound outpost. The creek is the ford by design: the rivers a player sees are Streams Reflowing's streams, which the quest cannot read before the land is made, and the river biome is rare in this world, so on six worlds measured no river was ever found.
 
    **Out of the cold.** Before it chooses, the quest checks the way: the land from the edge of the caravan's camp, 256 blocks out, to the ford, sampled every 64 blocks, and the ford's own spot; the camp's own ground is where the team already stands. If either lies where it snows, it turns the way in steps of 15 degrees to either side, as it already turns along the home land's coast (M40), and takes the first heading whose path and ford lie where no snow lies; the swamp's hall (S29) is then chosen along that heading. Nothing new reaches the player: the ember pulls by feeling as before, only another way, and the search runs once, out of sight, while the morning's talk plays. When no heading within a half turn is warm, on a home land deep in snow, the ford stays where it falls and a fire burns low on its near bank, the deserter's last, so the hold is fought beside it and the task panel's "Too cold: get to a fire" is answered at once.
 
@@ -840,7 +840,7 @@ What 1.3 asks of the systems, at their minimum:
 
 | System | For 1.3 |
 |---|---|
-| The quest engine (M1) | A place put down ahead at a river, a quest that opens when the team comes near, a side quest a person asks for |
+| The quest engine (M1) | A place put down ahead with the creek it cuts, a quest that opens when the team comes near, a side quest a person asks for |
 | Holds (M10) | Waves of Gazebound that cross from the far bank, a person to keep alive, a retry, and the fight following a team that walks off |
 | The fights (M37) | The Gazebound's tell, the horn and the shout; waves sized to the team online |
 | The caravan (M5) | A household that joins: Corin's small tent at the edge |
@@ -1910,4 +1910,4 @@ Edge cases:
 
 ## Open
 
-- **The ford's river (S28, 1.3).** The quest looks for a river first and cuts a creek only where none crosses the way, but on six worlds measured on 14.10 (the states' seed twice, seeds 1 to 4) every ford was a creek the quest cut: no river was ever found. Its search reads rivers as the river biome at sea level, and with Streams Reflowing the land's streams may not be that biome (not checked). Either the search learns to find the streams the land has, or the creek is the ford by design and the river search goes.
+Nothing is open.

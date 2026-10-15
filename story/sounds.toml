@@ -54,6 +54,16 @@ licence = "CC0 1.0"
 page = "https://freesound.org/people/moodyfingers/sounds/732942"
 slider = "players"
 
+[effects.deed]
+credit = "004-Kankles-C4, by tarane468"
+cut = { fade_in = 0.02, fade_out = 0.4, length = 3.2 }
+downloaded = "15.10.2026"
+gain = -6
+kind = "rare"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/tarane468/sounds/466516"
+slider = "master"
+
 [effects.door_blow]
 credit = "Door Hits; multiple, by RossBell"
 cut = { fade_out = 0.03, length = 1.1, start = 0.08 }

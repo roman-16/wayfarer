@@ -209,6 +209,7 @@ public final class Dice {
             games.remove(game.dicer.getUUID());
             ServerPlayer player = server.getPlayerList().getPlayer(game.player);
             if (won && player != null) {
+                Deeds.diced(player);
                 give(player, game.stake);
                 give(player, game.theirs);
                 Progress progress = Progress.of(server);

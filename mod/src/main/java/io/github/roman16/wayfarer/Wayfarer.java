@@ -11,10 +11,12 @@ import io.github.roman16.wayfarer.client.MusicPlayer;
 import io.github.roman16.wayfarer.client.PickUps;
 import io.github.roman16.wayfarer.client.Recap;
 import io.github.roman16.wayfarer.story.After;
+import io.github.roman16.wayfarer.story.Afterwards;
 import io.github.roman16.wayfarer.story.Banners;
 import io.github.roman16.wayfarer.story.Bell;
 import io.github.roman16.wayfarer.story.CaptainsPages;
 import io.github.roman16.wayfarer.story.Caravan;
+import io.github.roman16.wayfarer.story.Deeds;
 import io.github.roman16.wayfarer.story.Dice;
 import io.github.roman16.wayfarer.story.Duel;
 import io.github.roman16.wayfarer.story.Engine;
@@ -65,6 +67,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
@@ -99,6 +102,7 @@ public final class Wayfarer {
     private static final DeferredRegister<MapCodec<? extends DensityFunction>> DENSITY_FUNCTIONS = DeferredRegister.create(Registries.DENSITY_FUNCTION_TYPE, MODID);
     private static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT, MODID);
     private static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, MODID);
+    private static final DeferredRegister<GameEvent> GAME_EVENTS = DeferredRegister.create(Registries.GAME_EVENT, MODID);
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
     private static final DeferredRegister<MapCodec<? extends IGlobalLootModifier>> LOOT_MODIFIERS =
             DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, MODID);
@@ -124,6 +128,7 @@ public final class Wayfarer {
     public static final GameRules.Key<GameRules.BooleanValue> STORY =
             GameRules.register(MODID + "Story", GameRules.Category.MISC, GameRules.BooleanValue.create(true));
 
+    public static final DeferredHolder<GameEvent, GameEvent> VOICE = GAME_EVENTS.register("voice", () -> new GameEvent(GameEvent.DEFAULT_NOTIFICATION_RADIUS));
     public static final DeferredHolder<MobEffect, MobEffect> WARM = EFFECTS.register("warm", Warm::new);
     public static final DeferredHolder<StructureProcessorType<?>, StructureProcessorType<NetherSwap>> NETHER_SWAP =
             PROCESSORS.register("nether_swap", () -> () -> NetherSwap.CODEC);
@@ -235,6 +240,7 @@ public final class Wayfarer {
         BLOCKS.register(modBus);
         EFFECTS.register(modBus);
         ENTITY_TYPES.register(modBus);
+        GAME_EVENTS.register(modBus);
         ITEMS.register(modBus);
         LOOT_MODIFIERS.register(modBus);
         PIECES.register(modBus);
@@ -270,6 +276,7 @@ public final class Wayfarer {
         }
         NeoForge.EVENT_BUS.register(Cuts.class);
         NeoForge.EVENT_BUS.register(Daylight.class);
+        NeoForge.EVENT_BUS.register(Deeds.class);
         NeoForge.EVENT_BUS.register(Dice.class);
         NeoForge.EVENT_BUS.register(Dragon.class);
         NeoForge.EVENT_BUS.register(Duel.class);
@@ -371,7 +378,8 @@ public final class Wayfarer {
         registrar.playToClient(CompassPayload.TYPE, CompassPayload.STREAM_CODEC, (payload, context) -> HudState.compass = payload);
         registrar.playToClient(GazePayload.TYPE, GazePayload.STREAM_CODEC, (payload, context) -> HudState.gaze = payload);
         registrar.playToClient(NightPayload.TYPE, NightPayload.STREAM_CODEC, (payload, context) -> HudState.night = payload);
-        registrar.playToClient(After.Ending.TYPE, After.Ending.STREAM_CODEC, (payload, context) -> Ending.show(payload.lines()));
+        registrar.playToClient(After.Ending.TYPE, After.Ending.STREAM_CODEC, (payload, context) -> Ending.show(payload.afterwards()));
+        registrar.playToClient(Afterwards.Open.TYPE, Afterwards.Open.STREAM_CODEC, (payload, context) -> JournalScreen.afterwards());
         registrar.playToClient(After.Skin.TYPE, After.Skin.STREAM_CODEC, (payload, context) -> Ending.skin(payload.player(), payload.texture()));
         registrar.playToClient(Memories.Flash.TYPE, Memories.Flash.STREAM_CODEC, (payload, context) -> Flash.show(payload));
         registrar.playToClient(Music.Play.TYPE, Music.Play.STREAM_CODEC, (payload, context) -> MusicPlayer.play(payload));

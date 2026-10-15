@@ -24,7 +24,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class Places {
     private static final int CHECK_TICKS = 20;
-    private static final int VISIT_BLOCKS = 64;
+    static final int VISIT_BLOCKS = 64;
     private static final int SPIRAL = 6;
     private static final String FIRE_SEAT = "fire_";
 

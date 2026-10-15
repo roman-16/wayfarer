@@ -1,0 +1,13 @@
+name = "Leggings Fix"
+filename = "Leggings Fix 1.16-1.21.1.zip"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/9kKRfUOA/versions/mQB2rxZI/Leggings%20Fix%201.16-1.21.1.zip"
+hash-format = "sha512"
+hash = "ba1684eb7c7c74971bb2ddc9b86ffd58879594487164398e91aab8c582511dfb6aeaffbcb76b7a36f4734f69bd9c2a877c79f0575274375a323559d2349bfda3"
+
+[update]
+[update.modrinth]
+mod-id = "9kKRfUOA"
+version = "mQB2rxZI"

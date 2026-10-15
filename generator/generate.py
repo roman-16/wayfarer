@@ -4,11 +4,13 @@ import math
 import shutil
 from pathlib import Path
 
+import enchantments
 import fonts
 import png
 import poses
 import stamp
 import tomllib
+import tweaks
 from act3 import HOUSE as ACT3_HOUSE
 from act3 import airfield as act3_airfield
 from act3 import gatehouse as act3_gatehouse
@@ -435,7 +437,7 @@ def sounds(spec):
     )
 
 
-def credits(spec, faces):
+def credits(spec, faces, tweaked):
     def line(entry):
         return f"- {entry['credit']}. {entry['licence']}. {entry['page']}"
 
@@ -446,6 +448,7 @@ def credits(spec, faces):
             f"- {face['name']}, by {face['author']}. {face['licence']}. {face['url']}"
             for _, face in sorted(faces.items())
         ],
+        "Textures and recipes": [f"- {tweaked['credit']}"],
     }
     (ROOT / "pack/CREDITS.md").write_text(
         "# Credits\n"
@@ -948,12 +951,15 @@ def main():
     write_json(MAIN / "wayfarer/scenes.json", tomllib.loads((ROOT / "story/scenes.toml").read_text())["scenes"])
     write_json(MAIN / "wayfarer/dice.json", tomllib.loads((ROOT / "story/dice.toml").read_text()))
     music = tomllib.loads((ROOT / "story/sounds.toml").read_text())
+    tweaked = tomllib.loads((ROOT / "generator/tweaks.toml").read_text())
     sounds(music)
-    credits(music, faces)
+    credits(music, faces, tweaked)
     shard_names(eyes)
     old_camps(balance, written)
     books(written, eyes, library(written, eyes))
     shaders()
+    tweaks.write(MAIN, tomllib.loads((ROOT / "generator/nether.toml").read_text()), tweaked)
+    enchantments.write(MAIN, tomllib.loads((ROOT / "generator/enchantments.toml").read_text()))
 
 
 main()

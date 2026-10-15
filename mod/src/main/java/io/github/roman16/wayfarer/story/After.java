@@ -39,16 +39,14 @@ public final class After {
     private static final String BEGUN = "begun";
     private static final String PIP_LOST = "the_hollow/pip=lost";
     private static final String PIP_SKIN = "wayfarer:textures/entity/people/pip.png";
-    private static final String GONE_LINES = String.join("\n", "The frame goes still. Your friends are alone at the fire.", "",
-            "Far below, in the deep dark, the sculk creeps one block further. Nobody hears it.");
     private static final int CHECK_TICKS = 20;
     private static final Map<UUID, Vec3> ANCHORS = new HashMap<>();
 
     private After() {}
 
-    public record Ending(String lines) implements CustomPacketPayload {
+    public record Ending(String afterwards) implements CustomPacketPayload {
         public static final Type<Ending> TYPE = new Type<>(Wayfarer.id("ending"));
-        public static final StreamCodec<ByteBuf, Ending> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(Ending::new, Ending::lines);
+        public static final StreamCodec<ByteBuf, Ending> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(Ending::new, Ending::afterwards);
 
         @Override
         public Type<Ending> type() {
@@ -112,13 +110,17 @@ public final class After {
             Journey.of(server).end();
         }
         progress.setDirty();
+        Journal.syncAll(server);
         server.getPlayerList().getPlayers().forEach(After::greet);
+        if (!gone(server)) {
+            server.getPlayerList().getPlayers().forEach(Afterwards::open);
+        }
         Engine.open(server);
     }
 
     private static void greet(ServerPlayer player) {
         if (gone(player.server)) {
-            PacketDistributor.sendToPlayer(player, new Ending(GONE_LINES));
+            PacketDistributor.sendToPlayer(player, new Ending(Afterwards.view(player.server).toString()));
         }
         if (pip(player.server)) {
             player.server.getPlayerList().getPlayers().forEach(member -> PacketDistributor.sendToPlayer(player, new Skin(member.getUUID().toString(), PIP_SKIN)));

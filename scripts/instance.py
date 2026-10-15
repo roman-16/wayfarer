@@ -284,4 +284,5 @@ def main():
         server(arguments.target.resolve(), arguments.jar.resolve())
 
 
-main()
+if __name__ == "__main__":
+    main()

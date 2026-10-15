@@ -210,6 +210,8 @@ public final class Caravan {
         }
     }
 
+    record Camped(BlockPos centre, long day) {}
+
     static final class Camp extends SavedData {
         private Phase phase = Phase.GONE;
         private boolean ever;
@@ -220,6 +222,7 @@ public final class Caravan {
         private final Map<BlockPos, BlockState> originals = new LinkedHashMap<>();
         private final Map<BlockPos, BlockState> laid = new LinkedHashMap<>();
         private final List<BoundingBox> boxes = new ArrayList<>();
+        private final List<Camped> camps = new ArrayList<>();
         private long welcomed = -1;
         private long seenOff = -1;
         @Nullable
@@ -266,6 +269,10 @@ public final class Caravan {
                 int[] box = ((IntArrayTag) entry).getAsIntArray();
                 camp.boxes.add(new BoundingBox(box[0], box[1], box[2], box[3], box[4], box[5]));
             }
+            for (Tag entry : tag.getList("camps", Tag.TAG_COMPOUND)) {
+                CompoundTag camped = (CompoundTag) entry;
+                camp.camps.add(new Camped(BlockPos.of(camped.getLong("centre")), camped.getLong("day")));
+            }
             return camp;
         }
 
@@ -294,6 +301,14 @@ public final class Caravan {
             ListTag boxes = new ListTag();
             this.boxes.forEach(box -> boxes.add(new IntArrayTag(new int[] {box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ()})));
             tag.put("boxes", boxes);
+            ListTag camps = new ListTag();
+            this.camps.forEach(camped -> {
+                CompoundTag entry = new CompoundTag();
+                entry.putLong("centre", camped.centre().asLong());
+                entry.putLong("day", camped.day());
+                camps.add(entry);
+            });
+            tag.put("camps", camps);
             return tag;
         }
 
@@ -439,6 +454,10 @@ public final class Caravan {
             Vec3 at = Vec3.atBottomCenterOf(logs.get(logs.size() - fromEnd).above());
             return Optional.of(new Places.Seat(at, Frost.yaw(Vec3.atBottomCenterOf(fire).subtract(at).multiply(1, 0, 1))));
         });
+    }
+
+    static List<Camped> camps(MinecraftServer server) {
+        return List.copyOf(Camp.of(server).camps);
     }
 
     static BlockPos last(MinecraftServer server) {
@@ -713,6 +732,7 @@ public final class Caravan {
             camp.phase = Phase.STANDING;
             camp.ever = true;
             camp.day = Math.floorDiv(level.getDayTime(), Clock.DAY);
+            camp.camps.add(new Camped(camp.centre, camp.day));
             camp.setDirty();
             search = null;
             Progress.of(server).place(NAME, camp.centre);

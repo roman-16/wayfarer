@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Clock;
@@ -132,6 +133,8 @@ public final class StoryDev {
                                 .executes(context -> side(context.getSource(), StringArgumentType.getString(context, "step")))))
                         .then(Commands.literal("gift").then(Commands.argument("gift", StringArgumentType.word())
                                 .executes(context -> gift(context.getSource(), StringArgumentType.getString(context, "gift")))))
+                        .then(Commands.literal("deed").then(Commands.argument("deed", StringArgumentType.word())
+                                .executes(context -> deed(context.getSource(), StringArgumentType.getString(context, "deed")))))
                         .then(Commands.literal("choose").then(Commands.argument("choice", StringArgumentType.greedyString())
                                 .executes(context -> choose(context.getSource(), StringArgumentType.getString(context, "choice")))))
                         .then(Commands.literal("gear").then(Commands.argument("row", StringArgumentType.word())
@@ -237,6 +240,16 @@ public final class StoryDev {
         progress.setDirty();
         Journal.syncAll(source.getServer());
         source.sendSuccess(() -> Component.literal("story: the team holds the gift " + gift), false);
+        return 1;
+    }
+
+    private static int deed(CommandSourceStack source, String deed) throws CommandSyntaxException {
+        if (!Deeds.ALL.contains(deed)) {
+            source.sendFailure(Component.literal("story failed: there is no deed " + deed));
+            return 0;
+        }
+        Deeds.earn(source.getPlayerOrException(), deed);
+        source.sendSuccess(() -> Component.literal("story: the deed " + deed + " is earned"), false);
         return 1;
     }
 

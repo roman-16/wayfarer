@@ -50,7 +50,7 @@ Everything the player reads off the screen outside the world: the HUD, the pack'
 
 - J opens the journal as I5's leather-bound book, the same on every ribbon: the left page lists, the right page shows the entry chosen there. News carries a small gold dot until it is opened: a person, a word, a page, a gear row, a stone, a quest that is new or has a new objective, and a reward waiting. What the team lived through or read carries none, The Story So Far, Conversations, Pages and the quests done, since the team already knows it; the pencil's sound likewise marks only a new person, word or page. Turning a page sounds like vanilla's book (`sound.md`, A6).
 - On Quests the left page lists the rewards waiting first, then under a quiet "Main road" heading the main quest and Make for the caravan, under "Side road" the side quests, with the quests done folded away at the bottom. A heading is never chosen. The right page opens with the quest's own summary, where it comes from and what it asks, then holds the chosen quest's story as "I", its current objective with its tasks, what was found, any clock, and a Track ribbon; the tracked quest wears the Wayfarer's mark.
-- Ten ribbons are there, M2's eight, M18's Gear and M38's Deeds (`systems.md`), each a leather ribbon with its icon and its name on hover, its page titled with a line under the title saying what it holds (Conversations: "Every talk, word for word", newest first), each appearing the first time it holds an entry: the first night shows Quests, The Story So Far, People and the Map; Gear comes with Hob's patterns at the caravan's first fire, Pages with the first book, Conversations with the first talk, Stones with the first fall, Deeds with the first deed. A new ribbon carries the gold dot, and the first time Gear appears the task panel says where it is.
+- Eleven ribbons are there, M2's eight, M18's Gear, M38's Deeds (`systems.md`) and Afterwards (I9), hung by use in three groups with a small gap between them: what the player acts on (Quests, Gear, Map, Stones), what they know (The Story So Far, People, Words, Pages, Conversations) and the record (Deeds, Afterwards), so the tools opened many times an evening stay at the top and a ribbon that appears late only ever joins a lower group. Each is a leather ribbon with its icon and its name on hover, its page titled with a line under the title saying what it holds (Conversations: "Every talk, word for word", newest first), each appearing the first time it holds an entry: the first night shows Quests, The Story So Far, People and the Map; Gear comes with Hob's patterns at the caravan's first fire, Pages with the first book, Conversations with the first talk, Stones with the first fall, Deeds with the first deed, Afterwards when the door's scene ends. A new ribbon carries the gold dot, and the first time Gear appears the task panel says where it is.
 - A waiting reward is the first entry, in gold. Its right page shows the items in the stamp's slots, a line on what it is and one Take button; taking it plays its sound and puts the items in the inventory, or at the player's feet when it is full, and never ends a step. Until it is taken the task panel keeps it as a task.
 
   ```text
@@ -146,6 +146,23 @@ Everything the player reads off the screen outside the world: the HUD, the pack'
   ```
 
 **Why:** Tidying is chores, not play, and a camp chest a team shares reads the same to everyone when it keeps one order by kind, which an order by amount would shuffle each time a count changed. Sorting as a chest is closed, not as it opens, leaves loot as it was found and never moves a stack under a teammate's cursor; the hotbar stays the player's own, since that is where the layout is muscle memory. The recipe book repeats JEI, and its green book was the one vanilla button left outside the stamp.
+
+### I9 Afterwards: a page for every people met
+
+- When the door's scene ends (`vision.md`, D9; `story.md`, S8), the journal opens by itself on its last ribbon, Afterwards, "What became of them", with the gold dot. It holds one page for every people the player met, in the order they were met: the twelve halls' peoples, the gone ones known through who is left of them (Nell for the Frost Walkers, the witches for the Marsh Mothers, the Drowned City's last for theirs). A people is met when the player reached its hall or spoke with its people.
+- Each page is one short paragraph in the narrator's voice, speaking to "you" in the past tense as Fallout's ending slides do, so it reads the same after every door, made of two parts: what the player did at that people's hall (the shard left, taken, or given to Nell to bury, and the hall's own decision), and what the door did to their land. Every part is written with the `lore` skill.
+
+  ```text
+  Afterwards › The Tide Folk
+    You left their two stones together. The boats still go out at night, and nothing watches them.
+    When the Eye closed, the bay went dark for good, and they stopped hooding their lamps.
+  ```
+
+- A team gets one set of pages for its world, since it made one choice at the frame (D12); each player's journal shows it.
+- After Close the Eye with Pip dead the player never wakes (S8): there the pages turn on the black screen, one after another, between the frame going still and the sculk's line with "A new road". Each stays as long as it takes to read (`style.toml` `[motion]` `read`, per character), and a click or a key turns it sooner.
+- The pages stay in the journal for the game that goes on after the door. The journal opens by itself only for those online when the scene ends; a player who joins later finds the ribbon with its gold dots.
+
+**Why:** Fallout's and Dragon Age's ending slides answer "what happened to them" people by people, and that answer is where the road's choices pay: a shard left or taken weighs most when the player reads what it did. Two parts per page keep the writing to what the choices really decide, the hall and the door.
 
 ## Open
 

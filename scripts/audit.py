@@ -94,7 +94,11 @@ def features(jars):
 
 
 def merges(path):
-    merging = "/tags/" in path.as_posix() or path.as_posix().endswith("loot_modifiers/global_loot_modifiers.json")
+    merging = (
+        "/tags/" in path.as_posix()
+        or "/data_maps/" in path.as_posix()
+        or path.as_posix().endswith("loot_modifiers/global_loot_modifiers.json")
+    )
     return merging and not json.loads(path.read_text()).get("replace")
 
 
