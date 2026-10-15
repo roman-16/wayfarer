@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import net.blay09.mods.balm.api.Balm;
 import net.blay09.mods.waystones.api.MutableWaystone;
+import net.blay09.mods.waystones.api.WaystoneOrigin;
 import net.blay09.mods.waystones.api.WaystonesAPI;
 import net.blay09.mods.waystones.api.event.WaystoneTeleportEvent;
 import net.minecraft.ChatFormatting;
@@ -25,7 +26,6 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class Waystone {
     private static final String NAMESPACE = "waystones";
-    private static final String STANDING = Wayfarer.MODID + "_own_waystone";
     private static final int FLAGS = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE;
     private static final Map<UUID, BlockPos> placing = new HashMap<>();
     private static final Map<UUID, Vec3> leaving = new HashMap<>();
@@ -80,8 +80,7 @@ public final class Waystone {
             }
             for (BlockPos pos : new BlockPos[] {entry.getValue().above(), entry.getValue(), entry.getValue().above(2)}) {
                 Optional<net.blay09.mods.waystones.api.Waystone> placed = WaystonesAPI.getWaystoneAt(player.serverLevel(), pos);
-                if (placed.isPresent() && !placed.get().getWaystoneUid().equals(standing(player))) {
-                    player.getPersistentData().putUUID(STANDING, placed.get().getWaystoneUid());
+                if (placed.isPresent() && mine(player, placed.get())) {
                     if (placed.get() instanceof MutableWaystone named) {
                         named.setName(Component.translatable("wayfarer.stone.named", player.getDisplayName()));
                     }
@@ -93,14 +92,14 @@ public final class Waystone {
         }
     }
 
-    private static UUID standing(ServerPlayer player) {
-        return player.getPersistentData().hasUUID(STANDING) ? player.getPersistentData().getUUID(STANDING) : new UUID(0, 0);
+    private static boolean mine(ServerPlayer player, net.blay09.mods.waystones.api.Waystone waystone) {
+        return waystone.getOrigin() == WaystoneOrigin.PLAYER && player.getUUID().equals(waystone.getOwnerUid());
     }
 
     private static Optional<net.blay09.mods.waystones.api.Waystone> own(ServerPlayer player, BlockPos pos) {
         for (BlockPos part : new BlockPos[] {pos, pos.below(), pos.above()}) {
             Optional<net.blay09.mods.waystones.api.Waystone> found = WaystonesAPI.getWaystoneAt(player.serverLevel(), part)
-                    .filter(waystone -> waystone.getWaystoneUid().equals(standing(player)));
+                    .filter(waystone -> mine(player, waystone));
             if (found.isPresent()) {
                 return found;
             }
@@ -128,7 +127,7 @@ public final class Waystone {
             }
         }
         net.blay09.mods.waystones.api.Waystone target = event.getContext().getTargetWaystone();
-        if (target.getWaystoneUid().equals(standing(player))) {
+        if (mine(player, target)) {
             takeUp(player, target);
         }
     }
@@ -145,7 +144,6 @@ public final class Waystone {
             }
         }
         WaystonesAPI.removeWaystoneFromDatabase(player.server, waystone);
-        player.getPersistentData().remove(STANDING);
         ItemStack stone = OwnStone.stone(player);
         if (!player.getInventory().add(stone)) {
             player.drop(stone, false);

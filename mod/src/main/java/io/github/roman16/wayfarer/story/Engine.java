@@ -261,6 +261,9 @@ public final class Engine {
             }
         }
         Optional<String> goal = Caravan.heading(event.player()) ? Optional.of(Caravan.NAME) : tracked.flatMap(Steps::goal);
+        if (Caravan.heading(event.player()) && !Caravan.met(server)) {
+            event.rise();
+        }
         goal.ifPresent(name -> Progress.of(server).place(name).ifPresent(pos -> {
             if (felt(server, event.player(), pos)) {
                 event.aim(new Compass.Aim(pos));
@@ -589,6 +592,9 @@ public final class Engine {
             Library.Book book = Library.get().book(item.book()).orElseThrow(() -> new IllegalStateException(key + " gives the book " + item.book()
                     + ", which story/books.toml does not have"));
             return book.written();
+        }
+        if (item.tent() != null) {
+            return new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(Prologue.TENTS, item.tent() + "_" + Prologue.tent())));
         }
         ItemStack stack = new ItemStack(item.tag() == null ? BuiltInRegistries.ITEM.get(item.id())
                 : BuiltInRegistries.ITEM.getTag(TagKey.create(Registries.ITEM, item.tag()))

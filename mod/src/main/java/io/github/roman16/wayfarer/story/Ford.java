@@ -3,9 +3,11 @@ package io.github.roman16.wayfarer.story;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -52,6 +54,7 @@ final class Ford {
     private static final double BEND_LENGTH = 9;
     private static final int BEND_PHASE = 7;
     private static final int NARROW = 5;
+    private static final int FIRE_BESIDE = 3;
     private static final int ARRIVED = 2;
     private static final long NANOS_PER_MILLI = 1_000_000;
     private static final int FLAGS = Block.UPDATE_CLIENTS;
@@ -73,8 +76,11 @@ final class Ford {
         Balance.Ford balance = Balance.get().ford();
         Marsh.find(server);
         BlockPos hall = progress.place(Marsh.HALL).orElseThrow();
-        Vec3 way = new Vec3(hall.getX() - from.getX(), 0, hall.getZ() - from.getZ()).normalize();
+        Vec3 toward = new Vec3(hall.getX() - from.getX(), 0, hall.getZ() - from.getZ()).normalize();
         Unseen.Heights heights = new Unseen.Heights(level);
+        int ahead = balance.aheadBlocks();
+        Vec3 way = Unseen.warm(heights, from, toward, ahead) ? toward
+                : Home.aim(from, toward, ahead, (origin, bent) -> Unseen.warm(heights, origin, bent, ahead)).way();
         Vec3 start = Vec3.atLowerCornerOf(from);
         Banks banks = river(heights, level, start, way, balance, true)
                 .or(() -> dry(heights, level, start, way, balance, true))
@@ -91,8 +97,8 @@ final class Ford {
             progress.place(CREEK, near);
         }
         progress.setDirty();
-        LOGGER.info("the ford lies between {} and {}{}, found in {} ms", near, far, creek ? ", a creek the quest cuts" : ", across a river",
-                (System.nanoTime() - started) / NANOS_PER_MILLI);
+        LOGGER.info("the ford lies between {} and {}{}, the way turned {} degrees from the hall's, found in {} ms", near, far,
+                creek ? ", a creek the quest cuts" : ", across a river", Home.degrees(toward, way), (System.nanoTime() - started) / NANOS_PER_MILLI);
     }
 
     @Nullable
@@ -182,6 +188,22 @@ final class Ford {
         return new BlockPos(x, heights.surface(x, z), z);
     }
 
+    static void unbuild(MinecraftServer server) {
+        Progress.of(server).places.remove(NAME);
+        Progress.of(server).setDirty();
+    }
+
+    static void forget(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        List.of(NEAR_BANK, FAR_BANK, CREEK, NAME, FAR, OUTPOST, "seat_" + NAME).forEach(progress.places::remove);
+        progress.yaws.remove(WAY);
+        progress.yaws.remove("seat_" + NAME);
+        progress.witnesses.remove(NAME);
+        progress.witnesses.remove(OUTPOST);
+        progress.setDirty();
+        Marsh.forget(server);
+    }
+
     static boolean built(MinecraftServer server) {
         return Progress.of(server).place(NAME).isPresent();
     }
@@ -232,6 +254,9 @@ final class Ford {
         BlockPos corin = ashore(level, near, way.scale(-1)).above();
         BlockPos gazebound = ashore(level, far, way).above();
         BlockPos outpost = outpost(level, far, way, balance);
+        if (Unseen.snowy(level.getBiome(near), near)) {
+            fire(level, corin, side);
+        }
         progress.place(FAR, gazebound);
         progress.place(OUTPOST, outpost);
         progress.place("seat_" + NAME, corin);
@@ -242,6 +267,8 @@ final class Ford {
             ChunkPos chunk = new ChunkPos(at);
             level.getChunkSource().removeRegionTicket(TICKET, chunk, LOAD_RADIUS, chunk);
         }
+        Standing.keep(server, NAME);
+        Standing.keep(server, OUTPOST);
         LOGGER.info("the ford stands at {}, the Gazebound's outpost at {}", corin, outpost);
     }
 
@@ -345,6 +372,17 @@ final class Ford {
             }
         }
         return surface(level, BlockPos.containing(Vec3.atLowerCornerOf(bank).add(inland.scale(INLAND))));
+    }
+
+    private static void fire(ServerLevel level, BlockPos corin, Vec3 side) {
+        for (int sign : new int[] {1, -1}) {
+            BlockPos ground = surface(level, BlockPos.containing(Vec3.atLowerCornerOf(corin).add(side.scale(FIRE_BESIDE * sign))));
+            if (level.getFluidState(ground).isEmpty() && level.getBlockState(ground).isFaceSturdy(level, ground, Direction.UP)) {
+                level.setBlock(ground.above(), Blocks.CAMPFIRE.defaultBlockState(), Block.UPDATE_ALL);
+                LOGGER.info("the ford lies in the cold; a fire burns on its near bank at {}", ground.above());
+                return;
+            }
+        }
     }
 
     private static BlockState gravel(BlockPos at) {

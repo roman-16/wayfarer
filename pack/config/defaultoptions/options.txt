@@ -7,5 +7,5 @@ hideSplashTexts:true
 maxFps:260
 mouseSensitivity:0.335
 onboardAccessibility:false
-resourcePacks:["vanilla","mod_resources","file/FreshAnimations_v1.10.4.zip","file/DetailedAnimationsReworked - V1.15.zip","file/Bushy pink petals, wildflowers  leaf litter.zip"]
+resourcePacks:["vanilla","mod_resources","file/FreshAnimations_v1.10.4.zip","file/DetailedAnimationsReworked - V1.15.zip","file/Bushy pink petals, wildflowers  leaf litter.zip","file/Better-Leaves-9.6.zip"]
 skipMultiplayerWarning:true

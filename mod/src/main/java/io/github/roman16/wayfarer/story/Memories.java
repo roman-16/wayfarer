@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 import net.commoble.infiniverse.api.InfiniverseAPI;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -552,6 +553,26 @@ public final class Memories {
         player.removeAllEffects();
         Vec3 arrival = dream.arrivals.get(player.getUUID());
         player.teleportTo(dream.level, arrival.x, arrival.y, arrival.z, player.getYRot(), player.getXRot());
+    }
+
+    @SubscribeEvent
+    public static void onBreak(BlockEvent.BreakEvent event) {
+        if (!(event.getLevel() instanceof Level level) || !dream(level) || !(event.getPlayer() instanceof ServerPlayer player)) {
+            return;
+        }
+        if (dream == null || level != dream.level || dream.phase != Phase.DREAMING || !gathered(player.server, event.getPos(), event.getState())) {
+            event.setCanceled(true);
+            player.displayClientMessage(Component.translatable("wayfarer.memory.kept").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
+        }
+    }
+
+    private static boolean gathered(MinecraftServer server, BlockPos pos, BlockState state) {
+        Story.Step step = dream.current();
+        if (!step.kind().equals("gather") || !step.spec().has("tag")
+                || !new ItemStack(state.getBlock()).is(TagKey.create(Registries.ITEM, ResourceLocation.parse(step.text("tag"))))) {
+            return false;
+        }
+        return !dream.memory.place().equals(FirstCamp.NAME) || FirstCamp.fallen(server).contains(pos);
     }
 
     @SubscribeEvent

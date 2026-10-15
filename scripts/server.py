@@ -30,7 +30,7 @@ def dev_server(mode="full"):
 
 
 def start(arguments):
-    mode = "lean" if arguments.lean else "full"
+    mode = arguments.mode
     server = dev_server(mode)
     if arguments.state:
         states.check(arguments.state)
@@ -45,13 +45,13 @@ def start(arguments):
             print("restarting: " + "; ".join(reasons))
         server.stop(STOP_SECONDS)
     if arguments.fresh or arguments.seed is not None:
-        shutil.rmtree(DEV_SERVER / ("world-lean" if arguments.lean else "world"), ignore_errors=True)
+        shutil.rmtree(DEV_SERVER / ("world" if mode == "full" else f"world-{mode}"), ignore_errors=True)
     if arguments.seed is not None:
         os.environ["WAYFARER_SEED"] = str(arguments.seed)
     start = None
     if arguments.state:
         cache = states.folder("server", mode, arguments.state)
-        start = states.prepare(cache, DEV_SERVER / ("state-lean" if arguments.lean else "state"), arguments.rebuild)
+        start = states.prepare(cache, DEV_SERVER / ("state-lean" if mode == "lean" else "state"), arguments.rebuild)
         os.environ["WAYFARER_STATE"] = arguments.state
     os.environ |= {"WAYFARER_BACKGROUND": "true", "WAYFARER_DRIVEN": "true"}
     started = time.monotonic()
@@ -63,9 +63,9 @@ def start(arguments):
         server.run(f"wayfarer pretend join {WALKER}", STEP_SECONDS)
         replies = story(server, f"{arguments.state} {cache}", STEP_SECONDS)
         server.run(f"wayfarer pretend leave {WALKER}", STEP_SECONDS)
-    lean = ", with only the Wayfarer mod," if arguments.lean else ""
+    kind = {"far": ", with Distant Horizons and SeedGen,", "full": "", "lean": ", with only the Wayfarer mod,"}[mode]
     at = f" in state {arguments.state}, " + built(arguments.state, start, replies) if arguments.state else ""
-    print(f"the dev server is running{lean}{at} after {time.monotonic() - started:.0f} s; log in {server.log}")
+    print(f"the dev server is running{kind}{at} after {time.monotonic() - started:.0f} s; log in {server.log}")
 
 
 def restarting(launched, mode):
@@ -196,9 +196,22 @@ def main():
         help="open the world at a step of the story, such as ash/the_door, built from story/states.toml and kept "
         "in build/states/",
     )
-    start_parser.add_argument(
-        "--lean", action="store_true", help="load only the Wayfarer mod and what it needs, in a world of its own"
+    modes = start_parser.add_mutually_exclusive_group()
+    modes.add_argument(
+        "--far",
+        action="store_const",
+        const="far",
+        dest="mode",
+        help="add Distant Horizons and SeedGen, which draw the far view for the players who join, in a world of its own",
     )
+    modes.add_argument(
+        "--lean",
+        action="store_const",
+        const="lean",
+        dest="mode",
+        help="load only the Wayfarer mod and what it needs, in a world of its own",
+    )
+    start_parser.set_defaults(mode="full")
     start_parser.add_argument(
         "--rebuild",
         action="store_true",

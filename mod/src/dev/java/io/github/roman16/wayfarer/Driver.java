@@ -4,10 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.GlUtil;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.client.Conversation;
+import io.github.roman16.wayfarer.client.Frames;
+import io.github.roman16.wayfarer.client.Graphics;
 import io.github.roman16.wayfarer.client.Hud;
 import io.github.roman16.wayfarer.client.JournalScreen;
 import io.github.roman16.wayfarer.client.Recap;
@@ -122,7 +125,10 @@ public final class Driver {
     private static final int FIND_RADIUS = 32;
     private static final int SETTLE_CHUNKS = 3;
     private static final int SETTLE_FRAMES = 2;
-    private static final int PANORAMA_SIZE = 1024;
+    private static final int FLIGHT_HOLD_TICKS = 20;
+    private static final int PANORAMA_FOV = 90;
+    private static final int PANORAMA_FRAMES = 32;
+    private static final int PANORAMA_SIZE = 2048;
     private static final int CLOSE_LAYERS = 8;
     private static final float[][] PANORAMA_FACES = {{0, 0}, {90, 0}, {180, 0}, {-90, 0}, {0, -90}, {0, 90}};
     private static final double NANOS_PER_MILLI = 1_000_000.0;
@@ -271,7 +277,12 @@ public final class Driver {
             current = step;
             progressed = System.nanoTime();
             note("> " + step);
-            run(minecraft, step);
+            try {
+                run(minecraft, step);
+            } catch (RuntimeException exception) {
+                stopBatch(folder, step + " failed: " + exception);
+                return;
+            }
             if (waiting > 0 || pending != null || until != null) {
                 return;
             }
@@ -670,6 +681,11 @@ public final class Driver {
             }
             case "chat" -> chatHidden = argument.equals("off");
             case "digest" -> note("digest: " + digest(minecraft));
+            case "dh" -> {
+                String[] setting = argument.split(" ", 2);
+                String result = setting.length == 2 ? FarView.set(setting[0], setting[1]) : "error: dh takes a setting and a value";
+                note(result.startsWith("error: ") ? result : "dh: " + result);
+            }
             case "distance" -> distance(minecraft, Integer.parseInt(argument));
             case "click" -> {
                 String[] at = argument.split(" ");
@@ -684,10 +700,8 @@ public final class Driver {
             case "far" -> far();
             case "find" -> find(minecraft, argument);
             case "forget" -> JournalScreen.firstPage();
-            case "fly" -> {
-                minecraft.player.getAbilities().flying = argument.equals("on");
-                minecraft.player.onUpdateAbilities();
-            }
+            case "graphics" -> graphics(argument);
+            case "fly" -> fly(minecraft.player, argument.equals("on"));
             case "gui" -> minecraft.options.hideGui = argument.equals("off");
             case "inspect" -> inspect(minecraft, argument);
             case "hud" -> {
@@ -719,7 +733,7 @@ public final class Driver {
             }
             case "panorama" -> panorama(minecraft, argument);
             case "particles" -> minecraft.options.particles().set(ParticleStatus.valueOf(argument.toUpperCase(Locale.ROOT)));
-            case "perf" -> perf(minecraft);
+            case "perf" -> perf(minecraft, argument.isEmpty() ? 1 : Integer.parseInt(argument));
             case "pos" -> note("pos: %.1f %.1f %.1f facing %.0f %.0f in %s".formatted(minecraft.player.getX(), minecraft.player.getY(),
                     minecraft.player.getZ(), minecraft.player.getYRot(), minecraft.player.getXRot(), minecraft.level.dimension().location()));
             case "pause" -> minecraft.pauseGame(false);
@@ -749,11 +763,13 @@ public final class Driver {
             case "still" -> still(minecraft, argument);
             case "story" -> story(minecraft, argument);
             case "use" -> use(minecraft, argument);
+            case "vsync" -> minecraft.options.enableVsync().set(argument.equals("on"));
             case "type" -> argument.chars().forEach(character -> {
                 if (minecraft.screen != null) {
                     minecraft.screen.charTyped((char) character, 0);
                 }
             });
+            case "skin" -> note(Dressed.wear(minecraft, argument));
             case "sky" -> sky(minecraft, Integer.parseInt(argument));
             case "wait" -> waiting = Integer.parseInt(argument);
             case "workshop" -> command(minecraft, "wayfarer workshop enter");
@@ -838,16 +854,46 @@ public final class Driver {
         };
     }
 
-    private static void perf(Minecraft minecraft) {
-        long fromFrames = frames;
+    private static void perf(Minecraft minecraft, int seconds) {
+        Frames.Count count = Frames.count();
         long fromNanos = System.nanoTime();
-        until = () -> System.nanoTime() - fromNanos >= PERF_NANOS;
+        until = () -> {
+            progressed = System.nanoTime();
+            return System.nanoTime() - fromNanos >= seconds * PERF_NANOS;
+        };
+        waitingOn = "the frames of %d s".formatted(seconds);
         then = () -> {
-            double fps = (frames - fromFrames) * (double) PERF_NANOS / (System.nanoTime() - fromNanos);
+            Frames.Summary frames = count.stop();
             IntegratedServer server = minecraft.getSingleplayerServer();
             String tick = server == null ? "no server" : "%.1f ms a server tick".formatted(server.getAverageTickTimeNanos() / NANOS_PER_MILLI);
-            note("perf: %.0f fps over one second, %s, drawn by %s".formatted(fps, tick, GlUtil.getRenderer()));
+            note("perf: %.0f fps on average over %d s, 1%% low %.0f fps, worst frame %.0f ms, %s, drawn by %s".formatted(frames.fps(), seconds, frames.low(),
+                    frames.worstMillis(), tick, GlUtil.getRenderer()));
         };
+    }
+
+    private static void fly(LocalPlayer player, boolean on) {
+        int[] held = {0};
+        until = () -> {
+            if (player.getAbilities().flying != on) {
+                player.getAbilities().flying = on;
+                player.onUpdateAbilities();
+                held[0] = 0;
+                return false;
+            }
+            return ++held[0] >= FLIGHT_HOLD_TICKS;
+        };
+        waitingOn = "the flight to hold";
+    }
+
+    private static void graphics(String argument) {
+        String[] words = argument.split(" ");
+        if (words.length != 3 || !words[1].equals("shaders") || !List.of("on", "off").contains(words[2])) {
+            note("error: graphics takes a step and shaders on or off, such as graphics low shaders off");
+            return;
+        }
+        Graphics.shaders(words[2].equals("on"));
+        Graphics.choose(Graphics.valueOf(words[0].toUpperCase(Locale.ROOT)));
+        note("graphics: " + words[0] + ", shaders " + words[2]);
     }
 
     private static void far() {
@@ -956,12 +1002,17 @@ public final class Driver {
 
     private static void panorama(Minecraft minecraft, String name) {
         float yaw = minecraft.player.getYRot();
-        minecraft.gameRenderer.setPanoramicMode(true);
+        int fov = minecraft.options.fov().get();
+        double effects = minecraft.options.fovEffectScale().get();
+        // Vanilla's panoramic mode garbles the near terrain under Iris with Distant Horizons, so the faces take its 90 degrees from the options.
+        minecraft.options.fov().set(PANORAMA_FOV);
+        minecraft.options.fovEffectScale().set(0.0);
         minecraft.gameRenderer.setRenderBlockOutline(false);
         bare = true;
         face(minecraft, name, 0, yaw, () -> {
             bare = false;
-            minecraft.gameRenderer.setPanoramicMode(false);
+            minecraft.options.fov().set(fov);
+            minecraft.options.fovEffectScale().set(effects);
             minecraft.gameRenderer.setRenderBlockOutline(true);
             minecraft.player.setYRot(yaw);
             minecraft.player.setXRot(0);
@@ -974,8 +1025,17 @@ public final class Driver {
         player.setXRot(PANORAMA_FACES[face][1]);
         player.yRotO = player.getYRot();
         player.xRotO = player.getXRot();
-        framesFrom = -1;
-        until = () -> rendered(minecraft) && freshFrame();
+        long[] steady = {-1};
+        until = () -> {
+            if (!rendered(minecraft)) {
+                steady[0] = -1;
+                return false;
+            }
+            if (steady[0] < 0) {
+                steady[0] = frames;
+            }
+            return frames >= steady[0] + PANORAMA_FRAMES;
+        };
         then = () -> {
             Path path = minecraft.gameDirectory.toPath().resolve("screenshots/panorama").resolve(name).resolve("panorama_" + face + ".png")
                     .toAbsolutePath().normalize();
@@ -1069,14 +1129,23 @@ public final class Driver {
                 .filter(mapping -> mapping.getName().equals(name))
                 .findFirst()
                 .ifPresentOrElse(mapping -> {
-                    if (minecraft.screen != null) {
+                    boolean typed = mapping.getKey().getType() == InputConstants.Type.KEYSYM && !mapping.isUnbound();
+                    if (minecraft.screen != null || typed) {
                         long window = minecraft.getWindow().getWindow();
                         minecraft.keyboardHandler.keyPress(window, mapping.getKey().getValue(), 0, GLFW.GLFW_PRESS, 0);
                         minecraft.keyboardHandler.keyPress(window, mapping.getKey().getValue(), 0, GLFW.GLFW_RELEASE, 0);
-                        return;
+                    } else {
+                        KeyMapping.click(mapping.getKey());
                     }
-                    KeyMapping.click(mapping.getKey());
-                    until = () -> clicks(mapping) == 0;
+                    if (minecraft.screen == null) {
+                        long[] taken = {-1};
+                        until = () -> {
+                            if (taken[0] < 0 && clicks(mapping) == 0) {
+                                taken[0] = frames;
+                            }
+                            return taken[0] >= 0 && frames > taken[0];
+                        };
+                    }
                 }, () -> note("error: no key mapping " + name));
     }
 

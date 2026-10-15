@@ -8,17 +8,22 @@ Unreleased and in development: nothing is published yet, and a world made with o
 
 ## Settled
 
-### R1 Performance: no limits for weaker machines, one shader, a graphics setting
+### R1 Performance: a minimum machine, one shader, a graphics setting
 
-- The pack is never cut back so that weaker machines can run it. A reasonably high-end PC should run it at about 90 fps, as a guide and not a gate, and there is no fixed budget: what a player finds too slow is fixed when it comes up.
+- The pack names its minimum machine: a graphics card like the RTX 2070 Super for laptops, a processor with six cores and twelve threads like the i7-10750H, 16 GB of memory and a screen of 1920 by 1080. On it, Low with the shader off is playable: at least 60 frames a second on average, and a 1% low (the average of the slowest hundredth of frames) of at least 30, while walking, riding or flying over new land, alone and on a server. The first minute after a world opens, a server is joined or a waystone is taken is loading and does not count.
+- Above Low the pack is never cut back so that weaker machines can run it. A reasonably high-end PC should run High at about 90 fps, as a guide and not a gate, and what a player finds too slow is fixed when it comes up.
+- `python3 scripts/client.py bench --minimum` measures Low and Medium on a development PC held to the minimum machine's speed, and the play record (R3) shows every player's frame rate on a server.
 - There are two modes: no shader, or Complementary Reimagined with Euphoria Patches, the one shader the pack ships and its looks are judged under. It works with Distant Horizons, scales down to weaker PCs through its profiles, is the most used and best kept of its kind, and looks the way the pack wants. Bliss, Photon, Solas and MakeUp Ultra Fast leave the pack.
-- Video Settings, Sodium's screen, opens on a Wayfarer page, first in its list above Sodium's own, with a Graphics group: a Preset that steps through four settings, High on first launch, and Shaders on or off. Each step sets the shader's profile, the draw distance and Distant Horizons' far view together; changing any of them by hand makes the Preset read Custom, and pressing it again picks a step and sets them all. The Wayfarer mod sets Iris's profile, Distant Horizons and the video settings itself. The page is Sodium's own look, the one screen outside the stamp.
+- Both modes show the same night. Without a shader More Darkness darkens it: a moonless night is black beyond the torch, a full moon shows the land in pale grey, caves are black, and the eyes adapt to the dark over a few seconds. With the shader on, the Wayfarer mod switches More Darkness off, since the shader lights the world itself and never reads the light that More Darkness darkens, and the shader's own settings (`generator/shader.toml`: the moon's phase on its light, its light at night, its light in caves and colours fading at night) are tuned until a new moon, a full moon, a cave and a torch-lit room look as bright as without it.
+- Video Settings, Sodium's screen, opens on a Wayfarer page, first in its list above Sodium's own, with a Graphics group: a Preset that steps through four settings, High on first launch, and Shaders on or off. Each step sets the shader's profile, the draw distance, how far around the player a world of their own keeps running (the simulation distance) and Distant Horizons' far view with its detail together; changing any of them by hand makes the Preset read Custom, and pressing it again picks a step and sets them all. The Wayfarer mod sets Iris's profile, Distant Horizons and the video settings itself. The page is Sodium's own look, the one screen outside the stamp.
 
   | | Low | Medium | High | Ultra |
   |---|---|---|---|---|
   | Shader profile | Low | Medium | High | Ultra |
-  | Draw distance | 8 chunks | 10 | 12 | 16 |
-  | Far view | Off | 128 chunks, about 2 km | 256, about 4 km | 512, about 8 km |
+  | Draw distance | 6 chunks | 10 | 12 | 16 |
+  | Simulation distance | 6 chunks | 10 | 12 | 12 |
+  | Far view | 128 chunks, about 2 km | 128, about 2 km | 256, about 4 km | 512, about 8 km |
+  | Far view's detail | Low | Medium | Medium | High |
   | Far view's share of the processor | Least | Low | Balanced | Balanced |
 
   ```text
@@ -27,8 +32,9 @@ Unreleased and in development: nothing is published yet, and a world made with o
     Shaders   [x]
   ```
 
-**Why:** The pack is made for the friends who play it, on the machines they have, and limiting it for weaker ones would cost the atmosphere it is built for. Low is the exception: on a gaming laptop (RTX 2070, i7-10750H) the far view alone took the game from 130 frames a second to 20 to 37, so the lowest step turns it off. One shader means every look is judged once, and one Preset with four steps lets a newcomer pick how hard their machine works without knowing Iris, Distant Horizons and a dozen video settings. It lives where players already look for graphics, in Sodium's Video Settings, and is named Preset because Sodium already has a Graphics option (Fast or Fancy).
+- The pack asks the launcher for 8 GB of memory (`balance.toml` `[heap]`), which Prism Launcher and the CurseForge app give a fresh import, up to nine tenths of what the machine has.
 
+**Why:** The pack is made for the friends who play it, on the machines they have, and the far view is what makes its world feel vast, so every step keeps it, Low included. A floor needs a named machine to stand on, and the weakest one a friend played on is the minimum. Playable is judged on the average and the slowest hundredth of frames, since one hitch while new land loads is felt as a stutter and not as an unplayable game. On the minimum machine three things decided the floor, measured with `bench --minimum`: More Darkness read the screen's brightness back from the graphics card every frame and made the processor wait for everything drawn before it, which on a server took Low with the far view from 254 frames a second to 84, so the Wayfarer mod has it read the brightness a few frames later without waiting; Reactive Music's player checked for its next song without pause and kept a third of a core busy, so it rests between checks; and alone, the land generated and kept running around the player costs the processor most, so Low draws and runs 6 chunks and the far view covers what lies beyond. A team in which one friend plays with the shader and another without sees one night, so the dark stays a danger for both and the fire a refuge. One shader means every look is judged once, and one Preset with four steps lets a newcomer pick how hard their machine works without knowing Iris, Distant Horizons and a dozen video settings. It lives where players already look for graphics, in Sodium's Video Settings, and is named Preset because Sodium already has a Graphics option (Fast or Fancy). Prism gives an imported pack 4 GB unless the pack asks for more, too little for this pack and its far view.
 
 ### R3 Blind players and the play record
 

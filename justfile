@@ -14,7 +14,7 @@ build:
 clean:
     rm --recursive --force build dist mod/build mod/run
 
-[doc("Record the exaroton server's console, status, memory, tick time, log and world sizes into exaroton/ until interrupted")]
+[doc("Record the exaroton server's console, status, memory, tick time, log, world sizes and the play record with each player's frame rate into exaroton/ until interrupted")]
 exaroton server="":
     python3 scripts/exaroton.py {{ server }}
 
@@ -43,7 +43,7 @@ generate:
 compile:
     cd mod && ./gradlew --console=plain --quiet compileJava compileDevJava processResources processDevResources
 
-[doc("Run the dev server in the foreground: the whole pack with the Wayfarer mod's dev code, in build/devserver; `just devserver lean` loads only the Wayfarer mod and what it needs, in a world of its own")]
+[doc("Run the dev server in the foreground: the whole pack but Distant Horizons and SeedGen, with the Wayfarer mod's dev code, in build/devserver; `just devserver lean` loads only the Wayfarer mod and what it needs, and `just devserver far` adds Distant Horizons and SeedGen, each in a world of its own")]
 devserver mode="full":
     [ -n "${WAYFARER_DRIVEN:-}" ] || python3 scripts/server.py stop
     python3 scripts/instance.py devserver build/devserver --mode {{ mode }}
@@ -68,7 +68,7 @@ pack: build
     cp {{ jar }} build/pack/mods/
     (cd build/pack && packwiz refresh && packwiz curseforge export --yes --output "../../dist/Wayfarer-{{ packVersion }}.zip")
     magick mod/src/generated/resources/assets/wayfarer/textures/item/ember_lit.png -filter point -resize 1600% build/icon.png
-    python3 -c 'import sys, zipfile; zipfile.ZipFile(sys.argv[1], "a").write(sys.argv[2], "icon.png")' "dist/Wayfarer-{{ packVersion }}.zip" build/icon.png
+    python3 scripts/export.py "dist/Wayfarer-{{ packVersion }}.zip" build/icon.png
     python3 scripts/instance.py server build/server {{ jar }}
     python3 -c 'import shutil, sys; shutil.make_archive(sys.argv[1], "zip", sys.argv[2])' "dist/Wayfarer-{{ packVersion }}-server" build/server
 
@@ -129,6 +129,7 @@ test: build
     booted=$?
     wait "$tests"
     tested=$?
+    grep --only-matching "faces: .*" build/gametest.log
     if ! grep --extended-regexp --only-matching "All [0-9]+ required tests passed" build/gametest.log; then
         tested=1
         grep --extended-regexp --only-matching "[0-9]+ required tests? failed.*|Failed to start the minecraft server" build/gametest.log

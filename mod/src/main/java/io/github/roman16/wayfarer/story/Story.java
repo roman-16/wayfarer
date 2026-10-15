@@ -7,6 +7,7 @@ import io.github.roman16.wayfarer.Bundled;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -19,7 +20,7 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
     private static final Set<String> HALL_KINDS = Set.of("shard", "vision", "worm");
 
     public record Person(String id, String name, @Nullable String unnamed, ChatFormatting color, List<String> mornings, List<String> remarks, boolean voice,
-            @Nullable String people, List<String> cold, List<String> welcomes, Map<String, String> renamed) {}
+            @Nullable String people, List<String> cold, List<String> welcomes, Map<String, String> renamed, Map<String, List<String>> acts, List<String> shouts) {}
 
     public record Line(@Nullable String by, String text, List<String> names, @Nullable String sound, @Nullable String music, boolean pause,
             @Nullable String vanishes, @Nullable ResourceLocation left, @Nullable String when) {
@@ -37,7 +38,8 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
     }
 
     public record Item(@Nullable ResourceLocation id, @Nullable ResourceLocation tag, int count, @Nullable String name, @Nullable String book, boolean own,
-            @Nullable ResourceLocation potion, @Nullable String tooltip, @Nullable ResourceLocation instrument, @Nullable String dyed, @Nullable String mark, @Nullable String map) {}
+            @Nullable ResourceLocation potion, @Nullable String tooltip, @Nullable ResourceLocation instrument, @Nullable String dyed, @Nullable String mark, @Nullable String map,
+            @Nullable String tent) {}
 
     public record Reward(String key, String title, String text, String claimed, List<Item> items) {}
 
@@ -112,6 +114,12 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
         return STORY.get();
     }
 
+    public List<String> places() {
+        return quests.stream().flatMap(quest -> quest.steps().stream())
+                .flatMap(step -> Stream.of("place", "at").filter(step.spec()::has).map(step::text))
+                .filter(name -> !name.equals(Caravan.NAME)).distinct().toList();
+    }
+
     private static Story load(JsonObject json) {
         Map<String, Person> people = new LinkedHashMap<>();
         json.getAsJsonObject("people").entrySet().forEach(entry -> {
@@ -119,7 +127,8 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
             people.put(entry.getKey(), new Person(entry.getKey(), person.get("name").getAsString(),
                     person.has("unnamed") ? person.get("unnamed").getAsString() : null, ChatFormatting.getByName(person.get("color").getAsString()),
                     strings(person, "mornings"), strings(person, "remarks"), person.has("voice") && person.get("voice").getAsBoolean(),
-                    person.has("people") ? person.get("people").getAsString() : null, strings(person, "cold"), strings(person, "welcomes"), names(person)));
+                    person.has("people") ? person.get("people").getAsString() : null, strings(person, "cold"), strings(person, "welcomes"), names(person),
+                    acts(person), strings(person, "shouts")));
         });
         List<Quest> quests = json.getAsJsonArray("quests").asList().stream().map(JsonElement::getAsJsonObject).map(Story::quest).toList();
         Map<String, Memory> memories = new LinkedHashMap<>();
@@ -208,11 +217,19 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
                 flag(item, "own"), item.has("potion") ? ResourceLocation.parse(item.get("potion").getAsString()) : null,
                 item.has("tooltip") ? item.get("tooltip").getAsString() : null, item.has("instrument") ? ResourceLocation.parse(item.get("instrument").getAsString()) : null,
                 item.has("dyed") ? item.get("dyed").getAsString() : null, item.has("mark") ? item.get("mark").getAsString() : null,
-                item.has("map") ? item.get("map").getAsString() : null);
+                item.has("map") ? item.get("map").getAsString() : null, item.has("tent") ? item.get("tent").getAsString() : null);
     }
 
     private static <T> List<T> list(JsonObject owner, String key, Function<JsonObject, T> read) {
         return owner.has(key) ? owner.getAsJsonArray(key).asList().stream().map(JsonElement::getAsJsonObject).map(read).toList() : List.of();
+    }
+
+    private static Map<String, List<String>> acts(JsonObject person) {
+        Map<String, List<String>> acts = new LinkedHashMap<>();
+        if (person.has("acts")) {
+            person.getAsJsonObject("acts").keySet().forEach(act -> acts.put(act, strings(person.getAsJsonObject("acts"), act)));
+        }
+        return Map.copyOf(acts);
     }
 
     private static List<String> strings(JsonObject owner, String key) {

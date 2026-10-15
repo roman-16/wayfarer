@@ -11,6 +11,7 @@ from pathlib import Path
 import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
+BALANCE = ROOT / "balance.toml"
 PACK = ROOT / "pack"
 DEFAULT_OPTIONS = PACK / "config/defaultoptions/options.txt"
 DEFAULT_KEYS = PACK / "config/defaultoptions/keybindings.txt"
@@ -70,6 +71,7 @@ def source(meta):
 
 
 def link(source, target):
+    Path(target).unlink(missing_ok=True)
     try:
         os.link(source, target)
     except OSError:
@@ -113,7 +115,7 @@ def neoforge(target):
     shutil.copytree(installed, target, copy_function=link, dirs_exist_ok=True)
 
 
-def options(target):
+def options(target, mode):
     path = target / "options.txt"
     lines = path.read_text().splitlines() if path.exists() else []
     shipped = {
@@ -121,7 +123,9 @@ def options(target):
         for source in (DEFAULT_OPTIONS, DEFAULT_KEYS)
         for key, value in (line.split(":", 1) for line in source.read_text().splitlines() if ":" in line)
     }
-    overrides = shipped | CLIENT_OPTIONS
+    overrides = shipped | {
+        key: value for key, value in CLIENT_OPTIONS.items() if not (mode == "shipped" and key == "fullscreen")
+    }
     kept = [line for line in lines if line.split(":", 1)[0] not in overrides]
     forced = [f"{key}:{value}" for key, value in sorted(overrides.items())]
     path.write_text("\n".join(kept + forced) + "\n")
@@ -184,7 +188,7 @@ def client(target, mode):
     if mode == "shipped":
         for options_file in (PACK / "shaderpacks").glob("*.txt"):
             shutil.copyfile(options_file, target / "shaderpacks" / options_file.name)
-    options(target)
+    options(target, mode)
 
 
 def fresh(target, world, mode):
@@ -213,25 +217,25 @@ def server(target, jar):
     settings(target)
     properties(target, {})
     (target / "user_jvm_args.txt").unlink()
-    (target / "user_jvm_args.txt").write_text("-Xms4G\n-Xmx8G\n")
+    (target / "user_jvm_args.txt").write_text(f"-Xmx{tomllib.loads(BALANCE.read_text())['heap']['gigabytes']}G\n")
 
 
-def dev_server(target, lean):
+def dev_server(target, mode):
     shutil.rmtree(target / "mods", ignore_errors=True)
     (target / "mods").mkdir(parents=True)
-    if not lean:
-        files(target, "server", {"mods"}, FAR_VIEW)
+    if mode != "lean":
+        files(target, "server", {"mods"}, frozenset() if mode == "far" else FAR_VIEW)
     settings(target)
     voice = target / "config/voicechat/voicechat-server.properties"
     voice.parent.mkdir(parents=True, exist_ok=True)
     voice.write_text(f"port={DEV_SERVER_PORTS['voice']}\n")
-    world = {"level-name": "world-lean"} if lean else {}
+    world = {"level-name": f"world-{mode}"} if mode in ("far", "lean") else {}
     if os.environ.get("WAYFARER_SEED"):
         world["level-seed"] = os.environ["WAYFARER_SEED"]
     state = os.environ.get("WAYFARER_STATE")
     if state:
         seed = tomllib.loads(STATES.read_text())["seed"]
-        world = {"level-name": "state-lean" if lean else "state", "level-seed": seed}
+        world = {"level-name": "state-lean" if mode == "lean" else "state", "level-seed": seed}
     properties(target, {"online-mode": "false", "server-port": DEV_SERVER_PORTS["server"]} | world)
     (target / "eula.txt").write_text("eula=true\n")
 
@@ -248,7 +252,7 @@ def main():
         (
             "devserver",
             "mods, configs and properties for the dev server, which brings the Wayfarer mod itself; keeps the world",
-            ["full", "lean"],
+            ["far", "full", "lean"],
         ),
     ):
         side_parser = sides.add_parser(side, help=text)
@@ -273,7 +277,7 @@ def main():
     if arguments.side == "client":
         client(arguments.target.resolve(), arguments.mode)
     elif arguments.side == "devserver":
-        dev_server(arguments.target.resolve(), arguments.mode == "lean")
+        dev_server(arguments.target.resolve(), arguments.mode)
     elif arguments.side == "fresh":
         fresh(arguments.target.resolve(), arguments.world, arguments.mode)
     else:

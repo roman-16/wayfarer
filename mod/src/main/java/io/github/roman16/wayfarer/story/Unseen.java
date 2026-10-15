@@ -26,6 +26,9 @@ final class Unseen {
     private static final int SIGHT_NEAR = 4;
     private static final int SIGHT_OWN = 16;
     private static final int SIGHT_STEP = 8;
+    private static final int WARM_FROM = 256;
+    private static final int WARM_STEP = 64;
+    private static final float SNOWING = 0.15f;
 
     private Unseen() {}
 
@@ -76,8 +79,20 @@ final class Unseen {
         return false;
     }
 
+    static boolean warm(Heights heights, BlockPos from, Vec3 way, int length) {
+        for (int along = WARM_FROM; along <= length; along += WARM_STEP) {
+            int x = (int) Math.round(from.getX() + way.x * along);
+            int z = (int) Math.round(from.getZ() + way.z * along);
+            int y = heights.surface(x, z);
+            if (snowy(heights.biome(x, y, z), new BlockPos(x, y, z))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     static boolean snowy(Holder<Biome> biome, BlockPos at) {
-        return biome.is(Tags.Biomes.IS_SNOWY) || biome.is(Tags.Biomes.IS_ICY) || biome.value().coldEnoughToSnow(at);
+        return biome.is(Tags.Biomes.IS_SNOWY) || biome.is(Tags.Biomes.IS_ICY) || biome.value().getBaseTemperature() < SNOWING || biome.value().coldEnoughToSnow(at);
     }
 
     static final class Heights {

@@ -1,25 +1,43 @@
 package io.github.roman16.wayfarer.mixin;
 
-import com.google.common.collect.ImmutableMultiset;
-import com.google.common.collect.Multiset;
-import cpw.mods.inventorysorter.ItemStackHolder;
 import io.github.roman16.wayfarer.Sorting;
-import java.util.Comparator;
+import java.lang.reflect.Method;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Coerce;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Pseudo
-@Mixin(targets = "cpw.mods.inventorysorter.SortingHandler", remap = false)
+@Mixin(targets = "cpw.mods.inventorysorter.InventoryHandler$ItemStackComparator", remap = false)
 abstract class InventorySorterOrderMixin {
-    @Redirect(method = "compactInventory", at = @At(value = "INVOKE",
-            target = "Lcom/google/common/collect/Multisets;copyHighestCountFirst(Lcom/google/common/collect/Multiset;)Lcom/google/common/collect/ImmutableMultiset;"))
-    private ImmutableMultiset<ItemStackHolder> wayfarer$order(Multiset<ItemStackHolder> counts) {
-        ImmutableMultiset.Builder<ItemStackHolder> ordered = ImmutableMultiset.builder();
-        counts.entrySet().stream()
-                .sorted(Comparator.comparing(entry -> entry.getElement().is(), Sorting.ORDER))
-                .forEach(entry -> ordered.addCopies(entry.getElement(), entry.getCount()));
-        return ordered.build();
+    @Unique
+    private static Method wayfarer$stack;
+
+    @Inject(method = "compare(Lcpw/mods/inventorysorter/ItemStackHolder;Lcpw/mods/inventorysorter/ItemStackHolder;)I", at = @At("HEAD"), cancellable = true)
+    private void wayfarer$order(@Coerce Object first, @Coerce Object second, CallbackInfoReturnable<Integer> info) {
+        ItemStack one = wayfarer$stack(first);
+        ItemStack other = wayfarer$stack(second);
+        int order = Sorting.ORDER.compare(one, other);
+        if (order != 0) {
+            info.setReturnValue(order);
+        } else if (ItemStack.isSameItemSameComponents(one, other)) {
+            info.setReturnValue(0);
+        }
+    }
+
+    @Unique
+    private static ItemStack wayfarer$stack(Object holder) {
+        try {
+            if (wayfarer$stack == null) {
+                wayfarer$stack = holder.getClass().getMethod("is");
+            }
+            return (ItemStack) wayfarer$stack.invoke(holder);
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Inventory Sorter's ItemStackHolder has no stack", exception);
+        }
     }
 }

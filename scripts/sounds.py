@@ -66,7 +66,7 @@ def shaped(source, spec, work):
         filters.append(f"afade=t=in:d={cut['fade_in']}")
     if "fade_out" in cut:
         filters.append(f"afade=t=out:st={length - cut['fade_out']}:d={cut['fade_out']}")
-    channels = ["-ac", "1"] if "reach" in spec else []
+    channels = ["-ac", "1"] if "reach" in spec or "replaces" in spec else []
     out = work / "shaped.wav"
     ffmpeg("-i", source, "-af", ",".join(filters), *channels, "-ar", SAMPLE_RATE, out)
     return out

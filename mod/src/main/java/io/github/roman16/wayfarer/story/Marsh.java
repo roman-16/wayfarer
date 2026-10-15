@@ -94,10 +94,11 @@ final class Marsh {
         }
         ServerLevel level = Engine.overworld(server);
         Balance.Marsh balance = Balance.get().marsh();
-        Home.Aim aim = Home.aim(Caravan.last(server), Caravan.way(server), balance.searchBlocks());
+        Unseen.Heights heights = new Unseen.Heights(level);
+        int ford = Balance.get().ford().aheadBlocks();
+        Home.Aim aim = Home.aim(Caravan.last(server), Caravan.way(server), balance.searchBlocks(), (origin, bent) -> Unseen.warm(heights, origin, bent, ford));
         BlockPos from = aim.from();
         Vec3 way = aim.way();
-        Unseen.Heights heights = new Unseen.Heights(level);
         Optional<BlockPos> swamp = swamp(heights, level.getChunkSource().getGenerator().getSeaLevel(), from, way, balance);
         BlockPos site = swamp.orElseGet(() -> land(heights, from, way, balance));
         progress.place(SITE, site);
@@ -107,7 +108,8 @@ final class Marsh {
             progress.place(BOG, site);
         }
         progress.setDirty();
-        LOGGER.info("the Marsh Mothers' hall lies under {}{}", site, swamp.isPresent() ? ", in a swamp" : ", in a bog the quest makes");
+        LOGGER.info("the Marsh Mothers' hall lies under {}{}, the way turned {} degrees from the caravan's", site, swamp.isPresent() ? ", in a swamp" : ", in a bog the quest makes",
+                Home.degrees(Caravan.way(server), way));
     }
 
     private static Optional<BlockPos> swamp(Unseen.Heights heights, int sea, BlockPos from, Vec3 way, Balance.Marsh balance) {
@@ -180,12 +182,41 @@ final class Marsh {
     }
 
     static void tick(MinecraftServer server) {
+        Progress.of(server).place(SITE).filter(site -> near(server, site)).ifPresent(site -> raise(server));
+        watch(server);
+    }
+
+    static void raise(MinecraftServer server) {
         Progress progress = Progress.of(server);
         Optional<BlockPos> site = progress.place(SITE);
         if (site.isPresent() && progress.place(ORIGIN).isEmpty() && loaded(Engine.overworld(server), site.get())) {
             place(server, site.get());
         }
-        watch(server);
+    }
+
+    private static boolean near(MinecraftServer server, BlockPos site) {
+        int near = Balance.get().marsh().nearBlocks();
+        return Engine.players(server).stream().anyMatch(player -> player.level().dimension() == Level.OVERWORLD
+                && Steps.horizontal(player.blockPosition(), site) <= (double) near * near);
+    }
+
+    static void unbuild(MinecraftServer server) {
+        Progress.of(server).places.remove(ORIGIN);
+        Progress.of(server).setDirty();
+    }
+
+    static void forget(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        List.of(SITE, BOG, ORIGIN, HALL, CELLAR, NAME, "seat_" + FISHER).forEach(progress.places::remove);
+        for (String person : PEOPLE) {
+            progress.places.remove("seat_" + person);
+            progress.yaws.remove("seat_" + person);
+        }
+        progress.yaws.remove(TURN);
+        progress.wards.remove(NAME);
+        progress.witnesses.remove(HALL);
+        progress.witnesses.remove(NAME);
+        progress.setDirty();
     }
 
     private static boolean loaded(ServerLevel level, BlockPos site) {
@@ -223,6 +254,8 @@ final class Marsh {
         progress.place(ORIGIN, hall);
         record(server, level, hall, settings, turn);
         level.getChunkSource().removeRegionTicket(TICKET, new ChunkPos(site), LOAD_RADIUS, new ChunkPos(site));
+        Standing.keep(server, HALL);
+        Standing.keep(server, NAME);
         LOGGER.info("the Marsh Mothers' hall stands at {}, its pool at {}, turned {}", progress.place(HALL).orElseThrow(), world(server, "pool"), turn);
         Journal.syncAll(server);
     }

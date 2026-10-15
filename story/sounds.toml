@@ -239,6 +239,17 @@ licence = "CC0 1.0"
 page = "https://freesound.org/people/valeulloam97/sounds/541389"
 slider = "master"
 
+[effects.team_mark]
+credit = "Kalimba C3, by dvdfu"
+cut = { fade_out = 0.25 }
+downloaded = "14.10.2026"
+gain = -2
+kind = "frequent"
+licence = "CC0 1.0"
+page = "https://freesound.org/people/dvdfu/sounds/536549"
+replaces = "pingwheel:ping"
+slider = "master"
+
 [effects.tent_packed]
 credit = "Canvas Tent 1, by kevinkace"
 cut = { fade_out = 0.02, start = 0.02 }

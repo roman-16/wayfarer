@@ -118,6 +118,11 @@ final class Shipyard {
         searching = null;
     }
 
+    static void unbuild(MinecraftServer server, String name) {
+        Progress.of(server).places.remove(name.equals(WRECK) ? WRECK_ORIGIN : YARD_ORIGIN);
+        Progress.of(server).setDirty();
+    }
+
     static boolean ready(MinecraftServer server, String name) {
         Progress progress = Progress.of(server);
         return switch (name) {
@@ -385,6 +390,7 @@ final class Shipyard {
         progress.ward(NAME, level.getStructureManager().getOrCreate(YARD).getBoundingBox(settings, origin));
         progress.setDirty();
         release(level, site);
+        Standing.keep(server, NAME);
         LOGGER.info("the shipyard stands at {}, its shore at {}, turned {}", origin, shore, turn);
         Journal.syncAll(server);
     }
@@ -483,6 +489,7 @@ final class Shipyard {
         progress.ward(WRECK, level.getStructureManager().getOrCreate(WRECKAGE).getBoundingBox(settings, origin));
         progress.setDirty();
         release(level, site);
+        Standing.keep(server, WRECK);
         LOGGER.info("the wreck lies at {}, turned {}", origin, turn);
         Journal.syncAll(server);
     }

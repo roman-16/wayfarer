@@ -35,6 +35,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -133,8 +134,6 @@ public final class StoryDev {
                                 .executes(context -> gift(context.getSource(), StringArgumentType.getString(context, "gift")))))
                         .then(Commands.literal("choose").then(Commands.argument("choice", StringArgumentType.greedyString())
                                 .executes(context -> choose(context.getSource(), StringArgumentType.getString(context, "choice")))))
-                        .then(Commands.literal("done").then(Commands.argument("quest", StringArgumentType.word())
-                                .executes(context -> done(context.getSource(), StringArgumentType.getString(context, "quest")))))
                         .then(Commands.literal("gear").then(Commands.argument("row", StringArgumentType.word())
                                 .executes(context -> gear(context.getSource(), StringArgumentType.getString(context, "row")))))
                         .then(Commands.literal("said").then(Commands.argument("line", StringArgumentType.word())
@@ -254,18 +253,6 @@ public final class StoryDev {
         progress.setDirty();
         Journal.syncAll(source.getServer());
         source.sendSuccess(() -> Component.literal("story: " + choice + " stands as " + answer), false);
-        return 1;
-    }
-
-    private static int done(CommandSourceStack source, String quest) {
-        Optional<Engine.Active> active = Engine.active(source.getServer()).stream().filter(found -> found.quest().id().equals(quest)).findFirst();
-        if (active.isEmpty()) {
-            source.sendFailure(Component.literal("story failed: " + quest + " has no step under way"));
-            return 0;
-        }
-        String step = active.get().step().id();
-        Engine.complete(source.getServer(), active.get());
-        source.sendSuccess(() -> Component.literal("story: " + quest + "/" + step + " is done"), false);
         return 1;
     }
 
@@ -694,7 +681,7 @@ public final class StoryDev {
             case FirstCamp.NAME -> FirstCamp.tick(server);
             case FirstVillage.NAME, FirstVillage.STONE -> FirstVillage.tick(server);
             case Ford.NAME -> Ford.tick(server);
-            case Marsh.NAME, Marsh.HALL, Marsh.CELLAR -> Marsh.tick(server);
+            case Marsh.NAME, Marsh.HALL, Marsh.CELLAR -> Marsh.raise(server);
             case Frost.NAME, Frost.TRACKS, Frost.HALL, Frost.STONE, Frost.LAKE, Frost.LAKE_STONE -> Frost.tick(server);
             case Mine.NAME, Mine.DEEP, Mine.CART -> Mine.tick(server);
             case ReadingHouse.NAME -> ReadingHouse.tick(server);
@@ -796,10 +783,14 @@ public final class StoryDev {
         return level.clip(new ClipContext(eyes, face, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getType() == HitResult.Type.MISS;
     }
 
+    private static boolean stripped(BlockState state) {
+        return BuiltInRegistries.BLOCK.getKey(state.getBlock()).getPath().startsWith("stripped_");
+    }
+
     private static boolean standing(ServerLevel level, BlockPos feet) {
         BlockPos floor = feet.below();
         BlockState under = level.getBlockState(floor);
-        return under.isFaceSturdy(level, floor, Direction.UP) && !under.is(BlockTags.LOGS) && !under.is(BlockTags.LEAVES)
+        return under.isFaceSturdy(level, floor, Direction.UP) && !(under.is(BlockTags.LOGS) && !stripped(under)) && !under.is(BlockTags.LEAVES)
                 && !under.is(Blocks.CAMPFIRE) && level.getFluidState(floor).isEmpty()
                 && level.getBlockState(feet).getCollisionShape(level, feet).isEmpty() && level.getFluidState(feet).isEmpty()
                 && level.getBlockState(feet.above()).getCollisionShape(level, feet.above()).isEmpty() && level.getFluidState(feet.above()).isEmpty();

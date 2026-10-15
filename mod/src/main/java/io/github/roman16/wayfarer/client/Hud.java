@@ -177,7 +177,7 @@ public final class Hud {
         }
         return switch (reading.mode()) {
             case BARE -> null;
-            case AIR, COLD, DIM, LOST, HIDDEN -> new Urgent(List.of(new Run(Component.translatable(caption(reading.mode())), Stamp.LABEL)), -1, null);
+            case AIR, COLD, DIM, HIDDEN, LOST, RISING -> new Urgent(List.of(new Run(Component.translatable(caption(reading.mode())), Stamp.LABEL)), -1, null);
             case FAR -> new Urgent(List.of(new Run(Component.translatable("wayfarer.compass.ember"), Stamp.LABEL), new Run(Component.literal(" · "), Stamp.DIM),
                     new Run(Component.translatable("wayfarer.compass." + HEAT[reading.heat() + 2]), heatColor(reading.heat()))), -1, null);
         };
@@ -202,6 +202,7 @@ public final class Hud {
             case AIR -> "wayfarer.compass.air";
             case COLD -> "wayfarer.compass.cold";
             case DIM -> "wayfarer.compass.dim";
+            case RISING -> "wayfarer.compass.rising";
             default -> "wayfarer.compass.lost";
         };
     }

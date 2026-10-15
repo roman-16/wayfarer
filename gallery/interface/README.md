@@ -66,6 +66,14 @@
 
 ![JourneyMap's full map in its Victorian theme](mods/map.png)
 
+**A spot marked with Ping Wheel's side button, its distance under the mark**, in the showroom
+
+![A spot marked with Ping Wheel's side button, its distance under the mark](mods/ping-mark.jpg)
+
+**The marked spot off to the right, the stamp's arrow at the screen's edge pointing to it**, in the showroom
+
+![The marked spot off to the right, the stamp's arrow at the screen's edge pointing to it](mods/ping-edge.jpg)
+
 ## Vanilla
 
 **A book at a lectern, in the stamp's leather and parchment**, in the showroom

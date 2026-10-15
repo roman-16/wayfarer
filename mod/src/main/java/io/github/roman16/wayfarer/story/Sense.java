@@ -31,6 +31,7 @@ public final class Sense {
     public static final String KEY = "key.wayfarer.ember_sense";
     public static final int AMBER = 0xFFB040;
     public static final int TRUE = 0xDCE6F0;
+    public static final int SEEN = 0xF0F0F0;
     private static final String CLUES_GLOW = "clues_glow";
     private static final String TEAM = Wayfarer.MODID + "_sense";
     private static final String TRAIL_SIGHT = "trail_sight";
@@ -76,8 +77,7 @@ public final class Sense {
     private static void glow(ServerPlayer player, boolean held) {
         Balance.Sense sense = Balance.get().sense();
         List<Entity> near = player.serverLevel().getEntities((Entity) null, new AABB(player.blockPosition()).inflate(sense.reachBlocks()),
-                entity -> entity.getTags().stream().anyMatch(tag -> tag.startsWith(Steps.CLUE)) && !entity.getTags().contains(Steps.CLUE_BOX)
-                        && !Steps.hidden(player.server, entity));
+                entity -> !entity.getTags().contains(Steps.CLUE_BOX) && (entity.getTags().contains(Clues.SEEN) || Steps.lookable(player.server, entity)));
         near.forEach(entity -> glow(player, entity, true));
         if (held && !near.isEmpty()) {
             Sounds.play(player, CLUES_GLOW);
@@ -133,15 +133,6 @@ public final class Sense {
         team.setColor(ChatFormatting.GOLD);
         glowing.forEach(entity -> team.getPlayers().add(entity.getStringUUID()));
         return team;
-    }
-
-    static void unglow(ServerLevel level, Entity entity) {
-        sensing.forEach((uuid, held) -> {
-            ServerPlayer player = level.getServer().getPlayerList().getPlayer(uuid);
-            if (player != null && held.glowing().contains(entity)) {
-                glow(player, entity, false);
-            }
-        });
     }
 
     @SuppressWarnings("unchecked")

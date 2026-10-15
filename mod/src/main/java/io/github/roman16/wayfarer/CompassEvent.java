@@ -10,6 +10,7 @@ public final class CompassEvent extends Event {
     private boolean shown;
     private boolean awake;
     private boolean named = true;
+    private boolean rising;
     private Compass.Aim aim;
 
     CompassEvent(ServerPlayer player, boolean shown, boolean awake, Compass.Aim aim, List<CompassPayload.Marker> markers) {
@@ -46,6 +47,14 @@ public final class CompassEvent extends Event {
 
     public void unnamed() {
         named = false;
+    }
+
+    public boolean rising() {
+        return rising;
+    }
+
+    public void rise() {
+        rising = true;
     }
 
     public Compass.Aim aim() {

@@ -117,7 +117,13 @@ final class FirstCamp {
         Clues.marker(level, world(server, "stake"), "stake");
         Clues.marker(level, world(server, "hearth"), "hearthstone");
         Clues.marker(level, world(server, "sack"), "sack");
+        Standing.keep(server, NAME);
         LOGGER.info("his first camp stands at {}, turned {}", origin, turn);
+    }
+
+    static void unbuild(MinecraftServer server) {
+        Progress.of(server).places.remove(ORIGIN);
+        Progress.of(server).setDirty();
     }
 
     static boolean built(MinecraftServer server) {

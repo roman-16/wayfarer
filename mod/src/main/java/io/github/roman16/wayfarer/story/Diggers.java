@@ -86,6 +86,14 @@ final class Diggers {
         build = null;
     }
 
+    static void unbuild(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        progress.places.remove(NAME);
+        progress.places.remove(HALL);
+        progress.setDirty();
+        begin(server);
+    }
+
     static void tick(MinecraftServer server) {
         if (build == null) {
             return;
@@ -225,10 +233,10 @@ final class Diggers {
         for (JsonElement mark : tunnels.getAsJsonArray("marks")) {
             track(level, tunnelsAt.offset(turned(settings, vector(mark.getAsJsonArray()))));
         }
-        progress.places.remove(SITE);
-        progress.yaws.remove(TURN);
         progress.setDirty();
         level.getChunkSource().removeRegionTicket(TICKET, build.ticket, build.radius, build.ticket);
+        Standing.keep(server, NAME);
+        Standing.keep(server, HALL);
         LOGGER.info("the Diggers' tunnels lie under {}, their hall at {}", door, progress.place(HALL).orElseThrow());
         build = null;
         Journal.syncAll(server);

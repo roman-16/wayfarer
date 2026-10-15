@@ -41,6 +41,7 @@ Sounds in the Wayfarer mod:
 - DSGNSrce Glass-metal Resonant Transition 13, by newlocknew. CC BY 4.0. https://freesound.org/people/newlocknew/sounds/711059
 - Fire Torch_Whoosh 2(medium speed).wav, by kev_durr. CC BY 4.0. https://freesound.org/people/kev_durr/sounds/426209
 - Tarea completa, by valeulloam97. CC0 1.0. https://freesound.org/people/valeulloam97/sounds/541389
+- Kalimba C3, by dvdfu. CC0 1.0. https://freesound.org/people/dvdfu/sounds/536549
 - Canvas Tent 1, by kevinkace. CC0 1.0. https://freesound.org/people/kevinkace/sounds/66773
 - Umbrella Close 3, by Geoff-Bremner-Audio. CC BY 4.0. https://freesound.org/people/Geoff-Bremner-Audio/sounds/790255
 - FIREPLACE, by leosalom. CC BY 3.0. https://freesound.org/people/leosalom/sounds/234288

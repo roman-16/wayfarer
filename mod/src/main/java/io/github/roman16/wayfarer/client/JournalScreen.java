@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
@@ -93,6 +94,7 @@ public final class JournalScreen extends Screen {
     private List<Row> rows = List.of();
     private List<ThingButton> things = List.of();
     private boolean dirty;
+    private boolean turningBack;
     private int acting;
     private int left;
     private int top;
@@ -119,11 +121,13 @@ public final class JournalScreen extends Screen {
         latest = view;
         Recap.remember(view);
         Gifts.remember(view);
+        Eyes.remember(view);
     }
 
     public static void forget() {
         latest = "{}";
         Gifts.forget();
+        Eyes.forget();
         MARKED.clear();
         firstPage();
     }
@@ -175,6 +179,7 @@ public final class JournalScreen extends Screen {
         DONE,
         FOLD,
         GEAR,
+        HEADING,
         LINES,
         QUEST,
         REWARD,
@@ -254,8 +259,14 @@ public final class JournalScreen extends Screen {
                 onClose();
             });
         }
-        if (chosen != null && chosen.kind() == Kind.CARAVAN) {
+        if (chosen != null && chosen.kind() == Kind.CARAVAN && !turningBack) {
             action("wayfarer.journal.head_in", () -> {
+                turningBack = true;
+                rebuildWidgets();
+            });
+        } else if (chosen != null && chosen.kind() == Kind.CARAVAN) {
+            action("wayfarer.journal.head_in.sure", () -> {
+                turningBack = false;
                 PacketDistributor.sendToServer(new Caravan.HeadIn());
                 onClose();
             });
@@ -348,8 +359,12 @@ public final class JournalScreen extends Screen {
     @Nullable
     private Entry chosen() {
         String key = CHOSEN_ENTRY.get(open);
-        return entries.stream().filter(entry -> entry.key().equals(key) && entry.kind() != Kind.FOLD).findFirst()
-                .or(() -> entries.stream().filter(entry -> entry.kind() != Kind.FOLD).findFirst()).orElse(null);
+        return entries.stream().filter(entry -> entry.key().equals(key) && selectable(entry)).findFirst()
+                .or(() -> entries.stream().filter(JournalScreen::selectable).findFirst()).orElse(null);
+    }
+
+    private static boolean selectable(Entry entry) {
+        return entry.kind() != Kind.FOLD && entry.kind() != Kind.HEADING;
     }
 
     private void see(Entry entry) {
@@ -364,13 +379,18 @@ public final class JournalScreen extends Screen {
         return view.has("tracked") ? view.get("tracked").getAsString() : "";
     }
 
+    private Optional<String> trackedTitle() {
+        return view.getAsJsonArray("quests").asList().stream().map(JsonElement::getAsJsonObject)
+                .filter(quest -> quest.get("id").getAsString().equals(tracked())).map(quest -> quest.get("title").getAsString()).findFirst();
+    }
+
     private List<Entry> entries(Tab tab) {
         List<Entry> found = new ArrayList<>();
         switch (tab) {
             case QUESTS -> quests(found);
-            case STORY -> lines(found, view.getAsJsonArray("story"), CHAPTER, false);
-            case PEOPLE -> lines(found, view.getAsJsonArray("people"), "person", false);
-            case WORDS -> lines(found, view.getAsJsonArray("words"), "word", true);
+            case STORY -> lines(found, view.getAsJsonArray("story").asList().reversed(), CHAPTER, false);
+            case PEOPLE -> lines(found, view.getAsJsonArray("people").asList(), "person", false);
+            case WORDS -> lines(found, view.getAsJsonArray("words").asList(), "word", true);
             case PAGES -> view.getAsJsonArray("pages").forEach(element -> {
                 JsonObject book = element.getAsJsonObject();
                 found.add(new Entry(Kind.BOOK, "page:" + book.get("key").getAsString(), Component.literal(book.get("title").getAsString()), INK, book));
@@ -407,16 +427,21 @@ public final class JournalScreen extends Screen {
         List<JsonObject> quests = new ArrayList<>();
         view.getAsJsonArray("quests").forEach(element -> quests.add(element.getAsJsonObject()));
         for (String kind : new String[] {"main", "side"}) {
+            List<Entry> road = new ArrayList<>();
             for (JsonObject quest : quests) {
                 if (!quest.get("done").getAsBoolean() && quest.get("kind").getAsString().equals(kind)) {
                     boolean tracked = quest.get("id").getAsString().equals(tracked());
                     String key = "quest:" + quest.get("id").getAsString() + ":" + Integer.toHexString(quest.get("objective").getAsString().hashCode());
-                    found.add(new Entry(Kind.QUEST, key, Component.literal(quest.get("title").getAsString()), tracked ? TITLE_INK : INK, quest));
+                    road.add(new Entry(Kind.QUEST, key, Component.literal(quest.get("title").getAsString()), tracked ? TITLE_INK : INK, quest));
                 }
             }
-        }
-        if (view.get("headIn").getAsBoolean()) {
-            found.add(new Entry(Kind.CARAVAN, "caravan", Component.translatable("wayfarer.caravan.title"), INK, new JsonObject()));
+            if (kind.equals("main") && view.get("headIn").getAsBoolean()) {
+                road.add(new Entry(Kind.CARAVAN, "caravan", Component.translatable("wayfarer.caravan.title"), INK, new JsonObject()));
+            }
+            if (!road.isEmpty()) {
+                found.add(new Entry(Kind.HEADING, "road:" + kind, Component.translatable("wayfarer.journal." + kind), QUIET_INK, new JsonObject()));
+                found.addAll(road);
+            }
         }
         List<Entry> done = new ArrayList<>();
         for (JsonObject quest : quests) {
@@ -438,7 +463,7 @@ public final class JournalScreen extends Screen {
         }
     }
 
-    private void lines(List<Entry> found, JsonArray list, String prefix, boolean words) {
+    private void lines(List<Entry> found, List<JsonElement> list, String prefix, boolean words) {
         for (JsonElement element : list) {
             JsonObject entry = element.getAsJsonObject();
             Component label = words ? Component.translatable("wayfarer.word." + entry.get("key").getAsString()) : Component.literal(entry.get("title").getAsString());
@@ -464,6 +489,8 @@ public final class JournalScreen extends Screen {
                 }
             }
             case QUEST, DONE -> {
+                add(lines, Component.literal(data.get("summary").getAsString()), 0, QUIET_INK, width);
+                lines.add(Line.BLANK);
                 for (JsonElement told : data.getAsJsonArray("story")) {
                     add(lines, Component.literal(told.getAsString()), 0, INK, width);
                     lines.add(Line.BLANK);
@@ -486,7 +513,8 @@ public final class JournalScreen extends Screen {
                     add(lines, Component.translatable("wayfarer.journal.dream_again.fire"), 0, QUIET_INK, width);
                 }
             }
-            case CARAVAN -> add(lines, Component.translatable("wayfarer.caravan.objective"), 0, INK, width);
+            case CARAVAN -> add(lines, trackedTitle().map(title -> Component.translatable("wayfarer.caravan.ask.waits", title))
+                    .orElse(Component.translatable("wayfarer.caravan.ask")), 0, INK, width);
             case LINES -> data.getAsJsonArray("lines").forEach(line -> {
                 add(lines, Component.literal(line.getAsString()), 0, INK, width);
                 lines.add(Line.BLANK);
@@ -509,7 +537,7 @@ public final class JournalScreen extends Screen {
                     add(lines, Component.literal(by + ": ").withColor(TITLE_INK).append(Component.literal(said.get("text").getAsString()).withColor(INK)), 0, INK, width);
                 }
             });
-            case FOLD -> {}
+            case FOLD, HEADING -> {}
         }
         return lines;
     }
@@ -585,8 +613,10 @@ public final class JournalScreen extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
         Stamp.title(graphics, font, Component.translatable(open.key).getString(), listLeft() + PAD, pagesTop() + PAD, TITLE_INK, false);
-        graphics.drawString(font, font.substrByWidth(Component.translatable(open.key + ".about"), pageWidth() - PAD * 2).getString(), listLeft() + PAD,
-                pagesTop() + PAD + Stamp.DISPLAY_HEIGHT + TITLE_GAP / 2, QUIET_INK, false);
+        List<FormattedCharSequence> about = about();
+        for (int line = 0; line < about.size(); line++) {
+            graphics.drawString(font, about.get(line), listLeft() + PAD, pagesTop() + PAD + Stamp.DISPLAY_HEIGHT + TITLE_GAP / 2 + line * LINE, QUIET_INK, false);
+        }
         Stamp.divider(graphics, listLeft() + PAD, listTop() - Stamp.DIVIDER_HEIGHT - 2, pageWidth() - PAD * 2, true);
         graphics.enableScissor(listLeft(), listTop(), listLeft() + pageWidth(), listBottom());
         rows.forEach(row -> row.render(graphics, mouseX, mouseY, partialTick));
@@ -597,7 +627,11 @@ public final class JournalScreen extends Screen {
     }
 
     private int listTop() {
-        return pagesTop() + PAD + Stamp.DISPLAY_HEIGHT + TITLE_GAP + LINE + Stamp.DIVIDER_HEIGHT + 2;
+        return pagesTop() + PAD + Stamp.DISPLAY_HEIGHT + TITLE_GAP + LINE * about().size() + Stamp.DIVIDER_HEIGHT + 2;
+    }
+
+    private List<FormattedCharSequence> about() {
+        return font.split(Component.translatable(open.key + ".about"), pageWidth() - PAD * 2);
     }
 
     private int entryTop(@Nullable Entry entry) {
@@ -703,7 +737,7 @@ public final class JournalScreen extends Screen {
 
     private static boolean news(Entry entry) {
         return switch (entry.kind()) {
-            case BOOK, DONE, FOLD, TALK -> false;
+            case BOOK, DONE, FOLD, HEADING, TALK -> false;
             case LINES -> !entry.key().startsWith(CHAPTER + ":");
             default -> true;
         };
@@ -711,7 +745,7 @@ public final class JournalScreen extends Screen {
 
     private void choose(Tab tab) {
         if (tab == Tab.MAP) {
-            MapLink.open();
+            MapLink.open(true);
             return;
         }
         if (tab == Tab.GEAR) {
@@ -727,11 +761,15 @@ public final class JournalScreen extends Screen {
     }
 
     private void choose(Entry entry) {
+        if (entry.kind() == Kind.HEADING) {
+            return;
+        }
         if (entry.kind() == Kind.FOLD) {
             doneUnfolded = !doneUnfolded;
         } else {
             CHOSEN_ENTRY.put(open, entry.key());
             pageScroll = 0;
+            turningBack = false;
         }
         dirty = true;
     }
@@ -907,7 +945,7 @@ public final class JournalScreen extends Screen {
 
         @Override
         protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-            if (chosen || isHoveredOrFocused()) {
+            if (chosen || isHoveredOrFocused() && entry.kind() != Kind.HEADING) {
                 graphics.fill(getX(), getY() - 1, getRight(), getBottom() - 1, chosen ? CHOSEN : POINTED);
             }
             if (unseen(entry)) {

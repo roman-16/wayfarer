@@ -50,7 +50,7 @@ public final class FrontDoor {
             button(event, ADVANCEMENTS).ifPresent(advancements -> replace(event, advancements, Component.translatable("wayfarer.journal"),
                     JournalScreen::open));
             button(event, STATISTICS).ifPresent(statistics -> {
-                Button map = replace(event, statistics, Component.translatable("wayfarer.journal.map"), () -> MapLink.open());
+                Button map = replace(event, statistics, Component.translatable("wayfarer.journal.map"), () -> MapLink.open(false));
                 map.active = ModList.get().isLoaded(JOURNEYMAP);
             });
             FEEDBACK.stream().map(key -> button(event, key)).flatMap(Optional::stream).findFirst().ifPresent(row -> {

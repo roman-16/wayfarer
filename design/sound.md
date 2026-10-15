@@ -64,6 +64,7 @@ Each quest adds its moments here as it is built, along the road's curve (`story.
 | A quest begun: the parchment banner under the compass (`interface.md`, I2) | Magic 3.Glitter+Arrival, a glittering arrival | gsb1039, CC0, [Freesound](https://freesound.org/people/gsb1039/sounds/430893) |
 | A quest done: the banner | Level Up/Mission Complete (Fantasy) | SilverIllusionist, CC BY 4.0, [Freesound](https://freesound.org/people/SilverIllusionist/sounds/665203) |
 | A task ticked in the panel (I1) | Tarea completa, its first second | valeulloam97, CC0, [Freesound](https://freesound.org/people/valeulloam97/sounds/541389) |
+| A friend marks a spot for the team (Ping Wheel's mark), from the mark's direction, in place of Ping Wheel's digital chime | Kalimba C3, one warm pluck, 2 dB under the other frequent sounds | dvdfu, CC0, [Freesound](https://freesound.org/people/dvdfu/sounds/536549) |
 | A new person, word or page in the journal: the gold dot on its ribbon (I3) | Pencil, Writing, Close, A, cut to 4 s and eased out | InspectorJ, CC BY 4.0, [Freesound](https://freesound.org/people/InspectorJ/sounds/398271) |
 | The journal opened, a ribbon or an entry chosen | Page Turn, a page flip | qubodup, CC0, [Freesound](https://freesound.org/people/qubodup/sounds/442857) |
 | An answer chosen in a conversation (I4) | aturax_leatherBookUI_92, a wooden click | GeoffAturax, CC BY 4.0, [Freesound](https://freesound.org/people/GeoffAturax/sounds/532189) |

@@ -29,8 +29,10 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
@@ -103,6 +105,10 @@ public final class TentPitch {
         }
         Tent tent = Tent.from(held, ((TentItem) held.getItem()).getTentType(), size(held));
         TentSize size = TentPlacer.getOverworldSize(tent.getSize());
+        if (!grounded(level, door, tent, size, facing)) {
+            player.displayClientMessage(Component.translatable("wayfarer.tent.uneven"), true);
+            return;
+        }
         if (!TentPlacer.getInstance().canPlaceTentFrame(level, door, tent.getType(), tent.getSize(), facing)
                 || !TentPlacer.getInstance().placeTent(level, door, tent.getType(), size, facing, tent.getColor())
                 || !(level.getBlockEntity(door) instanceof TentDoorBlockEntity entrance)) {
@@ -119,6 +125,34 @@ public final class TentPitch {
         state.tents.add(new Joining.Pitched(player.getUUID(), new Joining.Place(level.dimension(), door.immutable()), tent.getId()));
         state.setDirty();
         Sounds.play(level, door.getCenter(), TENT_PITCHED);
+    }
+
+    private static boolean grounded(ServerLevel level, BlockPos door, Tent tent, TentSize size, Direction facing) {
+        StructureTemplate template = TentPlacer.getTemplate(level, tent.getType(), size);
+        if (template == null) {
+            return true;
+        }
+        Rotation rotation = TentPlacer.toRotation(facing);
+        BlockPos origin = door.offset(new BlockPos(0, 0, -template.getSize().getZ() / 2).rotate(rotation));
+        for (int x = 0; x < template.getSize().getX(); x++) {
+            for (int z = 0; z < template.getSize().getZ(); z++) {
+                BlockPos floor = origin.offset(new BlockPos(x, 0, z).rotate(rotation));
+                if (!ground(level, floor.below()) && !ground(level, floor.below(2))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static boolean ground(ServerLevel level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        return !state.canBeReplaced() && !state.getCollisionShape(level, pos).isEmpty();
+    }
+
+    private static boolean occupied(MinecraftServer server, Joining.Pitched tent) {
+        ServerLevel inside = server.getLevel(NTSavedData.get(server).getOrCreateKey(server, tent.id()));
+        return inside != null && !inside.players().isEmpty();
     }
 
     private static TentSize size(ItemStack held) {
@@ -172,8 +206,8 @@ public final class TentPitch {
     public static void bringBack(MinecraftServer server, Joining.Place camp) {
         int away = Balance.get().join().awayBlocks();
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-            List<Joining.Pitched> far = mine(player).stream().filter(tent -> !tent.place().dimension().equals(camp.dimension())
-                    || tent.place().pos().distSqr(camp.pos()) > (double) away * away).toList();
+            List<Joining.Pitched> far = mine(player).stream().filter(tent -> !occupied(server, tent) && (!tent.place().dimension().equals(camp.dimension())
+                    || tent.place().pos().distSqr(camp.pos()) > (double) away * away)).toList();
             if (!far.isEmpty() && recall(player, far, Joining.State.of(server).tents)) {
                 Talk.tell(player, Component.translatable("wayfarer.tent.brought"));
             }
@@ -248,8 +282,10 @@ public final class TentPitch {
 
     static void recall(ServerPlayer player, List<Joining.Pitched> tents) {
         int away = Balance.get().join().awayBlocks();
-        recall(player, tents.stream().filter(tent -> tent.owner().equals(player.getUUID())).filter(tent -> !tent.place().dimension().equals(player.level().dimension())
-                || tent.place().pos().distSqr(player.blockPosition()) > (double) away * away).toList(), tents);
+        Joining.Place at = Tents.outside(player).map(outside -> new Joining.Place(outside.level().dimension(), BlockPos.containing(outside.at())))
+                .orElse(Joining.Place.of(player));
+        recall(player, tents.stream().filter(tent -> tent.owner().equals(player.getUUID())).filter(tent -> !occupied(player.server, tent))
+                .filter(tent -> !tent.place().dimension().equals(at.dimension()) || tent.place().pos().distSqr(at.pos()) > (double) away * away).toList(), tents);
     }
 
     private static boolean recall(ServerPlayer player, List<Joining.Pitched> far, List<Joining.Pitched> tents) {

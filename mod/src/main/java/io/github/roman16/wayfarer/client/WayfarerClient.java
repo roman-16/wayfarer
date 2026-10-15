@@ -10,6 +10,7 @@ import io.github.roman16.wayfarer.client.stamp.Tooltips;
 import io.github.roman16.wayfarer.story.Sense;
 import io.github.roman16.wayfarer.story.Tasks;
 import java.util.List;
+import java.util.Optional;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ChestedHorseModel;
@@ -29,6 +30,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.RenderTooltipEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
@@ -79,8 +81,16 @@ public final class WayfarerClient {
                 WormLook.register(event);
             }
         });
-        modBus.addListener(RegisterClientReloadListenersEvent.class, event -> event.registerReloadListener((ResourceManagerReloadListener) DeepRenderer::reload));
+        modBus.addListener(EntityRenderersEvent.AddLayers.class, Eyes::register);
+        modBus.addListener(RegisterClientReloadListenersEvent.class, event -> {
+            event.registerReloadListener((ResourceManagerReloadListener) DeepRenderer::reload);
+            event.registerReloadListener((ResourceManagerReloadListener) Eyes::reload);
+        });
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Eyes.tick(Minecraft.getInstance()));
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> HeldLight.tick());
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Smoke.tick(Minecraft.getInstance()));
+        NeoForge.EVENT_BUS.addListener(RenderFrameEvent.Post.class, Frames::frame);
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, Frames::report);
         NeoForge.EVENT_BUS.addListener(ViewportEvent.ComputeFov.class, FarSight::zoom);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, FarSight::mark);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, Ending::tick);
@@ -127,6 +137,7 @@ public final class WayfarerClient {
             HudState.gaze = GazePayload.CLOSED;
             HudState.night = NightPayload.CALM;
             HudState.panel = Tasks.Panel.EMPTY;
+            HudState.smoke = Optional.empty();
             Conversation.forget();
             Hud.clearBanners();
             JournalScreen.forget();
@@ -144,7 +155,7 @@ public final class WayfarerClient {
         }
         while (MAP.consumeClick()) {
             if (journeymap) {
-                MapLink.open();
+                MapLink.open(false);
             }
         }
         while (SENSE.consumeClick()) {
@@ -153,6 +164,7 @@ public final class WayfarerClient {
         }
         if (journeymap) {
             MapLink.show(JournalScreen.places());
+            MapLink.tick(minecraft);
         }
     }
 }

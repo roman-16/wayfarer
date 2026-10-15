@@ -1,0 +1,4 @@
+[misc]
+	leather_horse_armor_powder_snow = false
+[summoning]
+	dimension_handling = "SAME"

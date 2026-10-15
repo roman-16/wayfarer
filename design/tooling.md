@@ -77,7 +77,7 @@ What an agent has to build and look with, beyond T1 and T2:
 | `just sources` | Unpacks Minecraft's and NeoForge's code, with Parchment's readable names, and every mod jar's code decompiled with Vineflower, into `build/sources/`, searchable with ripgrep; it runs again only when a mod changes version |
 | `just registries` | One headless boot that writes everything the pack contains, from every mod, as JSON into `build/reports/`: blocks, items, creatures, structures, biomes, loot tables, tags and recipes; it is the list M13's structure pass works from |
 | A lean launch | The dev client and server with only the Wayfarer mod and what it needs, for work that does not need the whole pack; the full pack stays the default |
-| Driver steps | `inspect` a block, creature, item or inventory as JSON; `log` the errors and warnings since the last step; `perf` the frame rate and the server's tick time through spark; `compare` two pictures for what changed |
+| Driver steps | `inspect` a block, creature, item or inventory as JSON; `log` the errors and warnings since the last step; `perf` the average frame rate, the 1% low and the worst frame over a stretch of play, with the server's tick time; `compare` two pictures for what changed |
 | Story checks | In `just lint`: every quest, person, choice and scene points at something that exists, every main quest can be reached whatever order the halls are taken in, and both ways of every decision lead on |
 | One server driver | `scripts/boot.py`, the boot test and the survey, runs on `scripts/server.py`, and both drivers share one library |
 | Split tests | `just unit`, `just gametest` and `just boot` each on their own, and `just test` running all of them |
@@ -85,7 +85,7 @@ What an agent has to build and look with, beyond T1 and T2:
 - **Searches skip what is generated.** An ignore file keeps `build/`, `mod/build`, `mod/run`, `.devbox` and `dist` out of every search by default, so an agent's context is not spent on built files; `build/sources` is searched on purpose.
 - **Every failure says how to fix it,** as `scripts/audit.py` already does.
 - **Project skills, one per activity:** a look (`art`), words (`lore`), sounds (`sound`), a design session (`design`), finishing the work before a commit (`finish`) and the user's own play (`playtest`).
-- **A virtual screen.** The dev client runs on a virtual screen by default, as HeadlessMC does, so an agent never takes over the user's display and can run beside them, even two at once; `--visible` puts it on the user's screen. It draws in software, and with the test settings below it runs about as fast as the graphics card does with the pack's full look.
+- **A virtual screen.** The dev client runs on a virtual screen by default, as HeadlessMC does, so an agent never takes over the user's display and can run beside them, even two at once; `--visible` puts it on the user's screen. It is drawn by the graphics card on a headless screen of its own (gamescope), so the shader and the far view work there as on the user's screen.
 - **Test settings.** Every local dev client, the showroom, a fresh world and every tour, runs without shaders, without Distant Horizons and at 8 chunks, laid over the pack's configs only in the dev client's folder; the shipped pack keeps its shaders, its far view and 12 chunks, and they are judged in the exported pack.
 
 The gates stay local: `just lint` and `just test` run on the machine, not on GitHub, in the `finish` skill and before a commit, never after each change.

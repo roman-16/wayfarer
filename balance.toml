@@ -124,11 +124,13 @@ hunt_interval_seconds = 10
 hunt_phantoms = 2
 
 [graphics]
-far_view_chunks = [0, 128, 256, 512]
+far_view_chunks = [128, 128, 256, 512]
+far_view_detail = ["LOW", "MEDIUM", "MEDIUM", "HIGH"]
 far_view_threads = ["MINIMAL_IMPACT", "LOW_IMPACT", "BALANCED", "BALANCED"]
 held_light = ["fastest", "fast", "fancy", "fancy"]
 profiles = ["LOW", "MEDIUM", "HIGH", "ULTRA"]
-render_chunks = [8, 10, 12, 16]
+render_chunks = [6, 10, 12, 16]
+simulation_chunks = [6, 10, 12, 12]
 
 [halls]
 act_three_from_blocks = 24576
@@ -136,6 +138,9 @@ act_three_leg_blocks = 12288
 act_two_leg_blocks = 8192
 nearest_blocks = 1024
 reach_blocks = 8192
+
+[heap]
+gigabytes = 8
 
 [hold]
 blow_ticks = 32
@@ -148,8 +153,8 @@ wave_seconds = 64
 waves = 4
 
 [hunger]
-exhaustion_factor = 2.0
-rowing_exhaustion_per_block = 0.01
+exhaustion_factor = 4.0
+rowing_exhaustion_per_block = 0.0078125
 warm_exhaustion_factor = 1.0
 
 [join]
@@ -167,6 +172,7 @@ bog_blocks = 3072
 bog_radius_blocks = 64
 cellar_blocks = 2
 hall_blocks = 8
+near_blocks = 512
 notice_blocks = 16
 search_blocks = 4096
 shunned_seconds = 60
@@ -227,6 +233,7 @@ reach_blocks = 24
 act = [0, 16, 32]
 bell_found = 2
 found_shine = 128
+glow_light = 8
 notice_blocks_per_shine = 0.5
 per_shard = 4
 spawn_every_seconds = 8
@@ -238,6 +245,11 @@ reach_blocks = 32
 
 [sleep]
 players_percentage = 66
+
+[smoke]
+column_blocks = 96
+puff_ticks = 1
+width_blocks = 8
 
 [spawns]
 creature_cap = 20
@@ -295,7 +307,7 @@ start_blocks = 8
 wait_seconds = 32
 
 [tent]
-fire_blocks = 8
+fire_blocks = 16
 reminder_blocks = 64
 
 [tide]
@@ -303,6 +315,9 @@ stone_blocks = 8
 
 [tollbridge]
 ahead_blocks = 256
+ash_every_ticks = 4
+ash_flakes = 4
+ash_reach_blocks = 16
 clear_blocks = 64
 least_buildings = 16
 radius_blocks = 64
@@ -447,6 +462,7 @@ waves = 3
 blocks_per_food = 256
 
 [weather]
+days_between_rain = 4
 rain_most_seconds = 576
 
 [wend_camp]

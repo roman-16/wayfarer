@@ -841,6 +841,37 @@ def jei(tokens):
     return sprites
 
 
+PING_ARROW = (
+    "................",
+    "##..............",
+    "#B##............",
+    "#BBB##..........",
+    ".#BBBB##........",
+    ".#BBBBBB##......",
+    "..#BBBBBBB##....",
+    "..#BBBBBBBBB##..",
+    "..#BBBBBBBBB##..",
+    "..#BBBBBBB##....",
+    ".#BBBBBB##......",
+    ".#BBBB##........",
+    "#BBB##..........",
+    "#B##............",
+    "##..............",
+    "................",
+)
+
+
+def ping_arrow(tokens):
+    scale = 4
+    canvas = Canvas(len(PING_ARROW[0]) * scale, len(PING_ARROW) * scale)
+    colors = {"#": tokens("ash", 0), "B": tokens.text["bone"]}
+    for y, row in enumerate(PING_ARROW):
+        for x, cell in enumerate(row):
+            if cell in colors:
+                canvas.fill(x * scale, y * scale, (x + 1) * scale, (y + 1) * scale, colors[cell])
+    return canvas
+
+
 def jade(main, spec):
     text = spec["text"]
     palette = {
@@ -934,6 +965,7 @@ def write(main, spec, glyphs):
     for kind in ("advancement", "recipe", "system", "tutorial"):
         vanilla[f"toast/{kind}"] = toast(tokens, f"toast-{kind}")
     jade(main, spec)
+    png.write(main / "assets/pingwheel/textures/arrow.png", ping_arrow(tokens).pixels)
     png.write(main / "assets/minecraft/textures/gui/book.png", book_screen(tokens).pixels)
     png.write(main / "assets/wayfarer/textures/gui/title/logo.png", logo(tokens, glyphs).pixels)
     for folder, sprites in ((SPRITES, own), (VANILLA, vanilla), (JEI, jei(tokens))):

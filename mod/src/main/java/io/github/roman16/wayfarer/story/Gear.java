@@ -59,9 +59,14 @@ public final class Gear {
     }
 
     private record Thing(String key, String name, String good, String made, @Nullable String make, @Nullable ResourceLocation jei,
-            List<JsonObject> have, List<Need> needs, @Nullable String namedBy, boolean hidden, boolean apart) {}
+            List<JsonObject> have, List<Need> needs, @Nullable String namedBy, boolean hidden, boolean apart, @Nullable String tent) {}
 
-    private record Row(String id, String title, String who, JsonObject appears, boolean ladder, List<Thing> things) {}
+    private record Row(String id, String title, String who, JsonObject appears, boolean ladder, List<Thing> all) {
+        List<Thing> things() {
+            String kind = Prologue.tent();
+            return all.stream().filter(thing -> thing.tent() == null || thing.tent().equals(kind)).toList();
+        }
+    }
 
     private record Line(String id, String by, String text, List<String> when) {}
 
@@ -393,7 +398,8 @@ public final class Gear {
         return new Thing(row + "/" + thing.get("id").getAsString(), text(thing, "name"), text(thing, "good"), text(thing, "made"),
                 thing.has("make") ? thing.get("make").getAsString() : null, thing.has("jei") ? ResourceLocation.parse(thing.get("jei").getAsString()) : null,
                 have, List.copyOf(needs), thing.has("named_by") ? thing.get("named_by").getAsString() : null,
-                thing.has("hidden") && thing.get("hidden").getAsBoolean(), thing.has("apart") && thing.get("apart").getAsBoolean());
+                thing.has("hidden") && thing.get("hidden").getAsBoolean(), thing.has("apart") && thing.get("apart").getAsBoolean(),
+                thing.has("tent") ? thing.get("tent").getAsString() : null);
     }
 
     private static String capitalised(String text) {

@@ -61,7 +61,6 @@ final class Steps {
     private static final int BLIND_TICKS = 40;
     private static final int TICKS_PER_SECOND = 20;
     private static final String TOUCH = "touch";
-    private static final String TOWARD = "toward";
     private static final String LEAVES = "leaves";
     private static final String ASKING = "asking";
     private static final String CALLS = "calls";
@@ -145,7 +144,7 @@ final class Steps {
     static Optional<String> goal(Engine.Active active) {
         Story.Step step = active.step();
         return switch (step.kind()) {
-            case "reach" -> Optional.of(step.spec().has(TOWARD) ? step.text(TOWARD) : step.text("place"));
+            case "reach" -> Optional.of(step.text("place"));
             case "sail", "sea" -> Optional.of(Voyage.FAR_SHORE);
             case "vision" -> Optional.of(step.text("at"));
             case "worm" -> Optional.of(SandSingers.LAIR);
@@ -679,9 +678,13 @@ final class Steps {
                 && player.hasLineOfSight(body));
     }
 
-    static boolean hidden(MinecraftServer server, Entity entity) {
-        return Engine.active(server).stream().filter(active -> active.step().kind().equals("clues"))
-                .anyMatch(active -> active.step().clues().stream().anyMatch(clue -> entity.getTags().contains(CLUE + clue.id()) && waiting(server, active, clue)));
+    static boolean lookable(MinecraftServer server, Entity entity) {
+        return Engine.active(server).stream().anyMatch(active -> switch (active.step().kind()) {
+            case "clues" -> active.step().clues().stream().anyMatch(clue -> entity.getTags().contains(CLUE + clue.id())
+                    && !Engine.found(active.scratch()).contains(clue.id()) && !waiting(server, active, clue));
+            case "memory" -> active.step().spec().has(TOUCH) && entity.getTags().contains(CLUE + active.step().text(TOUCH));
+            default -> false;
+        });
     }
 
     static int needed(MinecraftServer server, Engine.Active active) {

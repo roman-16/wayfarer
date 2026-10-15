@@ -21,23 +21,29 @@ public enum Graphics {
     static Graphics current() {
         Balance.Graphics steps = Balance.get().graphics();
         int render = Minecraft.getInstance().options.renderDistance().get();
-        Optional<Integer> far = ModList.get().isLoaded(FAR_VIEW) ? Optional.of(FarViewSetting.chunks()) : Optional.empty();
+        int simulation = Minecraft.getInstance().options.simulationDistance().get();
+        boolean farView = ModList.get().isLoaded(FAR_VIEW);
+        Optional<Integer> far = farView ? Optional.of(FarViewSetting.chunks()) : Optional.empty();
+        Optional<String> detail = farView ? Optional.of(FarViewSetting.detail()) : Optional.empty();
         Optional<String> profile = ModList.get().isLoaded(SHADERS) ? ShaderProfile.current() : Optional.empty();
         return STEPS.stream()
                 .filter(step -> render == steps.renderChunks().get(step.ordinal()))
+                .filter(step -> simulation == steps.simulationChunks().get(step.ordinal()))
                 .filter(step -> far.map(steps.farViewChunks().get(step.ordinal())::equals).orElse(true))
+                .filter(step -> detail.map(steps.farViewDetail().get(step.ordinal())::equals).orElse(true))
                 .filter(step -> profile.map(steps.profiles().get(step.ordinal())::equals).orElse(true))
                 .findFirst().orElse(CUSTOM);
     }
 
-    static void choose(Graphics step) {
+    public static void choose(Graphics step) {
         if (step == CUSTOM) {
             return;
         }
         Balance.Graphics steps = Balance.get().graphics();
         Minecraft.getInstance().options.renderDistance().set(steps.renderChunks().get(step.ordinal()));
+        Minecraft.getInstance().options.simulationDistance().set(steps.simulationChunks().get(step.ordinal()));
         if (ModList.get().isLoaded(FAR_VIEW)) {
-            FarViewSetting.set(steps.farViewChunks().get(step.ordinal()), steps.farViewThreads().get(step.ordinal()));
+            FarViewSetting.set(steps.farViewChunks().get(step.ordinal()), steps.farViewDetail().get(step.ordinal()), steps.farViewThreads().get(step.ordinal()));
         }
         if (ModList.get().isLoaded(SHADERS)) {
             ShaderProfile.choose(steps.profiles().get(step.ordinal()));
@@ -52,7 +58,7 @@ public enum Graphics {
         return Balance.get().graphics().heldLight().get((step == CUSTOM ? HIGH : step).ordinal());
     }
 
-    static boolean shaded() {
+    public static boolean shaded() {
         return ModList.get().isLoaded(SHADERS) && ShaderProfile.drawing();
     }
 
@@ -60,7 +66,7 @@ public enum Graphics {
         return ShaderProfile.enabled();
     }
 
-    static void shaders(boolean on) {
+    public static void shaders(boolean on) {
         Graphics step = current();
         ShaderProfile.enable(on);
         if (on) {

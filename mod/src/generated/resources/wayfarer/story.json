@@ -697,7 +697,9 @@
       "color": "green",
       "mornings": [
         "Eat something before you go. Then go on; we'll follow.",
-        "Go. I'll keep the child from running after you."
+        "Go. I'll keep the child from running after you.",
+        "Drink before you walk, not after. Go on.",
+        "If you cut yourself today, wash it. Then walk."
       ],
       "name": "Agna",
       "remarks": [
@@ -708,7 +710,9 @@
       "unnamed": "A woman in green",
       "welcomes": [
         "Back in one piece. Sit, let me look at you.",
-        "There you are. Eat before you do anything else."
+        "There you are. Eat before you do anything else.",
+        "Show me your hands. ...Fine. Go and get warm.",
+        "Sit before you fall down. Then tell me where it hurts."
       ]
     },
     "bram": {
@@ -766,7 +770,9 @@
       "color": "dark_aqua",
       "mornings": [
         "Go on ahead. I'll keep to the back, where I'm no trouble.",
-        "Mind the ridges today. Grey coats see a long way."
+        "Mind the ridges today. Grey coats see a long way.",
+        "I'll walk at the back. Nobody wants a grey coat in front.",
+        "If you see banners, don't wave. Come back."
       ],
       "name": "Corin",
       "remarks": [
@@ -834,6 +840,12 @@
       "color": "gray",
       "name": "A Gazebound",
       "road": true,
+      "shouts": [
+        "There! The light! Take it!",
+        "To me! It's here, the fire that walks!",
+        "Don't let it run. He wants it whole.",
+        "Grey, to me! Cut them off!"
+      ],
       "unnamed": "A man in grey"
     },
     "heir": {
@@ -864,7 +876,9 @@
       "color": "red",
       "mornings": [
         "We'll be packing a while yet. Go on ahead.",
-        "Cart's loaded by noon. Walk on, we'll find your marks."
+        "Cart's loaded by noon. Walk on, we'll find your marks.",
+        "Wheel's squeaking again. Go on, I'll catch you up.",
+        "Keep your blade dry. Go on, we'll be along."
       ],
       "name": "Hob",
       "remarks": [
@@ -875,14 +889,18 @@
       "unnamed": "A big man",
       "welcomes": [
         "There you are. Fire's going.",
-        "You found us, then. Pot's on."
+        "You found us, then. Pot's on.",
+        "Sit. Your boots can wait till morning.",
+        "Anything gone dull, give it here. I'll look at it by the fire."
       ]
     },
     "ilse": {
       "color": "blue",
       "mornings": [
         "I'll walk with the wagons. My feet aren't used to this yet.",
-        "Go on. I'm writing down yesterday before I lose it."
+        "Go on. I'm writing down yesterday before I lose it.",
+        "Go on. I'll ask you everything tonight.",
+        "Walk carefully. I've only just started writing you down."
       ],
       "name": "Ilse",
       "remarks": [
@@ -893,7 +911,9 @@
       "unnamed": "A young woman in grey",
       "welcomes": [
         "You're back. Tell me where you went. Slowly.",
-        "I saved you a seat. And a page."
+        "I saved you a seat. And a page.",
+        "Sit down before you forget it. Whatever it was.",
+        "There's room by the fire. You talk; I'll write."
       ]
     },
     "maren": {
@@ -928,7 +948,9 @@
       "color": "white",
       "mornings": [
         "I'll walk the ridge. Don't wait for me.",
-        "Snow's coming off the high ground. Walk fast."
+        "Snow's coming off the high ground. Walk fast.",
+        "Tracks are freshest at first light. Go now.",
+        "I'll find you. I always find what I'm following."
       ],
       "name": "Nell",
       "people": "nell",
@@ -977,7 +999,9 @@
       "color": "yellow",
       "mornings": [
         "Can I walk with you today? ...Fine. Go on, then.",
-        "Tamsin says we're slow. Go on, we'll catch up!"
+        "Tamsin says we're slow. Go on, we'll catch up!",
+        "I'll watch for you tonight. From the very first smoke.",
+        "Agna says I have to stay. One day I won't."
       ],
       "name": "Pip",
       "remarks": [
@@ -988,7 +1012,9 @@
       "unnamed": "A child",
       "welcomes": [
         "You're back! What did you see?",
-        "I watched for you all day!"
+        "I watched for you all day!",
+        "I kept your place by the fire. Nobody sat in it. Nearly nobody.",
+        "Did you see anything? Anything at all?"
       ]
     },
     "rue": {
@@ -1052,7 +1078,9 @@
       "color": "aqua",
       "mornings": [
         "We're packing up. Go on ahead; we'll follow your marks.",
-        "Don't wait for us. Look for our smoke tonight."
+        "Don't wait for us. Look for our smoke tonight.",
+        "Walk ahead. If it's bad, come back and say so.",
+        "We follow your marks. Leave good ones."
       ],
       "name": "Tamsin",
       "remarks": [
@@ -1063,7 +1091,9 @@
       "unnamed": "A grey-haired woman",
       "welcomes": [
         "There you are. Sit, and tell me what's ahead.",
-        "Good. Everyone's in."
+        "Good. Everyone's in.",
+        "You're late. Sit. What did you see?",
+        "Fire's lit and nobody's missing. Good."
       ]
     },
     "tansy": {
@@ -1103,6 +1133,39 @@
     "traveller": {
       "color": "white",
       "name": "The traveller",
+      "road": true
+    },
+    "villager": {
+      "acts": {
+        "1": [
+          "Strangers bring the burning. One trade, then go.",
+          "Keep that light in your pocket while you're in our street.",
+          "We were a bigger town once. Then we grew.",
+          "Trade's done. Don't linger near the well; people talk."
+        ],
+        "2": [
+          "Men in grey came asking after a fire that walks. We told them nothing.",
+          "One trade. The grey coats count our visitors.",
+          "They say someone walks with a fire in their hand again. ...Don't tell me if it's you.",
+          "You've come a long way. Go on further; it's safer for us both."
+        ],
+        "3": [
+          "Banners went by at dawn. Grey ones. Trade quick.",
+          "If you're going where I think you're going, take bread. Take two.",
+          "Nobody's slept well in weeks. Here. Go.",
+          "One trade, then go. And whatever you're doing out there, finish it."
+        ],
+        "finale": [
+          "It's quiet now. Quieter than I remember. Stay for supper, if you like.",
+          "My daughter asked about the walking fire. I told her it went home."
+        ],
+        "prologue": [
+          "Strangers bring the burning. One trade, then go.",
+          "Keep that light in your pocket while you're in our street."
+        ]
+      },
+      "color": "yellow",
+      "name": "A villager",
       "road": true
     },
     "warden": {
@@ -1151,7 +1214,7 @@
             "id": "sophisticatedbackpacks:backpack"
           },
           {
-            "id": "nomadictents:tiny_yurt"
+            "tent": "tiny"
           },
           {
             "tag": "minecraft:beds"
@@ -2450,8 +2513,7 @@
           ],
           "tasks": [
             "sweep"
-          ],
-          "toward": "marsh_hall"
+          ]
         },
         {
           "at": "ford",

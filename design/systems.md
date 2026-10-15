@@ -84,7 +84,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Stones | Where the player fell, with what each stone holds |
   | Map | The world map |
 
-- The map is JourneyMap's world map, opened from its tab in the journal or with M. There is no minimap anywhere on screen, no cave mapping, no radar and no waypoints of the player's own; the places they have found are added by the Wayfarer mod. Map Atlases leaves the pack.
+- The map is JourneyMap's world map, opened from its tab in the journal or with M. There is no minimap anywhere on screen, no cave mapping, no radar and no waypoints of the player's own; the places they have found are added by the Wayfarer mod: the Last Camp, Tollbridge and the caravan from the start, and every place a quest leads to once a player has stood within 64 blocks of it, his first camp, the old tunnels, the ford and the rest, so the map keeps where the team has been. Map Atlases leaves the pack.
 - The compass is on screen from the first moment of the world, before the ember wakes: until then it reads "the ember is cold" and shows only friends, the player's own tent (▲) and their stones. A tent standing more than 256 blocks away gets its own line under the compass, so a tent left at an old camp is never lost. The first time a goal shows, the task panel says to follow its mark at the top of the screen.
 - The compass shows the tracked quest's goal, the player's friends and their stones. A goal known by feeling shows only the ember's flaring, in gold, and its guttering, in blue, with no distance until the exact mark within 256 blocks (D6). Every fall leaves its own stone where the player fell; the compass shows all of them, the one holding the most the strongest. In the journal a stone can be tracked, so the compass points at it like a quest, or let go, which takes it off the compass, as when a player gives their old things up and starts afresh.
 
@@ -185,6 +185,9 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Danger | Never within 16 blocks of lava, fire or another danger, nor on top of a structure |
 
 - The camp is built like a village: the fire in the middle, and around it each household as its own small piece, a tent, a wagon or a lean-to, set at the height of the ground under it, with paths between them that follow the ground. There is no flattened square. A bigger household gets a bigger piece, a person who joins brings a new piece, and after the breaking the pieces of the dead are missing. When the camp is taken down, the blocks it replaced go back.
+- Every household's piece must fit: a spot where one has no room is a wish that failed, and the caravan looks on for one where all fit, settling for the spot that misses the fewest only when nothing better lies within its search. Its people always stand on the ground, never in the air.
+- The logs round the fire are benches: right-clicking one with an empty hand sits the player on it (Sit), and sitting there is resting by the fire. A log a person already sits on is taken.
+- Arriving at the fire, one of the caravan greets the team, a different one from the evening before, each with four welcomes said in turn, so nobody says the same thing twice running; mornings go the same way.
 - The camp cannot burn: while it stands, no fire takes hold in it and no lightning strikes it.
 - When the camp is taken down it leaves traces, so a team passing the same place days later finds an old campsite: the fire pit with its campfire out and its ring of stones, the paths worn to it, trodden patches where the tents stood, and now and then something left behind, such as a split log or a broken crate. They look like the pack's other old camps, only fresh, and they stay for good (M21).
 - Each person's record lives in the world's save data, alive or not, their trust and what they remember; their Easy NPC body is made from it in the evening and taken away in the morning.
@@ -247,7 +250,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 ### M7 Joining later
 
-- Who appears where, and with what, is D11's table. A tent or a mount counts as far beyond 256 blocks: then it comes back to the player who joins or returns, and one closer stays where it is.
+- Who appears where, and with what, is D11's table. A tent or a mount counts as far beyond 256 blocks: then it comes back to the player who joins or returns, and one closer stays where it is. A player who logs in inside a tent counts as standing at its door, and a tent anyone is inside never comes back to a pack; on the compass a teammate in a tent shows at its door.
 - A hard decision counts the players online when its vote starts: it needs two thirds of them. A player who joins later may still vote, and one who leaves keeps the vote they cast.
 
   ```text
@@ -272,6 +275,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 - A memory happens in a small dream world of its own, as the tents' insides do, and the player is taken in and brought back to the same spot. While they dream they are gone from the real world, so nothing can hurt them.
 - The dream rebuilds the place from the world's own seed, exactly as the world first made it: the same hills, rivers and hall, and nothing the players built or broke since, since that is the past. The memory then changes only what it needs, the hall whole and newer, the shard lit on its calling stone, the Frost Walkers on the stair, the grass halls young, and places again what the pack sets down by code, such as the Last Camp; whatever the memory needs no change to stays as the world made it.
+- Nothing in a memory breaks but what its task asks for: while the task asks for wood, the fallen pine's logs give way; anything else stays and says "It's a memory. It stays as it was."
 - Everyone within about 32 blocks of the stone dreams it together, every one of them as Wend. A player who was not there can dream it again later from the journal, at a fire: once a memory has been dreamt, its quest's page (under Quests, later under Done) carries a Dream it again button beside Track. It works while the player stands within 4 blocks of a lit campfire, the caravan's included; anywhere else it is greyed and the page says to sit by a fire. Pressing it closes the journal, the ember flares, and the player, with anyone within 32 blocks of them, dreams it from its beginning at the place as it was, standing round its stone, and wakes at the fire where they stood. Dreaming it again changes nothing in the quest and adds nothing to Conversations; alone, it is the one player.
 
   ```text
@@ -309,8 +313,12 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Found | The chance each night that the gaze finds the caravan grows with it (M6) |
 
 - It is felt, never shown as a number: the ember on the compass burns brighter, the player's eyes glow in the dark, and the journal says it as "I": "I shine like a lantern now. They find me before I find them."
+- The eyes glow from the evening Corin first sees them (2.7) on, in the gaze's violet: the eyes each player's skin draws light up, whatever their size, shape and place, the white of an eye paler than the rest, on the hat layer where that is what shows. The game finds them in the skin itself, so every machine lights the same pixels. They are seen by friends, in third person and on the inventory's figure, brighter the more of the twelve shards the team has taken, fading as the light around the player rises and gone from light 8 up (`balance.toml` `[shine]` `glow_light`).
+  - A face whose eyes cannot be read stays dark, as under a mask: a skin with no eyes drawn, a visor or sunglasses over them, a single eye under a patch, or a face the game is unsure of. Corin's line comes all the same.
+  - Nobody corrects a guess: there is no setting, and the face test in `just test` holds a glow off the eyes to at most 1 in 16 of the community faces in `generator/faces.toml`.
+  - Eyes of two sizes or two colours both glow, eyes up to a pixel off the mirror are still a pair, and a closed eye pairs with the open one. A full helmet covers them and an invisible player shows none.
 
-**Why:** A step for every shard makes each one a cost the player can feel and leaving one a relief they can feel too, and four effects together make the shine being hunted rather than only fighting tougher monsters. A number would turn the clock into a stat to manage; felt, it stays the slow horror of S12.
+**Why:** A step for every shard makes each one a cost the player can feel and leaving one a relief they can feel too, and four effects together make the shine being hunted rather than only fighting tougher monsters. A number would turn the clock into a stat to manage; felt, it stays the slow horror of S12. A glow on a forehead or a mouth reads as a bug while no glow reads as hidden eyes, and a setting to correct the guess would cost a screen, a message and storage for a detail most players see only in F5.
 
 **The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/ShineSpike.java`, dev code that never ships, with its steps in `balance.toml` `[shine]`): the shine is the act's base, 0, 16 or 32, plus 4 for every shard, and Agna's remedy takes 8 off for a night; at act 3 with all twelve shards it is 80. Improved Mobs' difficulty is set to the shine for every player (it reads 80.0 there); a monster born while the team shines 80 notices them from 40 blocks farther, so a zombie 64 blocks away comes for a player that one 48 blocks away leaves alone at shine 0; and at night more monsters are born in the dark around them, four more in half a minute at shine 80. What it showed:
 
@@ -336,6 +344,8 @@ The fourth effect, the chance each night that the gaze finds the caravan, is the
 | Hold | Something kept alive against waves until dawn or a set time | The Hordes, and the Wayfarer mod |
 
 - **The ember sense** is a key, the one left of X on every keyboard (Z on an English one, Y on a German one). Held, the ember flares, and for a few seconds clues and tracks within about 24 blocks glow faintly. While a goal is known by feeling, the held ember burns brighter the closer the player faces it, so sweeping it round finds the way; where the story laid a trail (the caravan's wheel ruts, the Diggers' marks, a hall's hidden entrance) it glows. Every quest that searches asks for the ember: clues, entrances and tracks are found with it, not by luck. A clue is something in the world the player looks at and clicks; each adds a line to the journal, and the step is done once enough are found. A trail is a line of marks laid on the ground ahead, the way road scenes are (M4), such as hoofprints, blood or a cold fire, and taken away afterwards. The Trail-sight gift (S6) makes tracks glow all the time.
+
+- Only what the step under way can look at glows amber; what the team has already looked at glows white, so a place with four clues shows which are done, and the things a later step will ask about stay dark until then. A step's clues may be looked at in any order.
 
   ```text
   You hold up the ember. Prints glow in the snow, a hunter's, heading for the ridge.
@@ -472,7 +482,8 @@ What it showed:
 ### M12 The camp and the gear
 
 - Nomadic Tents is changed so that placing a tent builds the whole tent at once, without a frame or a mallet; packing it up is one click. Its own `enter_when_safe` and `pickup_when_safe` are switched on, so nobody enters or packs up a tent while monsters are near (D13). It stays the pack's tent because it is the one whose inside is a folded space: Let's Do Camping and Simply Tents pitch an ordinary tent in the world, and both are All Rights Reserved.
-- A bed inside a tent sleeps only when a lit campfire burns within 8 blocks of the tent outside (D13, `[tent]` `fire_blocks`), room enough to find flat ground for a tent beside the fire. Every tent is a world of its own, but the night is the team's: a player lies down in their tent and stays lying until two thirds of the team sleep, in their tents or out, and then it is morning for everyone at once (`[sleep]` `players_percentage`). A pitched tent's inside keeps running while its owner is out, so a furnace in it finishes its work; a packed tent stops.
+- A bed inside a tent sleeps only when a lit campfire burns within 16 blocks of the tent outside (D13, `[tent]` `fire_blocks`), room enough to find flat ground for a tent beside the fire. A tent stands only on ground: every block of its floor has ground at most one block below it, so no player fits under it, and elsewhere the tent says "The ground here is too uneven for a tent. Find flatter ground." A tent anyone is inside is never taken down by the story: a player who logs in inside a tent counts as standing at its door, and the caravan brings back only tents nobody is in.
+- The first tent, the stranger's, is the kind the land around the Last Camp would build, the same for the whole team: a yurt in cold land and mountains, a tepee on plains, meadows and in forests, a Bedouin tent in desert and badlands, an indlu on the savanna, a shamiyana in jungle and swamp. The Gear page's camp row then grows that kind, tiny to large. Every tent is a world of its own, but the night is the team's: a player lies down in their tent and stays lying until two thirds of the team sleep, in their tents or out, and then it is morning for everyone at once (`[sleep]` `players_percentage`). A pitched tent's inside keeps running while its owner is out, so a furnace in it finishes its work; a packed tent stops.
 - A lit fire's circle reaches 32 blocks (`[fire]` `circle_blocks`): no monster spawns inside it, and one that wanders in turns away and lets the team be, so the caravan's whole camp lies inside and a tent beside the fire is never kept shut by monsters at its door. A hold switches the circle off around its own fight.
 - Resting is being by a lit fire: a player within 4 blocks of one rests at once, with nothing to wait for and no need to stand still. The camp, the afternoon at the caravan's fire, the Warm effect and the Flare all count that rest.
 - The fire's stories stay. If a night has one, the voice's long talk, a person's scene or Maren's visit, it plays once most of the team sits at the caravan's fire, and sleep waits until it is over; a night without one goes straight to sleep. Resting half a minute at a fire still warms the ember, so the player eats like a settled person until the next dusk.
@@ -580,7 +591,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | The compass (`Compass`) | Points at shards, friends and the grave | Kept, changed: the tracked quest's goal as the player knows it (D6), friends and stones (M2) |
 | Leads (`Leads`) | Places someone told the player of | Folded into the quest engine: a lead is a goal someone told of (S7) |
 | The fire (`Fire`, `Warm`) | The circle keeps monsters off, resting warms the ember, the voice speaks at rest | Kept, changed: the circle and the warming stay, and the voice's long talks and the night's stories play at the caravan's fire (S4, M12) |
-| Hunger and rowing | The ember eats double; steering a boat costs food | Kept |
+| Hunger and rowing | The ember eats four times what a body would (`[hunger]` `exhaustion_factor`); steering a boat costs a shank of food every 256 blocks on top; Spice of Life wants half vanilla's variety, its extra hearts at 2, 12 and 16 foods (`pack/config/solonion.json`) | Kept |
 | Nights (`Nights`) | A Sleepless Night every fourth night, a red moon every fifth | Changed: scripted, as the story's and the caravan's events (M6) |
 | Daylight (`Daylight`) | The gaze's creatures crumble in the sun | Kept |
 | Stillness (`Stillness`) | Staying in one place dims the ember, then brings the horde | Kept, changed: counts nights slept (M6) |
@@ -604,7 +615,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | Village raids | Bad Omen after killing a raid captain | Kept as the Gazebound's revenge: kill a captain, and they raid the next village the player visits |
 | The wandering trader | Vanilla | One of the road's people (D12), a scene that comes back (M4) |
 | Phantoms from sleeplessness | Vanilla | Off: the player sleeps every night anyway, and phantoms come only to the sky |
-| Weather, fishing, spawners, the End | Vanilla | Kept: storms are a daylight danger (M6), fishing is food, spawners are dangers in places, and the End is the finale; rain and storms last at most about ten minutes (`[weather]` `rain_most_seconds`), since the road's slow clock made vanilla's ten to twenty feel like a whole day |
+| Weather, fishing, spawners, the End | Vanilla | Kept: storms are a daylight danger (M6), fishing is food, spawners are dangers in places, and the End is the finale; rain and storms last at most about ten minutes (`[weather]` `rain_most_seconds`), since the road's slow clock made vanilla's ten to twenty feel like a whole day, and after a rain the sky stays clear for four story days (`days_between_rain`), since timers that count real minutes let it rain on almost every slow day |
 
 **Why:** Each part either carries the design as it now stands, is turned to it, or goes, so nothing survives for having been built, and every vanilla system left has a part in the road.
 
@@ -682,6 +693,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 - When evening begins the compass points at the camp's spot at once, and the camp goes up the first moment no player can see the spot: the land or a wood stands between, or every player has turned away from it.
 - If the team walks straight at it across open land and never looks away, it goes up anyway just before the spot comes within the view distance, and a few tents may appear once in the far view.
+- While the camp stands, smoke rises over its fire for every player in the overworld: the campfire's own signal smoke within the draw distance, and beyond it a plume drawn in the far view: blocky, shaded puffs of pale grey, about 96 blocks tall, widening and bending downwind as they rise (`balance.toml` `[smoke]`). The plume shows wherever the far view is drawn, out to hundreds of blocks, and only with the far view on, since particles fade into the fog at the draw distance. Before the caravan is met there is none.
 
   ```text
   Evening  [Main] Make for the caravan.   Compass ◆ 420 blocks
@@ -689,7 +701,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
            You turn back: smoke, and a few tents on the plain.
   ```
 
-**Why:** Distant Horizons shows the camp as soon as the server saves its chunks, on a server as in singleplayer, so a camp that waits for a turned back goes up unseen almost every evening, and one that never waits past the edge never leaves the team walking towards nothing. A few tents appearing far off once is what the lore already promises: in the evening their smoke shows me where.
+**Why:** Distant Horizons shows the camp as soon as the server saves its chunks, on a server as in singleplayer, so a camp that waits for a turned back goes up unseen almost every evening, and one that never waits past the edge never leaves the team walking towards nothing. A few tents appearing far off once is what the lore already promises: in the evening their smoke shows me where. The smoke is the lore's own sign ("in the evening their smoke shows me where"): the land itself leads the team home, and the compass only confirms it; vanilla's campfire smoke rises a few blocks and shows only within 32 of it, so the column is the pack's own.
 
 ### M20 Heading in early
 
@@ -761,6 +773,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   ```
 
 - Every waystone a player has touched, their own stone among them, shows on the world map with its name, and the map can show or hide them.
+- A player's own stone is known by its owner, as Waystones records it, so it comes back after a death, from inside a tent and wherever it was set: breaking it or sneaking with an empty hand on it puts it in the pack again.
 - The world's own waystones stay where they are, in villages and along old roads, and only fold roads already walked (D7).
 - Every fold costs hunger: the ember burns the walk it saves, about one food point for every 256 blocks, so a long fold on an empty stomach leaves the player starving at the stone.
 
@@ -823,7 +836,8 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 ### M28 Heading in on any day
 
-- Once the caravan's camp has packed up, a "Make for the caravan" entry stands in the journal every day. Choosing it, or a quest step that ends the day, sets the camp up out of sight ahead (M5, M19) and points the compass at it; if nobody has chosen by 17:00, it is tracked by itself.
+- Once the caravan's camp has packed up, a "Make for the caravan" entry stands in the journal every day. Its page asks first, since it ends the day for the whole team: "Turn back now? The day ends for the whole team; The Deserter waits for morning.", and its button reads Make for the caravan, then Yes, end the day. Choosing it, or a quest step that ends the day, sets the camp up out of sight ahead (M5, M19) and points the compass at it; if nobody has chosen by 17:00, it is tracked by itself. Until the camp stands, the compass reads "smoke rising" instead of the ember's listening.
+- The task panel says who turned back: "Kai turned back towards the caravan. Make for their smoke; The Deserter waits for morning." From 17:00 it reads "The day is ending." instead.
 - Before 17:00 the afternoon then passes at its fire (M20); from 17:00 the run home starts (M6).
 
   ```text
@@ -882,9 +896,10 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   You join the server. No yellow lines about worldgen data in chat. Hills fill in to the edge of sight within a minute or two.
   ```
 
+- SeedGen keeps Distant Horizons' own rule for the work of loading land onto the graphics card, at most half a frame at the frame-rate limit, where its own default allows eight times that (`SeedGenBudgetMixin`), so arriving somewhere new never spends whole frames on loading.
 - **Edge cases.** A server without Distant Horizons: the client's far view stops at its render distance. A player who turns the far view off: the same. A graphics card SeedGen cannot use: Distant Horizons still draws, more slowly.
 
-**Why:** The far view is what makes the world feel vast, and the server's SeedGen reads the same land the server makes, so a team sees one horizon; the chat lines are noise for a player who cannot act on them.
+**Why:** The far view is what makes the world feel vast, and the server's SeedGen reads the same land the server makes, so a team sees one horizon; the chat lines are noise for a player who cannot act on them. Eight times Distant Horizons' rule lets loading take up to 15 ms of every frame at the pack's limit of 260, more than a whole frame on the minimum machine (`production.md` R1).
 
 **The test** (SeedGen 0.8.0, a beta under All Rights Reserved, in dev clients started with `--far`, which keeps Distant Horizons on with a far view of 1,024 blocks; the dev step `/wayfarer far phantom` in `mod/src/dev/java/io/github/roman16/wayfarer/spike/FarSpike.java`): SeedGen's own measuring commands against the real generator, then the far view photographed from 150 to 170 blocks away before and after the real land there loaded. What it showed:
 
@@ -1017,6 +1032,8 @@ It raises, for its build: keeping each act's foes out of the world until their a
   - Terralith hangs its skylands, floating islands, over deep water where its weirdness, cold and dryness meet, the seas' as anywhere; they float in the sky and nothing stands on the water.
   - The world's spawn is on the home land on every seed, since the land round the Last Camp is lifted; a lake at the very centre still moves the spawn to its shore, as vanilla does.
 
+- **Caves open often.** Cave mouths are about twice as common as Tectonic's own: caves reach the surface (`depth_cutoff_start` -0.1) and its noodle and cheese caves run wider (`noodle_additive` -0.2, `cheese_additive` 0.18, `pack/config/tectonic.json`). On four 256-block squares of the states' seed the openings went from 159 to 286, so a team on foot finds a way down most days without digging.
+
 **Why:** On six seeds measured (`ShapeSpike`, dev code that never ships), today's world was about half sea in islands of 2 to 314 km², usually 25 to 47, so most seeds put Act 1's places across water, and two put the Last Camp on an island of 2 km². Built into the game, the shape gives a home land of 117 to 132 km² reaching about 7,750 blocks on every seed measured, a closed sea, and 28 to 34% land beyond it; the acts' own travel, on foot, by ship, by air, then follows the land.
 
 **The spike measured** (`/wayfarer shape <seed> <radius> <step>` and `/wayfarer preview <seed> <home> <sea> <sink>` on the dev server, pictures in `build/shape/`):
@@ -1112,6 +1129,31 @@ It raises, for its build: keeping each act's foes out of the world until their a
 - Simply Swords' unique weapons come about once in 64 chests a player opens, never in a village: its pity starts after 32 chests without one and makes one certain by the 128th (`pack/config/simplyswords/loot.toml`). When Dungeons Arise, whose chests held diamond gear and high enchantments from the first days, is cut (`mods.md`).
 
 **Why:** A unique is the road's rare reward; one in every chest makes it the road's floor.
+
+### M47 Story places are checked when the team comes
+
+- A place a quest puts down far ahead, his first camp, the Diggers' tunnels, the ford, the Marsh Mothers' hall, the Frost Walkers' house, hall and lake, the First Village and the shipyard, is checked the first time a player comes within the view distance and 64 blocks of it, before anyone can see it: if its own blocks are gone, it goes up again where it stood, out of sight. The Marsh Mothers' hall goes up only once a player is within 512 blocks (`[marsh]` `near_blocks`), as S29 has it.
+- An operator has a way past anything the check misses: `/wayfarer step` says the tracked quest's step, its place, how far and which way; `/wayfarer step again` puts the step's place down again, the ford and the swamp's hall anew ahead of the caravan and the others where they stood; `/wayfarer step skip` plays the step's outcome, its first answer, a hold won, a memory dreamt, and moves on. Each takes a quest's id to act on another quest. In singleplayer they need cheats on.
+
+  ```text
+  /wayfarer step        The Deserter, 1 of 3: Follow the pull: walk where the ember flares. The ford at 4268 64 3030, 2610 blocks south-west.
+  /wayfarer step again  The ford is put down again ahead of the caravan, out of sight.
+  /wayfarer step skip   Done as if played: The Deserter, 1 of 3: ...
+  ```
+
+**Why:** In the third server playtest the ford and the swamp's hall, both built while nobody was near, were gone when the team arrived, and nothing in the logs showed why; a quest's place that is not there ends the playthrough for everyone. A check before the team sees the spot mends it without them knowing, and the commands are the last resort a stuck team needs.
+
+### M48 The settled and the grey coats speak
+
+- A villager says one wary line the first time each day a player right-clicks them, on the band as "A villager", before the trade opens. Their lines follow the story: strangers bring the burning in Act 1; men in grey ask after a fire that walks in Act 2; banners pass at dawn in Act 3; after the doors it is quiet, and they ask the team to stay for supper (`story/people.toml`, `villager`).
+- An Illager that spots a player shouts once, "There! The light! Take it!", on the band as the man in grey, at most once in 16 seconds and never over a talk (`gazebound`, `shouts`).
+
+  ```text
+  Right-click a villager   <A villager> Strangers bring the burning. One trade, then go.
+  A pillager sees you      <A man in grey> To me! It's here, the fire that walks!
+  ```
+
+**Why:** The second server playtest asked for villages that feel lived in and enemies with a voice; a line each, rare and in the world's own words, says what the lore says of them, that towns which grow burn and fear strangers, without a talk to sit through. The settled have no name for what burns them, so they never say the gaze.
 
 ## Open
 

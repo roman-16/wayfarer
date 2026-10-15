@@ -18,6 +18,6 @@ abstract class ConnectScreenMixin {
     @Inject(method = "startConnecting", at = @At("HEAD"))
     private static void wayfarer$recap(Screen parent, Minecraft minecraft, ServerAddress address, ServerData data, boolean quickPlay,
             @Nullable TransferState transfer, CallbackInfo info) {
-        Recap.connecting();
+        Recap.connecting(address.getHost() + ":" + address.getPort());
     }
 }

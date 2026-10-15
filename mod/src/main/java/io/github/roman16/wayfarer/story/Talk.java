@@ -1,6 +1,7 @@
 package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
@@ -42,6 +43,7 @@ public final class Talk {
     private static final Deque<Speech> queue = new ArrayDeque<>();
     private static final Set<UUID> answering = new HashSet<>();
     private static final Map<String, Long> AGAIN = new HashMap<>();
+    private static final Map<String, Long> HEARD = new HashMap<>();
     private static final Map<UUID, Integer> votes = new HashMap<>();
     private static final Map<UUID, Personal> personal = new HashMap<>();
     private static long clock;
@@ -200,6 +202,7 @@ public final class Talk {
     }
 
     public static void reset() {
+        HEARD.clear();
         queue.clear();
         offer = null;
         votes.clear();
@@ -208,8 +211,10 @@ public final class Talk {
 
     private static void heard(MinecraftServer server, Said said) {
         Story.Line line = said.line();
-        if (said.fire() != null) {
-            Progress.of(server).hear(said.fire(), line.by() == null ? "" : People.label(server, line.by()), said.text());
+        String by = line.by() == null ? "" : People.label(server, line.by());
+        long day = Math.floorDiv(Engine.overworld(server).getDayTime(), Clock.DAY);
+        if (said.fire() != null && !Long.valueOf(day).equals(HEARD.put(said.fire() + "/" + by + "/" + said.text(), day))) {
+            Progress.of(server).hear(said.fire(), by, said.text());
             Journal.syncAll(server);
         }
         People.introduce(server, line.names());

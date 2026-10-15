@@ -120,7 +120,7 @@ public final class Compass {
         }
         Aim aim = bearing.aim;
         if (aim.pos() == null) {
-            return still(CompassPayload.Mode.LOST, claimed, markers, shelter, sight);
+            return still(event.rising() ? CompassPayload.Mode.RISING : CompassPayload.Mode.LOST, claimed, markers, shelter, sight);
         }
         if (bearing.trailStart == null) {
             bearing.trailStart = pos;
@@ -153,9 +153,9 @@ public final class Compass {
     private static List<CompassPayload.Marker> markers(ServerPlayer player) {
         List<CompassPayload.Marker> markers = new ArrayList<>();
         for (ServerPlayer member : player.server.getPlayerList().getPlayers()) {
-            if (member != player && member.level() == player.level()) {
-                markers.add(new CompassPayload.Marker(
-                        CompassPayload.Kind.TEAMMATE, member.getGameProfile().getName(), member.getBlockX(), member.getBlockZ()));
+            Joining.Place at = Joining.beside(member);
+            if (member != player && at.dimension() == player.level().dimension()) {
+                markers.add(new CompassPayload.Marker(CompassPayload.Kind.TEAMMATE, member.getGameProfile().getName(), at.pos().getX(), at.pos().getZ()));
             }
         }
         for (Stones.Stone stone : Stones.mine(player)) {

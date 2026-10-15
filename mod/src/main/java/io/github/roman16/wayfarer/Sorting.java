@@ -17,6 +17,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.CompoundContainer;
 import net.minecraft.world.Container;
@@ -26,6 +27,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.ShulkerBoxMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -36,6 +38,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 public final class Sorting {
     public static final Comparator<ItemStack> ORDER = Comparator.comparing(Sorting::kind)
+            .thenComparing(Sorting::mod)
             .thenComparing(stack -> stack.getHoverName().getString())
             .thenComparing(stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()).toString())
             .thenComparingInt(ItemStack::getDamageValue);
@@ -59,7 +62,13 @@ public final class Sorting {
         TOOLS,
         ARMOUR,
         FOOD,
+        BLOCKS,
         OTHER
+    }
+
+    private static String mod(ItemStack stack) {
+        String namespace = BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace();
+        return namespace.equals(ResourceLocation.DEFAULT_NAMESPACE) ? "" : namespace;
     }
 
     public static void look(ServerPlayer player, boolean open) {
@@ -153,7 +162,10 @@ public final class Sorting {
         if (stack.isDamageableItem()) {
             return Kind.TOOLS;
         }
-        return stack.has(DataComponents.FOOD) ? Kind.FOOD : Kind.OTHER;
+        if (stack.has(DataComponents.FOOD)) {
+            return Kind.FOOD;
+        }
+        return stack.getItem() instanceof BlockItem ? Kind.BLOCKS : Kind.OTHER;
     }
 
     private static int fingerprint(Inventory inventory) {

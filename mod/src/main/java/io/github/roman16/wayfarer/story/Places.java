@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
@@ -23,6 +24,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class Places {
     private static final int CHECK_TICKS = 20;
+    private static final int VISIT_BLOCKS = 64;
     private static final int SPIRAL = 6;
     private static final String FIRE_SEAT = "fire_";
 
@@ -102,6 +104,56 @@ public final class Places {
             case Act3Halls.WARD, Act3Halls.WARD_STONE, Act3Halls.WARD_CHAMPION, Act3Halls.WARD_LINES, Act3Halls.MANSION_HALL, Act3Halls.MANSION, Act3Halls.MANSION_STAND, Act3Halls.SCRIBES,
                     Act3Halls.SCRIBES_STONE, Act3Halls.GRAVEYARD, Act3Halls.GRAVEYARD_STONE -> Act3Halls.find(server, name);
             default -> throw new IllegalArgumentException("the story has no way to build " + name);
+        }
+    }
+
+    static void unbuild(MinecraftServer server, String name) {
+        switch (name) {
+            case Diggers.NAME, Diggers.HALL -> Diggers.unbuild(server);
+            case FirstCamp.NAME -> FirstCamp.unbuild(server);
+            case FirstVillage.NAME, FirstVillage.STONE -> FirstVillage.unbuild(server);
+            case Ford.NAME, Ford.OUTPOST -> Ford.unbuild(server);
+            case Frost.NAME, Frost.HALL, Frost.LAKE -> Frost.unbuild(server, name);
+            case Marsh.NAME, Marsh.HALL -> Marsh.unbuild(server);
+            case Shipyard.NAME, Shipyard.WRECK -> Shipyard.unbuild(server, name);
+            default -> throw new IllegalArgumentException("the story has no way to build " + name + " again");
+        }
+    }
+
+    static boolean forget(MinecraftServer server, String name) {
+        switch (name) {
+            case Ford.NAME, Ford.FAR, Ford.OUTPOST -> Ford.forget(server);
+            case Marsh.NAME, Marsh.HALL, Marsh.CELLAR -> Marsh.forget(server);
+            default -> {
+                return false;
+            }
+        }
+        build(server, name);
+        return true;
+    }
+
+    static boolean rebuilds(String name) {
+        return switch (name) {
+            case Diggers.NAME, Diggers.HALL, FirstCamp.NAME, FirstVillage.NAME, FirstVillage.STONE, Ford.NAME, Ford.OUTPOST, Frost.NAME, Frost.HALL, Frost.LAKE,
+                    Marsh.NAME, Marsh.HALL, Shipyard.NAME, Shipyard.WRECK -> true;
+            default -> false;
+        };
+    }
+
+    private static void visit(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        boolean found = false;
+        for (String name : Story.get().places()) {
+            Optional<BlockPos> pos = progress.place(name);
+            if (!progress.visited.contains(name) && pos.isPresent() && Engine.players(server).stream().anyMatch(player -> player.level().dimension() == Level.OVERWORLD
+                    && Steps.horizontal(player.blockPosition(), pos.get()) <= (double) VISIT_BLOCKS * VISIT_BLOCKS)) {
+                progress.visited.add(name);
+                found = true;
+            }
+        }
+        if (found) {
+            progress.setDirty();
+            Journal.syncAll(server);
         }
     }
 
@@ -190,6 +242,8 @@ public final class Places {
             Act3.tick(event.getServer());
             Act3Halls.tick(event.getServer());
             Voyage.tick(event.getServer());
+            Standing.tick(event.getServer());
+            visit(event.getServer());
             Steps.keep(event.getServer());
         }
     }

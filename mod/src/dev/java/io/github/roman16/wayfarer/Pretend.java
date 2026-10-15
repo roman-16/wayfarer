@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.roman16.wayfarer.story.Talk;
 import io.netty.channel.embedded.EmbeddedChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.commands.CommandSourceStack;
@@ -29,6 +30,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.network.ServerCommonPacketListenerImpl;
 import net.minecraft.util.StringUtil;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -39,6 +41,10 @@ import net.neoforged.neoforge.network.registration.NetworkRegistry;
 
 @EventBusSubscriber(modid = Wayfarer.MODID)
 public final class Pretend {
+    private static final ClientInformation DEFAULT = ClientInformation.createDefault();
+    private static final ClientInformation SEEN = new ClientInformation(DEFAULT.language(), DEFAULT.viewDistance(), DEFAULT.chatVisibility(),
+            DEFAULT.chatColors(), Arrays.stream(PlayerModelPart.values()).mapToInt(PlayerModelPart::getMask).reduce(0, (a, b) -> a | b),
+            DEFAULT.mainHand(), DEFAULT.textFilteringEnabled(), DEFAULT.allowsListing());
     private static final String ANSWERS = " sees the answers: ";
     private static final String CHAT = " hears: ";
     private static final String OVERLAY = " sees above the hotbar: ";
@@ -101,12 +107,12 @@ public final class Pretend {
             return 0;
         }
         GameProfile profile = new GameProfile(UUIDUtil.createOfflinePlayerUUID(name), name);
-        ServerPlayer player = new ServerPlayer(server, server.overworld(), profile, ClientInformation.createDefault());
+        ServerPlayer player = new ServerPlayer(server, server.overworld(), profile, SEEN);
         Silent connection = new Silent(server, name);
         new EmbeddedChannel(connection);
         NetworkRegistry.configureMockConnection(connection);
         connections.add(connection);
-        CommonListenerCookie cookie = new CommonListenerCookie(profile, 0, ClientInformation.createDefault(), false, ConnectionType.NEOFORGE);
+        CommonListenerCookie cookie = new CommonListenerCookie(profile, 0, SEEN, false, ConnectionType.NEOFORGE);
         server.getPlayerList().placeNewPlayer(connection, player, cookie);
         String dead = player.isDeadOrDying() ? ", dead since they left; `wayfarer pretend respawn %s` brings them back".formatted(name) : "";
         source.sendSuccess(() -> Component.literal("%s is online at %.1f %.1f %.1f in %s%s"

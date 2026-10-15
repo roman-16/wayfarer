@@ -1,0 +1,11 @@
+{
+  "ping": {
+    "replace": true,
+    "sounds": [
+      {
+        "name": "wayfarer:effects/team_mark"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.team_mark"
+  }
+}

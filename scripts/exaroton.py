@@ -11,6 +11,7 @@ import sys
 import threading
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime
 from pathlib import Path
@@ -36,7 +37,11 @@ STATUSES = {
 OFFLINE = 0
 ONLINE = 1
 CRASHED = 7
+FLOOR_AVERAGE_FPS = 60
+FLOOR_LOW_FPS = 30
 POLL_SECONDS = 60
+RECORD = "wayfarer/record"
+RECORD_FOLDER = "record"
 LOG_SECONDS = 300
 RECONNECT_SECONDS = 5
 SILENCE_SECONDS = 90
@@ -63,6 +68,17 @@ class Api:
         if not body.get("success"):
             raise ApiError(f"{path}: {body.get('error')}")
         return body["data"]
+
+    def data(self, path):
+        request = urllib.request.Request(
+            f"https://{HOST}/v1/{urllib.parse.quote(path)}",
+            headers={"Authorization": f"Bearer {self.token}", "User-Agent": AGENT},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                return response.read()
+        except urllib.error.HTTPError as error:
+            raise ApiError(f"{path}: HTTP {error.code}") from None
 
 
 class WebSocket:
@@ -155,6 +171,7 @@ class Session:
         self.folder = folder
         self.lock = threading.Lock()
         self.status = None
+        self.read = {}
 
     def append(self, name, line):
         with self.lock, open(self.folder / name, "a", encoding="utf-8") as file:
@@ -165,7 +182,7 @@ class Session:
 
     def write(self, name, text):
         path = self.folder / name
-        partial = path.with_name(name + ".part")
+        partial = path.with_name(path.name + ".part")
         partial.write_text(text, encoding="utf-8")
         partial.replace(path)
 
@@ -223,6 +240,31 @@ def fetch_log(api, server, session):
         session.write("latest.log", content)
 
 
+def fetch_record(api, server, session):
+    path = f"servers/{server['id']}"
+    try:
+        days = api.get(f"{path}/files/info/{RECORD}/").get("children") or []
+    except ApiError:
+        return
+    (session.folder / RECORD_FOLDER).mkdir(exist_ok=True)
+    for day in days:
+        try:
+            text = api.data(f"{path}/files/data/{RECORD}/{day['name']}").decode("utf-8")
+        except (ApiError, OSError) as error:
+            session.record("polls.jsonl", {"error": str(error)})
+            continue
+        session.write(f"{RECORD_FOLDER}/{day['name']}", text)
+        lines = text.splitlines()
+        for line in lines[session.read.get(day["name"], 0) :]:
+            event = json.loads(line)
+            if event.get("event") == "frames" and (event["fps"] < FLOOR_AVERAGE_FPS or event["low"] < FLOOR_LOW_FPS):
+                say(
+                    f"{event['player']} fell under the floor: {event['fps']} fps on average, 1% low {event['low']} at "
+                    f"{event['preset']}, shaders {'on' if event['shaders'] else 'off'}, far view {event['far_view']} chunks"
+                )
+        session.read[day["name"]] = len(lines)
+
+
 def poll(api, server, session, level):
     path = f"servers/{server['id']}"
     since_log = LOG_SECONDS
@@ -242,6 +284,8 @@ def poll(api, server, session, level):
         except (ApiError, OSError, KeyError) as error:
             snapshot["error"] = str(error)
         session.record("polls.jsonl", snapshot)
+        if snapshot.get("status") not in (None, OFFLINE):
+            fetch_record(api, server, session)
         if since_log >= LOG_SECONDS and snapshot.get("status") not in (None, OFFLINE):
             fetch_log(api, server, session)
             since_log = 0
@@ -289,7 +333,8 @@ def listen(api, server, session, token):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Record an exaroton server's console, status, memory, tick time, log and world sizes until interrupted"
+        description="Record an exaroton server's console, status, memory, tick time, log, world sizes and the Wayfarer "
+        "mod's play record, with each player's frame rate, until interrupted"
     )
     parser.add_argument("server", nargs="?", help="server name or id; the account's only server when omitted")
     arguments = parser.parse_args()

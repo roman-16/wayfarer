@@ -22,7 +22,8 @@ public record CompassPayload(
         DIM,
         FAR,
         HIDDEN,
-        LOST
+        LOST,
+        RISING
     }
 
     public enum Kind {

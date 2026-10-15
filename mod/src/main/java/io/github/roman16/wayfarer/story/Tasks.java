@@ -203,8 +203,12 @@ public final class Tasks {
         if (Caravan.heading(player) && tracked.map(active -> !active.step().kind().equals("caravan")).orElse(true)) {
             kind = Component.translatable("wayfarer.journal.main");
             title = Component.translatable("wayfarer.caravan.title");
-            objective = tracked.map(active -> Component.translatable("wayfarer.caravan.waits", Engine.title(Progress.of(server), active.quest())))
-                    .orElse(Component.translatable("wayfarer.caravan.objective"));
+            Optional<String> turnedBack = Caravan.turnedBack(server);
+            objective = tracked.map(active -> turnedBack
+                            .map(name -> Component.translatable("wayfarer.caravan.turned_back.waits", name, Engine.title(Progress.of(server), active.quest())))
+                            .orElse(Component.translatable("wayfarer.caravan.waits", Engine.title(Progress.of(server), active.quest()))))
+                    .orElse(turnedBack.map(name -> Component.translatable("wayfarer.caravan.turned_back", name))
+                            .orElse(Component.translatable("wayfarer.caravan.objective")));
             rest(player, "caravan", Clock::rested, open);
         } else if (tracked.isPresent()) {
             Engine.Active active = tracked.get();

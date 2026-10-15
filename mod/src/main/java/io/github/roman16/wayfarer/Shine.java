@@ -36,6 +36,7 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class Shine {
+    private static final String EYES_QUEST = "your_eyes";
     private static final String IMPROVED_MOBS = "improvedmobs";
     private static final int FAR = 48;
     private static final int LIMIT_SHINE = 4;
@@ -56,6 +57,13 @@ public final class Shine {
         Balance.Shine balance = Balance.get().shine();
         int act = Math.min(act(server), balance.act().size()) - 1;
         return balance.act().get(act) + Journey.claimed(server).size() * balance.perShard();
+    }
+
+    public static float glow(MinecraftServer server) {
+        if (Journey.over(server) || Progress.of(server).step(EYES_QUEST) < 0) {
+            return 0;
+        }
+        return Math.min(1, (float) Journey.claimed(server).size() / Halls.count(server.overworld()));
     }
 
     private static int act(MinecraftServer server) {

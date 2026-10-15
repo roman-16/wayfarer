@@ -13,6 +13,7 @@ from pathlib import Path
 
 import hotswap
 import states
+import tomllib
 from drive import Failure, crashes, running
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -23,8 +24,11 @@ GAME = DRIVER / "game.pid"
 LAUNCHED = DRIVER / "launched.json"
 WORLD = DRIVER / "world.json"
 SCREEN = DRIVER / "screen.pid"
+SCREEN_DISPLAY = DRIVER / "screen-display"
+SCREEN_LOG = DRIVER / "screen.log"
 SNAPSHOT = DRIVER / "classes"
-SCREEN_SIZE = "1920x1080x24"
+SCREEN_SECONDS = 20
+SCREEN_SIZE = (1920, 1080)
 LAUNCH_LOG = CLIENT / "launch.log"
 CRASHES = CLIENT / "crash-reports"
 DISPLAY_FAILED = "Failed to initialize the mod loading system and display"
@@ -54,12 +58,41 @@ EYE_HEIGHT = 1.62
 SHAFTS = {"ladder": 5, "spiral": 11, "switchback": 11}
 SHAFT_CAMERAS = ("outside", "above", "entrance", "stair-top", "stair-bottom", "stair-door")
 PANORAMA = ROOT / "mod/src/main/resources/assets/minecraft/textures/gui/title/background"
-PANORAMA_CAMERA = (-217.5, 79.3, 178.5, 270)
+PANORAMA_CAMERA = (-114, 73, 182, 210)
 PANORAMA_CHUNKS = 16
 PANORAMA_FACES = 6
-PANORAMA_SEED = 5
-PANORAMA_TIME = 23200
+PANORAMA_SEED = 21
+PANORAMA_SIZE = 2048
+PANORAMA_SKY_TICKS = 32
+PANORAMA_QUALITY = "85-98"
+PANORAMA_TIMES = {"dawn": 23400, "dusk": 12600, "night": 13600, "noon": 6000, "sunset": 12000}
 SOUTH, WEST, NORTH, EAST = (0, 1), (-1, 0), (0, -1), (1, 0)
+BENCH_SEED = tomllib.loads((ROOT / "story/states.toml").read_text())["seed"]
+BENCH_SECONDS = 32
+BENCH_HEIGHT = 256
+BENCH_PITCH = 32
+BENCH_SPEED = 8
+BENCH_HEADINGS = (-90, 180, 90, 0)
+BENCH_SETTLED = (
+    "/gamerule wayfarerStory false",
+    "/gamemode creative",
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/weather clear",
+    "/gamerule doWeatherCycle false",
+    "vsync off",
+)
+BENCH_STEPS = (("low", "off"), ("medium", "off"), ("high", "on"), ("ultra", "on"))
+MINIMUM_STEPS = (("low", "off"), ("medium", "off"))
+MINIMUM_MHZ = 1100
+MINIMUM_THREADS = 12
+MINIMUM_MHZ_LIMIT = 1200
+OTHERS_PERCENT = 5
+DEV_SERVER = ROOT / "build/devserver"
+DEV_SERVER_ADDRESS = "localhost:25566"
+SERVER_FAR_VIEW = CLIENT / "Distant_Horizons_server_data"
+PERF = re.compile(r"(\d+) fps on average over \d+ s, 1% low (\d+) fps, worst frame (\d+) ms")
+STANDING = re.compile(r"(-?[\d.]+) -?[\d.]+ (-?[\d.]+) facing")
 
 
 def alive():
@@ -80,6 +113,8 @@ def wait_done(timeout, before):
         launched = LAUNCH_LOG.read_text(errors="replace") if LAUNCH_LOG.exists() else ""
         if DISPLAY_FAILED in launched:
             sys.exit(f"the client could not open its window; launch log {LAUNCH_LOG}\n{launched[-4000:]}")
+        if SCREEN.exists() and not running(SCREEN):
+            sys.exit(f"the hidden screen (gamescope) stopped; its log {SCREEN_LOG}, launch log {LAUNCH_LOG}")
         if not alive():
             sys.exit(f"the client is not running; launch log {LAUNCH_LOG}\n{launched[-4000:]}")
         time.sleep(CHECK_SECONDS)
@@ -92,39 +127,50 @@ def wait_done(timeout, before):
     sys.exit(f"the driver did not finish within {timeout} s and was aborted; its log:\n{report}")
 
 
-def screen(visible):
+def screen(visible, size):
     environment = dict(os.environ)
     if visible:
         return environment
-    ready, announce = os.pipe()
-    process = subprocess.Popen(
-        ["Xvfb", "-displayfd", str(announce), "-screen", "0", SCREEN_SIZE, "-nolisten", "tcp", "-terminate"],
-        pass_fds=(announce,),
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        start_new_session=True,
+    if shutil.which("gamescope") is None:
+        sys.exit("the hidden screen needs gamescope from the system (programs.gamescope.enable); run with --visible")
+    SCREEN_DISPLAY.unlink(missing_ok=True)
+    width, height = (str(side) for side in size)
+    announce = (
+        f'printf %s "$DISPLAY" > {SCREEN_DISPLAY}.tmp && mv {SCREEN_DISPLAY}.tmp {SCREEN_DISPLAY}; exec sleep infinity'
     )
-    os.close(announce)
-    with os.fdopen(ready) as stream:
-        display = stream.readline().strip()
-    if not display:
-        sys.exit("the hidden screen (Xvfb) did not start; run with --visible to use the real one")
+    alone = {key: value for key, value in environment.items() if key not in ("DISPLAY", "WAYLAND_DISPLAY")}
+    with SCREEN_LOG.open("w") as log:
+        process = subprocess.Popen(
+            ["gamescope", "--backend", "headless", "-W", width, "-H", height, "-w", width, "-h", height]
+            + ["--", "sh", "-c", announce],
+            env=alone,
+            stdin=subprocess.DEVNULL,
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+        )
     SCREEN.write_text(str(process.pid))
+    deadline = time.monotonic() + SCREEN_SECONDS
+    while not SCREEN_DISPLAY.exists() and process.poll() is None and time.monotonic() < deadline:
+        time.sleep(CHECK_SECONDS)
+    if not SCREEN_DISPLAY.exists():
+        release_screen()
+        last = SCREEN_LOG.read_text(errors="replace").strip().splitlines()[-1:] or ["no output"]
+        sys.exit(f"the hidden screen (gamescope) did not start: {last[0]}; run with --visible to use the user's screen")
     environment.pop("WAYLAND_DISPLAY", None)
     return environment | {
-        "DISPLAY": f":{display}",
+        "DISPLAY": SCREEN_DISPLAY.read_text(),
         "WAYFARER_BACKGROUND": "true",
         "WAYFARER_SILENT": "true",
         "XDG_SESSION_TYPE": "x11",
-        "__GLX_VENDOR_LIBRARY_NAME": "mesa",
     }
 
 
-def games():
+def games(folder=CLIENT):
     for process in Path("/proc").iterdir():
         if process.name.isdigit():
             try:
-                if (process / "cwd").resolve() == CLIENT:
+                if (process / "cwd").resolve() == folder:
                     yield int(process.name)
             except OSError:
                 continue
@@ -132,17 +178,16 @@ def games():
 
 def release_screen():
     if running(SCREEN):
-        pid = int(SCREEN.read_text())
-        os.kill(pid, signal.SIGTERM)
+        # gamescope 3.16 segfaults and dumps core when asked to stop, so the hidden screen is killed outright.
+        os.kill(int(SCREEN.read_text()), signal.SIGKILL)
         deadline = time.monotonic() + STOP_SECONDS
         while running(SCREEN) and time.monotonic() < deadline:
             time.sleep(CHECK_SECONDS)
-        if running(SCREEN):
-            os.kill(pid, signal.SIGKILL)
-    SCREEN.unlink(missing_ok=True)
+    for screen_file in (SCREEN, SCREEN_DISPLAY):
+        screen_file.unlink(missing_ok=True)
 
 
-def launch(world, timeout, visible, mode, state, rebuild, seed):
+def launch(world, timeout, visible, mode, state, rebuild, seed, processors=None, size=SCREEN_SIZE):
     DRIVER.mkdir(parents=True, exist_ok=True)
     for stale in ("abort", "commands.txt", "done.txt", "game.pid", "launched.json", "quit", "world.json"):
         (DRIVER / stale).unlink(missing_ok=True)
@@ -150,7 +195,12 @@ def launch(world, timeout, visible, mode, state, rebuild, seed):
     shutil.rmtree(SCREENSHOTS, ignore_errors=True)
     before = crashes(CRASHES)
     command = ["just", "showroom" if world == "showroom" else "play", mode]
-    environment = screen(visible) | {"WAYFARER_DRIVEN": "true", "WAYFARER_SEED": "" if seed is None else str(seed)}
+    environment = screen(visible, size) | {
+        "WAYFARER_DRIVEN": "true",
+        "WAYFARER_SEED": "" if seed is None else str(seed),
+    }
+    if processors:
+        environment["WAYFARER_PROCESSORS"] = str(processors)
     start = None
     if state:
         cache = states.folder("client", mode, state)
@@ -183,7 +233,7 @@ def launch(world, timeout, visible, mode, state, rebuild, seed):
         shut(STOP_SECONDS)
         sys.exit(f"the client could not open its world: {blocked[0].removeprefix('blocked: ')}")
     hotswap.remember(SNAPSHOT)
-    record(states.digests(), mode, visible)
+    record(states.digests(), mode, visible, size)
     say(world, state, start, f"launched in {time.monotonic() - started:.0f} s", visible, mode, report)
 
 
@@ -217,8 +267,14 @@ def say(world, state, start, took, visible, mode, report):
     print("\n".join(errors))
 
 
-def record(digests, mode, visible):
-    LAUNCHED.write_text(json.dumps({"digests": digests, "mode": mode, "visible": visible}))
+def shown(visible, size):
+    return None if visible else list(size)
+
+
+def record(digests, mode, visible, size):
+    LAUNCHED.write_text(
+        json.dumps({"digests": digests, "mode": mode, "size": shown(visible, size), "visible": visible})
+    )
 
 
 def current():
@@ -227,10 +283,11 @@ def current():
     return json.loads(LAUNCHED.read_text()), json.loads(WORLD.read_text())
 
 
-def relaunching(launched, digests, mode, visible):
+def relaunching(launched, digests, mode, visible, size):
     if launched is None:
         return ["none runs"]
-    reasons = [] if (launched["mode"], launched["visible"]) == (mode, visible) else ["the screen or mode is another"]
+    running_on = (launched["mode"], launched["visible"], launched.get("size"))
+    reasons = [] if running_on == (mode, visible, shown(visible, size)) else ["the screen or mode is another"]
     return reasons + states.changed(launched["digests"], digests, states.LAUNCH)
 
 
@@ -251,22 +308,22 @@ def swapped():
     return [f"{', '.join(result['needs a restart'])} needs a restart"] if result["needs a restart"] else []
 
 
-def ensure(world, timeout, visible, mode, state=None, rebuild=False, anew=False, seed=None):
+def ensure(world, timeout, visible, mode, state=None, rebuild=False, anew=False, seed=None, size=SCREEN_SIZE):
     launched, opened = current()
     digests = states.digests()
-    reasons = relaunching(launched, digests, mode, visible) or swapped()
+    reasons = relaunching(launched, digests, mode, visible, size) or swapped()
     if reasons:
         if alive():
             print("relaunching: " + "; ".join(reasons))
             shut(STOP_SECONDS)
-        launch(world, timeout, visible, mode, state, rebuild, seed)
+        launch(world, timeout, visible, mode, state, rebuild, seed, size=size)
         return
     reloaded = ""
     if states.changed(launched["digests"], digests, ("assets",)):
         batch(["assets"], timeout)
         reloaded = "textures, models, fonts, sounds and lang reloaded, "
     data = states.changed(launched["digests"], digests, ("data",))
-    record(digests, mode, visible)
+    record(digests, mode, visible, size)
     if world == "showroom" and opened["world"] == "showroom" and not anew and not data:
         print("the client is running in the showroom" + (f" ({reloaded.removesuffix(', ')})" if reloaded else ""))
         return
@@ -563,36 +620,254 @@ def photograph(chosen, timeout):
 
 
 def panorama(arguments):
-    ensure("play", START_SECONDS, True, "shipped", seed=PANORAMA_SEED)
+    ensure("play", START_SECONDS, False, "shipped", seed=PANORAMA_SEED, size=(PANORAMA_SIZE, PANORAMA_SIZE))
     x, y, z, yaw = PANORAMA_CAMERA
-    report = batch(
-        [
-            "gui off",
-            "chat off",
-            "/gamemode spectator",
+    steps = [
+        "graphics ultra shaders on",
+        "gui off",
+        "chat off",
+        "/gamemode spectator",
+        "/gamerule doWeatherCycle false",
+        "/weather clear",
+        f"/tp @s {x} {y} {z} {yaw} 0",
+        "particles minimal",
+        f"distance {PANORAMA_CHUNKS}",
+        "settle",
+        "far",
+    ]
+    for name, daytime in sorted(PANORAMA_TIMES.items()):
+        steps += [
+            "/tick unfreeze",
             "/weather clear",
-            f"/tp @s {x} {y} {z} {yaw} 0",
-            "particles minimal",
-            f"distance {PANORAMA_CHUNKS}",
-            f"/time set {PANORAMA_TIME}",
+            f"/time set {daytime} true",
+            f"sky {PANORAMA_SKY_TICKS}",
             "/tick freeze",
             "settle",
-            "far",
-            "panorama title",
-            "/tick unfreeze",
-            "/gamemode creative",
-            "particles all",
-            "chat on",
-            "gui on",
-        ],
-        arguments.timeout,
-    )
+            f"panorama {name}",
+        ]
+    steps += [
+        "/tick unfreeze",
+        "/gamerule doWeatherCycle true",
+        "/gamemode creative",
+        "particles all",
+        "chat on",
+        "gui on",
+    ]
+    report = batch(steps, arguments.timeout)
     errors = [error for entry in parse(report) for error in entry.get("error", [])]
     if errors:
         sys.exit(f"panorama failed: {'; '.join(errors)}")
-    for face in range(PANORAMA_FACES):
-        shutil.copyfile(SCREENSHOTS / f"panorama/title/panorama_{face}.png", PANORAMA / f"panorama_{face}.png")
-    print(f"the title's panorama is in {PANORAMA.relative_to(ROOT)}")
+    shutil.rmtree(PANORAMA, ignore_errors=True)
+    for name in sorted(PANORAMA_TIMES):
+        (PANORAMA / name).mkdir(parents=True)
+        for face in range(PANORAMA_FACES):
+            shot = SCREENSHOTS / f"panorama/{name}/panorama_{face}.png"
+            kept = PANORAMA / name / f"panorama_{face}.png"
+            quantize = ["pngquant", "--quality", PANORAMA_QUALITY, "--speed", "1", "--force", "--output", str(kept)]
+            subprocess.run([*quantize, str(shot)], check=True)
+    print(f"the title's panoramas ({', '.join(sorted(PANORAMA_TIMES))}) are in {PANORAMA.relative_to(ROOT)}")
+
+
+def bench(arguments):
+    minimum = arguments.minimum
+    cpus = arguments.cpus or (slowest_cores() if minimum else None)
+    if minimum and cpus is None:
+        sys.exit("bench --minimum needs --cpus on a processor without slower cores")
+    if minimum and shutil.which("nvidia-smi") is None:
+        sys.exit("bench --minimum needs nvidia-smi to check the graphics card's clock")
+    steps = MINIMUM_STEPS if minimum else BENCH_STEPS
+    places = (("alone", []), ("server", [f"join {DEV_SERVER_ADDRESS}"])) if minimum else (("alone", []),)
+    nvidia = shutil.which("nvidia-smi")
+    locking = minimum and not at_pc()
+    for ending in (signal.SIGHUP, signal.SIGTERM):
+        signal.signal(ending, lambda number, frame: sys.exit(f"bench stopped by signal {number}"))
+    if alive():
+        shut(STOP_SECONDS)
+    try:
+        if locking:
+            subprocess.run(
+                ["sudo", "--non-interactive", nvidia, f"--lock-gpu-clocks={MINIMUM_MHZ},{MINIMUM_MHZ}"], check=True
+            )
+            print(f"nobody is at the PC: the graphics card is locked at {MINIMUM_MHZ:,} MHz until the bench ends")
+        measure(minimum, cpus, steps, places)
+    finally:
+        if locking:
+            subprocess.run(["sudo", "--non-interactive", nvidia, "--reset-gpu-clocks"], check=False)
+            print("the graphics card's clock is back to normal")
+        elif minimum:
+            print("to give the graphics card its speed back, run: sudo nvidia-smi --reset-gpu-clocks")
+
+
+def at_pc():
+    listed = subprocess.run(["loginctl", "list-sessions", "--json=short"], capture_output=True, text=True, check=True)
+    for session in json.loads(listed.stdout):
+        if session["class"] == "user" and not session["idle"]:
+            kind = subprocess.run(
+                ["loginctl", "show-session", session["session"], "--property=Type", "--value"],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            if kind.stdout.strip() in ("wayland", "x11"):
+                return True
+    return False
+
+
+def measure(minimum, cpus, steps, places):
+    try:
+        if minimum:
+            others = sorted(set(range(os.cpu_count())) - set(expand(cpus)))
+            subprocess.run(
+                ["python3", "scripts/server.py", "start", "--far", "--seed", str(BENCH_SEED)],
+                cwd=ROOT,
+                env=os.environ | {"WAYFARER_PROCESSORS": str(len(others))},
+                check=True,
+            )
+            for pid in games(DEV_SERVER):
+                pin(pid, ",".join(map(str, others)))
+            shutil.rmtree(SERVER_FAR_VIEW, ignore_errors=True)
+            launch("play", START_SECONDS, False, "shipped", None, False, BENCH_SEED, MINIMUM_THREADS)
+            pin(int(GAME.read_text()), cpus)
+        else:
+            launch("play", START_SECONDS, False, "shipped", None, False, BENCH_SEED)
+        held(minimum)
+        print(
+            f"benchmarking as the minimum machine: i7-10750H as cores {cpus}, RTX 2070 Super as the graphics card at "
+            f"{MINIMUM_MHZ:,} MHz, shader off"
+            if minimum
+            else "benchmarking this PC: every step, the shader on for high and ultra"
+        )
+        for where, joining in places:
+            first, shaders = steps[0]
+            report = batch([*joining, *BENCH_SETTLED, f"graphics {first} shaders {shaders}", "pos"], RUN_SECONDS)
+            spawn = [float(value) for value in STANDING.search(report).groups()]
+            print(opening(where, spawn), flush=True)
+            for index, (step, shaders) in enumerate(steps):
+                watch = subprocess.Popen(
+                    ["nvidia-smi", "pmon", "--delay", "1", "--select", "u"], stdout=subprocess.PIPE, text=True
+                )
+                result = leg(step, shaders, spawn, BENCH_HEADINGS[index])
+                watch.terminate()
+                held(minimum)
+                print(row(step, where, *result) + sharing(watch.communicate()[0]), flush=True)
+    finally:
+        if alive():
+            shut(STOP_SECONDS)
+        if minimum:
+            subprocess.run(["python3", "scripts/server.py", "stop"], cwd=ROOT, check=False)
+
+
+def sharing(watched):
+    ours = {int(GAME.read_text())} if GAME.exists() else set()
+    if SCREEN.exists():
+        ours |= family(int(SCREEN.read_text()))
+    samples = {}
+    for line in watched.splitlines():
+        fields = line.split()
+        if line.startswith("#") or len(fields) < 5 or not fields[1].isdigit() or int(fields[1]) in ours:
+            continue
+        samples.setdefault(fields[-1], []).append(0 if fields[3] == "-" else int(fields[3]))
+    busy = {name: sum(load) / len(load) for name, load in samples.items() if sum(load) / len(load) >= OTHERS_PERCENT}
+    return (
+        f"   others on the card: {', '.join(f'{name} {load:.0f}%' for name, load in sorted(busy.items()))}"
+        if busy
+        else ""
+    )
+
+
+def family(pid):
+    found = {pid}
+    for task in Path(f"/proc/{pid}/task").glob("*"):
+        with contextlib.suppress(OSError):
+            for child in (task / "children").read_text().split():
+                found |= family(int(child))
+    return found
+
+
+def leg(step, shaders, spawn, heading):
+    x, z = spawn
+    steps = [
+        f"graphics {step} shaders {shaders}",
+        f"/tp @s {x:.1f} {BENCH_HEIGHT} {z:.1f} {heading} {BENCH_PITCH}",
+        "fly on",
+        f"perf {BENCH_SECONDS}",
+        "pos",
+        "hold key.forward on",
+        f"perf {BENCH_SECONDS}",
+        "hold key.forward off",
+        "pos",
+    ]
+    entries = parse(batch(steps, RUN_SECONDS))
+    errors = [error for entry in entries for error in entry.get("error", [])]
+    if errors:
+        sys.exit(f"bench failed at {step}: {'; '.join(errors)}")
+    (start_x, start_z), (end_x, end_z) = (
+        (float(value) for value in STANDING.search(entry["pos"][0]).groups()) for entry in entries if "pos" in entry
+    )
+    flown = math.hypot(end_x - start_x, end_z - start_z)
+    if flown < BENCH_SECONDS * BENCH_SPEED:
+        sys.exit(
+            f"bench failed at {step}: the player flew {flown:.0f} blocks in {BENCH_SECONDS} s; something stood in the way"
+        )
+    return [PERF.search(entry["perf"][0]).groups() for entry in entries if "perf" in entry]
+
+
+def opening(where, spawn):
+    x, z = spawn
+    report = batch(
+        [f"/tp @s {x:.1f} {BENCH_HEIGHT} {z:.1f} 0 {BENCH_PITCH}", "fly on", f"perf {BENCH_SECONDS}"], RUN_SECONDS
+    )
+    fps, low, worst = PERF.search(report).groups()
+    return f"{'opening':<7} {where:<7} hovering {fps:>4} fps, 1% low {low:>4}, worst {worst:>4} ms"
+
+
+def row(step, where, hovering, flying):
+    def frames(name, values):
+        fps, low, worst = values
+        return f"{name} {fps:>4} fps, 1% low {low:>4}, worst {worst:>4} ms"
+
+    return f"{step:<7} {where:<7} {frames('hovering', hovering)}   {frames('flying', flying)}"
+
+
+def slowest_cores():
+    speeds = {}
+    for cpu in Path("/sys/devices/system/cpu").glob("cpu[0-9]*"):
+        top = cpu / "cpufreq/cpuinfo_max_freq"
+        if top.exists():
+            speeds[int(cpu.name.removeprefix("cpu"))] = int(top.read_text())
+    if len(set(speeds.values())) < 2:
+        return None
+    slowest = min(speeds.values())
+    return ",".join(str(cpu) for cpu in sorted(speeds) if speeds[cpu] == slowest)
+
+
+def expand(cpus):
+    for part in cpus.split(","):
+        first, _, last = part.partition("-")
+        yield from range(int(first), int(last or first) + 1)
+
+
+def pin(pid, cpus):
+    pinned = subprocess.run(
+        ["taskset", "--all-tasks", "--pid", "--cpu-list", cpus, str(pid)], capture_output=True, text=True
+    )
+    if pinned.returncode != 0 and Path(f"/proc/{pid}").exists():
+        sys.exit(f"bench failed: process {pid} cannot be held to cores {cpus}: {pinned.stderr.strip()}")
+
+
+def gpu_clock():
+    read = subprocess.run(
+        ["nvidia-smi", "--query-gpu=clocks.gr", "--format=csv,noheader,nounits"], capture_output=True, text=True
+    )
+    return int(read.stdout.split()[0]) if read.returncode == 0 and read.stdout.strip() else 0
+
+
+def held(minimum):
+    if minimum and gpu_clock() > MINIMUM_MHZ_LIMIT:
+        sys.exit(
+            f"bench failed: the graphics card runs at {gpu_clock():,} MHz and someone is using the PC, so its clock is "
+            f"theirs to lock; once they agree, run: sudo nvidia-smi --lock-gpu-clocks={MINIMUM_MHZ},{MINIMUM_MHZ}"
+        )
 
 
 def swap(arguments):
@@ -679,10 +954,24 @@ def main():
     )
     panorama_parser = commands.add_parser(
         "panorama",
-        help="grow the panorama's world from its seed, photograph the title's panorama from its camera at dawn on the "
-        "user's screen, with the far view and the shader as shipped, and write its six faces into the mod",
+        help="grow the panorama's world from its seed, photograph the title's panoramas from its camera at each of their "
+        "times of day on a hidden screen drawn by the graphics card, with the far view and the shader as shipped, and "
+        "write their six faces into the mod",
     )
     panorama_parser.add_argument("--timeout", type=int, default=START_SECONDS)
+    bench_parser = commands.add_parser(
+        "bench",
+        help="measure the frames of every graphics step on the hidden screen, with the far view as shipped: arriving "
+        "somewhere new and flying over new land, alone and, with --minimum, on the dev server; prints one row per run",
+    )
+    bench_parser.add_argument(
+        "--minimum",
+        action="store_true",
+        help="run as the minimum machine of design/production.md R1: the game believing it has 12 threads and held to the "
+        "slower cores, the graphics card's clock locked to its speed (by the bench itself when nobody is at the PC), "
+        "Low and Medium with the shader off",
+    )
+    bench_parser.add_argument("--cpus", help="the cores to hold the game to, as taskset lists them, such as 12-19")
     stop_parser = commands.add_parser("stop", help="quit the client; returns once it has exited")
     stop_parser.add_argument("--timeout", type=int, default=STOP_SECONDS)
     tour_parser = commands.add_parser(
@@ -696,9 +985,9 @@ def main():
         "--visible", action="store_true", help="show the game on the user's screen instead of a hidden one"
     )
     arguments = parser.parse_args()
-    {"panorama": panorama, "run": run, "start": start, "stop": stop, "swap": swap, "tour": tour}[arguments.command](
-        arguments
-    )
+    {"bench": bench, "panorama": panorama, "run": run, "start": start, "stop": stop, "swap": swap, "tour": tour}[
+        arguments.command
+    ](arguments)
 
 
 if __name__ == "__main__":

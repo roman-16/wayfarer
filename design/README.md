@@ -29,7 +29,7 @@ Next: **the user plays** in the exported pack, with the `playtest` skill's check
 |---|---|---|
 | `interface.md` | The HUD, the pack's screens and the front door: everything read off the screen outside the world | Settled |
 | `lore.md` | What is true in the world, written from `story.md`; the pack's texts are written from it | Canon |
-| `mods.md` | Mods, resource packs and data packs weighed for the pack, each with a verdict, and what the pack could build itself | Picked: every Use goes in with phase 4 |
+| `mods.md` | Mods, resource packs and data packs weighed for the pack, each with a verdict | Picked: every Use goes in with phase 4 |
 | `narration.md` | Who reads which book and speaks which line aloud, with which voice, and why | Waits for phase 6 |
 | `production.md` | How the pack reaches its players and keeps up with them: the performance budget, updates and saves, blind players, languages, the release | Open |
 | `acts.md` | How phase 5 builds Acts 2 and 3 and the finale, quest by quest, and each step's state | Built; waits for the user's play |

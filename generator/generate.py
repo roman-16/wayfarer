@@ -214,10 +214,11 @@ def empty():
 
 def showroom(eyes):
     lang = json.loads(LANG.read_text())
+    models = ROOT / "mod/src/main/resources/assets/wayfarer/models/item"
     items = [f"endrem:{eye}_eye" for eye in sorted(eyes)] + sorted(
-        key.split(".", 1)[1].replace(".", ":", 1)
+        f"wayfarer:{key.split('.', 2)[2]}"
         for key in lang
-        if key.startswith(("block.wayfarer.", "item.wayfarer."))
+        if key.startswith(("block.wayfarer.", "item.wayfarer.")) and (models / f"{key.split('.', 2)[2]}.json").exists()
     )
     y = WORLD_BOTTOM + sum(height for _, height in SHOWROOM_LAYERS)
     row = SHOWROOM_ROW_Z + CHUNK // 2
@@ -392,7 +393,18 @@ def shard_names(eyes):
 
 
 def sounds(spec):
-    effects = spec["effects"]
+    effects = {name: effect for name, effect in spec["effects"].items() if "replaces" not in effect}
+    taken = {}
+    for name, effect in spec["effects"].items():
+        if "replaces" in effect:
+            namespace, event = effect["replaces"].split(":")
+            taken.setdefault(namespace, {})[event] = {
+                "replace": True,
+                "sounds": [{"name": f"wayfarer:effects/{name}"}],
+                "subtitle": f"subtitles.wayfarer.{name}",
+            }
+    for namespace, events in taken.items():
+        write_json(MAIN / f"assets/{namespace}/sounds.json", events)
     write_json(
         MAIN / "assets/wayfarer/sounds.json",
         {
@@ -617,6 +629,19 @@ def shaders():
         stale.unlink()
     options = tomllib.loads((ROOT / "generator/shader.toml").read_text())
     (SHADERPACKS / f"{pack}.txt").write_text("".join(f"{key}={value}\n" for key, value in sorted(options.items())))
+
+
+def labelled_faces(spec):
+    for group in spec.values():
+        for name, face in group.items():
+            sources = {"default", "person", "texture"} & face.keys()
+            if len(sources) != 1:
+                raise SystemExit(
+                    f"generator/faces.toml: {name} names {sorted(sources)}; it needs one of default, person, texture"
+                )
+            if len(face["eyes"]) != 8 or any(len(row) != 8 or set(row) - set(".iwIW?") for row in face["eyes"]):
+                raise SystemExit(f"generator/faces.toml: {name}'s eyes are not 8 rows of 8 of . i w I W ?")
+    write_json(DEV / "wayfarer/faces.json", spec)
 
 
 def write_json(path, data):
@@ -846,6 +871,7 @@ def main():
     campfire_spawns(balance)
     removals(tomllib.loads((ROOT / "generator/removals.toml").read_text()))
     write_json(DEV / "wayfarer/noise.json", tomllib.loads((ROOT / "generator/noise.toml").read_text()))
+    labelled_faces(tomllib.loads((ROOT / "generator/faces.toml").read_text()))
     owners(tomllib.loads((ROOT / "generator/owners.toml").read_text()), balance)
     write_json(MAIN / "wayfarer/swaps.json", tomllib.loads((ROOT / "generator/nether.toml").read_text())["swaps"])
     camp().save(MAIN / "data/wayfarer/structure/last_camp.nbt")

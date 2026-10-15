@@ -63,3 +63,9 @@
 **The compass demo: a waymark, a companion circling the camp and the camp's grave**, in the showroom
 
 ![The compass demo: a waymark, a companion circling the camp and the camp's grave](showroom-compass.jpg)
+
+## Shoulder view
+
+**F5's first press: the camera over the player's shoulder, the crosshair still in the middle**, in the showroom
+
+![F5's first press: the camera over the player's shoulder, the crosshair still in the middle](shoulder-view.jpg)

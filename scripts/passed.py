@@ -20,6 +20,7 @@ INPUTS = (
     "justfile",
     "mod/src/dev",
     "mod/src/generated/dev",
+    "mod/src/generated/resources/assets/wayfarer/textures/entity/people",
     "mod/src/main/templates",
     "pack/config",
     "pack/index.toml",

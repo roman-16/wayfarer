@@ -54,6 +54,7 @@ public final class People {
     private static final Map<String, Vec3> walking = new HashMap<>();
     private static final double STRIDE = 0.12;
     private static final int CLIMB = 2;
+    private static final int GROUND_BELOW = 16;
     private static final int AWAY_BLOCKS = 32;
     private static final int GONE_BLOCKS = 48;
     private static final int LEAVE_SECONDS = 64;
@@ -105,8 +106,14 @@ public final class People {
 
     private static Vec3 surface(ServerLevel level, Vec3 at) {
         BlockPos pos = BlockPos.containing(at);
-        VoxelShape shape = level.getBlockState(pos).getCollisionShape(level, pos);
-        return shape.isEmpty() ? at : new Vec3(at.x, Math.max(at.y, pos.getY() + shape.max(Direction.Axis.Y)), at.z);
+        for (int drop = 0; drop <= GROUND_BELOW; drop++) {
+            BlockPos below = pos.below(drop);
+            VoxelShape shape = level.getBlockState(below).getCollisionShape(level, below);
+            if (!shape.isEmpty()) {
+                return new Vec3(at.x, drop == 0 ? Math.max(at.y, below.getY() + shape.max(Direction.Axis.Y)) : below.getY() + shape.max(Direction.Axis.Y), at.z);
+            }
+        }
+        return at;
     }
 
     public static Entity person(ServerLevel level, String person, Vec3 at, float yaw, String pose) {

@@ -12,6 +12,9 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+def heapGigabytes = (providers.fileContents(layout.projectDirectory.file('../balance.toml')).asText.get() =~ /(?ms)^\[heap\]\s*^gigabytes = (\d+)$/)[0][1]
+def processors = providers.environmentVariable('WAYFARER_PROCESSORS').orNull
+
 sourceSets {
     dev {
         compileClasspath += sourceSets.main.output
@@ -85,12 +88,15 @@ neoForge {
     runs {
         configureEach {
             systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+            if (processors != null) {
+                jvmArgument "-XX:ActiveProcessorCount=${processors}"
+            }
         }
         [play: false, showroom: true].each { name, showroom ->
             create(name) {
                 client()
                 gameDirectory = file('../build/client')
-                jvmArgument '-Xmx8G'
+                jvmArgument "-Xmx${heapGigabytes}G"
                 jvmArguments.addAll swappable(client_swap_port)
                 jvmArguments.add hotswapAgentArgument
                 programArguments.addAll '--fml.mixinConfig', "${mod_id}.dev.mixins.json", '--height', '720', '--username', 'Wayfarer', '--width', '1280'
@@ -101,7 +107,7 @@ neoForge {
                 systemProperty "${mod_id}.seed", providers.environmentVariable('WAYFARER_SEED').orElse('').get()
                 systemProperty "${mod_id}.state", providers.environmentVariable('WAYFARER_STATE').orElse('').get()
                 systemProperty "${mod_id}.state.cache", providers.environmentVariable('WAYFARER_STATE_CACHE').orElse('').get()
-                ['DISPLAY', 'XDG_SESSION_TYPE', '__GLX_VENDOR_LIBRARY_NAME'].each { variable ->
+                ['DISPLAY', 'XDG_SESSION_TYPE'].each { variable ->
                     String value = providers.environmentVariable(variable).orNull
                     if (value != null) {
                         environment.put(variable, value)
@@ -116,7 +122,7 @@ neoForge {
         server {
             server()
             gameDirectory = file('../build/devserver')
-            jvmArgument '-Xmx8G'
+            jvmArgument "-Xmx${heapGigabytes}G"
             jvmArguments.addAll swappable(server_swap_port)
             jvmArguments.add hotswapAgentArgument
             programArguments.add '--nogui'

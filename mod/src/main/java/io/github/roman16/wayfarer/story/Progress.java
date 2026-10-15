@@ -40,10 +40,12 @@ public final class Progress extends SavedData {
     final Map<String, Float> yaws = new LinkedHashMap<>();
     final Map<String, UUID> bodies = new LinkedHashMap<>();
     final Map<String, BoundingBox> wards = new LinkedHashMap<>();
+    final Map<String, Standing.Witness> witnesses = new LinkedHashMap<>();
     final Set<String> gifts = new LinkedHashSet<>();
     final Set<String> joined = new LinkedHashSet<>();
     final Set<String> named = new LinkedHashSet<>();
     final Set<String> unlaid = new LinkedHashSet<>();
+    final Set<String> visited = new LinkedHashSet<>();
     final Map<UUID, Set<String>> seen = new LinkedHashMap<>();
     final Map<UUID, String> tracking = new LinkedHashMap<>();
     final Map<String, Integer> trust = new LinkedHashMap<>();
@@ -180,10 +182,16 @@ public final class Progress extends SavedData {
             int[] box = wards.getIntArray(key);
             progress.wards.put(key, new BoundingBox(box[0], box[1], box[2], box[3], box[4], box[5]));
         });
+        CompoundTag witnesses = tag.getCompound("witnesses");
+        witnesses.getAllKeys().forEach(key -> {
+            CompoundTag witness = witnesses.getCompound(key);
+            progress.witnesses.put(key, new Standing.Witness(BlockPos.of(witness.getLong("centre")), strings(witness.getList("blocks", Tag.TAG_STRING))));
+        });
         progress.gifts.addAll(strings(tag.getList("gifts", Tag.TAG_STRING)));
         progress.joined.addAll(strings(tag.getList("joined", Tag.TAG_STRING)));
         progress.named.addAll(strings(tag.getList("named", Tag.TAG_STRING)));
         progress.unlaid.addAll(strings(tag.getList("unlaid", Tag.TAG_STRING)));
+        progress.visited.addAll(strings(tag.getList("visited", Tag.TAG_STRING)));
         progress.stone = tag.getString("stone");
         CompoundTag seen = tag.getCompound("seen");
         seen.getAllKeys().forEach(key -> progress.seen.put(UUID.fromString(key), new LinkedHashSet<>(strings(seen.getList(key, Tag.TAG_STRING)))));
@@ -252,10 +260,19 @@ public final class Progress extends SavedData {
         CompoundTag wards = new CompoundTag();
         this.wards.forEach((name, box) -> wards.putIntArray(name, new int[] {box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ()}));
         tag.put("wards", wards);
+        CompoundTag witnesses = new CompoundTag();
+        this.witnesses.forEach((name, witness) -> {
+            CompoundTag entry = new CompoundTag();
+            entry.putLong("centre", witness.centre().asLong());
+            entry.put("blocks", list(witness.blocks()));
+            witnesses.put(name, entry);
+        });
+        tag.put("witnesses", witnesses);
         tag.put("gifts", list(List.copyOf(gifts)));
         tag.put("joined", list(List.copyOf(joined)));
         tag.put("named", list(List.copyOf(named)));
         tag.put("unlaid", list(List.copyOf(unlaid)));
+        tag.put("visited", list(List.copyOf(visited)));
         CompoundTag seen = new CompoundTag();
         this.seen.forEach((player, keys) -> seen.put(player.toString(), list(List.copyOf(keys))));
         tag.put("seen", seen);

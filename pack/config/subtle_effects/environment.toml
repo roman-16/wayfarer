@@ -1,0 +1,20 @@
+version = 0
+
+[biomes]
+mushroomSporeBiomes = [
+    "minecraft:mushroom_fields",
+    "terralith:cave/fungal_caves"
+]
+pollenBiomes = [
+    "minecraft:flower_forest",
+    "minecraft:meadow",
+    "minecraft:sunflower_plains",
+    "terralith:blooming_plateau",
+    "terralith:blooming_valley",
+    "terralith:lavender_forest",
+    "terralith:lavender_valley",
+    "terralith:moonlight_grove",
+    "terralith:moonlight_valley",
+    "terralith:sakura_grove",
+    "terralith:sakura_valley"
+]

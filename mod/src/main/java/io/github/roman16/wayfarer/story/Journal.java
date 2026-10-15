@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import io.github.roman16.wayfarer.Library;
+import io.github.roman16.wayfarer.Shine;
 import io.github.roman16.wayfarer.Stones;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
@@ -176,6 +177,8 @@ public final class Journal {
         view.add("words", entries(progress.words, word -> word));
         JsonArray places = new JsonArray();
         PLACES.forEach(name -> progress.place(name).ifPresent(pos -> places.add(named(Places.label(server, name), pos))));
+        progress.visited.stream().filter(name -> !PLACES.contains(name))
+                .forEach(name -> progress.place(name).ifPresent(pos -> places.add(named(Places.label(server, name), pos))));
         for (int mark = 0; mark < Marks.count(); mark++) {
             progress.place(Marks.MARK + mark).ifPresent(pos -> places.add(place("place.mark", pos)));
         }
@@ -195,6 +198,7 @@ public final class Journal {
         JsonArray gifts = new JsonArray();
         progress.gifts.forEach(gifts::add);
         view.add("gifts", gifts);
+        view.addProperty("eyes", Shine.glow(server));
         return view;
     }
 

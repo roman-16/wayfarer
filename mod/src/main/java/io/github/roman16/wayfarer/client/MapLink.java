@@ -69,7 +69,18 @@ public final class MapLink implements IClientPlugin {
         return screen instanceof Fullscreen && !(screen.getFocused() instanceof EditBox);
     }
 
-    static void open() {
+    private static boolean fromJournal;
+
+    static void tick(Minecraft minecraft) {
+        if (fromJournal && minecraft.screen == null) {
+            fromJournal = false;
+            JournalScreen.open();
+        } else if (fromJournal && !(minecraft.screen instanceof Fullscreen)) {
+            fromJournal = false;
+        }
+    }
+
+    static void open(boolean journal) {
         CoreProperties core = JourneymapClient.getInstance().getCoreProperties();
         String version = Journeymap.JM_VERSION.toString();
         if (!version.equals(core.splashViewed.get())) {
@@ -77,6 +88,7 @@ public final class MapLink implements IClientPlugin {
         }
         Minecraft.getInstance().setScreen(null);
         UIManager.INSTANCE.getOrOpenFullscreenMap();
+        fromJournal = journal && Minecraft.getInstance().screen instanceof Fullscreen;
         PacketDistributor.sendToServer(new Tasks.Did("map"));
     }
 }

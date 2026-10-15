@@ -9,7 +9,7 @@ title = "The Last Fire"
 claimed = "You take up his pack: a tent, a bed, a little food, and room for everything else."
 items = [
   { id = "sophisticatedbackpacks:backpack" },
-  { id = "nomadictents:tiny_yurt" },
+  { tent = "tiny" },
   { tag = "minecraft:beds" },
   { count = 16, id = "minecraft:bread" },
 ]
@@ -792,7 +792,6 @@ story = [
   "The morning after his first camp, the ember pulled again, towards something far ahead.",
 ]
 tasks = ["sweep"]
-toward = "marsh_hall"
 
 [[quests.steps]]
 at = "ford"

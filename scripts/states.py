@@ -95,12 +95,12 @@ def prepare(cache, world, rebuild):
         if stale != kept:
             shutil.rmtree(stale, ignore_errors=True)
     if (cache / "level.dat").exists():
-        shutil.copytree(cache, world)
+        shutil.copytree(cache, world, dirs_exist_ok=True)
         return cache.relative_to(kept).as_posix()
     order = steps()
     target = order.index(cache.relative_to(kept).as_posix())
     for earlier in reversed(order[:target]):
         if (kept / earlier / "level.dat").exists():
-            shutil.copytree(kept / earlier, world)
+            shutil.copytree(kept / earlier, world, dirs_exist_ok=True)
             return earlier
     return None

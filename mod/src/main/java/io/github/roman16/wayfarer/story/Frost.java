@@ -362,6 +362,7 @@ public final class Frost {
         BlockPos kill = origin.offset(StructureTemplate.calculateRelativePosition(settings, local(plan.getAsJsonArray("kill"))));
         Fallen.lay(level, EntityType.GOAT, Vec3.atBottomCenterOf(kill), yaw + 90, true, Steps.CLUE + NAME);
         release(level, site);
+        Standing.keep(server, NAME);
         LOGGER.info("the Frost Walkers' winter house stands at {}, its door at {}", origin, progress.place(NAME).orElseThrow());
         Journal.syncAll(server);
     }
@@ -401,6 +402,7 @@ public final class Frost {
         }
         prints(level, shaft, stone);
         release(level, site);
+        Standing.keep(server, HALL);
         LOGGER.info("the Frost Walkers' hall stands at {}, its stair at {}, its empty stone at {}, {} dead along its walls", box, stair, stone, dead.size());
         Journal.syncAll(server);
     }
@@ -504,6 +506,7 @@ public final class Frost {
         progress.yaws.put("seat_" + RIM, yaw(Vec3.atLowerCornerOf(stone.subtract(rim)).multiply(1, 0, 1)));
         progress.setDirty();
         release(level, site);
+        Standing.keep(server, LAKE);
         LOGGER.info("the frozen lake lies at {}, the shard under its ice at {}", origin, stone);
         Journal.syncAll(server);
     }
@@ -681,6 +684,16 @@ public final class Frost {
             dream.addFreshEntity(coat);
         }
         return true;
+    }
+
+    static void unbuild(MinecraftServer server, String name) {
+        Progress progress = Progress.of(server);
+        progress.places.remove(switch (name) {
+            case NAME -> HOUSE;
+            case HALL -> HALL_LOW;
+            default -> LAKE_ORIGIN;
+        });
+        progress.setDirty();
     }
 
     static boolean built(MinecraftServer server) {

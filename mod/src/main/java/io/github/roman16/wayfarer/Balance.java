@@ -47,6 +47,7 @@ public record Balance(
         Shipyard shipyard,
         Sight sight,
         Sleep sleep,
+        Smoke smoke,
         Spawns spawns,
         Stare stare,
         Stillness stillness,
@@ -98,7 +99,8 @@ public record Balance(
 
     public record Gaze(List<Integer> capacitySeconds, int drainFactor, int huntIntervalSeconds, int huntPhantoms) {}
 
-    public record Graphics(List<Integer> farViewChunks, List<String> farViewThreads, List<String> heldLight, List<String> profiles, List<Integer> renderChunks) {}
+    public record Graphics(List<Integer> farViewChunks, List<String> farViewDetail, List<String> farViewThreads, List<String> heldLight, List<String> profiles,
+                           List<Integer> renderChunks, List<Integer> simulationChunks) {}
 
     public record Hold(int blowTicks, int calmSeconds, int doorStrength, int firstWave, int keepHealth, int waveGrowth, int waveSeconds, int waves) {}
 
@@ -137,7 +139,7 @@ public record Balance(
     public record Voyage(int besideBlocks, int calmSeconds, int firstWave, int landfallBlocks, int leftSeconds, int listingDamage, int reachBlocks, int riseBlocks,
             int waveGrowth, int waveSeconds, int waves) {}
 
-    public record Shine(List<Integer> act, int bellFound, int foundShine, double noticeBlocksPerShine, int perShard, int spawnEverySeconds, int spawnLimit,
+    public record Shine(List<Integer> act, int bellFound, int foundShine, int glowLight, double noticeBlocksPerShine, int perShard, int spawnEverySeconds, int spawnLimit,
             int spawnShine) {}
 
     public record Sight(int reachBlocks) {}
@@ -153,7 +155,7 @@ public record Balance(
     public record Ford(int aheadBlocks, int creekReachBlocks, int noticeBlocks, int outpostBlocks, int searchBlocks, int sideBlocks, int widestRiverBlocks,
             int widthBlocks) {}
 
-    public record Marsh(int aheadBlocks, int bogBlocks, int bogRadiusBlocks, int cellarBlocks, int hallBlocks, int noticeBlocks, int searchBlocks,
+    public record Marsh(int aheadBlocks, int bogBlocks, int bogRadiusBlocks, int cellarBlocks, int hallBlocks, int nearBlocks, int noticeBlocks, int searchBlocks,
             int shunnedSeconds, int sideBlocks) {}
 
     public record Memory(int arrivalBlocks, int fadeTicks, int fireBlocks, int togetherBlocks) {}
@@ -163,6 +165,8 @@ public record Balance(
     public record ReadingHouse(int aheadBlocks, int searchBlocks) {}
 
     public record Sleep(int playersPercentage) {}
+
+    public record Smoke(int columnBlocks, int puffTicks, int widthBlocks) {}
 
     public record Spawns(int creatureCap) {}
 
@@ -178,13 +182,14 @@ public record Balance(
 
     public record Tent(int fireBlocks, int reminderBlocks) {}
 
-    public record Tollbridge(int aheadBlocks, int clearBlocks, int leastBuildings, int radiusBlocks, int waitSeconds) {}
+    public record Tollbridge(int aheadBlocks, int ashEveryTicks, int ashFlakes, int ashReachBlocks, int clearBlocks, int leastBuildings, int radiusBlocks,
+                             int waitSeconds) {}
 
     public record ToolGate(int slowdown) {}
 
     public record Waystones(int blocksPerFood) {}
 
-    public record Weather(int rainMostSeconds) {}
+    public record Weather(int daysBetweenRain, int rainMostSeconds) {}
 
     public record World(int coastBlocks, double highest, int homeBlocks, int lastSeaPastRingBlocks, double lastSeaSink, double lift, double outerSink, int seaBlocks,
             double seaFloor, double seaSink, int shoreBlocks) {}
@@ -252,10 +257,12 @@ public record Balance(
                         toml.getInt("gaze.hunt_phantoms")),
                 new Graphics(
                         toml.<List<Number>>get("graphics.far_view_chunks").stream().map(Number::intValue).toList(),
+                        toml.get("graphics.far_view_detail"),
                         toml.get("graphics.far_view_threads"),
                         toml.get("graphics.held_light"),
                         toml.get("graphics.profiles"),
-                        toml.<List<Number>>get("graphics.render_chunks").stream().map(Number::intValue).toList()),
+                        toml.<List<Number>>get("graphics.render_chunks").stream().map(Number::intValue).toList(),
+                        toml.<List<Number>>get("graphics.simulation_chunks").stream().map(Number::intValue).toList()),
                 new Halls(toml.getInt("halls.act_three_from_blocks"), toml.getInt("halls.act_three_leg_blocks"), toml.getInt("halls.act_two_leg_blocks"),
                         toml.getInt("halls.nearest_blocks"), toml.getInt("halls.reach_blocks")),
                 new Hold(
@@ -274,7 +281,7 @@ public record Balance(
                 new Join(toml.getInt("join.away_blocks")),
                 new Loot(toml.<Number>get("loot.kept_share").doubleValue()),
                 new Marsh(toml.getInt("marsh.ahead_blocks"), toml.getInt("marsh.bog_blocks"), toml.getInt("marsh.bog_radius_blocks"),
-                        toml.getInt("marsh.cellar_blocks"), toml.getInt("marsh.hall_blocks"), toml.getInt("marsh.notice_blocks"),
+                        toml.getInt("marsh.cellar_blocks"), toml.getInt("marsh.hall_blocks"), toml.getInt("marsh.near_blocks"), toml.getInt("marsh.notice_blocks"),
                         toml.getInt("marsh.search_blocks"), toml.getInt("marsh.shunned_seconds"), toml.getInt("marsh.side_blocks")),
                 new Memory(toml.getInt("memory.arrival_blocks"), toml.getInt("memory.fade_ticks"), toml.getInt("memory.fire_blocks"),
                         toml.getInt("memory.together_blocks")),
@@ -300,6 +307,7 @@ public record Balance(
                         toml.<List<Number>>get("shine.act").stream().map(Number::intValue).toList(),
                         toml.getInt("shine.bell_found"),
                         toml.getInt("shine.found_shine"),
+                        toml.getInt("shine.glow_light"),
                         toml.<Number>get("shine.notice_blocks_per_shine").doubleValue(),
                         toml.getInt("shine.per_shard"),
                         toml.getInt("shine.spawn_every_seconds"),
@@ -308,6 +316,7 @@ public record Balance(
                 new Shipyard(toml.getInt("shipyard.wreck_blocks")),
                 new Sight(toml.getInt("sight.reach_blocks")),
                 new Sleep(toml.getInt("sleep.players_percentage")),
+                new Smoke(toml.getInt("smoke.column_blocks"), toml.getInt("smoke.puff_ticks"), toml.getInt("smoke.width_blocks")),
                 new Spawns(toml.getInt("spawns.creature_cap")),
                 new Stare(toml.getInt("stare.cone_degrees"), toml.getInt("stare.flee_blocks"), toml.getInt("stare.flee_seconds"), toml.getInt("stare.reach_blocks")),
                 new Stillness(toml.getInt("stillness.dimming_days"), toml.getInt("stillness.horde_days"), toml.getInt("stillness.radius_blocks")),
@@ -326,7 +335,8 @@ public record Balance(
                         toml.getInt("talk.wait_seconds")),
                 new Tent(toml.getInt("tent.fire_blocks"), toml.getInt("tent.reminder_blocks")),
                 new Tide(toml.getInt("tide.stone_blocks")),
-                new Tollbridge(toml.getInt("tollbridge.ahead_blocks"), toml.getInt("tollbridge.clear_blocks"), toml.getInt("tollbridge.least_buildings"),
+                new Tollbridge(toml.getInt("tollbridge.ahead_blocks"), toml.getInt("tollbridge.ash_every_ticks"), toml.getInt("tollbridge.ash_flakes"),
+                        toml.getInt("tollbridge.ash_reach_blocks"), toml.getInt("tollbridge.clear_blocks"), toml.getInt("tollbridge.least_buildings"),
                         toml.getInt("tollbridge.radius_blocks"),
                         toml.getInt("tollbridge.wait_seconds")),
                 new ToolGate(toml.getInt("tool_gate.slowdown")),
@@ -343,7 +353,7 @@ public record Balance(
                         toml.getInt("voyage.wave_seconds"),
                         toml.getInt("voyage.waves")),
                 new Waystones(toml.getInt("waystones.blocks_per_food")),
-                new Weather(toml.getInt("weather.rain_most_seconds")),
+                new Weather(toml.getInt("weather.days_between_rain"), toml.getInt("weather.rain_most_seconds")),
                 new WendCamp(toml.getInt("wend_camp.ahead_blocks")),
                 new World(
                         toml.getInt("world.coast_blocks"),

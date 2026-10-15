@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "5e422a1fb644e2af73e2492d2afe3f7bebef315fe15c09186714a9ddf61ea907"
+hash = "d1a34e1a9692adc9c0dd7a16f243f55bc27935483cb5877b7c7605b09d8d52b8"
 
 [[files]]
 file = "config/DistantHorizons.toml"
@@ -77,16 +77,12 @@ file = "config/c2me.toml"
 hash = "01064a300391147f410c79abfb7c5955bf049c4d700827832fbb97a6bc374482"
 
 [[files]]
-file = "config/carryon-common.toml"
-hash = "00fd7cd1cc4dc55a9cedad03e7942c738011e90ceebc8604ba29888be52d02ee"
-
-[[files]]
 file = "config/defaultoptions/keybindings.txt"
-hash = "1488305f42b8fdb1daf40d47d7f36d242f58331d099b1b0435275f66d442dc8d"
+hash = "f6ebb7133a2b349eb37a44e14f747d1dc3b6dab453586eecf8c1b3b9252b3391"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
-hash = "17ea89084ea8e42cd2a6582cea20ec0ecf4b40ca2456d41ab6cf4340425c3732"
+hash = "6144b6b6e67fc2b1c148a14314bbbda026716b3e7602467af6c117b8ed3007af"
 
 [[files]]
 file = "config/dynamic_fps.json"
@@ -95,6 +91,10 @@ hash = "c3e1984f020b1a8a07da3020c03bbf57e401baed0d096be6d6027cd3e7a5c685"
 [[files]]
 file = "config/enhancedcelestials2core/translations.json"
 hash = "24c34c89632454822eb2acc91d2b38b1a72fd370925c544c796396b2b174a205"
+
+[[files]]
+file = "config/entity_texture_features.json"
+hash = "8364a40ef07729c3040b697458f73625709c202cfa9c2d9d9b86f167878543cf"
 
 [[files]]
 file = "config/euphoria_patcher/settings.toml"
@@ -111,6 +111,10 @@ hash = "9d38050a5f0e9107f2c1de582264d53eac91e52ec1fcbe307a23102e00ca5859"
 [[files]]
 file = "config/hordes-common.toml"
 hash = "056d2a67bc4f045aab0b4188198dd2dc88a54e3b5582a414ce7a65cb850fff8c"
+
+[[files]]
+file = "config/horseman-server.toml"
+hash = "603c67b768a7d6cf66366692f2b2fe9bd7170d687cad80921f449efe66dbda59"
 
 [[files]]
 file = "config/immersive-hotbar.json5"
@@ -189,6 +193,10 @@ file = "config/sereneseasons/seasons.toml"
 hash = "40e24b452620a8521f8c4151e0b233870489b3e5795b182e615a44d8adc156b3"
 
 [[files]]
+file = "config/shouldersurfing-client.toml"
+hash = "e111dcdde85384ce4e8c7c8a0d834d23ad95fffa77996a070f2927e5301d2578"
+
+[[files]]
 file = "config/silentgear-common.toml"
 hash = "2416be04d3f29cde1e428e3f34deed8c59ee527253d0b25b11a0dcc8de22c760"
 
@@ -197,12 +205,20 @@ file = "config/simplyswords/loot.toml"
 hash = "7e0203de5c0d20913fc1485b0872a9d1ae33e0af411caade3ed776462a39410d"
 
 [[files]]
+file = "config/snowrealmagic-common.yaml"
+hash = "aecac027344627948a98cdf7c07cd316510410449bcc3f8eb32ba32fee1219d1"
+
+[[files]]
 file = "config/sodium-options.json"
 hash = "d8c6c5843af8a5ebd1f2ef3f853ba4045a1dde73a0648765e4d0b254122a3790"
 
 [[files]]
 file = "config/solonion-client.json"
 hash = "3491b93fb6219daa6204c5fd251a00158e6e1fe7db40fb4e4e74ac33678a5118"
+
+[[files]]
+file = "config/solonion.json"
+hash = "93d98970a1808adf87f98a3226afd37f4016b6e68a70024740f7fabb4d2c7035"
 
 [[files]]
 file = "config/soundattract/raid.toml"
@@ -221,6 +237,10 @@ file = "config/streamsreflowing-common.toml"
 hash = "22df05c63f0730c35ee098e04a9541f1c6907c4a2dc8fe23929b3f5c8c93d3dd"
 
 [[files]]
+file = "config/subtle_effects/environment.toml"
+hash = "0c611f4601d90815d61fb760c47f9412d0ee78d9e308ad2f8d9d2d2aeabae6a2"
+
+[[files]]
 file = "config/subtle_effects/general.toml"
 hash = "acdd4a35a9bb8a89e667245a10481f73f2fb1b0f137ecb9c77ef6605dc4f15d4"
 
@@ -230,7 +250,7 @@ hash = "3d250b12fd11a56d4d3355f40474f6e69ad2f7693ae20b2f0b8afa6945f30bb6"
 
 [[files]]
 file = "config/tectonic.json"
-hash = "1c89369d8fe65c38223a02f489899038e88744d9c31ba17b823a90c9667b3c4d"
+hash = "c3212bde9bd4aac94bd3b4c7e290eb71664256b97ec212cd6048b52a6d3d7b94"
 
 [[files]]
 file = "config/toughasnails/thirst.toml"
@@ -333,6 +353,16 @@ hash = "438170e7e704a1b8ed67bf0521dc5d77cdeeaabf6f729dba9f8dfdad75330acf"
 metafile = true
 
 [[files]]
+file = "mods/bl4cks-sit.pw.toml"
+hash = "2cfa9768cc635d7ec8cbc0172e62db5ad0fc79117b927344d7f2484b78ebd7b7"
+metafile = true
+
+[[files]]
+file = "mods/bookshelf-lib.pw.toml"
+hash = "68d6016fa3707c434b3aca5db041c7518c70feb53d0183faa2502cc6efd4c827"
+metafile = true
+
+[[files]]
 file = "mods/c2me-neoforge.pw.toml"
 hash = "b29065f7eb51b2fa53043366d0df737483b600c2f549d31c783fe52c4d72bfb5"
 metafile = true
@@ -343,11 +373,6 @@ hash = "b2b6522930ccb2d690bcc4f0c97a44577c32a019af105f8e4899dd669dcd27eb"
 metafile = true
 
 [[files]]
-file = "mods/carry-on.pw.toml"
-hash = "838dbcb90c93bab58691e82c95045bd97c3e096e3a2680a00cf063e56ce35ce3"
-metafile = true
-
-[[files]]
 file = "mods/chatanimation.pw.toml"
 hash = "a65792a359ce00ef6463f03342ad064ff7efa3e80bc3c6c9b64bec769f20d43c"
 metafile = true
@@ -355,11 +380,6 @@ metafile = true
 [[files]]
 file = "mods/cloth-config.pw.toml"
 hash = "75181b55e0407d1fca1e2f346c6501f919f5109545990ddfb66db9cd1b771f8a"
-metafile = true
-
-[[files]]
-file = "mods/cmdcam.pw.toml"
-hash = "5cf99e07c630439ca141b7840a9901ccf2608403759e83903d03420277ea5af1"
 metafile = true
 
 [[files]]
@@ -478,6 +498,11 @@ hash = "aa893b812f2075ff2bf084ddb869f9355313b9d763fb679aca86ceff835d5d58"
 metafile = true
 
 [[files]]
+file = "mods/enchantment-descriptions.pw.toml"
+hash = "88b9e727611f06350c407aeb4ccb41207b5058fef127abe0ff24c13505618aaf"
+metafile = true
+
+[[files]]
 file = "mods/endrem.pw.toml"
 hash = "43e084efa5f7f4d41eb1c27c998029cf79d403549c8721e7621f650558f94c6e"
 metafile = true
@@ -570,6 +595,11 @@ metafile = true
 [[files]]
 file = "mods/healing-campfire.pw.toml"
 hash = "54bbfb896352f95dc539979ccf3fd59ae8af74e73d2104583d9f31131608dfe4"
+metafile = true
+
+[[files]]
+file = "mods/horseman.pw.toml"
+hash = "018e97e8393dd17294a49693063a8dd4f42b2930708c4cc745ee9751f2f279c3"
 metafile = true
 
 [[files]]
@@ -773,13 +803,18 @@ hash = "49c0bacf8e4cb3ade6c384ad379282f92d7fa3075f2affd8e3093feb685288dd"
 metafile = true
 
 [[files]]
+file = "mods/ping-wheel.pw.toml"
+hash = "650330109d21831664d2ff597c7a90200eda69a1efaca4e9b0b6b6297ac3c364"
+metafile = true
+
+[[files]]
 file = "mods/playeranimator.pw.toml"
 hash = "93284ca7f2f23f0bb76d42b797cabf2aea1914ee9825bec82bf6ffe4c60dda0d"
 metafile = true
 
 [[files]]
-file = "mods/polytone.pw.toml"
-hash = "a7af695080bf24f091c87d411ca0713ee95e047b2dc0051689c4e9d178c5ba6f"
+file = "mods/prickle.pw.toml"
+hash = "c99c5bac469e8d6ece5aae80f08635e3bbb8367f0c586b6288573c725faefe69"
 metafile = true
 
 [[files]]
@@ -830,6 +865,11 @@ metafile = true
 [[files]]
 file = "mods/shatterbyte-lib.pw.toml"
 hash = "3f552bbdc42f07fd7d5695ced1d27d774af63cff5460be45817939e5f8e4f9de"
+metafile = true
+
+[[files]]
+file = "mods/shoulder-surfing-reloaded.pw.toml"
+hash = "bcce409dc3bd3c765d92538e192563b4baf345a843acb5fb9c90fce4ebccdf58"
 metafile = true
 
 [[files]]
@@ -1103,6 +1143,11 @@ hash = "cfb7ce4c2b00cedd2e61f7d345b824d6bcc1471021668d2319ee2e4079108639"
 metafile = true
 
 [[files]]
+file = "resourcepacks/better-leaves.pw.toml"
+hash = "eb0b5f269171cd5b891d9bdf2c5da89698e21a71ffec1172ead75bc19411cbdc"
+metafile = true
+
+[[files]]
 file = "resourcepacks/bushy-pinkpetals-wildflowers-leaflitter.pw.toml"
 hash = "4baf84085b9ab13524264e3a949cd97e3394d1445849be3b8ccd6c4de2c06677"
 metafile = true
@@ -1119,7 +1164,7 @@ metafile = true
 
 [[files]]
 file = "shaderpacks/ComplementaryReimagined_r5.9.3 + EuphoriaPatches_1.10.5.txt"
-hash = "7ca6e469bf7c2fbb9beacf89369bdc9b5649a19c28fb7677aa032580d421f7cc"
+hash = "9a3fcc767ef03695e9186f34dff9966bb70f3e05978f4fdb967fb2df21c2c8b1"
 
 [[files]]
 file = "shaderpacks/complementary-reimagined.pw.toml"

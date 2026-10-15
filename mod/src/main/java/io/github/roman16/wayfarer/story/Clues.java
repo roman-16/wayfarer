@@ -10,6 +10,7 @@ import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.LightLayer;
@@ -19,6 +20,7 @@ import net.minecraft.world.phys.Vec3;
 
 final class Clues {
     static final String VEIL = Wayfarer.MODID + "_veil";
+    static final String SEEN = Wayfarer.MODID + "_clue_seen";
     private static final float MARKER_SCALE = 1.02f;
     private static final int FOUND_REACH = 64;
     private static final String DOOR = Wayfarer.MODID + "_door_glow";
@@ -43,9 +45,14 @@ final class Clues {
         for (Entity entity : level.getEntities((Entity) null, found.getBoundingBox().inflate(FOUND_REACH), entity -> entity.getTags().contains(Steps.CLUE + clue))) {
             if (entity.getTags().contains(DOOR)) {
                 entity.discard();
-            } else {
-                entity.removeTag(Steps.CLUE + clue);
-                Sense.unglow(level, entity);
+                continue;
+            }
+            entity.removeTag(Steps.CLUE + clue);
+            if (entity instanceof Display) {
+                CompoundTag tag = entity.saveWithoutId(new CompoundTag());
+                tag.putInt("glow_color_override", Sense.SEEN);
+                entity.load(tag);
+                entity.addTag(SEEN);
             }
         }
     }

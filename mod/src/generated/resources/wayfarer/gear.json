@@ -484,12 +484,349 @@
           "good": "A tent for one, from his pack.",
           "have": [
             {
+              "item": "nomadictents:tiny_bedouin"
+            }
+          ],
+          "id": "tiny_bedouin",
+          "made": "It was his.",
+          "name": "Tiny Bedouin tent",
+          "tent": "bedouin"
+        },
+        {
+          "good": "More room inside.",
+          "have": [
+            {
+              "item": "nomadictents:small_bedouin"
+            }
+          ],
+          "id": "small_bedouin",
+          "jei": "nomadictents:small_bedouin",
+          "made": "Made at my bench.",
+          "make": "Make a small Bedouin tent: six bedouin sections around the tiny Bedouin tent in a crafting grid",
+          "name": "Small Bedouin tent",
+          "needs": [
+            {
+              "count": 6,
+              "item": "nomadictents:bedouin_section",
+              "name": "bedouin sections",
+              "where": "made at my bench from wool and sticks"
+            }
+          ],
+          "tent": "bedouin"
+        },
+        {
+          "good": "Room for a friend.",
+          "have": [
+            {
+              "item": "nomadictents:medium_bedouin"
+            }
+          ],
+          "id": "medium_bedouin",
+          "jei": "nomadictents:medium_bedouin",
+          "made": "Made at my bench.",
+          "make": "Make a medium Bedouin tent: six bedouin sections around the small Bedouin tent in a crafting grid",
+          "name": "Medium Bedouin tent",
+          "needs": [
+            {
+              "count": 6,
+              "item": "nomadictents:bedouin_section",
+              "name": "bedouin sections",
+              "where": "made at my bench from wool and sticks"
+            }
+          ],
+          "tent": "bedouin"
+        },
+        {
+          "good": "Room for the whole team.",
+          "have": [
+            {
+              "item": "nomadictents:large_bedouin"
+            }
+          ],
+          "id": "large_bedouin",
+          "jei": "nomadictents:large_bedouin",
+          "made": "Made at my bench.",
+          "make": "Make a large Bedouin tent: six bedouin sections and two golden crossbeams around the medium Bedouin tent in a crafting grid",
+          "name": "Large Bedouin tent",
+          "needs": [
+            {
+              "count": 6,
+              "item": "nomadictents:bedouin_section",
+              "name": "bedouin sections",
+              "where": "made at my bench from wool and sticks"
+            },
+            {
+              "count": 2,
+              "item": "nomadictents:golden_crossbeams",
+              "name": "golden crossbeams",
+              "where": "made at my bench from gold and sticks"
+            }
+          ],
+          "tent": "bedouin"
+        },
+        {
+          "good": "A tent for one, from his pack.",
+          "have": [
+            {
+              "item": "nomadictents:tiny_indlu"
+            }
+          ],
+          "id": "tiny_indlu",
+          "made": "It was his.",
+          "name": "Tiny indlu",
+          "tent": "indlu"
+        },
+        {
+          "good": "More room inside.",
+          "have": [
+            {
+              "item": "nomadictents:small_indlu"
+            }
+          ],
+          "id": "small_indlu",
+          "jei": "nomadictents:small_indlu",
+          "made": "Made at my bench.",
+          "make": "Make a small indlu: six indlu sections around the tiny indlu in a crafting grid",
+          "name": "Small indlu",
+          "needs": [
+            {
+              "count": 6,
+              "item": "nomadictents:indlu_section",
+              "name": "indlu sections",
+              "where": "made at my bench from leaves and sticks"
+            }
+          ],
+          "tent": "indlu"
+        },
+        {
+          "good": "Room for a friend.",
+          "have": [
+            {
+              "item": "nomadictents:medium_indlu"
+            }
+          ],
+          "id": "medium_indlu",
+          "jei": "nomadictents:medium_indlu",
+          "made": "Made at my bench.",
+          "make": "Make a medium indlu: six indlu sections around the small indlu in a crafting grid",
+          "name": "Medium indlu",
+          "needs": [
+            {
+              "count": 6,
+              "item": "nomadictents:indlu_section",
+              "name": "indlu sections",
+              "where": "made at my bench from leaves and sticks"
+            }
+          ],
+          "tent": "indlu"
+        },
+        {
+          "good": "Room for the whole team.",
+          "have": [
+            {
+              "item": "nomadictents:large_indlu"
+            }
+          ],
+          "id": "large_indlu",
+          "jei": "nomadictents:large_indlu",
+          "made": "Made at my bench.",
+          "make": "Make a large indlu: six indlu sections and two golden crossbeams around the medium indlu in a crafting grid",
+          "name": "Large indlu",
+          "needs": [
+            {
+              "count": 6,
+              "item": "nomadictents:indlu_section",
+              "name": "indlu sections",
+              "where": "made at my bench from leaves and sticks"
+            },
+            {
+              "count": 2,
+              "item": "nomadictents:golden_crossbeams",
+              "name": "golden crossbeams",
+              "where": "made at my bench from gold and sticks"
+            }
+          ],
+          "tent": "indlu"
+        },
+        {
+          "good": "A tent for one, from his pack.",
+          "have": [
+            {
+              "item": "nomadictents:tiny_shamiyana"
+            }
+          ],
+          "id": "tiny_shamiyana",
+          "made": "It was his.",
+          "name": "Tiny shamiyana",
+          "tent": "shamiyana"
+        },
+        {
+          "good": "More room inside.",
+          "have": [
+            {
+              "item": "nomadictents:small_shamiyana"
+            }
+          ],
+          "id": "small_shamiyana",
+          "jei": "nomadictents:small_shamiyana",
+          "made": "Made at my bench.",
+          "make": "Make a small shamiyana: five shamiyana sections around the tiny shamiyana in a crafting grid",
+          "name": "Small shamiyana",
+          "needs": [
+            {
+              "count": 5,
+              "item": "nomadictents:shamiyana_section",
+              "name": "shamiyana sections",
+              "where": "made at my bench from wool, canvas and sticks"
+            }
+          ],
+          "tent": "shamiyana"
+        },
+        {
+          "good": "Room for a friend.",
+          "have": [
+            {
+              "item": "nomadictents:medium_shamiyana"
+            }
+          ],
+          "id": "medium_shamiyana",
+          "jei": "nomadictents:medium_shamiyana",
+          "made": "Made at my bench.",
+          "make": "Make a medium shamiyana: five shamiyana sections around the small shamiyana in a crafting grid",
+          "name": "Medium shamiyana",
+          "needs": [
+            {
+              "count": 5,
+              "item": "nomadictents:shamiyana_section",
+              "name": "shamiyana sections",
+              "where": "made at my bench from wool, canvas and sticks"
+            }
+          ],
+          "tent": "shamiyana"
+        },
+        {
+          "good": "Room for the whole team.",
+          "have": [
+            {
+              "item": "nomadictents:large_shamiyana"
+            }
+          ],
+          "id": "large_shamiyana",
+          "jei": "nomadictents:large_shamiyana",
+          "made": "Made at my bench.",
+          "make": "Make a large shamiyana: five shamiyana sections and two golden crossbeams around the medium shamiyana in a crafting grid",
+          "name": "Large shamiyana",
+          "needs": [
+            {
+              "count": 5,
+              "item": "nomadictents:shamiyana_section",
+              "name": "shamiyana sections",
+              "where": "made at my bench from wool, canvas and sticks"
+            },
+            {
+              "count": 2,
+              "item": "nomadictents:golden_crossbeams",
+              "name": "golden crossbeams",
+              "where": "made at my bench from gold and sticks"
+            }
+          ],
+          "tent": "shamiyana"
+        },
+        {
+          "good": "A tent for one, from his pack.",
+          "have": [
+            {
+              "item": "nomadictents:tiny_tepee"
+            }
+          ],
+          "id": "tiny_tepee",
+          "made": "It was his.",
+          "name": "Tiny tepee",
+          "tent": "tepee"
+        },
+        {
+          "good": "More room inside.",
+          "have": [
+            {
+              "item": "nomadictents:small_tepee"
+            }
+          ],
+          "id": "small_tepee",
+          "jei": "nomadictents:small_tepee",
+          "made": "Made at my bench.",
+          "make": "Make a small tepee: six tepee sections around the tiny tepee in a crafting grid",
+          "name": "Small tepee",
+          "needs": [
+            {
+              "count": 6,
+              "item": "nomadictents:tepee_section",
+              "name": "tepee sections",
+              "where": "made at my bench from leather and sticks"
+            }
+          ],
+          "tent": "tepee"
+        },
+        {
+          "good": "Room for a friend.",
+          "have": [
+            {
+              "item": "nomadictents:medium_tepee"
+            }
+          ],
+          "id": "medium_tepee",
+          "jei": "nomadictents:medium_tepee",
+          "made": "Made at my bench.",
+          "make": "Make a medium tepee: six tepee sections around the small tepee in a crafting grid",
+          "name": "Medium tepee",
+          "needs": [
+            {
+              "count": 6,
+              "item": "nomadictents:tepee_section",
+              "name": "tepee sections",
+              "where": "made at my bench from leather and sticks"
+            }
+          ],
+          "tent": "tepee"
+        },
+        {
+          "good": "Room for the whole team.",
+          "have": [
+            {
+              "item": "nomadictents:large_tepee"
+            }
+          ],
+          "id": "large_tepee",
+          "jei": "nomadictents:large_tepee",
+          "made": "Made at my bench.",
+          "make": "Make a large tepee: six tepee sections and two golden crossbeams around the medium tepee in a crafting grid",
+          "name": "Large tepee",
+          "needs": [
+            {
+              "count": 6,
+              "item": "nomadictents:tepee_section",
+              "name": "tepee sections",
+              "where": "made at my bench from leather and sticks"
+            },
+            {
+              "count": 2,
+              "item": "nomadictents:golden_crossbeams",
+              "name": "golden crossbeams",
+              "where": "made at my bench from gold and sticks"
+            }
+          ],
+          "tent": "tepee"
+        },
+        {
+          "good": "A tent for one, from his pack.",
+          "have": [
+            {
               "item": "nomadictents:tiny_yurt"
             }
           ],
           "id": "tiny_yurt",
           "made": "It was his.",
-          "name": "Tiny yurt"
+          "name": "Tiny yurt",
+          "tent": "yurt"
         },
         {
           "good": "More room inside.",
@@ -510,7 +847,8 @@
               "name": "yurt sections",
               "where": "made at my bench from canvas, which is wool, and sticks"
             }
-          ]
+          ],
+          "tent": "yurt"
         },
         {
           "good": "Room for a friend.",
@@ -531,7 +869,8 @@
               "name": "yurt sections",
               "where": "made at my bench from canvas, which is wool, and sticks"
             }
-          ]
+          ],
+          "tent": "yurt"
         },
         {
           "good": "Room for the whole team.",
@@ -558,7 +897,8 @@
               "name": "golden crossbeams",
               "where": "made at my bench from gold and sticks"
             }
-          ]
+          ],
+          "tent": "yurt"
         },
         {
           "hidden": true,
@@ -601,6 +941,7 @@
         "has": [
           "getting_about/glider",
           "getting_about/hook",
+          "getting_about/horn",
           "getting_about/horse",
           "getting_about/stone"
         ]
@@ -636,6 +977,33 @@
               "item": "minecraft:saddle",
               "name": "saddle",
               "where": "found in old chests"
+            }
+          ]
+        },
+        {
+          "good": "Calls my horse to me, wherever I left it.",
+          "have": [
+            {
+              "item": "horseman:copper_horn"
+            }
+          ],
+          "id": "horn",
+          "jei": "horseman:copper_horn",
+          "made": "Made at my bench.",
+          "make": "Make a copper horn: a goat horn and three copper ingots in a crafting grid, then sneak and use it on your horse to teach it the call",
+          "name": "Copper horn",
+          "needs": [
+            {
+              "count": 3,
+              "item": "minecraft:copper_ingot",
+              "name": "copper ingots",
+              "where": "smelted from ore in the hills' stone"
+            },
+            {
+              "count": 1,
+              "item": "minecraft:goat_horn",
+              "name": "goat horn",
+              "where": "left behind when a mountain goat rams stone or a tree"
             }
           ]
         },

@@ -46,10 +46,12 @@ public final class Recap {
     private static final String LINES = "lines";
     private static final String STORY = "story";
     private static final String TITLE = "title";
+    private static final String SERVER = "server:";
     private static final Component TERRAIN = Component.translatable("multiplayer.downloadingTerrain");
     private static final Page FIRST = new Page("", List.of(Component.translatable("wayfarer.recap.first")));
     private static final Page WAITING = new Page("", List.of());
     private static String world = "";
+    private static String server = "";
     private static final int MARGIN = 12;
     private static final int MAX_WIDTH = 224;
     private static final int PERCENT = 100;
@@ -63,12 +65,19 @@ public final class Recap {
     }
 
     public static void begin(String world) {
+        server = "";
+        show(world);
+    }
+
+    private static void show(String world) {
         JsonElement page = kept().get(world);
         loading = page == null ? FIRST : Page.of(page.getAsJsonObject());
     }
 
-    public static void connecting() {
-        loading = WAITING;
+    public static void connecting(String address) {
+        server = SERVER + address;
+        JsonElement page = kept().get(server);
+        loading = page == null ? WAITING : Page.of(page.getAsJsonObject());
     }
 
     public static String world() {
@@ -78,7 +87,7 @@ public final class Recap {
     public static void world(String id) {
         world = id;
         if (loading != null) {
-            begin(id);
+            show(id);
         }
     }
 
@@ -96,13 +105,15 @@ public final class Recap {
             page.add(LINES, chapter.get(LINES));
         }
         JsonObject recaps = kept();
-        if (Objects.equals(recaps.get(key), page)) {
+        if (Objects.equals(recaps.get(key), page) && (server.isEmpty() || Objects.equals(recaps.get(server), page))) {
             return;
         }
-        if (page == null) {
-            recaps.remove(key);
-        } else {
-            recaps.add(key, page);
+        for (String kept : server.isEmpty() ? List.of(key) : List.of(key, server)) {
+            if (page == null) {
+                recaps.remove(kept);
+            } else {
+                recaps.add(kept, page);
+            }
         }
         try {
             Files.createDirectories(file().getParent());

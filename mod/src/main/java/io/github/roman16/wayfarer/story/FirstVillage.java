@@ -265,6 +265,8 @@ final class FirstVillage {
         progress.ward(HALL, hall.box());
         progress.setDirty();
         Frost.release(level, site);
+        Standing.keep(server, NAME);
+        Standing.keep(server, STONE);
         LOGGER.info("the First Village's ruins stand round {}, the casting pit's melt at {}, the empty stone at {}", well, melt, hall.stone());
         Journal.syncAll(server);
     }
@@ -302,6 +304,11 @@ final class FirstVillage {
             }
         }
         return false;
+    }
+
+    static void unbuild(MinecraftServer server) {
+        Progress.of(server).places.remove(HALL_LOW);
+        Progress.of(server).setDirty();
     }
 
     static boolean built(MinecraftServer server) {

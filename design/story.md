@@ -261,7 +261,7 @@ I want a world where nobody needs a tent."
   | Act | What happens | How it is explained away |
   |---|---|---|
   | Act 1 | Endermen do not flinch from the player's gaze. They hear the calling stones before the ember feels them. Agna finds their heart slower than anyone's, at the caravan's first fire (S23) | "Wayfarers are strange." The voice laughs it off |
-  | Act 2 | At the Jungle Folk's hall they first see through stone. Their eyes glow faintly in the dark, which their friends see. The peoples' guardians bow to them | Nobody can, and Agna stops laughing |
+  | Act 2 | From the team's second hall of the act their eyes glow faintly in the dark, which their friends see, Corin first (2.7). At the Jungle Folk's hall they first see through stone. The peoples' guardians bow to them | Nobody can, and Agna stops laughing |
   | Act 3 | They dream the dragon's dreams: the End, the void, an eye that cannot close. The Keepers know them at the door and bar the way, which is the second reveal | Nothing explains it away any more |
 
   ```text
@@ -800,11 +800,23 @@ What 1.2 asks of the systems, at their minimum:
 
 The third day of Act 1 step by step, as the slice builds it (`slice.md`, step 6), shown for a player alone; a team plays it the same, and where it differs it says so. Every line is a placeholder for the `lore` skill.
 
-**The morning** runs as every morning (S24): the camp packs up, Tamsin: "Go on. We'll follow your marks." The ember pulls again, towards the next hall, the swamp's (1.4), which the quest puts down ahead (S29), by feeling (D6).
+**The morning** runs as every morning (S24): the camp packs up, Tamsin: "Go on. We'll follow your marks." The ember pulls again, by feeling (D6), towards the ford the quest has put down ahead on the way to the swamp's hall (1.4, S29): it leads to the place where the step ends, from wherever the team stands, and the pull towards the swamp begins once Corin has joined.
 
 **1.3 The Deserter** (a ford below a Gazebound outpost; Hold; Strength):
 
 1. About 1,024 blocks out, the quest puts the ford down out of sight where the way first crosses a river on land where no snow lies, since the cold is 1.6's gate: a knee-deep crossing of gravel, about 8 blocks wide, and on the high ground across it a Gazebound outpost. It looks on up to 2,048 blocks along the way and up to 512 either side of it; with no river there, it cuts a stream across the way at about 1,024 blocks, a knee-deep creek about 8 wide with gravel banks, running far enough either side to read as one the land always had.
+
+   **Out of the cold.** Before it chooses, the quest checks the way: the land from the edge of the caravan's camp, 256 blocks out, to the ford, sampled every 64 blocks, and the ford's own spot; the camp's own ground is where the team already stands. If either lies where it snows, it turns the way in steps of 15 degrees to either side, as it already turns along the home land's coast (M40), and takes the first heading whose path and ford lie where no snow lies; the swamp's hall (S29) is then chosen along that heading. Nothing new reaches the player: the ember pulls by feeling as before, only another way, and the search runs once, out of sight, while the morning's talk plays. When no heading within a half turn is warm, on a home land deep in snow, the ford stays where it falls and a fire burns low on its near bank, the deserter's last, so the hold is fought beside it and the task panel's "Too cold: get to a fire" is answered at once.
+
+   ```text
+   Morning  The ember tugs at your hand again: steady, patient, towards something a long way off.
+            (it flares as you face south-west; the mountains stay on your left all day)
+   Ford     A green creek in a birch wood. A horn sounds across the water, low and long.
+   ```
+
+   Edge cases: a team that walked off before the morning is turned from where the caravan camped, as every search is; the choice is saved with the ford, so a restart or a reload keeps the same way; a teammate far off follows the compass like anyone; the walk itself may still cross a cold corner the line's samples missed, which the panel's line about the cold covers.
+
+   **Why:** On one world in six measured the way to the swamp crossed 2,000 blocks of snowy mountains and the ford fell in the snow, so the player met 1.6's gate two quests early, in powder snow without snowshoes. M45 already moves the Last Camp out of the snow rather than the player into it, and turning the way does the same for the ford; the fire is for the home land that has no warm way at all.
 2. Within about 64 blocks of it a horn sounds across the water, heard before anything is seen (M37). A man in grey bursts out of the far trees, wades the ford bleeding and falls on the near bank, and banners show at the treeline behind him: "There! The ember!" [Main] The Deserter opens: keep the wounded man alive.
 3. **The hold**, by day, with the battle piece (S25): three waves of Gazebound, crossbows and axes, wade the ford, each announced on the band. The water slows them, so the bank above the crossing is where the team holds, and they go for the wounded man first. The waves grow with the size of the team online, never with the shine (M37), so one player holds it as four do; better gear makes it easier (the Strength gate, D4). If he falls, the step fails and offers "Try the ford again", as Ash does: the waves gone, the man back on the bank. Walking off is no escape: the patrol has seen the ember, so it wades across and comes after the team on open ground, where the water no longer slows it.
 4. A horn from the outpost calls the last of them back up the hill. The man, an Illager born to the Grass Kingdom's outcasts, who looks like the men who chased him, looks at the ember: "I know that light. I'd know it anywhere." He gives his name, Corin, and names the Grass King's heir for the first time: "He wants that coal more than he wants me." He knew the man who carried it before, six winters under him, but will not say his name (Maren says it at 1.11, and Corin confirms it). He opens his shirt on the scar over his heart, the same scar the stranger had (S23), and says what it is: "They let the night look into you. If you live, it never looks again." He asks to come along.
@@ -845,7 +857,7 @@ The fourth day of Act 1 step by step, as the slice builds it (`slice.md`, step 7
 
 **The morning** runs as every morning (S24): the camp packs up, Corin's small tent with it. The ember pulls on towards the swamp's hall, by feeling (D6), and the main quest opens as the pull; its title is written with the `lore` skill, since nobody has named the Marsh Mothers yet.
 
-**Where the hall is.** At 1.3's morning, when the pull opens, the quest picks the hall's place, as 1.1 picks the Diggers' tunnels': the nearest swamp where no snow lies, 2,048 to 4,096 blocks along the way and up to 1,024 to either side. With no swamp there, it makes one at about 3,072 blocks along, as 1.3 cuts its creek: a bog about 128 across of mud, still water, mangroves and lily pads, its ground and water turned to the swamp's colours. The hall, its black pool and the witches' hut go up there out of sight when the team comes near, and stay for good, a place of the Twelve Peoples. The world makes no Marsh Mothers' halls of its own, so there is exactly one. A player alone walks about 2,000 to 3,000 blocks from the caravan, a day like 1.1's. Measured from the ford on three seeds, the nearest hall the world made lay 8,750 to 18,800 blocks away, and the nearest swamp of any kind 2,030 (a frozen ice marsh) to 5,900.
+**Where the hall is.** At 1.3's morning, when the pull opens, the quest picks the hall's place, as 1.1 picks the Diggers' tunnels': the nearest swamp where no snow lies, 2,048 to 4,096 blocks along the way (turned out of the cold, S28) and up to 1,024 to either side. With no swamp there, it makes one at about 3,072 blocks along, as 1.3 cuts its creek: a bog about 128 across of mud, still water, mangroves and lily pads, its ground and water turned to the swamp's colours. The hall, its black pool and the witches' hut go up there out of sight when the team comes near, and stay for good, a place of the Twelve Peoples. The world makes no Marsh Mothers' halls of its own, so there is exactly one. A player alone walks about 2,000 to 3,000 blocks from the caravan, a day like 1.1's. Measured from the ford on three seeds, the nearest hall the world made lay 8,750 to 18,800 blocks away, and the nearest swamp of any kind 2,030 (a frozen ice marsh) to 5,900.
 
 **1.4 The Marsh Mothers** (the swamp's witch hut; Talk, then Reach; Trust):
 
@@ -1898,4 +1910,4 @@ Edge cases:
 
 ## Open
 
-Nothing is open.
+- **The ford's river (S28, 1.3).** The quest looks for a river first and cuts a creek only where none crosses the way, but on six worlds measured on 14.10 (the states' seed twice, seeds 1 to 4) every ford was a creek the quest cut: no river was ever found. Its search reads rivers as the river biome at sea level, and with Streams Reflowing the land's streams may not be that biome (not checked). Either the search learns to find the streams the land has, or the creek is the ford by design and the river search goes.

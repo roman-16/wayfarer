@@ -1,5 +1,11 @@
 # People
 
+## Gliding
+
+**Gliding on a hang glider, seen from behind and above: the body lies still and straight under the wing, arms at its sides**, in the showroom
+
+![Gliding on a hang glider, seen from behind and above: the body lies still and straight under the wing, arms at its sides](gliding.jpg)
+
 ## The caravan
 
 **Corin, the deserter, standing and sitting**, in the showroom
@@ -643,6 +649,12 @@
 | Front | Side | Three quarters |
 | --- | --- | --- |
 | ![Front](act-two/wren/front.jpg) | ![Side](act-two/wren/side.jpg) | ![Three quarters](act-two/wren/three-quarters.jpg) |
+
+## Glowing eyes
+
+**From 2.7 on a friend's own eyes glow in the dark, wherever their skin draws them: one-pixel eyes on the face's edge, goggles on the hat layer, eyes two rows tall**, in the story at `your_eyes/the_eyes`
+
+![From 2.7 on a friend's own eyes glow in the dark, wherever their skin draws them: one-pixel eyes on the face's edge, goggles on the hat layer, eyes two rows tall](glowing-eyes.jpg)
 
 ## Act three
 

@@ -116,6 +116,11 @@
       "why": "Its JourneyMap plugin uses an annotation JourneyMap still reads"
     },
     {
+      "match": "Configuration LoadedConfig\\[.*waystones-common\\.toml.* is not correct\\. Correcting|Incorrect key general\\.restrictedWaystones was corrected from \\[PLAYER\\] to its default, \\[PLAYER\\]",
+      "mod": "Waystones",
+      "why": "Its config reads its own default list of restricted waystones as wrong on every launch and writes the same list back"
+    },
+    {
       "match": "Missing entity animation friendsandfoes:",
       "mod": "Friends and Foes",
       "why": "Animations for creatures the pack does not let spawn"
@@ -139,6 +144,16 @@
       "match": "Incorrect key .* was corrected from (.*) to its default, \\1\\.",
       "mod": "NeoForge",
       "why": "A config value written back unchanged"
+    },
+    {
+      "match": "Plugin for ParCool! \\(parcool\\) is loaded in legacy mode",
+      "mod": "Shoulder Surfing Reloaded",
+      "why": "ParCool's plugin for it uses its older interface, which it still runs"
+    },
+    {
+      "match": "Failed to load model twilightforest:",
+      "mod": "Motschen's Better Leaves",
+      "why": "It ships leaf models for Twilight Forest, which the pack leaves out"
     }
   ]
 }
