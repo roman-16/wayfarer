@@ -4,7 +4,7 @@ Everything in Wayfarer that speaks in words is to be read aloud: books, chat, si
 
 ## How it plays
 
-- **Chat waits for its voice.** A line in chat is read aloud as it appears, and the next line comes only once the line before has been spoken: a line whose audio runs three seconds holds the chat for three seconds. This holds for the voice, Maren and every person the player talks to.
+- **Chat waits for its voice.** A line in chat is read aloud as it appears, and the next line comes only once the line before has been spoken: a line whose audio runs three seconds holds the chat for three seconds. This holds for the voice, Malgven and every person the player talks to.
 - **A voice comes from where its speaker stands.** A person's line sounds from their body in the world, quieter and to one side as the player stands farther off or turns, as every other sound does; the voice in the ember, the narrator and a book read in the hand sound from the player.
 - **A book reads the page that is open.** Opening a page plays its narration; turning to the next page stops it and plays the next one. A page plays only once: turning back to a page already heard does not play it again, but a small play button on the page plays it again on purpose. This holds at a lectern, from the inventory and in the journal.
 - **A sign reads itself when right-clicked.** Every sign the pack places is waxed, so a right-click reads it instead of opening it for editing.
@@ -18,10 +18,10 @@ Everything in Wayfarer that speaks in words is to be read aloud: books, chat, si
 
 | Role | Who speaks | Reads | Voice | Effect |
 |---|---|---|---|---|
-| Wend | The dying stranger at the Last Camp: a Wayfarer who broke the oath and became a Gazebound captain | His words at the Last Camp, his lines in the memories, his ledger, the last captain's page, his letter to Maren, his real last whisper, and the voice until the first reveal | Brian | none |
+| Wend | The dying stranger at the Last Camp: a Wayfarer who broke the oath and became a Gazebound captain | His words at the Last Camp, his lines in the memories, his ledger, the last captain's page, his letter to Malgven, his real last whisper, and the voice until the first reveal | Brian | none |
 | The gaze | The dragon wearing Wend's voice, found in the ember's memory (`story.md`, S4) | The voice once it is unmasked at the end of Act 2, and its lines in the End | Brian | undertone |
-| Maren | The Gazebound evoker Wend raised | Her lines at the fire and the gate, and her notes | not chosen | none |
-| The caravan | Tamsin, Corin, Nell, Bram, Ilse, Agna, Hob, Pip and their households | Their lines in conversations, at the fire and on the road | not chosen | none |
+| Malgven | The Gazebound evoker Wend raised | Her lines at the fire and the gate, and her notes | not chosen | none |
+| The caravan | Maud, Cadoc, Drifa, Bram, Alruna, Agna, Hob, Pip and their households | Their lines in conversations, at the fire and on the road | not chosen | none |
 | The world's people | The Grass King's heir, the living peoples, travellers, the settled | Their lines in conversations and scenes | not chosen | none |
 | The Twelve Peoples | The peoples who hid the shards, living and gone | Their books in their halls and places | not chosen | none |
 | The Keepers | The Wayfarers who would not walk, guarding the twelve frames | Their records and library books, and their words at the door | Bill | none |
@@ -32,7 +32,7 @@ Everything in Wayfarer that speaks in words is to be read aloud: books, chat, si
 ## Why these choices
 
 - **Effects only where the voice is not a person's.** Everyone in the cast speaks aloud or wrote a book, and a dry recording says exactly that; only the gaze, an eye speaking through the player, gets an effect.
-- **Wend reads his own pages.** The last captain's page is in his hand, so a player who finds it before Maren names him hears the voice they carry in a Gazebound captain's orders. Any effect on either would hide that.
+- **Wend reads his own pages.** The last captain's page is in his hand, so a player who finds it before Malgven names him hears the voice they carry in a Gazebound captain's orders. Any effect on either would hide that.
 - **The gaze keeps his voice.** It found Wend's voice in the ember's memory and has none of its own (`story.md`, S4), so it speaks as Brian; once the mask drops, a low undertone under the same voice tells the player what they already know.
 - **The caravan and the world's people need voices of their own.** None is chosen yet; with eight at the fire, their households and the people on the road, the built-in voices may be too few to tell them apart (not counted).
 - **Keep effects subtle.** The gaze talks all through Act 3, so its undertone must stay pleasant through a long talk at the fire.

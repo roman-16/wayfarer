@@ -20,7 +20,7 @@ import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import org.slf4j.Logger;
 
 public final class Bell {
-    static final String PLACE = "tamsins_bell";
+    static final String PLACE = "mauds_bell";
     private static final String DECIDED = "the_bell/the_bell";
     private static final String MELT = "melt";
     private static final String KEEP = "keep";
@@ -59,7 +59,7 @@ public final class Bell {
             BlockPos.betweenClosedStream(bell.get().offset(-REACH, -REACH, -REACH), bell.get().offset(REACH, REACH, REACH))
                     .filter(pos -> level.getBlockState(pos).is(Wayfarer.TOLLBRIDGE_BELL)).map(BlockPos::immutable).toList().forEach(pos -> {
                         level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-                        LOGGER.info("Hob melted Tamsin's bell at {}", pos);
+                        LOGGER.info("Hob melted Maud's bell at {}", pos);
                     });
         }
         long day = Math.floorDiv(level.getDayTime(), Clock.DAY);

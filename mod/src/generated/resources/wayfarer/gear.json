@@ -471,7 +471,7 @@
         }
       ],
       "title": "Carrying",
-      "who": "tamsin"
+      "who": "maud"
     },
     {
       "appears": {
@@ -934,7 +934,7 @@
         }
       ],
       "title": "The camp",
-      "who": "tamsin"
+      "who": "maud"
     },
     {
       "appears": {
@@ -1104,7 +1104,7 @@
             }
           ],
           "id": "snowshoes",
-          "made": "Nell's mother made them.",
+          "made": "Drifa's mother made them.",
           "name": "The Frost Walkers' snowshoes",
           "named_by": "agna_cold"
         }

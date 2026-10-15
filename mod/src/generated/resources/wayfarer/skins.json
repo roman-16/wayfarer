@@ -3,6 +3,10 @@
     "model": "easy_npc:humanoid_slim",
     "scale": 1.0
   },
+  "alruna": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 1.0
+  },
   "bram": {
     "model": "easy_npc:humanoid",
     "scale": 1.0
@@ -12,6 +16,10 @@
     "scale": 0.75
   },
   "brannoc": {
+    "model": "easy_npc:vindicator",
+    "scale": 1.0
+  },
+  "cadoc": {
     "model": "easy_npc:vindicator",
     "scale": 1.0
   },
@@ -27,8 +35,12 @@
     "model": "easy_npc:humanoid_slim",
     "scale": 0.75
   },
-  "corin": {
-    "model": "easy_npc:vindicator",
+  "cecily": {
+    "model": "easy_npc:humanoid_slim",
+    "scale": 0.75
+  },
+  "drifa": {
+    "model": "easy_npc:humanoid_slim",
     "scale": 1.0
   },
   "drowned_1": {
@@ -151,27 +163,23 @@
     "model": "easy_npc:humanoid",
     "scale": 1.0
   },
-  "ilse": {
-    "model": "easy_npc:humanoid_slim",
-    "scale": 1.0
-  },
   "keeper_ansel": {
     "model": "easy_npc:humanoid",
     "scale": 0.95
   },
-  "maren": {
+  "malgven": {
     "model": "easy_npc:illusioner",
     "scale": 1.0
   },
-  "maren_child": {
+  "malgven_child": {
     "model": "easy_npc:illusioner",
     "scale": 0.75
   },
-  "morwen": {
+  "maud": {
     "model": "easy_npc:humanoid_slim",
     "scale": 1.0
   },
-  "nell": {
+  "morwen": {
     "model": "easy_npc:humanoid_slim",
     "scale": 1.0
   },
@@ -281,10 +289,6 @@
   },
   "stranger": {
     "model": "easy_npc:humanoid",
-    "scale": 1.0
-  },
-  "tamsin": {
-    "model": "easy_npc:humanoid_slim",
     "scale": 1.0
   },
   "tansy": {
@@ -438,9 +442,5 @@
   "wil": {
     "model": "easy_npc:humanoid",
     "scale": 1.0
-  },
-  "wren": {
-    "model": "easy_npc:humanoid_slim",
-    "scale": 0.75
   }
 }

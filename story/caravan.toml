@@ -1,11 +1,11 @@
 [[households]]
 piece = "large_tent"
-people = [{ at = "fire", person = "tamsin", pose = "sitting_leaning" }]
-unless = "the_hollow/tamsin=lost"
+people = [{ at = "fire", person = "maud", pose = "sitting_leaning" }]
+unless = "the_hollow/maud=lost"
 
 [[households]]
 piece = "bell_cart"
-place = "tamsins_bell"
+place = "mauds_bell"
 unless = "the_bell/the_bell=melt"
 
 [[households]]
@@ -17,23 +17,23 @@ people = [
 
 [[households]]
 apart = true
-joins = "corin"
-people = [{ at = "piece", person = "corin", pose = "sitting" }]
+joins = "cadoc"
+people = [{ at = "piece", person = "cadoc", pose = "sitting" }]
 piece = "tent"
-unless = "the_hollow/corin=lost"
+unless = "the_hollow/cadoc=lost"
 
 [[households]]
 apart = true
-joins = "nell"
-people = [{ at = "piece", person = "nell", pose = "standing" }]
+joins = "drifa"
+people = [{ at = "piece", person = "drifa", pose = "standing" }]
 piece = "hide_shelter"
-unless = "the_hollow/nell=lost"
+unless = "the_hollow/drifa=lost"
 
 [[households]]
-joins = "ilse"
-people = [{ at = "fire", person = "ilse", pose = "sitting_crossed" }]
+joins = "alruna"
+people = [{ at = "fire", person = "alruna", pose = "sitting_crossed" }]
 piece = "book_tent"
-unless = "the_hollow/ilse=lost"
+unless = "the_hollow/alruna=lost"
 
 [[households]]
 people = [{ at = "fire", person = "hob", pose = "sitting" }]

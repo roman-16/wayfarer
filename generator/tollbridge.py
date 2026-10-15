@@ -1042,8 +1042,8 @@ def plan():
             "seats": {
                 "agna": [hi - 2, 1, hi - 1, "sitting_crossed"],
                 "hob": [lo + 4, 1, lo + 2, "standing_arms_crossed"],
+                "maud": [lo + 3, 1, lo + 2, "sitting_grieving"],
                 "pip": [hi - 1, 1, hi - 2, "sitting_hunched"],
-                "tamsin": [lo + 3, 1, lo + 2, "sitting_grieving"],
             },
             "size": size(tower()),
         },

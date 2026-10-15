@@ -38,8 +38,8 @@ public final class StoryTests {
                 }
             }
         }
-        check(helper, "tamsin".equals(Story.get().quest("ash").orElseThrow().steps().stream()
-                .filter(step -> step.id().equals("the_bell")).findFirst().orElseThrow().with()), "the bell is Tamsin's talk, though Agna speaks first");
+        check(helper, "maud".equals(Story.get().quest("ash").orElseThrow().steps().stream()
+                .filter(step -> step.id().equals("the_bell")).findFirst().orElseThrow().with()), "the bell is Maud's talk, though Agna speaks first");
         helper.succeed();
     }
 

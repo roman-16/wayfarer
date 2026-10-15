@@ -29,7 +29,7 @@ final class Ford {
     static final String NAME = "ford";
     static final String FAR = "ford_far";
     static final String OUTPOST = "ford_outpost";
-    static final String WOUNDED = "corin";
+    static final String WOUNDED = "cadoc";
     private static final String NEAR_BANK = "ford_near_bank";
     private static final String FAR_BANK = "ford_far_bank";
     private static final String WAY = "ford_way";
@@ -187,17 +187,17 @@ final class Ford {
         creek(level, near, far, way, side, balance);
         path(level, near, way.scale(-1), side, balance);
         path(level, far, way, side, balance);
-        BlockPos corin = ashore(level, near, way.scale(-1)).above();
+        BlockPos cadoc = ashore(level, near, way.scale(-1)).above();
         BlockPos gazebound = ashore(level, far, way).above();
         BlockPos outpost = outpost(level, far, way, balance);
         if (Unseen.snowy(level.getBiome(near), near)) {
-            fire(level, corin, side);
+            fire(level, cadoc, side);
         }
         progress.place(FAR, gazebound);
         progress.place(OUTPOST, outpost);
-        progress.place("seat_" + NAME, corin);
-        progress.yaws.put("seat_" + NAME, yaw(Vec3.atCenterOf(corin), Vec3.atCenterOf(gazebound)));
-        progress.place(NAME, corin);
+        progress.place("seat_" + NAME, cadoc);
+        progress.yaws.put("seat_" + NAME, yaw(Vec3.atCenterOf(cadoc), Vec3.atCenterOf(gazebound)));
+        progress.place(NAME, cadoc);
         progress.setDirty();
         for (BlockPos at : new BlockPos[] {near, far, BlockPos.containing(Vec3.atLowerCornerOf(far).add(way.scale(balance.outpostBlocks())))}) {
             ChunkPos chunk = new ChunkPos(at);
@@ -205,7 +205,7 @@ final class Ford {
         }
         Standing.keep(server, NAME);
         Standing.keep(server, OUTPOST);
-        LOGGER.info("the ford stands at {}, the Gazebound's outpost at {}", corin, outpost);
+        LOGGER.info("the ford stands at {}, the Gazebound's outpost at {}", cadoc, outpost);
     }
 
     private static void creek(ServerLevel level, BlockPos near, BlockPos far, Vec3 way, Vec3 side, Balance.Ford balance) {
@@ -277,9 +277,9 @@ final class Ford {
         return surface(level, BlockPos.containing(Vec3.atLowerCornerOf(bank).add(inland.scale(INLAND))));
     }
 
-    private static void fire(ServerLevel level, BlockPos corin, Vec3 side) {
+    private static void fire(ServerLevel level, BlockPos cadoc, Vec3 side) {
         for (int sign : new int[] {1, -1}) {
-            BlockPos ground = surface(level, BlockPos.containing(Vec3.atLowerCornerOf(corin).add(side.scale(FIRE_BESIDE * sign))));
+            BlockPos ground = surface(level, BlockPos.containing(Vec3.atLowerCornerOf(cadoc).add(side.scale(FIRE_BESIDE * sign))));
             if (level.getFluidState(ground).isEmpty() && level.getBlockState(ground).isFaceSturdy(level, ground, Direction.UP)) {
                 level.setBlock(ground.above(), Blocks.CAMPFIRE.defaultBlockState(), Block.UPDATE_ALL);
                 LOGGER.info("the ford lies in the cold; a fire burns on its near bank at {}", ground.above());

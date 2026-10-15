@@ -71,7 +71,7 @@ Hard nights come with the story and the caravan, never with the calendar. A Slee
 A typical day (every name a placeholder):
 
 ```text
-Morning  The caravan is packing. Old Tamsin: "Go on. We'll follow your marks."
+Morning  The caravan is packing. Old Maud: "Go on. We'll follow your marks."
          [Main] The Salt Road - the Salt Folk's tracks, east of the dry lake
 Road     A wolf pack shadows you along the ridge. Thunder rolls in from the west
          <Wend> Storm's coming in off the flats. Walk faster, or don't, I'm not your mother.
@@ -88,7 +88,7 @@ The clock's curve, what counts a day, daylight's dangers and staying at a place 
 
 ### D3 Main quests: as long as the story needs, played many ways
 
-- A shard takes as many main quests as its story needs: one for some, a chain of several for others. Some main quests carry no shard and tell the story between them: Wend's past, Maren, the Gazebound, the two reveals.
+- A shard takes as many main quests as its story needs: one for some, a chain of several for others. Some main quests carry no shard and tell the story between them: Wend's past, Malgven, the Gazebound, the two reveals.
 
   ```text
   The Salt Folk's shard   4 quests: the empty hall, the caravan's trail, the winter camp, the cradle
@@ -229,10 +229,10 @@ The reveals' places are settled in `story.md` (S2), and the voice's in S4.
   [Side] The Fever - the child needs the healer before the third dawn   (2 days left)
   ```
 
-- The journal remembers everything, and explains it the way the player would tell a friend: the story so far, every person met and what they did to the player, every word of the world from the gaze to the Gazebound, every book and every talk at the fire. Each entry is written plainly, from the player's own point of view, and holds only what the player knows so far: a word they have never heard is not in the journal, and an entry grows as they learn more, so the stranger stays the stranger until Maren names him. A player who has forgotten who someone is, or where the story stands, can look it up. The journal is the team's, shared by every player and always up to date (D11); its entries speak as "I", so every player reads them as their own.
+- The journal remembers everything, and explains it the way the player would tell a friend: the story so far, every person met and what they did to the player, every word of the world from the gaze to the Gazebound, every book and every talk at the fire. Each entry is written plainly, from the player's own point of view, and holds only what the player knows so far: a word they have never heard is not in the journal, and an entry grows as they learn more, so the stranger stays the stranger until Malgven names him. A player who has forgotten who someone is, or where the story stands, can look it up. The journal is the team's, shared by every player and always up to date (D11); its entries speak as "I", so every player reads them as their own.
 
   ```text
-  Journal › People › Corin
+  Journal › People › Cadoc
     A deserter from the Gazebound. He served under Wend for six winters.
     He saved my life at the ford, and he still won't say what Wend made him do.
   ```
@@ -320,7 +320,7 @@ At the frame the ending asks whom the player believes and what they are, with fo
 - A team makes one choice, because the frame takes the Eye once.
 
 ```text
-At the frame Maren breaks Wend's seal and reads. Her band draws their blades.
+At the frame Malgven breaks Wend's seal and reads. Her band draws their blades.
 <Wend> Set it. Then come to me, and I'll give you a home nothing finds at night.
 Under his voice, older and thin: ...don't let it look at them...
 The Salt Folk's riders stand behind you. They brought their shard.
@@ -349,10 +349,10 @@ What opens the closed doors, the shards' part and the world after each door are 
   Leave it  <Wend> Soft. That's one fewer at the gate.
   ```
 
-- A frame takes the Eye with however many shards it holds, and the player learns this early, from the Keepers' records Ilse reads in Act 1. Each shard taken is a gift for the player and more sight for the dragon at the end; the voice insists on all twelve. Shards left with people who trust the player may come back to the frame in their hands.
+- A frame takes the Eye with however many shards it holds, and the player learns this early, from the Keepers' records Alruna reads in Act 1. Each shard taken is a gift for the player and more sight for the dragon at the end; the voice insists on all twelve. Shards left with people who trust the player may come back to the frame in their hands.
 
   ```text
-  Ilse, at the fire: "The Keepers wrote it down. A frame takes whatever of the Eye you bring it."
+  Alruna, at the fire: "The Keepers wrote it down. A frame takes whatever of the Eye you bring it."
   <The stranger> Don't listen to her. All twelve, or none of this matters.
   Journal › The Eye: 6 shards. A frame takes it, however many it holds.
   ```
@@ -399,7 +399,7 @@ The catch-up lives in the quest engine (`systems.md`, M1), and the distances and
 
 ### D12 People: a world to talk to
 
-- The world has people to talk to: travellers on the road, the peoples in their camps, the Gazebound, and characters who come back, such as the herder, the caravan's elder and Maren. The pack builds them with Easy NPC, and in phase 6 every one of them is voiced (`narration.md`).
+- The world has people to talk to: travellers on the road, the peoples in their camps, the Gazebound, and characters who come back, such as the herder, the caravan's elder and Malgven. The pack builds them with Easy NPC, and in phase 6 every one of them is voiced (`narration.md`).
 
 ```text
 The herder looks up from his fire. "You again. The dogs remember you."
@@ -408,11 +408,11 @@ The herder looks up from his fire. "You again. The dogs remember you."
 - Easy NPC gives the people their bodies, looks, poses and trading; the Wayfarer mod carries the conversations, for the whole team (D11). Clicking a person starts one: their lines stand as subtitles for everyone near and come in chat for those farther away, and the answers stand numbered beside the crosshair (`interface.md`, I4). The first answer chosen decides an ordinary one; a hard decision, such as a shard or a door, needs two thirds of the team, and everyone sees who chose what. Trading stays Easy NPC's own screen, one player at a time.
 
   ```text
-  Corin  They've got my brother at the outpost. I can't ask you. I'm asking anyway.
+  Cadoc  They've got my brother at the outpost. I can't ask you. I'm asking anyway.
     1 Go tonight   2 Not yet   3 Why should we?
   Kai chose: Go tonight
 
-  Nell  Give it to me. I'll bury it with them.
+  Drifa  Give it to me. I'll bury it with them.
     1 Give it to her 1/3   2 Keep the shard 2/3
   ```
 
@@ -451,7 +451,7 @@ The tents, the fire's stories and mending are settled in `systems.md` (M12).
 - The caravan is the story's to change: it can lose people, split, or die out halfway, and the player goes on alone.
 
 ```text
-Morning  The caravan is packing. Old Tamsin: "Go on. We'll follow your marks."
+Morning  The caravan is packing. Old Maud: "Go on. We'll follow your marks."
 Evening  [Main] Make for the caravan.   Compass ◆ 640 blocks
          The wagons are drawn up by a stream. Someone has the fire going.
 ```

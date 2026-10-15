@@ -165,29 +165,29 @@
       ],
       "title": "A Keeper's Note"
     },
-    "maren/bundle": {
+    "malgven/bundle": {
       "author": "M.",
       "pages": [
         "Across the sea already. He'd have been proud of you, the old fool.\n\nEat something warm tonight.\n\n- M."
       ],
       "title": "A Note"
     },
-    "maren/last": {
+    "malgven/last": {
       "author": "M.",
       "pages": [
         "You fly now. I never could keep up with him either.\n\nEat. He never ate enough either.\n\n- M."
       ],
       "title": "The Last Note"
     },
-    "maren/note": {
+    "malgven/note": {
       "author": "M.",
       "pages": [
         "For whoever carries his light now.\n\nEat. It is a long road on an empty stomach.\n\n- M."
       ],
       "title": "A Note"
     },
-    "maren/unsent": {
-      "author": "Maren",
+    "malgven/unsent": {
+      "author": "Malgven",
       "pages": [
         "Captain Wend. I know you cannot read this. I write it anyway, the way you taught me to talk to the fire.",
         "The one you chose is walking. The captains have me follow the smoke for them. You chose well: they stopped for a dying man when nobody else would. I have not decided what that means."
@@ -345,17 +345,17 @@
       "pages": [
         "The swamp's hall, under the black pool. The snow hall, the stair, twenty winters gone. The old green, empty. The bay: two, and they bow. The red canyons, empty.",
         "The sands: in the worm. The jungle: locked, and the boy has the maps now. The grasslands: under the seal. The dark wood: here, on my own stand.",
-        "The girl. Maren. Mine now."
+        "The girl. Malgven. Mine now."
       ],
       "title": "His Ledger"
     },
     "wend/letter": {
       "author": "Wend",
       "pages": [
-        "For Maren. Open it at the gate.",
-        "Watch the smoke, Maren. Someone kind is carrying my ember to the gate. Help them finish it, then go and build a home."
+        "For Malgven. Open it at the gate.",
+        "Watch the smoke, Malgven. Someone kind is carrying my ember to the gate. Help them finish it, then go and build a home."
       ],
-      "title": "For Maren"
+      "title": "For Malgven"
     },
     "wend/orders": {
       "author": "Wend",

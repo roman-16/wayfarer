@@ -90,4 +90,4 @@ Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftE
 | `mod/` | The Wayfarer mod (NeoForge, Java 21); `src/dev` holds the game tests and the dev client's driver, which never ship |
 | `pack/` | The packwiz pack: one file per mod, and the pack's configs |
 | `scripts/` | The server pack builder, the boot test, the Nether, portal, load order, structure removal and feature audit, the rule checks, the dev client driver with its screenshot tour, the dev server driver and the library both drivers share, the sources unpacker and the exaroton recorder |
-| `story/` | The books (`books.toml`), the voice at the fire, Maren and the leads (`fire.toml`), the journal's summary and word list (`notes.toml`) and the quest book (`quests.toml`) |
+| `story/` | The books (`books.toml`), the voice at the fire, Malgven and the leads (`fire.toml`), the journal's summary and word list (`notes.toml`) and the quest book (`quests.toml`) |

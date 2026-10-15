@@ -283,7 +283,7 @@ def positions():
             "worn": [[x, z] for (x, z), material in ground_cells() if material is GROUND],
             "quay": QUAY,
             "rails": list(RAILS),
-            "tamsin": [SLIP[1] - 1, 1, length - 2, 0, 1],
+            "maud": [SLIP[1] - 1, 1, length - 2, 0, 1],
             "size": list(YARD),
         },
     }

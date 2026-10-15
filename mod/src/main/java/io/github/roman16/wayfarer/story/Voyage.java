@@ -48,7 +48,7 @@ final class Voyage {
     private static final String HELD = "held";
     private static final String SUNK = "sunk";
     private static final ResourceLocation COG = ResourceLocation.fromNamespaceAndPath("smallships", "cog");
-    private static final String[] ABOARD = {"tamsin", "pip"};
+    private static final String[] ABOARD = {"maud", "pip"};
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final int MARCH = 64;
     private static final int CELL = 8;
@@ -237,7 +237,7 @@ final class Voyage {
         scratch.putLong(CALM_AT, level.getGameTime());
         Sea.rise(level, boat.position().add(side.normalize().scale(voyage.riseBlocks())), boat).ifPresent(beast -> scratch.putUUID(BEAST, beast.getUUID()));
         Progress.of(server).setDirty();
-        LOGGER.info("the night on the water begins at {}, Tamsin's boat beside {}", boat.blockPosition(), sailor.getScoreboardName());
+        LOGGER.info("the night on the water begins at {}, Maud's boat beside {}", boat.blockPosition(), sailor.getScoreboardName());
     }
 
     static void resume(MinecraftServer server, Engine.Active active) {

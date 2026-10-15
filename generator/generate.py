@@ -932,9 +932,9 @@ def main():
         | errandfolk()
         | act3folk()
     )
-    skins["maren_child"] = girl_in_grey(skins["maren"])
-    skins["heir"] = heir_of(skins["corin"])
-    skins["brannoc"] = brother_of(skins["corin"])
+    skins["malgven_child"] = girl_in_grey(skins["malgven"])
+    skins["heir"] = heir_of(skins["cadoc"])
+    skins["brannoc"] = brother_of(skins["cadoc"])
     skins["wend_reading"] = skins["stranger"]
     skins["newcomer"] = skins["road_07"]
 

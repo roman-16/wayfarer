@@ -384,7 +384,7 @@ final class Shipyard {
         }
         seat(progress, origin, settings, turn, HULL_SEAT, plan.getAsJsonArray("edda"));
         seat(progress, origin, settings, turn, JETTY_SEAT, plan.getAsJsonArray("launch"));
-        seat(progress, origin, settings, turn, QUAY_SEAT, plan.getAsJsonArray("tamsin"));
+        seat(progress, origin, settings, turn, QUAY_SEAT, plan.getAsJsonArray("maud"));
         progress.place(NAME, origin.offset(StructureTemplate.calculateRelativePosition(settings, Prologue.vector(plan.getAsJsonArray("hull")))));
         progress.place(YARD_ORIGIN, origin);
         progress.ward(NAME, level.getStructureManager().getOrCreate(YARD).getBoundingBox(settings, origin));

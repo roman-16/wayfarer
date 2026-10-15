@@ -8,11 +8,11 @@
 
 ## The caravan
 
-**Corin, the deserter, standing and sitting**, in the showroom
+**Cadoc, the deserter, standing and sitting**, in the showroom
 
 | Front | Side | Three quarters |
 | --- | --- | --- |
-| ![Front](the-caravan/corin/front.jpg) | ![Side](the-caravan/corin/side.jpg) | ![Three quarters](the-caravan/corin/three-quarters.jpg) |
+| ![Front](the-caravan/cadoc/front.jpg) | ![Side](the-caravan/cadoc/side.jpg) | ![Three quarters](the-caravan/cadoc/three-quarters.jpg) |
 
 **The stranger**, in the showroom
 
@@ -20,11 +20,11 @@
 | --- | --- | --- |
 | ![Front](the-caravan/the-stranger/front.jpg) | ![Side](the-caravan/the-stranger/side.jpg) | ![Three quarters](the-caravan/the-stranger/three-quarters.jpg) |
 
-**Tamsin**, in the showroom
+**Maud**, in the showroom
 
 | Front | Side | Three quarters |
 | --- | --- | --- |
-| ![Front](the-caravan/tamsin/front.jpg) | ![Side](the-caravan/tamsin/side.jpg) | ![Three quarters](the-caravan/tamsin/three-quarters.jpg) |
+| ![Front](the-caravan/maud/front.jpg) | ![Side](the-caravan/maud/side.jpg) | ![Three quarters](the-caravan/maud/three-quarters.jpg) |
 
 **Agna**, in the showroom
 
@@ -428,7 +428,7 @@
 
 ## The road
 
-**Brannoc, Corin's brother**, in the showroom
+**Brannoc, Cadoc's brother**, in the showroom
 
 | Front | Side | Three quarters |
 | --- | --- | --- |
@@ -510,27 +510,27 @@
 
 ## The caravan
 
-**Ilse, the Keeper's apprentice**, in the showroom
+**Alruna, the Keeper's apprentice**, in the showroom
 
 | Front | Side | Three quarters |
 | --- | --- | --- |
-| ![Front](the-caravan/ilse/front.jpg) | ![Side](the-caravan/ilse/side.jpg) | ![Three quarters](the-caravan/ilse/three-quarters.jpg) |
+| ![Front](the-caravan/alruna/front.jpg) | ![Side](the-caravan/alruna/side.jpg) | ![Three quarters](the-caravan/alruna/three-quarters.jpg) |
 
 ## Act one
 
-**Maren, the hooded woman**, in the showroom
+**Malgven, the hooded woman**, in the showroom
 
 | Front | Side | Three quarters |
 | --- | --- | --- |
-| ![Front](act-one/maren/front.jpg) | ![Side](act-one/maren/side.jpg) | ![Three quarters](act-one/maren/three-quarters.jpg) |
+| ![Front](act-one/malgven/front.jpg) | ![Side](act-one/malgven/side.jpg) | ![Three quarters](act-one/malgven/three-quarters.jpg) |
 
 ## Act three
 
-**Maren as a girl in grey**, in the showroom
+**Malgven as a girl in grey**, in the showroom
 
 | Front | Side | Three quarters |
 | --- | --- | --- |
-| ![Front](act-three/maren-child/front.jpg) | ![Side](act-three/maren-child/side.jpg) | ![Three quarters](act-three/maren-child/three-quarters.jpg) |
+| ![Front](act-three/malgven-child/front.jpg) | ![Side](act-three/malgven-child/side.jpg) | ![Three quarters](act-three/malgven-child/three-quarters.jpg) |
 
 ## Act two
 
@@ -542,11 +542,11 @@
 
 ## The caravan
 
-**Nell, the last Frost Walker**, in the showroom
+**Drifa, the last Frost Walker**, in the showroom
 
 | Front | Side | Three quarters |
 | --- | --- | --- |
-| ![Front](the-caravan/nell/front.jpg) | ![Side](the-caravan/nell/side.jpg) | ![Three quarters](the-caravan/nell/three-quarters.jpg) |
+| ![Front](the-caravan/drifa/front.jpg) | ![Side](the-caravan/drifa/side.jpg) | ![Three quarters](the-caravan/drifa/three-quarters.jpg) |
 
 ## Act two
 
@@ -644,11 +644,11 @@
 
 ## Act two
 
-**Wren, the potter's girl**, in the showroom
+**Cecily, the potter's girl**, in the showroom
 
 | Front | Side | Three quarters |
 | --- | --- | --- |
-| ![Front](act-two/wren/front.jpg) | ![Side](act-two/wren/side.jpg) | ![Three quarters](act-two/wren/three-quarters.jpg) |
+| ![Front](act-two/cecily/front.jpg) | ![Side](act-two/cecily/side.jpg) | ![Three quarters](act-two/cecily/three-quarters.jpg) |
 
 ## Glowing eyes
 

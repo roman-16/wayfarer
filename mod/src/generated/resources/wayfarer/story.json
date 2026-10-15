@@ -4,16 +4,16 @@
       "people": [
         {
           "at": "fire",
-          "person": "tamsin",
+          "person": "maud",
           "pose": "sitting_leaning"
         }
       ],
       "piece": "large_tent",
-      "unless": "the_hollow/tamsin=lost"
+      "unless": "the_hollow/maud=lost"
     },
     {
       "piece": "bell_cart",
-      "place": "tamsins_bell",
+      "place": "mauds_bell",
       "unless": "the_bell/the_bell=melt"
     },
     {
@@ -35,41 +35,41 @@
     },
     {
       "apart": true,
-      "joins": "corin",
+      "joins": "cadoc",
       "people": [
         {
           "at": "piece",
-          "person": "corin",
+          "person": "cadoc",
           "pose": "sitting"
         }
       ],
       "piece": "tent",
-      "unless": "the_hollow/corin=lost"
+      "unless": "the_hollow/cadoc=lost"
     },
     {
       "apart": true,
-      "joins": "nell",
+      "joins": "drifa",
       "people": [
         {
           "at": "piece",
-          "person": "nell",
+          "person": "drifa",
           "pose": "standing"
         }
       ],
       "piece": "hide_shelter",
-      "unless": "the_hollow/nell=lost"
+      "unless": "the_hollow/drifa=lost"
     },
     {
-      "joins": "ilse",
+      "joins": "alruna",
       "people": [
         {
           "at": "fire",
-          "person": "ilse",
+          "person": "alruna",
           "pose": "sitting_crossed"
         }
       ],
       "piece": "book_tent",
-      "unless": "the_hollow/ilse=lost"
+      "unless": "the_hollow/alruna=lost"
     },
     {
       "people": [
@@ -489,7 +489,7 @@
               "text": "A tiny open eye is stitched on her coat."
             }
           ],
-          "meets": "maren_child",
+          "meets": "malgven_child",
           "objective": "Choose: press its number."
         },
         {
@@ -526,7 +526,7 @@
             }
           ],
           "objective": "Remember.",
-          "vanish": "maren_child"
+          "vanish": "malgven_child"
         }
       ],
       "title": "His Last Camp"
@@ -586,7 +586,7 @@
               "text": "A girl in grey sits by the hearth with her knees drawn up, watching your hand."
             }
           ],
-          "meets": "maren_child",
+          "meets": "malgven_child",
           "objective": "Sit by the hearth."
         },
         {
@@ -627,7 +627,7 @@
             }
           ],
           "objective": "Remember.",
-          "vanish": "maren_child"
+          "vanish": "malgven_child"
         }
       ],
       "title": "The Girl in Grey"
@@ -715,6 +715,28 @@
         "Sit before you fall down. Then tell me where it hurts."
       ]
     },
+    "alruna": {
+      "color": "blue",
+      "mornings": [
+        "I'll walk with the wagons. My feet aren't used to this yet.",
+        "Go on. I'm writing down yesterday before I lose it.",
+        "Go on. I'll ask you everything tonight.",
+        "Walk carefully. I've only just started writing you down."
+      ],
+      "name": "Alruna",
+      "remarks": [
+        "Master Ansel copied that book three times. I can still smell the smoke on it.",
+        "Everything the Keepers wrote down, and none of them ever walked this far."
+      ],
+      "skin": "alruna",
+      "unnamed": "A young woman in grey",
+      "welcomes": [
+        "You're back. Tell me where you went. Slowly.",
+        "I saved you a seat. And a page.",
+        "Sit down before you forget it. Whatever it was.",
+        "There's room by the fire. You talk; I'll write."
+      ]
+    },
     "bram": {
       "color": "green",
       "name": "Bram",
@@ -742,6 +764,22 @@
       "skin": "brannoc",
       "unnamed": "A man in grey"
     },
+    "cadoc": {
+      "color": "dark_aqua",
+      "mornings": [
+        "Go on ahead. I'll keep to the back, where I'm no trouble.",
+        "Mind the ridges today. Grey coats see a long way.",
+        "I'll walk at the back. Nobody wants a grey coat in front.",
+        "If you see banners, don't wave. Come back."
+      ],
+      "name": "Cadoc",
+      "remarks": [
+        "Don't ask about the scar.",
+        "I sleep with my boots on. Habit."
+      ],
+      "skin": "cadoc",
+      "unnamed": "A wounded man"
+    },
     "captive_1": {
       "color": "white",
       "name": "A child",
@@ -766,26 +804,40 @@
       ],
       "skin": "captive_3"
     },
-    "corin": {
-      "color": "dark_aqua",
-      "mornings": [
-        "Go on ahead. I'll keep to the back, where I'm no trouble.",
-        "Mind the ridges today. Grey coats see a long way.",
-        "I'll walk at the back. Nobody wants a grey coat in front.",
-        "If you see banners, don't wave. Come back."
-      ],
-      "name": "Corin",
+    "cecily": {
+      "color": "yellow",
+      "name": "Cecily",
       "remarks": [
-        "Don't ask about the scar.",
-        "I sleep with my boots on. Habit."
+        "I'm not tired. I'm not."
       ],
-      "skin": "corin",
-      "unnamed": "A wounded man"
+      "skin": "cecily",
+      "unnamed": "A feverish girl"
     },
     "dicer": {
       "color": "white",
       "name": "The dicer",
       "road": true
+    },
+    "drifa": {
+      "cold": [
+        "Don't talk to me. You know why.",
+        "You kept it. Live with that."
+      ],
+      "color": "white",
+      "mornings": [
+        "I'll walk the ridge. Don't wait for me.",
+        "Snow's coming off the high ground. Walk fast.",
+        "Tracks are freshest at first light. Go now.",
+        "I'll find you. I always find what I'm following."
+      ],
+      "name": "Drifa",
+      "people": "drifa",
+      "remarks": [
+        "Twenty winters. I can wait a few days more.",
+        "Don't stand behind me."
+      ],
+      "skin": "drifa",
+      "unnamed": "A woman in furs"
     },
     "drowned_1": {
       "color": "gray",
@@ -894,40 +946,40 @@
         "Anything gone dull, give it here. I'll look at it by the fire."
       ]
     },
-    "ilse": {
-      "color": "blue",
-      "mornings": [
-        "I'll walk with the wagons. My feet aren't used to this yet.",
-        "Go on. I'm writing down yesterday before I lose it.",
-        "Go on. I'll ask you everything tonight.",
-        "Walk carefully. I've only just started writing you down."
-      ],
-      "name": "Ilse",
-      "remarks": [
-        "Master Ansel copied that book three times. I can still smell the smoke on it.",
-        "Everything the Keepers wrote down, and none of them ever walked this far."
-      ],
-      "skin": "ilse",
-      "unnamed": "A young woman in grey",
-      "welcomes": [
-        "You're back. Tell me where you went. Slowly.",
-        "I saved you a seat. And a page.",
-        "Sit down before you forget it. Whatever it was.",
-        "There's room by the fire. You talk; I'll write."
-      ]
-    },
-    "maren": {
+    "malgven": {
       "color": "gray",
-      "name": "Maren",
-      "skin": "maren",
+      "name": "Malgven",
+      "skin": "malgven",
       "unnamed": "A hooded woman"
     },
-    "maren_child": {
+    "malgven_child": {
       "color": "gray",
       "name": "A girl in grey",
-      "people": "maren_child",
-      "skin": "maren_child",
+      "people": "malgven_child",
+      "skin": "malgven_child",
       "unnamed": "A girl in grey"
+    },
+    "maud": {
+      "color": "aqua",
+      "mornings": [
+        "We're packing up. Go on ahead; we'll follow your marks.",
+        "Don't wait for us. Look for our smoke tonight.",
+        "Walk ahead. If it's bad, come back and say so.",
+        "We follow your marks. Leave good ones."
+      ],
+      "name": "Maud",
+      "remarks": [
+        "We follow your marks. Don't make me regret it.",
+        "The bell's still with us. So are we."
+      ],
+      "skin": "maud",
+      "unnamed": "A grey-haired woman",
+      "welcomes": [
+        "There you are. Sit, and tell me what's ahead.",
+        "Good. Everyone's in.",
+        "You're late. Sit. What did you see?",
+        "Fire's lit and nobody's missing. Good."
+      ]
     },
     "morwen": {
       "color": "aqua",
@@ -939,27 +991,6 @@
       ],
       "skin": "morwen",
       "unnamed": "A woman with a net"
-    },
-    "nell": {
-      "cold": [
-        "Don't talk to me. You know why.",
-        "You kept it. Live with that."
-      ],
-      "color": "white",
-      "mornings": [
-        "I'll walk the ridge. Don't wait for me.",
-        "Snow's coming off the high ground. Walk fast.",
-        "Tracks are freshest at first light. Go now.",
-        "I'll find you. I always find what I'm following."
-      ],
-      "name": "Nell",
-      "people": "nell",
-      "remarks": [
-        "Twenty winters. I can wait a few days more.",
-        "Don't stand behind me."
-      ],
-      "skin": "nell",
-      "unnamed": "A woman in furs"
     },
     "newcomer": {
       "color": "white",
@@ -999,7 +1030,7 @@
       "color": "yellow",
       "mornings": [
         "Can I walk with you today? ...Fine. Go on, then.",
-        "Tamsin says we're slow. Go on, we'll catch up!",
+        "Maud says we're slow. Go on, we'll catch up!",
         "I'll watch for you tonight. From the very first smoke.",
         "Agna says I have to stay. One day I won't."
       ],
@@ -1073,28 +1104,6 @@
       "skin": "stranger",
       "unnamed": "The stranger",
       "voice": true
-    },
-    "tamsin": {
-      "color": "aqua",
-      "mornings": [
-        "We're packing up. Go on ahead; we'll follow your marks.",
-        "Don't wait for us. Look for our smoke tonight.",
-        "Walk ahead. If it's bad, come back and say so.",
-        "We follow your marks. Leave good ones."
-      ],
-      "name": "Tamsin",
-      "remarks": [
-        "We follow your marks. Don't make me regret it.",
-        "The bell's still with us. So are we."
-      ],
-      "skin": "tamsin",
-      "unnamed": "A grey-haired woman",
-      "welcomes": [
-        "There you are. Sit, and tell me what's ahead.",
-        "Good. Everyone's in.",
-        "You're late. Sit. What did you see?",
-        "Fire's lit and nobody's missing. Good."
-      ]
     },
     "tansy": {
       "cold": [
@@ -1191,15 +1200,6 @@
       ],
       "skin": "wil",
       "unnamed": "An old cooper"
-    },
-    "wren": {
-      "color": "yellow",
-      "name": "Wren",
-      "remarks": [
-        "I'm not tired. I'm not."
-      ],
-      "skin": "wren",
-      "unnamed": "A feverish girl"
     }
   },
   "quests": [
@@ -1620,11 +1620,11 @@
             "hob": [
               "One more step and I'll swing."
             ],
+            "maud": [
+              "Shut that door. Quietly."
+            ],
             "pip": [
               "Mam?"
-            ],
-            "tamsin": [
-              "Shut that door. Quietly."
             ]
           },
           "story": [
@@ -1678,12 +1678,12 @@
               "text": "You've seen them out there. They never take anything. They only open the chest."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "names": [
-                "tamsin",
+                "maud",
                 "tollbridge"
               ],
-              "text": "Tamsin. I was Tollbridge's elder. It stood three hundred years. One night."
+              "text": "Maud. I was Tollbridge's elder. It stood three hundred years. One night."
             },
             {
               "by": "pip",
@@ -1697,14 +1697,14 @@
           "people": {
             "agna": "The healer of Tollbridge. She showed me the dead: they never take anything, she said, they only open the chest.",
             "hob": "The smith of Tollbridge, big and frightened, and the first to see I was only a person.",
-            "pip": "A child of Tollbridge. Pip's mother died the night it burned. Pip thinks I'm a Wayfarer out of the old stories.",
-            "tamsin": "The elder of Tollbridge. Her town stood three hundred years, she says, and fell in one night."
+            "maud": "The elder of Tollbridge. Her town stood three hundred years, she says, and fell in one night.",
+            "pip": "A child of Tollbridge. Pip's mother died the night it burned. Pip thinks I'm a Wayfarer out of the old stories."
           },
           "story": [
-            "Four of them were alive, in the cellar under the bell tower: Tamsin, their elder; Agna, the healer; Hob, the smith; and a child, Pip."
+            "Four of them were alive, in the cellar under the bell tower: Maud, their elder; Agna, the healer; Hob, the smith; and a child, Pip."
           ],
           "words": {
-            "tollbridge": "Tamsin's town, at a river crossing. It stood three hundred years and burned in one night.",
+            "tollbridge": "Maud's town, at a river crossing. It stood three hundred years and burned in one night.",
             "wayfarer": "Pip's word for me. In the stories Tollbridge told its children, Wayfarers carried fire and never stayed anywhere."
           }
         },
@@ -1735,12 +1735,12 @@
             "hob": [
               "Three hundred years of iron in my forge, and all I saved is a hammer."
             ],
+            "maud": [
+              "Sit, if you're staying. We've nothing to give you but the fire."
+            ],
             "pip": [
               "Is it warm? The fire in your hand? Can I hold it?",
               "Mam used to sing at the fire."
-            ],
-            "tamsin": [
-              "Sit, if you're staying. We've nothing to give you but the fire."
             ]
           },
           "reward": {
@@ -1767,8 +1767,8 @@
           "keep": [
             "agna",
             "hob",
-            "pip",
-            "tamsin"
+            "maud",
+            "pip"
           ],
           "kind": "hold",
           "lines": [
@@ -1776,7 +1776,7 @@
               "text": "Outside, something scrapes at the stones. Then more of them."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "They never come back. What did you bring?"
             },
             {
@@ -1787,7 +1787,7 @@
           "music": "hold",
           "objective": "Hold the cellar door until morning.",
           "people": {
-            "tamsin": "She asked what I brought with me when they came back. I think she meant the ember."
+            "maud": "She asked what I brought with me when they came back. I think she meant the ember."
           },
           "remarks": {
             "agna": [
@@ -1798,18 +1798,18 @@
               "I've got the door. You get the ones that come round.",
               "Hold! It's oak. It'll take it if we do."
             ],
+            "maud": [
+              "The stone will hold. Make sure the door does.",
+              "They never came back before. Never."
+            ],
             "pip": [
               "I'm not scared. I'm not.",
               "Are they going to come in?"
-            ],
-            "tamsin": [
-              "The stone will hold. Make sure the door does.",
-              "They never came back before. Never."
             ]
           },
           "retry": "Try the night again from the cellar",
           "story": [
-            "They came back in the night, for the cellar. Tamsin thinks they came for me. We held the door until morning."
+            "They came back in the night, for the cellar. Maud thinks they came for me. We held the door until morning."
           ],
           "wave": "The cellar door: wave {wave} of {waves}"
         },
@@ -1833,11 +1833,11 @@
             "hob": [
               "Listen. Birds. They're gone."
             ],
+            "maud": [
+              "Morning. We're still here."
+            ],
             "pip": [
               "Is it over? Is it morning?"
-            ],
-            "tamsin": [
-              "Morning. We're still here."
             ]
           }
         },
@@ -1868,10 +1868,10 @@
               "text": "We'll follow you. Whatever you are."
             },
             {
-              "text": "Tamsin sits by the town's bell, fallen from its tower and black with smoke."
+              "text": "Maud sits by the town's bell, fallen from its tower and black with smoke."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "The bell comes with us."
             }
           ],
@@ -1884,41 +1884,41 @@
               "place": "bell_hob",
               "pose": "standing"
             },
+            "maud": {
+              "place": "bell",
+              "pose": "sitting_hunched"
+            },
             "pip": {
               "place": "bell_pip",
               "pose": "standing"
-            },
-            "tamsin": {
-              "place": "bell",
-              "pose": "sitting_hunched"
             }
           },
-          "objective": "Talk to Tamsin.",
+          "objective": "Talk to Maud.",
           "people": {
             "agna": "She took Pip in, the morning after."
           },
           "remarks": {
             "agna": [
-              "Talk to Tamsin. She won't go anywhere without it."
+              "Talk to Maud. She won't go anywhere without it."
             ],
             "hob": [
               "If she says the bell comes, the bell comes. I'll find a cart."
             ],
             "pip": [
-              "The bell rang when I was born. Tamsin says it rang for everyone."
+              "The bell rang when I was born. Maud says it rang for everyone."
             ]
           },
           "story": [
-            "At dawn they asked me to lead them. I don't know where to. Tamsin won't go anywhere without her town's bell."
+            "At dawn they asked me to lead them. I don't know where to. Maud won't go anywhere without her town's bell."
           ],
-          "with": "tamsin"
+          "with": "maud"
         },
         {
           "id": "the_first_fire",
           "kind": "caravan",
           "lines": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Go on ahead. We'll be by water before dark. Look for our smoke."
             }
           ],
@@ -1930,11 +1930,11 @@
             "hob": [
               "The cart held. That bell's heavier than it looks."
             ],
+            "maud": [
+              "Sit by the fire. You've walked enough for one day."
+            ],
             "pip": [
               "We made a camp! A real one, like the Wayfarers in the stories."
-            ],
-            "tamsin": [
-              "Sit by the fire. You've walked enough for one day."
             ]
           },
           "tasks": [
@@ -1960,7 +1960,7 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "music": "first_fire",
               "text": "You walk ahead. We'll follow your marks."
             },
@@ -1991,7 +1991,7 @@
           "objective": "Sit at the caravan's fire.",
           "people": {
             "agna": "At the fire she held my wrist too long, and said my heart was slow, like something asleep.",
-            "tamsin": "She made me their scout: I walk ahead, and they follow my marks."
+            "maud": "She made me their scout: I walk ahead, and they follow my marks."
           },
           "reward": {
             "claimed": "You take Hob's patterns: one for every tool he makes.",
@@ -2013,9 +2013,9 @@
             "title": "Hob's Patterns"
           },
           "story": [
-            "They made camp by water, and I found their smoke. Tamsin says I'm their scout now: I walk ahead, and they follow my marks."
+            "They made camp by water, and I found their smoke. Maud says I'm their scout now: I walk ahead, and they follow my marks."
           ],
-          "with": "tamsin"
+          "with": "maud"
         },
         {
           "done": [
@@ -2033,11 +2033,11 @@
             "hob": [
               "Go on. I'll sit up a while."
             ],
+            "maud": [
+              "Sleep. Someone has to walk ahead tomorrow."
+            ],
             "pip": [
               "Goodnight, Wayfarer."
-            ],
-            "tamsin": [
-              "Sleep. Someone has to walk ahead tomorrow."
             ]
           },
           "tasks": [
@@ -2185,7 +2185,7 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "You came back different. What's in that hand now?"
             },
             {
@@ -2201,7 +2201,7 @@
               "text": "I made my first camp by a lake, under three pines. It's to the {direction} of here. I'd like to see it again."
             }
           ],
-          "objective": "Sit with Tamsin at the caravan's fire.",
+          "objective": "Sit with Maud at the caravan's fire.",
           "place": "first_camp",
           "story": [
             "At the caravan's fire his voice told me where he made his first camp: by a lake, under three pines, to the {direction}. He wants to see it again."
@@ -2314,7 +2314,7 @@
               "text": "...Someone's been here. Someone who knows my camps."
             }
           ],
-          "finds": "maren",
+          "finds": "malgven",
           "id": "the_gift",
           "kind": "clues",
           "needed": 1,
@@ -2333,7 +2333,7 @@
                 "name": "Dried Fish"
               },
               {
-                "book": "maren/note"
+                "book": "malgven/note"
               }
             ],
             "text": "bread, dried fish, and a note signed M.",
@@ -2366,7 +2366,7 @@
       "after": [
         "the_pull"
       ],
-      "found": "maren",
+      "found": "malgven",
       "id": "the_gifts",
       "kind": "side",
       "steps": [
@@ -2415,7 +2415,7 @@
                 "name": "Dried Fish"
               },
               {
-                "book": "maren/bundle"
+                "book": "malgven/bundle"
               }
             ],
             "text": "bread, dried fish, and a note signed M.",
@@ -2470,7 +2470,7 @@
                 "name": "Dried Fish"
               },
               {
-                "book": "maren/last"
+                "book": "malgven/last"
               }
             ],
             "text": "bread, dried fish, and a last note signed M.",
@@ -2531,7 +2531,7 @@
           "from": "ford_far",
           "id": "the_ford",
           "keep": [
-            "corin"
+            "cadoc"
           ],
           "kind": "hold",
           "lines": [
@@ -2543,14 +2543,14 @@
               "text": "There! The ember! Take them both!"
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "Fight or run. Don't just stand there."
             }
           ],
           "music": "hold",
           "objective": "Keep the wounded man alive while they come across the ford.",
           "remarks": {
-            "corin": [
+            "cadoc": [
               "Keep them in the water. They're slow in the water.",
               "I can't stand. Don't let them reach me."
             ]
@@ -2574,82 +2574,82 @@
               "text": "Keep up, then."
             }
           ],
-          "id": "corin",
-          "joins": "corin",
+          "id": "cadoc",
+          "joins": "cadoc",
           "kind": "talk",
           "lines": [
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "They'll be back with more. They always come back with more."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "Let me see your hand. ...That light."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "I know that light. I'd know it anywhere."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "names": [
-                "corin"
+                "cadoc"
               ],
-              "text": "Corin. Don't thank me. I brought them."
+              "text": "Cadoc. Don't thank me. I brought them."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "names": [
                 "gazebound"
               ],
               "text": "They're Gazebound. My own company, until last night."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "Their heir wants that coal more than he wants me. And he wants me badly."
             },
             {
               "text": "He pulls his shirt open. Over his heart runs an old white scar, like the one on the old man by the fire."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "We all carry one. They let the night look into you. If you live, it never looks again."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "The man who carried that light before you. I served under him, six winters."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "Don't ask me his name. Not yet."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "Where are you walking? Can a man with one good leg walk with you?"
             }
           ],
           "objective": "Talk to the wounded man by the ford.",
           "people": {
-            "corin": "A deserter from the men in grey, with their scar over his heart. He served under the stranger for six winters, and won't say his name. We held the ford for him."
+            "cadoc": "A deserter from the men in grey, with their scar over his heart. He served under the stranger for six winters, and won't say his name. We held the ford for him."
           },
           "story": [
-            "The man was Corin, a deserter. He knew the ember's light, and the man who carried it before me, and he wouldn't say his name. He walks with us now."
+            "The man was Cadoc, a deserter. He knew the ember's light, and the man who carried it before me, and he wouldn't say his name. He walks with us now."
           ],
-          "with": "corin",
+          "with": "cadoc",
           "words": {
-            "gazebound": "Men in grey who hunt whoever carries an ember. Every one of them has a scar over the heart, as the stranger had. Corin was one of them.",
-            "heir": "Whoever leads the Gazebound. Corin says he wants the ember more than anything, and Corin ran from him."
+            "gazebound": "Men in grey who hunt whoever carries an ember. Every one of them has a scar over the heart, as the stranger had. Cadoc was one of them.",
+            "heir": "Whoever leads the Gazebound. Cadoc says he wants the ember more than anything, and Cadoc ran from him."
           }
         },
         {
           "id": "the_caravan",
           "kind": "caravan",
           "leaves": [
-            "corin"
+            "cadoc"
           ],
           "lines": [
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "Go on ahead. I'll follow your smoke. I'm good at following smoke."
             }
           ],
@@ -2664,45 +2664,45 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "You brought one of the men in grey to our fire."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "Not one of them. Not any more."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "The man who had that ember before you. Where is he?"
             },
             {
               "text": "You tell him about the old man's fire, and the grave beside it."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "He's dead, then. Good."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "...No. Not good."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "My brother's still up at that outpost above the ford. He took the scar the same night I did."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "Not now. When you're stronger. I'll tell you when."
             }
           ],
-          "objective": "Talk to Corin, by his tent at the edge of the camp.",
+          "objective": "Talk to Cadoc, by his tent at the edge of the camp.",
           "people": {
-            "corin": "Corin heard the stranger is dead, and said good, and then said no. His brother is still with the Gazebound."
+            "cadoc": "Cadoc heard the stranger is dead, and said good, and then said no. His brother is still with the Gazebound."
           },
           "story": [
-            "At the caravan's fire Corin heard the stranger was dead. He said good, and then he said no. His brother is still with the Gazebound, at the outpost above the ford."
+            "At the caravan's fire Cadoc heard the stranger was dead. He said good, and then he said no. His brother is still with the Gazebound, at the outpost above the ford."
           ],
-          "with": "corin"
+          "with": "cadoc"
         }
       ],
       "summary": "The ember pulls again, as it pulled to the old tunnels. Hold it up, turn until it flares, and walk that way.",
@@ -2721,33 +2721,33 @@
           "awaits": "the_crossing",
           "id": "not_yet",
           "kind": "wait",
-          "objective": "Wait for Corin's word: he'll say when you're ready.",
+          "objective": "Wait for Cadoc's word: he'll say when you're ready.",
           "story": [
-            "Corin's brother took the Gazebound's scar the same night Corin did, and still serves at the outpost above the ford. Corin will say when."
+            "Cadoc's brother took the Gazebound's scar the same night Cadoc did, and still serves at the outpost above the ford. Cadoc will say when."
           ]
         },
         {
           "calls": 16,
-          "id": "corins_word",
+          "id": "cadocs_word",
           "kind": "talk",
           "lines": [
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "His company crossed before us. They camp at an outpost on this shore, a day off."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "Brannoc. My brother. If he comes, he comes. If he won't, I want to hear it from you."
             }
           ],
-          "objective": "Hear Corin out at the fire.",
+          "objective": "Hear Cadoc out at the fire.",
           "people": {
-            "corin": "His brother Brannoc's company crossed the sea before us and camps at an outpost on this shore."
+            "cadoc": "His brother Brannoc's company crossed the sea before us and camps at an outpost on this shore."
           },
           "story": [
-            "Corin's brother Brannoc camps with his company at an outpost on this shore. Corin asked me to fetch him, or hear him say no."
+            "Cadoc's brother Brannoc camps with his company at an outpost on this shore. Cadoc asked me to fetch him, or hear him say no."
           ],
-          "with": "corin"
+          "with": "cadoc"
         },
         {
           "done": [
@@ -2787,8 +2787,8 @@
             {
               "id": "well",
               "reply": "Then tell him I'm well. Tell him I'm sorry about the ford.",
-              "story": "I told Brannoc that Corin's alive and asked for him. Tell him I'm well, he said.",
-              "text": "Corin's alive. He asked for you."
+              "story": "I told Brannoc that Cadoc's alive and asked for him. Tell him I'm well, he said.",
+              "text": "Cadoc's alive. He asked for you."
             },
             {
               "id": "come",
@@ -2816,7 +2816,7 @@
               "names": [
                 "brannoc"
               ],
-              "text": "Brannoc. You're the one Corin follows now."
+              "text": "Brannoc. You're the one Cadoc follows now."
             },
             {
               "by": "brannoc",
@@ -2829,37 +2829,37 @@
               "pose": "standing"
             }
           },
-          "objective": "Find Corin's brother at the outpost.",
+          "objective": "Find Cadoc's brother at the outpost.",
           "people": {
-            "brannoc": "Corin's brother. He took the Gazebound's scar willingly and doesn't want to be saved."
+            "brannoc": "Cadoc's brother. He took the Gazebound's scar willingly and doesn't want to be saved."
           },
           "story": [
-            "Corin's brother Brannoc took the scar willingly. He chose the quiet, he said, and doesn't want to be saved."
+            "Cadoc's brother Brannoc took the scar willingly. He chose the quiet, he said, and doesn't want to be saved."
           ],
           "with": "brannoc"
         },
         {
           "done": [
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "He's well. Good."
             },
             {
-              "text": "Corin doesn't say anything else all evening."
+              "text": "Cadoc doesn't say anything else all evening."
             }
           ],
           "id": "the_caravan",
           "kind": "caravan",
-          "objective": "Make for their smoke, and tell Corin.",
+          "objective": "Make for their smoke, and tell Cadoc.",
           "story": [
-            "I told Corin his brother is well and won't come. He said good, and nothing else all evening."
+            "I told Cadoc his brother is well and won't come. He said good, and nothing else all evening."
           ],
           "tasks": [
             "rest"
           ]
         }
       ],
-      "summary": "Corin's brother serves the Gazebound. Corin will say when the team is strong enough to fetch him.",
+      "summary": "Cadoc's brother serves the Gazebound. Cadoc will say when the team is strong enough to fetch him.",
       "title": "His Brother"
     },
     {
@@ -3372,7 +3372,7 @@
           ],
           "done": [
             {
-              "by": "maren",
+              "by": "malgven",
               "text": "Eat. You walk further on bread."
             },
             {
@@ -3382,7 +3382,7 @@
               "left": "minecraft:bread",
               "sound": "smoke_gust",
               "text": "The fire gusts. Smoke rolls over the circle, and when it thins she is gone.",
-              "vanishes": "maren"
+              "vanishes": "malgven"
             },
             {
               "text": "The loaf is still on the log, dark and round."
@@ -3395,20 +3395,20 @@
               "text": "Someone walks out of the dark and sits down across the fire. A grey hood, a grey coat, an eye stitched over the heart."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Gazebound. At my fire."
             },
             {
               "text": "Hob gets up with his hammer in his fist. Nobody else moves."
             },
             {
-              "by": "maren",
+              "by": "malgven",
               "text": "So he's dead. I knew his smoke before I knew your face."
             }
           ],
           "objective": "Sit at the caravan's fire.",
           "people": {
-            "maren": "A hooded woman in Gazebound grey. She knew the stranger's smoke, and that he was dead. She left us bread."
+            "malgven": "A hooded woman in Gazebound grey. She knew the stranger's smoke, and that he was dead. She left us bread."
           },
           "poses": {
             "hob": "standing"
@@ -3419,7 +3419,7 @@
           "tasks": [
             "rest"
           ],
-          "with": "maren"
+          "with": "malgven"
         },
         {
           "awake": "Not yet. Her bread is still on the log.",
@@ -3467,32 +3467,32 @@
             }
           ],
           "objective": "Decide what to do with her bread: press an answer's number.",
-          "with": "tamsin"
+          "with": "maud"
         },
         {
-          "awake": "Not yet. Corin's watching you from his tent.",
+          "awake": "Not yet. Cadoc's watching you from his tent.",
           "calls": 64,
-          "id": "corin",
-          "joined": "corin",
+          "id": "cadoc",
+          "joined": "cadoc",
           "kind": "talk",
           "lines": [
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "She saw my tent. She let me be."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "...Don't ask me who she is."
             }
           ],
-          "objective": "Talk to Corin, by his tent at the edge of the camp.",
+          "objective": "Talk to Cadoc, by his tent at the edge of the camp.",
           "people": {
-            "corin": "He knows the hooded woman, and won't say who she is, as he won't say the stranger's name."
+            "cadoc": "He knows the hooded woman, and won't say who she is, as he won't say the stranger's name."
           },
           "story": [
-            "Corin knows her. He won't say who she is."
+            "Cadoc knows her. He won't say who she is."
           ],
-          "with": "corin"
+          "with": "cadoc"
         }
       ],
       "summary": "The voice says someone has walked in your smoke since his first camp. Sit at the caravan's fire tonight.",
@@ -3527,7 +3527,7 @@
             }
           ],
           "moves": {
-            "nell": {
+            "drifa": {
               "holds": "minecraft:bow",
               "place": "frost_roof",
               "pose": "standing_aiming"
@@ -3555,7 +3555,7 @@
           "kind": "reach",
           "known": "feeling",
           "moves": {
-            "nell": {
+            "drifa": {
               "holds": "minecraft:bow",
               "place": "frost_roof",
               "pose": "standing_aiming"
@@ -3563,7 +3563,7 @@
           },
           "objective": "Follow the tracks.",
           "place": "frost",
-          "shoots": "nell",
+          "shoots": "drifa",
           "story": [
             "Across my way ran a hunter's tracks, dragging something that bled. I followed them to a house half buried in the snow."
           ],
@@ -3573,55 +3573,55 @@
         },
         {
           "calls": 32,
-          "id": "nell",
-          "joins": "nell",
+          "id": "drifa",
+          "joins": "drifa",
           "kind": "talk",
           "lines": [
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "That's close enough. Hold the fire up where I can see it."
             },
             {
               "text": "A woman in furs stands on the roof, an arrow on the string. She looks at the ember in your hand for a long breath."
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "...A Wayfarer's fire. Twenty winters I've waited for one of those."
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "names": [
-                "nell",
+                "drifa",
                 "frost_walkers"
               ],
-              "text": "I'm Nell. The last of the Frost Walkers."
+              "text": "I'm Drifa. The last of the Frost Walkers."
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "Twenty winters ago I came home from a hunt and found my people dead on the stair to our hall. The hall was empty."
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "Our stone down there remembers what it saw. It shows it only to a Wayfarer's fire."
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "Wake it for me. I want a name."
             },
             {
               "text": "She climbs down and puts a pair of snowshoes in your hands: bent ash, laced with gut, worn smooth."
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "Up there you'd sink to the waist in those boots. My mother made these."
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "I'll be at the stair at first light. Don't make me wait."
             }
           ],
           "moves": {
-            "nell": {
+            "drifa": {
               "holds": "minecraft:bow",
               "place": "frost_roof",
               "pose": "standing_aiming"
@@ -3629,13 +3629,13 @@
           },
           "objective": "Hear out the woman on the roof.",
           "people": {
-            "nell": "Nell, the last of the Frost Walkers. She came home from a hunt twenty winters ago to find her people dead on their hall's stair. She wants a name."
+            "drifa": "Drifa, the last of the Frost Walkers. She came home from a hunt twenty winters ago to find her people dead on their hall's stair. She wants a name."
           },
           "poses": {
-            "nell": "standing"
+            "drifa": "standing"
           },
           "remarks": {
-            "nell": [
+            "drifa": [
               "First light. The stair."
             ]
           },
@@ -3645,29 +3645,29 @@
               {
                 "id": "artifacts:snowshoes",
                 "name": "Frost Walkers' Snowshoes",
-                "tooltip": "Nell's mother made them. Worn with your charms, they carry you over powder snow, and faster over snow."
+                "tooltip": "Drifa's mother made them. Worn with your charms, they carry you over powder snow, and faster over snow."
               }
             ],
-            "text": "a pair of snowshoes Nell's mother made: bent ash, laced with gut. They carry you over powder snow.",
+            "text": "a pair of snowshoes Drifa's mother made: bent ash, laced with gut. They carry you over powder snow.",
             "title": "Snowshoes"
           },
           "story": [
-            "On the roof stood Nell, the last of the Frost Walkers, with an arrow for me until she saw the ember. Her people died on their hall's stair twenty winters ago, and their stone was emptied. She wants a name, and gave me her mother's snowshoes for the way up."
+            "On the roof stood Drifa, the last of the Frost Walkers, with an arrow for me until she saw the ember. Her people died on their hall's stair twenty winters ago, and their stone was emptied. She wants a name, and gave me her mother's snowshoes for the way up."
           ],
-          "with": "nell",
+          "with": "drifa",
           "words": {
-            "frost_walkers": "Nell's people. They wintered in a hall up in the deep snow, with a stone that remembers. All dead but her."
+            "frost_walkers": "Drifa's people. They wintered in a hall up in the deep snow, with a stone that remembers. All dead but her."
           }
         },
         {
           "id": "the_caravan",
           "kind": "caravan",
           "leaves": [
-            "nell"
+            "drifa"
           ],
           "lines": [
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "Go on to your people. I'll come and look at them before dark."
             }
           ],
@@ -3681,44 +3681,44 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Your hunter came in at dusk. Sat down at the edge of the light and counted us. Twice."
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "I like to know who I'm sleeping near."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "She can stay. Anyone who brings meat can stay."
             }
           ],
-          "objective": "Sit with Tamsin at the caravan's fire.",
+          "objective": "Sit with Maud at the caravan's fire.",
           "story": [
-            "Nell came to the caravan's fire that evening, and counted us."
+            "Drifa came to the caravan's fire that evening, and counted us."
           ],
-          "with": "tamsin"
+          "with": "maud"
         },
         {
           "calls": 64,
-          "id": "corin",
-          "joined": "corin",
+          "id": "cadoc",
+          "joined": "cadoc",
           "kind": "talk",
           "lines": [
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "She looked at my coat for a long time."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "...I'll sleep with my boots on tonight."
             }
           ],
-          "objective": "Talk to Corin, by his tent at the edge of the camp.",
+          "objective": "Talk to Cadoc, by his tent at the edge of the camp.",
           "story": [
-            "Corin says Nell looked at his grey coat for a long time."
+            "Cadoc says Drifa looked at his grey coat for a long time."
           ],
-          "with": "corin"
+          "with": "cadoc"
         }
       ],
       "summary": "The ember pulls again, into air that smells of snow. Hold it up, turn until it flares, and walk that way.",
@@ -3735,7 +3735,7 @@
         {
           "done": [
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "You came. Down, then."
             }
           ],
@@ -3743,19 +3743,19 @@
           "kind": "reach",
           "lines": [
             {
-              "text": "Somewhere up in the deep snow, Nell is waiting at a stair."
+              "text": "Somewhere up in the deep snow, Drifa is waiting at a stair."
             }
           ],
           "moves": {
-            "nell": {
+            "drifa": {
               "place": "frost_stair",
               "pose": "standing"
             }
           },
-          "objective": "Meet Nell at the stair, up in the deep snow.",
+          "objective": "Meet Drifa at the stair, up in the deep snow.",
           "place": "frost_hall",
           "story": [
-            "At first light Nell waited at the stair to her people's hall."
+            "At first light Drifa waited at the stair to her people's hall."
           ]
         },
         {
@@ -3767,7 +3767,7 @@
               "text": "The stone at the far end stands empty."
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "Someone took it. I want a name."
             }
           ],
@@ -3779,7 +3779,7 @@
             }
           ],
           "moves": {
-            "nell": {
+            "drifa": {
               "place": "frost_inside",
               "pose": "standing"
             }
@@ -3803,7 +3803,7 @@
           ],
           "memory": "the_theft",
           "moves": {
-            "nell": {
+            "drifa": {
               "place": "frost_inside",
               "pose": "standing"
             }
@@ -3819,13 +3819,13 @@
             {
               "id": "told",
               "reply": "Then it's mine to bury, when we find it. Not his.",
-              "story": "I told Nell the truth: it was the man whose fire I carry. She wants the shard, to bury with her people.",
+              "story": "I told Drifa the truth: it was the man whose fire I carry. She wants the shard, to bury with her people.",
               "text": "The man whose fire I carry."
             },
             {
               "id": "hid",
               "reply": "...Then look harder next time.",
-              "story": "I told Nell I didn't see his face.",
+              "story": "I told Drifa I didn't see his face.",
               "text": "I didn't see his face."
             }
           ],
@@ -3833,21 +3833,21 @@
           "kind": "talk",
           "lines": [
             {
-              "text": "You're back by the empty stone. Nell is watching your face."
+              "text": "You're back by the empty stone. Drifa is watching your face."
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "Well? Who was it?"
             }
           ],
           "moves": {
-            "nell": {
+            "drifa": {
               "place": "frost_inside",
               "pose": "standing"
             }
           },
-          "objective": "Answer Nell: press an answer's number.",
-          "with": "nell"
+          "objective": "Answer Drifa: press an answer's number.",
+          "with": "drifa"
         },
         {
           "done": [
@@ -3877,7 +3877,7 @@
           ]
         }
       ],
-      "summary": "Nell waits at the stair to her people's hall, up in the deep snow. Meet her there, go down, and wake the stone.",
+      "summary": "Drifa waits at the stair to her people's hall, up in the deep snow. Meet her there, go down, and wake the stone.",
       "title": "The Theft"
     },
     {
@@ -3901,12 +3901,12 @@
           "kind": "reach",
           "lines": [
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "A day east of the hall. I'll be there before you."
             }
           ],
           "moves": {
-            "nell": {
+            "drifa": {
               "place": "frost_shore",
               "pose": "standing"
             }
@@ -3927,29 +3927,29 @@
               "text": "Keep it. Every one you leave behind is one the gaze can take back."
             },
             {
-              "text": "Up at the edge of the hole, Nell waits with her hand out."
+              "text": "Up at the edge of the hole, Drifa waits with her hand out."
             }
           ],
           "at": "frost_lake_stone",
           "choices": [
             {
               "id": "keep",
-              "reply": "You close your hand on it. Nell turns away.",
-              "story": "I kept the shard. Nell turned away.",
+              "reply": "You close your hand on it. Drifa turns away.",
+              "story": "I kept the shard. Drifa turned away.",
               "takes": [
                 "cold"
               ],
               "text": "Keep it.",
               "trusts": {
-                "nell": -1
+                "drifa": -1
               }
             },
             {
               "id": "give",
-              "leaves": "nell",
+              "leaves": "drifa",
               "reply": "You put it in her hand. She holds it a long time, then walks off along the shore without a word.",
-              "story": "I gave the shard to Nell, to bury with her people. She walked off along the shore without a word.",
-              "text": "Give it to Nell."
+              "story": "I gave the shard to Drifa, to bury with her people. She walked off along the shore without a word.",
+              "text": "Give it to Drifa."
             }
           ],
           "eyes": [
@@ -3962,7 +3962,7 @@
           "kind": "shard",
           "lines": [
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "That's it. Cut it out, and give it to me. I'll bury it with them."
             },
             {
@@ -3970,7 +3970,7 @@
             }
           ],
           "moves": {
-            "nell": {
+            "drifa": {
               "place": "frost_rim",
               "pose": "standing"
             }
@@ -4038,15 +4038,15 @@
           "awaits": "the_crossing",
           "id": "not_yet",
           "kind": "wait",
-          "objective": "Wait for Nell's word.",
+          "objective": "Wait for Drifa's word.",
           "story": [
-            "Nell will bury her people's names on their old winter grounds. She said she'd send word."
+            "Drifa will bury her people's names on their old winter grounds. She said she'd send word."
           ]
         },
         {
           "arrived": [
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "Here. They wintered here, before the hall. I was born here."
             }
           ],
@@ -4054,20 +4054,20 @@
           "kind": "escort",
           "lines": [
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "There you are. My people wintered on this shore once, in the snow. I'll lay their names there."
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "Walk with me. I don't want to do it alone."
             }
           ],
-          "objective": "Walk Nell to her people's old winter grounds.",
+          "objective": "Walk Drifa to her people's old winter grounds.",
           "place": "cairns",
           "story": [
-            "Nell asked me to walk with her to her people's old winter grounds on this shore, to lay their names to rest."
+            "Drifa asked me to walk with her to her people's old winter grounds on this shore, to lay their names to rest."
           ],
-          "who": "nell"
+          "who": "drifa"
         },
         {
           "calls": 8,
@@ -4075,7 +4075,7 @@
             {
               "id": "left",
               "reply": "Then he left late.",
-              "story": "I told Nell that Corin left them. Then he left late, she said.",
+              "story": "I told Drifa that Cadoc left them. Then he left late, she said.",
               "text": "He left them."
             },
             {
@@ -4095,41 +4095,41 @@
               "when": "under_the_ice/the_shard=give"
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "There. They're home."
             }
           ],
           "id": "the_cairns",
           "kind": "talk",
           "leaves": [
-            "nell"
+            "drifa"
           ],
           "lines": [
             {
-              "text": "Nell walks the ring of cairns and says a name at each, then many names at each."
+              "text": "Drifa walks the ring of cairns and says a name at each, then many names at each."
             },
             {
-              "by": "nell",
-              "text": "And the guilty. I counted the grey coats on the stair, and I heard one name they called. Corin."
+              "by": "drifa",
+              "text": "And the guilty. I counted the grey coats on the stair, and I heard one name they called. Cadoc."
             }
           ],
           "moves": {
-            "nell": {
-              "place": "cairns_nell",
+            "drifa": {
+              "place": "cairns_drifa",
               "pose": "standing"
             }
           },
-          "objective": "Stand with Nell at the cairns.",
+          "objective": "Stand with Drifa at the cairns.",
           "people": {
-            "nell": "On her people's old winter grounds she laid their names to rest. Corin's name is on her list of the guilty."
+            "drifa": "On her people's old winter grounds she laid their names to rest. Cadoc's name is on her list of the guilty."
           },
           "story": [
-            "At the cairns Nell said every name, and then the names of the guilty. Corin's is one of them."
+            "At the cairns Drifa said every name, and then the names of the guilty. Cadoc's is one of them."
           ],
-          "with": "nell"
+          "with": "drifa"
         }
       ],
-      "summary": "Nell will bury her people's names on their old winter grounds. She said she'd send word.",
+      "summary": "Drifa will bury her people's names on their old winter grounds. She said she'd send word.",
       "title": "The Burial"
     },
     {
@@ -4160,7 +4160,7 @@
             }
           ],
           "moves": {
-            "ilse": {
+            "alruna": {
               "place": "reading_house_vault",
               "pose": "sitting_hunched"
             }
@@ -4195,7 +4195,7 @@
           "id": "the_ashes",
           "kind": "clues",
           "moves": {
-            "ilse": {
+            "alruna": {
               "place": "reading_house_vault",
               "pose": "sitting_hunched"
             }
@@ -4229,7 +4229,7 @@
               "text": "What does that book say?"
             }
           ],
-          "id": "ilse",
+          "id": "alruna",
           "kind": "talk",
           "lines": [
             {
@@ -4239,28 +4239,28 @@
               "text": "She sees the ember in your hand, and the knife goes down."
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "A lit ember. Master Ansel waited sixty years for someone to carry one through that door."
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "names": [
-                "ilse",
+                "alruna",
                 "keepers"
               ],
-              "text": "I'm Ilse. I was his apprentice. This was the Keepers' reading-house."
+              "text": "I'm Alruna. I was his apprentice. This was the Keepers' reading-house."
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "Wayfarers came here to learn the oath, in the old script, in the old days. None came in his lifetime."
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "Three nights ago the night came for it. He sent me down to the vault with the oldest books, and he held the door."
             }
           ],
           "moves": {
-            "ilse": {
+            "alruna": {
               "holds": "minecraft:book",
               "place": "reading_house_stair",
               "pose": "standing"
@@ -4268,17 +4268,17 @@
           },
           "objective": "Hear out the woman on the stair.",
           "people": {
-            "ilse": "Ilse, a Keeper's apprentice. Her master died holding the door of their reading-house. She reads the old script."
+            "alruna": "Alruna, a Keeper's apprentice. Her master died holding the door of their reading-house. She reads the old script."
           },
           "remarks": {
-            "ilse": [
+            "alruna": [
               "Give me a moment. I haven't talked to anyone in three days."
             ]
           },
           "story": [
-            "Up the stair came Ilse, a Keeper's apprentice, with an armful of books. Her master, Ansel, died holding the door of their reading-house three nights ago."
+            "Up the stair came Alruna, a Keeper's apprentice, with an armful of books. Her master, Ansel, died holding the door of their reading-house three nights ago."
           ],
-          "with": "ilse",
+          "with": "alruna",
           "words": {
             "keepers": "Wayfarers who stopped walking on purpose, to guard the frames out past the edge of every map. They write everything down.",
             "old_script": "The writing of the first Wayfarers. Only the Keepers read it now. Its letters are the marks on an enchanting table."
@@ -4290,13 +4290,13 @@
             {
               "id": "told",
               "reply": "He's dead, and he talks to you. ...Master Ansel would have had a page on that. I'll look.",
-              "story": "I told Ilse the man whose ember I carry talks to me.",
+              "story": "I told Alruna the man whose ember I carry talks to me.",
               "text": "The man whose ember I carry."
             },
             {
               "id": "hid",
               "reply": "...All right.",
-              "story": "I told Ilse I was listening to nobody.",
+              "story": "I told Alruna I was listening to nobody.",
               "text": "Nobody."
             }
           ],
@@ -4307,23 +4307,23 @@
               "text": "She sits on the top step with the scorched book open on her knees, and reads the marks aloud."
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "\"The Eye sat in the portal between the worlds, and through it the dragon watched everything that stood still. Where it looked, its creatures came.\""
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "\"Those who lived tore the Eye out, and the dragon went blind. Fire, the sea and the hammer could only break it.\""
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "\"So they broke it in twelve, and sent each shard to a people at the far ends of the world. Those who carried its light walked.\""
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "\"Never settle, never shine, everything carried.\" The oath. He made me copy it every morning."
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "And the last line, in his hand: \"A frame takes whatever of the Eye it is brought. One shard or twelve, it closes the same.\""
             },
             {
@@ -4331,44 +4331,44 @@
               "text": "All twelve, or none of this matters."
             },
             {
-              "text": "Ilse looks up from the page. She heard nothing."
+              "text": "Alruna looks up from the page. She heard nothing."
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "Who were you listening to?"
             }
           ],
           "moves": {
-            "ilse": {
+            "alruna": {
               "holds": "minecraft:book",
               "place": "reading_house_stair",
               "pose": "sitting_hunched"
             }
           },
-          "objective": "Listen to Ilse read.",
+          "objective": "Listen to Alruna read.",
           "page": "keepers/breaking",
           "remarks": {
-            "ilse": [
+            "alruna": [
               "Let me finish the page."
             ]
           },
           "story": [
-            "Ilse read me the Keepers' book: the dragon's Eye, torn out and broken in twelve, and the oath. Its last line says a frame takes whatever of the Eye it is brought. The voice said all twelve, or none of this matters."
+            "Alruna read me the Keepers' book: the dragon's Eye, torn out and broken in twelve, and the oath. Its last line says a frame takes whatever of the Eye it is brought. The voice said all twelve, or none of this matters."
           ],
-          "with": "ilse"
+          "with": "alruna"
         },
         {
           "calls": 16,
-          "id": "ilse_joins",
-          "joins": "ilse",
+          "id": "alruna_joins",
+          "joins": "alruna",
           "kind": "talk",
           "lines": [
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "He guarded these his whole life and never saw a single place they talk about."
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "Take me with you. I can carry books, and I can read them."
             },
             {
@@ -4376,27 +4376,27 @@
             }
           ],
           "moves": {
-            "ilse": {
+            "alruna": {
               "holds": "minecraft:book",
               "place": "reading_house_stair",
               "pose": "standing"
             }
           },
-          "objective": "Talk to Ilse.",
+          "objective": "Talk to Alruna.",
           "story": [
-            "Ilse joined us, with as many of the Keepers' books as she could carry."
+            "Alruna joined us, with as many of the Keepers' books as she could carry."
           ],
-          "with": "ilse"
+          "with": "alruna"
         },
         {
           "id": "the_caravan",
           "kind": "caravan",
           "leaves": [
-            "ilse"
+            "alruna"
           ],
           "lines": [
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "Go on to your people. I'll bury him first. I know where he wanted to lie."
             }
           ],
@@ -4410,11 +4410,11 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "A Keeper's girl. My grandmother said the Keepers were a story for children."
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "So did mine. Then she sent me to them."
             },
             {
@@ -4422,15 +4422,15 @@
               "text": "Can you read me one? Any one. I don't mind which."
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "Sit down, then. Not that one. That one's sad."
             }
           ],
-          "objective": "Sit with Tamsin at the caravan's fire.",
+          "objective": "Sit with Maud at the caravan's fire.",
           "story": [
-            "Ilse came in to the caravan's fire at dusk, and Pip had her reading before she'd sat down."
+            "Alruna came in to the caravan's fire at dusk, and Pip had her reading before she'd sat down."
           ],
-          "with": "tamsin"
+          "with": "maud"
         }
       ],
       "summary": "On the way back from the hall the wind brought smoke, thick and bitter. Something big is burning, far off. Go and see what.",
@@ -4512,7 +4512,7 @@
               "names": [
                 "first_village"
               ],
-              "text": "Tamsin's bell. All those years it rang over Tollbridge with the shard inside it, and the town under it grew bright enough to burn."
+              "text": "Maud's bell. All those years it rang over Tollbridge with the shard inside it, and the town under it grew bright enough to burn."
             }
           ],
           "id": "the_memory",
@@ -4525,12 +4525,12 @@
           "memory": "the_bell",
           "objective": "Touch the empty stone: right-click it.",
           "people": {
-            "stranger": "Young, he dropped a shard into the first bell of a river crossing, to hide it. The crossing became Tollbridge.",
-            "tamsin": "The shard of the hall under the old green is in her bell. It rang over Tollbridge for forty-five summers, until the night it burned."
+            "maud": "The shard of the hall under the old green is in her bell. It rang over Tollbridge for forty-five summers, until the night it burned.",
+            "stranger": "Young, he dropped a shard into the first bell of a river crossing, to hide it. The crossing became Tollbridge."
           },
           "story": [
             "I touched the stone and woke forty-five summers ago, as him, young. People from a river crossing were casting a bell on the green, and he dropped the shard into their bronze.",
-            "It was Tamsin's bell. The shard rang over Tollbridge all those years, until the night it burned."
+            "It was Maud's bell. The shard rang over Tollbridge all those years, until the night it burned."
           ],
           "words": {
             "first_village": "Wayfarers who swore to stay one winter, and stayed a hundred. Their village burned so long ago the grass has forgotten. Under its well lies their hall."
@@ -4551,12 +4551,12 @@
           ]
         },
         {
-          "at": "tamsins_bell",
+          "at": "mauds_bell",
           "awake": "Not tonight. The moon is red.",
-          "failed": "They reach the bell. Tamsin falls, and everything goes dark.",
+          "failed": "They reach the bell. Maud falls, and everything goes dark.",
           "id": "the_red_moon",
           "keep": [
-            "tamsin"
+            "maud"
           ],
           "kind": "hold",
           "lines": [
@@ -4564,10 +4564,10 @@
               "text": "The moon comes up over the camp, and it is red."
             },
             {
-              "text": "On its cart, Tamsin's bell hums, though nobody has touched it."
+              "text": "On its cart, Maud's bell hums, though nobody has touched it."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Listen to it. It's never done that."
             },
             {
@@ -4577,8 +4577,8 @@
           ],
           "moon": "red",
           "moves": {
-            "tamsin": {
-              "place": "tamsins_bell",
+            "maud": {
+              "place": "mauds_bell",
               "pose": "standing"
             }
           },
@@ -4592,12 +4592,12 @@
               "They want the cart. Stand by the cart.",
               "I've got this side. Watch yours."
             ],
-            "pip": [
-              "Why is the moon red?"
-            ],
-            "tamsin": [
+            "maud": [
               "It's calling them. Listen to it.",
               "Keep them off it!"
+            ],
+            "pip": [
+              "Why is the moon red?"
             ]
           },
           "retry": "Try the night again",
@@ -4623,7 +4623,7 @@
             "hob": [
               "The cart's whole. So are we."
             ],
-            "tamsin": [
+            "maud": [
               "Not now. Let me sit with it."
             ]
           }
@@ -4631,18 +4631,18 @@
         {
           "asking": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "It's still ringing in my head. Tell me what's in it."
             },
             {
               "text": "You tell her: the hall under the old green, the casting fire, the hand that dropped the shard into the bronze."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "I was nine when they hung it. I carried charcoal for that fire."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "It rang for every child born in Tollbridge since. It rang for Pip."
             },
             {
@@ -4650,28 +4650,28 @@
               "text": "Melt it. Every night it rings, they'll hear it."
             }
           ],
-          "at": "tamsins_bell",
+          "at": "mauds_bell",
           "calls": 16,
           "choices": [
             {
               "id": "melt",
               "reply": "Then melt it. Hob. ...Hob, I said melt it.",
-              "story": "We melted Tamsin's bell and took the shard out of the bronze. She hasn't looked at me since.",
+              "story": "We melted Maud's bell and took the shard out of the bronze. She hasn't looked at me since.",
               "takes": [
                 "evil"
               ],
               "text": "Melt it. Get the shard out.",
               "trusts": {
-                "tamsin": -1
+                "maud": -1
               }
             },
             {
               "id": "keep",
               "reply": "It stays. Let it ring for the ones we've got left.",
-              "story": "Tamsin's bell stays on its cart, with the shard in it.",
+              "story": "Maud's bell stays on its cart, with the shard in it.",
               "text": "Keep it. It's Tollbridge's bell.",
               "trusts": {
-                "tamsin": 1
+                "maud": 1
               }
             }
           ],
@@ -4684,16 +4684,16 @@
           "id": "the_bell",
           "kind": "shard",
           "moves": {
-            "tamsin": {
-              "place": "tamsins_bell",
+            "maud": {
+              "place": "mauds_bell",
               "pose": "standing"
             }
           },
-          "objective": "Tell Tamsin what's in her bell, then decide: press an answer's number.",
+          "objective": "Tell Maud what's in her bell, then decide: press an answer's number.",
           "story": [
-            "At dawn I told Tamsin what is in her bell. She was nine when they hung it."
+            "At dawn I told Maud what is in her bell. She was nine when they hung it."
           ],
-          "with": "tamsin"
+          "with": "maud"
         },
         {
           "id": "melted",
@@ -4706,7 +4706,7 @@
               "text": "The shard sinks into the ember. A warmth spreads out from your chest, like standing close to a fire."
             },
             {
-              "text": "Tamsin watches the bronze run. Then she turns her back on you."
+              "text": "Maud watches the bronze run. Then she turns her back on you."
             },
             {
               "by": "stranger",
@@ -4728,14 +4728,14 @@
         {
           "done": [
             {
-              "text": "As the camp goes up, Tamsin rings her bell, once. All night nothing comes near the fire."
+              "text": "As the camp goes up, Maud rings her bell, once. All night nothing comes near the fire."
             }
           ],
           "id": "kept",
           "kind": "caravan",
           "lines": [
             {
-              "text": "Tamsin puts her hand on the bell and leaves it there a long time."
+              "text": "Maud puts her hand on the bell and leaves it there a long time."
             },
             {
               "by": "stranger",
@@ -4744,7 +4744,7 @@
           ],
           "objective": "Make for their smoke.",
           "story": [
-            "Tamsin rings her bell each evening as the camp goes up. Nothing comes near the fire while it rings."
+            "Maud rings her bell each evening as the camp goes up. Nothing comes near the fire while it rings."
           ],
           "tasks": [
             "rest"
@@ -4785,21 +4785,21 @@
           ],
           "done": [
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "It's true. Captain Wend. I served under him six winters."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "I never said it. It's not a name you say twice."
             },
             {
-              "by": "maren",
+              "by": "malgven",
               "text": "Now you know whose fire you carry. Walk well with it."
             },
             {
               "sound": "smoke_gust",
               "text": "The fire gusts. Smoke rolls over the circle, and when it thins she is gone.",
-              "vanishes": "maren"
+              "vanishes": "malgven"
             },
             {
               "by": "stranger",
@@ -4818,46 +4818,46 @@
               "text": "Someone walks out of the dark and sits down across the fire. The grey hood. The eye stitched over the heart."
             },
             {
-              "text": "At the edge of the light, Corin gets to his feet."
+              "text": "At the edge of the light, Cadoc gets to his feet."
             },
             {
-              "by": "maren",
+              "by": "malgven",
               "text": "You found his bell. Then you've walked far enough to hear his name."
             },
             {
-              "by": "maren",
+              "by": "malgven",
               "names": [
                 "stranger"
               ],
               "text": "His name was Wend. A Wayfarer once, and then ours: a captain of the heir's finders."
             },
             {
-              "by": "maren",
+              "by": "malgven",
               "text": "He raised me."
             }
           ],
           "objective": "Sit at the caravan's fire.",
           "people": {
-            "maren": "She told us his name. He raised her. She still won't give her own.",
+            "malgven": "She told us his name. He raised her. She still won't give her own.",
             "stranger": "His name was Wend. A Wayfarer once, then a captain of the Gazebound's finders. He raised the hooded woman."
           },
           "story": [
-            "The hooded woman came back to our fire and told us his name: Wend. A Wayfarer once, then a captain of the Gazebound's finders. He raised her. Corin says it's true."
+            "The hooded woman came back to our fire and told us his name: Wend. A Wayfarer once, then a captain of the Gazebound's finders. He raised her. Cadoc says it's true."
           ],
           "tasks": [
             "rest"
           ],
-          "with": "maren"
+          "with": "malgven"
         },
         {
           "id": "the_night",
           "kind": "sleep",
           "objective": "Sleep in your tent by the fire.",
           "remarks": {
-            "corin": [
+            "cadoc": [
               "Six winters. Don't ask me about them tonight."
             ],
-            "tamsin": [
+            "maud": [
               "Sleep. Names keep till morning."
             ]
           }
@@ -4868,14 +4868,14 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Well? Where does that ember of yours want us now?"
             },
             {
               "text": "You hold it up. It pulls towards the coast, and on past it."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Past the sea. Then we need boats."
             },
             {
@@ -4883,11 +4883,11 @@
               "text": "I can build a hull. I've never built one that floats."
             }
           ],
-          "objective": "Talk to Tamsin.",
+          "objective": "Talk to Maud.",
           "story": [
-            "At dawn the ember pulled towards the coast, and past it. Tamsin says we need boats."
+            "At dawn the ember pulled towards the coast, and past it. Maud says we need boats."
           ],
-          "with": "tamsin"
+          "with": "maud"
         }
       ],
       "summary": "The hooded woman is somewhere in your smoke again. Sit at the caravan's fire tonight.",
@@ -5131,7 +5131,7 @@
           "kind": "sleep",
           "objective": "Sleep. Edda works through the night.",
           "remarks": {
-            "tamsin": [
+            "maud": [
               "Boats. Forty-five summers on the river, and now boats."
             ]
           }
@@ -5212,11 +5212,11 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "So. Your dead man says there's a valley past the sea where nothing comes at night."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Ask him again how far."
             },
             {
@@ -5227,36 +5227,36 @@
               "text": "Far enough that nothing follows. Go at dusk."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Dusk. Edda says a night and a day for our tubs, and nobody lands on a strange shore in the dark."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "We load today. Tonight we camp on the shore, and then we go."
             }
           ],
           "moves": {
-            "tamsin": {
+            "maud": {
               "place": "shipyard_quay",
               "pose": "standing"
             }
           },
-          "objective": "Talk to Tamsin at Edda's yard.",
+          "objective": "Talk to Maud at Edda's yard.",
           "remarks": {
-            "tamsin": [
+            "maud": [
               "A night and a day. I've done longer on a river barge."
             ]
           },
           "story": [
-            "Tamsin came down to Edda's yard and asked the voice how far. Far enough that nothing follows, it said, and to go at dusk."
+            "Maud came down to Edda's yard and asked the voice how far. Far enough that nothing follows, it said, and to go at dusk."
           ],
-          "with": "tamsin"
+          "with": "maud"
         },
         {
           "id": "the_shore",
           "kind": "caravan",
           "leaves": [
-            "tamsin"
+            "maud"
           ],
           "objective": "Make for the caravan's smoke. Tonight it camps by the shore.",
           "tasks": [
@@ -5268,7 +5268,7 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Loaded. Hob wanted to caulk them himself, and Edda threw him off her jetty."
             },
             {
@@ -5276,11 +5276,11 @@
               "text": "She was right to."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "You lead. We'll keep your light in sight, and our lamps hooded."
             }
           ],
-          "objective": "Sit with Tamsin at the fire.",
+          "objective": "Sit with Maud at the fire.",
           "remarks": {
             "pip": [
               "Is it far? Is it farther than the river?"
@@ -5289,7 +5289,7 @@
           "story": [
             "The caravan loaded the boats. We go tonight, with my light in front."
           ],
-          "with": "tamsin"
+          "with": "maud"
         },
         {
           "done": [
@@ -5322,25 +5322,25 @@
           "kind": "sea",
           "lines": [
             {
-              "text": "A boat comes up alongside you out of the dark: Tamsin's, with Pip in the bow."
+              "text": "A boat comes up alongside you out of the dark: Maud's, with Pip in the bow."
             },
             {
               "text": "Something knocks against her hull. Then again."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "What is that? What's under us?"
             }
           ],
-          "listing": "Tamsin's boat sits low in the water.",
+          "listing": "Maud's boat sits low in the water.",
           "music": "hold",
-          "objective": "Keep Tamsin's boat afloat until morning.",
+          "objective": "Keep Maud's boat afloat until morning.",
           "story": [
-            "Out on the open water something came up from below for Tamsin's boat, and pale dead things climbed out of the sea."
+            "Out on the open water something came up from below for Maud's boat, and pale dead things climbed out of the sea."
           ],
           "sunk": [
             {
-              "text": "Tamsin's boat rolls over and goes down. Hands haul her and Pip out of the black water into the next boat."
+              "text": "Maud's boat rolls over and goes down. Hands haul her and Pip out of the black water into the next boat."
             },
             {
               "text": "The sky greys. Something long slides away under the boats and doesn't come back."
@@ -5379,7 +5379,7 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Pip says you beat it off with a lamp and a stick. I had my eyes shut.",
               "when": "the_crossing/the_night=held"
             },
@@ -5389,7 +5389,7 @@
               "when": "the_crossing/the_night=held"
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "We lost my boat and everything in it. Not Pip. Not me. Everything else.",
               "when": "the_crossing/the_night=sunk"
             },
@@ -5399,21 +5399,21 @@
               "when": "the_crossing/the_night=sunk"
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "A night and a day, she said. It was one night, and it was long enough."
             }
           ],
-          "objective": "Sit with Tamsin at the fire.",
+          "objective": "Sit with Maud at the fire.",
           "people": {
-            "tamsin": "She crossed the sea behind my light, in a boat with Pip in the bow, the night something came up from below."
+            "maud": "She crossed the sea behind my light, in a boat with Pip in the bow, the night something came up from below."
           },
           "story": [
             "We made our first camp across the sea."
           ],
-          "with": "tamsin"
+          "with": "maud"
         }
       ],
-      "summary": "Tamsin wants to ask the voice how far. Then the caravan loads its boats and puts to sea behind you.",
+      "summary": "Maud wants to ask the voice how far. Then the caravan loads its boats and puts to sea behind you.",
       "title": "The Crossing"
     },
     {
@@ -5945,7 +5945,7 @@
           "memory": "the_last_camp",
           "objective": "Touch the hearthstone: right-click it.",
           "people": {
-            "maren_child": "A girl in grey, a tiny eye stitched on her coat. Thirty winters ago she held out the bread he took."
+            "malgven_child": "A girl in grey, a tiny eye stitched on her coat. Thirty winters ago she held out the bread he took."
           },
           "story": [
             "I touched the hearthstone and woke thirty winters ago, as him, old and tired. Men in grey sat at his fire, kind, and a girl in grey held out a loaf. He took it. In the morning he wrote that he would walk on tomorrow, and never did."
@@ -6253,7 +6253,7 @@
             {
               "id": "what",
               "reply": "Shine. Like a cat's, but the wrong colour.",
-              "story": "I asked Corin what my eyes do. Shine, he said, like a cat's, but the wrong colour.",
+              "story": "I asked Cadoc what my eyes do. Shine, he said, like a cat's, but the wrong colour.",
               "text": "Do what?"
             },
             {
@@ -6265,20 +6265,20 @@
             {
               "id": "know",
               "reply": "Then you know more than us.",
-              "story": "I told them I know. Corin said I know more than them, then.",
+              "story": "I told them I know. Cadoc said I know more than them, then.",
               "text": "I know."
             }
           ],
           "done": [
             {
               "by": "agna",
-              "text": "It's the fire, Corin. Everyone's eyes do that."
+              "text": "It's the fire, Cadoc. Everyone's eyes do that."
             },
             {
               "text": "Agna looks for herself. She stops laughing."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Leave it. All of you."
             },
             {
@@ -6290,28 +6290,28 @@
           "kind": "talk",
           "lines": [
             {
-              "text": "Across the fire Corin is looking at you, and keeps looking."
+              "text": "Across the fire Cadoc is looking at you, and keeps looking."
             },
             {
               "by": "agna",
-              "text": "Corin. What are you staring at?"
+              "text": "Cadoc. What are you staring at?"
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "Your eyes. Did you know they do that?"
             }
           ],
           "objective": "Sit with them at the fire.",
           "people": {
-            "corin": "He saw my eyes catch the firelight like an animal's, pale, the wrong colour. Agna saw it too, and stopped laughing."
+            "cadoc": "He saw my eyes catch the firelight like an animal's, pale, the wrong colour. Agna saw it too, and stopped laughing."
           },
           "story": [
-            "At the fire Corin saw my eyes shine in the firelight, pale, like an animal's but the wrong colour. Agna laughed, and then she looked, and stopped."
+            "At the fire Cadoc saw my eyes shine in the firelight, pale, like an animal's but the wrong colour. Agna laughed, and then she looked, and stopped."
           ],
-          "with": "corin"
+          "with": "cadoc"
         }
       ],
-      "summary": "Corin has been watching you across the fire for days. Sit with them tonight.",
+      "summary": "Cadoc has been watching you across the fire for days. Sit with them tonight.",
       "title": "Your Eyes"
     },
     {
@@ -6545,10 +6545,10 @@
     {
       "act": "2",
       "halls": 3,
-      "id": "marens_warning",
+      "id": "malgvens_warning",
       "kind": "main",
       "renamed": {
-        "maren": "Maren's Warning"
+        "malgven": "Malgven's Warning"
       },
       "steps": [
         {
@@ -6577,7 +6577,7 @@
             {
               "sound": "smoke_gust",
               "text": "She stands. The fire gusts, smoke rolls over the circle, and when it thins she is gone.",
-              "vanishes": "maren"
+              "vanishes": "malgven"
             },
             {
               "text": "Somewhere in the ember, something laughs, low and long, and doesn't stop for a while. It doesn't sound like a man."
@@ -6590,21 +6590,21 @@
               "text": "The grey hood comes out of the dark again, and sits down across the fire. Her hands are empty."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "No bread tonight?"
             },
             {
-              "by": "maren",
+              "by": "malgven",
               "text": "Not tonight."
             },
             {
-              "by": "maren",
+              "by": "malgven",
               "text": "He isn't leading you where you think."
             }
           ],
           "objective": "Sit at the caravan's fire.",
           "people": {
-            "maren": "She came to our fire again without bread, and warned me: he isn't leading us where we think."
+            "malgven": "She came to our fire again without bread, and warned me: he isn't leading us where we think."
           },
           "story": [
             "The hooded woman came to our fire again, without bread, and warned me that he isn't leading us where I think. When she was gone the voice laughed, and it didn't sound like a man."
@@ -6612,7 +6612,7 @@
           "tasks": [
             "rest"
           ],
-          "with": "maren"
+          "with": "malgven"
         }
       ],
       "summary": "Someone walked in your smoke again today. Sit at the caravan's fire tonight.",
@@ -6654,7 +6654,7 @@
               "text": "This is it. The valley."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "This is it? This is his valley?"
             },
             {
@@ -6669,19 +6669,19 @@
           "story": [
             "The voice brought us to a hollow among low hills and called it the valley. Hob laughed for the first time in weeks."
           ],
-          "with": "tamsin"
+          "with": "maud"
         },
         {
           "at": "caravan",
           "awake": "Not tonight. The moon is red.",
           "fates": {
             "agna": "the_fever/the_way=arrived",
-            "corin": "his_brother",
+            "alruna": "the_seal",
+            "cadoc": "his_brother",
+            "drifa": "the_burial",
             "hob": "the_lost_ore",
-            "ilse": "the_seal",
-            "nell": "the_burial",
-            "pip": "the_road",
-            "tamsin": "the_missing"
+            "maud": "the_missing",
+            "pip": "the_road"
           },
           "id": "the_night",
           "kind": "hold",
@@ -6693,7 +6693,7 @@
               "text": "On every hill around the camp, something stands up out of the grass."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Everyone to the fire. Everyone."
             }
           ],
@@ -6707,11 +6707,11 @@
             "hob": [
               "They're in the tents. Get them out of the tents!"
             ],
+            "maud": [
+              "To the fire! Stay in the light!"
+            ],
             "pip": [
               "The wagons are burning."
-            ],
-            "tamsin": [
-              "To the fire! Stay in the light!"
             ]
           },
           "story": [
@@ -6729,8 +6729,8 @@
               "text": "The fires are out. Nine wagons are gone."
             },
             {
-              "text": "Tamsin went back into the burning tents for the others, and didn't come out.",
-              "when": "the_hollow/tamsin=lost"
+              "text": "Maud went back into the burning tents for the others, and didn't come out.",
+              "when": "the_hollow/maud=lost"
             },
             {
               "text": "Hob held the wagons' line with a cracked hammer until it broke, and then a while longer.",
@@ -6745,16 +6745,16 @@
               "when": "the_hollow/pip=lost"
             },
             {
-              "text": "Corin's tent is empty. Grey coats took him alive; his old company wanted him back.",
-              "when": "the_hollow/corin=lost"
+              "text": "Cadoc's tent is empty. Grey coats took him alive; his old company wanted him back.",
+              "when": "the_hollow/cadoc=lost"
             },
             {
-              "text": "Ilse's book tent is ash. She was in it, reading.",
-              "when": "the_hollow/ilse=lost"
+              "text": "Alruna's book tent is ash. She was in it, reading.",
+              "when": "the_hollow/alruna=lost"
             },
             {
-              "text": "Nell's shelter is empty. She went into the hills before dawn, without a word.",
-              "when": "the_hollow/nell=lost"
+              "text": "Drifa's shelter is empty. She went into the hills before dawn, without a word.",
+              "when": "the_hollow/drifa=lost"
             },
             {
               "by": "stranger",
@@ -7295,7 +7295,7 @@
             {
               "id": "ledger",
               "opens": "wend/ledger",
-              "text": "A ledger in his hand. The halls he found for them, one by one, and on the last page: \"The girl. Maren. Mine now.\""
+              "text": "A ledger in his hand. The halls he found for them, one by one, and on the last page: \"The girl. Malgven. Mine now.\""
             }
           ],
           "id": "his_room",
@@ -7476,12 +7476,12 @@
               "text": "The book he stopped at speaks of a thirteenth shard. \"The one that walks.\""
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "Here. These words. They close an Eye. Not break it. Close it.",
-              "when": "!the_hollow/ilse=lost"
+              "when": "!the_hollow/alruna=lost"
             },
             {
-              "text": "You can read it yourself: the old script Ilse taught you crawls into words. How an Eye is closed, not broken.",
+              "text": "You can read it yourself: the old script Alruna taught you crawls into words. How an Eye is closed, not broken.",
               "when": "gift:old_script"
             }
           ],
@@ -7505,7 +7505,7 @@
           ],
           "teaches": "close_words",
           "teaches_when": [
-            "!the_hollow/ilse=lost",
+            "!the_hollow/alruna=lost",
             "gift:old_script"
           ],
           "toward": "scribes",
@@ -7935,7 +7935,7 @@
               "text": "Beside him walks a woman in a grey hood."
             },
             {
-              "by": "maren",
+              "by": "malgven",
               "text": "...Wait.",
               "when": "!the_hooded_traveller/the_bread=burn"
             },
@@ -7957,16 +7957,16 @@
           "kind": "say",
           "lines": [
             {
-              "by": "maren",
+              "by": "malgven",
               "text": "He wrote it the night he gave you the ember. Thirty winters I carried it, and never read it.",
               "when": "!the_hooded_traveller/the_bread=burn"
             },
             {
-              "by": "maren",
+              "by": "malgven",
               "names": [
-                "maren"
+                "malgven"
               ],
-              "text": "Maren. My name's Maren. He'd want you to have it.",
+              "text": "Malgven. My name's Malgven. He'd want you to have it.",
               "when": "!the_hooded_traveller/the_bread=burn"
             },
             {
@@ -8187,22 +8187,22 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Wil the cooper. The last of Tollbridge I can't account for."
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "He went to his sister's village the spring before we burned. Up the valley, he said. Find out if he lived."
             }
           ],
-          "objective": "Hear Tamsin out at the fire.",
+          "objective": "Hear Maud out at the fire.",
           "people": {
-            "tamsin": "She can't account for one of Tollbridge: Wil the cooper, who went to his sister's village the spring before it burned."
+            "maud": "She can't account for one of Tollbridge: Wil the cooper, who went to his sister's village the spring before it burned."
           },
           "story": [
-            "Tamsin asked me to find Wil the cooper, the last of Tollbridge she can't account for, in his sister's village."
+            "Maud asked me to find Wil the cooper, the last of Tollbridge she can't account for, in his sister's village."
           ],
-          "with": "tamsin"
+          "with": "maud"
         },
         {
           "done": [
@@ -8246,7 +8246,7 @@
               "names": [
                 "wil"
               ],
-              "text": "Tamsin sent you? Tamsin's alive? Well. Of course she is."
+              "text": "Maud sent you? Maud's alive? Well. Of course she is."
             },
             {
               "by": "wil",
@@ -8271,7 +8271,7 @@
         {
           "done": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Wil. Sit, you old fool. Sit by me."
             }
           ],
@@ -8280,7 +8280,7 @@
           "kind": "caravan",
           "objective": "Make for their smoke.",
           "story": [
-            "Wil came with us. Tamsin made him sit by her at the fire."
+            "Wil came with us. Maud made him sit by her at the fire."
           ],
           "tasks": [
             "rest"
@@ -8290,18 +8290,18 @@
         {
           "done": [
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Wil. Still alive. Still stubborn."
             },
             {
-              "text": "Tamsin laughs, and then she doesn't."
+              "text": "Maud laughs, and then she doesn't."
             }
           ],
           "id": "stayed",
           "kind": "caravan",
-          "objective": "Make for their smoke, and tell Tamsin.",
+          "objective": "Make for their smoke, and tell Maud.",
           "story": [
-            "Wil stayed in his village. Tamsin laughed, and then she didn't."
+            "Wil stayed in his village. Maud laughed, and then she didn't."
           ],
           "tasks": [
             "rest"
@@ -8309,7 +8309,7 @@
           "when": "wil=stay"
         }
       ],
-      "summary": "Tamsin's last townsman, Wil the cooper, went to his sister's village the spring before Tollbridge burned. Find out if he lived.",
+      "summary": "Maud's last townsman, Wil the cooper, went to his sister's village the spring before Tollbridge burned. Find out if he lived.",
       "title": "The Missing"
     },
     {
@@ -8326,19 +8326,19 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "The Keepers kept a house on this shore. Sealed. They seal what they won't burn."
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "The seal takes three words of the oath. You'll see them better than I will, with that thing."
             }
           ],
-          "objective": "Hear Ilse out at the fire.",
+          "objective": "Hear Alruna out at the fire.",
           "story": [
-            "Ilse told me of a sealed Keepers' house on this shore. The seal takes three words of the oath."
+            "Alruna told me of a sealed Keepers' house on this shore. The seal takes three words of the oath."
           ],
-          "with": "ilse"
+          "with": "alruna"
         },
         {
           "done": [
@@ -8402,7 +8402,7 @@
           "calls": 16,
           "done": [
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "Now. The old script. Sit."
             },
             {
@@ -8413,29 +8413,29 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "They barred the door to him. And he went to them."
             },
             {
-              "by": "ilse",
+              "by": "alruna",
               "text": "If I die, nobody will be left who can read the Keepers' words. That can't happen."
             }
           ],
-          "objective": "Bring Ilse what the Keepers sealed in.",
+          "objective": "Bring Alruna what the Keepers sealed in.",
           "people": {
-            "ilse": "She taught me the old script, so it outlives her."
+            "alruna": "She taught me the old script, so it outlives her."
           },
           "story": [
-            "Ilse taught me the old script, so that someone can read the Keepers' words if she dies."
+            "Alruna taught me the old script, so that someone can read the Keepers' words if she dies."
           ],
           "teaches": "old_script",
-          "with": "ilse",
+          "with": "alruna",
           "words": {
-            "old_script": "The writing of the first Wayfarers. Ilse taught it to me, so it outlives her."
+            "old_script": "The writing of the first Wayfarers. Alruna taught it to me, so it outlives her."
           }
         }
       ],
-      "summary": "Ilse says the Keepers kept a house on this shore, and sealed it. They seal what they won't burn.",
+      "summary": "Alruna says the Keepers kept a house on this shore, and sealed it. They seal what they won't burn.",
       "title": "The Seal"
     },
     {
@@ -8453,7 +8453,7 @@
           "lines": [
             {
               "by": "agna",
-              "text": "Wren. The potter's girl. It's the marsh fever, the kind I can't break."
+              "text": "Cecily. The potter's girl. It's the marsh fever, the kind I can't break."
             },
             {
               "by": "agna",
@@ -8462,43 +8462,43 @@
           ],
           "objective": "Hear Agna out at the fire.",
           "people": {
-            "wren": "The potter's girl. She burns with the marsh fever."
+            "cecily": "The potter's girl. She burns with the marsh fever."
           },
           "story": [
-            "Wren, the potter's girl, burns with the marsh fever. Agna can't break it; the Tide Folk can, before the third dawn."
+            "Cecily, the potter's girl, burns with the marsh fever. Agna can't break it; the Tide Folk can, before the third dawn."
           ],
           "with": "agna"
         },
         {
           "arrived": [
             {
-              "text": "Wren sits down in the sand and doesn't get up. Morwen comes down the beach at a run."
+              "text": "Cecily sits down in the sand and doesn't get up. Morwen comes down the beach at a run."
             }
           ],
           "dawns": 3,
-          "each": "Wren coughs in her sleep. Dawns left: {left}.",
+          "each": "Cecily coughs in her sleep. Dawns left: {left}.",
           "id": "the_way",
           "kind": "escort",
           "late": [
             {
-              "text": "Before the third dawn Wren stops coughing. She's very light to carry back."
+              "text": "Before the third dawn Cecily stops coughing. She's very light to carry back."
             }
           ],
           "lines": [
             {
-              "by": "wren",
+              "by": "cecily",
               "names": [
-                "wren"
+                "cecily"
               ],
-              "text": "I'm Wren. I can walk. I'm not tired."
+              "text": "I'm Cecily. I can walk. I'm not tired."
             }
           ],
-          "objective": "Walk Wren to the Tide Folk's bay before the third dawn.",
+          "objective": "Walk Cecily to the Tide Folk's bay before the third dawn.",
           "place": "tide",
           "story": [
-            "I walked Wren towards the Tide Folk's bay, slowly, with the dawns counting down."
+            "I walked Cecily towards the Tide Folk's bay, slowly, with the dawns counting down."
           ],
-          "who": "wren"
+          "who": "cecily"
         },
         {
           "calls": 8,
@@ -8510,7 +8510,7 @@
           "id": "morwen",
           "kind": "talk",
           "leaves": [
-            "wren"
+            "cecily"
           ],
           "lines": [
             {
@@ -8528,10 +8528,10 @@
               "pose": "standing"
             }
           },
-          "objective": "Give Wren to Morwen.",
+          "objective": "Give Cecily to Morwen.",
           "page": "tide/remedy",
           "story": [
-            "Morwen took Wren in and broke her fever, and wrote the remedy down for Agna. For a day, whoever drinks it is looked past."
+            "Morwen took Cecily in and broke her fever, and wrote the remedy down for Agna. For a day, whoever drinks it is looked past."
           ],
           "when": "the_way=arrived",
           "with": "morwen"
@@ -8547,7 +8547,7 @@
             },
             {
               "by": "agna",
-              "text": "Wren?"
+              "text": "Cecily?"
             },
             {
               "text": "You tell her. Agna sits down very suddenly."
@@ -8558,7 +8558,7 @@
             "agna": "She learned the Tide Folk's remedy, which breaks the marsh fever and hides whoever drinks it for a day."
           },
           "story": [
-            "Agna learned the Tide Folk's remedy from Morwen's note. Wren lives."
+            "Agna learned the Tide Folk's remedy from Morwen's note. Cecily lives."
           ],
           "when": "the_way=arrived",
           "with": "agna"
@@ -8570,14 +8570,14 @@
               "text": "...Give her to me."
             },
             {
-              "text": "Agna sits with Wren until morning, and nobody asks her to stop."
+              "text": "Agna sits with Cecily until morning, and nobody asks her to stop."
             }
           ],
           "id": "late",
           "kind": "caravan",
-          "objective": "Bring Wren home.",
+          "objective": "Bring Cecily home.",
           "story": [
-            "Wren died on the road to the bay, before the third dawn. Agna sat with her until morning."
+            "Cecily died on the road to the bay, before the third dawn. Agna sat with her until morning."
           ],
           "tasks": [
             "rest"
@@ -8585,7 +8585,7 @@
           "when": "the_way=late"
         }
       ],
-      "summary": "Wren, the potter's girl, burns with a fever Agna can't break. The Tide Folk's healer can, before the third dawn.",
+      "summary": "Cecily, the potter's girl, burns with a fever Agna can't break. The Tide Folk's healer can, before the third dawn.",
       "title": "The Fever"
     },
     {
@@ -8824,59 +8824,59 @@
             {
               "id": "settle",
               "reply": "...Fine. He sits on the far side. I don't have to look at him.",
-              "story": "I made them both stay. Corin sits on the far side of the fire now.",
+              "story": "I made them both stay. Cadoc sits on the far side of the fire now.",
               "text": "We need you both. Sit apart, but sit."
             },
             {
-              "id": "nell",
-              "leaves": "corin",
+              "id": "drifa",
+              "leaves": "cadoc",
               "reply": "Then he goes. Tonight. I won't watch him do it.",
-              "story": "I sided with Nell. Corin walked into the dark without a word.",
-              "text": "Nell's right."
+              "story": "I sided with Drifa. Cadoc walked into the dark without a word.",
+              "text": "Drifa's right."
             },
             {
-              "id": "corin",
-              "leaves": "nell",
+              "id": "cadoc",
+              "leaves": "drifa",
               "reply": "Then I'll go. I've buried them. That's all I stayed for.",
-              "story": "I sided with Corin. Nell went back to the snow.",
+              "story": "I sided with Cadoc. Drifa went back to the snow.",
               "text": "He left. That counts."
             }
           ],
           "id": "the_quarrel",
-          "joined": "nell",
+          "joined": "drifa",
           "kind": "talk",
           "lines": [
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "He was on the stair. He was one of them."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "I was. I left. I've said it a hundred times."
             },
             {
-              "by": "nell",
+              "by": "drifa",
               "text": "You left late."
             }
           ],
           "moves": {
-            "corin": {
+            "cadoc": {
               "place": "fire_2",
               "pose": "sitting"
             },
-            "nell": {
+            "drifa": {
               "place": "fire_1",
               "pose": "sitting"
             }
           },
-          "objective": "Settle it between Nell and Corin.",
+          "objective": "Settle it between Drifa and Cadoc.",
           "story": [
-            "Nell and Corin couldn't share a fire any more."
+            "Drifa and Cadoc couldn't share a fire any more."
           ],
-          "with": "nell"
+          "with": "drifa"
         }
       ],
-      "summary": "Nell and Corin can't share a fire any more. Someone has to settle it.",
+      "summary": "Drifa and Cadoc can't share a fire any more. Someone has to settle it.",
       "title": "The Quarrel"
     },
     {
@@ -9123,30 +9123,30 @@
         },
         {
           "calls": 64,
-          "id": "corin",
+          "id": "cadoc",
           "kind": "talk",
           "lines": [
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "Where did you get those? ...Give them here."
             },
             {
               "text": "He reads them by the fire, slowly. His jaw sets."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "The heir's orders, in his captains' hands. I copied a few of these myself."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "They're not hunting you. They're herding you."
             }
           ],
-          "objective": "Show the pages to Corin at the caravan.",
+          "objective": "Show the pages to Cadoc at the caravan.",
           "story": [
-            "Corin read the captains' pages. They're not hunting us, he says. They're herding us."
+            "Cadoc read the captains' pages. They're not hunting us, he says. They're herding us."
           ],
-          "with": "corin"
+          "with": "cadoc"
         },
         {
           "done": [
@@ -9178,31 +9178,31 @@
         },
         {
           "calls": 64,
-          "id": "corins_reading",
+          "id": "cadocs_reading",
           "kind": "talk",
           "lines": [
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "That's his hand. He wrote my orders for six winters. I'd know it anywhere."
             },
             {
               "text": "He reads it twice, and then sits very still."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "The bread, the following, the herding. All of it was his, before he ever lit his last fire."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "Whatever's in that ember now, it learned from him."
             }
           ],
-          "objective": "Show the last page to Corin at the caravan.",
+          "objective": "Show the last page to Cadoc at the caravan.",
           "story": [
-            "Corin read the last page. The whole plan was his old captain's, written before his last fire."
+            "Cadoc read the last page. The whole plan was his old captain's, written before his last fire."
           ],
-          "when": "!the_hollow/corin=lost",
-          "with": "corin"
+          "when": "!the_hollow/cadoc=lost",
+          "with": "cadoc"
         }
       ],
       "summary": "A page of orders from a Gazebound outpost, copied out by one of their captains. Their other outposts may hold more.",
@@ -9316,7 +9316,7 @@
           ],
           "with": "hob",
           "words": {
-            "frost_iron": "The Frost Walkers' metal. Nell's knife was made of it: twenty winters old, and not a fleck of rust."
+            "frost_iron": "The Frost Walkers' metal. Drifa's knife was made of it: twenty winters old, and not a fleck of rust."
           }
         },
         {
@@ -9601,7 +9601,7 @@
               "text": "Bram. I kept sheep, up the valley. Three nights back the grey coats took my boy. Davy. He's eleven."
             },
             {
-              "text": "At the edge of the light, Corin looks away. \"Eleven. They'll have marked him by now.\""
+              "text": "At the edge of the light, Cadoc looks away. \"Eleven. They'll have marked him by now.\""
             },
             {
               "by": "bram",
@@ -9847,12 +9847,12 @@
           "done": [
             {
               "by": "pip",
-              "text": "Tamsin! A fox went by, walking, not running, all on its own, and it's asleep now. I read it in the dirt!"
+              "text": "Maud! A fox went by, walking, not running, all on its own, and it's asleep now. I read it in the dirt!"
             },
             {
-              "by": "tamsin",
+              "by": "maud",
               "text": "Did you, now. Then you can read me where the sheep went tomorrow.",
-              "when": "!the_hollow/tamsin=lost"
+              "when": "!the_hollow/maud=lost"
             }
           ],
           "id": "the_caravan",
@@ -9887,20 +9887,20 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "There's a rite at the outpost ahead. Tonight, or near it. Novices take the scar there."
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "I took mine at fifteen. Go and look, if you want to know what we are. I won't."
             }
           ],
-          "objective": "Hear Corin out at the fire.",
+          "objective": "Hear Cadoc out at the fire.",
           "story": [
-            "Corin told me of a rite at an outpost ahead, where the Gazebound's novices take the scar."
+            "Cadoc told me of a rite at an outpost ahead, where the Gazebound's novices take the scar."
           ],
-          "when": "!the_hollow/corin=lost",
-          "with": "corin"
+          "when": "!the_hollow/cadoc=lost",
+          "with": "cadoc"
         },
         {
           "done": [
@@ -9968,21 +9968,21 @@
         {
           "done": [
             {
-              "by": "corin",
+              "by": "cadoc",
               "names": [
                 "novice"
               ],
               "text": "Fifteen? Fair hair? ...Tobin. His mother cooked for our company.",
-              "when": "!the_hollow/corin=lost"
+              "when": "!the_hollow/cadoc=lost"
             },
             {
-              "by": "corin",
+              "by": "cadoc",
               "text": "They'll tell her he was found unworthy. They called it a blessing, when it took my friend.",
-              "when": "!the_hollow/corin=lost"
+              "when": "!the_hollow/cadoc=lost"
             },
             {
               "text": "Nobody at the fire knew him. You tell them what you saw, and that is all the burial he gets.",
-              "when": "the_hollow/corin=lost"
+              "when": "the_hollow/cadoc=lost"
             }
           ],
           "id": "the_caravan",
@@ -9996,10 +9996,10 @@
           ]
         }
       ],
-      "summary": "Corin heard there's a rite tonight at an outpost ahead, where the Gazebound's novices take the scar. Go and see it.",
+      "summary": "Cadoc heard there's a rite tonight at an outpost ahead, where the Gazebound's novices take the scar. Go and see it.",
       "title": "The Scar of the Searched",
       "when": [
-        "!the_hollow/corin=lost"
+        "!the_hollow/cadoc=lost"
       ]
     },
     {

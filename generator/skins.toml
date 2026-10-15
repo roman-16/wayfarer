@@ -157,7 +157,7 @@ p = ["#56391f", "#6a482a", "#7a5634"]
 s = ["#b07a5c", "#c48c6c", "#d09a7a"]
 w = "#dcd6cc"
 
-[corin]
+[cadoc]
 model = "vindicator"
 scale = 1.0
 arm = [
@@ -358,7 +358,7 @@ robe_side = [
   "......",
 ]
 
-[corin.palette]
+[cadoc.palette]
 B = ["#a89f8c", "#b8af9a", "#c4bba6"]
 E = "#252525"
 G = ["#4a4d4f", "#55595b", "#62666a"]
@@ -540,7 +540,7 @@ t = ["#2e2a26", "#3a3530", "#46403a"]
 w = "#d6d0c6"
 z = "#4e423c"
 
-[maren]
+[malgven]
 model = "illusioner"
 scale = 1.0
 arm = [
@@ -767,7 +767,7 @@ robe_side = [
   "G.GGG.",
 ]
 
-[maren.palette]
+[malgven.palette]
 B = ["#a89f8c", "#b8af9a", "#c4bba6"]
 D = "#141313"
 G = ["#4a4d4f", "#55595b", "#62666a"]
@@ -783,6 +783,170 @@ g = "#3a3e41"
 h = "#2c2e30"
 p = "#1e1f20"
 y = "#5f6e5c"
+
+[maud]
+raised = { arm = "Rr", body = "Rry", head = "Hh", leg = "B" }
+model = "humanoid_slim"
+scale = 1.0
+arm = [
+  "rrr",
+  "rrr",
+  "rrr",
+  "rrr",
+  "rrr",
+  "RRR",
+  "ddd",
+  "ddd",
+  "ddd",
+  "ddd",
+  "ddd",
+  "sss",
+]
+arm_side = [
+  "rrrr",
+  "rrrr",
+  "rrrr",
+  "rrrr",
+  "rrrr",
+  "RRRR",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "ssss",
+]
+body_back = [
+  "rrrrrrrr",
+  "rrrrrrrr",
+  "rrrrrrrr",
+  "rrrrrrrr",
+  "rrrrrrrr",
+  "RrrrrrrR",
+  "dRrrrrRd",
+  "dddddddd",
+  "dddDdddd",
+  "dddDdddd",
+  "dddDdddd",
+  "dddddddd",
+]
+body_front = [
+  "rrrssrrr",
+  "rrrrrrrr",
+  "rrrryrrr",
+  "RrrrrrrR",
+  "dRrrrrRd",
+  "ddRrrRdd",
+  "dddRRddd",
+  "dddddddd",
+  "dddDdddd",
+  "dddDdddd",
+  "ddDdddDd",
+  "dddddddd",
+]
+body_side = [
+  "rrrr",
+  "rrrr",
+  "rrrr",
+  "rrrr",
+  "rrrr",
+  "dRRd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+]
+hat_back = [
+  "........",
+  "...hh...",
+  "..hhhh..",
+  "..hHhh..",
+  "...hh...",
+  "........",
+  "........",
+  "........",
+]
+hat_top = [
+  "...hh...",
+  "..hhhh..",
+  "........",
+  "........",
+  "........",
+  "........",
+  "........",
+  "........",
+]
+head_back = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hHhhhhHh",
+  "hhhhhhhh",
+]
+head_front = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hssssssh",
+  "sHHssHHs",
+  "swessews",
+  "sSssssSs",
+  "sssmmsss",
+  "ssssssss",
+]
+head_side = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhss",
+  "hhhhhsss",
+  "hhhSSsss",
+  "hhhSssss",
+  "hhhsssss",
+  "hhssssss",
+]
+head_top = [
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+  "hhhhhhhh",
+]
+leg = [
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "dDdd",
+  "dddd",
+  "dddd",
+  "dddd",
+  "BBBB",
+]
+
+[maud.palette]
+B = ["#2a221c", "#33291f", "#3c3026"]
+D = "#30363f"
+H = "#948f88"
+R = "#47241d"
+S = "#b08a76"
+d = ["#3a414c", "#47505c", "#545e6c"]
+e = "#4e5e4e"
+h = ["#b0aca4", "#c8c4bc", "#dcd8d0"]
+m = "#8a5a4e"
+r = ["#562c24", "#66372c", "#764436"]
+s = ["#c4a08a", "#d4b29c", "#e0c0aa"]
+w = "#dcd8d0"
+y = "#b8a868"
 
 [pip]
 raised = { arm = "U", body = "Uq", head = "Hh", leg = "B" }
@@ -1609,170 +1773,6 @@ t = ["#30271e", "#3c3126", "#483b2e"]
 w = "#d8d4c8"
 x = "#ead6cc"
 y = "#8c8a80"
-
-[tamsin]
-raised = { arm = "Rr", body = "Rry", head = "Hh", leg = "B" }
-model = "humanoid_slim"
-scale = 1.0
-arm = [
-  "rrr",
-  "rrr",
-  "rrr",
-  "rrr",
-  "rrr",
-  "RRR",
-  "ddd",
-  "ddd",
-  "ddd",
-  "ddd",
-  "ddd",
-  "sss",
-]
-arm_side = [
-  "rrrr",
-  "rrrr",
-  "rrrr",
-  "rrrr",
-  "rrrr",
-  "RRRR",
-  "dddd",
-  "dddd",
-  "dddd",
-  "dddd",
-  "dddd",
-  "ssss",
-]
-body_back = [
-  "rrrrrrrr",
-  "rrrrrrrr",
-  "rrrrrrrr",
-  "rrrrrrrr",
-  "rrrrrrrr",
-  "RrrrrrrR",
-  "dRrrrrRd",
-  "dddddddd",
-  "dddDdddd",
-  "dddDdddd",
-  "dddDdddd",
-  "dddddddd",
-]
-body_front = [
-  "rrrssrrr",
-  "rrrrrrrr",
-  "rrrryrrr",
-  "RrrrrrrR",
-  "dRrrrrRd",
-  "ddRrrRdd",
-  "dddRRddd",
-  "dddddddd",
-  "dddDdddd",
-  "dddDdddd",
-  "ddDdddDd",
-  "dddddddd",
-]
-body_side = [
-  "rrrr",
-  "rrrr",
-  "rrrr",
-  "rrrr",
-  "rrrr",
-  "dRRd",
-  "dddd",
-  "dddd",
-  "dddd",
-  "dddd",
-  "dddd",
-  "dddd",
-]
-hat_back = [
-  "........",
-  "...hh...",
-  "..hhhh..",
-  "..hHhh..",
-  "...hh...",
-  "........",
-  "........",
-  "........",
-]
-hat_top = [
-  "...hh...",
-  "..hhhh..",
-  "........",
-  "........",
-  "........",
-  "........",
-  "........",
-  "........",
-]
-head_back = [
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hHhhhhHh",
-  "hhhhhhhh",
-]
-head_front = [
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hssssssh",
-  "sHHssHHs",
-  "swessews",
-  "sSssssSs",
-  "sssmmsss",
-  "ssssssss",
-]
-head_side = [
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hhhhhhss",
-  "hhhhhsss",
-  "hhhSSsss",
-  "hhhSssss",
-  "hhhsssss",
-  "hhssssss",
-]
-head_top = [
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hhhhhhhh",
-  "hhhhhhhh",
-]
-leg = [
-  "dddd",
-  "dddd",
-  "dddd",
-  "dddd",
-  "dddd",
-  "dddd",
-  "dddd",
-  "dDdd",
-  "dddd",
-  "dddd",
-  "dddd",
-  "BBBB",
-]
-
-[tamsin.palette]
-B = ["#2a221c", "#33291f", "#3c3026"]
-D = "#30363f"
-H = "#948f88"
-R = "#47241d"
-S = "#b08a76"
-d = ["#3a414c", "#47505c", "#545e6c"]
-e = "#4e5e4e"
-h = ["#b0aca4", "#c8c4bc", "#dcd8d0"]
-m = "#8a5a4e"
-r = ["#562c24", "#66372c", "#764436"]
-s = ["#c4a08a", "#d4b29c", "#e0c0aa"]
-w = "#dcd8d0"
-y = "#b8a868"
 
 [tansy]
 model = "witch"

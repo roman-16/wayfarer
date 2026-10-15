@@ -461,7 +461,7 @@ steps = [
 
 [[shots]]
 at = "his_first_camp/the_caravan"
-caption = "Maren's first gift waiting: bread, dried fish and her note"
+caption = "Malgven's first gift waiting: bread, dried fish and her note"
 id = "journal/quests/under-the-lean-to"
 kind = "screen"
 steps = [
@@ -473,7 +473,7 @@ steps = [
 
 [[shots]]
 at = "the_deserter/the_fireside"
-caption = "His Brother, waiting for Corin's word"
+caption = "His Brother, waiting for Cadoc's word"
 id = "journal/quests/his-brother"
 kind = "screen"
 steps = [
@@ -486,10 +486,10 @@ steps = [
 
 [[shots]]
 at = "the_deserter/the_fireside"
-caption = "Corin in the journal's People"
-id = "journal/people/corin"
+caption = "Cadoc in the journal's People"
+id = "journal/people/cadoc"
 kind = "screen"
-steps = ["key key.wayfarer.journal", "press People", "press Corin"]
+steps = ["key key.wayfarer.journal", "press People", "press Cadoc"]
 
 [[shots]]
 at = "his_first_camp/the_caravan"
@@ -692,7 +692,7 @@ steps = [
 
 [[shots]]
 at = "his_first_camp/the_gift"
-caption = "Maren's first gift: the sack under the lean-to, and The Gifts begun"
+caption = "Malgven's first gift: the sack under the lean-to, and The Gifts begun"
 id = "story/his-first-camp/the-gift"
 kind = "hud"
 steps = [
@@ -716,26 +716,26 @@ kind = "hud"
 steps = ["await come across the ford: 1"]
 
 [[shots]]
-at = "the_deserter/corin"
-caption = "Corin at the ford, shown the ember's light, and what to tell him"
-id = "story/the-deserter/corin"
+at = "the_deserter/cadoc"
+caption = "Cadoc at the ford, shown the ember's light, and what to tell him"
+id = "story/the-deserter/cadoc"
 kind = "hud"
 steps = ["await I brought them", "await six winters", "await answers:"]
 
 [[shots]]
 at = "the_deserter/the_fireside"
-caption = "At the caravan's fire, Corin hears the stranger is dead"
+caption = "At the caravan's fire, Cadoc hears the stranger is dead"
 id = "story/the-deserter/the-fireside"
 kind = "hud"
 steps = ["await Not good"]
 
 [[shots]]
 at = "showroom"
-caption = "Corin, the deserter, standing and sitting"
-id = "people/the-caravan/corin"
+caption = "Cadoc, the deserter, standing and sitting"
+id = "people/the-caravan/cadoc"
 kind = "views"
 sides = ["front", "side", "three-quarters"]
-steps = ["person corin", "person corin sitting"]
+steps = ["person cadoc", "person cadoc sitting"]
 
 [[shots]]
 at = "showroom"
@@ -747,11 +747,11 @@ steps = ["person stranger"]
 
 [[shots]]
 at = "showroom"
-caption = "Tamsin"
-id = "people/the-caravan/tamsin"
+caption = "Maud"
+id = "people/the-caravan/maud"
 kind = "views"
 sides = ["front", "side", "three-quarters"]
-steps = ["person tamsin"]
+steps = ["person maud"]
 
 [[shots]]
 at = "showroom"
@@ -1314,7 +1314,7 @@ steps = ["person bram_son"]
 
 [[shots]]
 at = "showroom"
-caption = "Brannoc, Corin's brother"
+caption = "Brannoc, Cadoc's brother"
 id = "people/the-road/brannoc"
 kind = "views"
 sides = ["front", "side", "three-quarters"]
@@ -1410,27 +1410,27 @@ steps = ["person heir"]
 
 [[shots]]
 at = "showroom"
-caption = "Ilse, the Keeper's apprentice"
-id = "people/the-caravan/ilse"
+caption = "Alruna, the Keeper's apprentice"
+id = "people/the-caravan/alruna"
 kind = "views"
 sides = ["front", "side", "three-quarters"]
-steps = ["person ilse"]
+steps = ["person alruna"]
 
 [[shots]]
 at = "showroom"
-caption = "Maren, the hooded woman"
-id = "people/act-one/maren"
+caption = "Malgven, the hooded woman"
+id = "people/act-one/malgven"
 kind = "views"
 sides = ["front", "side", "three-quarters"]
-steps = ["person maren"]
+steps = ["person malgven"]
 
 [[shots]]
 at = "showroom"
-caption = "Maren as a girl in grey"
-id = "people/act-three/maren-child"
+caption = "Malgven as a girl in grey"
+id = "people/act-three/malgven-child"
 kind = "views"
 sides = ["front", "side", "three-quarters"]
-steps = ["person maren_child"]
+steps = ["person malgven_child"]
 
 [[shots]]
 at = "showroom"
@@ -1442,11 +1442,11 @@ steps = ["person morwen"]
 
 [[shots]]
 at = "showroom"
-caption = "Nell, the last Frost Walker"
-id = "people/the-caravan/nell"
+caption = "Drifa, the last Frost Walker"
+id = "people/the-caravan/drifa"
 kind = "views"
 sides = ["front", "side", "three-quarters"]
-steps = ["person nell"]
+steps = ["person drifa"]
 
 [[shots]]
 at = "showroom"
@@ -1554,11 +1554,11 @@ steps = ["person wil"]
 
 [[shots]]
 at = "showroom"
-caption = "Wren, the potter's girl"
-id = "people/act-two/wren"
+caption = "Cecily, the potter's girl"
+id = "people/act-two/cecily"
 kind = "views"
 sides = ["front", "side", "three-quarters"]
-steps = ["person wren"]
+steps = ["person cecily"]
 
 [[shots]]
 at = "showroom"
@@ -2178,7 +2178,7 @@ kind = "hud"
 
 [[shots]]
 at = "the_crossing/the_night"
-caption = "The night on the open sea beside Tamsin's boat"
+caption = "The night on the open sea beside Maud's boat"
 id = "story/the-crossing"
 kind = "hud"
 
@@ -2208,7 +2208,7 @@ kind = "hud"
 
 [[shots]]
 at = "your_eyes/the_eyes"
-caption = "Corin stares at the player's eyes across the fire"
+caption = "Cadoc stares at the player's eyes across the fire"
 id = "story/your-eyes"
 kind = "hud"
 
@@ -2253,9 +2253,9 @@ steps = [
 ]
 
 [[shots]]
-at = "marens_warning/the_visit"
+at = "malgvens_warning/the_visit"
 caption = "The hooded woman comes to the fire without bread"
-id = "story/marens-warning"
+id = "story/malgvens-warning"
 kind = "hud"
 
 [[shots]]

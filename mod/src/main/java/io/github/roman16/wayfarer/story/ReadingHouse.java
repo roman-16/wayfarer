@@ -223,7 +223,7 @@ final class ReadingHouse {
         level.setBlock(grave.above(), Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, CANDLES), Block.UPDATE_CLIENTS);
         progress.scratch(QUEST).putBoolean(BURIED, true);
         progress.setDirty();
-        LOGGER.info("Ilse buried Ansel at {}", grave);
+        LOGGER.info("Alruna buried Ansel at {}", grave);
     }
 
     private static Rotation turn(Progress progress) {

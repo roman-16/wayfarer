@@ -448,15 +448,15 @@ def frostfolk():
         walkers("frost", FROST, "living")
         | walkers("frost_dead", FROST_DEAD, "frozen")
         | {
-            "frost_elder": walker("frost/elder", "old_woman", "living"),
-            "nell": walker(
-                "frost/nell",
+            "drifa": walker(
+                "frost/drifa",
                 "woman",
                 "living",
                 hooded=False,
                 quiver=True,
                 look={"fur": FURS[1], "hair": HAIRS[0], "hide": HIDES[0], "tone": TONES[1], "trim": TRIMS[0]},
             ),
+            "frost_elder": walker("frost/elder", "old_woman", "living"),
         }
     )
 
@@ -552,8 +552,8 @@ def keeper(seed, kind, fate, look):
 
 def keeperfolk():
     return {
-        "ilse": keeper(
-            "keepers/ilse",
+        "alruna": keeper(
+            "keepers/alruna",
             "woman",
             "living",
             {"hair": HAIRS[3], "hood": APPRENTICE_HOOD, "satchel": True, "style": "long", "tone": TONES[0]},
@@ -642,8 +642,8 @@ CHILD_FACE = {
 }
 
 
-def girl_in_grey(maren):
-    return maren | {"palette": maren["palette"] | CHILD_FACE, "scale": CHILD}
+def girl_in_grey(malgven):
+    return malgven | {"palette": malgven["palette"] | CHILD_FACE, "scale": CHILD}
 
 
 SAND_CLOTHS = [["#c89a5a", "#d8aa6a", "#e4b87a"], ["#a8643a", "#b8744a", "#c4825a"], ["#e0d6c0", "#ece2cc", "#f4ecd8"]]
@@ -664,8 +664,8 @@ HEIR = {
 }
 
 
-def heir_of(corin):
-    return corin | {"palette": corin["palette"] | HEIR}
+def heir_of(cadoc):
+    return cadoc | {"palette": cadoc["palette"] | HEIR}
 
 
 BROTHER = {
@@ -675,17 +675,17 @@ BROTHER = {
 }
 
 
-def brother_of(corin):
-    return corin | {"palette": corin["palette"] | BROTHER}
+def brother_of(cadoc):
+    return cadoc | {"palette": cadoc["palette"] | BROTHER}
 
 
 def errandfolk():
     return {
         "bram": person("errands/bram", "man", "living", cloths=[CLOTHS[1]]),
         "bram_son": person("errands/bram_son", "boy", "living", cloths=[CLOTHS[5]]),
+        "cecily": person("errands/cecily", "girl", "living"),
         "novice": person("errands/novice", "boy", "living", cloths=[CLOTHS[5]]),
         "wil": person("errands/wil", "old_man", "living"),
-        "wren": person("errands/wren", "girl", "living"),
     }
 
 

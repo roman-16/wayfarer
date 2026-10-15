@@ -66,9 +66,9 @@
 
 ![The refused choice: one more summer, and the answers offered again](his-first-camp/the-refusal.jpg)
 
-**Maren's first gift: the sack under the lean-to, and The Gifts begun**, in the story at `his_first_camp/the_gift`
+**Malgven's first gift: the sack under the lean-to, and The Gifts begun**, in the story at `his_first_camp/the_gift`
 
-![Maren's first gift: the sack under the lean-to, and The Gifts begun](his-first-camp/the-gift.jpg)
+![Malgven's first gift: the sack under the lean-to, and The Gifts begun](his-first-camp/the-gift.jpg)
 
 ## The deserter
 
@@ -80,13 +80,13 @@
 
 ![The ford: the wounded man on the near bank, the first of the Gazebound wading across](the-deserter/the-ford.jpg)
 
-**Corin at the ford, shown the ember's light, and what to tell him**, in the story at `the_deserter/corin`
+**Cadoc at the ford, shown the ember's light, and what to tell him**, in the story at `the_deserter/cadoc`
 
-![Corin at the ford, shown the ember's light, and what to tell him](the-deserter/corin.jpg)
+![Cadoc at the ford, shown the ember's light, and what to tell him](the-deserter/cadoc.jpg)
 
-**At the caravan's fire, Corin hears the stranger is dead**, in the story at `the_deserter/the_fireside`
+**At the caravan's fire, Cadoc hears the stranger is dead**, in the story at `the_deserter/the_fireside`
 
-![At the caravan's fire, Corin hears the stranger is dead](the-deserter/the-fireside.jpg)
+![At the caravan's fire, Cadoc hears the stranger is dead](the-deserter/the-fireside.jpg)
 
 ## Ships for everyone
 
@@ -96,9 +96,9 @@
 
 ## The crossing
 
-**The night on the open sea beside Tamsin's boat**, in the story at `the_crossing/the_night`
+**The night on the open sea beside Maud's boat**, in the story at `the_crossing/the_night`
 
-![The night on the open sea beside Tamsin's boat](the-crossing.jpg)
+![The night on the open sea beside Maud's boat](the-crossing.jpg)
 
 ## The tide folk
 
@@ -126,9 +126,9 @@
 
 ## Your eyes
 
-**Corin stares at the player's eyes across the fire**, in the story at `your_eyes/the_eyes`
+**Cadoc stares at the player's eyes across the fire**, in the story at `your_eyes/the_eyes`
 
-![Corin stares at the player's eyes across the fire](your-eyes.jpg)
+![Cadoc stares at the player's eyes across the fire](your-eyes.jpg)
 
 ## The locks
 
@@ -136,11 +136,11 @@
 
 ![The Jungle Folk's lock house, standing over their hall](the-locks.jpg)
 
-## Marens warning
+## Malgvens warning
 
-**The hooded woman comes to the fire without bread**, in the story at `marens_warning/the_visit`
+**The hooded woman comes to the fire without bread**, in the story at `malgvens_warning/the_visit`
 
-![The hooded woman comes to the fire without bread](marens-warning.jpg)
+![The hooded woman comes to the fire without bread](malgvens-warning.jpg)
 
 ## The hollow
 

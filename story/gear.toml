@@ -217,7 +217,7 @@ appears = { claimed = "the_last_fire" }
 id = "carrying"
 ladder = true
 title = "Carrying"
-who = "tamsin"
+who = "maud"
 
 [[rows.things]]
 good = "His pack: room for my tent, my bed and the rest."
@@ -259,7 +259,7 @@ appears = { claimed = "the_last_fire" }
 id = "camp"
 ladder = true
 title = "The camp"
-who = "tamsin"
+who = "maud"
 
 [[rows.things]]
 good = "A tent for one, from his pack."
@@ -616,7 +616,7 @@ needs = [
 good = "Carry you over powder snow, and faster over snow."
 have = [{ item = "artifacts:snowshoes" }]
 id = "snowshoes"
-made = "Nell's mother made them."
+made = "Drifa's mother made them."
 name = "The Frost Walkers' snowshoes"
 named_by = "agna_cold"
 

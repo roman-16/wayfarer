@@ -20,18 +20,18 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   [[quests.steps]]
   id = "reach_hall"
   goal = { hall = "frost_walkers" }
-  journal = "The Frost Walkers' hall. Nell wants a name."
+  journal = "The Frost Walkers' hall. Drifa wants a name."
 
   [[quests.steps]]
   id = "memory"
   memory = "the_theft"
 
   [[quests.steps]]
-  id = "tell_nell"
-  talk = "nell"
+  id = "tell_drifa"
+  talk = "drifa"
   choices = [
-    { id = "told", text = "The man whose fire I carry.", remember = "nell_knows" },
-    { id = "hid", text = "I didn't see his face.", remember = "nell_lied_to" },
+    { id = "told", text = "The man whose fire I carry.", remember = "drifa_knows" },
+    { id = "hid", text = "I didn't see his face.", remember = "drifa_lied_to" },
   ]
   ```
 
@@ -56,7 +56,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | The journal as a codex | The story so far, every person met, every word of the world, every book and talk, written plainly as "I" from the player's point of view, holding only what the team knows so far, shared and always up to date | D6, D11 |
   | Narration | Journal entries and quest descriptions read aloud like book pages, once each, with a button to hear them again | `narration.md` |
 
-- **The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/`, dev code that never ships): a three-step quest written as data to the nearest Gazebound outpost ahead, its mark on the compass; a hold whose fall fails the step and whose retry resets only the quest's own people; a choice remembered with its day and brought back by Corin the next day; a reward each player claims once from the journal, a player who joins later told on login that it waits; a journal screen whose codex entry grows with every step; and pretend players and the client sharing one state. What it showed:
+- **The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/`, dev code that never ships): a three-step quest written as data to the nearest Gazebound outpost ahead, its mark on the compass; a hold whose fall fails the step and whose retry resets only the quest's own people; a choice remembered with its day and brought back by Cadoc the next day; a reward each player claims once from the journal, a player who joins later told on login that it waits; a journal screen whose codex entry grows with every step; and pretend players and the client sharing one state. What it showed:
 
   | Finding | For the engine |
   |---|---|
@@ -82,7 +82,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | People | Everyone met, what they did and said |
   | Words | Every word of the world: the gaze, the Gazebound, the oath, the scar |
   | Pages | Every book and letter read, to read again |
-  | Conversations | Every talk with the voice, Maren and the people |
+  | Conversations | Every talk with the voice, Malgven and the people |
 
 - The map is JourneyMap's world map, opened from its tab in the journal or with M. There is no minimap anywhere on screen, no cave mapping, no radar and no waypoints of the player's own; the places they have found are added by the Wayfarer mod: the Last Camp, Tollbridge and the caravan from the start, and every place a quest leads to once a player has stood within 64 blocks of it, his first camp, the old tunnels, the ford and the rest, so the map keeps where the team has been. The caravan's newest camp is a lit campfire named The caravan, and every camp it made before is a faint campfire whose name shows only under the pointer ("The caravan's camp, day 7"), so a long road reads as a trail without burying the places' names; a camp within 64 blocks of a named place is left to that place. Map Atlases leaves the pack.
 - The compass is on screen from the first moment of the world, before the ember wakes: until then it reads "the ember is cold" and shows only friends, the player's own tent (▲) and their stones. A tent standing more than 256 blocks away gets its own line under the compass, so a tent left at an old camp is never lost. The first time a goal shows, the task panel says to follow its mark at the top of the screen.
@@ -129,7 +129,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 - A hard decision waits, and the person with it, until two thirds of the online team have chosen; walking away pauses a conversation, and coming back carries it on.
 
   ```text
-  <Nell> Give it to me. I'll bury it with them.
+  <Drifa> Give it to me. I'll bury it with them.
     [Give it to her 1/3]  [Keep the shard 1/3]   (waiting for Mo)
   ```
 
@@ -233,7 +233,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 - By day, danger is shade, storms, people and the land: dense forests and caves keep the gaze's creatures alive in daylight, a thunderstorm darkens the sky enough for them to walk, the Gazebound are people and the sun means nothing to them, predators hunt, and the cold, the heat and the water are the land's gates.
 - A quest gets no exception from the stillness rule, which already allows two nights in one place; a quest that keeps the player longer happens on a living people's hallowed land (S6), where the gaze cannot see them.
 - No night event comes from a calendar. A night the story already holds (a hold, a scripted hard night) takes no other with it, and every horde ends when the sun rises. While the story holds a night, no bed takes anyone, and the refusal says why: "Not tonight. The sky over the ridge is red."
-- The gaze finds the caravan when a quest calls for it (The Bell, The Hollow, The Empty Grave), when the caravan has slept three nights in one place, or by a chance each night that grows with the player's shine, and more while Tamsin's bell is with the caravan: the chance is the shine over 128, doubled while the bell travels with it (`balance.toml` `[shine]`), rolled once as the camp's evening begins, and never on a night the story already holds (a hold, a red moon, a visit at the fire). When it falls, the ember warns as the camp goes up: "The ember is uneasy tonight." That night nobody sleeps, no tent opens, the fire's circle holds nothing back, the clock runs on at its own speed instead of waiting at 20:00, the horde comes at midnight, and the next day begins on the road at 6:00. The red moon comes only when the story wants it, once an act, on its climax (`story.md`, S25).
+- The gaze finds the caravan when a quest calls for it (The Bell, The Hollow, The Empty Grave), when the caravan has slept three nights in one place, or by a chance each night that grows with the player's shine, and more while Maud's bell is with the caravan: the chance is the shine over 128, doubled while the bell travels with it (`balance.toml` `[shine]`), rolled once as the camp's evening begins, and never on a night the story already holds (a hold, a red moon, a visit at the fire). When it falls, the ember warns as the camp goes up: "The ember is uneasy tonight." That night nobody sleeps, no tent opens, the fire's circle holds nothing back, the clock runs on at its own speed instead of waiting at 20:00, the horde comes at midnight, and the next day begins on the road at 6:00. The red moon comes only when the story wants it, once an act, on its climax (`story.md`, S25).
 
 **Why:** A clock the story drives lets every night land where the people are and every hard night land as a set piece, and easing out keeps the sky moving so time never visibly stops. Counting days in nights slept cannot be cheated, and daylight that is safe only in the open keeps the forest, the storm and the Gazebound dangerous on a long day's road.
 
@@ -254,7 +254,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 - A hard decision counts the players online when its vote starts: it needs two thirds of them. A player who joins later may still vote, and one who leaves keeps the vote they cast.
 
   ```text
-  <Nell> Give it to me. I'll bury it with them.
+  <Drifa> Give it to me. I'll bury it with them.
     [Give it to her 1/3]  [Keep the shard 1/3]   (needs 2 of 3)
   Mo joined the road.   (Mo can vote; it still needs 2)
   ```
@@ -313,8 +313,8 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Found | The chance each night that the gaze finds the caravan grows with it (M6) |
 
 - It is felt, never shown as a number: the ember on the compass burns brighter, the player's eyes glow in the dark, and the journal says it as "I": "I shine like a lantern now. They find me before I find them."
-- The eyes glow from the evening Corin first sees them (2.7) on, in the gaze's violet: the eyes each player's skin draws light up, whatever their size, shape and place, the white of an eye paler than the rest, on the hat layer where that is what shows. The game finds them in the skin itself, so every machine lights the same pixels. They are seen by friends, in third person and on the inventory's figure, brighter the more of the twelve shards the team has taken, fading as the light around the player rises and gone from light 8 up (`balance.toml` `[shine]` `glow_light`).
-  - A face whose eyes cannot be read stays dark, as under a mask: a skin with no eyes drawn, a visor or sunglasses over them, a single eye under a patch, or a face the game is unsure of. Corin's line comes all the same.
+- The eyes glow from the evening Cadoc first sees them (2.7) on, in the gaze's violet: the eyes each player's skin draws light up, whatever their size, shape and place, the white of an eye paler than the rest, on the hat layer where that is what shows. The game finds them in the skin itself, so every machine lights the same pixels. They are seen by friends, in third person and on the inventory's figure, brighter the more of the twelve shards the team has taken, fading as the light around the player rises and gone from light 8 up (`balance.toml` `[shine]` `glow_light`).
+  - A face whose eyes cannot be read stays dark, as under a mask: a skin with no eyes drawn, a visor or sunglasses over them, a single eye under a patch, or a face the game is unsure of. Cadoc's line comes all the same.
   - Nobody corrects a guess: there is no setting, and the face test in `just test` holds a glow off the eyes to at most 1 in 16 of the community faces in `generator/faces.toml`.
   - Eyes of two sizes or two colours both glow, eyes up to a pixel off the mirror are still a pair, and a closed eye pairs with the open one. A full helmet covers them and an invisible player shows none.
 
@@ -349,10 +349,10 @@ The fourth effect, the chance each night that the gaze finds the caravan, is the
 
   ```text
   You hold up the ember. Prints glow in the snow, a hunter's, heading for the ridge.
-  Journal: Nell's tracks lead north-east. She's dragging something.
+  Journal: Drifa's tracks lead north-east. She's dragging something.
   ```
 
-- **Holding** is keeping something alive: The Hordes sends waves of the gaze's creatures at a place until dawn or a set time, and the quest names what has to survive, such as Corin at the ford, the bell's cart or the herder's fold. If it falls, the step fails and is tried again (D6).
+- **Holding** is keeping something alive: The Hordes sends waves of the gaze's creatures at a place until dawn or a set time, and the quest names what has to survive, such as Cadoc at the ford, the bell's cart or the herder's fold. If it falls, the step fails and is tried again (D6).
 
 **Why:** The ember is the Eye's light, and light is sight (S19), so a sense that shows what is hidden is what The Witcher 3's witcher senses are, with a reason in the lore, and one key serves both finding and following. Holding something alive turns a night of waves into protecting someone, and a loss into a challenge failed.
 
@@ -400,7 +400,7 @@ Act 3:
   Night on the ice, you sit by your campfire: the cold lets go of you.
   ```
 
-- A heist has roles: the lookout marks guards from above, the lock-hand opens doors, the distraction draws the guards off, and the carrier runs out with the prize. Each player picks one, and roles nobody takes go to the caravan's people, such as Corin as the distraction and Ilse at the locks; alone, the player takes one and the caravan the rest.
+- A heist has roles: the lookout marks guards from above, the lock-hand opens doors, the distraction draws the guards off, and the carrier runs out with the prize. Each player picks one, and roles nobody takes go to the caravan's people, such as Cadoc as the distraction and Alruna at the locks; alone, the player takes one and the caravan the rest.
 - Easy NPC's people can walk (its wiki lists objectives to follow a player, flee, and stroll around a home), so the camp's people also stroll about their own tents.
 
 **Why:** Thirst would be a second bar to refill all day beside the ember's hunger, which is upkeep and not play, so the land's danger is heat and cold, and only the land's: a fire is the cure for cold, so it never burns a player who sits by it, and the first playtest found every lantern and oven overheating players on temperate land. Hunts need creatures no mod has, and GeckoLib is how mods animate them. Attract to Sound already makes stealth real, and its licence (GPL-3.0) lets it be changed. Heist roles are GTA V's heists for a team of up to four, with the caravan making them work alone.
@@ -486,7 +486,7 @@ What it showed:
 - The first tent, the stranger's, is the kind the land around the Last Camp would build, the same for the whole team: a yurt in cold land and mountains, a tepee on plains, meadows and in forests, a Bedouin tent in desert and badlands, an indlu on the savanna, a shamiyana in jungle and swamp. The Gear page's camp row then grows that kind, tiny to large. Every tent is a world of its own, but the night is the team's: a player lies down in their tent and stays lying until two thirds of the team sleep, in their tents or out, and then it is morning for everyone at once (`[sleep]` `players_percentage`). A pitched tent's inside keeps running while its owner is out, so a furnace in it finishes its work; a packed tent stops.
 - A lit fire's circle reaches 32 blocks (`[fire]` `circle_blocks`): no monster spawns inside it, and one that wanders in turns away and lets the team be, so the caravan's whole camp lies inside and a tent beside the fire is never kept shut by monsters at its door. A hold switches the circle off around its own fight.
 - Resting is being by a lit fire: a player within 4 blocks of one rests at once, with nothing to wait for and no need to stand still. The camp, the afternoon at the caravan's fire, the Warm effect and the Flare all count that rest.
-- The fire's stories stay. If a night has one, the voice's long talk, a person's scene or Maren's visit, it plays once most of the team sits at the caravan's fire, and sleep waits until it is over; a night without one goes straight to sleep. Resting half a minute at a fire still warms the ember, so the player eats like a settled person until the next dusk.
+- The fire's stories stay. If a night has one, the voice's long talk, a person's scene or Malgven's visit, it plays once most of the team sits at the caravan's fire, and sleep waits until it is over; a night without one goes straight to sleep. Resting half a minute at a fire still warms the ember, so the player eats like a settled person until the next dusk.
 - Every tool, weapon and armour, Silent Gear's, Simply Swords', vanilla's and every other mod's, stops at its last use instead of breaking (D13), and at its last use a tool is a bare hand, in speed and in what drops: a diamond pick at its last use takes nothing from obsidian. Silent Gear already keeps broken gear (`breaks_permanently = false`), and the Wayfarer mod brings the rest to the same rule.
 - At a fire, a repair kit mends a worn tool: Silent Gear's repair kit, filled with the tool's own material and set beside the tool in a crafting grid within 4 blocks of a lit campfire, brings it back to half its durability at most, never beyond, and away from a fire it mends nothing. The same kit, filled with the right material, mends vanilla's and Simply Swords' gear too, iron for iron and diamond for diamond. A smith restores it fully: the peoples' smiths ask for goods, and Hob does it for nothing once his side quest has found the old ore (C7).
 
@@ -603,7 +603,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | Graves (`Graves`) | The grave, marked on the compass | Changed: stones (M2) |
 | Hordes in halls (`Hordes`) | A horde passes over someone sheltering in a hall | Kept |
 | The frame (`Gate`) | Takes all twelve shards, refuses while Gazebound stand in its hall | Kept, changed: takes any number (D10) and opens the four doors (S8) |
-| Maren (`Maren`) | Visits the fire and leaves food | Kept, changed: her part in S10 |
+| Malgven (`Malgven`) | Visits the fire and leaves food | Kept, changed: her part in S10 |
 | Story, books, notes and journal (`Story`, `Library`, `Notes`, `Journal`) | The voice's lines, the books, the notes, the FTB Quests book | Replaced by the quest engine and the journal (M1, M2); the books stay as content |
 | Teams (`Teams`) | FTB Teams | Replaced: everyone in the world is one team (D11) |
 | Camps (`Camps`) | The Last Camp and Wend's first and last camps | Kept: the prologue's camp and the memories' places; the camp generator also builds the caravan's pieces (M5) |
@@ -627,8 +627,8 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   | Decision | Taking the shard | Leaving it |
   |---|---|---|
   | The witches' shard (1.4), only for a team that did T1 first | True-sight and a step of shine; the black pool turns plain and their healing with it, and their trust falls back to the minimum | No gift and no shine; their full trust, which counts towards Keep the oath, and two healing brews for each player |
-  | Nell's shard (1.8) | Dark-sight and a step of shine; Nell stays but hates the player, which counts at the breaking | No gift and no shine; Nell leaves in peace and may fight beside the player at the gate (F1) |
-  | Tamsin's bell (1.10) | Warmth and a step of shine, and the gaze finds the caravan less often; Tamsin never forgives it, and some families leave | The bell's toll keeps the lesser creatures off the camp, and the townsfolk trust the player; the gaze finds the caravan more often |
+  | Drifa's shard (1.8) | Dark-sight and a step of shine; Drifa stays but hates the player, which counts at the breaking | No gift and no shine; Drifa leaves in peace and may fight beside the player at the gate (F1) |
+  | Maud's bell (1.10) | Warmth and a step of shine, and the gaze finds the caravan less often; Maud never forgives it, and some families leave | The bell's toll keeps the lesser creatures off the camp, and the townsfolk trust the player; the gaze finds the caravan more often |
   | The Tide Folk's two shards (2.3) | Up to two gifts, Deep-sight and Stare, and two steps of shine; their boats are seen and they starve, unless Night Fishing (T2) saves them | Their trust, which counts towards Keep the oath, and their bay stays dark even in Give it its sight |
   | The worm (2.6) | Far-sight and a step of shine; the Sand Singers lose their protector, and the raiders come (T3) | No gift; the Sand Singers trust the player, and the worm stays in the desert |
   | The Grass Kingdom's ward (3.4) | Sky-veil, which makes flight safe, and a step of shine; the walls fall unless the player holds them, and the heir has his land back | The kingdom stands and trusts the player, which counts towards Keep the oath; the heir looks for another way in |
@@ -667,7 +667,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 - The prologue and 1.1 have eight rows, each appearing the first time it matters to anyone in the team: weapons when Hob's Blade is taken, tools with his patterns, armour when anyone wears some, carrying and the camp with His Pack, getting about with the first of its things held or ridden, against the cold and against the heat the first time anyone feels either. The other six come with the steps where they first matter. The rows and their tiers live in `story/gear.toml`.
 - A tier nobody has named shows only "? Hob knows more." Once anyone holds a row's best named tier, its person says the next tier's line once, at the caravan's evening fire on a later day, and the page fills in its name and "From ?, made by ?": Hob's "the Frost Walkers had a metal that laughed at the cold", Agna's snowshoes and the Sand Singers' clothes. Carrying after iron and the camp after the large yurt stay "?" until Act 2 settles what comes next.
 - Track is each player's own. The tracked tier's materials sit in the task panel with their count ("Copper ingots: 1/3, smelted from ore in the hills' stone") and tick when carried, then its making; once it is made a banner says so ("Copper tools made") and tracking ends. A tier still on "?" cannot be tracked.
-- Each kind names the one in the caravan who knows it, and at the fire they now and then say a line about its next tier: Hob for metal, weapons, tools, armour and hooks; Agna for clothes against the cold and the heat, food and remedies; Tamsin for tents and the camp; Pip for horses. A few smiths' commissions are side quests with turns of their own, such as Hob's masterwork or a people's blade.
+- Each kind names the one in the caravan who knows it, and at the fire they now and then say a line about its next tier: Hob for metal, weapons, tools, armour and hooks; Agna for clothes against the cold and the heat, food and remedies; Maud for tents and the camp; Pip for horses. A few smiths' commissions are side quests with turns of their own, such as Hob's masterwork or a people's blade.
 
   ```text
   Gear › Against the cold
@@ -831,7 +831,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   ```
 
 - A step of a quest gives each person their lines for it, and a person keeps the lines of the last step that gave them any until the story moves on; past every quest that speaks of them, they have a few lines of their own for any day on the road.
-- The caravan greets the team. Once each camp, the first time someone of the team comes within the fire's circle, one of the people there says a line of welcome (`welcomes` in `story/people.toml`), unless a talk is already under way: "There you are. Fire's going." Corin keeps to the edge of the light and greets nobody.
+- The caravan greets the team. Once each camp, the first time someone of the team comes within the fire's circle, one of the people there says a line of welcome (`welcomes` in `story/people.toml`), unless a talk is already under way: "There you are. Fire's going." Cadoc keeps to the edge of the light and greets nobody.
 
 **Why:** A person who stands mute when spoken to breaks the feeling that the caravan is people; a line about the night in hand makes the world answer, and costs a line of text, not a scene.
 
@@ -964,7 +964,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   | Fight | What it asks |
   |---|---|
   | P3 The cellar door | Keep the door standing and the survivors alive; the waves walk in to it and beat on it until it cracks |
-  | 1.3 The ford | Keep Corin alive while the Gazebound cross; the water slows them, so the fight is at the crossing |
+  | 1.3 The ford | Keep Cadoc alive while the Gazebound cross; the water slows them, so the fight is at the crossing |
   | 1.10 The Bell, under the red moon | The bell draws the gaze to the caravan; hold the camp, then decide whether to melt it |
   | 2.2 The Crossing | The sea's beast rams the hull: a boat breaks where a ship holds, and the ship's cannons drive it off |
   | 2.6 The Worm | Learn the Sand Singers' song: the worm comes up to it, and the eye that sees is where it can be hurt; or leave it alive |
@@ -972,7 +972,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   | 3.4 The Ward's champion | A duel in a ring, parried and rolled; the team watches and cannot step in |
   | 3.7 The Empty Grave, under the red moon | The dead rise among the graves until dawn |
   | 3.8 The Rider | A chase, on horseback or in the air |
-  | F1 The Gate | Hold the frame against the heir's band, until Maren turns on them |
+  | F1 The Gate | Hold the frame against the heir's band, until Malgven turns on them |
   | The dragon, in Blind it | It is as blind as the shards set make it (M14) |
 
 - **Scaling.** Everyday foes grow only with the shine (M9). Named fights scale with the size of the team online, their health and their waves per player, as the dragon's health does, never with the shine, so a team of one can win each, and a retry (D6) comes back the same.
@@ -1066,7 +1066,7 @@ It raises, for its build: keeping each act's foes out of the world until their a
 - **Act 1's halls are put down by their quests, on the home land** (M39), each about a day's walk ahead of the team, on the nearest fitting ground in the way it is walking and out of sight, as the Diggers' tunnels (1.1, S24) and the Marsh Mothers' hall (1.4, S29) already are: the Frost Walkers' winter house and hall in snow (1.6, 1.7, and the frozen lake of 1.8), the First Village's ruins on open plains (1.10). The world grows no copies of Act 1's halls anywhere.
 
   ```text
-  The morning after Corin joins, the ember pulls north. Two days of walking; the air bites; then snow, and a winter house half buried in it.
+  The morning after Cadoc joins, the ember pulls north. Two days of walking; the air bites; then snow, and a winter house half buried in it.
   ```
 
 - **Act 2's and Act 3's halls grow where the world makes them, in bands.** Act 2's (the Tide Folk's bay, the Drowned City's badlands, the Sand Singers' desert, the Jungle Folk's temple) grow only between the sea's far shore and 24,576 blocks from the Last Camp; Act 3's (the Grass Kingdom, the Shadow Circle, the Scribes, the Grave Keepers) only from 24,576 blocks to the Last Sea's coast, the ring of frames among them. The ember pulls to the nearest of its kind. None grows on the home land.

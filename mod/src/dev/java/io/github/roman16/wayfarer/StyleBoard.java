@@ -126,7 +126,7 @@ final class StyleBoard extends Screen {
         Stamp.title(graphics, font, "The Pull", left + 64, top + 145, Stamp.GOLD, true);
         graphics.blitSprite(Stamp.PANEL_CLEAR, left + 168, top + 112, 134, 50);
         graphics.drawString(font, "Hob's blade is plain...", left + 176, top + 120, Stamp.withAlpha(Stamp.QUIET, Stamp.FAINT), true);
-        int nx = graphics.drawString(font, "TAMSIN", left + 176, top + 131, Stamp.GOLD, true);
+        int nx = graphics.drawString(font, "MAUD", left + 176, top + 131, Stamp.GOLD, true);
         graphics.drawString(font, "You walk ahead.", nx + 4, top + 131, Stamp.BONE, true);
         int meter = Stamp.label(graphics, font, "Dragon's gaze", left + 176, top + 144, Stamp.GAZE, true) + GAP;
         for (int cell = 0; cell < 8; cell++) {

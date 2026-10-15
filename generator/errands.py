@@ -139,7 +139,7 @@ def nest():
 def positions():
     return {
         "nest": {"centre": [NEST_CENTRE, 1, NEST_CENTRE], "size": [NEST, 4, NEST]},
-        "cairns": {"centre": [CENTRE, 1, CENTRE], "nell": [CENTRE, 1, CENTRE - 2], "size": [FIELD, 5, FIELD]},
+        "cairns": {"centre": [CENTRE, 1, CENTRE], "drifa": [CENTRE, 1, CENTRE - 2], "size": [FIELD, 5, FIELD]},
         "seal": {
             "door": [list(pos) for pos in SEAL],
             "front": [MIDDLE, 1, FRONT - 2],

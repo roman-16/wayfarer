@@ -640,11 +640,11 @@ public final class Errands {
         BlockPos origin = Camps.place(level, RING, site, Rotation.NONE);
         JsonObject plan = PLAN.get().getAsJsonObject("cairns");
         BlockPos centre = origin.offset(Prologue.vector(plan.getAsJsonArray("centre")));
-        BlockPos nell = origin.offset(Prologue.vector(plan.getAsJsonArray("nell")));
+        BlockPos drifa = origin.offset(Prologue.vector(plan.getAsJsonArray("drifa")));
         progress.place(CAIRNS_ORIGIN, origin);
         progress.place(CAIRNS, centre);
-        progress.place("seat_cairns_nell", nell);
-        progress.yaws.put("seat_cairns_nell", Frost.yaw(Vec3.atLowerCornerOf(centre.subtract(nell))));
+        progress.place("seat_cairns_drifa", drifa);
+        progress.yaws.put("seat_cairns_drifa", Frost.yaw(Vec3.atLowerCornerOf(centre.subtract(drifa))));
         progress.ward(CAIRNS, level.getStructureManager().getOrCreate(RING).getBoundingBox(Camps.settings(level, RING, Rotation.NONE), origin));
         progress.setDirty();
         Camps.snow(level, centre, PLAN.get().getAsJsonObject("cairns").getAsJsonArray("size").get(0).getAsInt());

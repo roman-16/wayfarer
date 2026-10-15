@@ -90,19 +90,19 @@
 
 ![A reward waiting: first in the list, in gold, its items in slots and one Take](quests/reward-waiting.png)
 
-**Maren's first gift waiting: bread, dried fish and her note**, in the story at `his_first_camp/the_caravan`
+**Malgven's first gift waiting: bread, dried fish and her note**, in the story at `his_first_camp/the_caravan`
 
-![Maren's first gift waiting: bread, dried fish and her note](quests/under-the-lean-to.png)
+![Malgven's first gift waiting: bread, dried fish and her note](quests/under-the-lean-to.png)
 
-**His Brother, waiting for Corin's word**, in the story at `the_deserter/the_fireside`
+**His Brother, waiting for Cadoc's word**, in the story at `the_deserter/the_fireside`
 
-![His Brother, waiting for Corin's word](quests/his-brother.png)
+![His Brother, waiting for Cadoc's word](quests/his-brother.png)
 
 ## People
 
-**Corin in the journal's People**, in the story at `the_deserter/the_fireside`
+**Cadoc in the journal's People**, in the story at `the_deserter/the_fireside`
 
-![Corin in the journal's People](people/corin.png)
+![Cadoc in the journal's People](people/cadoc.png)
 
 ## Quests
 
