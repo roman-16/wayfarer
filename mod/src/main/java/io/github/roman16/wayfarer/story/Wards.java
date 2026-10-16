@@ -56,6 +56,10 @@ public final class Wards {
         return wards;
     }
 
+    public static boolean guarded(LevelAccessor accessor, BlockPos pos) {
+        return at(accessor, pos).isPresent();
+    }
+
     private static Optional<Ward> at(LevelAccessor accessor, BlockPos pos) {
         if (!(accessor instanceof ServerLevel level) || level.dimension() != Level.OVERWORLD) {
             return Optional.empty();

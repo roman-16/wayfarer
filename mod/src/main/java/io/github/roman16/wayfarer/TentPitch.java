@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer;
 
 import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Talk;
+import io.github.roman16.wayfarer.story.Wards;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Stream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -60,6 +62,7 @@ public final class TentPitch {
     private static final int KEEP_TICKS = 64;
     private static final String TENT_PACKED = "tent_packed";
     private static final String TENT_PITCHED = "tent_pitched";
+    private static final float AT_A_TOUCH = 0.1f;
 
     private TentPitch() {}
 
@@ -97,7 +100,8 @@ public final class TentPitch {
             return;
         }
         UseOnContext context = new UseOnContext(player, event.getHand(), event.getHitVec());
-        BlockPos door = level.getBlockState(event.getPos()).canBeReplaced(new BlockPlaceContext(context)) ? event.getPos()
+        BlockState clicked = level.getBlockState(event.getPos());
+        BlockPos door = clicked.canBeReplaced(new BlockPlaceContext(context)) || overgrown(level, event.getPos(), clicked) ? event.getPos()
                 : event.getPos().relative(event.getFace() == null ? Direction.UP : event.getFace());
         Direction facing = player.getDirection();
         if (held.getOrDefault(NTDataComponents.TENT_ID.get(), 0) == 0) {
@@ -109,8 +113,13 @@ public final class TentPitch {
             player.displayClientMessage(Component.translatable("wayfarer.tent.uneven"), true);
             return;
         }
-        if (!TentPlacer.getInstance().canPlaceTentFrame(level, door, tent.getType(), tent.getSize(), facing)
-                || !TentPlacer.getInstance().placeTent(level, door, tent.getType(), size, facing, tent.getColor())
+        List<BlockPos> walls = walls(level, door, tent, size, facing);
+        if (!walls.stream().allMatch(pos -> free(level, pos))) {
+            player.displayClientMessage(Component.translatable("tent.build.deny.space"), true);
+            return;
+        }
+        walls.stream().filter(pos -> overgrown(level, pos, level.getBlockState(pos))).forEach(pos -> level.destroyBlock(pos, true, player));
+        if (!TentPlacer.getInstance().placeTent(level, door, tent.getType(), size, facing, tent.getColor())
                 || !(level.getBlockEntity(door) instanceof TentDoorBlockEntity entrance)) {
             player.displayClientMessage(Component.translatable("tent.build.deny.space"), true);
             return;
@@ -143,6 +152,29 @@ public final class TentPitch {
             }
         }
         return true;
+    }
+
+    private static List<BlockPos> walls(ServerLevel level, BlockPos door, Tent tent, TentSize size, Direction facing) {
+        StructureTemplate template = TentPlacer.getTemplate(level, tent.getType(), size);
+        if (template == null) {
+            return List.of(door);
+        }
+        Rotation rotation = TentPlacer.toRotation(facing);
+        BlockPos origin = door.offset(new BlockPos(0, 0, -template.getSize().getZ() / 2).rotate(rotation));
+        return Stream.concat(Stream.of(door), TentPlacer.getInstance().getTentBlockPositions(level, door, tent.getType(), size).stream()
+                .map(pos -> origin.offset(pos.rotate(rotation)))).distinct().toList();
+    }
+
+    private static boolean free(ServerLevel level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        return state.canBeReplaced() || overgrown(level, pos, state);
+    }
+
+    private static boolean overgrown(ServerLevel level, BlockPos pos, BlockState state) {
+        float hardness = state.getBlock().defaultDestroyTime();
+        return !state.canBeReplaced() && state.getCollisionShape(level, pos).isEmpty() && state.getFluidState().isEmpty() && !state.hasBlockEntity()
+                && hardness >= 0 && hardness <= AT_A_TOUCH && !BuiltInRegistries.BLOCK.getKey(state.getBlock()).getNamespace().equals(Wayfarer.MODID)
+                && !Wards.guarded(level, pos);
     }
 
     private static boolean ground(ServerLevel level, BlockPos pos) {
