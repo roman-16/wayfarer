@@ -2,11 +2,13 @@ package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
+import io.github.roman16.wayfarer.Firsts;
 import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,9 +30,12 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -46,6 +51,14 @@ public final class Talk {
     private static final Map<String, Long> HEARD = new HashMap<>();
     private static final Map<UUID, Integer> votes = new HashMap<>();
     private static final Map<UUID, Personal> personal = new HashMap<>();
+    private static final Set<UUID> screens = new HashSet<>();
+    private static final List<Said> told = new ArrayList<>();
+    private static final Set<String> FIGHTS = Set.of("chase", "duel", "hold", "memory", "sea", "slay", "worm");
+    private static final long NEVER = -Integer.MAX_VALUE;
+    private static long huntedAt = NEVER;
+    private static long heldSince = NEVER;
+    private static boolean warned;
+    private static boolean idle = true;
     private static long clock;
     private static long next;
     private static long waiting;
@@ -56,9 +69,11 @@ public final class Talk {
 
     private Talk() {}
 
-    private sealed interface Speech permits Said, Notice, Pause, Then, Ask {}
+    private sealed interface Speech permits Said, Replay, Notice, Pause, Then, Ask {}
 
     private record Said(@Nullable String fire, @Nullable Vec3 at, Story.Line line, String text) implements Speech {}
+
+    private record Replay(Said said) implements Speech {}
 
     private record Notice(Component line) implements Speech {}
 
@@ -100,12 +115,23 @@ public final class Talk {
         }
     }
 
-    public record Answers(List<String> choices) implements CustomPacketPayload {
+    public record Answers(List<Component> choices) implements CustomPacketPayload {
         public static final Type<Answers> TYPE = new Type<>(Wayfarer.id("answers"));
-        public static final StreamCodec<ByteBuf, Answers> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()).map(Answers::new, Answers::choices);
+        public static final StreamCodec<RegistryFriendlyByteBuf, Answers> STREAM_CODEC = ComponentSerialization.TRUSTED_STREAM_CODEC.apply(ByteBufCodecs.list())
+                .map(Answers::new, Answers::choices);
 
         @Override
         public Type<Answers> type() {
+            return TYPE;
+        }
+    }
+
+    public record Screen(boolean open) implements CustomPacketPayload {
+        public static final Type<Screen> TYPE = new Type<>(Wayfarer.id("screen"));
+        public static final StreamCodec<ByteBuf, Screen> STREAM_CODEC = ByteBufCodecs.BOOL.map(Screen::new, Screen::open);
+
+        @Override
+        public Type<Screen> type() {
             return TYPE;
         }
     }
@@ -181,7 +207,7 @@ public final class Talk {
 
     static void offerTo(ServerPlayer player, List<Story.Choice> choices, Answer answer) {
         personal.put(player.getUUID(), new Personal(choices, answer));
-        PacketDistributor.sendToPlayer(player, new Answers(choices.stream().map(Story.Choice::text).toList()));
+        PacketDistributor.sendToPlayer(player, new Answers(choices.stream().map(choice -> (Component) Component.literal(choice.text())).toList()));
     }
 
     static void withdraw(ServerPlayer player) {
@@ -199,6 +225,14 @@ public final class Talk {
 
     public static Optional<Offer> open() {
         return Optional.ofNullable(offer);
+    }
+
+    public static void screen(ServerPlayer player, boolean open) {
+        if (open) {
+            screens.add(player.getUUID());
+        } else {
+            screens.remove(player.getUUID());
+        }
     }
 
     public static void reset() {
@@ -249,21 +283,42 @@ public final class Talk {
             return;
         }
         clock++;
+        if (queue.isEmpty() && offer == null && clock >= next) {
+            idle = true;
+        }
         if (queue.isEmpty() || listened(server, queue.peek())) {
             waiting = clock;
         }
         while (offer == null && !queue.isEmpty() && clock >= next
                 && (listened(server, queue.peek()) || clock - waiting >= (long) Balance.get().talk().waitSeconds() * TICKS_PER_SECOND)) {
+            if (queue.peek() instanceof Said held && held(server, held)) {
+                break;
+            }
+            heldSince = NEVER;
+            warned = false;
             Speech speech = queue.poll();
             switch (speech) {
                 case Said said -> {
+                    if (idle) {
+                        told.clear();
+                        idle = false;
+                    }
+                    told.add(said);
                     Optional<Vec3> at = where(server, said);
+                    server.getPlayerList().getPlayers().stream().filter(player -> near(player, at.orElse(null)))
+                            .forEach(player -> Firsts.first(player, Tasks.FIRST + Tasks.TALKED));
                     Component text = Component.literal(said.text());
                     boolean road = ROAD.equals(said.fire());
                     deliver(server, Subtitle.of(server, said.line().by(), text), at.orElse(null), at.isPresent() && !road ? line(server, said.line().by(), text) : null);
                     heard(server, said);
                     speaking = said.line().by();
                     next = clock + reading(said.text());
+                }
+                case Replay replay -> {
+                    Optional<Vec3> at = where(server, replay.said());
+                    deliver(server, Subtitle.of(server, replay.said().line().by(), Component.literal(replay.said().text())), at.orElse(null), null);
+                    speaking = replay.said().line().by();
+                    next = clock + reading(replay.said().text());
                 }
                 case Notice notice -> {
                     speaking = null;
@@ -283,6 +338,57 @@ public final class Talk {
         reset();
         answering.clear();
         personal.clear();
+        screens.clear();
+        told.clear();
+    }
+
+    @SubscribeEvent
+    public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        screens.remove(event.getEntity().getUUID());
+    }
+
+    private static boolean held(MinecraftServer server, Said said) {
+        Balance.Talk talk = Balance.get().talk();
+        Optional<Vec3> at = where(server, said);
+        List<ServerPlayer> listeners = server.getPlayerList().getPlayers().stream().filter(player -> near(player, at.orElse(null))).toList();
+        List<ServerPlayer> hunted = fighting(server) ? List.of() : listeners.stream().filter(Talk::hunted).toList();
+        if (!hunted.isEmpty()) {
+            huntedAt = clock;
+            if (!warned) {
+                warned = true;
+                hunted.forEach(player -> PacketDistributor.sendToPlayer(player, Subtitle.of(server, null, Component.translatable("wayfarer.talk.hunted"))));
+            }
+        }
+        if (clock - huntedAt < (long) talk.safeSeconds() * TICKS_PER_SECOND) {
+            return true;
+        }
+        if (listeners.stream().noneMatch(player -> screens.contains(player.getUUID()))) {
+            return false;
+        }
+        if (heldSince == NEVER) {
+            heldSince = clock;
+        }
+        return clock - heldSince < (long) talk.screenSeconds() * TICKS_PER_SECOND;
+    }
+
+    private static boolean fighting(MinecraftServer server) {
+        return Engine.active(server).stream().anyMatch(active -> Steps.entered(active) && FIGHTS.contains(active.step().kind()));
+    }
+
+    private static boolean hunted(ServerPlayer player) {
+        int reach = Balance.get().talk().huntedBlocks();
+        return !player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(reach),
+                mob -> mob instanceof Enemy && mob.isAlive() && mob.getTarget() == player).isEmpty();
+    }
+
+    private static void replay(MinecraftServer server) {
+        Offer shown = offer;
+        offer = null;
+        votes.clear();
+        offer(server);
+        queue.addFirst(new Ask(shown));
+        told.reversed().forEach(said -> queue.addFirst(new Replay(said)));
+        Sounds.play(server, ANSWER_CHOSEN);
     }
 
     public static void pick(ServerPlayer player, int index) {
@@ -296,7 +402,14 @@ public final class Talk {
             }
             return;
         }
-        if (offer == null || index < 0 || index >= offer.choices().size() || !near(player, offer.at())) {
+        if (offer == null || index < 0 || !near(player, offer.at())) {
+            return;
+        }
+        if (index == offer.choices().size() && !told.isEmpty()) {
+            replay(player.server);
+            return;
+        }
+        if (index >= offer.choices().size()) {
             return;
         }
         Offer answered = offer;
@@ -341,14 +454,17 @@ public final class Talk {
         }
     }
 
-    private static List<String> answers(MinecraftServer server, Offer shown) {
+    private static List<Component> answers(MinecraftServer server, Offer shown) {
         List<String> texts = shown.choices().stream().map(Story.Choice::text).toList();
         int online = Engine.players(server).size();
-        if (!shown.vote() || online < 2) {
-            return texts;
+        List<Component> answers = new ArrayList<>(IntStream.range(0, texts.size())
+                .mapToObj(index -> (Component) Component.literal(!shown.vote() || online < 2 ? texts.get(index)
+                        : texts.get(index) + " " + votes.values().stream().filter(vote -> vote == index).count() + "/" + online))
+                .toList());
+        if (!told.isEmpty()) {
+            answers.add(Component.translatable("wayfarer.talk.again"));
         }
-        return IntStream.range(0, texts.size())
-                .mapToObj(index -> texts.get(index) + " " + votes.values().stream().filter(vote -> vote == index).count() + "/" + online).toList();
+        return answers;
     }
 
     private static boolean listened(MinecraftServer server, Speech speech) {

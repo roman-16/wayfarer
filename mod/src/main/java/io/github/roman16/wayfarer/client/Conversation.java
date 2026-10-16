@@ -52,6 +52,7 @@ public final class Conversation {
     private static final Deque<Logged> log = new ArrayDeque<>();
     private static List<String> answers = List.of();
     private static long clock;
+    private static boolean screenOpen;
     static int answersTop = Integer.MAX_VALUE;
     static int answersRight = Integer.MIN_VALUE;
     static int bandTop = Integer.MAX_VALUE;
@@ -81,7 +82,7 @@ public final class Conversation {
     }
 
     public static void ask(Talk.Answers offered) {
-        answers = List.copyOf(offered.choices());
+        answers = offered.choices().stream().map(Component::getString).toList();
         if (!answers.isEmpty()) {
             note("answers: " + String.join(" | ", answers));
         }
@@ -104,7 +105,16 @@ public final class Conversation {
     }
 
     static void tick(Minecraft minecraft) {
-        if (minecraft.level == null || minecraft.isPaused()) {
+        if (minecraft.level == null || minecraft.getConnection() == null) {
+            screenOpen = false;
+            return;
+        }
+        boolean open = minecraft.screen != null;
+        if (open != screenOpen) {
+            screenOpen = open;
+            PacketDistributor.sendToServer(new Talk.Screen(open));
+        }
+        if (minecraft.isPaused()) {
             return;
         }
         if (minecraft.level.tickRateManager().runsNormally()) {

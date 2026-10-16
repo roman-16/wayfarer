@@ -1,0 +1,10 @@
+{
+  "add_cosmetic": false,
+  "icon": "wayfarer:slot/lantern",
+  "order": 12,
+  "render_toggle": false,
+  "size": 1,
+  "validators": [
+    "curios:tag"
+  ]
+}

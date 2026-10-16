@@ -429,3 +429,29 @@ g = "#e0f1f8"
 h = "#f3fafd"
 
 [raw_frost_iron.variants.raw_frost_iron]
+
+[lantern_slot]
+folder = "slot"
+rows = [
+  "................",
+  ".......aa.......",
+  "......a..a......",
+  ".......aa.......",
+  "......aaaa......",
+  ".....a....a.....",
+  "....aaaaaaaa....",
+  "....a......a....",
+  "....a..aa..a....",
+  "....a.a..a.a....",
+  "....a..aa..a....",
+  "....a......a....",
+  "....aaaaaaaa....",
+  "................",
+  "................",
+  "................",
+]
+
+[lantern_slot.colors]
+a = "#555555"
+
+[lantern_slot.variants.lantern]

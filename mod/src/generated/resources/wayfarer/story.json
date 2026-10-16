@@ -2551,7 +2551,7 @@
           "objective": "Keep the wounded man alive while they come across the ford.",
           "remarks": {
             "cadoc": [
-              "Keep them in the water. They're slow in the water.",
+              "Hold the bank. Hit them while they're still in the water.",
               "I can't stand. Don't let them reach me."
             ]
           },
@@ -2659,10 +2659,25 @@
           ]
         },
         {
+          "choices": [
+            {
+              "id": "bring",
+              "reply": "Not now. When you're stronger. I'll tell you when.",
+              "text": "Then we'll bring him back."
+            },
+            {
+              "id": "like_you",
+              "reply": "He went to them gladly. I didn't. ...When you're stronger, we'll go and ask him. I'll tell you when.",
+              "text": "Is he like you?"
+            }
+          ],
           "finds": "brother",
           "id": "the_fireside",
           "kind": "talk",
           "lines": [
+            {
+              "text": "Hob gets to his feet with his hammer in his fist. Pip stares at the scar on Cadoc's chest."
+            },
             {
               "by": "maud",
               "text": "You brought one of the men in grey to our fire."
@@ -2670,6 +2685,10 @@
             {
               "by": "cadoc",
               "text": "Not one of them. Not any more."
+            },
+            {
+              "by": "agna",
+              "text": "Sit down before you fall down. That side won't close on its own."
             },
             {
               "by": "cadoc",
@@ -2688,11 +2707,15 @@
             },
             {
               "by": "cadoc",
-              "text": "My brother's still up at that outpost above the ford. He took the scar the same night I did."
+              "text": "I've pitched at the edge of the light. Your people shouldn't have a grey coat at their backs."
+            },
+            {
+              "by": "maud",
+              "text": "No. They shouldn't."
             },
             {
               "by": "cadoc",
-              "text": "Not now. When you're stronger. I'll tell you when."
+              "text": "My brother's still up at that outpost above the ford. He took the scar the same night I did."
             }
           ],
           "objective": "Talk to Cadoc, by his tent at the edge of the camp.",
@@ -2743,6 +2766,11 @@
           "objective": "Hear Cadoc out at the fire.",
           "people": {
             "cadoc": "His brother Brannoc's company crossed the sea before us and camps at an outpost on this shore."
+          },
+          "remarks": {
+            "cadoc": [
+              "At the fire, when you've a moment. It's my brother."
+            ]
           },
           "story": [
             "Cadoc's brother Brannoc camps with his company at an outpost on this shore. Cadoc asked me to fetch him, or hear him say no."
@@ -2898,6 +2926,20 @@
           ],
           "objective": "Follow the pull: walk where the ember flares.",
           "place": "marsh",
+          "remarks": {
+            "agna": [
+              "His side's mending. He won't let me near the scar."
+            ],
+            "hob": [
+              "He sleeps with his boots on. So do I, now."
+            ],
+            "maud": [
+              "He keeps to the edge of the light. Good. I can see him from here."
+            ],
+            "pip": [
+              "Cadoc says the grey coats ride real horses. Big ones."
+            ]
+          },
           "story": [
             "The morning after the ford, the ember pulled on, the way it had pulled before the horn."
           ],
@@ -8199,6 +8241,11 @@
           "people": {
             "maud": "She can't account for one of Tollbridge: Wil the cooper, who went to his sister's village the spring before it burned."
           },
+          "remarks": {
+            "maud": [
+              "Sit with me at the fire when you can. There's someone I can't account for."
+            ]
+          },
           "story": [
             "Maud asked me to find Wil the cooper, the last of Tollbridge she can't account for, in his sister's village."
           ],
@@ -8335,6 +8382,11 @@
             }
           ],
           "objective": "Hear Alruna out at the fire.",
+          "remarks": {
+            "alruna": [
+              "Come to the fire when you've a moment. I found something in the Keepers' pages."
+            ]
+          },
           "story": [
             "Alruna told me of a sealed Keepers' house on this shore. The seal takes three words of the oath."
           ],
@@ -8463,6 +8515,11 @@
           "objective": "Hear Agna out at the fire.",
           "people": {
             "cecily": "The potter's girl. She burns with the marsh fever."
+          },
+          "remarks": {
+            "agna": [
+              "Come and sit with me at the fire. It's Cecily."
+            ]
           },
           "story": [
             "Cecily, the potter's girl, burns with the marsh fever. Agna can't break it; the Tide Folk can, before the third dawn."
@@ -9311,6 +9368,11 @@
             "hob": "His hammer cracked the night Tollbridge burned, and since then he mends only halfway. He wants the Frost Walkers' metal for a new one."
           },
           "place": "frost_mine_cart",
+          "remarks": {
+            "hob": [
+              "Come by the fire one evening. I want a word about that Frost Walker's metal."
+            ]
+          },
           "story": [
             "Hob wants the Frost Walkers' metal, frost iron, to make a hammer worth the name. They'd have dug it near their hall."
           ],
@@ -9575,6 +9637,12 @@
       ],
       "id": "brams_son",
       "kind": "side",
+      "road": [
+        {
+          "by": "maud",
+          "text": "A herder came by while you were out, asking for the one with the light. Said he'd come back after dark."
+        }
+      ],
       "steps": [
         {
           "awake": "Not yet. Sit by the fire a while.",
@@ -9608,9 +9676,14 @@
               "text": "Their outpost's a day on, the way you're going. I'm no good with a blade. Please."
             }
           ],
-          "objective": "Sit at the caravan's fire.",
+          "objective": "Sit at the caravan's fire after dark: the herder is coming back.",
           "people": {
             "bram": "A herder. The Gazebound took his son Davy to their outpost a day ahead."
+          },
+          "remarks": {
+            "maud": [
+              "That herder said he'd be back after dark. Sit with us tonight and you'll hear him."
+            ]
           },
           "story": [
             "A herder named Bram came to our fire. The Gazebound took his son Davy to their outpost a day ahead."
@@ -9755,7 +9828,7 @@
           "with": "bram"
         }
       ],
-      "summary": "A herder came to the caravan's fire: the Gazebound took his son to their outpost a day ahead. Bring the boy back.",
+      "summary": "A herder came asking for me at the caravan while I was out. He said he'd come back to the fire after dark.",
       "title": "Bram's Son"
     },
     {
@@ -9781,6 +9854,11 @@
             }
           ],
           "objective": "Hear Pip out at the fire.",
+          "remarks": {
+            "pip": [
+              "I want to ask you something! At the fire. Promise?"
+            ]
+          },
           "story": [
             "Pip asked me to teach them to read tracks. A fox goes past our camp every night, and its den is close."
           ],
@@ -9896,6 +9974,11 @@
             }
           ],
           "objective": "Hear Cadoc out at the fire.",
+          "remarks": {
+            "cadoc": [
+              "Find me at the fire tonight. There's something you should see."
+            ]
+          },
           "story": [
             "Cadoc told me of a rite at an outpost ahead, where the Gazebound's novices take the scar."
           ],
@@ -10025,6 +10108,11 @@
             }
           ],
           "objective": "Hear Pip out at the fire.",
+          "remarks": {
+            "pip": [
+              "I heard about a horse! I'll tell you at the fire."
+            ]
+          },
           "story": [
             "Pip heard of a horse on the grass ahead that never sleeps, and asked me to go and see it."
           ],
@@ -10226,6 +10314,11 @@
             }
           ],
           "objective": "Hear Pip out at the fire.",
+          "remarks": {
+            "pip": [
+              "Can I ask you something at the fire? Just us."
+            ]
+          },
           "story": [
             "Pip asked what happens to the ember if I die out there."
           ],

@@ -94,7 +94,7 @@ public final class Journal {
         JsonObject view = new JsonObject();
         JsonArray quests = new JsonArray();
         for (Story.Quest quest : Story.get().quests()) {
-            if (!progress.steps.containsKey(quest.id())) {
+            if (!progress.steps.containsKey(quest.id()) || Engine.waiting(progress, quest)) {
                 continue;
             }
             JsonObject entry = new JsonObject();

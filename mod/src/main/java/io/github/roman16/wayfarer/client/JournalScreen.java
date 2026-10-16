@@ -793,6 +793,9 @@ public final class JournalScreen extends Screen {
         if (tab == Tab.GEAR) {
             PacketDistributor.sendToServer(new Tasks.Did("gear"));
         }
+        if (tab == Tab.CONVERSATIONS) {
+            PacketDistributor.sendToServer(new Tasks.Did("conversations"));
+        }
         if (tab != open) {
             open = tab;
             listScroll = 0;

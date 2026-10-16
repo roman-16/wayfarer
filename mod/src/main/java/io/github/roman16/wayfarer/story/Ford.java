@@ -189,6 +189,8 @@ final class Ford {
         path(level, far, way, side, balance);
         BlockPos cadoc = ashore(level, near, way.scale(-1)).above();
         BlockPos gazebound = ashore(level, far, way).above();
+        clearing(level, cadoc, balance);
+        clearing(level, gazebound, balance);
         BlockPos outpost = outpost(level, far, way, balance);
         if (Unseen.snowy(level.getBiome(near), near)) {
             fire(level, cadoc, side);
@@ -275,6 +277,25 @@ final class Ford {
             }
         }
         return surface(level, BlockPos.containing(Vec3.atLowerCornerOf(bank).add(inland.scale(INLAND))));
+    }
+
+    private static void clearing(ServerLevel level, BlockPos feet, Balance.Ford balance) {
+        int reach = balance.clearingBlocks();
+        for (int x = -reach; x <= reach; x++) {
+            for (int z = -reach; z <= reach; z++) {
+                if (x * x + z * z > reach * reach) {
+                    continue;
+                }
+                int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, feet.getX() + x, feet.getZ() + z);
+                for (int y = feet.getY(); y < top; y++) {
+                    BlockPos at = new BlockPos(feet.getX() + x, y, feet.getZ() + z);
+                    BlockState state = level.getBlockState(at);
+                    if (state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES)) {
+                        level.setBlock(at, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                    }
+                }
+            }
+        }
     }
 
     private static void fire(ServerLevel level, BlockPos cadoc, Vec3 side) {

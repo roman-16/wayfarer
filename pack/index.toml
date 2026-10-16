@@ -65,6 +65,10 @@ file = "config/ReactiveMusic.json5"
 hash = "22a454b1606bbaa2ac1d4fec11b220be81059c5bd493a155b7478177ba4852cc"
 
 [[files]]
+file = "config/ambientsounds-client.json"
+hash = "78810698534aa63c003ad93f71f44d598ac66017c8f1548cddce6fdfeea516f0"
+
+[[files]]
 file = "config/artifacts/items.toml"
 hash = "a3bbc015d42dfbb28a8180360f94458c13b305446e6e5207589b4f37b9c0d065"
 
@@ -263,6 +267,10 @@ hash = "50ea5ddc9894b778fd39f550b4f2cbbcd4515e35d2cf615bd4176f7af2b653bd"
 [[files]]
 file = "config/treechop-client.toml"
 hash = "bdf7a496677d9b8fab9f8cbb8655d9f7dce1ef65057783f5aa74157739710e2a"
+
+[[files]]
+file = "config/trmt.json"
+hash = "ab69a0d774166de28b91ad225ac5081981a63b782e5dcb9bb623fad95a04d1b5"
 
 [[files]]
 file = "config/voicechat/voicechat-client.properties"

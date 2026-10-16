@@ -56,7 +56,7 @@ final class Marsh {
     static final String HALL = "marsh_hall";
     static final String CELLAR = "marsh_cellar";
     static final String WITCHES = "witches";
-    private static final String SITE = "marsh_site";
+    static final String SITE = "marsh_site";
     private static final String TURN = "marsh_turn";
     private static final String BOG = "marsh_bog";
     private static final String ORIGIN = "marsh_origin";
@@ -463,6 +463,10 @@ final class Marsh {
         List.of(SITE, BOG, ORIGIN).forEach(progress.places::remove);
         progress.place(SITE, new BlockPos(x, top(Engine.overworld(server), x, z), z));
         progress.setDirty();
+    }
+
+    static Optional<BlockPos> site(Progress progress) {
+        return progress.place(SITE);
     }
 
     static boolean built(MinecraftServer server) {

@@ -1,7 +1,7 @@
 {
   "add_cosmetic": false,
   "icon": "minecraft:item/empty_armor_slot_helmet",
-  "order": 12,
+  "order": 13,
   "render_toggle": false,
   "size": 1,
   "validators": [

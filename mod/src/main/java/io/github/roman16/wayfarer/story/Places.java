@@ -210,6 +210,13 @@ public final class Places {
         return Progress.of(server).place(name);
     }
 
+    static Optional<BlockPos> aim(Progress progress, String name) {
+        return switch (name) {
+            case Marsh.NAME -> progress.place(name).or(() -> Marsh.site(progress));
+            default -> progress.place(name);
+        };
+    }
+
     static Optional<Seat> seat(MinecraftServer server, String name) {
         if (name.startsWith(FIRE_SEAT)) {
             return Caravan.fireSeat(server, Integer.parseInt(name.substring(FIRE_SEAT.length())));

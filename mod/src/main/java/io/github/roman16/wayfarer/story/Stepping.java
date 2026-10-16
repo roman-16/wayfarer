@@ -67,7 +67,7 @@ public final class Stepping {
         MinecraftServer server = source.getServer();
         return found(source, quest).map(active -> {
             Optional<String> goal = Steps.goal(active);
-            Component where = goal.map(name -> Progress.of(server).place(name).map(pos -> place(source, name, pos))
+            Component where = goal.map(name -> Places.aim(Progress.of(server), name).map(pos -> place(source, name, pos))
                     .orElse(Component.translatable("wayfarer.step.unchosen", Component.translatable(Places.label(server, name)))))
                     .orElse(Component.translatable("wayfarer.step.nowhere"));
             source.sendSuccess(() -> Component.translatable("wayfarer.step.shown", heading(source, active), where), false);

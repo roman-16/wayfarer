@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer.story;
 import net.minecraft.nbt.CompoundTag;
 import com.google.gson.JsonElement;
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.BeltLantern;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Ember;
 import io.github.roman16.wayfarer.Fire;
@@ -47,9 +48,10 @@ public final class Tasks {
     private static final String SAIL = "key.smallships.ship_sail";
     public static final Set<String> STEP_TASKS = Set.of("bed", "bury", "ember", "enter", "fire", "horse", "hull", "look", "map", "marks", "pack", "rest", "sail", "search", "stone", "sweep",
             "tent", "tracks");
-    private static final Set<String> TOLD_BY_CLIENT = Set.of("charms", "gear", "journal", "map");
+    private static final Set<String> TOLD_BY_CLIENT = Set.of("charms", "conversations", "gear", "journal", "map");
     private static final Set<String> QUIET = Set.of("evening", "waiting");
     static final String FIRST = "task.";
+    static final String TALKED = "talked";
     private static final String TASK_TICKED = "task_ticked";
     private static final String INVENTORY_KEY = "key.inventory";
     public static final String KEY = "wayfarer:key";
@@ -170,8 +172,17 @@ public final class Tasks {
         if (Ember.carried(server) && !Firsts.seen(player, FIRST + "charms")) {
             open.put("charms", task("charms", key(INVENTORY_KEY)));
         }
+        if (!Firsts.seen(player, FIRST + BeltLantern.SLOT)) {
+            if (!BeltLantern.worn(player).isEmpty()) {
+                Firsts.first(player, FIRST + BeltLantern.SLOT);
+            } else if (player.getInventory().contains(BeltLantern.FITS)) {
+                open.put(BeltLantern.SLOT, task(BeltLantern.SLOT, key(INVENTORY_KEY)));
+            }
+        }
         if (!Firsts.seen(player, FIRST + "journal")) {
             open.put("journal", task("journal", key(JOURNAL_KEY)));
+        } else if (Firsts.seen(player, FIRST + TALKED) && !Firsts.seen(player, FIRST + "conversations") && !Talk.busy()) {
+            open.put("conversations", task("conversations", key(JOURNAL_KEY)));
         }
         if (LastUse.lastUse(player.getMainHandItem()) && !Firsts.seen(player, FIRST + "mend")) {
             open.put("mend", task("mend", Balance.get().fire().restBlocks()));

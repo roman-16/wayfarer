@@ -71,6 +71,7 @@ public final class Engine {
     static final String TRACKED = "tracked";
     private static final String JOURNAL_ENTRY = "journal_entry";
     private static final String QUEST_BEGUN = "quest_begun";
+    private static final String WAIT = "wait";
     private static final String QUEST_DONE = "quest_done";
     private static final String REWARD_TAKEN = "reward_taken";
     private static final String STARTED = "started";
@@ -120,7 +121,7 @@ public final class Engine {
         Progress progress = Progress.of(player.server);
         if (quest.isEmpty()) {
             progress.tracking.remove(player.getUUID());
-        } else if (progress.open(quest)) {
+        } else if (progress.open(quest) && Story.get().quest(quest).filter(spec -> !waiting(progress, spec)).isPresent()) {
             progress.tracking.put(player.getUUID(), quest);
             Firsts.first(player, TRACKED);
         } else {
@@ -165,7 +166,7 @@ public final class Engine {
                 pass(server, active);
             } else if (Steps.entered(active)) {
                 Steps.tick(server, active);
-            } else if (!Talk.busy() && pursued(server, active.quest())) {
+            } else if (!Talk.busy() && (pursued(server, active.quest()) || active.step().kind().equals(WAIT))) {
                 begin(server, active);
             }
         }
@@ -185,9 +186,15 @@ public final class Engine {
     }
 
     private static void begin(MinecraftServer server, Active active) {
-        if (active.quest().steps().indexOf(active.step()) == 0) {
+        int index = active.quest().steps().indexOf(active.step());
+        if (index == 0 && !active.step().kind().equals(WAIT)) {
             Banners.show(Component.translatable("wayfarer.banner.begun"), Component.literal(title(Progress.of(server), active.quest())));
             Sounds.play(server, QUEST_BEGUN);
+        }
+        if (active.step().kind().equals(WAIT)) {
+            Progress progress = Progress.of(server);
+            progress.tracking.values().removeIf(active.quest().id()::equals);
+            progress.setDirty();
         }
         Steps.enter(server, active);
     }
@@ -231,7 +238,7 @@ public final class Engine {
             return Optional.empty();
         }
         Optional<String> goal = Caravan.heading(player) ? Optional.of(Caravan.NAME) : tracked(player).flatMap(Steps::goal);
-        return goal.flatMap(name -> Progress.of(server).place(name));
+        return goal.flatMap(name -> Places.aim(Progress.of(server), name));
     }
 
     static Optional<BlockPos> marked(ServerPlayer player) {
@@ -256,7 +263,7 @@ public final class Engine {
         Optional<Active> tracked = tracked(event.player());
         for (Active side : active(server)) {
             if (tracked.map(active -> active.quest() != side.quest()).orElse(true) && Steps.entered(side) && pursued(server, side.quest())) {
-                Steps.goal(side).ifPresent(name -> Progress.of(server).place(name).ifPresent(pos -> event.markers()
+                Steps.goal(side).ifPresent(name -> Places.aim(Progress.of(server), name).ifPresent(pos -> event.markers()
                         .add(new CompassPayload.Marker(CompassPayload.Kind.LEAD, Places.label(server, name), pos.getX(), pos.getZ()))));
             }
         }
@@ -264,7 +271,7 @@ public final class Engine {
         if (Caravan.heading(event.player()) && !Caravan.met(server)) {
             event.rise();
         }
-        goal.ifPresent(name -> Progress.of(server).place(name).ifPresent(pos -> {
+        goal.ifPresent(name -> Places.aim(Progress.of(server), name).ifPresent(pos -> {
             if (felt(server, event.player(), pos)) {
                 event.aim(new Compass.Aim(pos));
             } else {
@@ -302,15 +309,28 @@ public final class Engine {
                 progress.steps.put(quest.id(), 0);
                 progress.scratch.remove(quest.id());
                 progress.setDirty();
-                if (!pursued(server, quest)) {
-                    Banners.show(Component.translatable("wayfarer.banner.new", Tasks.key(Tasks.JOURNAL_KEY)), Component.literal(title(progress, quest)));
-                    Sounds.play(server, QUEST_BEGUN);
+                if (quest.halls() == 0) {
+                    Talk.say(quest.id(), null, quest.road(), fill(progress));
+                }
+                if (!waiting(progress, quest)) {
+                    Talk.then(() -> announce(server, quest));
                 }
                 opened.add(new Active(quest, quest.steps().getFirst(), progress.scratch(quest.id())));
             }
         }
         Journal.syncAll(server);
         return opened;
+    }
+
+    static boolean waiting(Progress progress, Story.Quest quest) {
+        return progress.steps.containsKey(quest.id()) && !progress.done(quest.id()) && quest.steps().get(progress.step(quest.id())).kind().equals(WAIT);
+    }
+
+    private static void announce(MinecraftServer server, Story.Quest quest) {
+        if (!pursued(server, quest)) {
+            Banners.show(Component.translatable("wayfarer.banner.new", Tasks.key(Tasks.JOURNAL_KEY)), Component.literal(title(Progress.of(server), quest)));
+            Sounds.play(server, QUEST_BEGUN);
+        }
     }
 
     static boolean holds(Progress progress, String when) {
@@ -417,6 +437,9 @@ public final class Engine {
         progress.setDirty();
         Journal.syncAll(server);
         if (next < quest.steps().size()) {
+            if (step.kind().equals(WAIT) && !quest.steps().get(next).kind().equals(WAIT)) {
+                announce(server, quest);
+            }
             return Optional.of(new Active(quest, quest.steps().get(next), progress.scratch(quest.id())));
         }
         if (quest.reward() != null) {

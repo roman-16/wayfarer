@@ -1,7 +1,7 @@
 {
   "add_cosmetic": false,
   "icon": "minecraft:item/empty_armor_slot_leggings",
-  "order": 14,
+  "order": 15,
   "render_toggle": false,
   "size": 1,
   "validators": [

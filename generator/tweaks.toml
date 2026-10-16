@@ -2,7 +2,7 @@ credit = "Vanilla Tweaks: https://vanillatweaks.net/"
 version = "1.21"
 
 [crafting]
-craftables = ["craftable gravel"]
+craftables = ["craftable gravel", "craftable horse armor"]
 quality-of-life = [
   "back to blocks",
   "charcoal to black dye",

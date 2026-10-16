@@ -299,6 +299,7 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Mine.class);
         NeoForge.EVENT_BUS.register(Music.class);
         NeoForge.EVENT_BUS.register(Nights.class);
+        NeoForge.EVENT_BUS.register(Omens.class);
         NeoForge.EVENT_BUS.register(Pages.class);
         NeoForge.EVENT_BUS.register(People.class);
         NeoForge.EVENT_BUS.register(Places.class);
@@ -356,6 +357,7 @@ public final class Wayfarer {
         registrar.playToClient(BookPayload.TYPE, BookPayload.STREAM_CODEC, (payload, context) -> Books.open(payload));
         registrar.playToClient(Talk.Answers.TYPE, Talk.Answers.STREAM_CODEC, (payload, context) -> Conversation.ask(payload));
         registrar.playToServer(Talk.Pick.TYPE, Talk.Pick.STREAM_CODEC, (payload, context) -> Talk.pick((ServerPlayer) context.player(), payload.index()));
+        registrar.playToServer(Talk.Screen.TYPE, Talk.Screen.STREAM_CODEC, (payload, context) -> Talk.screen((ServerPlayer) context.player(), payload.open()));
         registrar.playToClient(Talk.Subtitle.TYPE, Talk.Subtitle.STREAM_CODEC, (payload, context) -> Conversation.hear(payload));
         registrar.playToServer(Gear.Track.TYPE, Gear.Track.STREAM_CODEC, (payload, context) -> Gear.track((ServerPlayer) context.player(), payload.thing()));
         registrar.playToClient(Journal.View.TYPE, Journal.View.STREAM_CODEC, (payload, context) -> JournalScreen.show(payload.json()));

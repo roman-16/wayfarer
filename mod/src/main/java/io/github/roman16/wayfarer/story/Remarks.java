@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 
 final class Remarks {
     private static final Map<String, Integer> said = new HashMap<>();
+    private static final String MAIN = "main";
 
     private Remarks() {}
 
@@ -38,6 +39,13 @@ final class Remarks {
         Story.Person spec = Story.get().person(person);
         if (spec.people() != null && Progress.of(server).trust(spec.people()) < 0) {
             return spec.cold();
+        }
+        Progress progress = Progress.of(server);
+        for (Engine.Active waiting : Engine.active(server)) {
+            List<String> news = waiting.step().remarks().get(person);
+            if (news != null && !waiting.quest().kind().equals(MAIN) && !Engine.pursued(server, waiting.quest()) && !Engine.waiting(progress, waiting.quest())) {
+                return news;
+            }
         }
         Optional<Engine.Active> tracked = Engine.main(server).filter(Steps::entered);
         if (tracked.isPresent()) {

@@ -344,6 +344,9 @@ public final class Gear {
         if (wanted.has("ridden")) {
             return player.getStats().getValue(Stats.CUSTOM.get(Stats.HORSE_ONE_CM)) > 0;
         }
+        if (wanted.has("gift")) {
+            return Progress.of(player.server).gift(wanted.get("gift").getAsString());
+        }
         if (wanted.has("gear")) {
             if (!ModList.get().isLoaded("silentgear")) {
                 return false;

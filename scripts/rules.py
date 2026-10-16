@@ -348,8 +348,6 @@ def story():
         for line in quest.get("road", []):
             if "by" in line and line["by"] not in people:
                 yield f"story/quests.toml: {quest['id']} has {line['by']} speak on the road, who is not in story/people.toml"
-        if "road" in quest and "halls" not in quest:
-            yield f"story/quests.toml: {quest['id']} has lines for the road back from a hall but opens after no number of halls"
         for step in quest["steps"]:
             where = f"story/quests.toml: {quest['id']}/{step['id']}"
             if step["kind"] not in KINDS:

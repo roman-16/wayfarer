@@ -78,6 +78,10 @@
       "required": false
     },
     {
+      "id": "minecraft:ominous_bottle",
+      "required": false
+    },
+    {
       "id": "minecraft:recovery_compass",
       "required": false
     },

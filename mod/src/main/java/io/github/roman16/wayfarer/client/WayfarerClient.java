@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ChestedHorseModel;
 import net.minecraft.client.model.GoatModel;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
@@ -23,6 +24,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
@@ -40,6 +42,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
+import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 import top.theillusivec4.curios.api.client.ICuriosScreen;
 
 @Mod(value = Wayfarer.MODID, dist = Dist.CLIENT)
@@ -82,6 +85,10 @@ public final class WayfarerClient {
             }
         });
         modBus.addListener(EntityRenderersEvent.AddLayers.class, Eyes::register);
+        modBus.addListener(FMLClientSetupEvent.class, event -> {
+            CuriosRendererRegistry.register(Items.LANTERN, BeltLanternRenderer::new);
+            CuriosRendererRegistry.register(Items.SOUL_LANTERN, BeltLanternRenderer::new);
+        });
         modBus.addListener(RegisterClientReloadListenersEvent.class, event -> {
             event.registerReloadListener((ResourceManagerReloadListener) DeepRenderer::reload);
             event.registerReloadListener((ResourceManagerReloadListener) Eyes::reload);

@@ -96,6 +96,7 @@ reach_blocks = 16
 
 [ford]
 ahead_blocks = 1024
+clearing_blocks = 4
 creek_reach_blocks = 64
 notice_blocks = 64
 outpost_blocks = 48
@@ -132,6 +133,9 @@ capacity_seconds = [180, 300, 480, 720]
 drain_factor = 4
 hunt_interval_seconds = 10
 hunt_phantoms = 2
+
+[glider]
+drop_blocks = 1
 
 [graphics]
 far_view_chunks = [128, 128, 256, 512]
@@ -209,6 +213,9 @@ away_blocks = 512
 camp_search_blocks = 2048
 camp_step_blocks = 64
 
+[raids]
+omen_minutes = 100
+
 [reading_house]
 ahead_blocks = 1024
 search_blocks = 256
@@ -257,9 +264,11 @@ reach_blocks = 32
 players_percentage = 66
 
 [smoke]
+aloft_from_blocks = 16
+aloft_puffs = 4
 column_blocks = 96
 puff_ticks = 1
-width_blocks = 8
+width_blocks = 4
 
 [spawns]
 creature_cap = 20
@@ -310,9 +319,12 @@ visit_blocks = 24
 [talk]
 again_seconds = 16
 characters_per_second = 8
+hunted_blocks = 32
 least_seconds = 4
 pause_seconds = 16
 reach_blocks = 32
+safe_seconds = 4
+screen_seconds = 16
 start_blocks = 8
 wait_seconds = 32
 

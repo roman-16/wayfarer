@@ -1,7 +1,7 @@
 {
   "add_cosmetic": false,
   "icon": "minecraft:item/empty_armor_slot_boots",
-  "order": 15,
+  "order": 16,
   "render_toggle": false,
   "size": 1,
   "validators": [

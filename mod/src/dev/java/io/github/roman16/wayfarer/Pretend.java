@@ -200,7 +200,7 @@ public final class Pretend {
                 sees(SUBTITLE, line.by().isEmpty() ? line.text() : Component.literal("<" + line.by() + "> ").append(line.text()));
             } else if (packet instanceof ClientboundCustomPayloadPacket custom && custom.payload() instanceof Talk.Answers offered
                     && !offered.choices().isEmpty()) {
-                sees(ANSWERS, Component.literal(String.join(" | ", offered.choices())));
+                sees(ANSWERS, Component.literal(String.join(" | ", offered.choices().stream().map(Component::getString).toList())));
             }
             if (listener != null) {
                 listener.onSuccess();

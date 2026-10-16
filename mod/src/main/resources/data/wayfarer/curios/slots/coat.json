@@ -1,7 +1,7 @@
 {
   "add_cosmetic": false,
   "icon": "minecraft:item/empty_armor_slot_chestplate",
-  "order": 13,
+  "order": 14,
   "render_toggle": false,
   "size": 1,
   "validators": [

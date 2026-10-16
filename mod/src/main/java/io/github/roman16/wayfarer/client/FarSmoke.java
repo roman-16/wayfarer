@@ -28,8 +28,6 @@ final class FarSmoke {
     private static final int GREY_LOW = 200;
     private static final int PUFF_STEP = 4;
     private static final int CLUSTER = 3;
-    private static final double LEAN = 0.32;
-    private static final double SMALLEST = 2.5;
     private static final double SWAY = 0.35;
     private static final double SIDE = 0.6;
     private static final double BREAKS = 0.75;
@@ -87,8 +85,8 @@ final class FarSmoke {
             if (rise > BREAKS && random.nextBoolean()) {
                 continue;
             }
-            double size = (SMALLEST + rise * (smoke.widthBlocks() * 2 - SMALLEST)) * (1 + random.triangle(0, SWAY));
-            double lean = rise * rise * smoke.columnBlocks() * LEAN;
+            double size = Smoke.size(rise, smoke) * (1 + random.triangle(0, SWAY));
+            double lean = Smoke.lean(rise, smoke);
             double x = lean + random.triangle(0, size * SWAY);
             double z = lean + random.triangle(0, size * SWAY);
             int grey = (int) Math.round(GREY_LOW + rise * (GREY_HIGH - GREY_LOW));

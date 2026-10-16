@@ -57,6 +57,18 @@ public final class StoryTests {
     }
 
     @GameTest(template = "empty")
+    public static void theEmberFindsTheSwampBeforeItsHallStands(GameTestHelper helper) {
+        Progress progress = new Progress();
+        BlockPos site = new BlockPos(4096, 64, 0);
+        progress.place(Marsh.SITE, site);
+        check(helper, Places.aim(progress, Marsh.NAME).filter(site::equals).isPresent(), "the ember has nothing to aim at while the swamp's hall waits to go up");
+        BlockPos porch = new BlockPos(4104, 72, 8);
+        progress.place(Marsh.NAME, porch);
+        check(helper, Places.aim(progress, Marsh.NAME).filter(porch::equals).isPresent(), "once the hall stands, the ember aims at the witches' porch");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
     public static void everyFootprintCanBeClicked(GameTestHelper helper) {
         List<Entity> print = Clues.print(helper.getLevel(), helper.absolutePos(new BlockPos(1, 1, 1)), "test");
         check(helper, print.stream().anyMatch(entity -> entity instanceof Interaction && entity.getTags().contains(Steps.CLUE + "test")),

@@ -20,6 +20,12 @@ wants = { axe = "An axe wants", boots = "Boots want", chestplate = "A chestplate
 
 [[lines]]
 by = "hob"
+id = "hob_dark"
+text = "A torch in your fist is a hand you can't swing with. Iron round the flame and a hook on your belt, and you've both hands back."
+when = ["dark/torch"]
+
+[[lines]]
+by = "hob"
 id = "hob_metal"
 text = "Iron's good. But the Frost Walkers had a metal that laughed at the cold. I've never seen it worked."
 when = ["armour/iron", "tools/iron", "weapons/hobs_blade"]
@@ -520,11 +526,77 @@ needs = [
 ]
 
 [[rows]]
+appears = { has = ["dark/lantern", "dark/torch"] }
+id = "dark"
+ladder = true
+title = "In the dark"
+who = "hob"
+
+[[rows.things]]
+good = "Lights a step or two around me, and leaves me one hand."
+have = [{ item = "minecraft:torch" }]
+id = "torch"
+jei = "minecraft:torch"
+made = "Made at my bench."
+make = "Make torches: coal or charcoal on a stick in a crafting grid"
+name = "Torch"
+needs = [
+  { count = 1, name = "coal or charcoal", tag = "minecraft:coals", where = "dug from stone, or burnt from logs in a furnace" },
+  { count = 1, item = "minecraft:stick", name = "stick", where = "split from planks" },
+]
+
+[[rows.things]]
+good = "Hangs at my belt and lights the way, and leaves both hands free."
+have = [{ item = "minecraft:lantern" }, { item = "minecraft:soul_lantern" }]
+id = "lantern"
+jei = "minecraft:lantern"
+made = "Made at my bench."
+make = "Make a lantern: a torch ringed with eight iron nuggets in a crafting grid, then hang it in the lantern slot in your inventory"
+name = "Lantern"
+needs = [
+  { count = 8, item = "minecraft:iron_nugget", name = "iron nuggets", where = "an iron ingot broken up in a crafting grid" },
+  { count = 1, item = "minecraft:torch", name = "torch", where = "made at my bench" },
+]
+
+[[rows.things]]
+apart = true
+good = "Thrown, it sticks where it lands and lights the dark around it."
+have = [{ item = "spelunkery:glowstick" }]
+id = "glowstick"
+jei = "spelunkery:glowstick"
+made = "Made at my bench."
+make = "Make a glowstick: a slime ball over a glow ink sac over a stick in a crafting grid"
+name = "Glowsticks"
+needs = [
+  { count = 1, item = "minecraft:glow_ink_sac", name = "glow ink sac", where = "from glow squids in deep water" },
+  { count = 1, item = "minecraft:slime_ball", name = "slime ball", where = "from slimes in swamps and deep caves" },
+  { count = 1, item = "minecraft:stick", name = "stick", where = "split from planks" },
+]
+
+[[rows.things]]
+apart = true
+good = "The dark looks like dusk through them."
+have = [{ item = "artifacts:night_vision_goggles" }]
+id = "goggles"
+made = "Found, never made."
+name = "Night-vision goggles"
+
+[[rows.things]]
+apart = true
+good = "The dark shows me what's in it, dimly."
+have = [{ gift = "dark_sight" }]
+id = "dark_sight"
+made = "The Frost Walkers' shard."
+name = "Dark-sight"
+named_by = "had"
+
+[[rows]]
 appears = { has = [
   "getting_about/glider",
   "getting_about/hook",
   "getting_about/horn",
   "getting_about/horse",
+  "getting_about/horse_armour",
   "getting_about/stone",
 ] }
 id = "getting_about"
@@ -547,7 +619,20 @@ made = "Tamed, not made."
 make = "Tame a horse: climb on bareback again and again until it stops throwing you, then put a saddle on it"
 name = "A horse"
 needs = [
-  { count = 1, item = "minecraft:saddle", name = "saddle", where = "found in old chests" },
+  { count = 1, item = "minecraft:saddle", name = "saddle", where = "made at my bench from three leather and an iron ingot" },
+]
+
+[[rows.things]]
+good = "Takes the arrows and the teeth meant for my horse."
+have = [{ item = "minecraft:diamond_horse_armor" }, { item = "minecraft:golden_horse_armor" }, { item = "minecraft:iron_horse_armor" }]
+id = "horse_armour"
+jei = "minecraft:iron_horse_armor"
+made = "Made at my bench."
+make = "Make horse armour: a saddle and six iron ingots in a crafting grid, or gold ingots or diamonds for better"
+name = "Horse armour"
+needs = [
+  { count = 6, item = "minecraft:iron_ingot", name = "iron ingots", where = "smelted from ore in caves and mountains" },
+  { count = 1, item = "minecraft:saddle", name = "saddle", where = "made at my bench from three leather and an iron ingot" },
 ]
 
 [[rows.things]]
