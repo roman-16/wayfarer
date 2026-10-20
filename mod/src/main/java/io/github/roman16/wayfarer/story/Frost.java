@@ -76,7 +76,7 @@ public final class Frost {
     private static final String SNOWFIELD = "frost_snowfield_";
     private static final String ALONG = "frost_along";
     private static final String LAKE_TURN = "frost_lake_turn";
-    private static final String LAID = "frost_laid";
+    static final String LAID = "frost_laid";
     private static final String ROOF = "frost_roof";
     private static final String DOOR = "frost_door";
     private static final String HEARTH = "frost_hearth";

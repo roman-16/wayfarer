@@ -96,6 +96,11 @@ public final class StoryDev {
         private final String target;
         @Nullable
         private final Path save;
+        private final Map<String, String> answers;
+        @Nullable
+        private final String stone;
+        @Nullable
+        private final Runnable then;
         private final Map<UUID, GameType> modes = new HashMap<>();
         private BlockPos here;
         @Nullable
@@ -106,12 +111,19 @@ public final class StoryDev {
         private String moved;
         private int played;
 
-        private Run(CommandSourceStack source, @Nullable String target, @Nullable Path save, BlockPos here) {
+        private Run(CommandSourceStack source, @Nullable String target, @Nullable Path save, Way way, BlockPos here) {
             this.source = source;
             this.target = target;
             this.save = save;
+            this.answers = way.answers();
+            this.stone = way.stone();
+            this.then = way.then();
             this.here = here;
         }
+    }
+
+    record Way(Map<String, String> answers, @Nullable String stone, @Nullable Runnable then) {
+        private static final Way FIRST = new Way(Map.of(), null, null);
     }
 
     public static long seed() {
@@ -125,10 +137,10 @@ public final class StoryDev {
                         .requires(source -> source.hasPermission(OWNER))
                         .then(Commands.literal("build").then(Commands.argument("folder", StringArgumentType.string())
                                 .then(Commands.argument("step", StringArgumentType.greedyString()).executes(context -> begin(context.getSource(),
-                                        StringArgumentType.getString(context, "step"), Path.of(StringArgumentType.getString(context, "folder")))))))
-                        .then(Commands.literal("next").executes(context -> begin(context.getSource(), null, null)))
+                                        StringArgumentType.getString(context, "step"), Path.of(StringArgumentType.getString(context, "folder")), Way.FIRST)))))
+                        .then(Commands.literal("next").executes(context -> begin(context.getSource(), null, null, Way.FIRST)))
                         .then(Commands.literal("to").then(Commands.argument("step", StringArgumentType.greedyString())
-                                .executes(context -> begin(context.getSource(), StringArgumentType.getString(context, "step"), null))))
+                                .executes(context -> begin(context.getSource(), StringArgumentType.getString(context, "step"), null, Way.FIRST))))
                         .then(Commands.literal("side").then(Commands.argument("step", StringArgumentType.greedyString())
                                 .executes(context -> side(context.getSource(), StringArgumentType.getString(context, "step")))))
                         .then(Commands.literal("gift").then(Commands.argument("gift", StringArgumentType.word())
@@ -304,7 +316,7 @@ public final class StoryDev {
         run = null;
     }
 
-    private static int begin(CommandSourceStack source, @Nullable String target, @Nullable Path save) {
+    static int begin(CommandSourceStack source, @Nullable String target, @Nullable Path save, Way way) {
         MinecraftServer server = source.getServer();
         if (run != null) {
             source.sendFailure(Component.literal("story failed: it is already on its way to " + (run.target == null ? "the next step" : run.target)));
@@ -323,10 +335,13 @@ public final class StoryDev {
             }
             if (save == null && current.filter(active -> active.key().equals(target) && Steps.entered(active)).isPresent()) {
                 source.sendSuccess(() -> Component.literal("story: at " + target + ", where it already stood"), false);
+                if (way.then() != null) {
+                    way.then().run();
+                }
                 return 1;
             }
         }
-        run = new Run(source, target, save, server.getPlayerList().getPlayers().getFirst().blockPosition());
+        run = new Run(source, target, save, way, server.getPlayerList().getPlayers().getFirst().blockPosition());
         Talk.reset();
         current.filter(Steps::entered).ifPresent(active -> {
             run.moved = active.key();
@@ -408,13 +423,13 @@ public final class StoryDev {
                 if (step.spec().has("place") && !built(server, step.text("place"))) {
                     return false;
                 }
-                step.choices().stream().findFirst().ifPresent(choice -> Engine.choose(server, active.quest().id(), step.id(), choice));
+                answer(active).ifPresent(choice -> Engine.choose(server, active.quest().id(), step.id(), choice));
                 body(server, step.with()).ifPresent(at -> run.here = at);
             }
             case "bury" -> {
                 People.find(server, step.text("whom")).ifPresent(Entity::discard);
                 BlockPos sign = Prologue.grave(level);
-                String words = step.choices().stream().map(Story.Choice::stone).filter(Objects::nonNull).findFirst().orElse("");
+                String words = run.stone != null ? run.stone : step.choices().stream().map(Story.Choice::stone).filter(Objects::nonNull).findFirst().orElse("");
                 Prologue.engrave(level, sign, words);
                 progress.stone = words;
                 run.here = sign;
@@ -443,7 +458,7 @@ public final class StoryDev {
             case "shard" -> {
                 Optional<String> chosen = progress.choice(active.quest().id(), step.id());
                 Optional<Story.Choice> choice = chosen.flatMap(id -> step.choices().stream().filter(offered -> offered.id().equals(id)).findFirst())
-                        .or(() -> step.choices().stream().findFirst());
+                        .or(() -> answer(active));
                 if (chosen.isEmpty() && Engine.asking(progress, step)) {
                     choice.ifPresent(first -> Engine.choose(server, active.quest().id(), step.id(), first));
                 }
@@ -482,10 +497,10 @@ public final class StoryDev {
                 if (!built(server, step.text("at"))) {
                     return false;
                 }
-                progress.choices.put(active.quest().id() + "/" + step.id(), Duel.WON);
+                progress.choices.put(active.key(), outcome(active, Duel.WON));
                 run.here = Engine.at(server, step.text("at"));
             }
-            case "chase" -> progress.choices.put(active.quest().id() + "/" + step.id(), Chase.CAUGHT);
+            case "chase" -> progress.choices.put(active.key(), outcome(active, Chase.CAUGHT));
             case "board" -> {
                 if (!built(server, step.text("place"))) {
                     return false;
@@ -496,7 +511,7 @@ public final class StoryDev {
                 if (!built(server, step.text("place"))) {
                     return false;
                 }
-                progress.choices.put(active.quest().id() + "/" + step.id(), Escort.ARRIVED);
+                progress.choices.put(active.key(), outcome(active, Escort.ARRIVED));
                 run.here = Engine.at(server, step.text("place"));
             }
             case "locks" -> {
@@ -510,15 +525,15 @@ public final class StoryDev {
                 if (!built(server, SandSingers.LAIR)) {
                     return false;
                 }
-                progress.choices.put(active.quest().id() + "/" + step.id(), "spared");
+                progress.choices.put(active.key(), outcome(active, "spared"));
                 run.here = Engine.at(server, SandSingers.LAIR);
             }
             case "sea" -> {
-                progress.choices.put(active.quest().id() + "/" + step.id(), "held");
+                progress.choices.put(active.key(), outcome(active, "held"));
                 Clock.jump(level, Steps.DAWN, clock.road());
             }
             case "visit" -> {
-                step.choices().stream().findFirst().ifPresent(choice -> Engine.choose(server, active.quest().id(), step.id(), choice));
+                answer(active).ifPresent(choice -> Engine.choose(server, active.quest().id(), step.id(), choice));
                 run.here = Engine.at(server, Caravan.NAME);
             }
             case "caravan" -> {
@@ -542,6 +557,16 @@ public final class StoryDev {
         }
         Talk.reset();
         return true;
+    }
+
+    private static Optional<Story.Choice> answer(Engine.Active active) {
+        String answered = run.answers.get(active.key());
+        List<Story.Choice> offered = active.step().choices();
+        return offered.stream().filter(choice -> choice.id().equals(answered)).findFirst().or(() -> offered.stream().findFirst());
+    }
+
+    private static String outcome(Engine.Active active, String otherwise) {
+        return run.answers.getOrDefault(active.key(), otherwise);
     }
 
     private static void learn(MinecraftServer server, Engine.Active active) {
@@ -605,7 +630,11 @@ public final class StoryDev {
         }
         Engine.active(server).stream().filter(open -> !Steps.entered(open) && Engine.pursued(server, open.quest())).forEach(open -> Steps.enter(server, open));
         say("story: at " + active.key() + ", after " + steps(run.played));
+        Runnable then = run.then;
         finish(server);
+        if (then != null) {
+            then.run();
+        }
     }
 
     private static void keep(MinecraftServer server, Engine.Active active) {

@@ -381,7 +381,7 @@ public final class TentPitch {
                 .filter(tent -> !tent.place().dimension().equals(at.dimension()) || tent.place().pos().distSqr(at.pos()) > (double) away * away).toList(), tents);
     }
 
-    private static boolean recall(ServerPlayer player, List<Joining.Pitched> far, List<Joining.Pitched> tents) {
+    static boolean recall(ServerPlayer player, List<Joining.Pitched> far, List<Joining.Pitched> tents) {
         MinecraftServer server = player.server;
         boolean brought = false;
         for (Joining.Pitched tent : far) {

@@ -11,6 +11,8 @@ import baritone.api.pathing.goals.GoalComposite;
 import baritone.api.pathing.goals.GoalNear;
 import baritone.api.pathing.goals.GoalRunAway;
 import baritone.api.pathing.goals.GoalXZ;
+import baritone.api.pathing.path.IPathExecutor;
+import baritone.api.utils.BetterBlockPos;
 import io.github.roman16.wayfarer.client.Conversation;
 import io.github.roman16.wayfarer.story.Banners;
 import io.github.roman16.wayfarer.story.Tasks;
@@ -101,6 +103,12 @@ final class Legs {
     private static final int DETOUR_TICKS = 40;
     private static final int DETOUR_REACH = 6;
     private static final double HALF_BLOCK = 0.5;
+    private static final double LEAP_NEAR = 2;
+    private static final String HERE = "here";
+    private static final int PIT_RADIUS = 16;
+    private static final int PIT_STEP = 4;
+    private static final int PIT_SAMPLES = 16;
+    private static final int PIT_BLOCKS = 8;
     private static final double PRESS_MARGIN = 0.1;
     private static final double CLEAR_BLOCKS = 1.5;
     private static final double CLEAR_NEAR = 0.75;
@@ -126,6 +134,8 @@ final class Legs {
     private static Vec3 shore;
     @Nullable
     private static Vec3 cave;
+    @Nullable
+    private static Vec3 brink;
     private static boolean configured;
     @Nullable
     private static Action action;
@@ -162,7 +172,10 @@ final class Legs {
         BlockPos spot;
         final Set<BlockPos> hollow = new HashSet<>();
         boolean swims;
+        boolean loose;
         boolean burrows;
+        boolean stand;
+        boolean leaps;
         final int slot;
         @Nullable
         Entity foe;
@@ -227,6 +240,7 @@ final class Legs {
                 BaritoneAPI.getSettings().allowBreak.value = false;
                 BaritoneAPI.getSettings().allowPlace.value = false;
                 if (words.length == 1) {
+                    go.loose = true;
                     int blocks = Integer.parseInt(words[0]);
                     float yaw = player.getYRot() * Mth.DEG_TO_RAD;
                     go.target = new GoalXZ(Mth.floor(player.getX() - Mth.sin(yaw) * blocks), Mth.floor(player.getZ() + Mth.cos(yaw) * blocks));
@@ -240,8 +254,10 @@ final class Legs {
                 }
                 go.swims = shore != null && shore.distanceTo(player.position()) <= SHORE_BLOCKS;
                 go.burrows = cave != null && cave.distanceTo(player.position()) <= SHORE_BLOCKS;
+                go.leaps = brink != null && brink.distanceTo(player.position()) <= SHORE_BLOCKS;
                 shore = null;
                 cave = null;
+                brink = null;
                 go.arrival = go.spot == null ? around(go.target) : new GoalBlock(go.spot);
                 go.surface = go.spot == null;
                 go.goal = segment(minecraft, go);
@@ -283,15 +299,18 @@ final class Legs {
                 baritone.getMineProcess().mine(gather.count, blocks.toArray(Block[]::new));
             }
             case "fight" -> {
-                Predicate<Entity> wanted = (argument.isBlank() ? (Predicate<Entity>) Senses::hostile : matching(argument))
+                boolean stand = argument.strip().equals(HERE) || argument.strip().endsWith(" " + HERE);
+                String kind = stand ? argument.strip().substring(0, argument.strip().length() - HERE.length()).strip() : argument;
+                Predicate<Entity> wanted = (kind.isBlank() ? (Predicate<Entity>) Senses::hostile : matching(kind))
                         .and(entity -> entity instanceof LivingEntity living && living.isAlive() && player.hasLineOfSight(entity));
                 Optional<Entity> target = nearest(minecraft, wanted, FIGHT_BLOCKS);
-                if (target.isEmpty() && argument.isBlank()) {
+                if (target.isEmpty() && kind.isBlank()) {
                     throw new IllegalArgumentException("nothing to fight is in sight within " + (int) FIGHT_BLOCKS + " blocks");
                 }
-                Action fight = new Action(Kind.FIGHT, target.map(Senses::describe).orElse(argument.strip()), player);
+                Action fight = new Action(Kind.FIGHT, target.map(Senses::describe).orElse(kind.strip()), player);
                 fight.foe = target.orElse(null);
-                fight.wanted = argument.isBlank() ? null : wanted;
+                fight.wanted = kind.isBlank() ? null : wanted;
+                fight.stand = stand;
                 BaritoneAPI.getSettings().allowBreak.value = false;
                 BaritoneAPI.getSettings().allowPlace.value = false;
                 action = fight;
@@ -353,6 +372,14 @@ final class Legs {
     @Nullable
     static Kind kind() {
         return action == null ? null : action.kind;
+    }
+
+    static String doing() {
+        if (action == null) {
+            return "standing";
+        }
+        String kind = action.kind.name().toLowerCase(Locale.ROOT);
+        return action.digging ? kind + ", digging and climbing" : kind;
     }
 
     static boolean engaged() {
@@ -459,6 +486,11 @@ final class Legs {
                     yield stop(minecraft, "stopped: the way goes underground here, under " + roof + " blocks of rock and earth; go again to take it", null);
                 }
                 current.skyTicks = roof >= UNDERGROUND_BLOCKS ? 0 : current.skyTicks + 1;
+                Optional<String> leap = current.leaps || !player.onGround() ? Optional.empty() : leap(player, baritone);
+                if (leap.isPresent()) {
+                    brink = player.position();
+                    yield stop(minecraft, "stopped: " + leap.get() + "; go again to jump", null);
+                }
                 if (current.digging && bridging(minecraft, player, current.hollow)) {
                     yield stop(minecraft, null, "go failed: the way on builds out over a drop at " + at.toShortString() + "; step back and find another way");
                 }
@@ -550,7 +582,7 @@ final class Legs {
         if (current.ticks - current.movedAt > STILL_CLOCK_TICKS) {
             return stop(minecraft, "stopped: the clock stands still at " + time, null);
         }
-        double pace = minecraft.level.getDayTimePerTick();
+        double pace = minecraft.level.getDayTimePerTick() < 0 ? 1 : minecraft.level.getDayTimePerTick();
         long left = Math.floorMod(PART_STARTS.get(current.until) - dayTime, TICKS_PER_DAY);
         long minutes = Math.round(left / Math.max(pace, 1e-3) / TICKS_PER_SECOND / SECONDS_PER_MINUTE);
         if (current.ticks >= SLOW_CLOCK_TICKS && pace < SLOW_CLOCK && minutes > LONG_WAIT_MINUTES) {
@@ -719,7 +751,7 @@ final class Legs {
         if (Body.deep(target) && !Body.deep(player)) {
             return stop(minecraft, "stopped: " + current.what + " is in deep water", null);
         }
-        Body.strike(minecraft, target, current.ticks);
+        Body.strike(minecraft, target, current.ticks, current.stand);
         return new Tick(true, null, null);
     }
 
@@ -830,18 +862,68 @@ final class Legs {
         if (!minecraft.level.getChunkSource().hasChunk(x >> 4, z >> 4)) {
             return go.arrival;
         }
+        Optional<BlockPos> floor = floor(minecraft, x, z).map(found -> level(minecraft, found));
+        return floor.<Goal>map(found -> new GoalNear(found.above(), SEGMENT_NEAR)).orElse(go.arrival);
+    }
+
+    private static Optional<String> leap(LocalPlayer player, IBaritone baritone) {
+        IPathExecutor executing = baritone.getPathingBehavior().getCurrent();
+        if (executing == null) {
+            return Optional.empty();
+        }
+        List<BetterBlockPos> way = executing.getPath().positions();
+        for (int step = Math.max(executing.getPosition(), 0); step + 1 < way.size(); step++) {
+            BetterBlockPos from = way.get(step);
+            if (Vec3.atBottomCenterOf(from).distanceTo(player.position()) > LEAP_NEAR) {
+                return Optional.empty();
+            }
+            BetterBlockPos to = way.get(step + 1);
+            if (from.getY() - to.getY() > SAFE_FALL) {
+                return Optional.of("the way jumps " + (from.getY() - to.getY()) + " blocks down into water at " + to.getX() + ", " + to.getY() + ", " + to.getZ());
+            }
+        }
+        return Optional.empty();
+    }
+
+    private static Optional<BlockPos> floor(Minecraft minecraft, int x, int z) {
         BlockPos.MutableBlockPos below = new BlockPos.MutableBlockPos(x, minecraft.level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1, z);
         while (below.getY() > minecraft.level.getMinBuildHeight() && canopy(minecraft.level.getBlockState(below))) {
             below.move(Direction.DOWN);
         }
         BlockState floor = minecraft.level.getBlockState(below);
         if (below.getY() <= minecraft.level.getMinBuildHeight() || floor.is(Blocks.LAVA) || floor.is(BlockTags.FIRE)) {
-            return go.arrival;
+            return Optional.empty();
         }
-        return new GoalNear(below.above(), SEGMENT_NEAR);
+        return Optional.of(below.immutable());
+    }
+
+    private static BlockPos level(Minecraft minecraft, BlockPos floor) {
+        List<BlockPos> ring = new ArrayList<>();
+        for (int dx = -PIT_RADIUS; dx <= PIT_RADIUS; dx += PIT_STEP) {
+            for (int dz = -PIT_RADIUS; dz <= PIT_RADIUS; dz += PIT_STEP) {
+                int x = floor.getX() + dx;
+                int z = floor.getZ() + dz;
+                if ((dx != 0 || dz != 0) && minecraft.level.getChunkSource().hasChunk(x >> 4, z >> 4)) {
+                    floor(minecraft, x, z).ifPresent(ring::add);
+                }
+            }
+        }
+        if (ring.size() < PIT_SAMPLES) {
+            return floor;
+        }
+        int median = ring.stream().mapToInt(BlockPos::getY).sorted().skip(ring.size() / 2).findFirst().orElse(floor.getY());
+        if (floor.getY() >= median - PIT_BLOCKS) {
+            return floor;
+        }
+        return ring.stream().filter(spot -> Math.abs(spot.getY() - median) <= PIT_STEP)
+                .min(Comparator.comparingDouble(spot -> spot.distSqr(floor))).orElse(floor);
     }
 
     private static Goal surface(Minecraft minecraft, Action go) {
+        if (go.loose) {
+            return floor(minecraft, go.target.getX(), go.target.getZ()).map(found -> level(minecraft, found))
+                    .<Goal>map(found -> new GoalNear(found.above(), SEGMENT_NEAR)).orElse(go.arrival);
+        }
         List<Goal> spots = new ArrayList<>();
         for (BlockPos column : Stream.concat(Stream.of(BlockPos.ZERO), Direction.Plane.HORIZONTAL.stream().map(side -> BlockPos.ZERO.relative(side)))
                 .map(step -> new BlockPos(go.target.getX() + step.getX(), 0, go.target.getZ() + step.getZ())).toList()) {

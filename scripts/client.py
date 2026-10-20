@@ -63,7 +63,6 @@ FRAMING = 1.1
 NOTE = re.compile(r"([a-z]+): (.*)")
 STATE = "state: "
 NOW = "now: "
-CHECKPOINT = "checkpoint: "
 KEPT = "story: kept "
 FAILED_AT_ONCE = "` failed at once: "
 SIDES = {"front": (0, 0, 1), "side": (1, 0, 0), "above": (0, 1, 0.001), "three-quarters": (0.6, 1.0, 0.6)}
@@ -121,6 +120,8 @@ def wait_done(timeout, before):
             text = done.read_text()
             done.unlink()
             return text
+        if (DRIVER / "keep.txt").exists():
+            keep(DRIVER / "keep.txt")
         new = sorted(crashes(CRASHES) - before)
         if new:
             sys.exit(f"the client crashed; report in {new[0]}\n{new[0].read_text()[:4000]}")
@@ -203,7 +204,17 @@ def release_screen():
 
 def launch(world, timeout, visible, mode, state, rebuild, seed, processors=None, size=SCREEN_SIZE, save=None):
     DRIVER.mkdir(parents=True, exist_ok=True)
-    for stale in ("abort", "commands.txt", "done.txt", "game.pid", "launched.json", "quit", "world.json"):
+    for stale in (
+        "abort",
+        "commands.txt",
+        "done.txt",
+        "game.pid",
+        "keep.txt",
+        "kept.txt",
+        "launched.json",
+        "quit",
+        "world.json",
+    ):
         (DRIVER / stale).unlink(missing_ok=True)
     release_screen()
     shutil.rmtree(SCREENSHOTS, ignore_errors=True)
@@ -415,16 +426,17 @@ def batch(steps, timeout):
     partial = DRIVER / "commands.tmp"
     partial.write_text("\n".join(steps) + "\n")
     partial.replace(DRIVER / "commands.txt")
-    return "\n".join(kept(line) for line in wait_done(timeout, before).splitlines())
+    return wait_done(timeout, before)
 
 
-def kept(line):
-    if not line.startswith(CHECKPOINT):
-        return line
-    folder, _, where = line.removeprefix(CHECKPOINT).partition(" | ")
+def keep(request):
+    folder, _, where = request.read_text().partition(" | ")
     world = Path(folder)
     taken = drive.keep(world, CHECKPOINTS / world.name, where)
-    return f"{CHECKPOINT}checkpoint {taken['number']}: {where}"
+    partial = DRIVER / "kept.tmp"
+    partial.write_text(f"checkpoint {taken['number']}: {where}")
+    request.unlink()
+    partial.replace(DRIVER / "kept.txt")
 
 
 def rewind(step, timeout):

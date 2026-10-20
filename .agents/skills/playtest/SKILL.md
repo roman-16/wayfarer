@@ -1,6 +1,6 @@
 ---
 name: playtest
-description: The user's own play of Wayfarer - the in-game checklist for what tests and pictures cannot show (shaders, sound, the HUD and screens, halls, nights, flight and balance), how a blind play by friends runs, recording the exaroton server while they play, and writing the results back into balance.toml, the right config or design/. Use when the finish skill hands the user what to play, when the user asks what to playtest, before a blind play, or when the user asks to record, monitor or log the exaroton server.
+description: The user's own play of Wayfarer - the in-game checklist for what tests and pictures cannot show (shaders, sound, the HUD and screens, halls, nights, flight and balance), how a blind play by friends runs, recording the exaroton server while they play, and writing the results back into balance.toml, the right config or design/. Use when the finish skill hands the user what to play, when the user asks what to playtest, before a blind play, or when the user asks to record, monitor or log the exaroton server, or to carry its road into a fresh world.
 ---
 
 # Playtest
@@ -156,7 +156,7 @@ At the bar and at the end of each act, friends who never read `design/` play on 
 
 Run it in the foreground with no timeout: it records until the user presses Escape, which kills it and ends the turn; never start it in the background. It prints one line per status change, stream start and reconnect, and waits through an offline server until it boots.
 
-The recorder only reads. Never send console commands, and never call `start`, `stop`, `restart`, `command`, `extend-time`, `logs/share` or any `POST`, `PUT` or `DELETE` endpoint, nor any websocket message but a stream `start`; exaroton makes `start`, `stop` and `restart` plain `GET`s, so reading is not safe by method alone.
+The recorder only reads. Never send console commands, and never call `start`, `stop`, `restart`, `command`, `extend-time`, `logs/share` or any `POST`, `PUT` or `DELETE` endpoint, nor any websocket message but a stream `start`; exaroton makes `start`, `stop` and `restart` plain `GET`s, so reading is not safe by method alone. The one thing that writes to the server is `just carry <server> upload` (Carry the road to a new world), and only after the user's go.
 
 | File | Holds |
 |---|---|
@@ -175,3 +175,15 @@ Start with the play record: `just play-report exaroton/<session>` prints each st
 Then read what the user's own game wrote while they played: the Prism Launcher instance at `~/.local/share/PrismLauncher/instances/Wayfarer-<version>/minecraft/` keeps `crash-reports/`, `logs/latest.log` and the gzipped logs before it. Every crash there is a finding of its own, fixed at its cause before the user's notes; the log's story lines (`story music`, `sound`, `Tollbridge stands`, deaths, `[CHAT]`) time what the notes describe, so a "too fast" or "came too early" gets its seconds from the log, not a guess.
 
 Every number the user wants changed goes to `balance.toml`, or to the mod's config in `pack/config` when it is another mod's number. Worldgen numbers (hall and stronghold distances, structure spread) only change new chunks: test them in a fresh world.
+
+## Carry the road to a new world
+
+After a playtest, when the user asks to carry the road, or to play on in a fresh world after a change to the land, run `just carry <server>` in the foreground with a generous timeout while the server is offline. It changes nothing on exaroton:
+
+1. It downloads what the carry uses of the server's world into `exaroton/<YYYY-MM-DD_HH-MM>-carry/old/`: the players, the world's data without Lootr's, the tents' insides, the land and the rivers' data. exaroton hands out one file a request and slows a fast caller down, so this takes most of the carry's 15 minutes or so.
+2. It opens that world on the dev server with every player brought in by their id, and packs what stands in the world into its owner, as the player's own actions would: every pitched tent into the inventory with everything in it, every grave taken back, their own stone taken up, and the caravan's horse into the caravan. The player's last fire, respawn point, stillness and touched waystones are forgotten.
+3. It grows a new world from a random seed (another one, up to four, when the land cannot hold the story) and plays it to the step the main story stands at, with the team's own answers and the stranger's stone as they wrote it, then lays in what the team knows (choices, talks, the journal, rewards and who took them, gifts, trust, the halls taken, deeds, the captains' pages handed out, the dice and the smith's work) and every player's things (player data, backpacks, tents' insides, horses bound to a horn) into `exaroton/<...>-carry/new/`.
+
+Show the user its summary, then ask with the questionnaire before `just carry <server> upload`, which writes to the server and needs that go every time. It refuses unless the server is offline, its world unchanged since the download and its mods those of `build/server`, the server pack `just pack` builds and the user puts on the server; it uploads the world as `world-<YYYY-MM-DD_HH-MM>`, switches `level-name` to it, keeps the world before on the server as the way back, and removes the one before that.
+
+What the team meets on joining: everyone stands where the step begins, at its hour, and every step under way, main or side, begins again; a grave's things that found no room stay behind, named in the summary, and so do boats, ships, aircraft, pets and horses not bound to a horn that stood in the world; the new world starts its own play record; Distant Horizons and JourneyMap start fresh on every machine by themselves, since the seed and the world's id are new.

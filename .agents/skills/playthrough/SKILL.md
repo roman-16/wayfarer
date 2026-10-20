@@ -44,8 +44,8 @@ While playing, the agent is the player and nobody else.
 | Allowed: what a player has | Never while playing: the designer's tools |
 |---|---|
 | `go <blocks>`, `go <x> <z>` only for coordinates the screen showed, `follow <name or kind>`, `turn <degrees> [pitch]`, `face` | Commands, `/tp`, `fly`, `story`, `state`, `inspect`, `find`, `hud`, `digest`, `still`, `/tick` |
-| `gather <block> <count>`, `fight [kind]`, `eat`, `use`, `interact`, `hold`, `key`, `sneak`, `click` (with `shift` for a shift-click), `point`, `press`, `type`, `scale` | Reading `design/`, `story/*.toml`, the code or the logs to know what to do |
-| `craft <item> [count]`, `wear <item>`, `hotbar <item> [slot]`, `put <item> [<x> <y> <z>]`, `dig <x> <y> <z>`, `pitch`, `embark`, `row <x> <z>`, `dismount`, `idle until <time of day>`, `listen`, `fish [count]`, `scroll <x> <y> <lines>`, items named as the screen names them | |
+| `gather <block> <count>`, `fight [kind] [here]`, `eat`, `use`, `interact`, `hold`, `key`, `sneak`, `click` (with `shift` for a shift-click), `point`, `press`, `type`, `scale` | Reading `design/`, `story/*.toml`, the code or the logs to know what to do |
+| `craft <item> [count]`, `wear <item>`, `hotbar <item> [slot]`, `put <item> [<x> <y> <z>]`, `dig <x> <y> <z>`, `pitch`, `embark`, `ember` (hold up the ember and turn all round), `row <x> <z>`, `dismount`, `idle until <time of day>`, `listen`, `fish [count]`, `scroll <x> <y> <lines>`, items named as the screen names them | |
 | `shot`, `screen` (what is on it, the slots of a container), `pos` for the log's own bookkeeping only | F3's coordinates for finding the way: the pack's compass and ember are how a player finds it |
 | The band's and chat's lines the driver returns, read as the screen shows them; `seen`, `heard` and `hurt`, the HUD, the subtitles and the hits as a player perceives them; a `check` line is the dev code's story check, a finding for the log that the player never saw | Teleporting past a walk, skipping a talk, `/time`, `/weather` |
 | The run's own: `checkpoint` and `rewind`, as Deaths says; `cheat <command>`, for a workaround only | |

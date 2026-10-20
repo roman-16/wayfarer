@@ -262,7 +262,7 @@ final class Senses {
         StreamSupport.stream(minecraft.level.entitiesForRendering().spliterator(), false)
                 .filter(entity -> entity instanceof LivingEntity && !(entity instanceof ArmorStand) && entity != player && entity.isAlive()
                         && inView(minecraft, entity.getBoundingBox().getCenter())
-                        && (entity.distanceTo(player) <= AROUND_BLOCKS && visible(minecraft, entity) || entity.isCurrentlyGlowing() && entity.distanceTo(player) <= GLOW_BLOCKS))
+                        && (entity.distanceTo(player) <= AROUND_BLOCKS && visible(minecraft, entity) || minecraft.shouldEntityAppearGlowing(entity) && entity.distanceTo(player) <= GLOW_BLOCKS))
                 .forEach(entity -> {
                     boolean through = !(entity.distanceTo(player) <= AROUND_BLOCKS && visible(minecraft, entity));
                     sighted.add(new Sighted(entity.distanceTo(player), describe(entity) + ", " + Math.round(entity.distanceTo(player)) + " blocks "
@@ -273,13 +273,13 @@ final class Senses {
                 });
         StreamSupport.stream(minecraft.level.entitiesForRendering().spliterator(), false)
                 .filter(entity -> !(entity instanceof LivingEntity) && !(entity instanceof Interaction) && !(entity instanceof HangingEntity) && entity.isPickable()
-                        && !entity.isCurrentlyGlowing() && entity != player.getVehicle() && entity.distanceTo(player) <= AROUND_BLOCKS
+                        && !minecraft.shouldEntityAppearGlowing(entity) && entity != player.getVehicle() && entity.distanceTo(player) <= AROUND_BLOCKS
                         && inView(minecraft, entity.getBoundingBox().getCenter()) && visible(minecraft, entity))
                 .forEach(entity -> sighted.add(new Sighted(entity.distanceTo(player), describe(entity) + ", " + Math.round(entity.distanceTo(player)) + " blocks "
                         + side(player, entity.position()) + height(entity.getBoundingBox().getCenter().y - player.getEyeY()))));
         Vec3 eyes = player.getEyePosition();
         StreamSupport.stream(minecraft.level.entitiesForRendering().spliterator(), false)
-                .filter(entity -> !(entity instanceof LivingEntity) && entity.isCurrentlyGlowing() && entity.distanceTo(player) <= GLOW_BLOCKS
+                .filter(entity -> !(entity instanceof LivingEntity) && minecraft.shouldEntityAppearGlowing(entity) && entity.distanceTo(player) <= GLOW_BLOCKS
                         && inView(minecraft, entity.getBoundingBox().getCenter()))
                 .forEach(entity -> {
                     Vec3 centre = entity.getBoundingBox().getCenter();
@@ -383,7 +383,7 @@ final class Senses {
             return false;
         }
         return entity.distanceTo(player) <= DARK_BLOCKS || minecraft.level.getMaxLocalRawBrightness(BlockPos.containing(entity.getEyePosition())) >= DARK_LIGHT
-                || entity.isCurrentlyGlowing() || entity.isOnFire();
+                || minecraft.shouldEntityAppearGlowing(entity) || entity.isOnFire();
     }
 
     static boolean inView(Minecraft minecraft, Vec3 at) {

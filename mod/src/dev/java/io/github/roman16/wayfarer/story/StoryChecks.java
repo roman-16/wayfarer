@@ -251,7 +251,7 @@ public final class StoryChecks {
     }
 
     private static void fail(MinecraftServer server, String why) {
-        server.getPlayerList().broadcastSystemMessage(Component.literal("story check failed: " + why).withStyle(ChatFormatting.RED), false);
+        server.getPlayerList().broadcastSystemMessage(Component.literal("story check: " + why).withStyle(ChatFormatting.RED), false);
     }
 
     @SubscribeEvent

@@ -137,6 +137,11 @@ public final class Tents {
     }
 
     public static void eject(ServerPlayer player) {
+        out(player);
+        Talk.tell(player, Component.translatable("wayfarer.night.ejected"));
+    }
+
+    public static void out(ServerPlayer player) {
         Optional<Outside> outside = outside(player);
         if (outside.isPresent()) {
             Vec3 at = outside.get().at();
@@ -146,7 +151,6 @@ public final class Tents {
             BlockPos spawn = overworld.getSharedSpawnPos();
             player.teleportTo(overworld, spawn.getX() + 0.5, spawn.getY(), spawn.getZ() + 0.5, player.getYRot(), player.getXRot());
         }
-        Talk.tell(player, Component.translatable("wayfarer.night.ejected"));
     }
 
     private static Stream<BlockEntity> doors(ServerLevel tent, ChunkPos center) {

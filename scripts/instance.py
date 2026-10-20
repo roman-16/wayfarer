@@ -260,6 +260,8 @@ def dev_server(target, mode):
     voice.parent.mkdir(parents=True, exist_ok=True)
     voice.write_text(f"port={DEV_SERVER_PORTS['voice']}\n")
     world = {"level-name": f"world-{mode}"} if mode in ("far", "lean") else {}
+    if os.environ.get("WAYFARER_WORLD"):
+        world["level-name"] = os.environ["WAYFARER_WORLD"]
     if os.environ.get("WAYFARER_SEED"):
         world["level-seed"] = os.environ["WAYFARER_SEED"]
     state = os.environ.get("WAYFARER_STATE")

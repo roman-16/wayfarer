@@ -49,7 +49,7 @@ public final class Mine {
     private static final String LOW = "frost_mine_low";
     private static final String HIGH = "frost_mine_high";
     private static final String TURN = "frost_mine_turn";
-    private static final String LAID = "frost_mine_laid";
+    static final String LAID = "frost_mine_laid";
     private static final String CART_CLUE = "ore_cart";
     private static final String RUTS_CLUE = "ore_ruts";
     private static final String RUTS = "frost_mine_ruts";

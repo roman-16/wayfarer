@@ -98,7 +98,7 @@ public final class Waystone {
         }
     }
 
-    private static boolean mine(ServerPlayer player, net.blay09.mods.waystones.api.Waystone waystone) {
+    static boolean mine(ServerPlayer player, net.blay09.mods.waystones.api.Waystone waystone) {
         return waystone.getOrigin() == WaystoneOrigin.PLAYER && player.getUUID().equals(waystone.getOwnerUid());
     }
 
@@ -149,7 +149,7 @@ public final class Waystone {
         }
     }
 
-    private static void takeUp(ServerPlayer player, net.blay09.mods.waystones.api.Waystone waystone) {
+    static void takeUp(ServerPlayer player, net.blay09.mods.waystones.api.Waystone waystone) {
         ServerLevel level = player.server.getLevel(waystone.getDimension());
         if (level == null) {
             return;

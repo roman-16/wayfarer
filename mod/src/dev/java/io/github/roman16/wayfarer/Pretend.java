@@ -9,9 +9,11 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.UuidArgument;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.Connection;
 import net.minecraft.network.PacketSendListener;
@@ -60,7 +62,10 @@ public final class Pretend {
         event.getDispatcher().register(Commands.literal(Wayfarer.MODID)
                 .then(Commands.literal("pretend")
                         .requires(source -> source.hasPermission(OWNER))
-                        .then(Commands.literal("join").then(name(Pretend::join)))
+                        .then(Commands.literal("join").then(Commands.argument("name", StringArgumentType.word())
+                                .executes(context -> join(context.getSource(), StringArgumentType.getString(context, "name"), null))
+                                .then(Commands.argument("id", UuidArgument.uuid()).executes(context -> join(context.getSource(),
+                                        StringArgumentType.getString(context, "name"), UuidArgument.getUuid(context, "id"))))))
                         .then(Commands.literal("leave").then(name(Pretend::leave)))
                         .then(Commands.literal("respawn").then(name(Pretend::respawn)))
                         .then(Commands.literal("answer").then(Commands.argument("name", StringArgumentType.word())
@@ -98,17 +103,17 @@ public final class Pretend {
                 .executes(context -> action.run(context.getSource(), StringArgumentType.getString(context, "name")));
     }
 
-    private static int join(CommandSourceStack source, String name) {
+    private static int join(CommandSourceStack source, String name, @Nullable UUID id) {
         MinecraftServer server = source.getServer();
         if (!StringUtil.isValidPlayerName(name)) {
             source.sendFailure(Component.literal("pretend failed: " + name + " is not a valid player name: up to 16 letters, digits and underscores"));
             return 0;
         }
-        if (server.getPlayerList().getPlayerByName(name) != null) {
+        if (server.getPlayerList().getPlayerByName(name) != null || id != null && server.getPlayerList().getPlayer(id) != null) {
             source.sendFailure(Component.literal("pretend failed: " + name + " is already online"));
             return 0;
         }
-        GameProfile profile = new GameProfile(UUIDUtil.createOfflinePlayerUUID(name), name);
+        GameProfile profile = new GameProfile(id == null ? UUIDUtil.createOfflinePlayerUUID(name) : id, name);
         ServerPlayer player = new ServerPlayer(server, server.overworld(), profile, SEEN);
         Silent connection = new Silent(server, name);
         new EmbeddedChannel(connection);

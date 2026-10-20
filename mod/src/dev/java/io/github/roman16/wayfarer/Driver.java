@@ -153,6 +153,8 @@ public final class Driver {
     private static final Set<String> LOOKING = Set.of("log", "pos", "screen", "shot");
     private static final String STOPPED = "stopped:";
     private static final long CHECKPOINT_TICKS = 2048;
+    private static final long KEEP_CHECK_MILLIS = 128;
+    private static final long KEEP_LIMIT_NANOS = 64_000_000_000L;
     private static final long TALK_QUIET_TICKS = 200;
     private static final int RECENT_HURT_TICKS = 100;
     private static final double SAFE_BLOCKS = 16;
@@ -161,7 +163,7 @@ public final class Driver {
     private static final long SEED = 20260929L;
     private static final String DISTANT_HORIZONS = "distanthorizons";
     private static final Pattern FAILED = Pattern.compile("^[^:<]+ failed: ");
-    private static final String STORY_CHECK = "story check failed: ";
+    private static final String STORY_CHECK = "story check: ";
     private static final Pattern AT_BLOCK = Pattern.compile(" at -?\\d+, -?\\d+, -?\\d+");
     private static final int FIND_LIMIT = 20;
     private static final int FIND_RADIUS = 32;
@@ -189,17 +191,20 @@ public final class Driver {
     private static final int LAUNCH_BLOCKS = 4;
     private static final double LAUNCH_CLEAR = 2;
     private static final int DIG_TICKS = 400;
+    private static final int LAST_SECONDS = 8;
+    private static final int SECOND_TICKS = 20;
     private static final int WAY_CLEARS = 4;
     private static final float SOFT_HARDNESS = 0.75f;
     private static final int LAUNCH_TICKS = 40;
     private static final int STEP_IN_TICKS = 200;
     private static final int TAKE_BOAT_TICKS = 100;
+    private static final int SHORE_REACH = 2;
     private static final int SWING_TICKS = 4;
     private static final int PICKUP_TICKS = 20;
     private static final double WATER_TOP = 0.9;
     private static final String EXPERIMENTAL_WARNING = "selectWorld.backupQuestion.experimental";
     private static final String LOAD_WITHOUT_BACKUP = "selectWorld.backupJoinSkipButton";
-    private static final Set<String> PLAYER_STEPS = Set.of("beside", "cheat", "clear", "craft", "dig", "dismount", "distance", "eat", "embark", "fight", "fish", "fly", "follow",
+    private static final Set<String> PLAYER_STEPS = Set.of("beside", "cheat", "clear", "craft", "dig", "dismount", "distance", "eat", "embark", "ember", "fight", "fish", "fly", "follow",
             "gather", "go", "hold", "hotbar", "hud", "idle", "inspect", "interact", "key", "listen", "panorama", "person", "pitch", "place", "put", "row", "sky", "spawn", "state", "story",
             "turn", "wear", "workshop");
     private static final int SLOT_MIDDLE = 8;
@@ -231,6 +236,8 @@ public final class Driver {
     private static boolean turns;
     private static boolean stopping;
     private static boolean mourned;
+    private static volatile boolean keeping;
+    private static final Deque<String> lastSeconds = new ArrayDeque<>();
     private static boolean checked;
     private static long lastCheckpoint = -1;
     private static long talkedAt = -TALK_QUIET_TICKS;
@@ -331,6 +338,9 @@ public final class Driver {
                 stopBatch(folder, reason);
             }
             return;
+        }
+        if (until != null && pending == null && turns && due(minecraft) && safe(minecraft)) {
+            checkpoint(minecraft);
         }
         if (pending != null) {
             if (!pending.isDone()) {
@@ -466,7 +476,7 @@ public final class Driver {
     }
 
     public static boolean betweenTurns() {
-        return turns && !running;
+        return turns && (!running || keeping);
     }
 
     public static boolean panoramic() {
@@ -651,10 +661,6 @@ public final class Driver {
         stepped = false;
         stopping = false;
         checked = false;
-        IntegratedServer server = Minecraft.getInstance().getSingleplayerServer();
-        if (server != null) {
-            server.execute(() -> server.getAllLevels().forEach(level -> level.noSave = false));
-        }
         progressed = System.nanoTime();
         draw(Minecraft.getInstance(), true);
     }
@@ -862,6 +868,7 @@ public final class Driver {
 
     private static boolean body(Minecraft minecraft) {
         Senses.tick(minecraft);
+        keepTrack(minecraft);
         if (minecraft.screen instanceof DeathScreen) {
             mourn(minecraft);
         }
@@ -899,8 +906,27 @@ public final class Driver {
         }
         mourned = true;
         note("death: " + (minecraft.screen instanceof DeathScreen dead ? causeOfDeath(dead) : "you died"));
+        lastSeconds.forEach(line -> note("before: " + line));
+        lastSeconds.clear();
+        if (ModList.get().isLoaded(BARITONE)) {
+            Legs.chatter().forEach(line -> note("baritone: " + line));
+        }
         stopping = true;
         waiting = 0;
+    }
+
+    private static void keepTrack(Minecraft minecraft) {
+        LocalPlayer player = minecraft.player;
+        if (!player.isAlive() || player.tickCount % SECOND_TICKS != 0) {
+            return;
+        }
+        String acting = ModList.get().isLoaded(BARITONE) ? (Body.doing().isEmpty() ? Legs.doing() : Body.doing()) : "";
+        BlockPos at = player.blockPosition();
+        lastSeconds.addLast("%d, %d, %d, %s%s, health %d".formatted(at.getX(), at.getY(), at.getZ(), player.onGround() ? "on the ground" : "in the air",
+                acting.isEmpty() ? "" : ", " + acting, Math.round(player.getHealth())));
+        while (lastSeconds.size() > LAST_SECONDS) {
+            lastSeconds.removeFirst();
+        }
     }
 
     private static String causeOfDeath(DeathScreen dead) {
@@ -985,7 +1011,7 @@ public final class Driver {
         }
         boolean quiet = StreamSupport.stream(minecraft.level.entitiesForRendering().spliterator(), false)
                 .noneMatch(entity -> Senses.hostile(entity) && entity.isAlive() && entity.distanceTo(player) <= SAFE_BLOCKS);
-        return quiet && player.getHealth() >= player.getMaxHealth() / 2 && player.onGround() && !player.isInWater() && !player.isOnFire()
+        return quiet && player.getHealth() >= player.getMaxHealth() / 2 && (player.onGround() || player.getVehicle() instanceof Boat) && !player.isInWater() && !player.isOnFire()
                 && minecraft.level.getGameTime() - talkedAt >= TALK_QUIET_TICKS && !Senses.hurtLately(minecraft, RECENT_HURT_TICKS);
     }
 
@@ -996,12 +1022,44 @@ public final class Driver {
             return;
         }
         String where = Senses.time(minecraft.level.getDayTime()) + ", at " + minecraft.player.blockPosition().toShortString();
+        Path folder = minecraft.gameDirectory.toPath().resolve("driver");
         lastCheckpoint = minecraft.level.getGameTime();
+        keeping = true;
         pending = server.submit(() -> {
             server.saveEverything(true, true, true);
             server.getAllLevels().forEach(level -> level.noSave = true);
-            return "checkpoint: " + server.getWorldPath(LevelResource.ROOT).toAbsolutePath().normalize() + " | " + where;
+            return server.getWorldPath(LevelResource.ROOT).toAbsolutePath().normalize() + " | " + where;
+        }).thenApplyAsync(asked -> "checkpoint: " + kept(folder, asked)).whenComplete((line, failed) -> {
+            server.execute(() -> server.getAllLevels().forEach(level -> level.noSave = false));
+            keeping = false;
         });
+    }
+
+    private static String kept(Path folder, String asked) {
+        Path request = folder.resolve("keep.txt");
+        Path answer = folder.resolve("kept.txt");
+        try {
+            Files.deleteIfExists(answer);
+            Path partial = folder.resolve("keep.tmp");
+            Files.writeString(partial, asked);
+            Files.move(partial, request, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+            long deadline = System.nanoTime() + KEEP_LIMIT_NANOS;
+            while (!Files.exists(answer)) {
+                if (System.nanoTime() > deadline) {
+                    Files.deleteIfExists(request);
+                    throw new IllegalStateException("checkpoint failed: client.py kept no copy of the world within " + KEEP_LIMIT_NANOS / PERF_NANOS + " s");
+                }
+                Thread.sleep(KEEP_CHECK_MILLIS);
+            }
+            String line = Files.readString(answer).strip();
+            Files.delete(answer);
+            return line;
+        } catch (IOException exception) {
+            throw new UncheckedIOException(exception);
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("checkpoint failed: interrupted while the world was copied", exception);
+        }
     }
 
     static void logged(String line) {
@@ -1126,6 +1184,7 @@ public final class Driver {
             case "craft" -> Hands.craft(minecraft, argument);
             case "dismount" -> dismount(minecraft);
             case "hotbar" -> Hands.hotbar(minecraft, argument);
+            case "ember" -> Sweep.read(minecraft);
             case "fish" -> Fishing.fish(minecraft, argument);
             case "pitch" -> pitch(minecraft);
             case "put" -> Hands.put(minecraft, argument);
@@ -1388,7 +1447,7 @@ public final class Driver {
                 most = Math.max(most, step);
             }
             note("sky: over %d ticks the client's clock moved %d, %d to %d a tick, at %.3f a tick as the server set it%s".formatted(ticks,
-                    times.getLast() - times.getFirst(), least, most, minecraft.level.getDayTimePerTick(),
+                    times.getLast() - times.getFirst(), least, most, minecraft.level.getDayTimePerTick() < 0 ? 1 : minecraft.level.getDayTimePerTick(),
                     least < 0 ? "; it stepped backwards" : ""));
         };
     }
@@ -1429,6 +1488,13 @@ public final class Driver {
             entry.addProperty("z", marker.z());
             markers.add(entry);
         }
+        HudState.smoke.ifPresent(fire -> {
+            JsonObject entry = new JsonObject();
+            entry.addProperty("kind", "smoke");
+            entry.addProperty("x", fire.getX());
+            entry.addProperty("z", fire.getZ());
+            markers.add(entry);
+        });
         json.add("markers", markers);
         return json.toString();
     }
@@ -1888,10 +1954,10 @@ public final class Driver {
 
     private static void dig(Minecraft minecraft, String argument) {
         String[] xyz = argument.split(" ");
-        digAt(minecraft, block(minecraft, xyz[0], xyz[1], xyz[2]));
+        digAt(minecraft, block(minecraft, xyz[0], xyz[1], xyz[2]), WAY_CLEARS);
     }
 
-    private static void digAt(Minecraft minecraft, BlockPos pos) {
+    private static void digAt(Minecraft minecraft, BlockPos pos, int clears) {
         BlockState state = minecraft.level.getBlockState(pos);
         if (state.isAir()) {
             fail("dig failed: nothing stands at " + pos.toShortString());
@@ -1902,12 +1968,19 @@ public final class Driver {
         within(minecraft, pos, at -> {
             player.lookAt(EntityAnchorArgument.Anchor.EYES, at);
             drawn("the crosshair to settle on " + name, () -> {
+                if (clears > 0 && minecraft.hitResult instanceof BlockHitResult plant && plant.getType() == HitResult.Type.BLOCK && !plant.getBlockPos().equals(pos)
+                        && minecraft.level.getBlockState(plant.getBlockPos()).getCollisionShape(minecraft.level, plant.getBlockPos()).isEmpty()
+                        && soft(minecraft, plant.getBlockPos())) {
+                    breakBlock(minecraft, plant.getBlockPos(), plant.getDirection(), "dig", broken -> digAt(minecraft, pos, clears - 1),
+                            () -> digAt(minecraft, pos, clears));
+                    return;
+                }
                 if (!(minecraft.hitResult instanceof BlockHitResult aimed) || aimed.getType() == HitResult.Type.MISS || !aimed.getBlockPos().equals(pos)) {
                     String hit = Senses.aimed(minecraft);
                     fail("dig failed: " + (hit == null ? "nothing within reach there" : "the crosshair is on " + hit + ", not on the " + name));
                     return;
                 }
-                breakBlock(minecraft, pos, aimed.getDirection(), "dig", broken -> note("dig: broke the " + name + " with " + broken), () -> digAt(minecraft, pos));
+                breakBlock(minecraft, pos, aimed.getDirection(), "dig", broken -> note("dig: broke the " + name + " with " + broken), () -> digAt(minecraft, pos, clears));
             });
         });
     }
@@ -2102,6 +2175,10 @@ public final class Driver {
                     + ", and it is not bound");
             return;
         }
+        if (ridden instanceof Boat && !ashore(minecraft, ridden.blockPosition())) {
+            fail("dismount failed: open water all round the " + ridden.getName().getString() + ", nowhere to stand; row to a shore first");
+            return;
+        }
         minecraft.options.keyShift.setDown(true);
         dismount.ifPresent(mapping -> mapping.setDown(true));
         after(() -> {
@@ -2114,6 +2191,15 @@ public final class Driver {
             if (ridden instanceof Boat boat && !player.isInWater()) {
                 takeBoat(minecraft, boat);
             }
+        });
+    }
+
+    private static boolean ashore(Minecraft minecraft, BlockPos boat) {
+        return BlockPos.betweenClosedStream(boat.offset(-SHORE_REACH, -SHORE_REACH, -SHORE_REACH), boat.offset(SHORE_REACH, SHORE_REACH, SHORE_REACH)).anyMatch(ground -> {
+            BlockPos feet = ground.above();
+            return minecraft.level.getBlockState(ground).isFaceSturdy(minecraft.level, ground, Direction.UP) && minecraft.level.getFluidState(feet).isEmpty()
+                    && minecraft.level.getBlockState(feet).getCollisionShape(minecraft.level, feet).isEmpty()
+                    && minecraft.level.getBlockState(feet.above()).getCollisionShape(minecraft.level, feet.above()).isEmpty();
         });
     }
 

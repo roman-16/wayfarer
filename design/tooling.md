@@ -116,6 +116,16 @@ the client is running in state ash/the_door, from the cache, on a hidden screen 
 
 **Why:** A fresh random world sets every test back to the story's first minutes and lands in the sea as often as not, so most of a test went on reaching the moment to be tested. A recipe never goes stale, where a saved world as the source would be wrong after the next change to the code or data and is large binary nobody can read; the cache keeps a recipe as quick to open as a saved world, where a recipe alone would rebuild Tollbridge on every start. Resuming the last world was turned down: a state is a story point anyone can come back to, which the last world is not. Keying the cache on the code as well rebuilt nearly every start, 4 of about 40 coming from the cache, since nearly every test follows a code change.
 
+### T6 Carrying a playtest's road to a fresh world
+
+- After a playtest on the exaroton server the team's road can go on in a fresh world, so a change to the land is played without starting the story again. `just carry <server>` builds the world on the machine and changes nothing on the server; `just carry <server> upload` puts it on the server, switches the server to it and keeps the world before as the way back.
+- What the team knows and decided comes from the old world: the quests' steps, the choices, the talks, the journal, the rewards and who took them, the gifts, trust, the halls taken and the deeds. Where things stand comes from the new one: the story's places and people are built on the new land by playing it to the team's step as a named state is (T5), with the team's own answers instead of the first ones.
+- What each player owns comes along: their inventory, armour, charms and backpacks, their tent with everything in it, packed into the inventory, and their horse bound to a horn. Whatever of theirs still stands in the old world is packed into them first through the code their own action runs: a tent packed up, a grave taken back, their stone taken up.
+- Everyone stands where the step begins, at its hour; every step under way begins again. A grave's things that found no room, boats, ships, aircraft, pets and horses not bound to a horn stay behind. The new world starts its own play record, and the far view and the map start fresh on every machine without anyone deleting anything.
+- It is a tool for development only and never ships; how a released world takes a new version is `production.md`, R2.
+
+**Why:** The story belongs to the world and stands on places, so fresh land needs those places built again, and the state builder already builds them from the repository on any seed. Regrowing only the land nobody walked would leave seams, keep the old land where the team walked and show the old far view, and starting from the prologue costs an evening each time.
+
 ## Open
 
 Nothing is open.

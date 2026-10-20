@@ -86,7 +86,7 @@ public final class Caravan {
     static final String NAME = "caravan";
     static final String KIND = "caravan";
     private static final int SEAT_REACH = 4;
-    private static final String SAVE = "wayfarer_caravan";
+    static final String SAVE = "wayfarer_caravan";
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final String TENTS = "nomadictents";
     private static final String HORSEMAN = "horseman";
@@ -379,14 +379,40 @@ public final class Caravan {
         return People.find(server, camp.keeper).map(Entity::blockPosition).orElse(camp.centre);
     }
 
+    static Optional<BlockPos> grazing(MinecraftServer server) {
+        Camp camp = Camp.of(server);
+        return camp.horse != null && camp.carried.isEmpty() ? Optional.of(camp.centre) : Optional.empty();
+    }
+
+    static boolean takeAlong(ServerLevel level) {
+        Camp camp = Camp.of(level.getServer());
+        if (camp.horse != null && camp.carried.isEmpty() && level.getEntity(camp.horse) instanceof AbstractHorse horse) {
+            stow(camp, horse);
+        }
+        return !camp.carried.isEmpty();
+    }
+
+    static void adoptFrom(MinecraftServer server, CompoundTag saved) {
+        Camp from = Camp.load(saved, server.registryAccess());
+        Camp camp = Camp.of(server);
+        camp.horse = from.horse;
+        camp.keeper = from.keeper;
+        camp.carried = from.carried;
+        camp.setDirty();
+    }
+
     private static void carry(ServerLevel level, Camp camp) {
         if (camp.horse != null && level.getEntity(camp.horse) instanceof AbstractHorse horse && !horse.isVehicle() && !horse.isLeashed()
                 && horse.position().closerThan(Vec3.atCenterOf(camp.centre), RING + GRAZE)) {
-            camp.carried = horse.saveWithoutId(new CompoundTag());
-            camp.carried.putString("id", BuiltInRegistries.ENTITY_TYPE.getKey(horse.getType()).toString());
-            horse.discard();
-            camp.setDirty();
+            stow(camp, horse);
         }
+    }
+
+    private static void stow(Camp camp, AbstractHorse horse) {
+        camp.carried = horse.saveWithoutId(new CompoundTag());
+        camp.carried.putString("id", BuiltInRegistries.ENTITY_TYPE.getKey(horse.getType()).toString());
+        horse.discard();
+        camp.setDirty();
     }
 
     private static void release(ServerLevel level, Camp camp) {

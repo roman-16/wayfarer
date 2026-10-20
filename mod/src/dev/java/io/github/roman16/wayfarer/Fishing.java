@@ -19,6 +19,7 @@ final class Fishing {
     private static final int LANDING_TICKS = 60;
     private static final int BITE_TICKS = 900;
     private static final int REELED_TICKS = 30;
+    private static final int LOST_LINES = 4;
 
     private enum Phase { CAST, FLYING, WAITING, REELED }
 
@@ -34,6 +35,7 @@ final class Fishing {
         int[] caught = {0};
         int[] casts = {0};
         long[] since = {0};
+        int[] lost = {0};
         Phase[] phase = {Phase.CAST};
         Driver.after(() -> {
             if (Body.busy()) {
@@ -70,12 +72,17 @@ final class Fishing {
                 }
                 case WAITING -> {
                     if (hook == null) {
-                        Driver.fail("fish failed: the line came in on its own after " + caught[0] + " caught");
+                        if (++lost[0] >= LOST_LINES) {
+                            Driver.fail("fish failed: the line came in on its own " + lost[0] + " times running, after " + caught[0] + " caught");
+                            return false;
+                        }
+                        phase[0] = Phase.CAST;
                         return false;
                     }
                     if (hook.getEntityData().get(BITING)) {
                         KeyMapping.click(minecraft.options.keyUse.getKey());
                         caught[0]++;
+                        lost[0] = 0;
                         since[0] = now;
                         Driver.progress();
                         phase[0] = Phase.REELED;

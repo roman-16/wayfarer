@@ -38,6 +38,14 @@ public final class CaptainsPages extends LootModifier {
         super(conditions);
     }
 
+    static void carry(Progress from, Progress into) {
+        int given = from.scratch.getOrDefault(SCRATCH, new CompoundTag()).getInt(GIVEN);
+        if (given > 0) {
+            into.scratch(SCRATCH).putInt(GIVEN, given);
+            into.setDirty();
+        }
+    }
+
     @Override
     protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> loot, LootContext context) {
         Vec3 origin = context.getParamOrNull(LootContextParams.ORIGIN);

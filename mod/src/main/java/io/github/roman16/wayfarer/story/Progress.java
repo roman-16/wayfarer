@@ -21,7 +21,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 
 public final class Progress extends SavedData {
     private static final String DONE = "done";
-    private static final String NAME = "wayfarer_story";
+    static final String NAME = "wayfarer_story";
 
     final Map<String, Integer> steps = new LinkedHashMap<>();
     final Map<String, CompoundTag> scratch = new LinkedHashMap<>();
@@ -151,7 +151,7 @@ public final class Progress extends SavedData {
         throw new IllegalStateException("the save stands at " + quest.id() + "/" + step + ", which the story no longer has");
     }
 
-    private static Progress load(CompoundTag tag, HolderLookup.Provider registries) {
+    static Progress load(CompoundTag tag, HolderLookup.Provider registries) {
         Progress progress = new Progress();
         CompoundTag steps = tag.getCompound("steps");
         steps.getAllKeys().forEach(key -> Story.get().quest(key).ifPresent(quest -> progress.steps.put(key, index(quest, steps.getString(key)))));

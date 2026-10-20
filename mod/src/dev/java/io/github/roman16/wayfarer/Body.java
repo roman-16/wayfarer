@@ -55,6 +55,7 @@ final class Body {
     private static final double REFUGE_BLOCKS = 32;
     private static final double SAFE_BLOCKS = 3;
     private static final double CORNERED_BLOCKS = 6;
+    private static final String GOAL = "where I was going";
     private static final double SHIELD_BLOCKS = 5;
     private static final int RUN_BLOCKS = 16;
     private static final int STEP_OUT_BLOCKS = 3;
@@ -149,6 +150,19 @@ final class Body {
 
     static boolean acting() {
         return doing != Doing.NOTHING;
+    }
+
+    static String doing() {
+        return switch (doing) {
+            case BACK_OFF -> "backing off from a creeper";
+            case BREATHE -> "swimming up for air";
+            case EAT -> "eating";
+            case FIGHT -> "fighting";
+            case FLEE -> "running";
+            case NOTHING -> "";
+            case RETURN -> "walking back";
+            case STEP_OUT -> "stepping out of fire";
+        };
     }
 
     static boolean busy() {
@@ -381,12 +395,12 @@ final class Body {
             end(minecraft, Senses.describe(foe) + " went into deep water: left it; health " + fromTo(player));
             return;
         }
-        if (strike(minecraft, foe, ticks)) {
+        if (strike(minecraft, foe, ticks, false)) {
             strikes++;
         }
     }
 
-    static boolean strike(Minecraft minecraft, Entity foe, long tick) {
+    static boolean strike(Minecraft minecraft, Entity foe, long tick, boolean stand) {
         LocalPlayer player = minecraft.player;
         look(player, foe.getEyePosition());
         double distance = foe.distanceTo(player);
@@ -394,7 +408,7 @@ final class Body {
         boolean shield = shielded(player);
         if (distance > REACH_BLOCKS) {
             minecraft.options.keyUse.setDown(shield && ranged(foe) && distance < SHIELD_BLOCKS * 2);
-            if (tick % REPATH_TICKS == 1 && !(foe instanceof FlyingMob)) {
+            if (!stand && tick % REPATH_TICKS == 1 && !(foe instanceof FlyingMob)) {
                 baritone.getCustomGoalProcess().setGoalAndPath(new GoalNear(foe.blockPosition(), 1));
             }
             return false;
@@ -503,7 +517,7 @@ final class Body {
             return false;
         }
         Refuge shelter = refuge(minecraft);
-        return shelter == null || flat(player.position(), shelter.at()) <= CORNERED_BLOCKS;
+        return shelter != null && !shelter.name().equals(GOAL) && flat(player.position(), shelter.at()) <= CORNERED_BLOCKS;
     }
 
     private static Refuge refuge(Minecraft minecraft) {
@@ -517,7 +531,7 @@ final class Body {
                 .forEach(marker -> places.add(new Refuge("the tent", new Vec3(marker.x() + HALF, player.getY(), marker.z() + HALF))));
         GoalXZ goal = Legs.destination();
         if (goal != null) {
-            places.add(new Refuge("where I was going", new Vec3(goal.getX() + HALF, player.getY(), goal.getZ() + HALF)));
+            places.add(new Refuge(GOAL, new Vec3(goal.getX() + HALF, player.getY(), goal.getZ() + HALF)));
         }
         return places.stream().filter(place -> flat(player.position(), place.at()) <= REFUGE_BLOCKS)
                 .min(Comparator.comparingDouble(place -> flat(player.position(), place.at()))).orElse(null);

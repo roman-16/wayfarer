@@ -41,7 +41,12 @@ def start(arguments):
         states.check(arguments.state)
     if server.alive():
         launched = json.loads(LAUNCHED.read_text()) if LAUNCHED.exists() else None
-        world = arguments.state or arguments.fresh or arguments.seed is not None
+        world = (
+            arguments.state
+            or arguments.fresh
+            or arguments.seed is not None
+            or (launched or {}).get("world") != arguments.world
+        )
         reasons = restarting(launched, mode) or swapped(server)
         if not world and not reasons:
             print("the dev server is running")
@@ -50,9 +55,13 @@ def start(arguments):
             print("restarting: " + "; ".join(reasons))
         server.stop(STOP_SECONDS)
     if arguments.fresh or arguments.seed is not None:
-        shutil.rmtree(DEV_SERVER / ("world" if mode == "full" else f"world-{mode}"), ignore_errors=True)
+        shutil.rmtree(
+            DEV_SERVER / (arguments.world or ("world" if mode == "full" else f"world-{mode}")), ignore_errors=True
+        )
     if arguments.seed is not None:
         os.environ["WAYFARER_SEED"] = str(arguments.seed)
+    if arguments.world:
+        os.environ["WAYFARER_WORLD"] = arguments.world
     start = None
     if arguments.state:
         cache = states.folder("server", mode, arguments.state)
@@ -62,14 +71,19 @@ def start(arguments):
     started = time.monotonic()
     server.start(arguments.timeout)
     hotswap.remember(SNAPSHOT)
-    LAUNCHED.write_text(json.dumps({"digests": states.digests(), "mode": mode, "state": arguments.state}))
+    LAUNCHED.write_text(
+        json.dumps({"digests": states.digests(), "mode": mode, "state": arguments.state, "world": arguments.world})
+    )
     replies = []
     if arguments.state and start != arguments.state:
         server.run(f"wayfarer pretend join {WALKER}", STEP_SECONDS)
         replies = story(server, f"{arguments.state} {cache}", STEP_SECONDS)
         server.run(f"wayfarer pretend leave {WALKER}", STEP_SECONDS)
     kind = {"far": ", with Distant Horizons and SeedGen,", "full": "", "lean": ", with only the Wayfarer mod,"}[mode]
-    at = f" in state {arguments.state}, " + built(arguments.state, start, replies) if arguments.state else ""
+    if arguments.state:
+        at = f" in state {arguments.state}, " + built(arguments.state, start, replies)
+    else:
+        at = f" in {arguments.world}" if arguments.world else ""
     print(f"the dev server is running{kind}{at} after {time.monotonic() - started:.0f} s; log in {server.log}")
 
 
@@ -160,6 +174,8 @@ def rewind(step):
     os.environ |= {"WAYFARER_BACKGROUND": "true", "WAYFARER_DRIVEN": "true"}
     if launched.get("state"):
         os.environ["WAYFARER_STATE"] = launched["state"]
+    if launched.get("world"):
+        os.environ["WAYFARER_WORLD"] = launched["world"]
     server = dev_server(launched["mode"])
     server.start(START_SECONDS)
     hotswap.remember(SNAPSHOT)
@@ -259,6 +275,12 @@ def main():
     )
     start_parser.set_defaults(mode="full")
     start_parser.add_argument(
+        "--world",
+        metavar="SAVE",
+        help="open a save in build/devserver by its folder name, such as one copied there; with --fresh or --seed it "
+        "grows anew",
+    )
+    start_parser.add_argument(
         "--rebuild",
         action="store_true",
         help="build the state anew instead of from the cache, after a change to code that builds an earlier step",
@@ -282,6 +304,12 @@ def main():
     stop_parser = commands.add_parser("stop", help="stop the server; returns once it has exited")
     stop_parser.add_argument("--timeout", type=int, default=STOP_SECONDS)
     arguments = parser.parse_args()
+    if (
+        arguments.command == "start"
+        and arguments.world
+        and (arguments.state or arguments.world in ("state", "state-lean"))
+    ):
+        parser.error("--world opens a save of its own; a state is opened with --state alone")
     try:
         {"run": run, "start": start, "stop": stop, "swap": swap}[arguments.command](arguments)
     except Failure as failure:

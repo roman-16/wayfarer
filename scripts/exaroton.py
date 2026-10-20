@@ -17,7 +17,7 @@ from datetime import datetime
 from pathlib import Path
 
 HOST = "api.exaroton.com"
-AGENT = "wayfarer-exaroton-recorder"
+AGENT = "wayfarer-exaroton"
 ROOT = Path(__file__).resolve().parent.parent
 RECORDINGS = ROOT / "exaroton"
 STREAMS = ("console", "heap", "stats", "tick")
@@ -40,6 +40,10 @@ CRASHED = 7
 FLOOR_AVERAGE_FPS = 60
 FLOOR_LOW_FPS = 30
 POLL_SECONDS = 60
+REQUEST_SECONDS = 30
+RATE_TRIES = 8
+TOO_MANY_REQUESTS = 429
+TRANSFER_SECONDS = 600
 RECORD = "wayfarer/record"
 RECORD_FOLDER = "record"
 LOG_SECONDS = 300
@@ -56,29 +60,54 @@ class Api:
     def __init__(self, token):
         self.token = token
 
-    def get(self, path):
+    def open(self, method, path, body=None, headers=None, timeout=REQUEST_SECONDS):
         request = urllib.request.Request(
-            f"https://{HOST}/v1/{path}", headers={"Authorization": f"Bearer {self.token}", "User-Agent": AGENT}
+            f"https://{HOST}/v1/{urllib.parse.quote(path)}",
+            data=body,
+            method=method,
+            headers={"Authorization": f"Bearer {self.token}", "User-Agent": AGENT} | (headers or {}),
         )
+        for attempt in range(RATE_TRIES):
+            try:
+                with urllib.request.urlopen(request, timeout=timeout) as response:
+                    return response.read()
+            except urllib.error.HTTPError as error:
+                if error.code != TOO_MANY_REQUESTS or attempt == RATE_TRIES - 1:
+                    raise
+                time.sleep(float(error.headers.get("Retry-After") or 2**attempt))
+        raise ApiError(f"{method} {path}: no attempt left")
+
+    def get(self, path):
         try:
-            with urllib.request.urlopen(request, timeout=30) as response:
-                body = json.load(response)
+            body = json.loads(self.open("GET", path))
         except urllib.error.HTTPError as error:
             body = json.load(error)
         if not body.get("success"):
             raise ApiError(f"{path}: {body.get('error')}")
         return body["data"]
 
-    def data(self, path):
-        request = urllib.request.Request(
-            f"https://{HOST}/v1/{urllib.parse.quote(path)}",
-            headers={"Authorization": f"Bearer {self.token}", "User-Agent": AGENT},
-        )
+    def data(self, path, timeout=REQUEST_SECONDS):
         try:
-            with urllib.request.urlopen(request, timeout=30) as response:
-                return response.read()
+            return self.open("GET", path, timeout=timeout)
         except urllib.error.HTTPError as error:
             raise ApiError(f"{path}: HTTP {error.code}") from None
+
+    def put(self, path, body, kind="application/octet-stream"):
+        self.change("PUT", path, body, {"Content-Type": kind})
+
+    def delete(self, path):
+        self.change("DELETE", path, None, {})
+
+    def change(self, method, path, body, headers):
+        try:
+            answer = json.loads(self.open(method, path, body, headers, TRANSFER_SECONDS))
+        except urllib.error.HTTPError as error:
+            said = error.read().decode("utf-8", "replace")
+            with contextlib.suppress(ValueError):
+                said = json.loads(said).get("error") or said
+            raise ApiError(f"{method} {path}: HTTP {error.code}: {said}") from None
+        if not answer.get("success"):
+            raise ApiError(f"{method} {path}: {answer.get('error')}")
 
 
 class WebSocket:
@@ -203,7 +232,7 @@ def find_server(api, wanted):
     servers = api.get("servers/")
     chosen = [server for server in servers if wanted in (server["id"], server["name"])] if wanted else servers
     if len(chosen) != 1:
-        sys.exit(f"name the server to record, one of: {', '.join(server['name'] for server in servers)}")
+        sys.exit(f"name the server, one of: {', '.join(server['name'] for server in servers)}")
     return chosen[0]
 
 

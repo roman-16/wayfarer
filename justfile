@@ -18,6 +18,10 @@ clean:
 exaroton server="":
     python3 scripts/exaroton.py {{ server }}
 
+[doc("Carry the exaroton server's road into a fresh world under exaroton/: download its world, pack what stands in it into its players, grow a new world from a random seed played to the team's step with their own answers, and lay their story and things into it; `just carry <server> upload` puts the carried world on the server and switches to it")]
+carry server="" step="":
+    python3 scripts/carry.py {{ server }} {{ if step == "upload" { "--upload" } else if step == "" { "" } else { error("the word after the server is upload, or nothing") } }}
+
 [doc("Boot the whole pack on a headless dedicated server after auditing its jars, and check the world with /locate")]
 boot: build boot-server
 
