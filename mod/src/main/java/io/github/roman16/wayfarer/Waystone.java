@@ -50,6 +50,11 @@ public final class Waystone {
                 player.displayClientMessage(Component.translatable("wayfarer.stone.not_yours").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
                 return;
             }
+            if (Tents.isTent(player.level().dimension())) {
+                event.setCanceled(true);
+                player.displayClientMessage(Component.translatable("wayfarer.stone.tent").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
+                return;
+            }
             placing.put(player.getUUID(), event.getPos());
             return;
         }
@@ -110,8 +115,12 @@ public final class Waystone {
 
     private static void onLeave(WaystoneTeleportEvent.Pre event) {
         if (event.getContext().getEntity() instanceof ServerPlayer player) {
-            leaving.put(player.getUUID(), player.position());
+            leaving.put(player.getUUID(), ground(player));
         }
+    }
+
+    private static Vec3 ground(ServerPlayer player) {
+        return Tents.outside(player).map(Tents.Outside::at).orElse(player.position());
     }
 
     private static void onArrive(WaystoneTeleportEvent.Post event) {
@@ -120,8 +129,14 @@ public final class Waystone {
         }
         Deeds.folded(player);
         Vec3 from = leaving.remove(player.getUUID());
+        Vec3 to = ground(player);
+        Record.event(player.server, "fold", player, line -> {
+            if (from != null) {
+                line.addProperty("blocks", (int) from.distanceTo(to));
+            }
+        });
         if (from != null) {
-            int cost = (int) Math.round(from.distanceTo(player.position()) / Balance.get().waystones().blocksPerFood());
+            int cost = (int) Math.round(from.distanceTo(to) / Balance.get().waystones().blocksPerFood());
             player.getFoodData().setFoodLevel(Math.max(0, player.getFoodData().getFoodLevel() - cost));
             player.getFoodData().setSaturation(0);
             if (cost > 0) {

@@ -70,7 +70,7 @@ hash = "78810698534aa63c003ad93f71f44d598ac66017c8f1548cddce6fdfeea516f0"
 
 [[files]]
 file = "config/artifacts/items.toml"
-hash = "a3bbc015d42dfbb28a8180360f94458c13b305446e6e5207589b4f37b9c0d065"
+hash = "7681a9cc0b8079d20fa597374d431df8a5bcf964a1f3bc60021e5b091993a24d"
 
 [[files]]
 file = "config/asynclocator.toml"
@@ -82,7 +82,7 @@ hash = "01064a300391147f410c79abfb7c5955bf049c4d700827832fbb97a6bc374482"
 
 [[files]]
 file = "config/defaultoptions/keybindings.txt"
-hash = "f6ebb7133a2b349eb37a44e14f747d1dc3b6dab453586eecf8c1b3b9252b3391"
+hash = "7bfb52220333bec7834ccdb9c3200e9c36a4eefba0faf3a9ce2d0f6262f7c827"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
@@ -95,6 +95,10 @@ hash = "c3e1984f020b1a8a07da3020c03bbf57e401baed0d096be6d6027cd3e7a5c685"
 [[files]]
 file = "config/enhancedcelestials2core/translations.json"
 hash = "24c34c89632454822eb2acc91d2b38b1a72fd370925c544c796396b2b174a205"
+
+[[files]]
+file = "config/entity_model_features.json"
+hash = "4e732b28ff23c7885e4702548d9dc81366db6f3baf0ff39c31257a449acce8d9"
 
 [[files]]
 file = "config/entity_texture_features.json"
@@ -114,7 +118,7 @@ hash = "9d38050a5f0e9107f2c1de582264d53eac91e52ec1fcbe307a23102e00ca5859"
 
 [[files]]
 file = "config/hordes-common.toml"
-hash = "056d2a67bc4f045aab0b4188198dd2dc88a54e3b5582a414ce7a65cb850fff8c"
+hash = "2dd0cef3f49b033d814e2974622ad488df570da27d6a39ed1a76ef63ccc3cc49"
 
 [[files]]
 file = "config/horseman-server.toml"
@@ -134,7 +138,7 @@ hash = "a21384a476c1cf7773d7b23e54a1ef22e7d07e89d2e9496275ffc38689b4e8bc"
 
 [[files]]
 file = "config/improvedmobs/equipment.json"
-hash = "6b8f9999c9beb54dce5da896ecbb23539e0b87fc70dea85f036360c962608e01"
+hash = "20f5a366602ddc7734eef8c03239db302dfdf35892c2b70aaf37f47db464e75e"
 
 [[files]]
 file = "config/inventorysorter-client.toml"
@@ -146,7 +150,7 @@ hash = "11f5c69a972ea8c240f59ef2fd9ab36993918842038aad770c4d6f90e238226f"
 
 [[files]]
 file = "config/jade/hide-blocks.json"
-hash = "55af2f0e56f3dbce98b158543e375f9cffd7c3233311f15c57fe66bc347bc4f4"
+hash = "a02ef3b5600f9c88e5b77026dbe990f753d5b750bfdc8c9d014d7e0b7e627282"
 
 [[files]]
 file = "config/jade/jade.json"
@@ -162,7 +166,7 @@ hash = "cda675a661efe4de11d0292127b19f664dd08552b8b5cfcd65bef99f66ec9444"
 
 [[files]]
 file = "config/more_darkness.json"
-hash = "ffb408b92616a3c90d346ade5f1a79a4e75579fd8cdc5633326b608e8a182ced"
+hash = "e3e5cefba8de13f4401a9b1652b555312599d9443fd09f9cf7b69c21ca41e091"
 
 [[files]]
 file = "config/nohostilesaroundcampfire.json5"
@@ -171,10 +175,6 @@ hash = "c3b7e627d0fb29a431270837dd9d9741ddb00acef7fce8b547d3dbdc7ee7ea37"
 [[files]]
 file = "config/nomadictents-common.toml"
 hash = "16a47b024834ba1dc862f99268fcfa61be1de3c14d2394ff73015a48a2854a28"
-
-[[files]]
-file = "config/parcool-server.toml"
-hash = "7b5d6ac6e4cb2b089a84466dd6e1d721473dd55c4572616c7656e69ff55bb259"
 
 [[files]]
 file = "config/particular-common.toml"
@@ -222,7 +222,11 @@ hash = "3491b93fb6219daa6204c5fd251a00158e6e1fe7db40fb4e4e74ac33678a5118"
 
 [[files]]
 file = "config/solonion.json"
-hash = "93d98970a1808adf87f98a3226afd37f4016b6e68a70024740f7fabb4d2c7035"
+hash = "c3fada6c176a08c502f14e9b4b4b771f648f6583f9243ae9e2f2835974e9d98d"
+
+[[files]]
+file = "config/sophisticatedbackpacks-server.toml"
+hash = "0a890eccb0676f13ca60ac18df646dd573e2d99c761785bcc90db0e3affd82f1"
 
 [[files]]
 file = "config/soundattract/raid.toml"
@@ -257,6 +261,10 @@ file = "config/tectonic.json"
 hash = "c3212bde9bd4aac94bd3b4c7e290eb71664256b97ec212cd6048b52a6d3d7b94"
 
 [[files]]
+file = "config/toughasnails/temperature.toml"
+hash = "bec888eed59626e49993ee452a05792976ce5b99789dd2cbe35c60bacd70cb9c"
+
+[[files]]
 file = "config/toughasnails/thirst.toml"
 hash = "45c7e32ed5789e958f102422f029beab1007b5f02d0359c3c9fbbd1e02f820c2"
 
@@ -282,7 +290,7 @@ hash = "95c55f5a51e25dca37f887896486ba413b6ce5d1c1ce59c753be61a4ca894637"
 
 [[files]]
 file = "journeymap/config/6.0/journeymap.core.config"
-hash = "837f0638e39dc55451f22771880bff2a944e85e93f01cde18d7bd17525f08ef3"
+hash = "a1f8d1a3e44639c81bee9141e5e1f7a674985c415cabc3c3ddbabe8bdc113289"
 
 [[files]]
 file = "journeymap/config/6.0/journeymap.fullmap.config"
@@ -796,11 +804,6 @@ hash = "84cb0dcad9ac46d22adba4fb7924951affa6ac5e46027a3b25fa9a0db8d91b2b"
 metafile = true
 
 [[files]]
-file = "mods/parcool.pw.toml"
-hash = "c1bb2b2c278638945373172f712d504441c4b4a97dc3ad4a76dc5f8a36e4c868"
-metafile = true
-
-[[files]]
 file = "mods/particle-rain.pw.toml"
 hash = "70a1250e9612f8194f88e9c14b405907d16e7b2df7742d6b4d1c42473486395e"
 metafile = true
@@ -1192,7 +1195,7 @@ metafile = true
 
 [[files]]
 file = "shaderpacks/ComplementaryReimagined_r5.9.3 + EuphoriaPatches_1.10.5.txt"
-hash = "9a3fcc767ef03695e9186f34dff9966bb70f3e05978f4fdb967fb2df21c2c8b1"
+hash = "9d57c0881e0cdb5a54850f5929120086c2cf143145704b5c0550b1dbc00839c9"
 
 [[files]]
 file = "shaderpacks/complementary-reimagined.pw.toml"

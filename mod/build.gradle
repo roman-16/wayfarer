@@ -62,6 +62,13 @@ repositories {
         url = 'https://api.modrinth.com/maven'
         content { includeGroup 'maven.modrinth' }
     }
+    ivy {
+        name = 'Baritone'
+        url = 'https://github.com/cabaletta/baritone/releases/download'
+        patternLayout { artifact 'v[revision]/[module]-[revision].[ext]' }
+        metadataSources { artifact() }
+        content { includeGroup 'cabaletta' }
+    }
     mavenCentral {
         content {
             includeGroup 'org.hotswapagent'
@@ -107,6 +114,7 @@ neoForge {
                 systemProperty "${mod_id}.seed", providers.environmentVariable('WAYFARER_SEED').orElse('').get()
                 systemProperty "${mod_id}.state", providers.environmentVariable('WAYFARER_STATE').orElse('').get()
                 systemProperty "${mod_id}.state.cache", providers.environmentVariable('WAYFARER_STATE_CACHE').orElse('').get()
+                systemProperty "${mod_id}.world", providers.environmentVariable('WAYFARER_WORLD').orElse('').get()
                 ['DISPLAY', 'XDG_SESSION_TYPE'].each { variable ->
                     String value = providers.environmentVariable(variable).orNull
                     if (value != null) {
@@ -180,6 +188,7 @@ dependencies {
             prefer infiniverse_version
         }
     }
+    devCompileOnly "cabaletta:baritone-api-neoforge:${baritone_version}"
     hotswapAgent "org.hotswapagent:hotswap-agent-core:${hotswap_agent_version}"
     vineflower "org.vineflower:vineflower:${vineflower_version}"
 }

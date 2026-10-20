@@ -81,7 +81,7 @@ public final class Hold {
     private static final int CRACK_STAGES = 10;
     private static final int CRACKS = -Wayfarer.MODID.hashCode();
     private static final int DOOR_SEARCH = 16;
-    private static final int REACH = 96;
+    static final int REACH = 96;
     private static final String OUTLINED = Wayfarer.MODID + "_besieging";
     private static final int REPATH_TICKS = 20;
     private static final int TICKS_PER_SECOND = 20;
@@ -499,7 +499,7 @@ public final class Hold {
         monster.goalSelector.addGoal(BESIEGE_PRIORITY, new Besiege(monster));
     }
 
-    static void outline(Entity monster, boolean on) {
+    public static void outline(Entity monster, boolean on) {
         Scoreboard scoreboard = monster.level().getScoreboard();
         PlayerTeam team = scoreboard.getPlayerTeam(OUTLINED);
         if (team == null) {

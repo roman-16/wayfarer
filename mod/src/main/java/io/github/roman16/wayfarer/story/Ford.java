@@ -23,6 +23,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.Tags;
 import org.slf4j.Logger;
 
 final class Ford {
@@ -92,7 +93,7 @@ final class Ford {
         int y = heights.surface(x, z);
         Holder<Biome> biome = heights.biome(x, y, z);
         return !heights.wet(x, z) && !biome.is(BiomeTags.IS_OCEAN) && !biome.is(BiomeTags.IS_DEEP_OCEAN) && !biome.is(BiomeTags.IS_RIVER)
-                && !biome.is(BiomeTags.IS_BEACH) && !(warm && Unseen.snowy(biome, new BlockPos(x, y, z)));
+                && !biome.is(BiomeTags.IS_BEACH) && !biome.is(Tags.Biomes.IS_SWAMP) && !(warm && Unseen.snowy(biome, new BlockPos(x, y, z)));
     }
 
     private static boolean flat(Unseen.Heights heights, Vec3 at, Vec3 way, int half) {
@@ -359,7 +360,7 @@ final class Ford {
         if (body.isEmpty()) {
             People.person(level, WOUNDED, Vec3.atBottomCenterOf(start), yaw(Vec3.atCenterOf(start), Vec3.atCenterOf(bank)), "standing");
         }
-        People.walk(server, WOUNDED, Vec3.atBottomCenterOf(bank));
+        People.walk(server, WOUNDED, Vec3.atBottomCenterOf(bank), People.WALKING);
         crossing = true;
     }
 
@@ -369,7 +370,7 @@ final class Ford {
 
     static void lay(MinecraftServer server) {
         crossing = false;
-        Places.seat(server, NAME).ifPresent(seat -> People.person(Engine.overworld(server), WOUNDED, seat.at(), seat.yaw(), SITTING));
+        Places.seat(server, NAME).ifPresent(seat -> People.place(Engine.overworld(server), WOUNDED, seat.at(), seat.yaw(), SITTING));
     }
 
     private static void watch(MinecraftServer server) {

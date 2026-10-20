@@ -30,6 +30,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -77,6 +78,8 @@ public final class Frost {
     private static final String LAKE_TURN = "frost_lake_turn";
     private static final String LAID = "frost_laid";
     private static final String ROOF = "frost_roof";
+    private static final String DOOR = "frost_door";
+    private static final String HEARTH = "frost_hearth";
     private static final String STAIR = "frost_stair";
     private static final String INSIDE = "frost_inside";
     private static final String SHORE = "frost_shore";
@@ -94,6 +97,14 @@ public final class Frost {
     private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/frost.json");
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_frost", Comparator.comparingLong(ChunkPos::toLong));
     private static final int GRID = 64;
+    private static final int LAKE_AROUND_BLOCKS = 64;
+    private static final int LAKE_FAN_STEP = 16;
+    private static final int LAKE_MARGIN = 4;
+    private static final int LAKE_RAISED_COST = 4;
+    private static final int LAKE_ROUGH_COST = 16;
+    private static final int LAKE_ROUGH_MOST = 8;
+    private static final int LAKE_STEP = 128;
+    private static final int LAKE_SNOW_BONUS = 32;
     private static final int INSIDE_SAMPLE = 32;
     private static final int EDGE_STEP = 8;
     private static final int TURN_STEP_DEGREES = 15;
@@ -179,7 +190,7 @@ public final class Frost {
         BlockPos from = progress.place(HALL_SITE).orElseGet(() -> Caravan.last(server));
         Home.Aim aim = Home.aim(from, new Vec3(1, 0, 0), balance.lakeBlocks());
         Unseen.Heights heights = new Unseen.Heights(level);
-        BlockPos site = ground(heights, aim.from(), aim.way(), balance.lakeBlocks());
+        BlockPos site = hollow(heights, aim.from(), aim.way(), balance);
         if (!snowy(heights, site.getX(), site.getZ())) {
             progress.place(SNOWFIELD + LAKE, site);
         }
@@ -187,6 +198,60 @@ public final class Frost {
         progress.yaws.put(LAKE_TURN, (float) facing(aim.way().scale(-1)).ordinal());
         progress.setDirty();
         LOGGER.info("the frozen lake lies at {}", site);
+    }
+
+    private static BlockPos hollow(Unseen.Heights heights, BlockPos from, Vec3 way, Balance.Frost balance) {
+        return hollow(heights, from, way, balance, LAKE_ROUGH_MOST).or(() -> hollow(heights, from, way, balance, Integer.MAX_VALUE))
+                .orElseGet(() -> ground(heights, from, way, balance.lakeBlocks()));
+    }
+
+    private static Optional<BlockPos> hollow(Unseen.Heights heights, BlockPos from, Vec3 way, Balance.Frost balance, int roughest) {
+        int reach = PLAN.get().getAsJsonObject("lake").getAsJsonArray("size").get(0).getAsInt() / 2 + LAKE_MARGIN;
+        BlockPos best = null;
+        double most = Double.NEGATIVE_INFINITY;
+        for (int turned = -balance.lakeFanDegrees(); turned <= balance.lakeFanDegrees(); turned += LAKE_FAN_STEP) {
+            Vec3 along = way.yRot((float) Math.toRadians(turned));
+            for (int distance = balance.lakeBlocks() - balance.lakeSpreadBlocks(); distance <= balance.lakeBlocks() + balance.lakeSpreadBlocks(); distance += LAKE_STEP) {
+                Vec3 at = Vec3.atLowerCornerOf(from).add(along.scale(distance));
+                int x = (int) Math.round(at.x);
+                int z = (int) Math.round(at.z);
+                Optional<int[]> spread = spread(heights, x, z, reach, roughest);
+                if (spread.isEmpty()) {
+                    continue;
+                }
+                int y = heights.surface(x, z);
+                double around = 0;
+                for (Direction side : Direction.Plane.HORIZONTAL) {
+                    around += heights.surface(x + side.getStepX() * LAKE_AROUND_BLOCKS, z + side.getStepZ() * LAKE_AROUND_BLOCKS);
+                }
+                around /= 4;
+                double score = -(spread.get()[1] - spread.get()[0]) * LAKE_ROUGH_COST - Math.max(0, y - around) * LAKE_RAISED_COST
+                        + (snowy(heights, x, z) ? LAKE_SNOW_BONUS : 0) - Math.abs(distance - balance.lakeBlocks()) / (double) LAKE_STEP;
+                if (score > most) {
+                    most = score;
+                    best = new BlockPos(x, y, z);
+                }
+            }
+        }
+        return Optional.ofNullable(best);
+    }
+
+    private static Optional<int[]> spread(Unseen.Heights heights, int x, int z, int reach, int roughest) {
+        int low = Integer.MAX_VALUE;
+        int high = Integer.MIN_VALUE;
+        for (int[] at : new int[][] {{0, 0}, {reach, 0}, {-reach, 0}, {0, reach}, {0, -reach}, {reach / 2, reach / 2}, {-reach / 2, -reach / 2},
+                {reach / 2, -reach / 2}, {-reach / 2, reach / 2}}) {
+            if (heights.wet(x + at[0], z + at[1])) {
+                return Optional.empty();
+            }
+            int y = heights.surface(x + at[0], z + at[1]);
+            low = Math.min(low, y);
+            high = Math.max(high, y);
+            if (high - low > roughest) {
+                return Optional.empty();
+            }
+        }
+        return Optional.of(new int[] {low, high});
     }
 
     private static Optional<BlockPos> snow(Unseen.Heights heights, BlockPos from, Vec3 way, Balance.Frost balance) {
@@ -358,6 +423,14 @@ public final class Frost {
         progress.place(NAME, origin.offset(StructureTemplate.calculateRelativePosition(settings, local(plan.getAsJsonArray("door")))));
         progress.place("seat_" + ROOF, origin.offset(StructureTemplate.calculateRelativePosition(settings, local(plan.getAsJsonArray("roof")))));
         progress.yaws.put("seat_" + ROOF, yaw);
+        BlockPos hearth = origin.offset(StructureTemplate.calculateRelativePosition(settings, local(plan.getAsJsonArray("hearth"))));
+        BlockPos beside = origin.offset(StructureTemplate.calculateRelativePosition(settings, local(plan.getAsJsonArray("hearth_seat"))));
+        progress.place("seat_" + HEARTH, beside);
+        progress.yaws.put("seat_" + HEARTH, (float) Math.toDegrees(Math.atan2(beside.getX() - hearth.getX(), hearth.getZ() - beside.getZ())));
+        progress.place(NAME).ifPresent(door -> {
+            progress.place("seat_" + DOOR, door);
+            progress.yaws.put("seat_" + DOOR, yaw);
+        });
         progress.setDirty();
         BlockPos kill = origin.offset(StructureTemplate.calculateRelativePosition(settings, local(plan.getAsJsonArray("kill"))));
         Fallen.lay(level, EntityType.GOAT, Vec3.atBottomCenterOf(kill), yaw + 90, true, Steps.CLUE + NAME);
@@ -387,7 +460,11 @@ public final class Frost {
         progress.place(SHAFT_LOW, new BlockPos(shaft.minX(), shaft.minY(), shaft.minZ()));
         progress.place(SHAFT_HIGH, new BlockPos(shaft.maxX(), shaft.maxY(), shaft.maxZ()));
         Vec3 home = Vec3.atLowerCornerOf(progress.place(HOUSE_SITE).orElse(site).subtract(stair)).multiply(1, 0, 1).normalize();
+        BoundingBox cover = shaft.inflatedBy(1);
         Vec3 seat = Vec3.atBottomCenterOf(stair).add(home.scale(STAIR_SEAT));
+        for (int out = STAIR_SEAT; cover.intersects(Mth.floor(seat.x), Mth.floor(seat.z), Mth.floor(seat.x), Mth.floor(seat.z)) && out < STAIR_SEAT * 4; out++) {
+            seat = Vec3.atBottomCenterOf(stair).add(home.scale(out));
+        }
         BlockPos stairSeat = BlockPos.containing(seat.x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) Math.floor(seat.x), (int) Math.floor(seat.z)),
                 seat.z);
         progress.place("seat_" + STAIR, stairSeat);

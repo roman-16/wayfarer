@@ -163,7 +163,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | What do the settled remember? | Wayfarers only as a story told to children: walkers who carried fire and never stayed. They have no name for what burns their towns; they say "they", or "the night" |
 | Who are the Gazebound? | An Illager cult under the Grass King's heir that serves the gaze to use it: they believe its sight will run through them once the Eye is set. Their outposts, camps, forts and mansions stand across the world |
 | What is the Gazebound's mark? | An open eye: the eye they serve, on their banners and cut wherever they have been |
-| What do the Gazebound ask on the road? | After a light: "Seen anyone with a coal in their hand that glows? A fire that walks?" They are looking for whoever carries an ember |
+| What do the Gazebound ask on the road? | After an ember: "Seen anyone with a glowing coal in their hand?" They are looking for whoever carries an ember |
 | Where do the Illagers come from? | They are the Grass Kingdom's outcasts and their children |
 | Why do monsters leave the Gazebound alone? | At their oath, every Gazebound lets the gaze's creatures open their chest just far enough to look. Not all survive it; those who do carry the scar over the heart, and the gaze never searches a heart twice. They call it a blessing |
 | Why do the Gazebound feed Wayfarers? | Only an ember can lift a shard, and an ember cannot be taken. So they feed Wayfarers, follow their smoke, and wait |

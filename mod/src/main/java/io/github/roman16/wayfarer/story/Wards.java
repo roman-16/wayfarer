@@ -36,6 +36,8 @@ import net.neoforged.neoforge.event.level.PistonEvent;
 
 public final class Wards {
     private static final int GRIEF_REACH = 4;
+    private static final double FOOT = 0.25;
+    private static final String FOOTING = "footing";
 
     private Wards() {}
 
@@ -67,6 +69,16 @@ public final class Wards {
         return wards(level.getServer()).stream().filter(ward -> ward.box().isInside(pos)).findFirst();
     }
 
+    private static Optional<Ward> footing(LevelAccessor accessor, BlockPos pos) {
+        if (!(accessor instanceof ServerLevel level)) {
+            return Optional.empty();
+        }
+        AABB above = new AABB(pos.above()).deflate(FOOT, 0, FOOT);
+        boolean stood = !level.getEntitiesOfClass(Entity.class, above, body -> body.getTags().contains(People.TAG)
+                && Math.abs(body.getBoundingBox().minY - (pos.getY() + 1)) < FOOT).isEmpty();
+        return stood ? Optional.of(new Ward(FOOTING, new BoundingBox(pos))) : Optional.empty();
+    }
+
     private static void refuse(Entity entity, Ward ward) {
         if (entity instanceof ServerPlayer player) {
             player.displayClientMessage(Component.translatable("wayfarer.ward." + ward.place()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
@@ -77,7 +89,7 @@ public final class Wards {
     public static void onLeftClick(PlayerInteractEvent.LeftClickBlock event) {
         if (event.getAction() == PlayerInteractEvent.LeftClickBlock.Action.START && !event.getEntity().isCreative()
                 && !Graves.grave(event.getLevel().getBlockState(event.getPos()))) {
-            at(event.getLevel(), event.getPos()).ifPresent(ward -> {
+            at(event.getLevel(), event.getPos()).or(() -> footing(event.getLevel(), event.getPos())).ifPresent(ward -> {
                 event.setCanceled(true);
                 refuse(event.getEntity(), ward);
             });
@@ -87,7 +99,7 @@ public final class Wards {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onBreak(BlockEvent.BreakEvent event) {
         if (!event.getPlayer().isCreative() && !Graves.grave(event.getState())) {
-            at(event.getLevel(), event.getPos()).ifPresent(ward -> {
+            at(event.getLevel(), event.getPos()).or(() -> footing(event.getLevel(), event.getPos())).ifPresent(ward -> {
                 event.setCanceled(true);
                 refuse(event.getPlayer(), ward);
             });

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
+import io.github.roman16.wayfarer.Underground;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -243,14 +244,7 @@ final class Marsh {
         BlockPos pool = local(PLAN.get().getAsJsonObject("places").getAsJsonArray("pool"));
         int water = top(level, site.getX(), site.getZ());
         BlockPos hall = new BlockPos(site.getX(), water - pool.getY(), site.getZ()).subtract(turned(settings, pool.atY(0)));
-        BlockPos origin = local(PLAN.get().getAsJsonArray("origin"));
-        BlockPos rest = hall.offset(turned(settings, origin));
-        StructureTemplate hut = template(level, "marsh/hut");
-        clear(level, hut.getBoundingBox(settings, rest));
-        level(level, hall, settings, pool.getY());
-        template(level, "marsh/way").placeInWorld(level, rest, rest, settings, level.random, FLAGS);
-        template(level, "hall/witch/hall").placeInWorld(level, hall, hall, settings, level.random, FLAGS);
-        hut.placeInWorld(level, rest, rest, settings, level.random, FLAGS);
+        build(level, hall, turn);
         progress.place(ORIGIN, hall);
         record(server, level, hall, settings, turn);
         level.getChunkSource().removeRegionTicket(TICKET, new ChunkPos(site), LOAD_RADIUS, new ChunkPos(site));
@@ -258,6 +252,23 @@ final class Marsh {
         Standing.keep(server, NAME);
         LOGGER.info("the Marsh Mothers' hall stands at {}, its pool at {}, turned {}", progress.place(HALL).orElseThrow(), world(server, "pool"), turn);
         Journal.syncAll(server);
+    }
+
+    static void build(ServerLevel level, BlockPos hall, Rotation turn) {
+        StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(turn);
+        BlockPos rest = hall.offset(turned(settings, local(PLAN.get().getAsJsonArray("origin"))));
+        JsonObject standing = PLAN.get().getAsJsonObject("hut");
+        clear(level, BoundingBox.fromCorners(hall.offset(turned(settings, local(standing.getAsJsonArray("from")))),
+                hall.offset(turned(settings, local(standing.getAsJsonArray("to"))))));
+        level(level, hall, settings, local(PLAN.get().getAsJsonObject("places").getAsJsonArray("pool")).getY());
+        StructurePlaceSettings below = Underground.settings(turn);
+        template(level, "marsh/way").placeInWorld(level, rest, rest, below, level.random, FLAGS);
+        template(level, "hall/witch/hall").placeInWorld(level, hall, hall, below, level.random, FLAGS);
+        template(level, "marsh/hut").placeInWorld(level, rest, rest, settings, level.random, FLAGS);
+    }
+
+    static JsonObject plan() {
+        return PLAN.get();
     }
 
     private static void record(MinecraftServer server, ServerLevel level, BlockPos hall, StructurePlaceSettings settings, Rotation turn) {
@@ -278,9 +289,9 @@ final class Marsh {
                 hall.offset(turned(settings, local(ward.getAsJsonArray("to"))))));
         progress.setDirty();
         for (String person : PEOPLE) {
-            Places.seat(server, person).ifPresent(seat -> People.person(level, person, seat.at(), seat.yaw(), "standing"));
+            Places.seat(server, person).ifPresent(seat -> People.place(level, person, seat.at(), seat.yaw(), "standing"));
         }
-        Places.seat(server, FISHER).ifPresent(seat -> People.person(level, FISHER, seat.at(), seat.yaw(), "sleeping"));
+        Places.seat(server, FISHER).ifPresent(seat -> People.place(level, FISHER, seat.at(), seat.yaw(), "sleeping"));
         plan.getAsJsonObject("clues").entrySet().forEach(clue -> Clues.marker(level, hall.offset(turned(settings, local(clue.getValue().getAsJsonArray()))), clue.getKey()));
         for (JsonElement mark : plan.getAsJsonArray("marks")) {
             Clues.display(level, hall.offset(turned(settings, local(mark.getAsJsonArray()))), TRACK_SCALE, NAME);

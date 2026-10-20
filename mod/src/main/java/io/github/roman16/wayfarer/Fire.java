@@ -174,7 +174,9 @@ public final class Fire {
             RESTING.remove(player.getUUID());
             return;
         }
-        RESTING.add(player.getUUID());
+        if (RESTING.add(player.getUUID())) {
+            Record.event(player.server, "rest", player);
+        }
         rest(player, fire.get());
     }
 

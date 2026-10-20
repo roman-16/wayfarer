@@ -20,6 +20,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.saveddata.SavedData;
 
 public final class Progress extends SavedData {
+    private static final String DONE = "done";
     private static final String NAME = "wayfarer_story";
 
     final Map<String, Integer> steps = new LinkedHashMap<>();
@@ -138,10 +139,22 @@ public final class Progress extends SavedData {
         return claims.getOrDefault(reward, Set.of()).contains(player);
     }
 
+    private static int index(Story.Quest quest, String step) {
+        if (step.equals(DONE)) {
+            return quest.steps().size();
+        }
+        for (int index = 0; index < quest.steps().size(); index++) {
+            if (quest.steps().get(index).id().equals(step)) {
+                return index;
+            }
+        }
+        throw new IllegalStateException("the save stands at " + quest.id() + "/" + step + ", which the story no longer has");
+    }
+
     private static Progress load(CompoundTag tag, HolderLookup.Provider registries) {
         Progress progress = new Progress();
         CompoundTag steps = tag.getCompound("steps");
-        steps.getAllKeys().forEach(key -> progress.steps.put(key, steps.getInt(key)));
+        steps.getAllKeys().forEach(key -> Story.get().quest(key).ifPresent(quest -> progress.steps.put(key, index(quest, steps.getString(key)))));
         CompoundTag scratch = tag.getCompound("scratch");
         scratch.getAllKeys().forEach(key -> progress.scratch.put(key, scratch.getCompound(key)));
         CompoundTag choices = tag.getCompound("choices");
@@ -205,7 +218,7 @@ public final class Progress extends SavedData {
     @Override
     public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         CompoundTag steps = new CompoundTag();
-        this.steps.forEach(steps::putInt);
+        this.steps.forEach((quest, index) -> Story.get().quest(quest).ifPresent(found -> steps.putString(quest, index >= found.steps().size() ? DONE : found.steps().get(index).id())));
         tag.put("steps", steps);
         CompoundTag scratch = new CompoundTag();
         this.scratch.forEach(scratch::put);

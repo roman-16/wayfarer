@@ -12,7 +12,7 @@ RIDGE = 6
 DOOR = (5, 11)
 HEARTH = (5, 8)
 SMOKE = (5, 8)
-LAKE = 25
+LAKE = 48
 LAKE_DEPTH = 5
 ICE = 2
 SHORE = 2
@@ -220,6 +220,8 @@ def positions():
     return {
         "house": {
             "door": [MARGIN + DOOR[0], FLOOR, MARGIN + length],
+            "hearth": [MARGIN + HEARTH[0], FLOOR, MARGIN + HEARTH[1]],
+            "hearth_seat": [MARGIN + HEARTH[0] + 2, FLOOR, MARGIN + HEARTH[1]],
             "kill": [MARGIN + DOOR[0] + 2, FLOOR, MARGIN + length],
             "roof": [MARGIN + (width - 1) // 2, RIDGE + 1, MARGIN + length - 4],
             "size": list(HOUSE),

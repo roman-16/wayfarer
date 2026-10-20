@@ -1,7 +1,12 @@
 import math
+from pathlib import Path
 
+import tomllib
 from blocks import AIR, Material, Room, Template, coherent, noise
 from halls import FALSE_WALL
+
+ROOT = Path(__file__).resolve().parent.parent
+BALANCE = tomllib.loads((ROOT / "balance.toml").read_text())["marsh"]
 
 WATER = 13
 GROUND = WATER
@@ -9,8 +14,7 @@ FLOOR = GROUND + 2
 LANDING = (13, 14)
 WELL = (15, 16)
 TUNNEL_FLOOR = -4
-TUNNEL = (17, 40)
-POCKET = (27, 28)
+DESCENT = WATER - TUNNEL_FLOOR
 POOL = (6, 41)
 POOL_HALF = 3
 SHAFT_HALF = 1
@@ -25,9 +29,15 @@ HUT = ((3, 9), (28, 34))
 PORCH = (35, 38)
 CHIMNEY = (10, 30)
 RIM = 7
-MARKS = (20, 25, 32, 37)
-LOW = (-4, -6, 0)
-HIGH = (14, 30, 49)
+ROW = 8
+START = (POOL[0], POOL[1] - 1)
+END = (POOL[0], WELL[1] + 1)
+LAST_ROW = START[1] - 2 * ROW
+REACH = (BALANCE["drowned_blocks"] - 2 * ROW - (LAST_ROW - END[1])) // 4
+SPREAD = 4
+STILL_ENDS = 3
+LOW = (POOL[0] - REACH - SPREAD, -6, 0)
+HIGH = (POOL[0] + REACH + SPREAD, 30, 49)
 
 MUD = Material(
     "marsh/mud",
@@ -83,7 +93,6 @@ def way():
     landing(room)
     well(room)
     tunnel(room)
-    pocket(room)
     pool(room)
     stair(room)
     cellar(room)
@@ -127,40 +136,79 @@ def well(room):
                 open_air(room, (x, y, z))
 
 
-def bend(z):
-    return round(math.sin((z - TUNNEL[0]) / 4.0) * 1.2)
+def course():
+    x0, z0 = START
+    points = [
+        START,
+        (x0 + REACH, z0),
+        (x0 + REACH, z0 - ROW),
+        (x0 - REACH, z0 - ROW),
+        (x0 - REACH, LAST_ROW),
+        (x0, LAST_ROW),
+        END,
+    ]
+    cells = []
+    for (ax, az), (bx, bz) in zip(points, points[1:], strict=False):
+        dx, dz = (bx > ax) - (bx < ax), (bz > az) - (bz < az)
+        x, z = ax, az
+        while (x, z) != (bx, bz):
+            cells.append((x, z, dx != 0))
+            x, z = x + dx, z + dz
+    cells.append((*END, False))
+    return cells
+
+
+def across(cells, index, d):
+    x, z, along_x = cells[index]
+    still = index < STILL_ENDS or index >= len(cells) - STILL_ENDS
+    shift = 0 if still else round(math.sin(index / 4.0) * 1.2)
+    return (x, z + shift + d) if along_x else (x + shift + d, z)
+
+
+def pockets(cells):
+    return [
+        index
+        for index in range(BALANCE["pocket_every_blocks"] - DESCENT, len(cells) - ROW, BALANCE["pocket_every_blocks"])
+    ]
+
+
+def marks(cells):
+    return [
+        across(cells, index, 0)
+        for index in range(BALANCE["mark_every_blocks"], len(cells), BALANCE["mark_every_blocks"])
+    ]
 
 
 def tunnel(room):
-    for z in range(TUNNEL[0], TUNNEL[1] + 1):
-        shift = bend(z)
-        for x in range(4 + shift, 9 + shift):
-            edge = x in (4 + shift, 8 + shift)
-            if edge and coherent("marsh/tunnel-wide", (x, 0, z)) < 0.55:
+    cells = course()
+    for index in range(len(cells)):
+        for d in range(-2, 3):
+            x, z = across(cells, index, d)
+            if abs(d) == 2 and coherent("marsh/tunnel-wide", (x, 0, z)) < 0.55:
                 continue
             put(room, (x, TUNNEL_FLOOR, z), BED)
             for y in range(TUNNEL_FLOOR + 1, TUNNEL_FLOOR + 4):
                 flood(room, (x, y, z))
-        for x in range(4 + shift, 9 + shift):
+    free = {across(cells, index, 0) for index in range(len(cells))}
+    rising = {across(cells, index + step, d) for index in pockets(cells) for step in (0, 1) for d in (0, 1)}
+    for index in range(len(cells)):
+        for d in range(-2, 3):
+            x, z = across(cells, index, d)
             for y in range(TUNNEL_FLOOR + 1, TUNNEL_FLOOR + 4):
                 pos = (x, y, z)
-                if at(pos) not in room.open or abs(x - 6 - shift) == 0 and y < TUNNEL_FLOOR + 3:
+                ceiling = y == TUNNEL_FLOOR + 3
+                if at(pos) not in room.open or (x, z) in free and not ceiling or (x, z) in rising:
                     continue
-                hang = y == TUNNEL_FLOOR + 3 and coherent("marsh/roots", pos) < 0.5
-                side = abs(x - 6 - shift) >= 2 and coherent("marsh/roots-side", pos) < 0.45
+                hang = ceiling and coherent("marsh/roots", pos) < 0.5
+                side = abs(d) >= 2 and coherent("marsh/roots-side", pos) < 0.45
                 if hang or side:
                     put(room, pos, "minecraft:mangrove_roots", waterlogged=True)
-
-
-def pocket(room):
-    for z in range(POCKET[0], POCKET[1] + 1):
-        for x in (5, 6):
-            shift = bend(z)
-            for y in range(TUNNEL_FLOOR + 4, TUNNEL_FLOOR + 8):
-                if y <= TUNNEL_FLOOR + 5:
-                    flood(room, (x + shift, y, z))
-                else:
-                    open_air(room, (x + shift, y, z))
+    for x, z in rising:
+        for y in range(TUNNEL_FLOOR + 4, TUNNEL_FLOOR + 8):
+            if y <= TUNNEL_FLOOR + 5:
+                flood(room, (x, y, z))
+            else:
+                open_air(room, (x, y, z))
 
 
 def pool(room):
@@ -175,7 +223,7 @@ def pool(room):
                 flood(room, (x, y, z))
             put(room, (x, WATER - depth, z), BED)
     for x in range(cx - SHAFT_HALF, cx + SHAFT_HALF + 1):
-        for z in range(TUNNEL[1], cz + SHAFT_HALF + 1):
+        for z in range(START[1], cz + SHAFT_HALF + 1):
             for y in range(TUNNEL_FLOOR + 1, WATER + 1):
                 flood(room, (x, y, z))
     for x in range(cx - SHAFT_HALF - 1, cx + SHAFT_HALF + 2):
@@ -238,15 +286,16 @@ def cellar(room):
                 open_air(room, (x, y, z))
     for y in (CELLAR_FLOOR + 1, CELLAR_FLOOR + 2):
         put(room, (x0 - 1, y, z0 + 1), FALSE_WALL)
+        room.open.add(at((x0 - 1, y, z0 + 1)))
     hx, hz = HATCH
-    for y in range(CELLAR_FLOOR + 1, GROUND + 1):
+    for y in range(CELLAR_FLOOR + 1, FLOOR):
         put(room, (hx, y, hz), "minecraft:ladder", facing="south", waterlogged=False)
         for dx, dz in ((-1, 0), (1, 0), (0, -1), (0, 1)):
             if at((hx + dx, y, hz + dz)) not in room.t.blocks:
                 put(room, (hx + dx, y, hz + dz), MUD)
     put(
         room,
-        (hx, GROUND + 1, hz),
+        (hx, FLOOR, hz),
         "minecraft:mangrove_trapdoor",
         facing="south",
         half="top",
@@ -258,12 +307,16 @@ def cellar(room):
     put(room, (x1, CELLAR_FLOOR + 1, z0), "minecraft:decorated_pot", facing="west", cracked=False, waterlogged=False)
     put(room, (x0, CELLAR_FLOOR + 1, z1), "minecraft:decorated_pot", facing="north", cracked=False, waterlogged=False)
     for x in range(x0, x1 + 1):
-        if noise("marsh/cellar-roots", x) < 0.6:
+        if noise("marsh/cellar-roots", x) < 0.6 and (x, z0) != HATCH:
             put(room, (x, CELLAR_FLOOR + 3, z0), "minecraft:rooted_dirt")
             put(room, (x, CELLAR_FLOOR + 2, z0), "minecraft:hanging_roots", waterlogged=False)
 
 
 def hut(carved):
+    return shifted(standing(carved))
+
+
+def standing(carved):
     t = Template()
     bank(t, carved)
     footing(t)
@@ -276,7 +329,7 @@ def hut(carved):
     shore(t)
     clues(t)
     growth(t)
-    return shifted(t)
+    return t
 
 
 def carved(room):
@@ -363,7 +416,7 @@ def house(t):
     windows = (
         (x0, z0 + 2, "west"),
         (x0, z1 - 2, "west"),
-        (x1, z0 + 2, "east"),
+        (x1, z1 - 2, "east"),
         (door - 1, z1, "south"),
         (door + 1, z0, "north"),
     )
@@ -404,20 +457,22 @@ def porch(t):
     for x in (x0, door, x1):
         for y in range(GROUND - 3, FLOOR):
             t.set((x, y, PORCH[1]), "minecraft:mangrove_log", axis="y")
+    for x in (x0, x1):
         for y in range(FLOOR + 1, FLOOR + 4):
+            railed = y == FLOOR + 1
             t.set(
                 (x, y, PORCH[1]),
                 "minecraft:spruce_fence",
-                east=False,
-                north=False,
+                east=railed and x == x0,
+                north=railed and x == x0,
                 south=False,
-                west=False,
+                west=railed and x == x1,
                 waterlogged=False,
             )
     rail = {"north": False, "south": False, "waterlogged": False}
     for x in range(x0 + 1, x1):
         if x != door:
-            t.set((x, FLOOR + 1, PORCH[1]), "minecraft:spruce_fence", east=True, west=True, **rail)
+            t.set((x, FLOOR + 1, PORCH[1]), "minecraft:spruce_fence", east=x + 1 != door, west=x - 1 != door, **rail)
     for z in range(PORCH[0], PORCH[1]):
         t.set(
             (x0, FLOOR + 1, z),
@@ -504,7 +559,7 @@ def roof(t):
         for z in range(z0 - 1, z1 + 2):
             distance = abs(z - middle)
             y = FLOOR + 5 + round(min(4, (middle - z0 + 1 - distance)))
-            facing = "south" if z > middle else "north"
+            facing = "north" if z > middle else "south"
             mossy = coherent("marsh/roof-moss", (x, y, z)) < 0.3
             if distance < 0.6:
                 t.set(
@@ -639,10 +694,18 @@ def layout(hall, carved):
         "clues": {name: list(pos) for name, pos in layout_clues().items()},
         "false_walls": [hall["hidden"], [hall["hidden"][0], hall["hidden"][1] + 1, hall["hidden"][2]]]
         + [[x0 - 1, y, z0 + 1] for y in (CELLAR_FLOOR + 1, CELLAR_FLOOR + 2)],
-        "marks": [[6 + bend(z), TUNNEL_FLOOR, z] for z in MARKS],
+        "marks": [[x, TUNNEL_FLOOR, z] for x, z in marks(course())],
         "origin": list(LOW),
         "stone": hall["stone"],
         "places": places(),
         "under": WATER - 1,
         "ward": {"from": list(LOW), "to": [HIGH[0], GROUND, HIGH[2]]},
+        "hut": extent(standing(carved)),
+    }
+
+
+def extent(t):
+    return {
+        "from": [min(pos[axis] for pos in t.blocks) for axis in range(3)],
+        "to": [max(pos[axis] for pos in t.blocks) for axis in range(3)],
     }

@@ -1,3 +1,4 @@
 {
-  "darkEnd": false
+  "darkEnd": false,
+  "minimumMoonBrightness": 0.0
 }

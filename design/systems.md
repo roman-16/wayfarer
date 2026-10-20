@@ -7,7 +7,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 ### M1 The quest engine: the Wayfarer mod's own
 
 - Quests run on an engine of the Wayfarer mod's own, with its own journal screen for the quests, their steps and the codex. Quests are written as data in `story/quests.toml` and turned into the mod's data by `just generate`. FTB Quests, FTB Teams and FTB Library leave the pack.
-- The world's story state lives in the mod's world-save data, as `Journey` already keeps the shards and the ember's waking, so it is one for the whole world (D11).
+- The world's story state lives in the mod's world-save data, as `Journey` already keeps the shards and the ember's waking, so it is one for the whole world (D11). The save names each quest's step by its id, or `done`, never by its place in the list, so a quest that gains a step keeps every world where it stood; a step that is renamed or cut is moved in existing worlds once, out of band.
 - A quest is a list of steps, each with a goal (a hall, a kind of place, a person, a memory), and a step's choices are remembered by name for later scenes to check:
 
   ```toml
@@ -41,10 +41,10 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
   | Part | What it does | From |
   |---|---|---|
-  | Main and side quests | Listed apart in the journal, each with its current objective; main quests carry the acts, and some carry no shard. A side quest opens on a line someone says (its `road` lines, such as Maud telling of the herder who came while the team was out), and its banner follows that line. A quest whose step only waits, for Cadoc's word, for M.'s next bundle, for Drifa's word, is not in the journal and cannot be tracked until the wait is over; then it appears with the banner "New in your journal". While a side quest waits for the team at the fire and nobody tracks it, the person it belongs to says so when right-clicked ("That herder said he'd be back after dark.") | D3, D6 |
+  | Main and side quests | Listed apart in the journal, each with its current objective; main quests carry the acts, and some carry no shard. A side quest opens on a line someone says (its `road` lines, such as Maud telling of the herder who came while the team was out), and its banner follows that line. Nothing names a quest before someone speaks of it: its summary holds only what its opening line said, and what the talk after it tells goes into the story so far. A quest whose step only waits, for Cadoc's word, for M.'s next bundle, for Drifa's word, is not in the journal and cannot be tracked until the wait is over; then it appears with the banner "New in your journal". While a side quest waits for the team at the fire and nobody tracks it, the person it belongs to says so when right-clicked ("That herder said he'd be back after dark.") | D3, D6 |
   | Steps | A quest is steps; a step's goal is a hall, a person, a memory, a fixed place, a place the quest puts down, or the nearest place of a kind ahead | D3, D16, S13 |
   | Order | A quest opens after others, or "by count" after a number of an act's halls, whichever they were | S3, S16 |
-  | Tracking | Each player chooses which quest they follow, if any, and the compass shows its goal as the player knows it: by feeling (the ember flares and gutters, exact within 256 blocks), by rumour (a direction and a rough distance, exact within 256 blocks) or by being told (exact from the start) | D6, S7 |
+  | Tracking | Each player chooses which quest they follow, if any, and the compass shows its goal as the player knows it: by feeling (the ember flares and gutters, exact within 256 blocks), by rumour (a direction and a rough distance, exact within 256 blocks) or by being told (exact from the start); whenever nothing is tracked and a road stands open, the task panel says "Choose what to follow next: open your journal J and press Track", quietly | D6, S7 |
   | Choices | Remembered by name for the whole world and brought back later, in a scene, at a fire, in a person's words or at the doors; an ordinary answer goes to the first click, a hard decision to two thirds of the team | D1, D10, D12 |
   | Failing | Falling never fails a quest; a story that goes wrong turns the quest into a worse version; a challenge that goes wrong lets its step be tried again, resetting only the quest's own people and places; a main quest always leaves a way on | D6 |
   | Clocks | A few quests carry a clock the journal shows, and turn when it runs out | D6 |
@@ -52,7 +52,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Unlocks | Ships, flight, sight through stone, the memories and the frame open with their quests, never with a number of shards | D15 |
   | One state | Quests, choices, shards and people belong to the world, as far as the team has got; what one player does, the world does | D11 |
   | The day | "Make for the caravan" is always there; a quest can keep the player out for a night and set the clock itself, or keep them at a place for a while | D2, D14 |
-  | Lines in chat | Every line goes to everyone and waits for its voice before the next | D11, `narration.md` |
+  | Lines in chat | Every line goes to everyone, within reach as a subtitle and farther away in chat, and waits for its voice before the next line of its own conversation | D11, `narration.md` |
   | The journal as a codex | The story so far, every person met, every word of the world, every book and talk, written plainly as "I" from the player's point of view, holding only what the team knows so far, shared and always up to date | D6, D11 |
   | Narration | Journal entries and quest descriptions read aloud like book pages, once each, with a button to hear them again | `narration.md` |
 
@@ -108,9 +108,12 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 | Gravestone builds a stone even for a fall with nothing in it, and has no setting against it | A stone with nothing in it is not recorded |
 | The compass already takes marks from other code, so the single grave of the last death gives way to every stone through the same hook | Stones reach the compass the way quest goals do; the HUD still needs to draw the fullest one strongest |
 
-### M3 Conversations: one scene at a time, for everyone
+### M3 Conversations: each where it happens, for everyone
 
 - Every player online follows a conversation: within reach as subtitles, with the answers numbered beside the crosshair, and farther away in chat, each speaker in a colour of their own (`interface.md`, I4).
+- A conversation belongs to where it is said: a quest's talk, a road scene, a villager's word. Conversations in different places run at once, so a teammate's road scene never holds the story's talk elsewhere, and a player hears one at a time, the story's before the road's. A road scene's question that nobody stands near any more lapses after half a minute (`balance.toml` `[talk]` `lapse_seconds`), as if they had walked on; a quest's question waits for its people to come back, and holds nothing else meanwhile, so nothing ever waits on an answer nobody near can give.
+
+  **Why:** In the friends' play on 17.10. ShinyaKougami walked past the men in grey without answering, and their question, at the head of the world's only queue of talk, held every line and step of the story until the server stopped; two players 200 blocks apart are two audiences.
 - An ordinary answer can be chosen only by a player near the person, within about 32 blocks, and the first choice decides. A hard decision, a shard or a door, can be voted on by every player online, wherever they are, and needs two thirds.
 - A person speaks under what the player sees until someone says their name, and under their name from that line on; the name over their head follows. Every person is introduced in their first scene.
 
@@ -146,7 +149,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 
 ### M4 Road scenes: placed ahead, taken away behind
 
-- A scene is set up 64 to 128 blocks ahead on the way the player is going, behind a hill or a bend, never while anyone can see the spot. Once everyone has walked out of sight of it, its props and people are taken away; what the story keeps stays, such as a grave the player dug, a burned cart or the herder's fold.
+- A scene is set up 64 to 128 blocks ahead on the way the player is going, behind a hill or a bend, never while anyone can see the spot. Once everyone is out of sight of it and has walked 64 blocks farther from it than the nearest they came, or stands 192 blocks off, its props and people are taken away, so a team that turns round in a village or loots a house on the way leaves it waiting; what the story keeps stays, such as a grave the player dug, a burned cart or the herder's fold.
 
   ```text
   You crest a ridge. Below, by the stream: a cart on its side, a dead mule, tracks into the reeds.
@@ -168,7 +171,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 | Walking into a lake or along a river leaves no dry spot on any of the five ways ahead | The ways ahead fan out wider or the scene waits for land; a sea scene (Act 2) is its own kind |
 | The way a player goes is read from where they walked; a teleport says nothing about it | A jump of more than 8 blocks in a tick resets the heading |
 | A scene kept only in memory leaves its blocks standing after a restart | Scenes and the blocks they replaced live in the world's save data, so a restart takes them away too |
-| A scene the players turn away from before seeing it is taken away as soon as they are out of sight and past | A scene never seen counts as passed, and a variant of it can come again |
+| A scene the players walk away from before seeing it is taken away once they are out of sight and past | A scene never seen counts as passed, and a variant of it can come again; past is measured from the nearest each player came, never from the way they face, since in the friends' play on 16.10. half the scenes placed went away within a minute while the team looted and looked round |
 
 ### M5 The caravan: a village that walks
 
@@ -181,7 +184,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Evening comes at sea | On the nearest land ahead; a night on the water only when a quest wants it, as in The Crossing (2.2) |
   | Someone is underground | On the surface near where they went down |
   | A quest keeps everyone away for days | No camp; the quest says "camp alone tonight" and sets the clock (D2) |
-  | The ground | Where a real camp would stand: level, neither a hollow nor an exposed top, near water but not in it, with grass and wood near, and at least 32 blocks from any structure. These are wishes: within 128 blocks past the nearest spot out of sight the camp takes the best spot it finds and settles for it, and never walks on to find a better land |
+  | The ground | Where a real camp would stand: level, neither a hollow nor an exposed top, near water but not in it, with grass and wood near, and at least 32 blocks from any structure. The whole camp is judged, every few blocks across it: more than an eighth of its ground under water, or a rise of more than 4 blocks across the fire's circle, passes a spot over. These are wishes: within 128 blocks past the nearest spot out of sight the camp takes the best spot it finds and settles for it, and never walks on to find a better land. A wagon stands on ground within 2 blocks of its own middle, on at most 2 blocks of fill of the land's own surface block, and goes to another spot round the fire rather than onto a ledge |
   | Danger | Never within 16 blocks of lava, fire or another danger, nor on top of a structure |
 
 - The camp is built like a village: the fire in the middle, and around it each household as its own small piece, a tent, a wagon or a lean-to, set at the height of the ground under it, with paths between them that follow the ground. There is no flattened square. A bigger household gets a bigger piece, a person who joins brings a new piece, and after the breaking the pieces of the dead are missing. When the camp is taken down, the blocks it replaced go back.
@@ -233,7 +236,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 - By day, danger is shade, storms, people and the land: dense forests and caves keep the gaze's creatures alive in daylight, a thunderstorm darkens the sky enough for them to walk, the Gazebound are people and the sun means nothing to them, predators hunt, and the cold, the heat and the water are the land's gates.
 - A quest gets no exception from the stillness rule, which already allows two nights in one place; a quest that keeps the player longer happens on a living people's hallowed land (S6), where the gaze cannot see them.
 - No night event comes from a calendar. A night the story already holds (a hold, a scripted hard night) takes no other with it, and every horde ends when the sun rises. While the story holds a night, no bed takes anyone, and the refusal says why: "Not tonight. The sky over the ridge is red."
-- The gaze finds the caravan when a quest calls for it (The Bell, The Hollow, The Empty Grave), when the caravan has slept three nights in one place, or by a chance each night that grows with the player's shine, and more while Maud's bell is with the caravan: the chance is the shine over 128, doubled while the bell travels with it (`balance.toml` `[shine]`), rolled once as the camp's evening begins, and never on a night the story already holds (a hold, a red moon, a visit at the fire). When it falls, the ember warns as the camp goes up: "The ember is uneasy tonight." That night nobody sleeps, no tent opens, the fire's circle holds nothing back, the clock runs on at its own speed instead of waiting at 20:00, the horde comes at midnight, and the next day begins on the road at 6:00. The red moon comes only when the story wants it, once an act, on its climax (`story.md`, S25).
+- The gaze finds the caravan when a quest calls for it (The Bell, The Hollow, The Empty Grave), when the caravan has slept three nights in one place, or by a chance each night that grows with the player's shine, and more while Maud's bell is with the caravan: the chance is the shine over 128, doubled while the bell travels with it (`balance.toml` `[shine]`), rolled once as the camp's evening begins, and never on a night the story already holds (a hold, a red moon, a visit at the fire). When it falls, the ember warns as the camp goes up: "The ember is uneasy tonight." That night nobody sleeps, no tent opens, the fire's circle holds nothing back, the clock runs on at its own speed instead of waiting at 20:00, the horde comes at midnight, and the next day begins on the road at 6:00. The horde is sized for the player it comes for: each wave a few of the gaze's creatures per player online, growing with the shine and never with the days (`balance.toml` `[nights]`), and a player who falls is let go until dawn, so waking by the fire never wakes into the horde: "Whatever is looking has seen enough of you tonight. It looks elsewhere until dawn." The rest of the team still holds. The red moon comes only when the story wants it, once an act, on its climax (`story.md`, S25).
 
 **Why:** A clock the story drives lets every night land where the people are and every hard night land as a set piece, and easing out keeps the sky moving so time never visibly stops. Counting days in nights slept cannot be cheated, and daylight that is safe only in the open keeps the forest, the storm and the Gazebound dangerous on a long day's road.
 
@@ -393,7 +396,7 @@ Act 3:
 | Carry | Someone on the player's back: no sprinting, and running wakes them | The Wayfarer mod |
 | Tame | Vanilla taming, and the horse that never sleeps with a rule of its own | Vanilla, and the Wayfarer mod |
 
-- Only the land and the weather can make a player dangerously hot or cold: deserts and badlands by day, icy land by night. The season colours the land and brings its snow, but never makes a warm land hot or a cool one icy (M25). The first time a player is too hot or too cold, the task panel says what helps. Fires, lanterns, ovens, running, armour and what they hold warm or cool them, but never past warm or cool, and in the cold lands a fire still brings them back to comfortable.
+- Only the land and the weather can make a player dangerously hot or cold: deserts and badlands by day, icy land by night. The season colours the land and brings its snow, but never makes a warm land hot or a cool one icy (M25). The first time a player is too hot or too cold, the task panel says what helps. Fires, lanterns, ovens, running, armour and what they hold warm or cool them, but never past warm or cool, and in the cold lands a fire still brings them back to comfortable. Shade is anything over the player's head, a roof, a canopy, a cave: out of the sun and out of the wind the land's heat and cold do not reach them, at any height (Tough As Nails' `environmental_modifier_altitude` at its top), so the panel's "get into shade" and "out of the wind" are true on a mountain as in a valley.
 
   ```text
   Noon on the plains, you sit by your campfire: warm, never burning.
@@ -481,12 +484,13 @@ What it showed:
 
 ### M12 The camp and the gear
 
-- Nomadic Tents is changed so that placing a tent builds the whole tent at once, without a frame or a mallet; packing it up is one click. Its own `enter_when_safe` and `pickup_when_safe` are switched on, so nobody enters or packs up a tent while monsters are near (D13). It stays the pack's tent because it is the one whose inside is a folded space: Let's Do Camping and Simply Tents pitch an ordinary tent in the world, and both are All Rights Reserved.
-- A bed inside a tent sleeps only when a lit campfire burns within 16 blocks of the tent outside (D13, `[tent]` `fire_blocks`), room enough to find flat ground for a tent beside the fire. A tent stands only on ground: every block of its floor has ground at most one block below it, so no player fits under it, and elsewhere the tent says "The ground here is too uneven for a tent. Find flatter ground." Grass, flowers, saplings, mushrooms and whatever else breaks at a touch and can be walked through give way where its walls and door go up, popping off as a hand would break them; anything solid, a fluid, a block with something inside it, and what the story protects, such as the caravan's own tents, still keeps it from standing there. A tent anyone is inside is never taken down by the story: a player who logs in inside a tent counts as standing at its door, and the caravan brings back only tents nobody is in.
+- Nomadic Tents is changed so that placing a tent builds the whole tent at once, without a frame or a mallet; packing it up is one click. Its own `enter_when_safe` and `pickup_when_safe` are switched on, so nobody enters or packs up a tent while monsters are near (D13); the story's people never count as monsters, though Cadoc, the witches and the hooded woman wear monsters' bodies. A tent keeps no invisible blocks round its walls: what stands in its corners stays when it goes up and when it is packed. Its one invisible block fills the smoke hole at the top of its roof, so nobody drops through it into the tent's shell. When a tent refuses, the player who pitched it sees for the stamp's linger time what is wrong, outlined: whatever stands in the way in bone, and each missing block of ground in the stamp's danger red. It stays the pack's tent because it is the one whose inside is a folded space: Let's Do Camping and Simply Tents pitch an ordinary tent in the world, and both are All Rights Reserved.
+- A bed inside a tent sleeps only when a lit campfire burns within 16 blocks of the tent outside (D13, `[tent]` `fire_blocks`), room enough to find flat ground for a tent beside the fire. A tent stands only on ground: every block of its floor has ground at most one block below it, so no player fits under it, and elsewhere a tent needs ground right under every block of its floor, and refuses with "Fill the outlined holes, or find flatter ground." Grass, flowers, saplings, mushrooms and whatever else breaks at a touch and can be walked through give way where its walls and door go up, popping off as a hand would break them; anything solid, a fluid, a block with something inside it, and what the story protects, such as the caravan's own tents, still keeps it from standing there, and the refusal names it: "A spruce log stands where the tent goes up." Nor does a tent rise through a body: "Step back: you're standing where the tent goes up.", or "Something stands where the tent goes up." for a creature. A tent anyone is inside is never taken down by the story: a player who logs in inside a tent counts as standing at its door, and the caravan brings back only tents nobody is in.
 - The first tent, the stranger's, is the kind the land around the Last Camp would build, the same for the whole team: a yurt in cold land and mountains, a tepee on plains, meadows and in forests, a Bedouin tent in desert and badlands, an indlu on the savanna, a shamiyana in jungle and swamp. The Gear page's camp row then grows that kind, tiny to large. Every tent is a world of its own, but the night is the team's: a player lies down in their tent and stays lying until two thirds of the team sleep, in their tents or out, and then it is morning for everyone at once (`[sleep]` `players_percentage`). A pitched tent's inside keeps running while its owner is out, so a furnace in it finishes its work; a packed tent stops.
 - A lit fire's circle reaches 32 blocks (`[fire]` `circle_blocks`): no monster spawns inside it, and one that wanders in turns away and lets the team be, so the caravan's whole camp lies inside and a tent beside the fire is never kept shut by monsters at its door. A hold switches the circle off around its own fight.
 - Resting is being by a lit fire: a player within 4 blocks of one rests at once, with nothing to wait for and no need to stand still. The camp, the afternoon at the caravan's fire, the Warm effect and the Flare all count that rest.
-- The fire's stories stay. If a night has one, the voice's long talk, a person's scene or Malgven's visit, it plays once most of the team sits at the caravan's fire, and sleep waits until it is over; a night without one goes straight to sleep. Resting half a minute at a fire still warms the ember, so the player eats like a settled person until the next dusk.
+- The fire's stories stay. If a night has one, the voice's long talk, a person's scene or Malgven's visit, it plays once most of the team sits at the caravan's fire, and sleep waits until it is over; a night without one goes straight to sleep. Resting half a minute at a fire still warms the ember, so the player eats like a settled person until the next dusk, a fall included, since the ember goes through a death with them (M36).
+- A player with no tent, theirs lying under a stone or never made again, sleeps in one of the caravan's household tents: each has a bed that takes a player who carries no tent and has none pitched, and the task panel says so in place of pitching one. "Your tent is under your stone. Maud's tent has room tonight: right-click its bed"; Maud: "Mind the pots." Anyone else at that bed gets the bed's usual refusal, and it never sets where they wake (M34).
 - Every tool, weapon and armour, Silent Gear's, Simply Swords', vanilla's and every other mod's, stops at its last use instead of breaking (D13), and at its last use a tool is a bare hand, in speed and in what drops: a diamond pick at its last use takes nothing from obsidian. Silent Gear already keeps broken gear (`breaks_permanently = false`), and the Wayfarer mod brings the rest to the same rule.
 - At a fire, a repair kit mends a worn tool: Silent Gear's repair kit, filled with the tool's own material and set beside the tool in a crafting grid within 4 blocks of a lit campfire, brings it back to half its durability at most, never beyond, and away from a fire it mends nothing. The same kit, filled with the right material, mends vanilla's and Simply Swords' gear too, iron for iron and diamond for diamond. A smith restores it fully: the peoples' smiths ask for goods, and Hob does it for nothing once his side quest has found the old ore (C7).
 
@@ -512,7 +516,8 @@ What it showed:
 ### M13 What goes
 
 - **The Last Sea.** The land ends 4,096 blocks past the ring's radius, and the sea runs on to Minecraft's own world edge, with no border of the pack's own. Its cold, through Tough As Nails, starts once the player is out on it and grows with every block: freezing about 1,024 blocks out, deadly within a minute after that, so nobody reaches the edge. A player who falls on the Last Sea leaves their stone on the nearest land.
-- **Enchanting.** Enchanted books stay in loot, and only a smith can put one on, overnight: the peoples' smiths for goods, Hob once his side quest is done (C7, `story.md` S33). Mending and every enchantment that runs on XP go, since repair is the fire's and the smith's (M12).
+- **Enchanting.** Enchanted books stay in loot, and only a smith can put one on, overnight: the peoples' smiths for goods, Hob once his side quest is done (C7, `story.md` S33). Mending and every enchantment that runs on XP go, since repair is the fire's and the smith's (M12). A book says so on itself ("Only a smith can put it on a tool or armour. It takes a night."), an anvil says a smith could put the book on, and the first evening someone carries one, Hob says how: before The Lost Ore that his cracked hammer can't do it yet, after it to hold the piece out with the book in the other hand.
+- **Diamonds.** The diamond backpack is Act 2's (M18), and the open stone has no diamonds; the first evening someone carries a gold backpack, Maud says that a bigger one needs diamonds, which only old mines and the deep dark hold.
 - **Ore.**
 
   | Ore | In plain stone | In places: old mines and the deep stone around the Ancient Cities |
@@ -591,7 +596,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | The compass (`Compass`) | Points at shards, friends and the grave | Kept, changed: the tracked quest's goal as the player knows it (D6), friends and stones (M2) |
 | Leads (`Leads`) | Places someone told the player of | Folded into the quest engine: a lead is a goal someone told of (S7) |
 | The fire (`Fire`, `Warm`) | The circle keeps monsters off, resting warms the ember, the voice speaks at rest | Kept, changed: the circle and the warming stay, and the voice's long talks and the night's stories play at the caravan's fire (S4, M12) |
-| Hunger and rowing | The ember eats four times what a body would (`[hunger]` `exhaustion_factor`); steering a boat costs a shank of food every 256 blocks on top; Spice of Life wants half vanilla's variety, its extra hearts at 2, 12 and 16 foods (`pack/config/solonion.json`) | Kept |
+| Hunger and rowing | The ember eats four times what a body would (`[hunger]` `exhaustion_factor`); steering a boat costs a shank of food every 256 blocks on top; Spice of Life counts the different foods among the last 32 meals, each kind once and a golden apple twice, with no fading, so a food not eaten lately shows +1 and one eaten lately 0, its extra hearts at 2, 12 and 16 kinds (`pack/config/solonion.json`) | Kept |
 | Nights (`Nights`) | A Sleepless Night every fourth night, a red moon every fifth | Changed: scripted, as the story's and the caravan's events (M6) |
 | Daylight (`Daylight`) | The gaze's creatures crumble in the sun | Kept |
 | Stillness (`Stillness`) | Staying in one place dims the ember, then brings the horde | Kept, changed: counts nights slept (M6) |
@@ -648,7 +653,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   | 2 | Bort and diamond, from the deep places | Tide steel, Sand Singer glass-bronze | The diamond hook and backpack, large tents, ships |
   | 3 | | Crimson steel from the deep stone around the Ancient Cities, then the top tier from a far metal, forged by the Keepers' smiths or at the far ring | The top hook, backpack and tent, airships |
 
-- What vanilla makes from wood, stone and leather stays as vanilla makes it, so the first hours play as Minecraft does; everything of metal and better is Silent Gear's. Hob hands each player his patterns at the caravan's first fire, and the task panel walks them through the first head and the first tool.
+- What vanilla makes from wood, stone and leather stays as vanilla makes it, so the first hours play as Minecraft does; everything of metal and better is Silent Gear's. Hob hands each player his patterns at the caravan's first fire, for every tool he makes and for armour and a shield, and the task panel walks them through the first head and the first tool. Vanilla's metal armour is found, never made, and JEI says so on it.
 
   ```text
   <Hob> And take these. My patterns. Copper and iron want shaping, not just hammering.
@@ -664,7 +669,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 - The journal's Gear page shows the road. It has a row for every kind the player can grow into, each appearing when it first matters: weapons; tools (the spyglass among them); armour; against the cold (wool clothes, the fur cloak, snowshoes, Warmth); against the heat (leaf clothes, the drinks that cool, the Sand Singers' shade); under water (the snorkel, the flippers, Deep-sight); in the dark (torches, the lantern that hangs at the belt, glowsticks, the night-vision goggles, Dark-sight once the Frost Walkers' shard gives it); carrying (backpacks and their upgrades, lunchboxes); the camp (tents from tiny to mega, the crossbeams and shovels that make the inside bigger, the cooking pot); getting about (grappling hooks, the hang glider, ziplines, a horse with its saddle and armour, the stone of one's own; a saddle is made from three leather and an iron ingot, horse armour from a saddle and six ingots or diamonds); ships, with Act 2; aircraft, with Act 3; food and health (more hearts from food eaten in variety, the meals); and charms (the trinkets and the shards' gifts).
 - Each row shows what the player has, what it is good for, which land or gate it opens, and the next tier: what it needs, where that is found and who makes it, "?" until the player learns it, filled in for the whole team by what anyone does (D6, D11). "How it's made" opens JEI on its recipe. Track puts the next step in the task panel as a quest's tasks are, as Horizon Forbidden West turns a missing part into a job; nothing on the page has to be done, and nothing pays for ticking it.
-- The prologue and 1.1 have eight rows, each appearing the first time it matters to anyone in the team: weapons when Hob's Blade is taken, tools with his patterns, armour when anyone wears some, carrying and the camp with His Pack, getting about with the first of its things held or ridden, against the cold and against the heat the first time anyone feels either. The other six come with the steps where they first matter. The rows and their tiers live in `story/gear.toml`.
+- The prologue and 1.1 have eight rows, each appearing the first time it matters to anyone in the team: weapons when Hob's Blade is taken, tools and armour with his patterns, carrying and the camp with His Pack, getting about with the first of its things held or ridden, against the cold and against the heat the first time anyone feels either. The other six come with the steps where they first matter. The rows and their tiers live in `story/gear.toml`.
 - A tier nobody has named shows only "? Hob knows more." Once anyone holds a row's best named tier, its person says the next tier's line once, at the caravan's evening fire on a later day, and the page fills in its name and "From ?, made by ?": Hob's "the Frost Walkers had a metal that laughed at the cold", Agna's snowshoes and the Sand Singers' clothes. Carrying after iron and the camp after the large yurt stay "?" until Act 2 settles what comes next.
 - Track is each player's own. The tracked tier's materials sit in the task panel with their count ("Copper ingots: 1/3, smelted from ore in the hills' stone") and tick when carried, then its making; once it is made a banner says so ("Copper tools made") and tracking ends. A tier still on "?" cannot be tracked.
 - Each kind names the one in the caravan who knows it, and at the fire they now and then say a line about its next tier: Hob for metal, weapons, tools, armour, hooks and light in the dark; Agna for clothes against the cold and the heat, food and remedies; Maud for tents and the camp; Pip for horses. A few smiths' commissions are side quests with turns of their own, such as Hob's masterwork or a people's blade.
@@ -734,7 +739,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 - Every old camp keeps its campfire on the map (M2), so the way back to it is never lost.
 - This is the caravan's camp only. A camp the player makes on their own out on the road is theirs, and stays or goes as they leave it.
-- The caravan takes back only what it set down. A block anyone placed or broke in its camp since it stood, a tent pitched by its fire above all, stays as the team left it when the camp packs up, and no trace is laid over it.
+- The caravan takes back only what it set down, in whatever state the night left it: a brewing stand someone used, a cauldron the rain filled. A block anyone placed or broke in its camp since it stood, a tent pitched by its fire above all, stays as the team left it when the camp packs up, and no trace is laid over it.
 - In the morning the camp stands until the team has walked out of sight of it. A player inside a tent counts as standing at the tent's door, so nobody wakes to find the caravan gone; the first player to step out at the camp gets the morning's line from someone there ("Eat something before you go. Then go on; we'll follow."), and the camp packs once they are on their way.
 
 **Why:** The road the team walked stays in the world, as the Van der Linde gang's old camps do in Red Dead Redemption 2, and traces that never change need nothing to keep them.
@@ -766,7 +771,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 ### M23 A stone of one's own
 
-- Every player carries one waystone of their own, a settled Wayfarer's from W5 The Cache (S24), which waits in the journal for each player. They set it down where they leave the road, a quest left halfway or a camp to come back to, and touch it. From any waystone they have touched since, they can fold back to it, and arriving takes it up into their pack again, so nothing of theirs stays standing. Crouching and taking it up by hand works too, to set it down somewhere else.
+- Every player carries one waystone of their own, a settled Wayfarer's from W5 The Cache (S24), which waits in the journal for each player. They set it down where they leave the road, a quest left halfway or a camp to come back to, and touch it; it wants open ground, never a tent's floor, since a tent goes with its owner ("The stone wants open ground."). From any waystone they have touched since, they can fold back to it, and arriving takes it up into their pack again, so nothing of theirs stays standing. Crouching and taking it up by hand works too, to set it down somewhere else.
 
   ```text
   You set your stone down at the edge of the marsh and touch it.
@@ -839,6 +844,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 - Once the caravan's camp has packed up, a "Make for the caravan" entry stands in the journal every day. Its page asks first, since it ends the day for the whole team: "Turn back now? The day ends for the whole team; The Deserter waits for morning.", and its button reads Make for the caravan, then Yes, end the day. Choosing it, or a quest step that ends the day, sets the camp up out of sight ahead (M5, M19) and points the compass at it; if nobody has chosen by 17:00, it is tracked by itself. Until the camp stands, the compass reads "smoke rising" instead of the ember's listening.
 - The task panel says who turned back: "Kai turned back towards the caravan. Make for their smoke; The Deserter waits for morning." From 17:00 it reads "The day is ending." instead.
+- **Edge cases.** The team turns back and walks on into the quest anyway, or a restart finds them standing in its place: once a step of that quest begins, the panel and the compass follow the quest, and "waits for morning" is withdrawn; when the quest next stands waiting, the caravan's line comes back. A step that begins after 17:00 changes nothing about the evening: the run home still starts.
 - Before 17:00 the afternoon then passes at its fire (M20); from 17:00 the run home starts (M6).
 
   ```text
@@ -917,18 +923,18 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 ### M34 Waking after a fall
 
-- A player who falls comes to beside the teammate nearest the place they fell, on safe ground, as a player who joins does (M7); with nobody else on the road, they come to by the last fire they rested at. A bed, a tent or a story's fire never sets where they wake. Their things stay under the stone where they fell, and the task panel says to fetch them while any stone of theirs stands.
+- A player who falls comes to beside the teammate nearest the place they fell, on safe ground, as a player who joins does (M7); with nobody else on the road, they come to by the nearer of two fires, the last fire they rested at and the caravan's fire while its camp stands ("You come to by the caravan's fire."). A bed, a tent or a story's fire never sets where they wake. Their things stay under the stone where they fell, and the task panel says to fetch them while any stone of theirs stands.
 
   ```text
   You come to beside Mo. The ember found the nearest warmth it knew.
   ○ Fetch your things: the stone where you fell, marked on your compass
   ```
 
-**Why:** In the playtest a fall sent a player to a tent five thousand blocks behind and another to a story's fire the team had long left, alone and naked, and the cold took them in minutes. Waking beside a friend keeps a team together, which the story assumes everywhere, and the last fire is the lore's answer for a player alone.
+**Why:** In the playtest a fall sent a player to a tent five thousand blocks behind and another to a story's fire the team had long left, alone and naked, and the cold took them in minutes. Waking beside a friend keeps a team together, which the story assumes everywhere, and the nearest warmth the ember knew is the lore's answer for a player alone; the agent's playthrough woke three times at a camp the caravan had packed up, up to 1,400 blocks behind, while the caravan's own fire burned near.
 
 ### M35 The story's places hold
 
-- What the story builds and still needs cannot be broken, built on, burnt, flooded or blown up: the Last Camp with the stranger's grave, Tollbridge's bell tower and its cellar until Ash is done, and the caravan's camp while it stands. Doors, beds and chests in them still work, and a grave in them can be taken back, since nothing may keep a player from their own things. A refusal says why: "Leave it standing: it is all Tollbridge has left."
+- What the story builds and still needs cannot be broken, built on, burnt, flooded or blown up: the Last Camp with the stranger's grave, Tollbridge's bell tower and its cellar until Ash is done, and the caravan's camp while it stands. Nor can the block a person of the story stands or sits on, wherever they are: "Leave it: someone is standing on it." Doors, beds and chests in them still work, and a grave in them can be taken back, since nothing may keep a player from their own things. A refusal says why: "Leave it standing: it is all Tollbridge has left."
 
 **Why:** In the playtest one swing at the cellar's fire stopped the story until someone typed a command. A place the story waits on that one player can break ends the story for everyone, and the reasons are the world's own: a grave, a ruin, someone else's camp.
 
@@ -958,6 +964,8 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   | The gaze's own beasts: one each, at a story moment | | The sea's beast (M22), the worm (2.6), the horse that never sleeps (W9) | The phantom nest (W12), the dragon (M14) |
   | The deep | The Warden in the Ancient Cities, best crept past (W4) | | |
 
+- **Each act's foes come with their act.** The land's beasts, the Gazebound's kinds and the gaze's own kinds in the table spawn only once their act has begun, from biome spawns to the ravagers of vanilla's raids and the spawners in structures, listed in `generator/foes.toml`; what the story spawns for a hold, a duel or a scene is the story's, and a creature born before its act stays where it is.
+- **Monsters carry what they are drawn with:** swords, axes, bows, shields. Nothing throws TNT, a bomb, a potion or a wind charge, lights a fire or casts a pearl, since none of it gives a tell (Improved Mobs' lists in `pack/config/improvedmobs/equipment.json`), and zombie horses never attack, since they belong to nobody in the table.
 - **Nothing hurts without a tell,** heard first and seen second. The gaze's creatures make their digging sound as they come up; the Gazebound shout a line before they charge ("There! The ember!"), and their banners show from afar; beasts growl at the edge of their ground and attack only if pushed, hunters at night aside; a named beast's tell is long, the worm's tremor and rising dust, the sea beast's knock on the hull; a hold's next wave is announced on the band (`interface.md`, I4).
 - **A fight asks for the team, the ground and the gear,** not only damage. Everyday fights reward the fire's circle, the tent, a shield and a bow; each act's foes ask for that act's gear (M18): a shield and a bow on foot, a ship's cannons at sea, rolling and parrying for the duel, flying past phantoms. Getting past a fight, creeping by or walking on, is always an answer and never a loss, save at the ford (1.3), where the patrol has seen the ember and follows a team that walks off (`story.md`, S28). Each named fight has one idea beyond swinging:
 
@@ -1122,11 +1130,11 @@ It raises, for its build: keeping each act's foes out of the world until their a
 
 **Why:** Clothes under armour let a player keep their best gear on in the snow and the desert instead of trading it for wool, and a slot for each worn kind keeps the spyglass and the totem from pushing each other out. A lantern at the belt frees the off hand for a shield in the caves, where a held one cost the only defence.
 
-### M45 The Last Camp stands out of the snow
+### M45 The Last Camp stands on mild land
 
-- When the world's spawn lies where it snows, the Last Camp moves to the nearest dry land within 2,048 blocks where it does not snow (`[prologue]` `camp_search_blocks`), and the world's spawn moves with it, so the first night never begins in a blizzard with nothing to wear. With no such ground within reach it stands where the spawn is.
+- When the world's spawn lies on land that burns by day or freezes by night, the Last Camp moves to the nearest dry land within 2,048 blocks that Tough As Nails reads as mild or warm (`[prologue]` `camp_search_blocks`), and the world's spawn moves with it, so the first day never begins in a blizzard, a badlands noon or an ice marsh with nothing to wear. With no such ground within reach it stands where the spawn is.
 
-**Why:** A newcomer meets the story at the fire; freezing there before the stranger has said a word teaches only that the start is unfair.
+**Why:** A newcomer meets the story at the fire; freezing or burning there before the stranger has said a word, or on the first day's walk from it, teaches only that the start is unfair. In the agent's playthrough the heat of a wooded badlands and the cold of an ice marsh each ended the first day twice.
 
 ### M46 Loot: a unique now and then
 
@@ -1149,16 +1157,18 @@ It raises, for its build: keeping each act's foes out of the world until their a
 
 ### M48 The settled and the grey coats speak
 
-- A villager says one wary line the first time each day a player right-clicks them, on the band as "A villager", before the trade opens. Their lines follow the story: strangers bring the burning in Act 1; men in grey ask after a fire that walks in Act 2; banners pass at dawn in Act 3; after the doors it is quiet, and they ask the team to stay for supper (`story/people.toml`, `villager`).
+- A villager says one wary line the first time each day a player right-clicks them, on the band as "A villager", before the trade opens. Their lines follow the story: strangers bring the burning in Act 1; men in grey come asking about someone with a glowing coal in Act 2; banners pass at dawn in Act 3; after the doors it is quiet, and they ask the team to stay for supper (`story/people.toml`, `villager`).
 - An Illager that spots a player shouts once, "There! The light! Take it!", on the band as the man in grey, at most once in 16 seconds and never over a talk (`gazebound`, `shouts`).
 
   ```text
   Right-click a villager   <A villager> Strangers bring the burning. One trade, then go.
-  A pillager sees you      <A man in grey> To me! It's here, the fire that walks!
+  A pillager sees you      <A man in grey> To me! The one with the ember is here!
   ```
 
 **Why:** The second server playtest asked for villages that feel lived in and enemies with a voice; a line each, rare and in the world's own words, says what the lore says of them, that towns which grow burn and fear strangers, without a talk to sit through. The settled have no name for what burns them, so they never say the gaze.
 
 ## Open
 
-Nothing is open.
+### O1 Big caves breaking through flat land
+
+Opening caves to the surface (M39, "Caves open often") also lets Tectonic's widened cheese caves, the big round caverns, break through flat land as sheer pits about 40 blocks deep with no slope down: on the friends' server one stands in open savanna at 3205 67 3456, down into a dripstone cave, and grown again from the same seed with today's pack the same cavern opens wider there, about 40 by 24 blocks. The friends took it for broken world generation. Open: whether cheese caves keep reaching the surface, or only the narrow noodle and spaghetti caves make the cave mouths, which Tectonic's single depth cutoff cannot tell apart, so it needs the caves' density functions changed in a data pack. The pit's straight edges on the server are where chunks made by an older pack meet chunks made by a newer one, which every change to the world's generation leaves in a world already played.

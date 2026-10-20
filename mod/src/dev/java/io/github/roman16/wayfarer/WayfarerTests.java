@@ -173,9 +173,12 @@ public final class WayfarerTests {
     @GameTest(template = "empty")
     public static void heatFollowsTheWalk(GameTestHelper helper) {
         check(helper, Compass.heat(20, 20) == 2, "walking straight at the shard is much warmer");
-        check(helper, Compass.heat(8, 20) == 1, "walking partly towards it is warmer");
-        check(helper, Compass.heat(-8, 20) == -1, "walking partly away is colder");
+        check(helper, Compass.heat(12, 20) == 1, "walking partly towards it is warmer");
+        check(helper, Compass.heat(2, 20) == 0, "walking across its way only listens");
+        check(helper, Compass.heat(-12, 20) == -1, "walking partly away is colder");
         check(helper, Compass.heat(-20, 20) == -2, "walking straight away is much colder");
+        check(helper, Compass.facing(Math.cos(Math.toRadians(39))) == 1, "facing 39 degrees off the goal glows, never flares");
+        check(helper, Compass.facing(Math.cos(Math.toRadians(8))) == 2, "facing within 16 degrees of the goal flares");
         helper.succeed();
     }
 

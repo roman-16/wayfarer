@@ -108,11 +108,10 @@ kind = "talk"
 lines = [
   { music = "last_fire", text = "He coughs for a long time. When he looks up, he looks past you, at something that isn't there." },
   { by = "stranger", text = "Don't let it... the shards. I took them. Don't let it have..." },
-  { text = "He doesn't finish. His hand goes slack, and his head drops to his chest." },
+  { poses = { stranger = "fallen_slumped" }, text = "He doesn't finish. His hand goes slack, and his head drops to his chest." },
 ]
 objective = "Sit with the stranger."
 people.stranger = "He died before I learned his name."
-poses.stranger = "fallen_slumped"
 story = [
   "He died before he could finish: \"Don't let it... the shards. I took them. Don't let it have...\" I don't know what he meant.",
 ]
@@ -186,6 +185,7 @@ objective = "Find new ground for the ember: {left} blocks to go."
 story = [
   "I walked away from his fire. He knew who I was, and the ember is all I have of that, so I took it somewhere new.",
 ]
+tasks = ["campfire"]
 
 [[quests.steps]]
 id = "camp"
@@ -250,7 +250,7 @@ remarks.hob = ["One more step and I'll swing."]
 remarks.pip = ["Mam?"]
 remarks.maud = ["Shut that door. Quietly."]
 story = [
-  "Whatever came to the town wasn't after plunder. It opened people over the heart, and left their purses.",
+  "Whatever came to the town didn't come to steal. It cut people open over the heart, and left their purses.",
 ]
 tasks = ["ember", "look"]
 words.ember = "Held up, it shows me for a moment what has passed by."
@@ -261,7 +261,7 @@ text = "A man by the well. His shirt is torn open over the heart. His purse is s
 
 [[quests.steps.clues]]
 id = "doorway"
-text = "A woman in a doorway, opened the same way. Her rings are still on her hands."
+text = "A woman in a doorway, cut open the same way. Her rings are still on her hands."
 
 [[quests.steps.clues]]
 id = "strongbox"
@@ -288,7 +288,7 @@ lines = [
     "agna",
     "hob",
   ], text = "I'm Agna. I mend people, when there's anything left to mend. That's Hob, our smith." },
-  { by = "agna", text = "You've seen them out there. They never take anything. They only open the chest." },
+  { by = "agna", text = "You've seen them out there. They never take anything. They only cut the chest open." },
   { by = "maud", names = [
     "maud",
     "tollbridge",
@@ -298,7 +298,7 @@ lines = [
   ], text = "I'm Pip. You've got fire in your hand. Like in the stories. Are you a Wayfarer?" },
 ]
 objective = "Go down into the cellar."
-people.agna = "The healer of Tollbridge. She showed me the dead: they never take anything, she said, they only open the chest."
+people.agna = "The healer of Tollbridge. She showed me the dead: they never take anything, she said, they only cut the chest open."
 people.hob = "The smith of Tollbridge, big and frightened, and the first to see I was only a person."
 people.pip = "A child of Tollbridge. Pip's mother died the night it burned. Pip thinks I'm a Wayfarer out of the old stories."
 people.maud = "The elder of Tollbridge. Her town stood three hundred years, she says, and fell in one night."
@@ -371,7 +371,7 @@ objective = "Hold the cellar door until morning."
 people.maud = "She asked what I brought with me when they came back. I think she meant the ember."
 remarks.agna = [
   "Stay behind me, Pip.",
-  "Keep them off the door. I can't mend what they open.",
+  "Keep them off the door. I can't mend what they cut open.",
 ]
 remarks.hob = [
   "I've got the door. You get the ones that come round.",
@@ -396,7 +396,7 @@ done = [
 id = "morning"
 kind = "dawn"
 objective = "Hold the cellar door until morning."
-remarks.agna = ["Nobody's bleeding who wasn't. That's a good night, now."]
+remarks.agna = ["Nobody new is hurt. These days, that's a good night."]
 remarks.hob = ["Listen. Birds. They're gone."]
 remarks.pip = ["Is it over? Is it morning?"]
 remarks.maud = ["Morning. We're still here."]
@@ -445,7 +445,7 @@ lines = [
   { by = "maud", text = "Go on ahead. We'll be by water before dark. Look for our smoke." },
 ]
 objective = "Make for their smoke."
-remarks.agna = ["Sit. The rest of the day can pass without you."]
+remarks.agna = ["Sit. You can rest here for the rest of the day."]
 remarks.hob = ["The cart held. That bell's heavier than it looks."]
 remarks.pip = ["We made a camp! A real one, like the Wayfarers in the stories."]
 remarks.maud = ["Sit by the fire. You've walked enough for one day."]
@@ -458,9 +458,9 @@ lines = [
   { by = "maud", music = "first_fire", text = "You walk ahead. We'll follow your marks." },
   { by = "agna", text = "Give me that arm. You've been bleeding since the door." },
   { text = "She binds the cut, and keeps two fingers on your wrist a moment too long." },
-  { by = "agna", text = "Slow. Like something asleep. Well. You've had a night." },
+  { by = "agna", text = "Slow. Like something asleep. Well. It's been a long night." },
   { by = "hob", text = "That blade's yours now. When it's dull you bring it to me. Don't you dare throw it away." },
-  { by = "hob", text = "And take these. My patterns. Copper and iron want shaping, not just hammering." },
+  { by = "hob", text = "And take these. My patterns. Copper and iron need shaping, not just hammering." },
   { by = "pip", text = "Will you teach me? To be a Wayfarer?" },
 ]
 objective = "Sit at the caravan's fire."
@@ -484,14 +484,19 @@ story = "Pip asked me to teach the way of a Wayfarer. I said it isn't like the s
 text = "It isn't like the stories."
 
 [quests.steps.reward]
-claimed = "You take Hob's patterns: one for every tool he makes."
+claimed = "You take Hob's patterns: one for every tool he makes, for every piece of armour, and for a shield."
 items = [
   { id = "silentgear:axe_blueprint" },
+  { id = "silentgear:boots_blueprint" },
+  { id = "silentgear:chestplate_blueprint" },
+  { id = "silentgear:helmet_blueprint" },
+  { id = "silentgear:leggings_blueprint" },
   { id = "silentgear:pickaxe_blueprint" },
+  { id = "silentgear:shield_blueprint" },
   { id = "silentgear:shovel_blueprint" },
   { id = "silentgear:sword_blueprint" },
 ]
-text = "his patterns for tools, from his own bench."
+text = "his patterns for tools, armour and a shield, from his own bench."
 title = "Hob's Patterns"
 
 [[quests.steps]]
@@ -556,7 +561,7 @@ done = [
   { text = "A warmth runs up your arm, and then a voice you last heard dying:" },
   { by = "stranger", text = "Well. That's one." },
   { by = "stranger", text = "Don't look so surprised. Did you think I'd let you carry it alone?" },
-  { by = "stranger", text = "You heard me at the fire. The shards. Gather them, bring them to a frame, and we put its eye out for good." },
+  { by = "stranger", text = "You heard me at the fire. The shards. Gather them, bring them to a frame, and we put its eye out forever." },
   { by = "stranger", text = "A frame. You'll know one when you see it. No more burning towns." },
   { text = "When you look down, old tracks stand out on the ground, as if the ember held them up for you." },
 ]
@@ -703,7 +708,7 @@ after = ["the_pull"]
 found = "malgven"
 id = "the_gifts"
 kind = "side"
-summary = "Someone left food under his lean-to, with a note signed M. They know his camps, and they know someone carries his light now."
+summary = "Someone left food under his lean-to, with a note signed M. They know his camps, and they know someone carries his ember now."
 title = "The Gifts"
 
 [[quests.steps]]
@@ -841,7 +846,7 @@ lines = [
   ], text = "They're Gazebound. My own company, until last night." },
   { by = "cadoc", text = "Their heir wants that coal more than he wants me. And he wants me badly." },
   { text = "He pulls his shirt open. Over his heart runs an old white scar, like the one on the old man by the fire." },
-  { by = "cadoc", text = "We all carry one. They let the night look into you. If you live, it never looks again." },
+  { by = "cadoc", text = "We all carry one. The scar lets the night look into you, once. If you live, it never looks at you again." },
   { by = "cadoc", text = "The man who carried that light before you. I served under him, six winters." },
   { by = "cadoc", text = "Don't ask me his name. Not yet." },
   { by = "cadoc", text = "Where are you walking? Can a man with one good leg walk with you?" },
@@ -874,7 +879,7 @@ finds = "brother"
 id = "the_fireside"
 kind = "talk"
 lines = [
-  { text = "Hob gets to his feet with his hammer in his fist. Pip stares at the scar on Cadoc's chest." },
+  { poses = { hob = "standing" }, text = "Hob gets to his feet with his hammer in his fist. Pip stares at the scar on Cadoc's chest." },
   { by = "maud", text = "You brought one of the men in grey to our fire." },
   { by = "cadoc", text = "Not one of them. Not any more." },
   { by = "agna", text = "Sit down before you fall down. That side won't close on its own." },
@@ -882,11 +887,12 @@ lines = [
   { text = "You tell him about the old man's fire, and the grave beside it." },
   { by = "cadoc", text = "He's dead, then. Good." },
   { by = "cadoc", text = "...No. Not good." },
-  { by = "cadoc", text = "I've pitched at the edge of the light. Your people shouldn't have a grey coat at their backs." },
+  { by = "cadoc", text = "I've pitched my tent at the edge of the light. Your people shouldn't have to sleep next to a grey coat." },
   { by = "maud", text = "No. They shouldn't." },
   { by = "cadoc", text = "My brother's still up at that outpost above the ford. He took the scar the same night I did." },
 ]
-objective = "Talk to Cadoc, by his tent at the edge of the camp."
+moves.cadoc = { place = "fire_2", pose = "sitting" }
+objective = "Talk to Cadoc at the caravan's fire."
 people.cadoc = "Cadoc heard the stranger is dead, and said good, and then said no. His brother is still with the Gazebound."
 story = [
   "At the caravan's fire Cadoc heard the stranger was dead. He said good, and then he said no. His brother is still with the Gazebound, at the outpost above the ford.",
@@ -922,7 +928,7 @@ lines = [
 ]
 objective = "Hear Cadoc out at the fire."
 people.cadoc = "His brother Brannoc's company crossed the sea before us and camps at an outpost on this shore."
-remarks.cadoc = ["At the fire, when you've a moment. It's my brother."]
+remarks.cadoc = ["At the fire, when you have a moment. It's my brother."]
 story = ["Cadoc's brother Brannoc camps with his company at an outpost on this shore. Cadoc asked me to fetch him, or hear him say no."]
 with = "cadoc"
 
@@ -947,10 +953,9 @@ wave = "The outpost: wave {wave} of {waves}"
 
 [[quests.steps]]
 calls = 8
-done = [{ text = "He turns and walks up the hill, and doesn't look back." }]
+done = [{ leaves = ["brannoc"], text = "He turns and walks up the hill, and doesn't look back." }]
 id = "brannoc"
 kind = "talk"
-leaves = ["brannoc"]
 lines = [
   { text = "A man in grey stands below the tower, unarmed, watching you come." },
   { by = "brannoc", names = ["brannoc"], text = "Brannoc. You're the one Cadoc follows now." },
@@ -1009,7 +1014,7 @@ lines = [
 objective = "Follow the pull: walk where the ember flares."
 place = "marsh"
 remarks.agna = ["His side's mending. He won't let me near the scar."]
-remarks.hob = ["He sleeps with his boots on. So do I, now."]
+remarks.hob = ["He sleeps with his boots on, ready to run. So do I, now."]
 remarks.maud = ["He keeps to the edge of the light. Good. I can see him from here."]
 remarks.pip = ["Cadoc says the grey coats ride real horses. Big ones."]
 story = [
@@ -1026,8 +1031,8 @@ done = [
   { text = "She takes your chin in a cold hand and looks into your eyes. Then she flinches back, as if the ember had burnt her." },
   { by = "tansy", text = "Something looks out of you." },
   { by = "rue", text = "...Not his, then. Whatever you are." },
-  { by = "rue", text = "Go down, if it wants you. Under the water, where it shows you no face." },
-  { by = "rue", text = "Drink this first, or the bog keeps you." },
+  { by = "rue", text = "Go down, if it wants you. Down there, under the water." },
+  { by = "rue", text = "Drink this first, or you'll drown down there." },
 ]
 calls = 16
 finds = "marsh_fisher"
@@ -1109,7 +1114,7 @@ choices = [
     { count = 2, id = "minecraft:potion", name = "Marsh Brew", potion = "minecraft:healing" },
   ], text = "Two of the witches' bottles, brewed from the black water. Drink one when a wound won't close.", title = "The witches' brews" } },
 ]
-closes = { the_witches_debt = "The black pool is only water now. There was nothing left to brew with, and the fisher's fever was his own to fight." }
+closes = { the_witches_debt = "The black pool is only water now. There was nothing left to brew with, and the fisher had to fight his fever alone." }
 eyes = ["witch"]
 gifts = { witch = "true_sight" }
 id = "shard"
@@ -1123,7 +1128,7 @@ words.shards = "The second lay on a stone in a hall under a black pool in the sw
 
 [[quests.steps]]
 done = [
-  { text = "The stair ends behind a wall that is no wall, in a cellar of roots. A ladder, a hatch, and you come up into a room that smells of smoke." },
+  { text = "The stair ends behind a wall that only looks like one, in a cellar of roots. A ladder, a hatch, and you come up into a room that smells of smoke." },
   { by = "rue", text = "All these years we kept the door, and never knew it." },
   { by = "rue", text = "And the pool's gone flat as rain water. Whatever you took, it was ours." },
 ]
@@ -1136,14 +1141,14 @@ lines = [
 objective = "Go up the stair behind the faint wall."
 place = "marsh_cellar"
 story = [
-  "Taking the shard showed me a wall that was no wall: the Marsh Mothers' own stair, up into the witches' cellar. Their pool has been plain water since.",
+  "Taking the shard showed me a wall that only looked like one: the Marsh Mothers' own stair, up into the witches' cellar. Their pool has been plain water since.",
 ]
 when = "shard="
-words.true_sight = "Since the second shard I see through what isn't there: a wall that's only seeming shows faint as smoke."
+words.true_sight = "Since the second shard I can see false walls: a wall that only looks solid shows faint as smoke."
 
 [[quests.steps]]
 done = [
-  { text = "The stair ends behind a wall that is no wall, in a cellar of roots. A ladder, a hatch, and you come up into a room that smells of smoke." },
+  { text = "The stair ends behind a wall that only looks like one, in a cellar of roots. A ladder, a hatch, and you come up into a room that smells of smoke." },
   { by = "rue", text = "All these years we kept the door, and never knew it." },
   { by = "rue", text = "You paid his debt and took our water. Then we're even, you and I." },
 ]
@@ -1159,7 +1164,7 @@ story = [
   "I took the shard, knowing what it cost the witches. It showed me the Marsh Mothers' own stair, up into their cellar.",
 ]
 when = "shard=take"
-words.true_sight = "Since the second shard I see through what isn't there: a wall that's only seeming shows faint as smoke."
+words.true_sight = "Since the second shard I can see false walls: a wall that only looks solid shows faint as smoke."
 
 [[quests.steps]]
 done = [
@@ -1168,7 +1173,7 @@ done = [
 ]
 id = "the_way_back"
 kind = "reach"
-lines = [{ by = "stranger", text = "Soft. That's one fewer at the gate." }]
+lines = [{ by = "stranger", text = "Soft. That's one shard fewer for the frame." }]
 objective = "Swim back up through the black pool."
 place = "marsh"
 story = [
@@ -1204,7 +1209,7 @@ kind = "clues"
 lines = [
   { by = "rue", text = "That man came up our water two days ago, burning. We've nothing left to brew with." },
   { by = "rue", text = "A blue orchid, frogspawn, and a bottle of the black water. My knees won't take me round the pool any more." },
-  { by = "rue", text = "The one who carried that light owes us. You can pay some of it." },
+  { by = "rue", text = "The man who carried that ember owes us. You can pay some of it." },
 ]
 needed = 3
 objective = "Find what the brew needs round the pool: a blue orchid, frogspawn and the black water."
@@ -1220,13 +1225,12 @@ id = "the_brew"
 kind = "talk"
 lines = [
   { text = "Rue boils it all in the porch cauldron and spoons it into the fisher, a sip at a time." },
-  { by = "fisher", text = "...Cold. Why's it cold?" },
+  { by = "fisher", poses = { fisher = "sitting" }, text = "...Cold. Why's it cold?" },
   { text = "You hold up the ember. The brew in the cup glows faintly, the way the pool glows." },
   { by = "rue", text = "Whatever heals is down there. It always was." },
   { by = "rue", text = "That's his debt paid. Yours is your own." },
 ]
 objective = "Bring what you found to Rue on the porch."
-poses = { fisher = "sitting" }
 story = [
   "I found what the witches' brew needed, and the fisher sat up. Whatever heals in their pool lies down there, with the shard.",
 ]
@@ -1590,16 +1594,16 @@ halls = 2
 id = "the_hooded_traveller"
 kind = "main"
 road = [
-  { by = "stranger", text = "Someone's walked in your smoke since my first camp. Don't look round." },
+  { by = "stranger", text = "Someone has been following your smoke since my first camp. Don't look round." },
 ]
-summary = "The voice says someone has walked in your smoke since his first camp. Sit at the caravan's fire tonight."
+summary = "The voice says someone has been following our smoke since his first camp. Sit at the caravan's fire tonight."
 title = "The Hooded Traveller"
 
 [[quests.steps]]
 awake = "Not yet. Sit by the fire a while."
 done = [
   { by = "malgven", text = "Eat. You walk further on bread." },
-  { text = "She sets a loaf on the log beside her and stands." },
+  { poses = { malgven = "standing" }, text = "She sets a loaf on the log beside her and stands." },
   { left = "minecraft:bread", sound = "smoke_gust", text = "The fire gusts. Smoke rolls over the circle, and when it thins she is gone.", vanishes = "malgven" },
   { text = "The loaf is still on the log, dark and round." },
 ]
@@ -1608,12 +1612,11 @@ kind = "visit"
 lines = [
   { text = "Someone walks out of the dark and sits down across the fire. A grey hood, a grey coat, an eye stitched over the heart." },
   { by = "maud", text = "Gazebound. At my fire." },
-  { text = "Hob gets up with his hammer in his fist. Nobody else moves." },
+  { poses = { hob = "standing" }, text = "Hob gets up with his hammer in his fist. Nobody else moves." },
   { by = "malgven", text = "So he's dead. I knew his smoke before I knew your face." },
 ]
 objective = "Sit at the caravan's fire."
 people.malgven = "A hooded woman in Gazebound grey. She knew the stranger's smoke, and that he was dead. She left us bread."
-poses.hob = "standing"
 story = [
   "A woman in Gazebound grey walked out of the dark and sat down at our fire. She knew the stranger's smoke, and that he was dead. Then she was gone in the smoke, and left a loaf behind.",
 ]
@@ -1697,13 +1700,16 @@ after = ["the_hooded_traveller"]
 id = "the_last_frost_walker"
 kind = "main"
 renamed = { frost_walkers = "The Last Frost Walker" }
+road = [
+  { by = "agna", text = "Where that pull goes, it snows. Bring me eight wool, and I'll show you how to dress for it." },
+]
 summary = "The ember pulls again, into air that smells of snow. Hold it up, turn until it flares, and walk that way."
 title = "Tracks in the Snow"
 
 [[quests.steps]]
 done = [
   { text = "Prints cross your way: someone running, a long drag mark beside them, and a little blood." },
-  { text = "Someone hunts here. Fresh." },
+  { text = "Someone is hunting here. The tracks are fresh." },
 ]
 id = "the_pull"
 kind = "reach"
@@ -1739,12 +1745,24 @@ tasks = ["tracks"]
 [[quests.steps]]
 calls = 32
 id = "drifa"
-joins = "drifa"
 kind = "talk"
 lines = [
   { by = "drifa", text = "That's close enough. Hold the fire up where I can see it." },
   { text = "A woman in furs stands on the roof, an arrow on the string. She looks at the ember in your hand for a long breath." },
   { by = "drifa", text = "...A Wayfarer's fire. Twenty winters I've waited for one of those." },
+  { by = "drifa", text = "In, before you freeze." },
+  { moves = { drifa = { place = "frost_hearth", pose = "sitting" } }, text = "She climbs down off the roof and ducks in at the door." },
+]
+moves.drifa = { holds = "minecraft:bow", place = "frost_roof", pose = "standing_aiming" }
+objective = "Hear out the woman on the roof."
+with = "drifa"
+
+[[quests.steps]]
+id = "the_hearth"
+joins = "drifa"
+kind = "talk"
+lines = [
+  { text = "Inside, the fire is low and the air smells of smoke and hide. She feeds the fire a stick before she looks at you." },
   { by = "drifa", names = [
     "drifa",
     "frost_walkers",
@@ -1752,14 +1770,13 @@ lines = [
   { by = "drifa", text = "Twenty winters ago I came home from a hunt and found my people dead on the stair to our hall. The hall was empty." },
   { by = "drifa", text = "Our stone down there remembers what it saw. It shows it only to a Wayfarer's fire." },
   { by = "drifa", text = "Wake it for me. I want a name." },
-  { text = "She climbs down and puts a pair of snowshoes in your hands: bent ash, laced with gut, worn smooth." },
+  { text = "She reaches behind her and puts a pair of snowshoes in your hands: bent ash, laced with gut, worn smooth." },
   { by = "drifa", text = "Up there you'd sink to the waist in those boots. My mother made these." },
   { by = "drifa", text = "I'll be at the stair at first light. Don't make me wait." },
 ]
-moves.drifa = { holds = "minecraft:bow", place = "frost_roof", pose = "standing_aiming" }
-objective = "Hear out the woman on the roof."
+moves.drifa = { place = "frost_hearth", pose = "sitting" }
+objective = "Go in to her fire."
 people.drifa = "Drifa, the last of the Frost Walkers. She came home from a hunt twenty winters ago to find her people dead on their hall's stair. She wants a name."
-poses.drifa = "standing"
 remarks.drifa = ["First light. The stair."]
 story = [
   "On the roof stood Drifa, the last of the Frost Walkers, with an arrow for me until she saw the ember. Her people died on their hall's stair twenty winters ago, and their stone was emptied. She wants a name, and gave me her mother's snowshoes for the way up.",
@@ -1793,6 +1810,7 @@ lines = [
   { by = "drifa", text = "I like to know who I'm sleeping near." },
   { by = "maud", text = "She can stay. Anyone who brings meat can stay." },
 ]
+moves.drifa = { place = "fire_1", pose = "sitting" }
 objective = "Sit with Maud at the caravan's fire."
 story = ["Drifa came to the caravan's fire that evening, and counted us."]
 with = "maud"
@@ -1804,7 +1822,7 @@ joined = "cadoc"
 kind = "talk"
 lines = [
   { by = "cadoc", text = "She looked at my coat for a long time." },
-  { by = "cadoc", text = "...I'll sleep with my boots on tonight." },
+  { by = "cadoc", text = "She knows what this coat means. I'll sleep with my boots on tonight, ready to run." },
 ]
 objective = "Talk to Cadoc, by his tent at the edge of the camp."
 story = ["Cadoc says Drifa looked at his grey coat for a long time."]
@@ -1892,14 +1910,17 @@ done = [
 from = "frost_stone"
 id = "the_way_out"
 kind = "walk"
+lines = [{ text = "Drifa follows you up the stair." }]
+moves.drifa = { place = "frost_stair", pose = "standing" }
 objective = "Climb back out of the hall."
 story = [
-  "On the way out his voice owned it: he was the grey coats' finder, and led them up that stair.",
+  "On the way out his voice admitted it: he was the grey coats' finder, and led them up that stair.",
 ]
 
 [[quests.steps]]
 id = "the_caravan"
 kind = "caravan"
+moves.drifa = { place = "fire_1", pose = "sitting" }
 objective = "Make for their smoke."
 tasks = ["rest"]
 
@@ -1920,8 +1941,8 @@ id = "the_lake"
 kind = "reach"
 lines = [
   { by = "drifa", text = "A day east of the hall. I'll be there before you." },
+  { leaves = ["drifa"], text = "Drifa picks up her bow and walks off into the dark." },
 ]
-moves.drifa = { place = "frost_shore", pose = "standing" }
 objective = "Find the frozen lake a day east of the hall."
 place = "frost_lake"
 story = [
@@ -1991,7 +2012,7 @@ act = "1"
 after = ["under_the_ice"]
 id = "the_burial"
 kind = "side"
-summary = "Drifa will bury her people's names on their old winter grounds. She said she'd send word."
+summary = "Drifa will raise a cairn for each of her people on their old winter grounds. She said she'd send word."
 title = "The Burial"
 
 [[quests.steps]]
@@ -1999,19 +2020,19 @@ awaits = "the_crossing"
 id = "not_yet"
 kind = "wait"
 objective = "Wait for Drifa's word."
-story = ["Drifa will bury her people's names on their old winter grounds. She said she'd send word."]
+story = ["Drifa will raise a cairn for each of her people on their old winter grounds. She said she'd send word."]
 
 [[quests.steps]]
 arrived = [{ by = "drifa", text = "Here. They wintered here, before the hall. I was born here." }]
 id = "the_way"
 kind = "escort"
 lines = [
-  { by = "drifa", text = "There you are. My people wintered on this shore once, in the snow. I'll lay their names there." },
+  { by = "drifa", text = "There you are. My people wintered on this shore once, in the snow. I'll raise a cairn there for each of them." },
   { by = "drifa", text = "Walk with me. I don't want to do it alone." },
 ]
 objective = "Walk Drifa to her people's old winter grounds."
 place = "cairns"
-story = ["Drifa asked me to walk with her to her people's old winter grounds on this shore, to lay their names to rest."]
+story = ["Drifa asked me to walk with her to her people's old winter grounds on this shore, to raise a cairn for each of them."]
 who = "drifa"
 
 [[quests.steps]]
@@ -2019,25 +2040,24 @@ calls = 8
 done = [
   { text = "She lays a stone on every cairn, one for each name, and the last one on the stone in the middle." },
   { text = "Under the last stone she buries the shard, and doesn't look at it again.", when = "under_the_ice/the_shard=give" },
-  { by = "drifa", text = "There. They're home." },
+  { by = "drifa", leaves = ["drifa"], text = "There. They're home." },
 ]
 id = "the_cairns"
 kind = "talk"
-leaves = ["drifa"]
 lines = [
   { text = "Drifa walks the ring of cairns and says a name at each, then many names at each." },
   { by = "drifa", text = "And the guilty. I counted the grey coats on the stair, and I heard one name they called. Cadoc." },
 ]
 moves.drifa = { place = "cairns_drifa", pose = "standing" }
 objective = "Stand with Drifa at the cairns."
-people.drifa = "On her people's old winter grounds she laid their names to rest. Cadoc's name is on her list of the guilty."
+people.drifa = "On her people's old winter grounds she raised a cairn for each of them and said their names. Cadoc's name is on her list of the guilty."
 story = ["At the cairns Drifa said every name, and then the names of the guilty. Cadoc's is one of them."]
 with = "drifa"
 
 [[quests.steps.choices]]
 id = "left"
-reply = "Then he left late."
-story = "I told Drifa that Cadoc left them. Then he left late, she said."
+reply = "Then he left too late."
+story = "I told Drifa that Cadoc left them. Then he left too late, she said."
 text = "He left them."
 
 [[quests.steps.choices]]
@@ -2072,7 +2092,7 @@ story = ["The wind brought smoke. I followed it to a house of grey stone that ha
 
 [[quests.steps]]
 clues = [
-  { id = "ansel", text = "An old man in a grey robe lies across the doorway, his chest opened like the dead of Tollbridge. There is ink on his fingers." },
+  { id = "ansel", text = "An old man in a grey robe lies across the doorway, his chest cut open like the dead of Tollbridge. There is ink on his fingers." },
   { id = "scorched_book", opens = "keepers/breaking", text = "A book on a lectern the fire didn't reach. The letters are like nothing you know: the marks that crawl over an enchanting table." },
   { id = "ash_prints", text = "Footprints in the ash, one person's, small and fresh. They go down the stair." },
 ]
@@ -2086,7 +2106,7 @@ needed = 3
 objective = "Look through the burnt house: {found}/{needed}."
 place = "reading_house"
 story = [
-  "In the burnt house an old man lay dead at the door, his chest opened. A book on a lectern was written in letters I couldn't read, and fresh footprints went down a stair.",
+  "In the burnt house an old man lay dead at the door, his chest cut open. A book on a lectern was written in letters I couldn't read, and fresh footprints went down a stair.",
 ]
 tasks = ["search"]
 
@@ -2095,7 +2115,7 @@ calls = 16
 id = "alruna"
 kind = "talk"
 lines = [
-  { text = "A young woman in a grey robe comes up out of the dark, an armful of books against her chest and a little knife held the wrong way round." },
+  { moves = { alruna = { holds = "minecraft:book", place = "reading_house_stair", pose = "standing" } }, text = "A young woman in a grey robe comes up out of the dark, an armful of books against her chest and a little knife held the wrong way round." },
   { text = "She sees the ember in your hand, and the knife goes down." },
   { by = "alruna", text = "A lit ember. Master Ansel waited sixty years for someone to carry one through that door." },
   { by = "alruna", names = [
@@ -2103,9 +2123,8 @@ lines = [
     "keepers",
   ], text = "I'm Alruna. I was his apprentice. This was the Keepers' reading-house." },
   { by = "alruna", text = "Wayfarers came here to learn the oath, in the old script, in the old days. None came in his lifetime." },
-  { by = "alruna", text = "Three nights ago the night came for it. He sent me down to the vault with the oldest books, and he held the door." },
+  { by = "alruna", text = "Three nights ago, things came out of the dark for it. He sent me down to the vault with the oldest books, and he held the door." },
 ]
-moves.alruna = { holds = "minecraft:book", place = "reading_house_stair", pose = "standing" }
 objective = "Hear out the woman on the stair."
 people.alruna = "Alruna, a Keeper's apprentice. Her master died holding the door of their reading-house. She reads the old script."
 remarks.alruna = ["Give me a moment. I haven't talked to anyone in three days."]
@@ -2136,7 +2155,7 @@ calls = 16
 id = "the_breaking"
 kind = "talk"
 lines = [
-  { text = "She sits on the top step with the scorched book open on her knees, and reads the marks aloud." },
+  { moves = { alruna = { holds = "minecraft:book", place = "reading_house_stair", pose = "sitting_hunched" } }, text = "She sits on the top step with the scorched book open on her knees, and reads the marks aloud." },
   { by = "alruna", text = "\"The Eye sat in the portal between the worlds, and through it the dragon watched everything that stood still. Where it looked, its creatures came.\"" },
   { by = "alruna", text = "\"Those who lived tore the Eye out, and the dragon went blind. Fire, the sea and the hammer could only break it.\"" },
   { by = "alruna", text = "\"So they broke it in twelve, and sent each shard to a people at the far ends of the world. Those who carried its light walked.\"" },
@@ -2146,7 +2165,6 @@ lines = [
   { text = "Alruna looks up from the page. She heard nothing." },
   { by = "alruna", text = "Who were you listening to?" },
 ]
-moves.alruna = { holds = "minecraft:book", place = "reading_house_stair", pose = "sitting_hunched" }
 objective = "Listen to Alruna read."
 page = "keepers/breaking"
 remarks.alruna = ["Let me finish the page."]
@@ -2217,7 +2235,7 @@ title = "The Old Green"
 [[quests.steps]]
 done = [
   { text = "Low walls in the grass, in a ring round an empty green. Black beams half sunk in the turf. In the middle, an old well." },
-  { text = "A village stood here once. It burned so long ago the grass has forgotten." },
+  { text = "A village stood here once. It burned so long ago that grass has grown over everything." },
 ]
 id = "the_pull"
 kind = "reach"
@@ -2245,7 +2263,7 @@ tasks = ["search"]
 done = [
   { by = "stranger", text = "So that's where it went." },
   { by = "stranger", text = "Her bell. Get it out of there." },
-  { names = ["first_village"], text = "Maud's bell. All those years it rang over Tollbridge with the shard inside it, and the town under it grew bright enough to burn." },
+  { names = ["first_village"], text = "Maud's bell. All those years it rang over Tollbridge with the shard inside it, and the shard drew the night to the town until it burned." },
 ]
 id = "the_memory"
 kind = "memory"
@@ -2258,7 +2276,7 @@ story = [
   "I touched the stone and woke forty-five summers ago, as him, young. People from a river crossing were casting a bell on the green, and he dropped the shard into their bronze.",
   "It was Maud's bell. The shard rang over Tollbridge all those years, until the night it burned.",
 ]
-words.first_village = "Wayfarers who swore to stay one winter, and stayed a hundred. Their village burned so long ago the grass has forgotten. Under its well lies their hall."
+words.first_village = "Wayfarers who swore to stay one winter, and stayed a hundred. Their village burned so long ago that grass has grown over everything. Under its well lies their hall."
 
 [[quests.steps]]
 done = [{ text = "The last of the light goes out over the hills, red as a forge." }]
@@ -2345,7 +2363,7 @@ lines = [
   { text = "Hob fires the forge without a word. By noon the bell is a puddle of bronze, and the shard lies in it, cooling." },
   { text = "The shard sinks into the ember. A warmth spreads out from your chest, like standing close to a fire." },
   { text = "Maud watches the bronze run. Then she turns her back on you." },
-  { by = "stranger", text = "She won't forgive you. She's alive not to." },
+  { by = "stranger", text = "She won't forgive you. Better angry and alive." },
 ]
 objective = "Make for their smoke."
 story = ["Since the bell's shard the ember warms me like a fire."]
@@ -2373,7 +2391,10 @@ act = "1"
 halls = 4
 id = "the_name"
 kind = "main"
-summary = "The hooded woman is somewhere in your smoke again. Sit at the caravan's fire tonight."
+road = [
+  { by = "stranger", text = "She's following our smoke again. Sit at the fire tonight." },
+]
+summary = "The voice says the hooded woman is following our smoke again. Sit at the caravan's fire tonight."
 title = "The Name"
 
 [[quests.steps]]
@@ -2384,13 +2405,13 @@ done = [
   { by = "malgven", text = "Now you know whose fire you carry. Walk well with it." },
   { sound = "smoke_gust", text = "The fire gusts. Smoke rolls over the circle, and when it thins she is gone.", vanishes = "malgven" },
   { by = "stranger", text = "So now you know my name." },
-  { by = "stranger", text = "It doesn't change what's in your chest. The rest of them lie past the sea." },
+  { by = "stranger", text = "It doesn't change what you carry. The rest of the shards lie past the sea." },
 ]
 id = "the_visit"
 kind = "visit"
 lines = [
   { music = "the_name", text = "Someone walks out of the dark and sits down across the fire. The grey hood. The eye stitched over the heart." },
-  { text = "At the edge of the light, Cadoc gets to his feet." },
+  { poses = { cadoc = "standing" }, text = "At the edge of the light, Cadoc gets to his feet." },
   { by = "malgven", text = "You found his bell. Then you've walked far enough to hear his name." },
   { by = "malgven", names = ["stranger"], text = "His name was Wend. A Wayfarer once, and then ours: a captain of the heir's finders." },
   { by = "malgven", text = "He raised me." },
@@ -2427,7 +2448,7 @@ id = "the_night"
 kind = "sleep"
 objective = "Sleep in your tent by the fire."
 remarks.cadoc = ["Six winters. Don't ask me about them tonight."]
-remarks.maud = ["Sleep. Names keep till morning."]
+remarks.maud = ["Sleep. We can talk about names in the morning."]
 
 [[quests.steps]]
 calls = 16
@@ -2494,7 +2515,7 @@ text = "We need boats for all of us."
 
 [[quests.steps.choices]]
 id = "him"
-reply = "The sea happened. Go and look."
+reply = "The sea took him. Go and look."
 story = "I asked Edda what happened to him."
 text = "What happened to him?"
 
@@ -2552,7 +2573,7 @@ kind = "give"
 moves.edda = { place = "shipyard_hull", pose = "standing" }
 objective = "Bring Edda thirty-two logs of any wood and hold them out to her: {carried}/{count}."
 place = "shipyard"
-short = "That's not thirty-two. Hulls don't build from good intentions."
+short = "That's not thirty-two. I can't build a hull from promises."
 story = ["We brought Edda timber for the boats. She's working through the night."]
 tag = "minecraft:logs"
 with = "edda"
@@ -2727,9 +2748,8 @@ title = "The Bay"
 [[quests.steps]]
 done = [
   { text = "Huts on stilts above the tideline, boats turned keel up on the sand. The village sleeps by day." },
-  { text = "Two wardens step out with tridents, and stop, and bow low to you. Both at once." },
+  { faces = ["tide_warden_1", "tide_warden_2"], poses = { tide_warden_1 = "standing_bowing", tide_warden_2 = "standing_bowing" }, text = "Two wardens step out with tridents, and stop, and bow low to you. Both at once." },
 ]
-faces = ["tide_warden_1", "tide_warden_2"]
 id = "the_pull"
 kind = "reach"
 known = "feeling"
@@ -2739,7 +2759,6 @@ moves.tide_warden_1 = { holds = "minecraft:trident", place = "tide_warden_1", po
 moves.tide_warden_2 = { holds = "minecraft:trident", place = "tide_warden_2", pose = "standing" }
 objective = "Follow the pull: walk where the ember flares."
 place = "tide"
-poses = { tide_warden_1 = "standing_bowing", tide_warden_2 = "standing_bowing" }
 story = ["Across the sea the ember pulled along the coast to a village on stilts, and its wardens bowed to me. Nobody told them to."]
 tasks = ["sweep"]
 
@@ -2792,9 +2811,9 @@ id = "the_hall"
 kind = "reach"
 lines = [
   { by = "morwen", text = "They bowed. I've no right to keep you out of anything." },
-  { by = "morwen", text = "Come down under the fire pit, and see what you'd be taking." },
+  { by = "morwen", moves = { morwen = { place = "tide_inside", pose = "standing" } }, text = "Come down under the fire pit, and see what you'd be taking." },
 ]
-moves.morwen = { place = "tide_inside", pose = "standing" }
+moves.morwen = { holds = "minecraft:fishing_rod", place = "tide_morwen", pose = "standing" }
 objective = "Follow Morwen down under the fire pit."
 place = "tide_hall"
 story = ["Morwen took me down under the fire pit into the Tide Folk's hall, where two shards lie side by side."]
@@ -3002,7 +3021,7 @@ touch = "hearthstone"
 id = "the_caravan"
 kind = "caravan"
 lines = [
-  { text = "The ember is small for a breath. Then it isn't." },
+  { text = "For a moment the ember goes dim. Then it glows again." },
   { by = "stranger", text = "...Enough of that. Walk." },
 ]
 objective = "Make for their smoke."
@@ -3144,7 +3163,10 @@ act = "2"
 halls = 2
 id = "your_eyes"
 kind = "main"
-summary = "Cadoc has been watching you across the fire for days. Sit with them tonight."
+road = [
+  { text = "Across the fire, Cadoc is watching you again." },
+]
+summary = "Cadoc keeps watching you across the fire. Sit with them tonight."
 title = "Your Eyes"
 
 [[quests.steps]]
@@ -3168,6 +3190,7 @@ lines = [
   { by = "agna", text = "Cadoc. What are you staring at?" },
   { by = "cadoc", text = "Your eyes. Did you know they do that?" },
 ]
+moves.cadoc = { place = "fire_2", pose = "sitting" }
 objective = "Sit with them at the fire."
 people.cadoc = "He saw my eyes catch the firelight like an animal's, pale, the wrong colour. Agna saw it too, and stopped laughing."
 story = ["At the fire Cadoc saw my eyes shine in the firelight, pale, like an animal's but the wrong colour. Agna laughed, and then she looked, and stopped."]
@@ -3326,7 +3349,10 @@ halls = 3
 id = "malgvens_warning"
 kind = "main"
 renamed.malgven = "Malgven's Warning"
-summary = "Someone walked in your smoke again today. Sit at the caravan's fire tonight."
+road = [
+  { by = "stranger", text = "She's behind us again. Keep to the fire tonight." },
+]
+summary = "The voice says the hooded woman is following our smoke again. Sit at the caravan's fire tonight."
 title = "The Hooded Woman's Warning"
 
 [[quests.steps]]
@@ -3573,7 +3599,10 @@ act = "3"
 halls = 1
 id = "the_dreaming"
 kind = "main"
-summary = "Something is wrong with your sleep. Sit at the fire tonight."
+road = [
+  { text = "You wake tired, as if you had walked all night." },
+]
+summary = "You wake tired, as if you had walked all night. Sit at the fire tonight."
 title = "The Dreaming"
 
 [[quests.steps]]
@@ -4003,7 +4032,10 @@ act = "3"
 halls = 3
 id = "the_rider"
 kind = "main"
-summary = "The heir's riders have been seen near the caravan. Sit at the fire tonight, and keep the children close."
+road = [
+  { text = "Riders in grey kept pace with the wagons today, out on the hills." },
+]
+summary = "Riders in grey kept pace with the wagons today. Sit at the fire tonight, and keep the children close."
 title = "The Rider"
 
 [[quests.steps]]
@@ -4040,7 +4072,10 @@ act = "3"
 halls = 4
 id = "keepers_door"
 kind = "main"
-summary = "The last hall of the far ring is behind you. The Keepers keep the frame in the nearest stronghold. The ember wants it."
+road = [
+  { by = "stranger", text = "That was the last of the far ring. The frame's in the Keepers' stronghold. Take me to it." },
+]
+summary = "The last hall of the far ring is behind you. The voice says the Keepers keep the frame in their stronghold, and wants it."
 title = "The Keepers' Door"
 
 [[quests.steps]]
@@ -4188,7 +4223,7 @@ when = "the_doors=blind"
 id = "blinded"
 kind = "say"
 lines = [
-  { text = "It falls. Its eye goes dark for good." },
+  { text = "It falls. Its eye goes dark forever." },
   { text = "Back in the world, the nights are only nights. Nothing comes. A tent is only a tent." },
   { text = "Far below, in the deep dark, the sculk creeps one block further. Nobody hears it." },
 ]
@@ -4240,7 +4275,10 @@ act = "1"
 after = ["the_last_frost_walker"]
 id = "the_missing"
 kind = "side"
-summary = "Maud's last townsman, Wil the cooper, went to his sister's village the spring before Tollbridge burned. Find out if he lived."
+road = [
+  { by = "maud", text = "Drifa came to our fire and counted us. It made me count my own. Sit with me at the fire when you can: one of my people from Tollbridge may still be alive." },
+]
+summary = "Maud wants a word at the fire. One of her people from Tollbridge may still be alive."
 title = "The Missing"
 
 [[quests.steps]]
@@ -4248,13 +4286,13 @@ calls = 16
 id = "the_ask"
 kind = "talk"
 lines = [
-  { by = "maud", text = "Wil the cooper. The last of Tollbridge I can't account for." },
-  { by = "maud", text = "He went to his sister's village the spring before we burned. Up the valley, he said. Find out if he lived." },
+  { by = "maud", text = "Wil the cooper. Of everyone from Tollbridge, he's the one I know nothing about. Alive or dead." },
+  { by = "maud", text = "He went to his sister's village the spring before Tollbridge burned. Up the valley, he said. Go and see if he's alive." },
 ]
 objective = "Hear Maud out at the fire."
-people.maud = "She can't account for one of Tollbridge: Wil the cooper, who went to his sister's village the spring before it burned."
-remarks.maud = ["Sit with me at the fire when you can. There's someone I can't account for."]
-story = ["Maud asked me to find Wil the cooper, the last of Tollbridge she can't account for, in his sister's village."]
+people.maud = "She doesn't know if Wil the cooper is alive. He went to his sister's village the spring before Tollbridge burned."
+remarks.maud = ["Drifa came to our fire and counted us. It made me count my own. Sit with me at the fire when you can: one of my people from Tollbridge may still be alive."]
+story = ["Maud asked me to find out if Wil the cooper is alive. He went to his sister's village before Tollbridge burned."]
 with = "maud"
 
 [[quests.steps]]
@@ -4304,11 +4342,11 @@ tasks = ["rest"]
 when = "wil=come"
 
 [[quests.steps]]
-done = [{ by = "maud", text = "Wil. Still alive. Still stubborn." }, { text = "Maud laughs, and then she doesn't." }]
+done = [{ by = "maud", text = "Wil. Still alive. Still stubborn." }, { text = "Maud laughs, and then she stops." }]
 id = "stayed"
 kind = "caravan"
 objective = "Make for their smoke, and tell Maud."
-story = ["Wil stayed in his village. Maud laughed, and then she didn't."]
+story = ["Wil stayed in his village. Maud laughed, and then she stopped."]
 tasks = ["rest"]
 when = "wil=stay"
 
@@ -4317,7 +4355,10 @@ act = "2"
 after = ["the_tide_folk"]
 id = "the_seal"
 kind = "side"
-summary = "Alruna says the Keepers kept a house on this shore, and sealed it. They seal what they won't burn."
+road = [
+  { by = "alruna", text = "Master Ansel's pages name a Keepers' house on this shore. Now that we've crossed, I can look for it. Come to the fire when you have a moment." },
+]
+summary = "Alruna found something in the Keepers' pages. Hear her out at the fire."
 title = "The Seal"
 
 [[quests.steps]]
@@ -4329,7 +4370,7 @@ lines = [
   { by = "alruna", text = "The seal takes three words of the oath. You'll see them better than I will, with that thing." },
 ]
 objective = "Hear Alruna out at the fire."
-remarks.alruna = ["Come to the fire when you've a moment. I found something in the Keepers' pages."]
+remarks.alruna = ["Master Ansel's pages name a Keepers' house on this shore. Now that we've crossed, I can look for it. Come to the fire when you have a moment."]
 story = ["Alruna told me of a sealed Keepers' house on this shore. The seal takes three words of the oath."]
 with = "alruna"
 
@@ -4395,7 +4436,10 @@ act = "2"
 after = ["his_last_camp"]
 id = "the_fever"
 kind = "side"
-summary = "Cecily, the potter's girl, burns with a fever Agna can't break. The Tide Folk's healer can, before the third dawn."
+road = [
+  { by = "agna", text = "Cecily's fever is worse tonight. Come and sit with me at the fire." },
+]
+summary = "Agna wants you at the fire. It's about Cecily."
 title = "The Fever"
 
 [[quests.steps]]
@@ -4408,7 +4452,7 @@ lines = [
 ]
 objective = "Hear Agna out at the fire."
 people.cecily = "The potter's girl. She burns with the marsh fever."
-remarks.agna = ["Come and sit with me at the fire. It's Cecily."]
+remarks.agna = ["Cecily's fever is worse tonight. Come and sit with me at the fire."]
 story = ["Cecily, the potter's girl, burns with the marsh fever. Agna can't break it; the Tide Folk can, before the third dawn."]
 with = "agna"
 
@@ -4433,12 +4477,12 @@ kind = "talk"
 leaves = ["cecily"]
 lines = [
   { by = "morwen", text = "Marsh fever. Give her here." },
-  { by = "morwen", text = "Bladderwrack and salt, steeped in our water. It breaks the fever, and for a day what looks for you looks past you. We use it on the boats." },
+  { by = "morwen", text = "Bladderwrack and salt, steeped in our water. It breaks the fever, and for a day the night's creatures look past you. We use it on the boats." },
 ]
 moves.morwen = { place = "tide_morwen", pose = "standing" }
 objective = "Give Cecily to Morwen."
 page = "tide/remedy"
-story = ["Morwen took Cecily in and broke her fever, and wrote the remedy down for Agna. For a day, whoever drinks it is looked past."]
+story = ["Morwen took Cecily in and broke her fever, and wrote the remedy down for Agna. For a day, the night's creatures look past whoever drinks it."]
 when = "the_way=arrived"
 with = "morwen"
 
@@ -4471,7 +4515,10 @@ act = "2"
 after = ["the_tide_folk"]
 id = "night_fishing"
 kind = "side"
-summary = "Morwen asks if you'll go out with the Tide Folk's boats tonight."
+road = [
+  { by = "morwen", text = "The boats go out tonight, for the first time since you came to our stone. Find me by them before dark. I have something to ask you." },
+]
+summary = "Morwen has something to ask you. Find her by the boats before dark."
 title = "Night Fishing"
 
 [[quests.steps]]
@@ -4487,6 +4534,13 @@ objective = "Hear Morwen out at the bay."
 place = "tide"
 story = ["Morwen asked me to go out with the Tide Folk's boats at night."]
 with = "morwen"
+
+[[quests.steps]]
+id = "dusk"
+kind = "dusk"
+lines = [{ text = "The Tide Folk mend nets and watch the water. The afternoon goes slowly, then all at once." }]
+objective = "Wait with the Tide Folk for dark."
+place = "tide"
 
 [[quests.steps]]
 at = "tide"
@@ -4520,12 +4574,21 @@ items = [{ count = 8, id = "minecraft:cooked_cod", name = "Tide Folk's Catch" }]
 text = "a share of the night's catch."
 title = "The Catch"
 
+[[quests.steps]]
+done = [{ text = "Grey light on the water. The boats come in." }]
+id = "morning"
+kind = "dawn"
+objective = "Stay out with the boats until morning."
+
 [[quests]]
 act = "2"
 after = ["the_worm"]
 id = "the_raiders"
 kind = "side"
-summary = "Sefa sent word: something's changed in the desert."
+road = [
+  { text = "Word comes up the road from the Sand Singers' camp: Sefa wants you there." },
+]
+summary = "Sefa sent word from the Sand Singers' camp. Go and hear her out."
 title = "The Raiders"
 
 [[quests.steps]]
@@ -4543,6 +4606,14 @@ story = ["Sefa sent word from the desert."]
 with = "sefa"
 
 [[quests.steps]]
+id = "dusk"
+kind = "dusk"
+lines = [{ text = "Sefa's people bank their fire low and keep their eyes on the dunes." }]
+objective = "Wait with the Sand Singers for dark."
+place = "sand"
+when = "the_worm/the_worm=killed"
+
+[[quests.steps]]
 at = "sand"
 id = "the_raid"
 kind = "hold"
@@ -4552,6 +4623,13 @@ objective = "Hold the Sand Singers' camp."
 story = ["With the worm dead, raiders came for the Sand Singers, and we held their camp."]
 table = "gazebound"
 wave = "The raid: wave {wave} of {waves}"
+when = "the_worm/the_worm=killed"
+
+[[quests.steps]]
+done = [{ text = "The torches go back over the dunes. At first light Sefa's people count each other." }]
+id = "morning"
+kind = "dawn"
+objective = "Hold until morning."
 when = "the_worm/the_worm=killed"
 
 [[quests.steps]]
@@ -4571,7 +4649,10 @@ act = "2"
 after = ["his_last_camp"]
 id = "the_burning"
 kind = "side"
-summary = "Smoke on the road ahead: a village the caravan traded with. The night is coming for it."
+road = [
+  { text = "Smoke on the road ahead, too much of it for chimneys." },
+]
+summary = "Smoke on the road ahead, too much of it for chimneys. Get there before nightfall."
 title = "The Burning"
 
 [[quests.steps]]
@@ -4581,6 +4662,13 @@ kind = "reach"
 objective = "Get to the village before nightfall."
 place = "burning"
 story = ["The night was coming for a village we traded with."]
+
+[[quests.steps]]
+id = "dusk"
+kind = "dusk"
+lines = [{ text = "Somebody hands you a cup of something hot through a gap in the shutters. Nobody talks. The light goes." }]
+objective = "Wait with the village for nightfall."
+place = "burning"
 
 [[quests.steps]]
 at = "burning"
@@ -4603,7 +4691,10 @@ act = "2"
 after = ["the_burial"]
 id = "the_quarrel"
 kind = "side"
-summary = "Drifa and Cadoc can't share a fire any more. Someone has to settle it."
+road = [
+  { text = "At the fire tonight Drifa and Cadoc sit as far apart as the light allows." },
+]
+summary = "Drifa and Cadoc sit as far apart as the fire allows. Someone has to settle it."
 title = "The Quarrel"
 
 [[quests.steps]]
@@ -4614,7 +4705,7 @@ kind = "talk"
 lines = [
   { by = "drifa", text = "He was on the stair. He was one of them." },
   { by = "cadoc", text = "I was. I left. I've said it a hundred times." },
-  { by = "drifa", text = "You left late." },
+  { by = "drifa", text = "You left too late." },
 ]
 moves.cadoc = { place = "fire_2", pose = "sitting" }
 moves.drifa = { place = "fire_1", pose = "sitting" }
@@ -4647,6 +4738,9 @@ act = "2"
 after = ["the_dry_city"]
 id = "settled_wayfarer"
 kind = "side"
+road = [
+  { text = "The ember tugs aside, towards a village, and another light in it, very small." },
+]
 summary = "The ember tugs towards a village, and another light in it, very small."
 title = "The Settled Wayfarer"
 
@@ -4692,7 +4786,10 @@ act = "3"
 after = ["the_ward"]
 id = "through_the_lines"
 kind = "side"
-summary = "The warden has a message for the kingdom's people beyond the heir's lines, and nobody who isn't in grey gets through."
+road = [
+  { by = "warden", text = "Now that the walls have held, I have a message for our far villages. A word, at the stone, before you go on." },
+]
+summary = "The warden wants a word at the stone before you go on."
 title = "Through the Lines"
 
 [[quests.steps]]
@@ -4701,7 +4798,7 @@ id = "the_message"
 kind = "talk"
 lines = [
   { by = "warden", text = "Our people in the far villages think the walls have fallen. Tell them they haven't." },
-  { by = "warden", text = "You've their grey. Walk through the heir's camp as one of his, and nobody will look twice." },
+  { by = "warden", text = "You have their grey. Walk through the heir's camp as one of his, and nobody will look twice." },
 ]
 moves.warden = { place = "ward_warden", pose = "standing" }
 objective = "Hear the warden out at the stone."
@@ -4726,7 +4823,7 @@ lines = [
   { text = "At the last fire beyond the tents, a woman in ochre takes the message, and then your hand." },
   { by = "heirs_sister", names = ["heirs_sister"], text = "Linnet. Tell my brother I'm alive. He thinks the walls ate me too." },
   { text = "She means the heir." },
-  { by = "heirs_sister", text = "He went looking for our grandfather's summer. I stayed for the people who lived through it." },
+  { by = "heirs_sister", text = "He went looking for the sight our grandfather had for one summer. I stayed for the people who lived through it." },
 ]
 moves.heirs_sister = { place = "ward_lines", pose = "standing" }
 objective = "Give the warden's message to whoever waits beyond the tents."
@@ -4740,7 +4837,10 @@ act = "3"
 after = ["the_scribes"]
 id = "the_pilgrims"
 kind = "side"
-summary = "A pilgrim on the road asks to walk with you to the Keepers."
+road = [
+  { text = "On the road a pilgrim with a staff waits at a milestone, as if for company." },
+]
+summary = "A pilgrim waits on the road, as if for company. Walk with her if she asks."
 title = "The Pilgrims"
 
 [[quests.steps]]
@@ -4835,7 +4935,7 @@ done = [{ text = "Word goes round the taverns: the traveller with the coal plays
 id = "wins"
 kind = "wins"
 objective = "Win games of bones in the taverns: {won}/{count}."
-story = ["In the taverns they play bones for stakes. I've learned to stop while I'm ahead."]
+story = ["In the taverns they play bones for stakes. I've learned to stop while I'm winning."]
 
 
 [[quests.steps]]
@@ -4865,6 +4965,9 @@ act = "1"
 after = ["under_the_ice"]
 id = "the_lost_ore"
 kind = "side"
+road = [
+  { by = "hob", text = "We're near the Frost Walkers' old ground now. Come by the fire one evening: I want a word about their metal." },
+]
 summary = "Hob wants a word about the Frost Walkers' metal. He's at the caravan in the evenings."
 title = "The Lost Ore"
 
@@ -4882,7 +4985,7 @@ lines = [
 objective = "Hear Hob out at the caravan: right-click him."
 people.hob = "His hammer cracked the night Tollbridge burned, and since then he mends only halfway. He wants the Frost Walkers' metal for a new one."
 place = "frost_mine_cart"
-remarks.hob = ["Come by the fire one evening. I want a word about that Frost Walker's metal."]
+remarks.hob = ["We're near the Frost Walkers' old ground now. Come by the fire one evening: I want a word about their metal."]
 story = [
   "Hob wants the Frost Walkers' metal, frost iron, to make a hammer worth the name. They'd have dug it near their hall.",
 ]
@@ -4962,9 +5065,9 @@ done = [{ by = "hob", text = "There. A hammer worth the name. Bring me anything.
 id = "the_morning"
 kind = "sleep"
 objective = "Sleep: Hob works through the night."
-people.hob = "Since the Frost Walkers' metal he has a hammer worth the name. He makes anything whole overnight, makes it again in frost iron, and sets an old book's writing into steel."
+people.hob = "Since the Frost Walkers' metal he has a hammer worth the name. He makes anything whole overnight, makes it again in frost iron, and puts an enchanted book onto a tool or armour."
 story = [
-  "Hob worked through the night. Now he makes anything whole, makes it again in frost iron, and sets the old books into steel.",
+  "Hob worked through the night. Now he makes anything whole, makes it again in frost iron, and puts enchanted books onto our gear.",
 ]
 
 [[quests]]
@@ -4985,7 +5088,7 @@ place = "cache"
 [[quests.steps]]
 done = [
   { text = "The journal's last page reads: \"One more winter here. The ember is so small now. I'll walk in spring.\"" },
-  { by = "stranger", text = "They didn't. Spring doesn't come for someone who stops. Take the stone. They'd want it walked." },
+  { by = "stranger", text = "They didn't. Spring doesn't come for someone who stops. Take the stone. They'd want it back on the road." },
 ]
 id = "the_camp"
 kind = "clues"
@@ -4993,10 +5096,10 @@ needed = 3
 objective = "Search the old camp: {found}/{needed}."
 place = "cache"
 story = [
-  "In an old camp by the road I found another Wayfarer's ember, gone out, and their journal. They stopped walking, and their ember went home. They left their stone. I carry it now.",
+  "In an old camp by the road I found another Wayfarer's ember, gone out, and their journal. They stopped walking, and their ember went out. They left their stone. I carry it now.",
 ]
 tasks = ["search"]
-words.stone = "A stone of my own, cut down to fit a pack. Set down and touched, it folds me back to it from any waystone I've touched, and the ember burns the walk it saves."
+words.stone = "A stone of my own, cut down to fit a pack. Set down and touched, it folds me back to it from any waystone I've touched, and it costs me some of the food the walk would have."
 
 [[quests.steps.clues]]
 id = "tin"
@@ -5021,6 +5124,9 @@ act = "1"
 after = ["the_pull"]
 id = "the_road"
 kind = "side"
+road = [
+  { by = "pip", text = "You found a shard, like in the stories! In the stories every Wayfarer has a horse, too. Find me one? A brown one." },
+]
 summary = "Pip wants a horse, like the Wayfarers in the stories. Any horse will do, Pip says, as long as it's brown."
 title = "The Road"
 
@@ -5033,9 +5139,6 @@ done = [
 id = "a_horse"
 keeper = "agna"
 kind = "horse"
-lines = [
-  { by = "pip", text = "In the stories every Wayfarer has a horse. Find me one? A brown one." },
-]
 name = "Bramble"
 objective = "Find Pip a horse and bring it to the caravan's fire."
 people.pip = "Pip wanted a horse, like the Wayfarers in the stories. I found one, and Pip called her Bramble."
@@ -5152,7 +5255,10 @@ act = "2"
 after = ["the_crossing"]
 id = "pips_tracks"
 kind = "side"
-summary = "Pip wants to learn to read tracks, like the Wayfarers in the stories. There's a fox's den a little way ahead."
+road = [
+  { by = "pip", text = "Everything here is new, even the animals. I want to ask you something! At the fire. Promise?" },
+]
+summary = "Pip wants to ask you something at the fire."
 title = "Tracks"
 when = ["!the_hollow/pip=lost"]
 
@@ -5165,7 +5271,7 @@ lines = [
   { by = "pip", text = "A fox goes past our camp every night. I bet its den's close. Take me? Please?" },
 ]
 objective = "Hear Pip out at the fire."
-remarks.pip = ["I want to ask you something! At the fire. Promise?"]
+remarks.pip = ["Everything here is new, even the animals. I want to ask you something! At the fire. Promise?"]
 story = ["Pip asked me to teach them to read tracks. A fox goes past our camp every night, and its den is close."]
 when = "!the_hollow/pip=lost"
 with = "pip"
@@ -5221,7 +5327,10 @@ act = "2"
 after = ["his_last_camp"]
 id = "the_scar"
 kind = "side"
-summary = "Cadoc heard there's a rite tonight at an outpost ahead, where the Gazebound's novices take the scar. Go and see it."
+road = [
+  { by = "cadoc", text = "You've seen his last camp. Now you should see what his men do. Find me at the fire tonight." },
+]
+summary = "Cadoc wants you at the fire tonight. There's something he says you should see."
 title = "The Scar of the Searched"
 when = ["!the_hollow/cadoc=lost"]
 
@@ -5234,7 +5343,7 @@ lines = [
   { by = "cadoc", text = "I took mine at fifteen. Go and look, if you want to know what we are. I won't." },
 ]
 objective = "Hear Cadoc out at the fire."
-remarks.cadoc = ["Find me at the fire tonight. There's something you should see."]
+remarks.cadoc = ["You've seen his last camp. Now you should see what his men do. Find me at the fire tonight."]
 story = ["Cadoc told me of a rite at an outpost ahead, where the Gazebound's novices take the scar."]
 when = "!the_hollow/cadoc=lost"
 with = "cadoc"
@@ -5260,7 +5369,7 @@ moves.novice = { place = "novice", pose = "sleeping" }
 needed = 2
 objective = "Look at what the rite left, with the ember held up: {found}/{needed}."
 place = "rite"
-story = ["The rite opens a novice's chest for the night to look in. This one didn't live through it."]
+story = ["The rite cuts a novice's chest open for the night to look in. This one didn't live through it."]
 tasks = ["search"]
 
 [[quests.steps.clues]]
@@ -5288,7 +5397,10 @@ act = "2"
 after = ["the_worm"]
 id = "the_horse"
 kind = "side"
-summary = "Pip heard of a horse ahead that never sleeps, and never stops watching. Find it, and tame it if you can."
+road = [
+  { by = "pip", text = "The Sand Singers told me about a horse! I'll tell you at the fire." },
+]
+summary = "Pip heard about a horse, and will tell you at the fire."
 title = "The Horse That Never Sleeps"
 when = ["!the_hollow/pip=lost"]
 
@@ -5301,7 +5413,7 @@ lines = [
   { by = "pip", text = "In the stories a horse like that waits for one rider. Go and see if it's you?" },
 ]
 objective = "Hear Pip out at the fire."
-remarks.pip = ["I heard about a horse! I'll tell you at the fire."]
+remarks.pip = ["The Sand Singers told me about a horse! I'll tell you at the fire."]
 story = ["Pip heard of a horse on the grass ahead that never sleeps, and asked me to go and see it."]
 when = "!the_hollow/pip=lost"
 with = "pip"
@@ -5331,6 +5443,9 @@ act = "3"
 after = ["wings"]
 id = "the_first_gate"
 kind = "side"
+road = [
+  { by = "stranger", text = "Under the hills ahead, little light, lies the city that built the first gate. Dig, if you want to see it." },
+]
 summary = "The gaze says the city that built the first gate lies under the hills ahead. Go down to it."
 title = "The First Gate"
 
@@ -5342,7 +5457,6 @@ done = [
 id = "the_city"
 kind = "reach"
 lines = [
-  { by = "stranger", text = "Under the hills ahead, little light, lies the city that built the first gate. Dig, if you want to see it." },
   { by = "stranger", text = "Walk softly down there. Their guard still listens." },
 ]
 objective = "Dig down to the city under the hills, and walk softly."
@@ -5361,6 +5475,9 @@ act = "3"
 after = ["wings"]
 id = "the_nest"
 kind = "side"
+road = [
+  { text = "At dawn the phantoms that hunted you in the night drop away, all of them towards the same height ahead." },
+]
 summary = "At dawn the phantoms drop away towards one height ahead. Find their nest, and burn it."
 title = "The Phantom Nest"
 
@@ -5368,7 +5485,6 @@ title = "The Phantom Nest"
 done = [{ text = "Bones on the rock, bleached, with dead brush woven through them. It stinks of the things." }]
 id = "the_height"
 kind = "reach"
-lines = [{ text = "At dawn the phantoms that hunted you in the night drop away, all of them towards the same height ahead." }]
 objective = "Find where the phantoms nest, on the height ahead."
 place = "nest"
 story = ["The phantoms nest on a height ahead, in a ring of bones."]
@@ -5398,7 +5514,10 @@ act = "3"
 after = ["the_dreaming"]
 id = "pips_ember"
 kind = "side"
-summary = "Pip has a question about the ember, and has been working up to it for days. Hear it at the fire."
+road = [
+  { by = "pip", text = "You woke up so tired today. Can I ask you something at the fire? Just us." },
+]
+summary = "Pip wants to ask you something at the fire, just the two of you."
 title = "Pip's Ember"
 when = ["!the_hollow/pip=lost"]
 
@@ -5411,7 +5530,7 @@ lines = [
   { by = "pip", text = "In the stories the Wayfarer gives the light to someone first. So it doesn't go out." },
 ]
 objective = "Hear Pip out at the fire."
-remarks.pip = ["Can I ask you something at the fire? Just us."]
+remarks.pip = ["You woke up so tired today. Can I ask you something at the fire? Just us."]
 story = ["Pip asked what happens to the ember if I die out there."]
 with = "pip"
 

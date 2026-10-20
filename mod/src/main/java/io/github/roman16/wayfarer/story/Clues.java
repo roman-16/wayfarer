@@ -21,6 +21,7 @@ import net.minecraft.world.phys.Vec3;
 final class Clues {
     static final String VEIL = Wayfarer.MODID + "_veil";
     static final String SEEN = Wayfarer.MODID + "_clue_seen";
+    private static final float BOX = 1.0625f;
     private static final float MARKER_SCALE = 1.02f;
     private static final int FOUND_REACH = 64;
     private static final String DOOR = Wayfarer.MODID + "_door_glow";
@@ -116,8 +117,16 @@ final class Clues {
     }
 
     static Entity box(ServerLevel level, Vec3 at, String clue) {
+        return box(level, at.subtract(0, (BOX - 1) / 2, 0), clue, BOX, BOX);
+    }
+
+    static Entity box(ServerLevel level, Vec3 bottom, String clue, float width, float height) {
         Entity box = EntityType.INTERACTION.create(level);
-        box.moveTo(at.x, at.y, at.z);
+        CompoundTag size = box.saveWithoutId(new CompoundTag());
+        size.putFloat("width", width);
+        size.putFloat("height", height);
+        box.load(size);
+        box.moveTo(bottom.x, bottom.y, bottom.z);
         box.addTag(Steps.CLUE + clue);
         box.addTag(Steps.CLUE_BOX);
         level.addFreshEntity(box);

@@ -9,8 +9,11 @@ import signal
 import subprocess
 import sys
 import time
+from collections import Counter
+from datetime import datetime
 from pathlib import Path
 
+import drive
 import hotswap
 import states
 import tomllib
@@ -23,6 +26,16 @@ LAUNCHER = DRIVER / "launcher.pid"
 GAME = DRIVER / "game.pid"
 LAUNCHED = DRIVER / "launched.json"
 WORLD = DRIVER / "world.json"
+SAVE = DRIVER / "save.json"
+SAVES = CLIENT / "saves"
+CHECKPOINTS = CLIENT / "checkpoints"
+SHOT_NAME = re.compile(r"t(\d{4})")
+RUN_FOLDER = "%Y-%m-%d_%H-%M"
+REBUILT = {"play", "play-lean", "showroom", "showroom-lean", "state", "state-lean"}
+VIEW_WIDTH = 1280
+VIEW_QUALITY = "85"
+TICKS_PER_SECOND = 20
+TICKS_PER_MINUTE = 60 * TICKS_PER_SECOND
 SCREEN = DRIVER / "screen.pid"
 SCREEN_DISPLAY = DRIVER / "screen-display"
 SCREEN_LOG = DRIVER / "screen.log"
@@ -49,6 +62,8 @@ ASPECT = 1280 / 720
 FRAMING = 1.1
 NOTE = re.compile(r"([a-z]+): (.*)")
 STATE = "state: "
+NOW = "now: "
+CHECKPOINT = "checkpoint: "
 KEPT = "story: kept "
 FAILED_AT_ONCE = "` failed at once: "
 SIDES = {"front": (0, 0, 1), "side": (1, 0, 0), "above": (0, 1, 0.001), "three-quarters": (0.6, 1.0, 0.6)}
@@ -186,7 +201,7 @@ def release_screen():
         screen_file.unlink(missing_ok=True)
 
 
-def launch(world, timeout, visible, mode, state, rebuild, seed, processors=None, size=SCREEN_SIZE):
+def launch(world, timeout, visible, mode, state, rebuild, seed, processors=None, size=SCREEN_SIZE, save=None):
     DRIVER.mkdir(parents=True, exist_ok=True)
     for stale in ("abort", "commands.txt", "done.txt", "game.pid", "launched.json", "quit", "world.json"):
         (DRIVER / stale).unlink(missing_ok=True)
@@ -197,6 +212,7 @@ def launch(world, timeout, visible, mode, state, rebuild, seed, processors=None,
     environment = screen(visible, size) | {
         "WAYFARER_DRIVEN": "true",
         "WAYFARER_SEED": "" if seed is None else str(seed),
+        "WAYFARER_WORLD": save or "",
     }
     if processors:
         environment["WAYFARER_PROCESSORS"] = str(processors)
@@ -233,7 +249,7 @@ def launch(world, timeout, visible, mode, state, rebuild, seed, processors=None,
         sys.exit(f"the client could not open its world: {blocked[0].removeprefix('blocked: ')}")
     hotswap.remember(SNAPSHOT)
     record(states.digests(), mode, visible, size)
-    say(world, state, start, f"launched in {time.monotonic() - started:.0f} s", visible, mode, report)
+    say(world, state, start, f"launched in {time.monotonic() - started:.0f} s", visible, mode, report, save)
 
 
 def built(state, start, report):
@@ -244,10 +260,11 @@ def built(state, start, report):
     return (f"built from {start}" if start else "built") + keeping + ","
 
 
-def say(world, state, start, took, visible, mode, report):
+def say(world, state, start, took, visible, mode, report, save=None):
     errors = [line for line in report.splitlines() if line.startswith("error:")]
     where = {
         "play": "a fresh natural world",
+        "save": f"the world {save}",
         "showroom": "the showroom",
         "state": f"state {state}, " + built(state, start, report),
     }[world]
@@ -259,7 +276,7 @@ def say(world, state, start, took, visible, mode, report):
     }[mode]
     stopped = [line for line in errors if FAILED_AT_ONCE in line]
     if stopped:
-        sys.exit(f"opening {state or world} failed: {stopped[0].removeprefix('error: ')}")
+        sys.exit(f"opening {state or save or world} failed: {stopped[0].removeprefix('error: ')}")
     print(
         f"the client is running in {where} {screen} ({took}, {len(report.splitlines())} log lines, {len(errors)} errors)"
     )
@@ -307,7 +324,9 @@ def swapped():
     return [f"{', '.join(result['needs a restart'])} needs a restart"] if result["needs a restart"] else []
 
 
-def ensure(world, timeout, visible, mode, state=None, rebuild=False, anew=False, seed=None, size=SCREEN_SIZE):
+def ensure(
+    world, timeout, visible, mode, state=None, rebuild=False, anew=False, seed=None, size=SCREEN_SIZE, save=None
+):
     launched, opened = current()
     digests = states.digests()
     reasons = relaunching(launched, digests, mode, visible, size) or swapped()
@@ -315,7 +334,7 @@ def ensure(world, timeout, visible, mode, state=None, rebuild=False, anew=False,
         if alive():
             print("relaunching: " + "; ".join(reasons))
             shut(STOP_SECONDS)
-        launch(world, timeout, visible, mode, state, rebuild, seed, size=size)
+        launch(world, timeout, visible, mode, state, rebuild, seed, size=size, save=save)
         return
     reloaded = ""
     if states.changed(launched["digests"], digests, ("assets",)):
@@ -326,14 +345,19 @@ def ensure(world, timeout, visible, mode, state=None, rebuild=False, anew=False,
     if world == "showroom" and opened["world"] == "showroom" and not anew and not data:
         print("the client is running in the showroom" + (f" ({reloaded.removesuffix(', ')})" if reloaded else ""))
         return
-    switch(world, timeout, visible, mode, state, rebuild, seed, reloaded)
+    if world == "save" and opened == {"state": save, "world": "save"} and SAVE.exists() and not data:
+        print(f"the client is running in the world {save}" + (f" ({reloaded.removesuffix(', ')})" if reloaded else ""))
+        return
+    switch(world, timeout, visible, mode, state, rebuild, seed, reloaded, save)
 
 
-def switch(world, timeout, visible, mode, state, rebuild, seed, reloaded=""):
+def switch(world, timeout, visible, mode, state, rebuild, seed, reloaded="", save=None):
     started = time.monotonic()
     batch(["leave"], timeout)
     start = None
-    if state:
+    if save:
+        target = f"save {save}"
+    elif state:
         cache = states.folder("client", mode, state)
         start = states.prepare(cache, CLIENT / "saves" / ("state-lean" if mode == "lean" else "state"), rebuild)
         target = f"state {state} {cache}"
@@ -343,13 +367,35 @@ def switch(world, timeout, visible, mode, state, rebuild, seed, reloaded=""):
         )
         target = world if seed is None else f"{world} {seed}"
     report = batch([f"enter {target}"], timeout)
-    say(world, state, start, f"{reloaded}opened in {time.monotonic() - started:.0f} s", visible, mode, report)
+    say(world, state, start, f"{reloaded}opened in {time.monotonic() - started:.0f} s", visible, mode, report, save)
 
 
 def start(arguments):
+    if arguments.title:
+        launched, _ = current()
+        if relaunching(launched, states.digests(), arguments.mode, arguments.visible, SCREEN_SIZE) or swapped():
+            ensure("showroom", arguments.timeout, arguments.visible, arguments.mode)
+        batch(["leave"], arguments.timeout)
+        print("the client stands at the title screen")
+        return
     if arguments.state:
         states.check(arguments.state)
-    world = "state" if arguments.state else "play" if arguments.fresh or arguments.seed is not None else "showroom"
+    if arguments.world in REBUILT:
+        sys.exit(
+            f"{arguments.world} is the dev client's own world, made anew by its start mode; open a save of your own"
+        )
+    if arguments.world and not (SAVES / arguments.world / "level.dat").exists():
+        saves = sorted(path.name for path in SAVES.iterdir() if (path / "level.dat").exists()) if SAVES.exists() else []
+        sys.exit(f"no save {arguments.world}; the saves are: {', '.join(saves) or 'none'}")
+    world = (
+        "save"
+        if arguments.world
+        else "state"
+        if arguments.state
+        else "play"
+        if arguments.fresh or arguments.seed is not None
+        else "showroom"
+    )
     ensure(
         world,
         arguments.timeout,
@@ -358,6 +404,7 @@ def start(arguments):
         arguments.state,
         arguments.rebuild,
         seed=arguments.seed,
+        save=arguments.world,
     )
 
 
@@ -368,13 +415,82 @@ def batch(steps, timeout):
     partial = DRIVER / "commands.tmp"
     partial.write_text("\n".join(steps) + "\n")
     partial.replace(DRIVER / "commands.txt")
-    return wait_done(timeout, before)
+    return "\n".join(kept(line) for line in wait_done(timeout, before).splitlines())
+
+
+def kept(line):
+    if not line.startswith(CHECKPOINT):
+        return line
+    folder, _, where = line.removeprefix(CHECKPOINT).partition(" | ")
+    world = Path(folder)
+    taken = drive.keep(world, CHECKPOINTS / world.name, where)
+    return f"{CHECKPOINT}checkpoint {taken['number']}: {where}"
+
+
+def rewind(step, timeout):
+    words = step.split()
+    back = int(words[1]) if len(words) > 1 else 1
+    if not SAVE.exists():
+        return {"step": step, "error": ["rewind failed: no world the client opened itself is open"]}
+    world = Path(json.loads(SAVE.read_text())["folder"])
+    kept_ones = drive.checkpoints(CHECKPOINTS / world.name)
+    if len(kept_ones) < back:
+        return {
+            "step": step,
+            "error": [f"rewind failed: {world.name} has {len(kept_ones)} checkpoint{'s' * (len(kept_ones) != 1)}"],
+        }
+    batch(["leave"], timeout)
+    back_to = drive.rewound(world, kept_ones[-back])
+    report = batch([f"enter save {world.name}", "hud"], timeout)
+    errors = [line.removeprefix("error: ") for line in report.splitlines() if line.startswith("error:")]
+    return {"step": step, "rewind": [back_to]} | ({"error": errors} if errors else {})
+
+
+def run_begun(folder, world):
+    try:
+        begun = datetime.strptime(folder.name, RUN_FOLDER).astimezone()
+    except ValueError:
+        return {"begun": datetime.now().astimezone().isoformat(timespec="seconds"), "last": None, "ticks": 0}
+    positions = Counter(event["player"] for event in drive.recorded_since(world, begun) if event["event"] == "position")
+    every = tomllib.loads((ROOT / "balance.toml").read_text())["trail"]["position_seconds"] * TICKS_PER_SECOND
+    return {
+        "begun": begun.isoformat(timespec="seconds"),
+        "last": None,
+        "ticks": max(positions.values(), default=0) * every,
+    }
+
+
+def played(folder, clock):
+    path = folder / "run.json"
+    world = Path(json.loads(SAVE.read_text())["folder"])
+    state = json.loads(path.read_text()) if path.exists() else run_begun(folder, world)
+    if state["last"] is not None and clock >= state["last"]:
+        state["ticks"] += clock - state["last"]
+    state["last"] = clock
+    path.write_text(json.dumps(state))
+    events = drive.recorded_since(world, datetime.fromisoformat(state["begun"]))
+    minutes = state["ticks"] // TICKS_PER_MINUTE
+    return {
+        "deaths": sum(event["event"] == "death" for event in events),
+        "played": f"{minutes // 60} h {minutes % 60:02d} min" if minutes >= 60 else f"{minutes} min",
+        "rewinds": sum(event["event"] == "rewound" for event in events),
+    }
+
+
+def next_shot(folder):
+    numbers = [int(found.group(1)) for path in folder.glob("t*.png") if (found := SHOT_NAME.match(path.stem))]
+    return f"t{max(numbers, default=0) + 1:04d}"
 
 
 def run(arguments):
     steps = arguments.steps or [line for line in sys.stdin.read().splitlines() if line.strip()]
-    local = {"compare": compare, "views": views}
+    local = {"compare": compare, "rewind": rewind, "views": views}
     pending = []
+    closing = None
+    if arguments.shots:
+        arguments.shots.mkdir(parents=True, exist_ok=True)
+        closing = next_shot(arguments.shots)
+        steps = [*steps, f"shot {closing}"]
 
     def flush():
         if pending:
@@ -383,6 +499,22 @@ def run(arguments):
             report(entries)
 
     def report(entries):
+        clocks = [int(clock) for entry in entries for clock in entry.pop("clock", [])]
+        if closing and any(entry.get("step") == f"shot {closing}" for entry in entries):
+            entries = [entry for entry in entries if entry.get("step") != f"shot {closing}"]
+            if not entries or "step" in entries[-1]:
+                entries.append({})
+            if clocks and arguments.shots.name == "shots" and SAVE.exists():
+                entries[-1]["run"] = played(arguments.shots.parent, clocks[-1])
+            taken = SCREENSHOTS / f"{closing}.png"
+            if taken.exists():
+                shutil.copy2(taken, arguments.shots / taken.name)
+                view = SCREENSHOTS / "view" / f"{closing}.jpg"
+                view.parent.mkdir(exist_ok=True)
+                subprocess.run(
+                    ["magick", str(taken), "-resize", f"{VIEW_WIDTH}x", "-quality", VIEW_QUALITY, str(view)], check=True
+                )
+                entries[-1] |= {"screenshot": str(arguments.shots / taken.name), "view": str(view)}
         for entry in entries:
             print(json.dumps(entry), flush=True)
         if any("error" in entry for entry in entries):
@@ -404,6 +536,9 @@ def parse(report):
         if line.startswith("> "):
             entries.append({"step": line.removeprefix("> ")})
             continue
+        if line.startswith(NOW):
+            entries.append({"seen": json.loads(line.removeprefix(NOW))})
+            continue
         if not entries:
             entries.append({"step": None})
         found = NOTE.fullmatch(line)
@@ -411,7 +546,7 @@ def parse(report):
         if key == "chat" and value.startswith(STATE):
             entries[-1]["state"] = json.loads(Path(value.removeprefix(STATE)).read_text())
             continue
-        entries[-1].setdefault(key, []).append(json.loads(value) if key in ("hud", "inspect") else value)
+        entries[-1].setdefault(key, []).append(json.loads(value) if key in ("hud", "inspect", "seen") else value)
     return entries
 
 
@@ -914,10 +1049,18 @@ def main():
     worlds.add_argument("--fresh", action="store_true", help="open a fresh natural world instead of the showroom")
     worlds.add_argument("--seed", type=int, help="open a fresh natural world grown from this seed")
     worlds.add_argument(
+        "--title", action="store_true", help="stand at the title screen, to make or load a world as a player does"
+    )
+    worlds.add_argument(
         "--state",
         metavar="QUEST/STEP",
         help="open the world at a step of the story, such as ash/the_door, built from story/states.toml and kept "
         "in build/states/",
+    )
+    worlds.add_argument(
+        "--world",
+        metavar="SAVE",
+        help="open a save of the dev client by its folder name, such as a playthrough's world",
     )
     start_parser.add_argument(
         "--rebuild",
@@ -943,12 +1086,27 @@ def main():
         dest="mode",
         help="load only the Wayfarer mod and what it needs, in worlds of its own",
     )
+    modes.add_argument(
+        "--shipped",
+        action="store_const",
+        const="shipped",
+        dest="mode",
+        help="play as the pack ships: the shader, the far view and 12 chunks, full screen",
+    )
     start_parser.set_defaults(mode="full")
     run_parser = commands.add_parser(
-        "run", help="run driver steps (arguments, or one per line on stdin) and print their log"
+        "run",
+        help="run driver steps (arguments, or one per line on stdin) and print their log; 'rewind [n]' puts the world "
+        "the client opened itself back as its newest checkpoint, or the nth newest, left it",
     )
     run_parser.add_argument("steps", nargs="*")
     run_parser.add_argument("--timeout", type=int, default=RUN_SECONDS)
+    run_parser.add_argument(
+        "--shots",
+        type=Path,
+        help="end the batch with a screenshot, numbered after the ones already in this folder and copied into it, "
+        "such as a playthrough's shots/",
+    )
     commands.add_parser(
         "swap",
         help="compile the Wayfarer mod and swap every changed class into the running client; prints one line of JSON",

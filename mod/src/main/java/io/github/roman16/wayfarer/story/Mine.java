@@ -6,6 +6,7 @@ import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Camps;
+import io.github.roman16.wayfarer.Underground;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -231,7 +232,7 @@ public final class Mine {
     }
 
     private static StructurePlaceSettings settings(BlockPos shaft, Rotation turn) {
-        return new StructurePlaceSettings().setRotation(turn).setRotationPivot(shaft);
+        return Underground.settings(turn, shaft);
     }
 
     private static BlockPos shaft(JsonObject piece) {

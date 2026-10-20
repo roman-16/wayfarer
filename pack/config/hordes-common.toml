@@ -8,7 +8,7 @@
 	#Whether piglins and hoglins automatically convert to zombies in the overworld
 	piglinsHoglinsConvert = false
 	#Whether zombie horses are aggressive or not.
-	aggressiveZombieHorses = true
+	aggressiveZombieHorses = false
 	#Whether zombie horses burn in sunlight.
 	zombieHorsesBurn = false
 	#Whether skeleton horses burn in sunlight.
@@ -36,7 +36,7 @@
 	#Amount of mobs to spawn per wave.
 	spawnAmount = 15
 	#Multiplier by which the spawn amount increases by each time the event naturally spawns. (Set to 1 to disable scaling.)
-	hordeSpawnMultiplier = 1.05
+	hordeSpawnMultiplier = 1.0
 	#Time in ticks the event lasts for
 	hordeSpawnDuration = 6000
 	#Time in ticks between spawns for the horde spawn event.

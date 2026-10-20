@@ -1,6 +1,5 @@
 package io.github.roman16.wayfarer.story;
 
-import net.minecraft.nbt.CompoundTag;
 import com.google.gson.JsonElement;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.BeltLantern;
@@ -10,8 +9,10 @@ import io.github.roman16.wayfarer.Fire;
 import io.github.roman16.wayfarer.Firsts;
 import io.github.roman16.wayfarer.Heat;
 import io.github.roman16.wayfarer.LastUse;
+import io.github.roman16.wayfarer.Nights;
 import io.github.roman16.wayfarer.OwnStone;
 import io.github.roman16.wayfarer.Patterns;
+import io.github.roman16.wayfarer.Record;
 import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Stones;
 import io.github.roman16.wayfarer.TentPitch;
@@ -28,6 +29,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
@@ -38,6 +40,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -46,7 +49,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Tasks {
     private static final String SAIL = "key.smallships.ship_sail";
-    public static final Set<String> STEP_TASKS = Set.of("bed", "bury", "ember", "enter", "fire", "horse", "hull", "look", "map", "marks", "pack", "rest", "sail", "search", "stone", "sweep",
+    public static final Set<String> STEP_TASKS = Set.of("bed", "bury", "campfire", "ember", "enter", "fire", "horse", "hull", "look", "map", "marks", "pack", "rest", "sail", "search", "stone", "sweep",
             "tent", "tracks");
     private static final Set<String> TOLD_BY_CLIENT = Set.of("charms", "conversations", "gear", "journal", "map");
     private static final Set<String> QUIET = Set.of("evening", "waiting");
@@ -123,6 +126,7 @@ public final class Tasks {
 
     public static void did(ServerPlayer player, String task) {
         if (Firsts.first(player, FIRST + task)) {
+            Record.event(player.server, "task", player, line -> line.addProperty("task", task));
             refresh(player);
         }
     }
@@ -165,7 +169,7 @@ public final class Tasks {
         }
         Map<String, Component> open = new LinkedHashMap<>();
         if (Talk.answering(player) && !Firsts.seen(player, FIRST + "answer")) {
-            int choices = Talk.open().map(offer -> offer.choices().size()).orElse(1);
+            int choices = Talk.open(player).map(offer -> offer.choices().size()).orElse(1);
             open.put("answer", choices == 1 ? task("answer.one", key(HOTBAR + 1))
                     : task("answer", key(HOTBAR + 1), key(HOTBAR + choices)));
         }
@@ -203,7 +207,7 @@ public final class Tasks {
         }
         Progress progress = Progress.of(server);
         for (Story.Reward reward : Engine.rewards()) {
-            if (progress.rewards.contains(reward.key()) && !progress.claimed(reward.key(), player.getUUID())) {
+            if (progress.rewards.contains(reward.key()) && !progress.claimed(reward.key(), player.getUUID()) && !Talk.unsaid(reward.key())) {
                 open.put("claim/" + reward.key(), task("claim", reward.title(), key(JOURNAL_KEY)));
             }
         }
@@ -211,7 +215,7 @@ public final class Tasks {
         Component title = Component.empty();
         Component objective = Component.empty();
         Optional<Engine.Active> tracked = Engine.tracked(player);
-        if (Caravan.heading(player) && tracked.map(active -> !active.step().kind().equals("caravan")).orElse(true)) {
+        if (Caravan.homeward(player) && tracked.map(active -> !active.step().kind().equals("caravan")).orElse(true)) {
             kind = Component.translatable("wayfarer.journal.main");
             title = Component.translatable("wayfarer.caravan.title");
             Optional<String> turnedBack = Caravan.turnedBack(server);
@@ -229,8 +233,12 @@ public final class Tasks {
                 objective = Component.literal(Journal.objective(player, active));
             }
             tasks(player, active, open);
-        } else if (!Firsts.seen(player, Engine.TRACKED) && Engine.active(server).stream().anyMatch(active -> !active.quest().act().equals(Engine.PROLOGUE))) {
+        } else if (Engine.active(server).stream().anyMatch(active -> !active.quest().act().equals(Engine.PROLOGUE))) {
             open.put("choose", task("choose", key(JOURNAL_KEY)));
+        }
+        if (Clock.evening() && !Talk.busy() && Caravan.standing(server).isPresent() && !Tents.isTent(player.level().dimension()) && !player.isSleeping()
+                && !Nights.sleepless(player)) {
+            open.put("sleep", task(TentPitch.owns(player) ? "sleep" : "lent"));
         }
         if (OwnStone.carried(player) && !Firsts.seen(player, FIRST + "stone_set")) {
             open.put("stone_set", task("stone_set"));
@@ -279,12 +287,13 @@ public final class Tasks {
         boolean inTent = Tents.isTent(level.dimension());
         return switch (id) {
             case "bury" -> unless(active.scratch().contains(Steps.BURIED), task("bury"));
+            case "campfire" -> unless(player.getInventory().contains(stack -> stack.is(Items.CAMPFIRE)) || Fire.nearest(level, player.position(), NEAR).isPresent(), task("campfire"));
             case "tent" -> unless(inTent || Tents.pitchedNear(level, player.blockPosition(), NEAR), task("tent"));
             case "fire" -> unless(inTent || campfire(level, player.blockPosition()), task("fire", Balance.get().tent().fireBlocks()));
             case "ember" -> unless(done(player, active, "ember"), task("ember", key(Sense.KEY)));
             case "look" -> unless(Firsts.seen(player, FIRST + "look"), task("look"));
             case "marks" -> unless(done(player, active, "ember"), task("marks", key(Sense.KEY)));
-            case "sweep" -> unless(done(player, active, "sweep"), task("sweep", key(Sense.KEY)));
+            case "sweep" -> unless(done(player, active, "sweep") || Firsts.seen(player, FIRST + "sweep"), task("sweep", key(Sense.KEY)));
             case "search" -> unless(done(player, active, "ember"), task("search", key(Sense.KEY)));
             case "tracks" -> unless(done(player, active, "ember"), task("tracks", key(Sense.KEY)));
             case "horse" -> Optional.of(task("horse"));

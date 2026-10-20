@@ -129,13 +129,6 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "parcool"
-type = "optional"
-versionRange = "*"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
 modId = "pingwheel"
 type = "optional"
 versionRange = "*"

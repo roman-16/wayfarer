@@ -24,7 +24,7 @@ public final class HallPiece extends TemplateStructurePiece {
     }
 
     private static StructurePlaceSettings settings(Rotation rotation) {
-        return new StructurePlaceSettings().setRotation(rotation);
+        return Underground.settings(rotation);
     }
 
     public boolean is(ResourceLocation template) {

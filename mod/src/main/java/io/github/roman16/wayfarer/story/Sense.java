@@ -2,13 +2,16 @@ package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Journey;
+import io.github.roman16.wayfarer.Record;
 import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.codec.StreamCodec;
@@ -25,6 +28,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class Sense {
@@ -41,6 +45,7 @@ public final class Sense {
     private static final int TICKS_PER_SECOND = 20;
     private static final Field FLAGS = flags();
     private static final Map<UUID, Sensing> sensing = new HashMap<>();
+    private static final Map<UUID, Set<String>> veiled = new HashMap<>();
 
     private Sense() {}
 
@@ -66,6 +71,7 @@ public final class Sense {
         if (!Journey.awake(player.server) || now != null && now.held()) {
             return;
         }
+        Record.event(player.server, "ember", player);
         if (now != null) {
             stop(player, now);
         }
@@ -124,8 +130,20 @@ public final class Sense {
         veils.forEach(entity -> glow(player, entity, true));
         PlayerTeam team = new PlayerTeam(new Scoreboard(), VEILS);
         team.setColor(ChatFormatting.WHITE);
-        veils.forEach(entity -> team.getPlayers().add(entity.getStringUUID()));
-        player.connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
+        Set<String> known = veiled.get(player.getUUID());
+        if (known == null) {
+            veils.forEach(entity -> team.getPlayers().add(entity.getStringUUID()));
+            player.connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
+            veiled.put(player.getUUID(), new HashSet<>(team.getPlayers()));
+            return;
+        }
+        veils.stream().map(Entity::getStringUUID).filter(known::add)
+                .forEach(veil -> player.connection.send(ClientboundSetPlayerTeamPacket.createPlayerPacket(team, veil, ClientboundSetPlayerTeamPacket.Action.ADD)));
+    }
+
+    @SubscribeEvent
+    public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        veiled.remove(event.getEntity().getUUID());
     }
 
     private static PlayerTeam team(List<Entity> glowing) {

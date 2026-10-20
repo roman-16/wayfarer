@@ -6,12 +6,15 @@ import shutil
 import subprocess
 import sys
 import urllib.request
+import zipfile
 from pathlib import Path
 
 import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
 BALANCE = ROOT / "balance.toml"
+GRADLE_PROPERTIES = ROOT / "mod/gradle.properties"
+BARITONE_MIXINS = "mixins.baritone.json"
 PACK = ROOT / "pack"
 DEFAULT_OPTIONS = PACK / "config/defaultoptions/options.txt"
 DEFAULT_KEYS = PACK / "config/defaultoptions/keybindings.txt"
@@ -91,6 +94,31 @@ def files(target, side, folders, left_out=frozenset()):
         cached = download(source(meta), spec["hash-format"], spec["hash"], meta["name"])
         (target / folder).mkdir(parents=True, exist_ok=True)
         link(cached, target / folder / meta["filename"])
+
+
+def baritone(target):
+    properties = dict(
+        line.split("=", 1)
+        for line in GRADLE_PROPERTIES.read_text().splitlines()
+        if "=" in line and not line.startswith("#")
+    )
+    version = properties["baritone_version"]
+    name = f"baritone-api-neoforge-{version}.jar"
+    url = f"https://github.com/cabaletta/baritone/releases/download/v{version}/{name}"
+    downloaded = download(url, "sha256", properties["baritone_sha256"], f"Baritone {version}")
+    patched = CACHE / "files" / f"{properties['baritone_sha256']}-lenient"
+    if not patched.exists():
+        partial = patched.with_name(patched.name + ".partial")
+        with zipfile.ZipFile(downloaded) as original, zipfile.ZipFile(partial, "w", zipfile.ZIP_DEFLATED) as copy:
+            for entry in original.infolist():
+                data = original.read(entry)
+                if entry.filename == BARITONE_MIXINS:
+                    mixins = json.loads(data)
+                    mixins["injectors"]["defaultRequire"] = 0
+                    data = json.dumps(mixins, indent=2).encode()
+                copy.writestr(entry, data)
+        partial.rename(patched)
+    link(patched, target / "mods" / name)
 
 
 def neoforge(target):
@@ -179,6 +207,8 @@ def client(target, mode):
         {"resourcepacks", "shaderpacks"} if mode == "lean" else {"mods", "resourcepacks", "shaderpacks"},
         frozenset() if mode in ("far", "shipped") else FAR_VIEW,
     )
+    if mode != "lean":
+        baritone(target)
     settings(target)
     for name, overrides in CLIENT_CONFIGS.items():
         if not (mode == "shipped" and name == IRIS):

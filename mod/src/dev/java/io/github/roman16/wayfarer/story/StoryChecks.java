@@ -2,21 +2,31 @@ package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
+import io.github.roman16.wayfarer.CompassEvent;
 import io.github.roman16.wayfarer.Fire;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Interaction;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -29,11 +39,21 @@ public final class StoryChecks {
     private static final int STALL_SECONDS = 60;
     private static final int TICKS_PER_SECOND = 20;
     private static final double CLUE_REACH = 1.5;
+    private static final double UNDERFOOT = 0.05;
     private static final Map<String, Long> waiting = new HashMap<>();
+    private static final Map<UUID, Long> aimless = new HashMap<>();
+    private static final Map<UUID, String> misplaced = new HashMap<>();
+    private static final Map<String, Placed> placed = new HashMap<>();
+    private static final Set<String> reported = new HashSet<>();
+    private static final Set<String> stuck = new HashSet<>();
+    private static final double JUMP = 8;
     private static final List<Entity> clues = new ArrayList<>();
     private static String lastSpeaker = "";
+    private static boolean settled;
 
     private StoryChecks() {}
+
+    private record Placed(UUID body, Vec3 at) {}
 
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
@@ -43,6 +63,10 @@ public final class StoryChecks {
         }
         clues(server);
         speaker(server);
+        people(server);
+        aims(server);
+        talks(server);
+        jumps(server);
         long now = server.getTickCount();
         for (Engine.Active active : Engine.active(server)) {
             Optional<String> stall = stalled(server, active);
@@ -95,11 +119,116 @@ public final class StoryChecks {
             if (!near.isEmpty() && near.stream().noneMatch(player -> player.hasLineOfSight(body))) {
                 fail(server, speaker.get() + " speaks out of sight of " + near.getFirst().getScoreboardName());
             }
+            if (!near.isEmpty() && near.stream().noneMatch(Arrivals::there)) {
+                fail(server, speaker.get() + " spoke to " + near.getFirst().getScoreboardName() + " before their land was drawn");
+            }
+            int present = Balance.get().talk().presentBlocks();
+            Engine.active(server).stream().filter(active -> Steps.entered(active) && active.quest().id().equals(Talk.speakingIn())).map(active -> active.step().with())
+                    .filter(with -> with != null && !with.equals(speaker.get())).flatMap(with -> People.find(server, with).stream())
+                    .filter(with -> with.level() == body.level() && with.distanceTo(body) > present).findFirst()
+                    .ifPresent(with -> fail(server, speaker.get() + " speaks " + (int) with.distanceTo(body) + " blocks from the talk with "
+                            + People.who(with).orElse("?")));
         });
+    }
+
+    private static void people(MinecraftServer server) {
+        for (String person : Progress.of(server).bodies.keySet()) {
+            Optional<Entity> found = People.find(server, person);
+            if (found.isEmpty() || !(found.get().level() instanceof ServerLevel level)) {
+                continue;
+            }
+            Entity body = found.get();
+            AABB box = body.getBoundingBox();
+            BlockPos under = BlockPos.containing(body.getX(), box.minY - UNDERFOOT, body.getZ());
+            String wrong = !level.noBlockCollision(body, box.deflate(UNDERFOOT)) ? "stands inside " + BuiltInRegistries.BLOCK.getKey(level.getBlockState(body.blockPosition()).getBlock())
+                    : level.getBlockState(under).is(BlockTags.LEAVES) ? "stands on " + BuiltInRegistries.BLOCK.getKey(level.getBlockState(under).getBlock()) : null;
+            if (wrong == null) {
+                misplaced.remove(body.getUUID());
+            } else if (!wrong.equals(misplaced.put(body.getUUID(), wrong))) {
+                fail(server, person + " " + wrong + " at " + body.blockPosition().toShortString());
+            }
+        }
+    }
+
+    private static void aims(MinecraftServer server) {
+        long now = server.getTickCount();
+        for (ServerPlayer player : Engine.players(server)) {
+            Optional<Engine.Active> tracked = Engine.tracked(player).filter(Steps::entered);
+            Optional<String> goal = tracked.flatMap(Steps::goal);
+            if (goal.isEmpty() || Places.aim(Progress.of(server), goal.get()).isPresent()) {
+                aimless.remove(player.getUUID());
+                continue;
+            }
+            long since = aimless.computeIfAbsent(player.getUUID(), uuid -> now);
+            if (now - since >= (long) STALL_SECONDS * TICKS_PER_SECOND) {
+                aimless.put(player.getUUID(), now);
+                fail(server, tracked.get().key() + " is tracked, but the compass has nowhere to point for " + STALL_SECONDS + " s");
+            }
+        }
+    }
+
+    private static void talks(MinecraftServer server) {
+        List<String> now = Talk.stuck(server, (long) STALL_SECONDS * TICKS_PER_SECOND);
+        stuck.retainAll(now);
+        now.stream().filter(stuck::add).forEach(why -> fail(server, why + " for " + STALL_SECONDS + " s"));
+    }
+
+    private static void jumps(MinecraftServer server) {
+        if (StoryDev.playing()) {
+            placed.clear();
+            settled = false;
+            return;
+        }
+        boolean checking = settled;
+        settled = true;
+        for (String person : Progress.of(server).bodies.keySet()) {
+            Optional<Entity> found = People.find(server, person).filter(body -> body.level() instanceof ServerLevel);
+            Placed before = placed.remove(person);
+            if (found.isEmpty()) {
+                continue;
+            }
+            Entity body = found.get();
+            ServerLevel level = (ServerLevel) body.level();
+            placed.put(person, new Placed(body.getUUID(), body.position()));
+            boolean jumped = before != null && before.body().equals(body.getUUID()) && before.at().distanceTo(body.position()) > JUMP;
+            if (checking && jumped && watched(level) && (People.seen(level, body.position()) || People.seen(level, before.at()))) {
+                fail(server, person + " jumped " + (int) before.at().distanceTo(body.position()) + " blocks in sight of a player to " + body.blockPosition().toShortString());
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onCompass(CompassEvent event) {
+        ServerPlayer player = event.player();
+        MinecraftServer server = player.server;
+        if (!Engine.running(server)) {
+            return;
+        }
+        int exact = Balance.get().compass().exactBlocks();
+        for (Engine.Active active : Engine.active(server)) {
+            if (!Steps.entered(active) || !Steps.felt(active)) {
+                continue;
+            }
+            Steps.goal(active).flatMap(name -> Places.aim(Progress.of(server), name)).ifPresent(pos -> {
+                boolean marked = event.markers().stream().anyMatch(marker -> marker.x() == pos.getX() && marker.z() == pos.getZ());
+                double away = Math.sqrt(player.blockPosition().distToCenterSqr(pos.getX(), player.getY(), pos.getZ()));
+                if (marked && away > exact && reported.add("felt " + active.key() + " " + player.getUUID())) {
+                    fail(server, player.getScoreboardName() + "'s compass marks a felt goal " + (int) away + " blocks away");
+                }
+            });
+        }
+    }
+
+    private static boolean watched(ServerLevel level) {
+        return level.players().stream().anyMatch(player -> player instanceof ServerPlayer arrived && Arrivals.there(arrived));
     }
 
     @SubscribeEvent
     public static void onJoin(EntityJoinLevelEvent event) {
+        if (!event.loadedFromDisk() && event.getLevel() instanceof ServerLevel level && event.getEntity().getTags().contains(People.TAG) && settled
+                && !StoryDev.playing() && watched(level) && People.seen(level, event.getEntity().position())) {
+            fail(level.getServer(), event.getEntity().getName().getString() + " appeared in sight of a player at " + event.getEntity().blockPosition().toShortString());
+        }
         if (!event.loadedFromDisk() && event.getEntity() instanceof Display.BlockDisplay
                 && event.getEntity().getTags().stream().anyMatch(tag -> tag.startsWith(Steps.CLUE))) {
             clues.add(event.getEntity());
@@ -128,6 +257,12 @@ public final class StoryChecks {
     @SubscribeEvent
     public static void onServerStopped(ServerStoppedEvent event) {
         waiting.clear();
+        aimless.clear();
+        misplaced.clear();
+        placed.clear();
+        settled = false;
+        reported.clear();
+        stuck.clear();
         clues.clear();
         lastSpeaker = "";
     }

@@ -696,7 +696,7 @@ caption = "Malgven's first gift: the sack under the lean-to, and The Gifts begun
 id = "story/his-first-camp/the-gift"
 kind = "hud"
 steps = [
-  "/execute at @e[tag=wayfarer_clue_sack,limit=1] run tp @s ~1.5 ~1 ~ 90 30",
+  "/execute at @e[tag=wayfarer_clue_sack,limit=1] run tp @s ~ ~0.2 ~-0.5 0 40",
   "settle",
   "interact minecraft:interaction",
   "await A sack",

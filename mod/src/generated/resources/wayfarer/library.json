@@ -5,7 +5,7 @@
       "pages": [
         "Autumn. Found the valley today: water, birch, a south slope. The ember brightened at the pond. One winter. I'll build a cabin for one winter.",
         "The cabin stands. I sleep in a bed for the first time since I was a child. The ember is quieter. It's resting, I think. We've walked a long way.",
-        "Spring. I meant to go. The roof wanted mending, and then the garden. The ember is the size of a pea. It doesn't warm my hand any more.",
+        "Spring. I meant to go. The roof needed mending, and then the garden. The ember is the size of a pea. It doesn't warm my hand any more.",
         "Second winter. Something scratched at the door last night and went away. It came back the next night. I keep the fire high.",
         "One more winter here. The ember is so small now. I'll walk in spring."
       ],
@@ -49,7 +49,7 @@
       "author": "The Gazebound",
       "pages": [
         "Captain Wend, taken in at the grass halls in the first winter. Eats well. Asks for nothing. Walks the halls at night as if they were a road.",
-        "Ninth winter: the captain's ember went dark. He hears nothing in it now. We keep him anyway, for the day it can be passed.",
+        "Ninth winter: the captain's ember went dark. He hears nothing in it now. We keep him anyway: one day he may give it to someone.",
         "Twentieth winter: the captain is old. The captains agree: let him light his fire by the road, and follow whoever he gives it to."
       ],
       "title": "The Captain's Ledger"
@@ -66,22 +66,22 @@
       "author": "A Gazebound captain",
       "pages": [
         "By the heir's word, to every outpost on the south roads. Watch for smoke where no village stands. A Wayfarer's fire is small, and burns each night in a new place.",
-        "Do not fight whoever carries one. Do not let them see you follow. Feed them. A light that is fed walks further."
+        "Do not fight whoever carries an ember. Do not let them see you follow. Leave them food: a carrier who eats well walks further."
       ],
       "title": "Captain's Orders, I"
     },
     "gazebound/orders_2": {
       "author": "A Gazebound captain",
       "pages": [
-        "The finder's ember is dark, and he walks no more. We keep him at the grass halls for the day it can be passed.",
-        "Our hope is whoever he passes it to. When the old man lights his last fire, follow the one who leaves it."
+        "Our finder's ember has gone dark. It no longer shows him the halls. We keep him at our halls in the grassland anyway: one day he will give his ember to someone.",
+        "When the old man lights his last fire by the road and dies there, someone will walk away from it with his ember. Follow that one."
       ],
       "title": "Captain's Orders, II"
     },
     "gazebound/orders_3": {
       "author": "A Gazebound captain",
       "pages": [
-        "A carrier who trusts us walks faster than one who fears us. Let the swamp women and the snow folk think the worst of us. It costs us nothing.",
+        "Never frighten the carrier: a carrier who fears us hides, and walks slower. Let the swamp women and the snow folk think the worst of us. It costs us nothing.",
         "Leave bread where the carrier sleeps. Take nothing from them. Every shard they lift is one we could never lift ourselves."
       ],
       "title": "Captain's Orders, III"
@@ -98,7 +98,7 @@
       "author": "A Gazebound captain",
       "pages": [
         "The heir rides to the jungle halls himself. Whatever the carrier cannot open, he will stand beside them and wait.",
-        "Keep close to their camp, and closer when the moon turns. So it was written in the old captain's own hand, and his page is kept at his house in the dark wood."
+        "Keep close to their camp, and closer on the night of the red moon. So it was written in the old captain's own hand, and his page is kept at his house in the dark wood."
       ],
       "title": "Captain's Orders, V"
     },
@@ -160,7 +160,7 @@
       "author": "A Keeper",
       "pages": [
         "The finder came to our door again tonight. His ember is the size of a pea. He asked to stay one winter, only one, and said he was tired.",
-        "We told him what we tell them all: a Wayfarer who stops is a door left open. He said we were a door shut. He cursed us, and the oath, and the road.",
+        "We told him what we tell them all: a Wayfarer who stops lets the gaze in. He said we had shut him out. He cursed us, and the oath, and the road.",
         "He walked off towards the grey coats' fires. Seal this, and pray we were right."
       ],
       "title": "A Keeper's Note"
@@ -320,7 +320,7 @@
       "author": "Morwen",
       "pages": [
         "For the healer of your caravan. Bladderwrack and salt, steeped a night in the water of our bay. Drink it warm.",
-        "It breaks the marsh fever. It does one thing more: for a day, whatever looks for you looks past you. We use it on the boats. Use it well."
+        "It breaks the marsh fever. It does one thing more: for a day, the night's creatures look past you. We use it on the boats. Use it well."
       ],
       "title": "The Tide Folk's Remedy"
     },
@@ -360,8 +360,8 @@
     "wend/orders": {
       "author": "Wend",
       "pages": [
-        "To the heir. Do not chase the one who carries it. Feed them, and let them walk. The ember pulls to the halls, and a light that is fed walks further.",
-        "Let the peoples think the worst of us. Fear sends a carrier on; trust makes them stop and talk.",
+        "To the heir. Do not chase the one who carries it. Feed them, and let them walk. The ember pulls them to the halls, and a carrier who eats well walks further.",
+        "Let the peoples think the worst of us. If they fear us, they send the carrier on quickly. If they trust us, they keep the carrier talking.",
         "When the last shard is lifted, wait at the frame. They will open it, because they will think it is theirs to open. I will not be there. Find someone to carry it."
       ],
       "title": "Orders, in His Hand"

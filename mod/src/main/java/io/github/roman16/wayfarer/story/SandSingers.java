@@ -404,6 +404,6 @@ public final class SandSingers {
         progress.setDirty();
         Talk.say(active.quest().id(), null, active.step().lines(outcome), Engine.fill(progress));
         LOGGER.info("the worm's fight ends: {}", outcome);
-        Talk.then(() -> Engine.complete(server, active));
+        Talk.then(active.quest().id(), () -> Engine.complete(server, active));
     }
 }

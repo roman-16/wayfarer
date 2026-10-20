@@ -7,6 +7,7 @@ import sys
 import time
 from pathlib import Path
 
+import drive
 import hotswap
 import states
 from drive import Failure, Server, reply
@@ -15,6 +16,10 @@ ROOT = Path(__file__).resolve().parent.parent
 DEV_SERVER = ROOT / "build/devserver"
 SNAPSHOT = DEV_SERVER / "driver/classes"
 LAUNCHED = DEV_SERVER / "driver/launched.json"
+PROPERTIES = DEV_SERVER / "server.properties"
+CHECKPOINTS = DEV_SERVER / "checkpoints"
+LEVEL = re.compile(r"^level-name=(.*)$", re.MULTILINE)
+DAY = re.compile(r"(\d+)$")
 START_SECONDS = 900
 STEP_SECONDS = 60
 STOP_SECONDS = 120
@@ -57,7 +62,7 @@ def start(arguments):
     started = time.monotonic()
     server.start(arguments.timeout)
     hotswap.remember(SNAPSHOT)
-    LAUNCHED.write_text(json.dumps({"digests": states.digests(), "mode": mode}))
+    LAUNCHED.write_text(json.dumps({"digests": states.digests(), "mode": mode, "state": arguments.state}))
     replies = []
     if arguments.state and start != arguments.state:
         server.run(f"wayfarer pretend join {WALKER}", STEP_SECONDS)
@@ -111,6 +116,12 @@ def run(arguments):
                 result = state(server.run("wayfarer state", arguments.timeout))
             elif step.startswith("story "):
                 result = {"replies": story(server, step.removeprefix("story "), arguments.timeout)}
+            elif step == "checkpoint":
+                result = checkpoint(server, arguments.timeout)
+            elif step.split()[0] == "rewind":
+                server, result = rewind(step)
+                offset = server.size()
+                taken = set()
             else:
                 result = {"replies": server.run(step, arguments.timeout)}
         except Failure as failure:
@@ -118,6 +129,41 @@ def run(arguments):
             sys.exit(1)
         seconds = round(time.monotonic() - started, 2)
         print(json.dumps({"step": step} | result | {"seconds": seconds}), flush=True)
+
+
+def world():
+    return DEV_SERVER / LEVEL.search(PROPERTIES.read_text()).group(1).strip()
+
+
+def checkpoint(server, timeout):
+    folder = world()
+    day = int(DAY.search(server.run("time query day", timeout)[0]).group(1)) + 1
+    server.run("save-off", timeout)
+    try:
+        server.run("save-all flush", timeout)
+        taken = drive.keep(folder, CHECKPOINTS / folder.name, f"day {day}")
+    finally:
+        server.run("save-on", timeout)
+    return {"checkpoint": [f"checkpoint {taken['number']}: {taken['where']}"]}
+
+
+def rewind(step):
+    words = step.split()
+    back = int(words[1]) if len(words) > 1 else 1
+    folder = world()
+    kept = drive.checkpoints(CHECKPOINTS / folder.name)
+    if len(kept) < back:
+        raise Failure(f"rewind failed: {folder.name} has {len(kept)} checkpoint{'s' * (len(kept) != 1)}")
+    launched = json.loads(LAUNCHED.read_text())
+    dev_server(launched["mode"]).stop(STOP_SECONDS)
+    back_to = drive.rewound(folder, kept[-back])
+    os.environ |= {"WAYFARER_BACKGROUND": "true", "WAYFARER_DRIVEN": "true"}
+    if launched.get("state"):
+        os.environ["WAYFARER_STATE"] = launched["state"]
+    server = dev_server(launched["mode"])
+    server.start(START_SECONDS)
+    hotswap.remember(SNAPSHOT)
+    return server, {"rewind": [back_to + "; the server started again, so players join again"]}
 
 
 def story(server, argument, timeout):
@@ -223,7 +269,9 @@ def main():
         help="run console commands in order, each returning once the server has run it, with one line of JSON per step; "
         + "'await <text>' waits for a later reply containing the text, such as an asynchronous /locate's; "
         + "'state' returns the world's story state; "
-        + "'story <quest/step>' plays the story to that step and returns once it stands there",
+        + "'story <quest/step>' plays the story to that step and returns once it stands there; "
+        + "'checkpoint' keeps a copy of the world in build/devserver/checkpoints/; "
+        + "'rewind [n]' puts the world back as its newest checkpoint, or the nth newest, left it and starts the server again",
     )
     run_parser.add_argument("steps", nargs="*")
     run_parser.add_argument("--timeout", type=int, default=STEP_SECONDS)

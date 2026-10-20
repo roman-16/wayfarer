@@ -24,7 +24,7 @@ voice = ["A pedlar. Count your fingers after you shake his hand."]
 [scenes.questioning]
 ask = [
   { text = "On the road ahead, three men in grey stand around a traveller on his knees." },
-  { by = "gazebound", text = "Seen anyone with a coal in their hand that glows? A fire that walks?" },
+  { by = "gazebound", text = "Seen anyone with a glowing coal in their hand?" },
   { by = "traveller", text = "I've seen nothing! I sell needles, that's all!" },
 ]
 hid = [
@@ -35,7 +35,7 @@ hid = [
 voice = ["They're asking after you. Don't stand there."]
 won = [
   { by = "traveller", text = "You... you came out for me. Nobody comes out." },
-  { by = "traveller", text = "Listen. Past the hill there's a burnt-out place. Whoever lived there buried what they had. Nobody came back for it." },
+  { by = "traveller", text = "Listen. Further on there's a burnt-out place. Whoever lived there buried what they had. Nobody came back for it." },
 ]
 
 [[scenes.questioning.choices]]
@@ -58,8 +58,11 @@ names = ["gazebound"]
 seen = "On the ridge, a line of figures in grey, walking. None of them looks down."
 voice = ["Gazebound. The heir's people. Keep low and let them pass."]
 
+[scenes.sea]
+voice = ["It pulls out over the water. You'll want a boat."]
+
 [scenes.traveller]
-clues.traveller = "A traveller lies by the road, opened over the heart, like the dead in Tollbridge. The purse on the belt is still full."
+clues.traveller = "A traveller lies by the road, cut open over the heart, like the dead in Tollbridge. The purse on the belt is still full."
 voice = ["They walked alone, at night. Don't."]
 
 [scenes.trunk]

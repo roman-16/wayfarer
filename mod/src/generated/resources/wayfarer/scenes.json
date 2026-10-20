@@ -51,7 +51,7 @@
       },
       {
         "by": "gazebound",
-        "text": "Seen anyone with a coal in their hand that glows? A fire that walks?"
+        "text": "Seen anyone with a glowing coal in their hand?"
       },
       {
         "by": "traveller",
@@ -98,7 +98,7 @@
       },
       {
         "by": "traveller",
-        "text": "Listen. Past the hill there's a burnt-out place. Whoever lived there buried what they had. Nobody came back for it."
+        "text": "Listen. Further on there's a burnt-out place. Whoever lived there buried what they had. Nobody came back for it."
       }
     ]
   },
@@ -111,9 +111,14 @@
       "Gazebound. The heir's people. Keep low and let them pass."
     ]
   },
+  "sea": {
+    "voice": [
+      "It pulls out over the water. You'll want a boat."
+    ]
+  },
   "traveller": {
     "clues": {
-      "traveller": "A traveller lies by the road, opened over the heart, like the dead in Tollbridge. The purse on the belt is still full."
+      "traveller": "A traveller lies by the road, cut open over the heart, like the dead in Tollbridge. The purse on the belt is still full."
     },
     "voice": [
       "They walked alone, at night. Don't."

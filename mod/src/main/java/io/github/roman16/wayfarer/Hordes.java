@@ -27,6 +27,15 @@ public final class Hordes {
     public static void onWave(HordeStartWaveEvent event) {
         if (Halls.inside(event.getPlayer())) {
             event.setCanceled(true);
+            return;
         }
+        if (event.getHorde().isActive()) {
+            event.setCount(wave(Shine.of(event.getPlayer().server)));
+        }
+    }
+
+    public static int wave(int shine) {
+        Balance.Nights nights = Balance.get().nights();
+        return nights.wave() + shine / nights.shinePerCreature();
     }
 }

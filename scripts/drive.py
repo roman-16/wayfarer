@@ -1,12 +1,19 @@
 import contextlib
+import json
 import os
 import re
+import shutil
 import signal
 import subprocess
 import time
 import uuid
+from datetime import datetime
 
 CHECK_SECONDS = 0.1
+CHECKPOINT = "checkpoint.json"
+KEPT_CHECKPOINTS = 16
+NUMBERED = re.compile(r"\d{4}")
+DAY = re.compile(r"day (\d+)")
 FAILED = re.compile(r"^[^:<]+ failed: ")
 READY = "]: Done ("
 ANSI = re.compile(r"\x1b\[[0-9;]*m")
@@ -44,6 +51,123 @@ def crashes(folder):
 def reply(line):
     found = REPLY.search(ANSI.sub("", line))
     return found.group(1) if found else None
+
+
+def left_out(relative):
+    return (
+        relative.parts[0] == "baritone"
+        or relative.as_posix().startswith("wayfarer/record")
+        or relative.name.startswith("DistantHorizons")
+        or relative.name == "session.lock"
+    )
+
+
+def same(source, target):
+    if not target.exists():
+        return False
+    first, second = source.stat(), target.stat()
+    return first.st_size == second.st_size and first.st_mtime_ns == second.st_mtime_ns
+
+
+def checkpoints(store):
+    if not store.exists():
+        return []
+    return sorted(path for path in store.iterdir() if NUMBERED.fullmatch(path.name) and (path / CHECKPOINT).exists())
+
+
+def described(checkpoint):
+    return json.loads((checkpoint / CHECKPOINT).read_text())
+
+
+def keep(world, store, where):
+    kept = checkpoints(store)
+    previous = kept[-1] if kept else None
+    number = int(previous.name) + 1 if previous else 1
+    partial = store / f"{number:04d}.tmp"
+    shutil.rmtree(partial, ignore_errors=True)
+    partial.mkdir(parents=True)
+    for source in sorted(world.rglob("*")):
+        relative = source.relative_to(world)
+        if source.is_dir() or left_out(relative):
+            continue
+        copy = partial / relative
+        copy.parent.mkdir(parents=True, exist_ok=True)
+        before = previous / relative if previous else None
+        with contextlib.suppress(FileNotFoundError):
+            if before is not None and same(source, before):
+                os.link(before, copy)
+            else:
+                shutil.copy2(source, copy)
+    day = DAY.search(where)
+    taken = datetime.now().astimezone().isoformat(timespec="seconds")
+    (partial / CHECKPOINT).write_text(
+        json.dumps({"day": int(day.group(1)) if day else 0, "number": number, "taken": taken, "where": where})
+    )
+    partial.rename(store / f"{number:04d}")
+    prune(store)
+    return described(store / f"{number:04d}")
+
+
+def prune(store):
+    kept = checkpoints(store)
+    firsts = {}
+    for checkpoint in kept:
+        firsts.setdefault(described(checkpoint)["day"], checkpoint)
+    staying = set(kept[-KEPT_CHECKPOINTS:]) | set(firsts.values())
+    for checkpoint in kept:
+        if checkpoint not in staying:
+            shutil.rmtree(checkpoint)
+
+
+def restore(checkpoint, world):
+    wanted = set()
+    for source in checkpoint.rglob("*"):
+        relative = source.relative_to(checkpoint)
+        if source.is_dir() or relative.as_posix() == CHECKPOINT:
+            continue
+        wanted.add(relative)
+        target = world / relative
+        if not same(source, target):
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.unlink(missing_ok=True)
+            shutil.copy2(source, target)
+    for target in list(world.rglob("*")):
+        relative = target.relative_to(world)
+        if target.is_file() and relative not in wanted and not left_out(relative):
+            target.unlink()
+    for later in checkpoints(checkpoint.parent):
+        if int(later.name) > int(checkpoint.name):
+            shutil.rmtree(later)
+
+
+def recorded(world, event, fields):
+    now = datetime.now().astimezone()
+    folder = world / "wayfarer" / "record"
+    folder.mkdir(parents=True, exist_ok=True)
+    line = {"time": now.isoformat(timespec="milliseconds"), "event": event} | fields
+    with (folder / f"{now.date().isoformat()}.jsonl").open("a") as record:
+        record.write(json.dumps(line, separators=(",", ":")) + "\n")
+
+
+def recorded_since(world, since):
+    events = []
+    for path in sorted((world / "wayfarer" / "record").glob("*.jsonl")):
+        for line in path.read_text().splitlines():
+            if line.strip():
+                event = json.loads(line)
+                if datetime.fromisoformat(event["time"]) >= since:
+                    events.append(event)
+    return events
+
+
+def rewound(world, checkpoint):
+    taken = described(checkpoint)
+    restore(checkpoint, world)
+    recorded(world, "rewound", {"checkpoint": taken["number"], "taken": taken["taken"], "to": taken["where"]})
+    return (
+        f"back to checkpoint {taken['number']}: {taken['where']}, kept at {taken['taken'][11:16]}; "
+        "the record keeps what came after"
+    )
 
 
 class Server:

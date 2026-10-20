@@ -1,10 +1,13 @@
 package io.github.roman16.wayfarer.story;
 
+import com.google.gson.JsonArray;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Firsts;
 import io.github.roman16.wayfarer.Music;
+import io.github.roman16.wayfarer.Record;
 import io.github.roman16.wayfarer.Sounds;
+import io.github.roman16.wayfarer.Tents;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayDeque;
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,6 +33,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Enemy;
@@ -37,35 +42,35 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public final class Talk {
     public static final String ROAD = "road";
+    private static final String NOTICES = "notices";
     private static final String ANSWER_CHOSEN = "answer_chosen";
     private static final int TICKS_PER_SECOND = 20;
-    private static final Deque<Speech> queue = new ArrayDeque<>();
-    private static final Set<UUID> answering = new HashSet<>();
+    private static final int OUTSIDE_TICKS = 20;
+    private static final Map<String, Conversation> conversations = new LinkedHashMap<>();
+    private static final Set<Mob> outlined = new HashSet<>();
+    private static final Map<UUID, String> answering = new HashMap<>();
+    private static final Map<UUID, Hearing> hearing = new HashMap<>();
     private static final Map<String, Long> AGAIN = new HashMap<>();
     private static final Map<String, Long> HEARD = new HashMap<>();
-    private static final Map<UUID, Integer> votes = new HashMap<>();
     private static final Map<UUID, Personal> personal = new HashMap<>();
+    private static final Map<UUID, Vec3> outside = new HashMap<>();
     private static final Set<UUID> screens = new HashSet<>();
-    private static final List<Said> told = new ArrayList<>();
+    private static final Set<String> unsaid = new HashSet<>();
+    private static final List<Pending> pending = new ArrayList<>();
     private static final Set<String> FIGHTS = Set.of("chase", "duel", "hold", "memory", "sea", "slay", "worm");
     private static final long NEVER = -Integer.MAX_VALUE;
-    private static long huntedAt = NEVER;
-    private static long heldSince = NEVER;
-    private static boolean warned;
-    private static boolean idle = true;
     private static long clock;
-    private static long next;
-    private static long waiting;
+    private static long spokenUntil;
     @Nullable
     private static String speaking;
-    @Nullable
-    private static Offer offer;
+    private static String speakingIn = "";
 
     private Talk() {}
 
@@ -85,9 +90,47 @@ public final class Talk {
 
     private record Personal(List<Story.Choice> choices, Answer answer) {}
 
-    public record Offer(@Nullable String fire, @Nullable String speaker, List<Story.Choice> choices, @Nullable Vec3 at, Answer answer, boolean vote) {
+    private record Hearing(String key, long until) {}
+
+    private record Pending(@Nullable String key, Runnable run) {}
+
+    private static final class Conversation {
+        private final String key;
+        private final boolean road;
+        private final Deque<Speech> queue = new ArrayDeque<>();
+        private final List<Said> told = new ArrayList<>();
+        private final Map<UUID, Integer> votes = new HashMap<>();
+        @Nullable
+        private Offer offer;
+        private long offered;
+        private long next;
+        private long waiting;
+        private long unheardSince = NEVER;
+        private long movedAt;
+        private long huntedAt = NEVER;
+        private long heldSince = NEVER;
+        private boolean warned;
+        private boolean idle = true;
+
+        private Conversation(String key, boolean road) {
+            this.key = key;
+            this.road = road;
+            this.movedAt = clock;
+        }
+
+        private boolean busy() {
+            return !queue.isEmpty() || offer != null;
+        }
+    }
+
+    public record Offer(@Nullable String fire, @Nullable String speaker, List<Story.Choice> choices, @Nullable Vec3 at, Answer answer, boolean vote,
+            @Nullable Runnable lapsed) {
         public Offer(@Nullable String fire, @Nullable String speaker, List<Story.Choice> choices, @Nullable Vec3 at, Answer answer) {
-            this(fire, speaker, choices, at, answer, false);
+            this(fire, speaker, choices, at, answer, false, null);
+        }
+
+        public Offer(@Nullable String fire, @Nullable String speaker, List<Story.Choice> choices, @Nullable Vec3 at, Answer answer, boolean vote) {
+            this(fire, speaker, choices, at, answer, vote, null);
         }
     }
 
@@ -146,16 +189,37 @@ public final class Talk {
         }
     }
 
+    private static String key(@Nullable String fire, @Nullable Vec3 at) {
+        if (fire == null) {
+            return NOTICES;
+        }
+        if (ROAD.equals(fire) && at != null) {
+            return ROAD + "@" + (Mth.floor(at.x) >> 4) + "," + (Mth.floor(at.z) >> 4);
+        }
+        return fire;
+    }
+
+    private static Conversation conversation(@Nullable String fire, @Nullable Vec3 at) {
+        return conversations.computeIfAbsent(key(fire, at), key -> new Conversation(key, ROAD.equals(fire)));
+    }
+
+    private static List<Conversation> ordered() {
+        List<Conversation> ordered = new ArrayList<>(conversations.values().stream().filter(conversation -> !conversation.road).toList());
+        ordered.addAll(conversations.values().stream().filter(conversation -> conversation.road).toList());
+        return ordered;
+    }
+
     public static void say(@Nullable String fire, @Nullable Vec3 at, List<Story.Line> lines, Placeholders placeholders) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        Conversation conversation = conversation(fire, at);
         for (Story.Line line : lines) {
             if (line.when() != null && server != null && !Engine.holds(Progress.of(server), line.when())) {
                 continue;
             }
             if (line.pause()) {
-                queue.add(new Pause());
+                conversation.queue.add(new Pause());
             }
-            queue.add(new Said(fire, at, line, placeholders.fill(line.text())));
+            conversation.queue.add(new Said(fire, at, line, placeholders.fill(line.text())));
         }
     }
 
@@ -174,15 +238,40 @@ public final class Talk {
     }
 
     public static void notice(Component line) {
-        queue.add(new Notice(line));
+        conversation(null, null).queue.add(new Notice(line));
     }
 
-    public static void then(Runnable run) {
-        queue.add(new Then(run));
+    public static void then(@Nullable String fire, Runnable run) {
+        then(fire, null, run);
+    }
+
+    public static void then(@Nullable String fire, @Nullable Vec3 at, Runnable run) {
+        conversation(fire, at).queue.add(new Then(run));
+    }
+
+    public static void whenQuiet(Runnable run) {
+        if (busy()) {
+            pending.add(new Pending(null, run));
+        } else {
+            run.run();
+        }
+    }
+
+    public static void whenQuiet(String key, Runnable run) {
+        if (busy()) {
+            unsaid.add(key);
+            pending.add(new Pending(key, run));
+        } else {
+            run.run();
+        }
+    }
+
+    public static boolean unsaid(String key) {
+        return unsaid.contains(key);
     }
 
     public static void ask(Offer offer) {
-        queue.add(new Ask(offer));
+        conversation(offer.fire(), offer.at()).queue.add(new Ask(offer));
     }
 
     public static void tell(ServerPlayer listener, Component text) {
@@ -198,11 +287,28 @@ public final class Talk {
     }
 
     public static Optional<String> speaker() {
-        return clock < next ? Optional.ofNullable(speaking) : Optional.empty();
+        return clock < spokenUntil ? Optional.ofNullable(speaking) : Optional.empty();
+    }
+
+    public static String speakingIn() {
+        return speakingIn;
     }
 
     public static boolean busy() {
-        return !queue.isEmpty() || offer != null;
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        return conversations.values().stream().anyMatch(conversation -> !conversation.road && (!conversation.queue.isEmpty() || clock < conversation.next
+                || conversation.offer != null && server != null && heard(server, conversation.offer.at())));
+    }
+
+    public static boolean busy(@Nullable String fire) {
+        Conversation conversation = conversations.get(key(fire, null));
+        return conversation != null && (conversation.busy() || clock < conversation.next);
+    }
+
+    public static boolean free(ServerPlayer player) {
+        UUID id = player.getUUID();
+        Hearing heard = hearing.get(id);
+        return !answering.containsKey(id) && !personal.containsKey(id) && (heard == null || heard.until() <= clock);
     }
 
     static void offerTo(ServerPlayer player, List<Story.Choice> choices, Answer answer) {
@@ -217,14 +323,11 @@ public final class Talk {
     }
 
     public static boolean answering(ServerPlayer player) {
-        if (personal.containsKey(player.getUUID())) {
-            return true;
-        }
-        return offer != null && near(player, offer.at());
+        return personal.containsKey(player.getUUID()) || answering.containsKey(player.getUUID());
     }
 
-    public static Optional<Offer> open() {
-        return Optional.ofNullable(offer);
+    public static Optional<Offer> open(ServerPlayer player) {
+        return Optional.ofNullable(answering.get(player.getUUID())).map(conversations::get).map(conversation -> conversation.offer);
     }
 
     public static void screen(ServerPlayer player, boolean open) {
@@ -237,10 +340,11 @@ public final class Talk {
 
     public static void reset() {
         HEARD.clear();
-        queue.clear();
-        offer = null;
-        votes.clear();
-        next = clock;
+        conversations.clear();
+        unsaid.clear();
+        pending.clear();
+        hearing.clear();
+        spokenUntil = clock;
     }
 
     private static void heard(MinecraftServer server, Said said) {
@@ -261,6 +365,7 @@ public final class Talk {
         if (line.vanishes() != null) {
             Visit.vanish(server, line.vanishes(), line.left());
         }
+        Steps.stage(server, line.stage());
     }
 
     static int reading(String text) {
@@ -283,54 +388,158 @@ public final class Talk {
             return;
         }
         clock++;
-        if (queue.isEmpty() && offer == null && clock >= next) {
-            idle = true;
+        if (clock % OUTSIDE_TICKS == 0) {
+            outside(server);
         }
-        if (queue.isEmpty() || listened(server, queue.peek())) {
-            waiting = clock;
+        unoutline(server);
+        for (Conversation conversation : ordered()) {
+            advance(server, conversation);
+            lapse(server, conversation);
         }
-        while (offer == null && !queue.isEmpty() && clock >= next
-                && (listened(server, queue.peek()) || clock - waiting >= (long) Balance.get().talk().waitSeconds() * TICKS_PER_SECOND)) {
-            if (queue.peek() instanceof Said held && held(server, held)) {
+        conversations.values().removeIf(conversation -> conversation.idle && !conversation.busy() && clock >= conversation.next);
+        offer(server);
+        if (!pending.isEmpty() && !busy()) {
+            List<Pending> due = List.copyOf(pending);
+            pending.clear();
+            for (Pending quiet : due) {
+                if (quiet.key() != null) {
+                    unsaid.remove(quiet.key());
+                }
+                quiet.run().run();
+            }
+        }
+    }
+
+    public static List<String> stuck(MinecraftServer server, long ticks) {
+        return conversations.values().stream().filter(conversation -> conversation.busy() && clock - conversation.movedAt >= ticks)
+                .map(conversation -> conversation.key + (conversation.offer != null ? " waits on an answer nobody near can give" : " waits on a line nobody can hear"))
+                .toList();
+    }
+
+    private static void advance(MinecraftServer server, Conversation conversation) {
+        long wait = (long) Balance.get().talk().waitSeconds() * TICKS_PER_SECOND;
+        if (!conversation.busy() || conversation.offer != null && heard(server, conversation.offer.at())) {
+            conversation.movedAt = clock;
+        }
+        if (conversation.queue.isEmpty() || listened(server, conversation.queue.peek())) {
+            conversation.waiting = clock;
+        }
+        while (conversation.offer == null && !conversation.queue.isEmpty() && clock >= conversation.next
+                && (listened(server, conversation.queue.peek()) || clock - conversation.waiting >= wait)) {
+            Speech head = conversation.queue.peek();
+            if (head instanceof Said said && (held(server, conversation, said) || occupied(conversation, listeners(server, said)))
+                    || head instanceof Replay replay && occupied(conversation, listeners(server, replay.said()))
+                    || head instanceof Notice && occupied(conversation, server.getPlayerList().getPlayers())) {
                 break;
             }
-            heldSince = NEVER;
-            warned = false;
-            Speech speech = queue.poll();
-            switch (speech) {
+            conversation.heldSince = NEVER;
+            conversation.warned = false;
+            conversation.movedAt = clock;
+            switch (conversation.queue.poll()) {
                 case Said said -> {
-                    if (idle) {
-                        told.clear();
-                        idle = false;
+                    if (conversation.idle) {
+                        conversation.told.clear();
+                        conversation.idle = false;
                     }
-                    told.add(said);
+                    conversation.told.add(said);
                     Optional<Vec3> at = where(server, said);
-                    server.getPlayerList().getPlayers().stream().filter(player -> near(player, at.orElse(null)))
-                            .forEach(player -> Firsts.first(player, Tasks.FIRST + Tasks.TALKED));
+                    List<ServerPlayer> near = listeners(server, said);
+                    near.forEach(player -> Firsts.first(player, Tasks.FIRST + Tasks.TALKED));
                     Component text = Component.literal(said.text());
-                    boolean road = ROAD.equals(said.fire());
-                    deliver(server, Subtitle.of(server, said.line().by(), text), at.orElse(null), at.isPresent() && !road ? line(server, said.line().by(), text) : null);
+                    deliver(server, Subtitle.of(server, said.line().by(), text), at.orElse(null), far(server, said, at, text));
+                    Record.event(server, "line", null, line -> {
+                        line.addProperty("quest", said.fire());
+                        line.addProperty("by", said.line().by() == null ? "" : said.line().by());
+                        line.addProperty("text", said.text());
+                    });
                     heard(server, said);
-                    speaking = said.line().by();
-                    next = clock + reading(said.text());
+                    conversation.next = clock + reading(said.text());
+                    spoke(conversation, said.line().by(), near);
                 }
                 case Replay replay -> {
                     Optional<Vec3> at = where(server, replay.said());
                     deliver(server, Subtitle.of(server, replay.said().line().by(), Component.literal(replay.said().text())), at.orElse(null), null);
-                    speaking = replay.said().line().by();
-                    next = clock + reading(replay.said().text());
+                    conversation.next = clock + reading(replay.said().text());
+                    spoke(conversation, replay.said().line().by(), listeners(server, replay.said()));
                 }
                 case Notice notice -> {
-                    speaking = null;
                     deliver(server, Subtitle.of(server, null, notice.line()), null, null);
-                    next = clock + reading(notice.line().getString());
+                    conversation.next = clock + reading(notice.line().getString());
+                    spoke(conversation, null, server.getPlayerList().getPlayers());
                 }
-                case Pause pause -> next = clock + (long) Balance.get().talk().pauseSeconds() * TICKS_PER_SECOND;
+                case Pause pause -> conversation.next = clock + (long) Balance.get().talk().pauseSeconds() * TICKS_PER_SECOND;
                 case Then then -> then.run().run();
-                case Ask ask -> offer = ask.offer();
+                case Ask ask -> {
+                    conversation.offer = ask.offer();
+                    conversation.offered = clock;
+                    conversation.unheardSince = NEVER;
+                    Record.event(server, "answers", null, line -> {
+                        line.addProperty("quest", ask.offer().fire());
+                        line.add("answers", ask.offer().choices().stream().map(Story.Choice::text).collect(JsonArray::new, JsonArray::add, JsonArray::addAll));
+                    });
+                }
             }
         }
-        offer(server);
+        if (conversation.queue.isEmpty() && conversation.offer == null && clock >= conversation.next) {
+            conversation.idle = true;
+        }
+    }
+
+    private static void spoke(Conversation conversation, @Nullable String by, List<ServerPlayer> listeners) {
+        speaking = by;
+        speakingIn = conversation.key;
+        spokenUntil = conversation.next;
+        listeners.forEach(player -> hearing.put(player.getUUID(), new Hearing(conversation.key, conversation.next)));
+    }
+
+    private static boolean occupied(Conversation conversation, List<ServerPlayer> listeners) {
+        for (ServerPlayer player : listeners) {
+            Hearing heard = hearing.get(player.getUUID());
+            if (heard != null && heard.until() > clock && !heard.key().equals(conversation.key)) {
+                return true;
+            }
+            String shown = answering.get(player.getUUID());
+            Conversation asking = shown == null ? null : conversations.get(shown);
+            if (asking != null && asking != conversation && (conversation.road || !asking.road)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void lapse(MinecraftServer server, Conversation conversation) {
+        Offer standing = conversation.offer;
+        if (!conversation.road || standing == null || standing.lapsed() == null) {
+            return;
+        }
+        if (heard(server, standing.at())) {
+            conversation.unheardSince = NEVER;
+            return;
+        }
+        if (conversation.unheardSince == NEVER) {
+            conversation.unheardSince = clock;
+            return;
+        }
+        if (clock - conversation.unheardSince >= (long) Balance.get().talk().lapseSeconds() * TICKS_PER_SECOND) {
+            conversation.offer = null;
+            conversation.votes.clear();
+            conversation.queue.clear();
+            offer(server);
+            standing.lapsed().run();
+        }
+    }
+
+    private static void outside(MinecraftServer server) {
+        outside.clear();
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+            Tents.outside(player).filter(door -> door.level().dimension() == Level.OVERWORLD).ifPresent(door -> outside.put(player.getUUID(), door.at()));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerStopping(ServerStoppingEvent event) {
+        outlined.forEach(mob -> Hold.outline(mob, false));
+        outlined.clear();
     }
 
     @SubscribeEvent
@@ -339,129 +548,179 @@ public final class Talk {
         answering.clear();
         personal.clear();
         screens.clear();
-        told.clear();
+        outside.clear();
     }
 
     @SubscribeEvent
     public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        screens.remove(event.getEntity().getUUID());
+        UUID id = event.getEntity().getUUID();
+        screens.remove(id);
+        answering.remove(id);
+        hearing.remove(id);
+        outside.remove(id);
     }
 
-    private static boolean held(MinecraftServer server, Said said) {
+    private static boolean held(MinecraftServer server, Conversation conversation, Said said) {
         Balance.Talk talk = Balance.get().talk();
-        Optional<Vec3> at = where(server, said);
-        List<ServerPlayer> listeners = server.getPlayerList().getPlayers().stream().filter(player -> near(player, at.orElse(null))).toList();
-        List<ServerPlayer> hunted = fighting(server) ? List.of() : listeners.stream().filter(Talk::hunted).toList();
+        List<ServerPlayer> listeners = listeners(server, said);
+        if (!listeners.isEmpty() && listeners.stream().noneMatch(Arrivals::there)) {
+            return true;
+        }
+        List<ServerPlayer> hunted = fighting(server, listeners) ? List.of() : listeners.stream().filter(Talk::hunted).toList();
         if (!hunted.isEmpty()) {
-            huntedAt = clock;
-            if (!warned) {
-                warned = true;
+            conversation.huntedAt = clock;
+            outline(hunted);
+            if (!conversation.warned) {
+                conversation.warned = true;
                 hunted.forEach(player -> PacketDistributor.sendToPlayer(player, Subtitle.of(server, null, Component.translatable("wayfarer.talk.hunted"))));
             }
         }
-        if (clock - huntedAt < (long) talk.safeSeconds() * TICKS_PER_SECOND) {
+        if (clock - conversation.huntedAt < (long) talk.safeSeconds() * TICKS_PER_SECOND) {
             return true;
         }
         if (listeners.stream().noneMatch(player -> screens.contains(player.getUUID()))) {
             return false;
         }
-        if (heldSince == NEVER) {
-            heldSince = clock;
+        if (conversation.heldSince == NEVER) {
+            conversation.heldSince = clock;
         }
-        return clock - heldSince < (long) talk.screenSeconds() * TICKS_PER_SECOND;
+        return clock - conversation.heldSince < (long) talk.screenSeconds() * TICKS_PER_SECOND;
     }
 
-    private static boolean fighting(MinecraftServer server) {
-        return Engine.active(server).stream().anyMatch(active -> Steps.entered(active) && FIGHTS.contains(active.step().kind()));
+    private static boolean fighting(MinecraftServer server, List<ServerPlayer> listeners) {
+        return Engine.active(server).stream().anyMatch(active -> Steps.entered(active) && FIGHTS.contains(active.step().kind())
+                && (!active.step().spec().has("at") || Progress.of(server).place(active.step().text("at")).filter(at -> listeners.stream()
+                        .anyMatch(player -> player.level().dimension() == Level.OVERWORLD && player.blockPosition().distSqr(at) <= (double) Hold.REACH * Hold.REACH)).isPresent()));
     }
 
     private static boolean hunted(ServerPlayer player) {
-        int reach = Balance.get().talk().huntedBlocks();
-        return !player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(reach),
-                mob -> mob instanceof Enemy && mob.isAlive() && mob.getTarget() == player).isEmpty();
+        return !hunters(player).isEmpty();
     }
 
-    private static void replay(MinecraftServer server) {
-        Offer shown = offer;
-        offer = null;
-        votes.clear();
+    private static List<Mob> hunters(ServerPlayer player) {
+        int reach = Balance.get().talk().huntedBlocks();
+        return player.level().getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(reach),
+                mob -> mob instanceof Enemy && mob.isAlive() && mob.getTarget() == player && mob.hasLineOfSight(player));
+    }
+
+    private static void outline(List<ServerPlayer> hunted) {
+        hunted.stream().flatMap(player -> hunters(player).stream()).filter(mob -> !mob.hasGlowingTag()).forEach(mob -> {
+            Hold.outline(mob, true);
+            outlined.add(mob);
+        });
+    }
+
+    private static void unoutline(MinecraftServer server) {
+        long safe = (long) Balance.get().talk().safeSeconds() * TICKS_PER_SECOND;
+        boolean waiting = conversations.values().stream().anyMatch(conversation -> clock - conversation.huntedAt < safe);
+        outlined.removeIf(mob -> {
+            boolean hunting = waiting && mob.isAlive() && mob.getTarget() instanceof ServerPlayer player && hunters(player).contains(mob);
+            if (!hunting) {
+                Hold.outline(mob, false);
+            }
+            return !hunting;
+        });
+    }
+
+    private static void replay(MinecraftServer server, Conversation conversation) {
+        Offer shown = conversation.offer;
+        conversation.offer = null;
+        conversation.votes.clear();
         offer(server);
-        queue.addFirst(new Ask(shown));
-        told.reversed().forEach(said -> queue.addFirst(new Replay(said)));
+        conversation.queue.addFirst(new Ask(shown));
+        conversation.told.reversed().forEach(said -> conversation.queue.addFirst(new Replay(said)));
         Sounds.play(server, ANSWER_CHOSEN);
     }
 
     public static void pick(ServerPlayer player, int index) {
+        MinecraftServer server = player.server;
         Personal own = personal.get(player.getUUID());
         if (own != null) {
             if (index >= 0 && index < own.choices().size()) {
                 personal.remove(player.getUUID());
                 PacketDistributor.sendToPlayer(player, new Answers(List.of()));
-                Sounds.play(player.server, ANSWER_CHOSEN);
+                Sounds.play(server, ANSWER_CHOSEN);
                 own.answer().chosen(player, own.choices().get(index));
             }
             return;
         }
-        if (offer == null || index < 0 || !near(player, offer.at())) {
+        String key = answering.get(player.getUUID());
+        Conversation conversation = key == null ? null : conversations.get(key);
+        if (conversation == null || conversation.offer == null || index < 0) {
             return;
         }
-        if (index == offer.choices().size() && !told.isEmpty()) {
-            replay(player.server);
+        Offer answered = conversation.offer;
+        if (index == answered.choices().size() && !conversation.told.isEmpty()) {
+            replay(server, conversation);
             return;
         }
-        if (index >= offer.choices().size()) {
+        if (index >= answered.choices().size()) {
             return;
         }
-        Offer answered = offer;
         Story.Choice picked = answered.choices().get(index);
+        long offered = conversation.offered;
+        Record.event(server, "chose", player, line -> {
+            line.addProperty("quest", answered.fire());
+            line.addProperty("answer", picked.text());
+            line.addProperty("seconds", (clock - offered) / TICKS_PER_SECOND);
+        });
         if (answered.vote()) {
-            votes.put(player.getUUID(), index);
-            long agreed = votes.values().stream().filter(vote -> vote == index).count();
-            if (!Engine.most(player.server, agreed)) {
+            conversation.votes.put(player.getUUID(), index);
+            long agreed = conversation.votes.values().stream().filter(vote -> vote == index).count();
+            if (!Engine.most(server, agreed)) {
                 Component chose = Component.translatable("wayfarer.talk.chose", player.getDisplayName(), picked.text());
-                deliver(player.server, Subtitle.of(player.server, null, chose), answered.at(), null);
-                answering.clear();
-                offer(player.server);
+                deliver(server, Subtitle.of(server, null, chose), answered.at(), null);
+                Answers tally = new Answers(answers(server, conversation));
+                answering.forEach((id, shown) -> {
+                    ServerPlayer asked = server.getPlayerList().getPlayer(id);
+                    if (asked != null && shown.equals(conversation.key)) {
+                        PacketDistributor.sendToPlayer(asked, tally);
+                    }
+                });
                 return;
             }
-            votes.clear();
+            conversation.votes.clear();
         }
-        offer = null;
-        offer(player.server);
+        conversation.offer = null;
+        offer(server);
         if (answered.fire() != null) {
-            Progress.of(player.server).hear(answered.fire(), player.getDisplayName().getString(), picked.text());
+            Progress.of(server).hear(answered.fire(), player.getDisplayName().getString(), picked.text());
         }
-        next = clock + reading(picked.text());
+        conversation.next = clock + reading(picked.text());
         Tasks.did(player, "answer");
-        Sounds.play(player.server, ANSWER_CHOSEN);
+        Sounds.play(server, ANSWER_CHOSEN);
         Component chose = Component.translatable("wayfarer.talk.chose", player.getDisplayName(), picked.text());
-        deliver(player.server, Subtitle.of(player.server, null, chose), answered.at(),
+        deliver(server, Subtitle.of(server, null, chose), answered.at(),
                 answered.at() == null ? null : chose.copy().withStyle(ChatFormatting.DARK_GRAY));
         answered.answer().chosen(player, picked);
     }
 
     private static void offer(MinecraftServer server) {
+        List<Conversation> asking = ordered().stream().filter(conversation -> conversation.offer != null).toList();
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             if (personal.containsKey(player.getUUID())) {
                 continue;
             }
-            boolean shown = offer != null && near(player, offer.at());
-            if (shown && answering.add(player.getUUID())) {
-                PacketDistributor.sendToPlayer(player, new Answers(answers(server, offer)));
-            } else if (!shown && answering.remove(player.getUUID())) {
+            Optional<Conversation> shown = asking.stream().filter(conversation -> near(player, conversation.offer.at())).findFirst();
+            String before = answering.get(player.getUUID());
+            if (shown.isPresent() && !shown.get().key.equals(before)) {
+                answering.put(player.getUUID(), shown.get().key);
+                PacketDistributor.sendToPlayer(player, new Answers(answers(server, shown.get())));
+            } else if (shown.isEmpty() && answering.remove(player.getUUID()) != null) {
                 PacketDistributor.sendToPlayer(player, new Answers(List.of()));
             }
         }
     }
 
-    private static List<Component> answers(MinecraftServer server, Offer shown) {
+    private static List<Component> answers(MinecraftServer server, Conversation conversation) {
+        Offer shown = conversation.offer;
         List<String> texts = shown.choices().stream().map(Story.Choice::text).toList();
         int online = Engine.players(server).size();
         List<Component> answers = new ArrayList<>(IntStream.range(0, texts.size())
                 .mapToObj(index -> (Component) Component.literal(!shown.vote() || online < 2 ? texts.get(index)
-                        : texts.get(index) + " " + votes.values().stream().filter(vote -> vote == index).count() + "/" + online))
+                        : texts.get(index) + " " + conversation.votes.values().stream().filter(vote -> vote == index).count() + "/" + online))
                 .toList());
-        if (!told.isEmpty()) {
+        if (!conversation.told.isEmpty()) {
             answers.add(Component.translatable("wayfarer.talk.again"));
         }
         return answers;
@@ -471,16 +730,24 @@ public final class Talk {
         if (!(speech instanceof Said said)) {
             return true;
         }
-        Optional<Vec3> at = where(server, said);
-        return at.isEmpty() || server.getPlayerList().getPlayers().stream().anyMatch(player -> near(player, at.get()));
+        return where(server, said).map(at -> heard(server, at)).orElse(true);
+    }
+
+    private static boolean heard(MinecraftServer server, @Nullable Vec3 at) {
+        return server.getPlayerList().getPlayers().stream().anyMatch(player -> near(player, at));
+    }
+
+    private static List<ServerPlayer> listeners(MinecraftServer server, Said said) {
+        Vec3 at = where(server, said).orElse(null);
+        return server.getPlayerList().getPlayers().stream().filter(player -> near(player, at)).toList();
     }
 
     private static Optional<Vec3> where(MinecraftServer server, Said said) {
         String by = said.line().by();
-        if (ROAD.equals(said.fire()) && said.at() != null) {
-            return Optional.of(said.at());
+        if (ROAD.equals(said.fire()) && said.at() != null || by == null) {
+            return Optional.ofNullable(said.at());
         }
-        if (by == null || Story.get().person(by).voice()) {
+        if (Story.get().person(by).voice()) {
             return Optional.empty();
         }
         Optional<Entity> body = People.find(server, by);
@@ -488,6 +755,20 @@ public final class Talk {
             return body.map(Entity::position);
         }
         return Optional.ofNullable(said.at());
+    }
+
+    @Nullable
+    private static Component far(MinecraftServer server, Said said, Optional<Vec3> at, Component text) {
+        if (at.isEmpty() || ROAD.equals(said.fire())) {
+            return null;
+        }
+        MutableComponent line = line(server, said.line().by(), text);
+        if (said.line().by() != null) {
+            return line;
+        }
+        return server.getPlayerList().getPlayers().stream().filter(player -> near(player, at.get())).findFirst()
+                .map(there -> (Component) Component.literal("[" + there.getScoreboardName() + "] ").withStyle(ChatFormatting.GRAY).append(line))
+                .orElse(line);
     }
 
     private static void deliver(MinecraftServer server, Subtitle subtitle, @Nullable Vec3 at, @Nullable Component far) {
@@ -501,8 +782,18 @@ public final class Talk {
     }
 
     private static boolean near(ServerPlayer player, @Nullable Vec3 at) {
+        if (at == null) {
+            return true;
+        }
         int reach = Balance.get().talk().reachBlocks();
-        return at == null || (player.level().dimension() == Level.OVERWORLD || Memories.dreaming(player)) && at.distanceToSqr(player.position()) <= (double) reach * reach;
+        Vec3 door = outside.get(player.getUUID());
+        if (door != null && Tents.isTent(player.level().dimension())) {
+            return at.distanceToSqr(door) <= (double) reach * reach;
+        }
+        if (Memories.dreaming(player) && Memories.dream(player.level())) {
+            return Memories.scene(at);
+        }
+        return player.level().dimension() == Level.OVERWORLD && at.distanceToSqr(player.position()) <= (double) reach * reach;
     }
 
     public interface Placeholders {

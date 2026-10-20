@@ -24,7 +24,7 @@ A fix after a step means its earlier steps run again for what the fix touched.
 
 ## Walk it through
 
-Play what changed the way players will, knowing nothing but what the screen says: alone first, since about half of them play alone, then with a teammate.
+Play what changed the way players will, knowing nothing but what the screen says (the `playthrough` skill's newcomer): alone first, since about half of them play alone, then with a teammate.
 
 - **Alone, in a singleplayer world.** `client.py start --state <quest/step>` opens one; nothing may wait for, ask for or need a second player.
 - **Then a dedicated server and a teammate.** Team rules (two thirds of the team, everyone's own rewards, who waits for whom) only show with two players:
@@ -41,30 +41,9 @@ Play what changed the way players will, knowing nothing but what the screen says
 - **The pack's own settings.** Keys come from `pack/config/defaultoptions`; read every chat line on joining, since every mod's greeting reaches the user too.
 - **Every screen off the title and back.** When the front door, a screen or a mixin of a vanilla screen changed, open each of the title's buttons (Singleplayer, Multiplayer, Mods, Language, Options, Accessibility) and leave it the way a player does, with Done, Back or Cancel, back to the title; a driver that only opens a world never leaves one, which is how a crash on returning to the title reached the user.
 - **A touched timed step at the player's pace.** `/tick rate 80` checks that a hold, a dusk or a long talk works and works again after a restart; a step whose timing or lines changed is then played once at 20, since how long it feels is a finding too.
-- **Every changed step once at the player's real pace.** From the state before it, play it through at 20 ticks a second, without `story next`, `/tick rate` or a teleport past what a player would walk, waiting at the fire as long as a player would. The dev code's story checks (`StoryChecks`) watch every world and end a driver batch with `story check failed: ...` when a speaker talks out of the listener's sight, a step whose condition holds stands still for a minute, or a clue a step asks for cannot be clicked; each is a finding. A bug the user met that no check or test caught gets the game test or check that would have, with its fix.
+- **Every changed step once at the player's real pace.** From the state before it, play it through at 20 ticks a second, without `story next`, `/tick rate` or a teleport past what a player would walk, waiting at the fire as long as a player would. The dev code's story checks (`StoryChecks`) watch every world and put a `check` line into the driver's batch when a speaker talks out of the listener's sight or before the listener's land is drawn, a step whose condition holds stands still for a minute, a tracked step's compass has nowhere to point for a minute, a person stands inside a block or on a tree's leaves, or a clue a step asks for cannot be clicked; each is a finding. A bug the user met that no check or test caught gets the game test or check that would have, with its fix.
 
-Play as someone who knows vanilla Minecraft and nothing else, using only what the screen shows (the task panel, chat, the HUD, the open screen). At every step, a no to any question is a finding.
-
-| Ask | Fails when |
-|---|---|
-| What is happening? | Something big happened (a death, an arrival, a loss) and no line says it plainly, or the scene cuts from one state to the next with only a new objective |
-| What is that? | A word, a name or a HUD text shows before the story said it, or a person speaks under a name nobody gave |
-| Why am I doing this? | The task panel asks for an action the story gave no reason for |
-| What do I do now? | The task panel shows no objective, or only the journal says it |
-| How? | The step needs a key or a click that no task names with its key |
-| Is it working? | Something takes time (resting, walking, waiting for dusk) and nothing counts it |
-| Why not? | An action does nothing, or a refusal does not say why and what to do instead |
-| Who opened this screen? | A screen opens that the player did not ask for, or opens without a word on what it is for |
-| What about alone? | Something waits for, asks for or needs a second player, or a fight or a hold is out of reach for one |
-| What about my teammate? | One player is done and does not know whom they wait for, or the other does not know they are waited for |
-| What about a restart? | Stopping the server inside the step (mid-dusk, mid-hold, mid-build) and starting it again moves the clock, repeats lines, builds twice or crashes |
-| What about odd land? | A place the story puts down crashes, floats or comes out thin on another seed; when the change touches how a place is put down or what it is built from, build it on the state seed, three others (`server.py start --seed <n>`, then `story <quest/step>`) and the seed of any world the user reported |
-| What about meanwhile? | The player does something else while the step waits: walks off, goes underground, sleeps in a tent, dies, logs out, untracks the quest, or a teammate does the opposite; each is tried and its answer matches the edge cases the design lists |
-| What about a death? | A player who falls during the step, in a doorway, on stairs or in a ward, cannot reach their grave or take their things back, or the step runs on without them while they are down |
-| What else speaks? | A mod's chat line, key, HUD element, starting item or random event that the design does not know of |
-| Does it look right? | A block is not what the thing is made of (the `art` skill) |
-| Does it sound? | A moment's music or cue does not fire (the client log names each story piece and cue it plays), or Reactive Music does not fade out under a piece and come back after |
-| Where is it? | Something the story gives cannot be found again: no item, charm or tooltip shows it |
+Play as the `playthrough` skill plays, with its hands and eyes, over this scope only, and ask its questions at every step: a no to any is a finding.
 
 Fix every finding in the code, the text (`lore` skill) or the look (`art` skill); a finding that needs a decision goes to the user as an Open question in its design document. Read both logs for what the work caused: `log` on the client driver, `build/devserver/logs/latest.log`.
 

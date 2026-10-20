@@ -79,6 +79,14 @@ play mode="full":
     python3 scripts/instance.py fresh build/client play --mode {{ mode }}
     cd mod && WAYFARER_LEAN={{ if mode == "lean" { "true" } else { "false" } }} LD_LIBRARY_PATH="$DEVBOX_PACKAGES_DIR/lib:/run/opengl-driver/lib" ./gradlew runPlay
 
+[doc("Turn a play record into a report: each step's time, every stall with what the players did, said and looked at, the choices, deaths and rewinds, workarounds, screens, frames and a map of everyone's paths, from an exaroton session, a playthrough's folder or a save; `--since <time>` keeps only what came after that moment, such as a playthrough's start from its run.json")]
+play-report folder *arguments:
+    python3 scripts/report.py "{{ folder }}" {{ arguments }}
+
+[doc("Write the whole story into build/script.md in the order a player meets it: every line, answer, task, journal entry and notice, for reading it through as a script")]
+script:
+    python3 scripts/script.py
+
 [doc("Run the pack's dedicated server locally")]
 server: build
     python3 scripts/instance.py server build/server {{ jar }}

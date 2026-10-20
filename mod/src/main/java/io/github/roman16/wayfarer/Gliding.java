@@ -5,6 +5,7 @@ import java.util.WeakHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class Gliding {
     private static final Map<Player, Flight> FLIGHTS = new WeakHashMap<>();
@@ -36,7 +37,8 @@ public final class Gliding {
         int lowest = Mth.floor(takeoff - Balance.get().glider().dropBlocks());
         BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos(player.getBlockX(), Mth.floor(player.getY()), player.getBlockZ());
         for (; at.getY() >= lowest; at.move(0, -1, 0)) {
-            if (!player.level().getBlockState(at).getCollisionShape(player.level(), at).isEmpty()) {
+            BlockState state = player.level().getBlockState(at);
+            if (!state.getCollisionShape(player.level(), at).isEmpty() || !state.getFluidState().isEmpty()) {
                 return false;
             }
         }

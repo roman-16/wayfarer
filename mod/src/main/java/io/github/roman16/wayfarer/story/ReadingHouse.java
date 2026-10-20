@@ -6,6 +6,7 @@ import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Camps;
+import io.github.roman16.wayfarer.Underground;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -163,7 +164,8 @@ final class ReadingHouse {
         StructurePlaceSettings settings = Camps.settings(level, HOUSE, turn);
         int depth = PLAN.get().get("vault_depth").getAsInt();
         StructureTemplate vault = level.getStructureManager().getOrCreate(VAULT_TEMPLATE);
-        vault.placeInWorld(level, origin.below(depth), origin.below(depth), settings, level.random, Block.UPDATE_CLIENTS);
+        vault.placeInWorld(level, origin.below(depth), origin.below(depth), Underground.settings(turn, Camps.pivot(level, HOUSE)), level.random,
+                Block.UPDATE_CLIENTS);
         BoundingBox box = level.getStructureManager().getOrCreate(HOUSE).getBoundingBox(settings, origin);
         progress.place(ORIGIN, origin);
         progress.place(NAME, world(origin, settings, "door"));

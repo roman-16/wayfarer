@@ -5,9 +5,15 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.roman16.wayfarer.story.After;
+import io.github.roman16.wayfarer.story.Caravan;
+import io.github.roman16.wayfarer.story.Story;
+import io.github.roman16.wayfarer.story.Talk;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -33,6 +39,7 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.common.loot.LootModifier;
@@ -49,6 +56,8 @@ import net.neoforged.neoforge.event.village.WandererTradesEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public final class Cuts {
+    private static final String LENDER = "maud";
+    private static final Map<UUID, Long> LENT = new HashMap<>();
     private static final TagKey<Block> ROOTLESS = TagKey.create(Registries.BLOCK, Wayfarer.id("rootless"));
     private static final TagKey<Block> STORAGE = TagKey.create(Registries.BLOCK, Wayfarer.id("storage"));
     private static final Bundled<Spec> SPEC = Bundled.json("/wayfarer/cuts.json", json -> new Spec(ids(json.getAsJsonArray("creatures")),
@@ -156,10 +165,22 @@ public final class Cuts {
 
     @SubscribeEvent
     public static void onSleep(CanPlayerSleepEvent event) {
-        if (!Tents.isTent(event.getLevel().dimension()) && !(event.getEntity() instanceof ServerPlayer player && After.free(player.server, event.getPos()))) {
-            event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
-            tell(event.getEntity(), "wayfarer.cut.sleep");
+        if (Tents.isTent(event.getLevel().dimension()) || event.getEntity() instanceof ServerPlayer player && After.free(player.server, event.getPos())) {
+            return;
         }
+        if (event.getEntity() instanceof ServerPlayer player && Caravan.lends(player, event.getPos())) {
+            long night = player.server.overworld().getDayTime() / Clock.DAY;
+            if (Talk.busy()) {
+                event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
+                player.displayClientMessage(Component.translatable("wayfarer.tent.story").withStyle(ChatFormatting.GRAY), true);
+            } else if (LENT.getOrDefault(player.getUUID(), -1L) != night) {
+                LENT.put(player.getUUID(), night);
+                Talk.say(Talk.ROAD, Vec3.atCenterOf(event.getPos()), new Story.Line(LENDER, Story.get().people().get(LENDER).lends()));
+            }
+            return;
+        }
+        event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
+        tell(event.getEntity(), "wayfarer.cut.sleep");
     }
 
     @SubscribeEvent
@@ -167,7 +188,7 @@ public final class Cuts {
         Item item = event.getLevel().getBlockState(event.getPos()).getBlock().asItem();
         if (event.getEntity() instanceof ServerPlayer player && item != Items.AIR && SPEC.get().items().contains(BuiltInRegistries.ITEM.getKey(item))) {
             event.setCanceled(true);
-            tell(player, "wayfarer.cut.cold");
+            tell(player, player.getMainHandItem().is(Items.ENCHANTED_BOOK) || player.getOffhandItem().is(Items.ENCHANTED_BOOK) ? "wayfarer.cut.cold_book" : "wayfarer.cut.cold");
         }
     }
 

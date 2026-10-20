@@ -2,12 +2,12 @@ package io.github.roman16.wayfarer.story;
 
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.Heat;
 import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.NotchedLog;
 import io.github.roman16.wayfarer.Notices;
-import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
@@ -25,9 +25,9 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import net.commoble.infiniverse.api.InfiniverseAPI;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -95,6 +95,7 @@ public final class Memories {
     private static final float CAST_VOLUME = 0.5f;
     private static final List<ResourceKey<Level>> LET_GO = new ArrayList<>();
     @Nullable
+    private static final int SCENE_BLOCKS = 256;
     private static Dream dream;
 
     private Memories() {}
@@ -244,6 +245,10 @@ public final class Memories {
 
     public static boolean dream(Level level) {
         return level.dimensionTypeRegistration().is(DREAM_TYPE) || level.dimensionTypeRegistration().is(NIGHT_DREAM_TYPE);
+    }
+
+    static boolean scene(Vec3 at) {
+        return dream != null && at.distanceToSqr(Vec3.atCenterOf(dream.stone)) <= (double) SCENE_BLOCKS * SCENE_BLOCKS;
     }
 
     public static boolean dreaming(Player player) {
@@ -420,7 +425,10 @@ public final class Memories {
                 : new Vec3(ahead.x, dream.level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(ahead.x), Mth.floor(ahead.z)), ahead.z);
         float yaw = dreamer.getYRot() + 180;
         if (People.skinned(person)) {
-            People.spawn(dream.level, person, at, yaw, "standing", ROLE + person);
+            Entity body = People.spawn(dream.level, person, at, yaw, "standing", ROLE + person);
+            if (Story.get().people().containsKey(person)) {
+                body.setCustomName(Component.literal(People.label(dream.level.getServer(), person)));
+            }
             return;
         }
         Mob grey = EntityType.VINDICATOR.create(dream.level);
@@ -482,7 +490,7 @@ public final class Memories {
         Talk.ask(new Talk.Offer(quest(), null, step.choices(), dream.anchor, (player, choice) -> {
             if (choice.refused() != null) {
                 Talk.say(quest(), dream.anchor, new Story.Line(null, choice.refused()));
-                Talk.then(Memories::ask);
+                Talk.then(quest(), Memories::ask);
                 return;
             }
             if (!choice.reply().isEmpty()) {
@@ -501,7 +509,7 @@ public final class Memories {
             return;
         }
         dream.finishing = true;
-        Talk.then(() -> {
+        Talk.then(quest(), () -> {
             if (dream != null) {
                 dream.phase = Phase.WAKING;
                 dream.fade = Balance.get().memory().fadeTicks();

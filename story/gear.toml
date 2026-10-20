@@ -2,21 +2,41 @@ opens = { claimed = "ash/evening" }
 
 [forge]
 already = "It's frost iron already."
-book_no_hammer = "Pretty book. Useless in your hands. And in mine, with this hammer."
+book_no_hammer = "Pretty book. Putting it on a tool needs a sound hammer, and mine's been cracked since the fire."
 book_wont = "It won't take what's in that book."
-half = "That's better than this hammer leaves it."
+half = "More than half whole. This hammer does no better. Bring it back when it's worn."
 here = "Here. Mind the edge."
 leave = "Leave it with me tonight."
 leave_half = "Leave it with me tonight. Halfway is the best this hammer does."
 lumps = { axe = 3, boots = 4, chestplate = 8, helmet = 5, hoe = 2, leggings = 7, pickaxe = 3, shovel = 1, sword = 2 }
-no_hammer = "Not till I've a hammer for it."
+no_hammer = "Not till I have a hammer for it."
 not_mine = "That's not mine to make again. Hold it out with nothing in your other hand, and I'll mend it."
 not_yet = "Not till morning."
 numbers = ["none", "one", "two", "three", "four", "five", "six", "seven", "eight"]
 room = "Make room. I'll not drop it in the mud."
 short = "{wants} {need}. You've {have}."
 whole = "It's whole. Nothing for me to do."
-wants = { axe = "An axe wants", boots = "Boots want", chestplate = "A chestplate wants", helmet = "A helmet wants", hoe = "A hoe wants", leggings = "Leggings want", pickaxe = "A pickaxe wants", shovel = "A shovel wants", sword = "A sword wants" }
+wants = { axe = "An axe needs", boots = "Boots need", chestplate = "A chestplate needs", helmet = "A helmet needs", hoe = "A hoe needs", leggings = "Leggings need", pickaxe = "A pickaxe needs", shovel = "A shovel needs", sword = "A sword needs" }
+
+[[lines]]
+after = "the_lost_ore"
+by = "hob"
+carries = "minecraft:enchanted_book"
+id = "hob_book"
+text = "A book? Hold the piece out to me with the book in your other hand. I'll have it set by morning."
+
+[[lines]]
+before = "the_lost_ore"
+by = "hob"
+carries = "minecraft:enchanted_book"
+id = "hob_book_cracked"
+text = "A book? I can put its enchantment onto a tool or armour, overnight. Not with this cracked hammer, though."
+
+[[lines]]
+by = "maud"
+carries = "sophisticatedbackpacks:gold_backpack"
+id = "maud_diamonds"
+text = "A bigger pack than that needs diamonds, and the open stone has none. Old mines have them, and the deep dark, if you dare go down."
 
 [[lines]]
 by = "hob"
@@ -27,7 +47,7 @@ when = ["dark/torch"]
 [[lines]]
 by = "hob"
 id = "hob_metal"
-text = "Iron's good. But the Frost Walkers had a metal that laughed at the cold. I've never seen it worked."
+text = "Iron's good. But the Frost Walkers had a metal that never rusts and doesn't mind the cold. I've never seen it worked."
 when = ["armour/iron", "tools/iron", "weapons/hobs_blade"]
 
 [[lines]]
@@ -57,7 +77,7 @@ made = "Hob made it for a man who didn't live to fetch it."
 name = "Hob's Blade"
 
 [[rows.things]]
-good = "Holds its edge, and wears half again as long as iron."
+good = "Holds its edge, and lasts one and a half times as long as iron."
 have = [{ gear = "tool", material = "wayfarer:frost_iron" }]
 id = "frost_metal"
 made = "Hob made it, overnight."
@@ -131,7 +151,7 @@ needs = [
 ]
 
 [[rows.things]]
-good = "Digs a little faster than iron, and wears half again as long."
+good = "Digs a little faster than iron, and lasts one and a half times as long."
 have = [{ gear = "tool", material = "wayfarer:frost_iron" }]
 id = "frost_metal"
 made = "Hob made it, overnight."
@@ -157,7 +177,7 @@ needs = [
 ]
 
 [[rows]]
-appears = { worn = true }
+appears = { claimed = "ash/evening" }
 id = "armour"
 ladder = true
 title = "Armour"
@@ -181,16 +201,15 @@ needs = [
 ]
 
 [[rows.things]]
-good = "Light metal, and it turns a blade."
+good = "Light metal, and it stops a blade."
 have = [{ gear = "armour", material = "silentgear:copper" }]
 id = "copper"
 jei = "silentgear:helmet_plates"
-made = "Made at my bench, with a template."
-make = "Make a copper helmet: a helmet template from five boards, then the template and five copper ingots in a crafting grid"
+made = "Made at my bench, with Hob's patterns."
+make = "Make a copper helmet: Hob's helmet pattern and five copper ingots in a crafting grid, then the plates on their own"
 name = "Copper armour"
 needs = [
   { count = 5, item = "minecraft:copper_ingot", name = "copper ingots", where = "smelted from ore in the hills' stone" },
-  { count = 5, item = "silentgear:template_board", name = "template boards", where = "cut from logs with a knife" },
 ]
 
 [[rows.things]]
@@ -198,16 +217,15 @@ good = "Heavy, and it holds."
 have = [{ gear = "armour", material = "silentgear:iron" }]
 id = "iron"
 jei = "silentgear:helmet_plates"
-made = "Made at my bench, with a template."
-make = "Make an iron helmet: a helmet template from five boards, then the template and five iron ingots in a crafting grid"
+made = "Made at my bench, with Hob's patterns."
+make = "Make an iron helmet: Hob's helmet pattern and five iron ingots in a crafting grid, then the plates on their own"
 name = "Iron armour"
 needs = [
   { count = 5, item = "minecraft:iron_ingot", name = "iron ingots", where = "smelted from ore in caves and mountains" },
-  { count = 5, item = "silentgear:template_board", name = "template boards", where = "cut from logs with a knife" },
 ]
 
 [[rows.things]]
-good = "Keeps a blow out a little better than iron, and wears half again as long."
+good = "Stops a blow a little better than iron, and lasts one and a half times as long."
 have = [{ gear = "armour", material = "wayfarer:frost_iron" }]
 id = "frost_metal"
 made = "Hob made it, overnight."
@@ -271,8 +289,13 @@ who = "maud"
 good = "A tent for one, from his pack."
 have = [{ item = "nomadictents:tiny_bedouin" }]
 id = "tiny_bedouin"
+jei = "nomadictents:tiny_bedouin"
 made = "It was his."
+make = "Make a tiny Bedouin tent: six bedouin sections in a crafting grid"
 name = "Tiny Bedouin tent"
+needs = [
+  { count = 6, item = "nomadictents:bedouin_section", name = "bedouin sections", where = "made at my bench from wool and sticks" },
+]
 tent = "bedouin"
 
 [[rows.things]]
@@ -319,8 +342,13 @@ tent = "bedouin"
 good = "A tent for one, from his pack."
 have = [{ item = "nomadictents:tiny_indlu" }]
 id = "tiny_indlu"
+jei = "nomadictents:tiny_indlu"
 made = "It was his."
+make = "Make a tiny indlu: six indlu sections in a crafting grid"
 name = "Tiny indlu"
+needs = [
+  { count = 6, item = "nomadictents:indlu_section", name = "indlu sections", where = "made at my bench from leaves and sticks" },
+]
 tent = "indlu"
 
 [[rows.things]]
@@ -367,8 +395,13 @@ tent = "indlu"
 good = "A tent for one, from his pack."
 have = [{ item = "nomadictents:tiny_shamiyana" }]
 id = "tiny_shamiyana"
+jei = "nomadictents:tiny_shamiyana"
 made = "It was his."
+make = "Make a tiny shamiyana: five shamiyana sections in a crafting grid"
 name = "Tiny shamiyana"
+needs = [
+  { count = 5, item = "nomadictents:shamiyana_section", name = "shamiyana sections", where = "made at my bench from wool, canvas and sticks" },
+]
 tent = "shamiyana"
 
 [[rows.things]]
@@ -415,8 +448,13 @@ tent = "shamiyana"
 good = "A tent for one, from his pack."
 have = [{ item = "nomadictents:tiny_tepee" }]
 id = "tiny_tepee"
+jei = "nomadictents:tiny_tepee"
 made = "It was his."
+make = "Make a tiny tepee: six tepee sections in a crafting grid"
 name = "Tiny tepee"
+needs = [
+  { count = 6, item = "nomadictents:tepee_section", name = "tepee sections", where = "made at my bench from leather and sticks" },
+]
 tent = "tepee"
 
 [[rows.things]]
@@ -463,8 +501,13 @@ tent = "tepee"
 good = "A tent for one, from his pack."
 have = [{ item = "nomadictents:tiny_yurt" }]
 id = "tiny_yurt"
+jei = "nomadictents:tiny_yurt"
 made = "It was his."
+make = "Make a tiny yurt: three yurt sections in a crafting grid"
 name = "Tiny yurt"
+needs = [
+  { count = 3, item = "nomadictents:yurt_section", name = "yurt sections", where = "made at my bench from canvas, which is wool, and sticks" },
+]
 tent = "yurt"
 
 [[rows.things]]
@@ -674,7 +717,7 @@ needs = [
 ]
 
 [[rows]]
-appears = { feels = "cold" }
+appears = { feels = "cold", opened = "the_last_frost_walker" }
 id = "cold"
 ladder = true
 title = "Against the cold"

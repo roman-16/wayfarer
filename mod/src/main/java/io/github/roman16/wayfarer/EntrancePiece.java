@@ -39,7 +39,7 @@ public final class EntrancePiece extends TemplateStructurePiece {
     }
 
     private static StructurePlaceSettings settings(Rotation rotation) {
-        return new StructurePlaceSettings().setRotation(rotation);
+        return Underground.settings(rotation);
     }
 
     @Override

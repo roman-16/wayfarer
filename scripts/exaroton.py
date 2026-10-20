@@ -240,16 +240,16 @@ def fetch_log(api, server, session):
         session.write("latest.log", content)
 
 
-def fetch_record(api, server, session):
+def fetch_record(api, server, session, level):
     path = f"servers/{server['id']}"
     try:
-        days = api.get(f"{path}/files/info/{RECORD}/").get("children") or []
+        days = api.get(f"{path}/files/info/{level}/{RECORD}/").get("children") or []
     except ApiError:
         return
     (session.folder / RECORD_FOLDER).mkdir(exist_ok=True)
     for day in days:
         try:
-            text = api.data(f"{path}/files/data/{RECORD}/{day['name']}").decode("utf-8")
+            text = api.data(f"{path}/files/data/{level}/{RECORD}/{day['name']}").decode("utf-8")
         except (ApiError, OSError) as error:
             session.record("polls.jsonl", {"error": str(error)})
             continue
@@ -285,7 +285,7 @@ def poll(api, server, session, level):
             snapshot["error"] = str(error)
         session.record("polls.jsonl", snapshot)
         if snapshot.get("status") not in (None, OFFLINE):
-            fetch_record(api, server, session)
+            fetch_record(api, server, session, level)
         if since_log >= LOG_SECONDS and snapshot.get("status") not in (None, OFFLINE):
             fetch_log(api, server, session)
             since_log = 0

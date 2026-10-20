@@ -11,6 +11,7 @@ import io.github.roman16.wayfarer.CompassEvent;
 import io.github.roman16.wayfarer.CompassPayload;
 import io.github.roman16.wayfarer.Journey;
 import io.github.roman16.wayfarer.Notices;
+import io.github.roman16.wayfarer.Record;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -133,6 +134,7 @@ public final class Scenes {
         private final Map<BlockPos, BlockState> originals = new LinkedHashMap<>();
         private final List<UUID> entities = new ArrayList<>();
         private final Set<UUID> greeted = new HashSet<>();
+        private final Map<UUID, Double> nearest = new HashMap<>();
         private boolean seen;
         private boolean keep;
         private String state = "";
@@ -154,6 +156,9 @@ public final class Scenes {
             tag.put("originals", blocks);
             tag.put("entities", uuids(entities));
             tag.put("greeted", uuids(greeted));
+            CompoundTag closest = new CompoundTag();
+            nearest.forEach((player, distance) -> closest.putDouble(player.toString(), distance));
+            tag.put("nearest", closest);
             tag.putBoolean("seen", seen);
             tag.putBoolean("keep", keep);
             tag.putString("state", state);
@@ -173,6 +178,8 @@ public final class Scenes {
             }
             scene.entities.addAll(uuids(tag.getList("entities", Tag.TAG_INT_ARRAY)));
             scene.greeted.addAll(uuids(tag.getList("greeted", Tag.TAG_INT_ARRAY)));
+            CompoundTag closest = tag.getCompound("nearest");
+            closest.getAllKeys().forEach(player -> scene.nearest.put(UUID.fromString(player), closest.getDouble(player)));
             scene.seen = tag.getBoolean("seen");
             scene.keep = tag.getBoolean("keep");
             scene.state = tag.getString("state");
@@ -362,6 +369,10 @@ public final class Scenes {
         return Ledger.of(server).scenes.stream().filter(scene -> scene.entities.contains(entity.getUUID())).findFirst();
     }
 
+    static String voice(String kind) {
+        return text(kind).getAsJsonArray("voice").get(0).getAsString();
+    }
+
     private static JsonObject text(String kind) {
         return TEXT.get().getAsJsonObject(kind);
     }
@@ -448,6 +459,7 @@ public final class Scenes {
                 group.forEach(player -> ledger.due.put(player.getUUID(), next));
                 ledger.setDirty();
                 LOGGER.info("a road scene, {}, waits at {} ahead of {}", kind, scene.centre, leader.getScoreboardName());
+                Record.event(server, "scene", leader, line -> line.addProperty("scene", kind));
                 return true;
             }
         }
@@ -791,6 +803,13 @@ public final class Scenes {
             }
             default -> {}
         }
+        for (ServerPlayer player : players) {
+            double distance = player.position().distanceTo(Vec3.atCenterOf(scene.centre));
+            if (distance < scene.nearest.getOrDefault(player.getUUID(), Double.MAX_VALUE)) {
+                scene.nearest.put(player.getUUID(), distance);
+                ledger.setDirty();
+            }
+        }
         if (!visible && players.stream().allMatch(player -> past(player, scene)) && level.isPositionEntityTicking(scene.centre)) {
             takeAway(level, ledger, scene);
         }
@@ -804,17 +823,17 @@ public final class Scenes {
         long now = server.overworld().getGameTime();
         boolean story = scene.kind.equals(CACHE);
         long gap = (long) Balance.get().scenes().voiceGapSeconds() * TICKS_PER_SECOND;
-        if (text.has("voice") && !Journey.claimed(server).isEmpty() && (story || now - ledger.voiceAt >= gap)) {
+        if (text.has("voice") && !text.has("ask") && !Journey.claimed(server).isEmpty() && (story || now - ledger.voiceAt >= gap)) {
             JsonArray voice = text.getAsJsonArray("voice");
             List<String> names = text.has("names") ? text.getAsJsonArray("names").asList().stream().map(JsonElement::getAsString).toList() : List.of();
-            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(STRANGER, voice.get(server.overworld().getRandom().nextInt(voice.size())).getAsString(), names, null, null, false, null, null, null));
+            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(STRANGER, voice.get(server.overworld().getRandom().nextInt(voice.size())).getAsString(), names, null, null, false, null, null, null, null));
             ledger.voiceAt = now;
         }
         if (story) {
             Progress progress = Progress.of(server);
             progress.place(CACHE, scene.centre);
             progress.setDirty();
-            Talk.then(() -> Engine.open(server));
+            Talk.then(Talk.ROAD, Vec3.atCenterOf(scene.centre), () -> Engine.open(server));
         }
         ledger.setDirty();
     }
@@ -824,7 +843,8 @@ public final class Scenes {
         int ask = Balance.get().scenes().askBlocks();
         switch (scene.state) {
             case "" -> {
-                if (scene.seen && !Talk.busy() && players.stream().anyMatch(player -> player.position().closerThan(Vec3.atCenterOf(scene.centre), ask))) {
+                List<ServerPlayer> near = players.stream().filter(player -> player.position().closerThan(Vec3.atCenterOf(scene.centre), ask)).toList();
+                if (scene.seen && !Talk.busy() && !near.isEmpty() && near.stream().allMatch(Talk::free)) {
                     scene.state = "asked";
                     Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), lines(text.getAsJsonArray("ask")), Talk.Placeholders.NONE);
                     if (!Journey.claimed(server).isEmpty()) {
@@ -834,7 +854,8 @@ public final class Scenes {
                             .map(choice -> new Story.Choice(choice.get("id").getAsString(), choice.get("text").getAsString(), choice.get("reply").getAsString(),
                                     null, null, null))
                             .toList();
-                    Talk.ask(new Talk.Offer(Talk.ROAD, null, choices, Vec3.atCenterOf(scene.centre), (player, choice) -> chosen(player, scene, choice)));
+                    Talk.ask(new Talk.Offer(Talk.ROAD, null, choices, Vec3.atCenterOf(scene.centre), (player, choice) -> chosen(player, scene, choice), false,
+                            () -> lapsed(server, scene)));
                 }
             }
             case "fighting" -> {
@@ -843,7 +864,7 @@ public final class Scenes {
                 if (!standing && level.isPositionEntityTicking(scene.centre)) {
                     scene.state = "won";
                     Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), lines(text.getAsJsonArray("won")), Talk.Placeholders.NONE);
-                    Talk.then(() -> rumourAhead(server, level, scene));
+                    Talk.then(Talk.ROAD, Vec3.atCenterOf(scene.centre), () -> rumourAhead(server, level, scene));
                 }
             }
             default -> {}
@@ -852,6 +873,10 @@ public final class Scenes {
 
     private static void chosen(ServerPlayer player, Scene scene, Story.Choice choice) {
         MinecraftServer server = player.server;
+        Record.event(server, "scene chosen", player, line -> {
+            line.addProperty("scene", scene.kind);
+            line.addProperty("choice", choice.id());
+        });
         Ledger ledger = Ledger.of(server);
         if (ledger.scenes.contains(scene)) {
             Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(null, choice.reply()));
@@ -875,6 +900,16 @@ public final class Scenes {
                 }
             }
             ledger.setDirty();
+        }
+    }
+
+    private static void lapsed(MinecraftServer server, Scene scene) {
+        Ledger ledger = Ledger.of(server);
+        if (ledger.scenes.contains(scene) && scene.state.equals("asked")) {
+            scene.state = "walked";
+            ledger.taken = Math.floorDiv(Engine.overworld(server).getDayTime(), Clock.DAY);
+            ledger.setDirty();
+            Record.event(server, "scene lapsed", null, line -> line.addProperty("scene", scene.kind));
         }
     }
 
@@ -928,12 +963,8 @@ public final class Scenes {
     private static boolean past(ServerPlayer player, Scene scene) {
         Balance.Scenes balance = Balance.get().scenes();
         double distance = player.position().distanceTo(Vec3.atCenterOf(scene.centre));
-        return distance >= balance.goneBlocks() && (!ahead(player, scene) || distance >= balance.farthestBlocks() + balance.goneBlocks());
-    }
-
-    private static boolean ahead(ServerPlayer player, Scene scene) {
-        Vec3 heading = headings.get(player.getUUID());
-        return heading == null || Vec3.atCenterOf(scene.centre).subtract(player.position()).multiply(1, 0, 1).dot(heading) > 0;
+        return distance >= scene.nearest.getOrDefault(player.getUUID(), distance) + balance.goneBlocks()
+                || distance >= balance.farthestBlocks() + balance.goneBlocks();
     }
 
     private static void takeAway(ServerLevel level, Ledger ledger, Scene scene) {

@@ -80,6 +80,7 @@ public final class Compass {
             Sounds.play(player, now.heat() > before.heat() ? EMBER_FLARES : EMBER_GUTTERS);
             if (now.heat() > before.heat() && Sense.held(player)) {
                 Tasks.done(player, "sweep");
+                Tasks.did(player, "sweep");
             }
         }
         if (leads(now).stream().anyMatch(lead -> !leads(before).contains(lead))) {
@@ -178,17 +179,20 @@ public final class Compass {
     }
 
     public static int heat(double closerBy, double moved) {
+        Balance.Sense sense = Balance.get().sense();
         double ratio = closerBy / moved;
-        if (ratio > 0.7) {
+        double flare = Math.cos(Math.toRadians(sense.flareDegrees()));
+        double glow = Math.cos(Math.toRadians(sense.glowDegrees()));
+        if (ratio > flare) {
             return 2;
         }
-        if (ratio >= 0) {
+        if (ratio >= glow) {
             return 1;
         }
-        if (ratio > -0.7) {
-            return -1;
+        if (ratio > -glow) {
+            return 0;
         }
-        return -2;
+        return ratio > -flare ? -1 : -2;
     }
 
     private static double horizontal(BlockPos a, BlockPos b) {

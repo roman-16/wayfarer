@@ -15,6 +15,8 @@ public final class HudState {
     public static volatile NightPayload night = NightPayload.CALM;
     public static volatile Tasks.Panel panel = Tasks.Panel.EMPTY;
     public static volatile Optional<BlockPos> smoke = Optional.empty();
+    public static volatile TentPitch.Outlines tentOutlines = new TentPitch.Outlines(List.of(), List.of());
+    public static volatile long tentOutlinedAt;
 
     private HudState() {}
 }

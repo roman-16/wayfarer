@@ -18,14 +18,15 @@ import net.minecraft.resources.ResourceLocation;
 public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String, Person> people) {
     private static final Bundled<Story> STORY = Bundled.json("/wayfarer/story.json", Story::load);
     private static final Set<String> HALL_KINDS = Set.of("shard", "vision", "worm");
+    private static final Set<String> STAGE = Set.of("faces", "leaves", "moves", "poses");
 
     public record Person(String id, String name, @Nullable String unnamed, ChatFormatting color, List<String> mornings, List<String> remarks, boolean voice,
-            @Nullable String people, List<String> cold, List<String> welcomes, Map<String, String> renamed, Map<String, List<String>> acts, List<String> shouts) {}
+            @Nullable String people, List<String> cold, List<String> welcomes, Map<String, String> renamed, Map<String, List<String>> acts, List<String> shouts, @Nullable String lends) {}
 
     public record Line(@Nullable String by, String text, List<String> names, @Nullable String sound, @Nullable String music, boolean pause,
-            @Nullable String vanishes, @Nullable ResourceLocation left, @Nullable String when) {
+            @Nullable String vanishes, @Nullable ResourceLocation left, @Nullable String when, @Nullable JsonObject stage) {
         public Line(@Nullable String by, String text) {
-            this(by, text, List.of(), null, null, false, null, null, null);
+            this(by, text, List.of(), null, null, false, null, null, null, null);
         }
     }
 
@@ -128,7 +129,7 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
                     person.has("unnamed") ? person.get("unnamed").getAsString() : null, ChatFormatting.getByName(person.get("color").getAsString()),
                     strings(person, "mornings"), strings(person, "remarks"), person.has("voice") && person.get("voice").getAsBoolean(),
                     person.has("people") ? person.get("people").getAsString() : null, strings(person, "cold"), strings(person, "welcomes"), names(person),
-                    acts(person), strings(person, "shouts")));
+                    acts(person), strings(person, "shouts"), person.has("lends") ? person.get("lends").getAsString() : null));
         });
         List<Quest> quests = json.getAsJsonArray("quests").asList().stream().map(JsonElement::getAsJsonObject).map(Story::quest).toList();
         Map<String, Memory> memories = new LinkedHashMap<>();
@@ -172,7 +173,7 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
         return new Line(line.has("by") ? line.get("by").getAsString() : null, line.get("text").getAsString(), strings(line, "names"),
                 line.has("sound") ? line.get("sound").getAsString() : null, line.has("music") ? line.get("music").getAsString() : null, flag(line, "pause"),
                 line.has("vanishes") ? line.get("vanishes").getAsString() : null, line.has("left") ? ResourceLocation.parse(line.get("left").getAsString()) : null,
-                line.has("when") ? line.get("when").getAsString() : null);
+                line.has("when") ? line.get("when").getAsString() : null, STAGE.stream().anyMatch(line::has) ? line : null);
     }
 
     private static Choice choice(String step, JsonObject choice) {

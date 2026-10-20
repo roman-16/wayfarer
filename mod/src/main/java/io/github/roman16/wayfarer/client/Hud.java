@@ -178,8 +178,12 @@ public final class Hud {
             case BARE -> null;
             case AIR, COLD, DIM, HIDDEN, LOST, RISING -> new Urgent(List.of(new Run(Component.translatable(caption(reading.mode())), Stamp.LABEL)), -1, null);
             case FAR -> new Urgent(List.of(new Run(Component.translatable("wayfarer.compass.ember"), Stamp.LABEL), new Run(Component.literal(" · "), Stamp.DIM),
-                    new Run(Component.translatable("wayfarer.compass." + HEAT[reading.heat() + 2]), heatColor(reading.heat()))), -1, null);
+                    new Run(Component.translatable(heatKey(reading.heat())), heatColor(reading.heat()))), -1, null);
         };
+    }
+
+    public static String heatKey(int heat) {
+        return "wayfarer.compass." + HEAT[heat + 2];
     }
 
     public static void sensed() {

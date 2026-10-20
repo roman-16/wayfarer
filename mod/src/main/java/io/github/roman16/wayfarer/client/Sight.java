@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer.client;
 
+import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.HudState;
 import net.minecraft.client.Minecraft;
@@ -28,7 +29,7 @@ public final class Sight {
 
     public static boolean shows(Entity entity) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null || !HudState.compass.sight() || still < STILL_TICKS || !player.level().isNight() || !(entity instanceof Enemy)) {
+        if (player == null || !HudState.compass.sight() || still < STILL_TICKS || !player.level().isNight() || !(entity instanceof Enemy) || entity instanceof EasyNPC<?>) {
             return false;
         }
         int reach = Balance.get().sight().reachBlocks();

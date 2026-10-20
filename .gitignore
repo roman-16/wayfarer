@@ -5,6 +5,7 @@
 /build/
 /dist/
 /exaroton/
+/playtests/
 __pycache__/
 mod/.gradle/
 mod/build/

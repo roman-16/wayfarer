@@ -786,6 +786,7 @@ public final class JournalScreen extends Screen {
     }
 
     private void choose(Tab tab) {
+        Screens.opened("journal " + tab.name().toLowerCase(Locale.ROOT));
         if (tab == Tab.MAP) {
             MapLink.open(true);
             return;

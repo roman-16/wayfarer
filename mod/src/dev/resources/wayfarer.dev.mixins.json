@@ -2,13 +2,15 @@
   "client": [
     "AbstractClientPlayerMixin",
     "FogRendererMixin",
+    "GuiAccessor",
     "GuiMixin",
     "LevelRendererMixin",
-    "LightStaminaHudMixin",
+    "MinecraftMixin",
     "PanoramaPickMixin",
     "PanoramaRendererMixin",
     "ParticleEngineAccessor",
     "ParticularCounterMixin",
+    "ScreenMixin",
     "TextureAtlasAccessor",
     "TextureManagerAccessor"
   ],

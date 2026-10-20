@@ -32,10 +32,13 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.network.configuration.ICustomConfigurationTask;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
+import toughasnails.init.ModTags;
 
 public final class WorldSetup {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final String ID = "id";
+    private static final float MILD_LEAST = 0.45f;
+    private static final float MILD_MOST = 1.0f;
     private static final String NAME = "wayfarer_world";
     private static final String SEASON_CYCLE = "doSeasonCycle";
 
@@ -129,15 +132,15 @@ public final class WorldSetup {
 
     private static void placeLastCamp(ServerLevel level) {
         BlockPos spawn = level.getSharedSpawnPos();
-        if (snowy(level, spawn.getX(), spawn.getZ())) {
-            Optional<BlockPos> warmer = warmer(level, spawn);
-            warmer.ifPresentOrElse(found -> level.setDefaultSpawnPos(found, 0),
-                    () -> LOGGER.warn("no ground without snow lies within {} blocks of the spawn; the Last Camp stands in the snow", Balance.get().prologue().campSearchBlocks()));
+        if (!mild(level, spawn.getX(), spawn.getZ())) {
+            Optional<BlockPos> milder = milder(level, spawn);
+            milder.ifPresentOrElse(found -> level.setDefaultSpawnPos(found, 0),
+                    () -> LOGGER.warn("no mild ground lies within {} blocks of the spawn; the Last Camp stands where it burns or freezes", Balance.get().prologue().campSearchBlocks()));
         }
         Prologue.lastCamp(level, Camps.place(level, Wayfarer.id("last_camp"), level.getSharedSpawnPos()));
     }
 
-    private static Optional<BlockPos> warmer(ServerLevel level, BlockPos spawn) {
+    private static Optional<BlockPos> milder(ServerLevel level, BlockPos spawn) {
         Balance.Prologue prologue = Balance.get().prologue();
         for (int reach = prologue.campStepBlocks(); reach <= prologue.campSearchBlocks(); reach += prologue.campStepBlocks()) {
             int around = Math.max(8, (int) Math.round(Math.PI * 2 * reach / prologue.campStepBlocks()));
@@ -145,7 +148,7 @@ public final class WorldSetup {
                 double angle = Math.PI * 2 * step / around;
                 int x = spawn.getX() + (int) Math.round(Math.cos(angle) * reach);
                 int z = spawn.getZ() + (int) Math.round(Math.sin(angle) * reach);
-                if (land(level, x, z) && !snowy(level, x, z)) {
+                if (land(level, x, z) && mild(level, x, z)) {
                     return Optional.of(new BlockPos(x, ground(level, x, z), z));
                 }
             }
@@ -153,9 +156,14 @@ public final class WorldSetup {
         return Optional.empty();
     }
 
-    private static boolean snowy(ServerLevel level, int x, int z) {
+    private static boolean mild(ServerLevel level, int x, int z) {
         BlockPos at = new BlockPos(x, ground(level, x, z), z);
-        return biome(level, at).value().coldEnoughToSnow(at);
+        Holder<Biome> biome = biome(level, at);
+        if (biome.value().coldEnoughToSnow(at) || biome.is(ModTags.Biomes.ICY_BIOMES) || biome.is(ModTags.Biomes.COLD_BIOMES) || biome.is(ModTags.Biomes.HOT_BIOMES)) {
+            return false;
+        }
+        float temperature = biome.value().getBaseTemperature();
+        return biome.is(ModTags.Biomes.NEUTRAL_BIOMES) || biome.is(ModTags.Biomes.WARM_BIOMES) || temperature >= MILD_LEAST && temperature < MILD_MOST;
     }
 
     private static boolean land(ServerLevel level, int x, int z) {

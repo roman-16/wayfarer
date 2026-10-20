@@ -121,7 +121,7 @@ public final class Duel {
                         Places.place(server, active.step().text(BURNS)).ifPresent(at -> burn(level, at));
                     }
                     Talk.say(active.quest().id(), event.getEntity().position(), active.step().lines(WON), Engine.fill(progress));
-                    Talk.then(() -> Engine.complete(server, active));
+                    Talk.then(active.quest().id(), () -> Engine.complete(server, active));
                 });
     }
 }

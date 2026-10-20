@@ -46,6 +46,9 @@ final class Visit {
     private static final float LOAF_SCALE = 0.5f;
     private static final double LOAF_RISE = 0.03;
 
+    private static final int OUT_OF_SIGHT_BLOCKS = 64;
+    private static final int SIGHT_STEP = 8;
+
     private Visit() {}
 
     static void tick(MinecraftServer server, Engine.Active active) {
@@ -85,12 +88,17 @@ final class Visit {
     private static void come(MinecraftServer server, Engine.Active active, String visitor, BlockPos fire) {
         ServerLevel level = Engine.overworld(server);
         Vec3 away = away(server, fire);
-        Vec3 from = Vec3.atBottomCenterOf(fire).add(away.scale(Balance.get().story().visitBlocks()));
-        BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.containing(from));
+        BlockPos ground = fire;
+        for (int out = Balance.get().story().visitBlocks(); out <= OUT_OF_SIGHT_BLOCKS; out += SIGHT_STEP) {
+            ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.containing(Vec3.atBottomCenterOf(fire).add(away.scale(out))));
+            if (!People.seen(level, Vec3.atBottomCenterOf(ground))) {
+                break;
+            }
+        }
         float yaw = yaw(Vec3.atBottomCenterOf(ground), Vec3.atBottomCenterOf(fire));
         People.person(level, visitor, Vec3.atBottomCenterOf(ground), yaw, "standing");
         Vec3 seat = seat(level, fire, away);
-        People.walk(server, visitor, seat);
+        People.walk(server, visitor, seat, People.WALKING);
         active.scratch().putBoolean(COMING, true);
         active.scratch().put(SEAT, position(seat));
         Progress.of(server).scratch(VISITS).putLong(EVENING, today(server));
@@ -110,7 +118,7 @@ final class Visit {
         }
         Vec3 seat = new Vec3(at.getDouble(0), at.getDouble(1), at.getDouble(2));
         if (body.get().position().multiply(1, 0, 1).distanceTo(seat.multiply(1, 0, 1)) > 1) {
-            People.walk(server, visitor, seat);
+            People.walk(server, visitor, seat, People.WALKING);
             return;
         }
         body.get().moveTo(seat.x, seat.y, seat.z, body.get().getYRot(), 0);
@@ -135,7 +143,6 @@ final class Visit {
         });
         active.scratch().remove(COMING);
         active.scratch().remove(SEAT);
-        Steps.poses(server, active.step());
         Steps.start(server, active);
     }
 

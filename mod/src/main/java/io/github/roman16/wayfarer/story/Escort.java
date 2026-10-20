@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -15,8 +14,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 
 final class Escort {
@@ -69,26 +66,21 @@ final class Escort {
         ServerPlayer player = nearest.get();
         Optional<Entity> body = People.find(server, who).filter(found -> found.level() == level);
         if (body.isEmpty() || body.get().distanceTo(player) > balance.leashBlocks()) {
-            Vec3 behind = player.position().subtract(player.getLookAngle().multiply(1, 0, 1).normalize().scale(balance.followBlocks()));
-            BlockPos beside = BlockPos.containing(behind.x, player.getY(), behind.z);
-            BlockPos ground = standable(level, beside) ? beside : standable(level, player.blockPosition()) ? player.blockPosition()
-                    : level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.containing(behind));
-            People.person(level, who, Vec3.atBottomCenterOf(ground), player.getYRot(), "standing");
+            People.catchUp(level, who, player.position().subtract(player.getLookAngle().multiply(1, 0, 1).normalize().scale(balance.followBlocks())), player.getYRot());
+        }
+        if (body.isEmpty()) {
             return;
         }
         Entity walker = body.get();
-        if (walker.distanceTo(player) > balance.followBlocks() && (!People.walking(who) || level.getGameTime() % RETARGET == 0)) {
-            People.walk(server, who, player.position());
+        double behind = walker.distanceTo(player);
+        if (behind > balance.followBlocks() && (!People.walking(who) || level.getGameTime() % RETARGET == 0)) {
+            People.walk(server, who, player.position(), behind > balance.jogBlocks() ? People.JOGGING : People.WALKING);
         }
         Optional<BlockPos> goal = Places.place(server, step.text("place"));
         int within = Places.arrival(step.text("place"));
         if (goal.isPresent() && walker.blockPosition().distSqr(goal.get()) <= (double) within * within) {
             end(server, active, ARRIVED);
         }
-    }
-
-    private static boolean standable(ServerLevel level, BlockPos at) {
-        return level.getBlockState(at).isAir() && level.getBlockState(at.above()).isAir() && level.getBlockState(at.below()).isFaceSturdy(level, at.below(), Direction.UP);
     }
 
     private static void end(MinecraftServer server, Engine.Active active, String outcome) {
@@ -101,6 +93,6 @@ final class Escort {
         progress.setDirty();
         Talk.say(active.quest().id(), null, active.step().lines(outcome), Engine.fill(progress));
         LOGGER.info("the escort of {} ends: {}", active.step().text(WHO), outcome);
-        Talk.then(() -> Engine.complete(server, active));
+        Talk.then(active.quest().id(), () -> Engine.complete(server, active));
     }
 }

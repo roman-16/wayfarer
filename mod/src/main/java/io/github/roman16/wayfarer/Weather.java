@@ -56,6 +56,10 @@ public final class Weather {
             last.raining = data.isRaining();
             last.rainedDay = today;
             last.setDirty();
+            Record.event(server, last.raining ? "rain began" : "rain ended", null, line -> {
+                line.addProperty("day", today);
+                line.addProperty("thunder", data.isThundering());
+            });
         }
         if (!data.isRaining() && today < last.rainedDay + balance.daysBetweenRain()) {
             data.setRainTime(Math.max(data.getRainTime(), HELD_TICKS));

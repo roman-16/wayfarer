@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
+import io.github.roman16.wayfarer.Underground;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -192,7 +193,7 @@ final class Diggers {
 
     private static void place(ServerLevel level) {
         Site site = build.site;
-        StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(site.turn());
+        StructurePlaceSettings settings = Underground.settings(site.turn());
         JsonObject entrance = PLAN.get().getAsJsonObject("entrance");
         JsonObject tunnels = PLAN.get().getAsJsonObject("tunnels");
         int surface = ground(level, site.centre().getX(), site.centre().getZ());

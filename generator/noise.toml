@@ -149,11 +149,6 @@ mod = "NeoForge"
 why = "A config value written back unchanged"
 
 [[noise]]
-match = 'Plugin for ParCool! \(parcool\) is loaded in legacy mode'
-mod = "Shoulder Surfing Reloaded"
-why = "ParCool's plugin for it uses its older interface, which it still runs"
-
-[[noise]]
 match = 'Failed to load model twilightforest:'
 mod = "Motschen's Better Leaves"
 why = "It ships leaf models for Twilight Forest, which the pack leaves out"

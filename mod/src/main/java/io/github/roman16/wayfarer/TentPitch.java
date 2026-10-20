@@ -3,6 +3,8 @@ package io.github.roman16.wayfarer;
 import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Talk;
 import io.github.roman16.wayfarer.story.Wards;
+import io.netty.buffer.ByteBuf;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -12,12 +14,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -25,6 +31,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -35,12 +43,16 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 import nomadictents.NTSavedData;
 import nomadictents.block.TentDoorBlock;
 import nomadictents.dimension.DimensionFactory;
@@ -51,6 +63,7 @@ import nomadictents.structure.TentPlacer;
 import nomadictents.tileentity.TentDoorBlockEntity;
 import nomadictents.util.Tent;
 import nomadictents.util.TentSize;
+import top.theillusivec4.curios.api.CuriosApi;
 
 public final class TentPitch {
     private static final BlockPos INSIDE_DOOR = Tent.calculatePos(0);
@@ -107,17 +120,15 @@ public final class TentPitch {
         if (held.getOrDefault(NTDataComponents.TENT_ID.get(), 0) == 0) {
             held.set(NTDataComponents.TENT_ID.get(), NTSavedData.get(player.server).getNextTentId());
         }
+        Optional<Refusal> refused = refusal(player, held, door, facing);
+        if (refused.isPresent()) {
+            player.displayClientMessage(refused.get().why(), true);
+            PacketDistributor.sendToPlayer(player, new Outlines(refused.get().blocked(), refused.get().gaps()));
+            return;
+        }
         Tent tent = Tent.from(held, ((TentItem) held.getItem()).getTentType(), size(held));
         TentSize size = TentPlacer.getOverworldSize(tent.getSize());
-        if (!grounded(level, door, tent, size, facing)) {
-            player.displayClientMessage(Component.translatable("wayfarer.tent.uneven"), true);
-            return;
-        }
         List<BlockPos> walls = walls(level, door, tent, size, facing);
-        if (!walls.stream().allMatch(pos -> free(level, pos))) {
-            player.displayClientMessage(Component.translatable("tent.build.deny.space"), true);
-            return;
-        }
         walls.stream().filter(pos -> overgrown(level, pos, level.getBlockState(pos))).forEach(pos -> level.destroyBlock(pos, true, player));
         if (!TentPlacer.getInstance().placeTent(level, door, tent.getType(), size, facing, tent.getColor())
                 || !(level.getBlockEntity(door) instanceof TentDoorBlockEntity entrance)) {
@@ -134,24 +145,45 @@ public final class TentPitch {
         state.tents.add(new Joining.Pitched(player.getUUID(), new Joining.Place(level.dimension(), door.immutable()), tent.getId()));
         state.setDirty();
         Sounds.play(level, door.getCenter(), TENT_PITCHED);
+        Record.event(player.server, "tent pitched", player);
     }
 
-    private static boolean grounded(ServerLevel level, BlockPos door, Tent tent, TentSize size, Direction facing) {
+    public static Optional<Refusal> refusal(ServerPlayer player, ItemStack held, BlockPos door, Direction facing) {
+        ServerLevel level = player.serverLevel();
+        Tent tent = Tent.from(held, ((TentItem) held.getItem()).getTentType(), size(held));
+        TentSize size = TentPlacer.getOverworldSize(tent.getSize());
+        List<BlockPos> gaps = gaps(level, door, tent, size, facing);
+        if (!gaps.isEmpty()) {
+            return Optional.of(new Refusal(Component.translatable("wayfarer.tent.uneven"), List.of(), gaps));
+        }
+        List<BlockPos> walls = walls(level, door, tent, size, facing);
+        List<BlockPos> blocked = walls.stream().filter(pos -> !free(level, pos)).toList();
+        if (!blocked.isEmpty()) {
+            return Optional.of(new Refusal(Component.translatable("wayfarer.tent.blocked", level.getBlockState(blocked.getFirst()).getBlock().getName()), blocked, List.of()));
+        }
+        List<Entity> standing = walls.stream().flatMap(pos -> level.getEntities((Entity) null, new AABB(pos), entity -> entity instanceof LivingEntity && !entity.isSpectator()).stream())
+                .distinct().toList();
+        return standing.stream().findFirst().map(entity -> new Refusal(Component.translatable(entity == player ? "wayfarer.tent.underfoot" : "wayfarer.tent.someone"),
+                standing.stream().map(Entity::blockPosition).distinct().toList(), List.of()));
+    }
+
+    private static List<BlockPos> gaps(ServerLevel level, BlockPos door, Tent tent, TentSize size, Direction facing) {
         StructureTemplate template = TentPlacer.getTemplate(level, tent.getType(), size);
         if (template == null) {
-            return true;
+            return List.of();
         }
         Rotation rotation = TentPlacer.toRotation(facing);
         BlockPos origin = door.offset(new BlockPos(0, 0, -template.getSize().getZ() / 2).rotate(rotation));
+        List<BlockPos> gaps = new ArrayList<>();
         for (int x = 0; x < template.getSize().getX(); x++) {
             for (int z = 0; z < template.getSize().getZ(); z++) {
                 BlockPos floor = origin.offset(new BlockPos(x, 0, z).rotate(rotation));
-                if (!ground(level, floor.below()) && !ground(level, floor.below(2))) {
-                    return false;
+                if (!ground(level, floor.below())) {
+                    gaps.add(floor.below());
                 }
             }
         }
-        return true;
+        return gaps;
     }
 
     private static List<BlockPos> walls(ServerLevel level, BlockPos door, Tent tent, TentSize size, Direction facing) {
@@ -182,6 +214,19 @@ public final class TentPitch {
         return !state.canBeReplaced() && !state.getCollisionShape(level, pos).isEmpty();
     }
 
+    public record Refusal(Component why, List<BlockPos> blocked, List<BlockPos> gaps) {}
+
+    public record Outlines(List<BlockPos> blocked, List<BlockPos> gaps) implements CustomPacketPayload {
+        public static final Type<Outlines> TYPE = new Type<>(Wayfarer.id("tent_outlines"));
+        public static final StreamCodec<ByteBuf, Outlines> STREAM_CODEC = StreamCodec.composite(BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()), Outlines::blocked,
+                BlockPos.STREAM_CODEC.apply(ByteBufCodecs.list()), Outlines::gaps, Outlines::new);
+
+        @Override
+        public Type<Outlines> type() {
+            return TYPE;
+        }
+    }
+
     private static boolean occupied(MinecraftServer server, Joining.Pitched tent) {
         ServerLevel inside = server.getLevel(NTSavedData.get(server).getOrCreateKey(server, tent.id()));
         return inside != null && !inside.players().isEmpty();
@@ -202,6 +247,7 @@ public final class TentPitch {
         }
         Tent pitched = door.getTent();
         Sounds.play(player.serverLevel(), door.getBlockPos().getCenter(), TENT_PACKED);
+        Record.event(player.server, "tent packed", player);
         TentPlacer.getInstance().removeTent(player.level(), door.getBlockPos(), pitched.getType(), TentPlacer.getOverworldSize(pitched.getSize()),
                 door.getDirection());
         ItemStack item = pitched.asItem();
@@ -227,12 +273,27 @@ public final class TentPitch {
                 && tent.place().pos().distSqr(player.blockPosition()) > (double) reach * reach
                 && !Caravan.within(player.server, player.level(), Vec3.atCenterOf(tent.place().pos())))) {
             REMINDED.put(player.getUUID(), today);
-            Talk.tell(player, Component.translatable("wayfarer.tent.behind"));
+            Talk.tell(player, Component.translatable(Caravan.met(player.server) ? "wayfarer.tent.left" : "wayfarer.tent.behind"));
         }
     }
 
     public static boolean pitched(ServerPlayer player) {
         return !mine(player).isEmpty();
+    }
+
+    public static boolean owns(ServerPlayer player) {
+        Stream<ItemStack> carried = Stream.concat(Stream.of(player.getInventory().items, player.getInventory().offhand).flatMap(List::stream),
+                CuriosApi.getCuriosInventory(player).map(curios -> curios.getEquippedCurios()).stream()
+                        .flatMap(curios -> IntStream.range(0, curios.getSlots()).mapToObj(curios::getStackInSlot)));
+        return pitched(player) || carried.anyMatch(TentPitch::holdsTent);
+    }
+
+    private static boolean holdsTent(ItemStack stack) {
+        if (stack.getItem() instanceof TentItem) {
+            return true;
+        }
+        IItemHandler inside = stack.getCapability(Capabilities.ItemHandler.ITEM);
+        return inside != null && IntStream.range(0, inside.getSlots()).anyMatch(slot -> inside.getStackInSlot(slot).getItem() instanceof TentItem);
     }
 
     public static void bringBack(MinecraftServer server, Joining.Place camp) {
@@ -338,9 +399,11 @@ public final class TentPitch {
             Tent pitched = door.getTent();
             TentPlacer.getInstance().removeTent(level, pos, pitched.getType(), TentPlacer.getOverworldSize(pitched.getSize()), door.getDirection());
             ItemStack item = pitched.asItem();
+            ItemStack shown = item.copy();
             if (!player.getInventory().add(item)) {
                 player.drop(item, false);
             }
+            Notices.given(player, List.of(shown));
             brought = true;
         }
         return brought;

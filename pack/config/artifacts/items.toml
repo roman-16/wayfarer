@@ -1,2 +1,5 @@
+[crystal_heart]
+	healthBonus = 4.0
+
 [snowshoes]
 	generateAsLoot = false

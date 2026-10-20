@@ -30,6 +30,7 @@ import net.minecraft.world.phys.Vec3;
 
 public final class Camps {
     private static final int CLEARANCE = 10;
+    private static final int SLOPE = 8;
 
     private static final int SAMPLE = 2;
     private static final int HALF_TURN = 180;
@@ -44,8 +45,12 @@ public final class Camps {
     }
 
     public static StructurePlaceSettings settings(ServerLevel level, ResourceLocation template, Rotation rotation) {
+        return new StructurePlaceSettings().setRotation(rotation).setRotationPivot(pivot(level, template));
+    }
+
+    public static BlockPos pivot(ServerLevel level, ResourceLocation template) {
         Vec3i size = level.getStructureManager().getOrCreate(template).getSize();
-        return new StructurePlaceSettings().setRotation(rotation).setRotationPivot(new BlockPos(size.getX() / 2, 0, size.getZ() / 2));
+        return new BlockPos(size.getX() / 2, 0, size.getZ() / 2);
     }
 
     public static BlockPos place(ServerLevel level, ResourceLocation template, BlockPos centre, Rotation rotation) {
@@ -128,6 +133,7 @@ public final class Camps {
                 top = Math.max(top, crown);
             }
         }
+        slope(level, origin, size, ground);
         BlockPos low = origin.offset(-LeavesBlock.DECAY_DISTANCE, 1, -LeavesBlock.DECAY_DISTANCE);
         BlockPos high = origin.offset(size.getX() + LeavesBlock.DECAY_DISTANCE, top - origin.getY(), size.getZ() + LeavesBlock.DECAY_DISTANCE);
         prune(level, low, high);
@@ -214,6 +220,30 @@ public final class Camps {
         for (int above = foot.getY() + CLEARANCE + 1; above < crown; above++) {
             if (tree(level.getBlockState(foot.atY(above)))) {
                 level.setBlock(foot.atY(above), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+        }
+    }
+
+    private static void slope(ServerLevel level, BlockPos origin, Vec3i size, Set<BlockPos> ground) {
+        for (int dx = -SLOPE; dx < size.getX() + SLOPE; dx++) {
+            for (int dz = -SLOPE; dz < size.getZ() + SLOPE; dz++) {
+                int away = Math.max(Math.max(-dx, dx - size.getX() + 1), Math.max(-dz, dz - size.getZ() + 1));
+                if (away <= 0 || ground.isEmpty()) {
+                    continue;
+                }
+                BlockPos column = origin.offset(dx, 0, dz);
+                int allowed = origin.getY() + away;
+                int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column.getX(), column.getZ()) - 1;
+                if (top <= allowed) {
+                    continue;
+                }
+                BlockState surface = level.getBlockState(column.atY(top));
+                for (int y = top; y > allowed; y--) {
+                    level.setBlock(column.atY(y), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                }
+                if (surface.isCollisionShapeFullBlock(level, column.atY(top)) && !surface.hasBlockEntity()) {
+                    level.setBlock(column.atY(allowed), surface, Block.UPDATE_CLIENTS);
+                }
             }
         }
     }

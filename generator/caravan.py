@@ -71,14 +71,14 @@ def ridge_tent(t, half, depth, canvas):
 def tent(contents):
     t = Template()
     ridge = ridge_tent(t, 2, 5, CANVAS)
-    t.set((ridge - 1, 1, 3), "minecraft:brown_carpet")
-    t.set((ridge - 1, 1, 4), "minecraft:brown_carpet")
+    t.set((ridge - 1, 1, 3), "minecraft:brown_bed", facing="south", part="foot", occupied=False)
+    t.set((ridge - 1, 1, 4), "minecraft:brown_bed", facing="south", part="head", occupied=False)
     if contents == "books":
         t.set((ridge, 1, 4), "minecraft:bookshelf")
         t.set((ridge + 1, 1, 4), "minecraft:chiseled_bookshelf", facing="west", **shelf(0b101011))
         t.set((ridge + 1, 1, 2), "minecraft:lectern", facing="west", has_book=False, powered=False)
     elif contents == "healer":
-        t.set((ridge + 1, 1, 4), "minecraft:brewing_stand", has_bottle_0=True, has_bottle_1=False, has_bottle_2=True)
+        t.set((ridge + 1, 1, 4), "minecraft:brewing_stand", has_bottle_0=False, has_bottle_1=False, has_bottle_2=False)
         t.set((ridge + 1, 1, 3), "minecraft:barrel", facing="up", open=False)
         t.set((0, 1, 2), "minecraft:decorated_pot", cracked=False, facing="south", waterlogged=False)
     else:
@@ -95,9 +95,10 @@ def shelf(books):
 def large_tent():
     t = Template()
     ridge = ridge_tent(t, 3, 7, CANVAS)
-    for x, colour in ((ridge - 2, "brown"), (ridge + 2, "light_gray")):
-        for z in (3, 4):
-            t.set((x, 1, z), f"minecraft:{colour}_carpet")
+    for z in (3, 4):
+        t.set((ridge - 2, 1, z), "minecraft:brown_carpet")
+    t.set((ridge + 2, 1, 3), "minecraft:light_gray_bed", facing="south", part="foot", occupied=False)
+    t.set((ridge + 2, 1, 4), "minecraft:light_gray_bed", facing="south", part="head", occupied=False)
     t.set((ridge - 1, 1, 6), "minecraft:barrel", facing="up", open=False)
     t.set((ridge + 1, 1, 6), "minecraft:barrel", facing="up", open=False)
     t.set((ridge, 1, 5), "minecraft:white_carpet")

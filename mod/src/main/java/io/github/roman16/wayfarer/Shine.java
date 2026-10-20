@@ -66,7 +66,7 @@ public final class Shine {
         return Math.min(1, (float) Journey.claimed(server).size() / Halls.count(server.overworld()));
     }
 
-    private static int act(MinecraftServer server) {
+    public static int act(MinecraftServer server) {
         Progress progress = Progress.of(server);
         return Story.get().quests().stream().filter(quest -> progress.step(quest.id()) >= 0)
                 .mapToInt(quest -> quest.act().chars().allMatch(Character::isDigit) ? Integer.parseInt(quest.act()) : 1).max().orElse(1);

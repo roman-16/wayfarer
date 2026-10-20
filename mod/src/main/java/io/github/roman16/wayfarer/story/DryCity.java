@@ -87,9 +87,9 @@ final class DryCity {
         scratch.putBoolean(SEEN, true);
         Progress.of(server).setDirty();
         Talk.say(active.quest().id(), centre, step.lines("seen"), Engine.fill(Progress.of(server)));
-        Talk.then(() -> {
+        Talk.then(active.quest().id(), () -> {
             Vec3 out = Vec3.atBottomCenterOf(Places.place(server, step.text("toward")).orElse(stone));
-            figures.forEach(figure -> People.walk(server, figure, out));
+            figures.forEach(figure -> People.walk(server, figure, out, People.WALKING));
             scratch.putLong(UNTIL, level.getGameTime() + (long) step.number("fades") * TICKS_PER_SECOND);
             Progress.of(server).setDirty();
         });

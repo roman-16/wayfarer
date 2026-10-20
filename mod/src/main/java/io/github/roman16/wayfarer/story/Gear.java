@@ -68,7 +68,7 @@ public final class Gear {
         }
     }
 
-    private record Line(String id, String by, String text, List<String> when) {}
+    private record Line(String id, String by, String text, List<String> when, Optional<Item> carries, Optional<String> before, Optional<String> after) {}
 
     private record Data(JsonObject opens, List<Row> rows, List<Line> lines) {}
 
@@ -188,8 +188,9 @@ public final class Gear {
         boolean changed = mark(server, progress);
         long day = Math.floorDiv(Engine.overworld(server).getDayTime(), Clock.DAY);
         for (Line line : DATA.get().lines()) {
-            if (!progress.gearMet.containsKey(line.id()) && line.when().stream().flatMap(key -> located(key).stream())
-                    .anyMatch(found -> anyone(server, found.row(), found.thing()))) {
+            if (!progress.gearMet.containsKey(line.id()) && line.before().filter(progress::done).isEmpty() && line.after().filter(quest -> !progress.done(quest)).isEmpty()
+                    && (line.when().stream().flatMap(key -> located(key).stream()).anyMatch(found -> anyone(server, found.row(), found.thing()))
+                    || line.carries().filter(item -> server.getPlayerList().getPlayers().stream().anyMatch(player -> player.getInventory().contains(new ItemStack(item)))).isPresent())) {
                 progress.gearMet.put(line.id(), day);
                 changed = true;
             }
@@ -270,18 +271,13 @@ public final class Gear {
 
     private static boolean appears(MinecraftServer server, Progress progress, JsonObject appears) {
         List<ServerPlayer> players = server.getPlayerList().getPlayers();
-        if (appears.has("claimed")) {
-            return !progress.claims.getOrDefault(appears.get("claimed").getAsString(), Set.of()).isEmpty();
-        }
-        if (appears.has("worn")) {
-            return players.stream().anyMatch(player -> player.getInventory().armor.stream().anyMatch(stack -> !stack.isEmpty()));
-        }
-        if (appears.has("feels")) {
-            String feeling = appears.get("feels").getAsString();
-            return ModList.get().isLoaded("toughasnails") && players.stream().anyMatch(player -> Heat.feels(player).filter(feeling::equals).isPresent());
-        }
-        return appears.getAsJsonArray("has").asList().stream().flatMap(key -> located(key.getAsString()).stream())
+        boolean claimed = appears.has("claimed") && !progress.claims.getOrDefault(appears.get("claimed").getAsString(), Set.of()).isEmpty();
+        boolean opened = appears.has("opened") && progress.step(appears.get("opened").getAsString()) >= 0;
+        boolean felt = appears.has("feels") && ModList.get().isLoaded("toughasnails")
+                && players.stream().anyMatch(player -> Heat.feels(player).filter(appears.get("feels").getAsString()::equals).isPresent());
+        boolean had = appears.has("has") && appears.getAsJsonArray("has").asList().stream().flatMap(key -> located(key.getAsString()).stream())
                 .anyMatch(found -> anyone(server, found.row(), found.thing()));
+        return claimed || opened || felt || had;
     }
 
     private static boolean opened(MinecraftServer server, Progress progress) {
@@ -382,7 +378,10 @@ public final class Gear {
         for (JsonElement element : json.getAsJsonArray("lines")) {
             JsonObject line = element.getAsJsonObject();
             lines.add(new Line(line.get("id").getAsString(), line.get("by").getAsString(), line.get("text").getAsString(),
-                    line.getAsJsonArray("when").asList().stream().map(JsonElement::getAsString).toList()));
+                    line.has("when") ? line.getAsJsonArray("when").asList().stream().map(JsonElement::getAsString).toList() : List.of(),
+                    line.has("carries") ? Optional.of(BuiltInRegistries.ITEM.get(ResourceLocation.parse(line.get("carries").getAsString()))) : Optional.empty(),
+                    line.has("before") ? Optional.of(line.get("before").getAsString()) : Optional.empty(),
+                    line.has("after") ? Optional.of(line.get("after").getAsString()) : Optional.empty()));
         }
         return new Data(json.getAsJsonObject("opens"), List.copyOf(rows), List.copyOf(lines));
     }

@@ -70,6 +70,7 @@ snow_reach_blocks = 4096
 
 [escort]
 follow_blocks = 4
+jog_blocks = 8
 leash_blocks = 24
 
 [far_sight]
@@ -112,6 +113,8 @@ drift_every_blocks = 32
 hall_blocks = 512
 house_blocks = 24
 lake_blocks = 2048
+lake_fan_degrees = 32
+lake_spread_blocks = 512
 leave_blocks = 64
 mine_blocks = 256
 mine_floor = -16
@@ -185,9 +188,12 @@ ahead_blocks = 2048
 bog_blocks = 3072
 bog_radius_blocks = 64
 cellar_blocks = 2
+drowned_blocks = 128
 hall_blocks = 8
+mark_every_blocks = 16
 near_blocks = 512
 notice_blocks = 16
+pocket_every_blocks = 32
 search_blocks = 4096
 shunned_seconds = 60
 side_blocks = 1024
@@ -197,6 +203,10 @@ arrival_blocks = 4
 fade_ticks = 16
 fire_blocks = 4
 together_blocks = 32
+
+[nights]
+shine_per_creature = 16
+wave = 4
 
 [ore]
 coal = 0.5
@@ -243,8 +253,11 @@ ram_seconds = 2
 shine_per_step = 4
 
 [sense]
+flare_degrees = 16
+glow_degrees = 64
 glow_seconds = 4
 reach_blocks = 24
+sea_blocks = 256
 
 [shine]
 act = [0, 16, 32]
@@ -259,6 +272,12 @@ spawn_shine = 16
 
 [sight]
 reach_blocks = 32
+
+[sky]
+cloud_height = 384
+moon_full = 1.00
+moon_new = 0.01
+moon_partial = 0.10
 
 [sleep]
 players_percentage = 66
@@ -318,10 +337,14 @@ visit_blocks = 24
 
 [talk]
 again_seconds = 16
+arrive_most_seconds = 32
+arrive_seconds = 4
 characters_per_second = 8
 hunted_blocks = 32
+lapse_seconds = 32
 least_seconds = 4
 pause_seconds = 16
+present_blocks = 16
 reach_blocks = 32
 safe_seconds = 4
 screen_seconds = 16
@@ -466,6 +489,11 @@ rolls = [1, 1]
 
 [tool_gate]
 slowdown = 8
+
+[trail]
+position_seconds = 16
+stall_blocks = 8
+stall_seconds = 120
 
 [voice]
 quietest_decibels = -48

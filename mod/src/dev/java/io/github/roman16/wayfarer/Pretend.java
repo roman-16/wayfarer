@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer;
 import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import io.github.roman16.wayfarer.story.Arrivals;
 import io.github.roman16.wayfarer.story.Talk;
 import io.netty.channel.embedded.EmbeddedChannel;
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public final class Pretend {
         }
         for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
             if (player.connection.getConnection() instanceof Silent) {
+                Arrivals.here(player);
                 player.serverLevel().getChunkSource().move(player);
                 if (player.isChangingDimension()) {
                     player.hasChangedDimension();
@@ -151,7 +153,7 @@ public final class Pretend {
         if (player == null) {
             return 0;
         }
-        if (Talk.open().filter(offer -> answer <= offer.choices().size()).isEmpty() || !Talk.answering(player)) {
+        if (Talk.open(player).filter(offer -> answer <= offer.choices().size()).isEmpty()) {
             source.sendFailure(Component.literal("pretend failed: " + name + " has no answer " + answer + " to give"));
             return 0;
         }

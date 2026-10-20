@@ -53,8 +53,7 @@ public final class Frames {
         minuteFrom = now;
         Summary frames = minute.restart();
         Minecraft minecraft = Minecraft.getInstance();
-        if (frames.frames() == 0 || minecraft.getConnection() == null || minecraft.isLocalServer()
-                || !minecraft.getConnection().hasChannel(Record.Frames.TYPE)) {
+        if (frames.frames() == 0 || minecraft.getConnection() == null || !minecraft.getConnection().hasChannel(Record.Frames.TYPE)) {
             return;
         }
         Runtime runtime = Runtime.getRuntime();

@@ -100,6 +100,7 @@ LANG = ROOT / "mod/src/main/resources/assets/wayfarer/lang/en_us.json"
 SPARSE_STRUCTURES = ROOT / "pack/config/sparsestructures.json5"
 CAMPFIRE_SPAWNS = ROOT / "pack/config/nohostilesaroundcampfire.json5"
 CHUNK = 16
+CLOUD_LAYERS_APART = 64
 CONTAINER_LOOT = "container_loot"
 CUT_LOOT = "cut"
 ACT_NAMES = {2: "act_two", 3: "act_three"}
@@ -631,6 +632,14 @@ def shaders():
     for stale in SHADERPACKS.glob("*.txt"):
         stale.unlink()
     options = tomllib.loads((ROOT / "generator/shader.toml").read_text())
+    sky = tomllib.loads((ROOT / "balance.toml").read_text())["sky"]
+    options |= {
+        "CLOUD_ALT1": str(sky["cloud_height"]),
+        "CLOUD_ALT2": str(sky["cloud_height"] + CLOUD_LAYERS_APART),
+        "MOON_PHASE_DARK": f"{sky['moon_new']:.2f}",
+        "MOON_PHASE_FULL": f"{sky['moon_full']:.2f}",
+        "MOON_PHASE_PARTIAL": f"{sky['moon_partial']:.2f}",
+    }
     (SHADERPACKS / f"{pack}.txt").write_text("".join(f"{key}={value}\n" for key, value in sorted(options.items())))
 
 
@@ -873,6 +882,7 @@ def main():
     spread(balance)
     campfire_spawns(balance)
     removals(tomllib.loads((ROOT / "generator/removals.toml").read_text()))
+    write_json(MAIN / "wayfarer/foes.json", tomllib.loads((ROOT / "generator/foes.toml").read_text())["foes"])
     write_json(DEV / "wayfarer/noise.json", tomllib.loads((ROOT / "generator/noise.toml").read_text()))
     labelled_faces(tomllib.loads((ROOT / "generator/faces.toml").read_text()))
     owners(tomllib.loads((ROOT / "generator/owners.toml").read_text()), balance)

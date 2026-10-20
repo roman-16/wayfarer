@@ -26,10 +26,14 @@ public final class Banners {
     }
 
     static void show(Component label, Component title) {
-        PacketDistributor.sendToAllPlayers(new Payload(label, title));
+        Talk.whenQuiet(() -> PacketDistributor.sendToAllPlayers(new Payload(label, title)));
     }
 
     static void show(ServerPlayer player, Component label, Component title) {
-        PacketDistributor.sendToPlayer(player, new Payload(label, title));
+        Talk.whenQuiet(() -> {
+            if (!player.hasDisconnected()) {
+                PacketDistributor.sendToPlayer(player, new Payload(label, title));
+            }
+        });
     }
 }

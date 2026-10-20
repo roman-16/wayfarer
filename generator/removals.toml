@@ -137,7 +137,6 @@ loot_tables = [
   "endrem:minecraft/chests/nether_bridge",
   "endrem:minecraft/entities/elder_guardian",
   "endrem:minecraft/entities/wither",
-  "parcool:grant_parcool_guide",
 ]
 
 recipes = [
@@ -185,7 +184,6 @@ recipes = [
   "minecraft:netherite_sword_smithing",
   "minecraft:repair_item",
   "minecraft:shield",
-  "parcool:parcool_guide",
   "silentgear:quick_repair",
   "silentgear:sapling/netherwood",
   "silentgear:woodcutting/netherwood_door",

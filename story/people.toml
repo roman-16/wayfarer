@@ -67,7 +67,7 @@ mornings = [
   "If you see banners, don't wave. Come back.",
 ]
 name = "Cadoc"
-remarks = ["Don't ask about the scar.", "I sleep with my boots on. Habit."]
+remarks = ["Don't ask about the scar.", "I sleep with my boots on, ready to run. Habit."]
 unnamed = "A wounded man"
 
 [captive_1]
@@ -155,9 +155,9 @@ color = "gray"
 name = "A Gazebound"
 road = true
 shouts = [
-  "There! The light! Take it!",
-  "To me! It's here, the fire that walks!",
-  "Don't let it run. He wants it whole.",
+  "There! The ember! Take it!",
+  "To me! The one with the ember is here!",
+  "Don't let them get away! The heir wants that ember whole!",
   "Grey, to me! Cut them off!",
 ]
 unnamed = "A man in grey"
@@ -213,6 +213,7 @@ unnamed = "A girl in grey"
 
 [maud]
 color = "aqua"
+lends = "Mind the pots."
 mornings = [
   "We're packing up. Go on ahead; we'll follow your marks.",
   "Don't wait for us. Look for our smoke tonight.",
@@ -227,7 +228,7 @@ remarks = [
 unnamed = "A grey-haired woman"
 welcomes = [
   "There you are. Sit, and tell me what's ahead.",
-  "Good. Everyone's in.",
+  "Good. You're all back.",
   "You're late. Sit. What did you see?",
   "Fire's lit and nobody's missing. Good.",
 ]
@@ -357,12 +358,12 @@ road = true
 [villager.acts]
 1 = [
   "Strangers bring the burning. One trade, then go.",
-  "Keep that light in your pocket while you're in our street.",
-  "We were a bigger town once. Then we grew.",
+  "Keep that ember in your pocket while you're in our street.",
+  "We were a bigger town once. Then the burning came.",
   "Trade's done. Don't linger near the well; people talk.",
 ]
 2 = [
-  "Men in grey came asking after a fire that walks. We told them nothing.",
+  "Men in grey came asking about someone with a glowing coal. We told them nothing.",
   "One trade. The grey coats count our visitors.",
   "They say someone walks with a fire in their hand again. ...Don't tell me if it's you.",
   "You've come a long way. Go on further; it's safer for us both.",
@@ -379,7 +380,7 @@ finale = [
 ]
 prologue = [
   "Strangers bring the burning. One trade, then go.",
-  "Keep that light in your pocket while you're in our street.",
+  "Keep that ember in your pocket while you're in our street.",
 ]
 
 [warden]

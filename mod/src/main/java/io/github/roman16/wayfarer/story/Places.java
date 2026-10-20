@@ -4,7 +4,12 @@ import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.ShaftPiece;
 import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Wayfarer;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
@@ -29,6 +34,46 @@ public final class Places {
     private static final String FIRE_SEAT = "fire_";
 
     private Places() {}
+
+    private record Site(BiConsumer<MinecraftServer, String> build, @Nullable BiPredicate<MinecraftServer, String> ready) {}
+
+    private static final Map<String, Site> SITES = sites();
+
+    private static Map<String, Site> sites() {
+        Map<String, Site> sites = new HashMap<>();
+        site(sites, (server, name) -> Tollbridge.begin(server), null, Tollbridge.NAME);
+        site(sites, (server, name) -> Diggers.begin(server), null, Diggers.NAME, Diggers.HALL);
+        site(sites, (server, name) -> FirstCamp.find(server), (server, name) -> FirstCamp.built(server), FirstCamp.NAME);
+        site(sites, (server, name) -> FirstVillage.find(server), null, FirstVillage.NAME, FirstVillage.STONE);
+        site(sites, (server, name) -> Ford.find(server), null, Ford.NAME);
+        site(sites, (server, name) -> Frost.find(server), null, Frost.NAME, Frost.TRACKS, Frost.HALL, Frost.STONE);
+        site(sites, (server, name) -> Frost.lake(server), null, Frost.LAKE, Frost.LAKE_STONE);
+        site(sites, (server, name) -> Marsh.find(server), null, Marsh.NAME, Marsh.HALL, Marsh.CELLAR);
+        site(sites, (server, name) -> Mine.find(server), null, Mine.NAME, Mine.DEEP, Mine.CART);
+        site(sites, (server, name) -> ReadingHouse.find(server), null, ReadingHouse.NAME);
+        site(sites, (server, name) -> Shipyard.find(server), Shipyard::ready, Shipyard.NAME, Shipyard.WRECK);
+        site(sites, (server, name) -> Shipyard.launch(server), Shipyard::ready, Shipyard.LAUNCH);
+        site(sites, (server, name) -> Voyage.find(server), null, Voyage.FAR_SHORE);
+        site(sites, (server, name) -> TideFolk.find(server), TideFolk::ready, TideFolk.NAME, TideFolk.HALL);
+        site(sites, (server, name) -> DryCity.find(server), DryCity::ready, DryCity.NAME, DryCity.STONE);
+        site(sites, (server, name) -> WendCamp.find(server), (server, name) -> WendCamp.ready(server), WendCamp.NAME, WendCamp.CHAIR);
+        site(sites, (server, name) -> SandSingers.find(server), SandSingers::ready, SandSingers.NAME, SandSingers.LAIR);
+        site(sites, (server, name) -> Locks.find(server), Locks::ready, Locks.NAME, Locks.STONE);
+        site(sites, Errands::find, Errands::ready, Errands.MISSING, Errands.SETTLED, Errands.BURNING, Errands.OUTPOST, Errands.RITE, Errands.BRAM,
+                Errands.CAIRNS, Errands.SEAL, Errands.DEN, Errands.BUNDLE, Errands.LAST_BUNDLE, Errands.NEVER_SLEEPS, Errands.NEST, Errands.FIRST_GATE);
+        site(sites, Act3::find, Act3::ready, Act3.HOLLOW, Act3.AIRFIELD, Act3.KEEPERS);
+        site(sites, Act3Halls::find, Act3Halls::ready, Act3Halls.WARD, Act3Halls.WARD_STONE, Act3Halls.WARD_CHAMPION, Act3Halls.WARD_LINES, Act3Halls.MANSION_HALL,
+                Act3Halls.MANSION, Act3Halls.MANSION_STAND, Act3Halls.SCRIBES, Act3Halls.SCRIBES_STONE, Act3Halls.GRAVEYARD, Act3Halls.GRAVEYARD_STONE);
+        site(sites, (server, name) -> Caravan.headIn(server), (server, name) -> Caravan.standing(server).isPresent() || Caravan.heading(server), Caravan.NAME);
+        return Map.copyOf(sites);
+    }
+
+    private static void site(Map<String, Site> sites, BiConsumer<MinecraftServer, String> build, @Nullable BiPredicate<MinecraftServer, String> ready,
+            String... names) {
+        for (String name : names) {
+            sites.put(name, new Site(build, ready));
+        }
+    }
 
     record Seat(Vec3 at, float yaw) {}
 
@@ -79,32 +124,15 @@ public final class Places {
         if (ready(server, name)) {
             return;
         }
-        switch (name) {
-            case Tollbridge.NAME -> Tollbridge.begin(server);
-            case Diggers.NAME, Diggers.HALL -> Diggers.begin(server);
-            case FirstCamp.NAME -> FirstCamp.find(server);
-            case FirstVillage.NAME, FirstVillage.STONE -> FirstVillage.find(server);
-            case Ford.NAME -> Ford.find(server);
-            case Frost.NAME, Frost.TRACKS, Frost.HALL, Frost.STONE -> Frost.find(server);
-            case Frost.LAKE, Frost.LAKE_STONE -> Frost.lake(server);
-            case Marsh.NAME, Marsh.HALL, Marsh.CELLAR -> Marsh.find(server);
-            case Mine.NAME, Mine.DEEP, Mine.CART -> Mine.find(server);
-            case ReadingHouse.NAME -> ReadingHouse.find(server);
-            case Shipyard.NAME, Shipyard.WRECK -> Shipyard.find(server);
-            case Shipyard.LAUNCH -> Shipyard.launch(server);
-            case Voyage.FAR_SHORE -> Voyage.find(server);
-            case TideFolk.NAME, TideFolk.HALL -> TideFolk.find(server);
-            case DryCity.NAME, DryCity.STONE -> DryCity.find(server);
-            case WendCamp.NAME, WendCamp.CHAIR -> WendCamp.find(server);
-            case SandSingers.NAME, SandSingers.LAIR -> SandSingers.find(server);
-            case Locks.NAME, Locks.STONE -> Locks.find(server);
-            case Errands.MISSING, Errands.SETTLED, Errands.BURNING, Errands.OUTPOST, Errands.RITE, Errands.BRAM, Errands.CAIRNS, Errands.SEAL, Errands.DEN,
-                    Errands.BUNDLE, Errands.LAST_BUNDLE, Errands.NEVER_SLEEPS, Errands.NEST, Errands.FIRST_GATE -> Errands.find(server, name);
-            case Act3.HOLLOW, Act3.AIRFIELD, Act3.KEEPERS -> Act3.find(server, name);
-            case Act3Halls.WARD, Act3Halls.WARD_STONE, Act3Halls.WARD_CHAMPION, Act3Halls.WARD_LINES, Act3Halls.MANSION_HALL, Act3Halls.MANSION, Act3Halls.MANSION_STAND, Act3Halls.SCRIBES,
-                    Act3Halls.SCRIBES_STONE, Act3Halls.GRAVEYARD, Act3Halls.GRAVEYARD_STONE -> Act3Halls.find(server, name);
-            default -> throw new IllegalArgumentException("the story has no way to build " + name);
+        Site site = SITES.get(name);
+        if (site == null) {
+            throw new IllegalArgumentException("the story has no way to build " + name);
         }
+        site.build().accept(server, name);
+    }
+
+    static boolean buildable(String name) {
+        return SITES.containsKey(name);
     }
 
     static void unbuild(MinecraftServer server, String name) {
@@ -162,21 +190,8 @@ public final class Places {
     }
 
     static boolean ready(MinecraftServer server, String name) {
-        return switch (name) {
-            case FirstCamp.NAME -> FirstCamp.built(server);
-            case Shipyard.NAME, Shipyard.WRECK, Shipyard.LAUNCH -> Shipyard.ready(server, name);
-            case TideFolk.NAME, TideFolk.HALL -> TideFolk.ready(server, name);
-            case DryCity.NAME, DryCity.STONE -> DryCity.ready(server, name);
-            case WendCamp.NAME, WendCamp.CHAIR -> WendCamp.ready(server);
-            case SandSingers.NAME, SandSingers.LAIR -> SandSingers.ready(server, name);
-            case Locks.NAME, Locks.STONE -> Locks.ready(server, name);
-            case Errands.MISSING, Errands.SETTLED, Errands.BURNING, Errands.OUTPOST, Errands.RITE, Errands.BRAM, Errands.CAIRNS, Errands.SEAL, Errands.DEN,
-                    Errands.BUNDLE, Errands.LAST_BUNDLE, Errands.NEVER_SLEEPS, Errands.NEST, Errands.FIRST_GATE -> Errands.ready(server, name);
-            case Act3.HOLLOW, Act3.AIRFIELD, Act3.KEEPERS -> Act3.ready(server, name);
-            case Act3Halls.WARD, Act3Halls.WARD_STONE, Act3Halls.WARD_CHAMPION, Act3Halls.WARD_LINES, Act3Halls.MANSION_HALL, Act3Halls.MANSION, Act3Halls.MANSION_STAND, Act3Halls.SCRIBES,
-                    Act3Halls.SCRIBES_STONE, Act3Halls.GRAVEYARD, Act3Halls.GRAVEYARD_STONE -> Act3Halls.ready(server, name);
-            default -> Progress.of(server).place(name).isPresent();
-        };
+        Site site = SITES.get(name);
+        return site != null && site.ready() != null ? site.ready().test(server, name) : Progress.of(server).place(name).isPresent();
     }
 
     static int arrival(String name) {

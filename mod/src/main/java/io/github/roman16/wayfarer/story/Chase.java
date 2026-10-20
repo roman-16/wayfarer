@@ -124,6 +124,6 @@ final class Chase {
         progress.choices.put(key, CAUGHT);
         progress.setDirty();
         Talk.say(active.quest().id(), where, active.step().lines(CAUGHT), Engine.fill(progress));
-        Talk.then(() -> Engine.complete(server, active));
+        Talk.then(active.quest().id(), () -> Engine.complete(server, active));
     }
 }

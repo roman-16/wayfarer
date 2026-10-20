@@ -314,6 +314,6 @@ final class Voyage {
         Balance.Clock clock = Balance.get().clock();
         Clock.pass(level, Steps.DAWN, clock.dawnSeconds(), clock.road());
         LOGGER.info("the night on the water ends: {}", outcome);
-        Talk.then(() -> Engine.complete(server, active));
+        Talk.then(active.quest().id(), () -> Engine.complete(server, active));
     }
 }

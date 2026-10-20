@@ -109,6 +109,8 @@ public final class Tollbridge {
     private static final int HIGH = 4;
     private static final int TREE_REACH = 32;
     private static final int WELL = 6;
+    private static final float LYING_HEIGHT = 0.5f;
+    private static final float LYING_REACH = 4;
     @Nullable
     private static Build build;
 
@@ -1059,7 +1061,7 @@ public final class Tollbridge {
     static void survivors(MinecraftServer server) {
         ServerLevel level = Engine.overworld(server);
         tower().getAsJsonObject("seats").entrySet().forEach(entry -> Places.seat(server, entry.getKey())
-                .ifPresent(seat -> People.person(level, entry.getKey(), seat.at(), seat.yaw(), entry.getValue().getAsJsonArray().get(3).getAsString())));
+                .ifPresent(seat -> People.place(level, entry.getKey(), seat.at(), seat.yaw(), entry.getValue().getAsJsonArray().get(3).getAsString())));
     }
 
     private static void unlaid(Progress progress, String clue) {
@@ -1137,6 +1139,7 @@ public final class Tollbridge {
         Entity body = People.spawn(level, skin, Vec3.atBottomCenterOf(at), town.random.nextFloat() * 360, pose, DEAD);
         if (clue != null) {
             body.addTag(Steps.CLUE + clue);
+            Clues.box(level, Vec3.atBottomCenterOf(at), clue, LYING_REACH, LYING_HEIGHT);
         }
         laid.add(at);
     }

@@ -179,6 +179,8 @@ PLACES = {
     "ford",
     "ford_far",
     "frost",
+    "frost_door",
+    "frost_hearth",
     "frost_hall",
     "frost_inside",
     "frost_lake",
@@ -258,6 +260,7 @@ KNOWN = {"feeling"}
 TASKS = {
     "bed",
     "bury",
+    "campfire",
     "ember",
     "enter",
     "fire",
@@ -361,9 +364,16 @@ def story():
             named += [step[key] for key in ("whom", "with") if key in step]
             named += [line["vanishes"] for line in said if "vanishes" in line]
             named += step.get("faces", []) + step.get("figures", [])
+            named += [
+                person
+                for line in said
+                for person in line.get("faces", [])
+                + line.get("leaves", [])
+                + list(line.get("poses", {}))
+                + list(line.get("moves", {}))
+            ]
             named += (
                 list(step.get("people", {}))
-                + list(step.get("poses", {}))
                 + list(step.get("moves", {}))
                 + list(step.get("remarks", {}))
                 + step.get("keep", [])
@@ -402,6 +412,9 @@ def story():
                     yield f"{where} teaches the word {word}; add wayfarer.word.{word} to the language file"
             places = [step[key] for key in ("at", "builds", "from", "place", "toward") if key in step]
             places += [move["place"] for move in step.get("moves", {}).values()]
+            places += [move["place"] for line in said for move in line.get("moves", {}).values()]
+            if "poses" in step:
+                yield f"{where} poses people for the whole step; a pose goes on the line that tells it"
             for place in places:
                 if place not in PLACES:
                     yield f"{where} names the place {place}; the story builds {', '.join(sorted(PLACES))}"
@@ -430,9 +443,14 @@ def gear():
     for line in spec["lines"]:
         if line["by"] not in people:
             yield f"story/gear.toml: the line {line['id']} is said by {line['by']}, who is not in story/people.toml"
-        for key in line["when"]:
+        if not line.get("when") and "carries" not in line:
+            yield f"story/gear.toml: the line {line['id']} waits on nothing; give it when or carries"
+        for key in line.get("when", []):
             if key not in things:
                 yield f"story/gear.toml: the line {line['id']} waits on {key}, which no row has"
+        for bound in ("before", "after"):
+            if bound in line and line[bound] not in {quest["id"] for quest in quests}:
+                yield f"story/gear.toml: the line {line['id']} is said {bound} {line[bound]}, which is no quest"
     for row in spec["rows"]:
         if row["who"] not in people:
             yield f"story/gear.toml: {row['id']} is known by {row['who']}, who is not in story/people.toml"
@@ -442,6 +460,9 @@ def gear():
         for key in row["appears"].get("has", []):
             if key not in things:
                 yield f"story/gear.toml: {row['id']} appears with {key}, which no row has"
+        opened = row["appears"].get("opened")
+        if opened is not None and opened not in {quest["id"] for quest in quests}:
+            yield f"story/gear.toml: {row['id']} appears when {opened} opens, which is no quest"
         for thing in row["things"]:
             named = thing.get("named_by")
             if named is not None and named != "had" and named not in lines:
@@ -530,6 +551,25 @@ def enchantments():
         yield f"generator/enchantments.toml lists {enchantment}, which no mod in the pack has"
 
 
+def foes():
+    listed = tomllib.loads((ROOT / "generator/foes.toml").read_text())["foes"]
+    named = set()
+    for meta in sorted(PACK.glob("mods/*.pw.toml")):
+        with packed(meta) as archive:
+            for name in archive.namelist():
+                if name.startswith("assets/") and name.endswith("lang/en_us.json"):
+                    named.update(json.loads(archive.read(name).decode("utf-8-sig"), strict=False))
+    vanilla = sorted(ROOT.glob("build/sources/neoforge-*/assets/minecraft/lang/en_us.json"))
+    if vanilla:
+        named.update(json.loads(vanilla[-1].read_text()))
+    for creature, act in sorted(listed.items()):
+        namespace, path = creature.split(":")
+        if (namespace != "minecraft" or vanilla) and f"entity.{namespace}.{path}" not in named:
+            yield f"generator/foes.toml lists {creature}, which no mod in the pack has"
+        if act not in (2, 3):
+            yield f"generator/foes.toml gives {creature} act {act}, but foes wait only for Act 2 or 3"
+
+
 def main():
     findings = [
         *sides(),
@@ -543,6 +583,7 @@ def main():
         *interface(),
         *gallery.problems(),
         *enchantments(),
+        *foes(),
     ]
     for finding in findings:
         print(finding)

@@ -6,9 +6,15 @@ import io.github.roman16.wayfarer.story.Deeds;
 import io.github.roman16.wayfarer.story.Engine;
 import io.github.roman16.wayfarer.story.Hold;
 import io.github.roman16.wayfarer.story.Talk;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
@@ -21,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
@@ -50,6 +57,8 @@ public final class Nights {
         long red = -1;
         long rolled = -1;
         long hunted = -1;
+        long freed = -1;
+        final Set<UUID> free = new HashSet<>();
 
         static State load(CompoundTag tag, HolderLookup.Provider registries) {
             State state = new State();
@@ -59,6 +68,8 @@ public final class Nights {
             state.red = tag.contains("red") ? tag.getLong("red") : -1;
             state.rolled = tag.contains("rolled") ? tag.getLong("rolled") : -1;
             state.hunted = tag.contains("hunted") ? tag.getLong("hunted") : -1;
+            state.freed = tag.contains("freed") ? tag.getLong("freed") : -1;
+            tag.getList("free", Tag.TAG_INT_ARRAY).forEach(id -> state.free.add(NbtUtils.loadUUID(id)));
             return state;
         }
 
@@ -70,6 +81,10 @@ public final class Nights {
             tag.putLong("red", red);
             tag.putLong("rolled", rolled);
             tag.putLong("hunted", hunted);
+            tag.putLong("freed", freed);
+            ListTag ids = new ListTag();
+            free.forEach(id -> ids.add(NbtUtils.createUUID(id)));
+            tag.put("free", ids);
             return tag;
         }
     }
@@ -183,13 +198,48 @@ public final class Nights {
             state.setDirty();
             if (ModList.get().isLoaded(HORDES)) {
                 for (ServerPlayer player : level.players()) {
-                    if (sleepless(player)) {
+                    if (sleepless(player) && !letGo(player)) {
                         Deeds.hardNight(player);
                         command(server, "hordes start " + player.getGameProfile().getName() + " " + (TICKS_PER_DAY - time));
                         Music.play(player, HORDE_MUSIC, true);
                     }
                 }
             }
+        }
+    }
+
+    private static boolean letGo(ServerPlayer player) {
+        ServerLevel level = player.server.overworld();
+        State state = state(level);
+        return state.freed == level.getDayTime() / TICKS_PER_DAY && state.free.contains(player.getUUID());
+    }
+
+    @SubscribeEvent
+    public static void onDeath(LivingDeathEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || !night(player.server.overworld()) || !sleepless(player) || letGo(player)) {
+            return;
+        }
+        ServerLevel level = player.server.overworld();
+        State state = state(level);
+        long day = level.getDayTime() / TICKS_PER_DAY;
+        if (state.freed != day) {
+            state.freed = day;
+            state.free.clear();
+        }
+        state.free.add(player.getUUID());
+        state.setDirty();
+        if (ModList.get().isLoaded(HORDES)) {
+            Hordes.stop(player);
+        }
+        if (HORDE_MUSIC.equals(Music.looping(player))) {
+            Music.stop(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player && night(player.server.overworld()) && letGo(player)) {
+            Talk.tell(player, Component.translatable("wayfarer.night.let_go").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
         }
     }
 

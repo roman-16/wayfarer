@@ -71,6 +71,7 @@ public final class Graves {
                 && player.getUUID().equals(grave.getDeath().getPlayerUUID()) && GraveUtils.canBreakGrave(player.level(), player, event.getPos())
                 && player.gameMode.destroyBlock(event.getPos())) {
             Notices.written(player, new ItemStack(BuiltInRegistries.ITEM.get(GRAVESTONE)), Component.translatable("wayfarer.notice.things"));
+            Record.event(player.server, "grave", player);
         }
     }
 
