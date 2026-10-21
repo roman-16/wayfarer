@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer;
 
 import baritone.api.BaritoneAPI;
 import baritone.api.IBaritone;
+import baritone.api.pathing.goals.GoalBlock;
 import baritone.api.pathing.goals.GoalNear;
 import baritone.api.pathing.goals.GoalRunAway;
 import baritone.api.pathing.goals.GoalXZ;
@@ -18,6 +19,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
@@ -33,6 +35,8 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.entity.CampfireBlockEntity;
@@ -63,8 +67,11 @@ final class Body {
     private static final int REPATH_TICKS = 10;
     private static final int FLEE_TICKS = 200;
     private static final int RETURN_TICKS = 400;
+    private static final int BACK_OFF_TICKS = 256;
     private static final int BREATHE_TICKS = 200;
     private static final int STEP_OUT_TICKS = 60;
+    private static final int QUENCH_BLOCKS = 8;
+    private static final int QUENCH_TICKS = 160;
     private static final int EAT_TICKS = 100;
     private static final int FED_TICKS = 20;
     private static final int BREATHED_TICKS = 200;
@@ -80,7 +87,7 @@ final class Body {
     private static final float UPWARD = -60;
     private static final double TOUCH = 0.05;
 
-    private enum Doing { NOTHING, BREATHE, STEP_OUT, BACK_OFF, FIGHT, FLEE, RETURN, EAT }
+    private enum Doing { NOTHING, BREATHE, STEP_OUT, QUENCH, BACK_OFF, FIGHT, FLEE, RETURN, EAT }
 
     private record Refuge(String name, Vec3 at) {}
 
@@ -112,6 +119,7 @@ final class Body {
     private static long fedAt = Long.MIN_VALUE / 2;
     private static long breathedAt = Long.MIN_VALUE / 2;
     private static boolean tookOver;
+    private static boolean treading;
     private static boolean finished;
     @Nullable
     private static String handBack;
@@ -129,10 +137,12 @@ final class Body {
             if (doing != Doing.NOTHING) {
                 end(minecraft, null);
             }
+            tread(minecraft, false);
             noticed = 0;
             foes = List.of();
             return;
         }
+        tread(minecraft, doing == Doing.NOTHING && deep(player) && (standing || leg == Legs.Kind.LISTEN));
         foes = foes(minecraft, leg);
         noticed = foes.isEmpty() ? 0 : noticed + 1;
         Doing wanted = wanted(minecraft, leg);
@@ -148,6 +158,13 @@ final class Body {
         }
     }
 
+    private static void tread(Minecraft minecraft, boolean tread) {
+        if (tread || treading) {
+            minecraft.options.keyJump.setDown(tread);
+            treading = tread;
+        }
+    }
+
     static boolean acting() {
         return doing != Doing.NOTHING;
     }
@@ -160,6 +177,7 @@ final class Body {
             case FIGHT -> "fighting";
             case FLEE -> "running";
             case NOTHING -> "";
+            case QUENCH -> "putting the fire out";
             case RETURN -> "walking back";
             case STEP_OUT -> "stepping out of fire";
         };
@@ -212,6 +230,7 @@ final class Body {
         letGo.clear();
         said.clear();
         tookOver = false;
+        treading = false;
         finished = false;
         handBack = null;
     }
@@ -232,6 +251,9 @@ final class Body {
         if (burning(minecraft)) {
             return Doing.STEP_OUT;
         }
+        if (player.isOnFire() && !player.isInWater() && water(minecraft) != null) {
+            return Doing.QUENCH;
+        }
         if (creeper(minecraft) != null) {
             return Doing.BACK_OFF;
         }
@@ -242,7 +264,7 @@ final class Body {
         boolean reachable = !deep(nearest) || deep(player);
         boolean hurt = player.getHealth() <= player.getMaxHealth() * LOW_SHARE;
         boolean able = armed(player) && !hurt && foes.size() <= MOST_FOES && reachable;
-        boolean near = nearest.distanceTo(player) <= REACH_BLOCKS
+        boolean near = reach(player, nearest) <= REACH_BLOCKS || reach(player, nearest) <= REACH_BLOCKS * 2 && Senses.hurtLately(minecraft, REPATH_TICKS)
                 || (home == null || flat(nearest.position(), home) <= PURSUIT_BLOCKS)
                 && (!letGo.contains(nearest.getId()) || nearest.distanceTo(player) <= PURSUIT_BLOCKS);
         if (able && near || hurt && cornered(minecraft, nearest)) {
@@ -310,6 +332,7 @@ final class Body {
                     handBack = "under water and no way up, air " + air(player);
                 } else {
                     player.setXRot(UPWARD);
+                    minecraft.options.keyShift.setDown(false);
                     minecraft.options.keyJump.setDown(true);
                     minecraft.options.keyUp.setDown(true);
                 }
@@ -324,6 +347,18 @@ final class Body {
                     baritone().getCustomGoalProcess().setGoalAndPath(new GoalRunAway(STEP_OUT_BLOCKS, player.blockPosition()));
                 } else if (!baritone().getPathingBehavior().isPathing()) {
                     minecraft.options.keyDown.setDown(true);
+                }
+            }
+            case QUENCH -> {
+                if (!player.isOnFire() || player.isInWater()) {
+                    end(minecraft, "put the fire out in water, health " + health(player));
+                } else if (ticks > QUENCH_TICKS) {
+                    end(minecraft, "could not reach water to put the fire out, health " + health(player));
+                } else if (ticks % REPATH_TICKS == 1) {
+                    BlockPos water = water(minecraft);
+                    if (water != null) {
+                        baritone().getCustomGoalProcess().setGoalAndPath(new GoalBlock(water));
+                    }
                 }
             }
             case BACK_OFF -> backOff(minecraft);
@@ -345,16 +380,33 @@ final class Body {
             return;
         }
         double distance = creeper.distanceTo(player);
-        if (distance >= CREEPER_CLEAR_BLOCKS && ((Creeper) creeper).getSwelling(1) <= 0) {
-            end(minecraft, "backed off from a creeper, health " + health(player));
+        boolean hissing = hissing((Creeper) creeper);
+        Entity attacker = Senses.hurtLately(minecraft, REPATH_TICKS) ? Senses.lastAttacker() : null;
+        boolean pressed = attacker != null && attacker != creeper && attacker.isAlive() && reach(player, attacker) <= REACH_BLOCKS && distance > CREEPER_BLOCKS;
+        if (!hissing && distance >= CREEPER_CLEAR_BLOCKS || pressed || ticks > BACK_OFF_TICKS) {
+            end(minecraft, (pressed ? "stopped backing off from a creeper, " + Senses.describe(attacker) + " struck me"
+                    : hissing ? "backed off from a creeper that kept after me" : "backed off from a creeper") + ", health " + health(player));
             return;
         }
         if (shielded(player)) {
             look(player, creeper.getEyePosition());
             minecraft.options.keyUse.setDown(true);
-        } else if (ticks % REPATH_TICKS == 1) {
+        } else if (!knockBack(minecraft, creeper) && ticks % REPATH_TICKS == 1) {
             baritone().getCustomGoalProcess().setGoalAndPath(new GoalRunAway(CREEPER_CLEAR_BLOCKS, creeper.blockPosition()));
         }
+    }
+
+    private static boolean knockBack(Minecraft minecraft, Entity creeper) {
+        LocalPlayer player = minecraft.player;
+        if (!weapon(player.getMainHandItem()) || reach(player, creeper) > REACH_BLOCKS || player.getAttackStrengthScale(HALF) < READY) {
+            return false;
+        }
+        look(player, creeper.getEyePosition());
+        if (!aimed(minecraft, creeper)) {
+            return false;
+        }
+        KeyMapping.click(minecraft.options.keyAttack.getKey());
+        return true;
     }
 
     private static void fight(Minecraft minecraft) {
@@ -369,7 +421,7 @@ final class Body {
             return;
         }
         double out = flat(player.position(), home);
-        if (out >= PURSUIT_BLOCKS && foe.distanceTo(player) > REACH_BLOCKS) {
+        if (out >= PURSUIT_BLOCKS && reach(player, foe) > REACH_BLOCKS) {
             if (letGo.add(foe.getId())) {
                 said.add("let " + Senses.describe(foe) + " go " + Senses.side(player, foe.position()) + ", " + Math.round(out)
                         + " blocks from where I stood; health " + fromTo(player));
@@ -403,7 +455,7 @@ final class Body {
     static boolean strike(Minecraft minecraft, Entity foe, long tick, boolean stand) {
         LocalPlayer player = minecraft.player;
         look(player, foe.getEyePosition());
-        double distance = foe.distanceTo(player);
+        double distance = reach(player, foe);
         IBaritone baritone = baritone();
         boolean shield = shielded(player);
         if (distance > REACH_BLOCKS) {
@@ -516,8 +568,17 @@ final class Body {
         if (!armed(player) || foe.distanceTo(player) > PURSUIT_BLOCKS || deep(foe) && !deep(player)) {
             return false;
         }
+        if (boxed(minecraft, player)) {
+            return true;
+        }
         Refuge shelter = refuge(minecraft);
         return shelter != null && !shelter.name().equals(GOAL) && flat(player.position(), shelter.at()) <= CORNERED_BLOCKS;
+    }
+
+    private static boolean boxed(Minecraft minecraft, LocalPlayer player) {
+        BlockPos feet = player.blockPosition();
+        return Direction.Plane.HORIZONTAL.stream().map(feet::relative)
+                .allMatch(side -> !minecraft.level.getBlockState(side).getCollisionShape(minecraft.level, side).isEmpty());
     }
 
     private static Refuge refuge(Minecraft minecraft) {
@@ -559,9 +620,24 @@ final class Body {
         LocalPlayer player = minecraft.player;
         return StreamSupport.stream(minecraft.level.entitiesForRendering().spliterator(), false)
                 .filter(entity -> entity instanceof Creeper creeper && creeper.isAlive() && creeper.distanceTo(player) <= CREEPER_BLOCKS
-                        && (creeper.getSwelling(1) > 0 || creeper.distanceTo(player) <= REACH_BLOCKS))
+                        && (hissing(creeper) || creeper.distanceTo(player) <= REACH_BLOCKS))
                 .min(Comparator.comparingDouble(player::distanceTo))
                 .orElse(doing == Doing.BACK_OFF ? target : null);
+    }
+
+    private static boolean hissing(Creeper creeper) {
+        return creeper.getSwelling(1) > 0;
+    }
+
+    @Nullable
+    private static BlockPos water(Minecraft minecraft) {
+        BlockPos feet = minecraft.player.blockPosition();
+        return BlockPos.betweenClosedStream(feet.offset(-QUENCH_BLOCKS, -2, -QUENCH_BLOCKS), feet.offset(QUENCH_BLOCKS, 2, QUENCH_BLOCKS))
+                .filter(pos -> minecraft.level.getFluidState(pos).is(FluidTags.WATER) && minecraft.level.getFluidState(pos.above()).isEmpty()
+                        && minecraft.level.getBlockState(pos.above()).getCollisionShape(minecraft.level, pos.above()).isEmpty())
+                .map(BlockPos::immutable)
+                .min(Comparator.comparingDouble(pos -> pos.distSqr(feet)))
+                .orElse(null);
     }
 
     private static boolean burning(Minecraft minecraft) {
@@ -593,12 +669,16 @@ final class Body {
         for (int slot = 0; slot < HOTBAR; slot++) {
             ItemStack stack = player.getInventory().getItem(slot);
             FoodProperties food = stack.getFoodProperties(player);
-            if (food != null && player.canEat(food.canAlwaysEat()) && (food.effects().isEmpty() || starving) && food.nutrition() > most) {
+            if (food != null && player.canEat(food.canAlwaysEat()) && (food.effects().isEmpty() && !raw(player, stack) || starving) && food.nutrition() > most) {
                 best = slot;
                 most = food.nutrition();
             }
         }
         return best;
+    }
+
+    private static boolean raw(LocalPlayer player, ItemStack stack) {
+        return player.level().getRecipeManager().getRecipeFor(RecipeType.SMOKING, new SingleRecipeInput(stack), player.level()).isPresent();
     }
 
     private static boolean armed(LocalPlayer player) {
@@ -624,7 +704,7 @@ final class Body {
     }
 
     private static boolean weapon(ItemStack stack) {
-        return stack.is(ItemTags.SWORDS) || stack.is(ItemTags.AXES) || stack.getItem() instanceof TridentItem;
+        return (stack.is(ItemTags.SWORDS) || stack.is(ItemTags.AXES) || stack.getItem() instanceof TridentItem) && !LastUse.lastUse(stack);
     }
 
     private static boolean shielded(LocalPlayer player) {
@@ -642,7 +722,11 @@ final class Body {
     private static boolean aimed(Minecraft minecraft, Entity foe) {
         HitResult hit = minecraft.hitResult;
         return hit instanceof EntityHitResult entity && entity.getEntity() == foe
-                || (hit == null || hit.getType() == HitResult.Type.MISS) && foe.distanceTo(minecraft.player) <= REACH_BLOCKS;
+                || (hit == null || hit.getType() == HitResult.Type.MISS) && reach(minecraft.player, foe) <= REACH_BLOCKS;
+    }
+
+    private static double reach(LocalPlayer player, Entity foe) {
+        return Math.max(0, foe.distanceTo(player) - foe.getBbWidth() / 2);
     }
 
     private static void walkOn(LocalPlayer player, String why) {

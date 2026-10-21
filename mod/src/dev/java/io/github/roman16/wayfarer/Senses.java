@@ -81,6 +81,7 @@ final class Senses {
     private static final long TREND_TICKS = 200;
     private static final String TOUGH_AS_NAILS = "toughasnails";
     private static final String TAN_THIRST = "toughasnails.thirst";
+    static final String BERRY_BUSH = "a berry bush";
     static final String HUNGER = "hunger";
     private static final Set<SoundSource> HEARD = Set.of(SoundSource.AMBIENT, SoundSource.BLOCKS, SoundSource.HOSTILE, SoundSource.NEUTRAL,
             SoundSource.PLAYERS, SoundSource.WEATHER);
@@ -89,7 +90,7 @@ final class Senses {
             Map.entry("drown", "drowning"), Map.entry("dryout", "drying out"), Map.entry("fall", FALL), Map.entry("fallingBlock", "a falling block"),
             Map.entry("flyIntoWall", "a wall"), Map.entry("freeze", "cold"), Map.entry("hotFloor", "a hot floor"), Map.entry("inFire", "fire"),
             Map.entry("inWall", "a wall around the head"), Map.entry("lava", "lava"), Map.entry("lightningBolt", "lightning"), Map.entry("magic", "poison"),
-            Map.entry("onFire", "burning"), Map.entry("starve", HUNGER), Map.entry("sweetBerryBush", "a berry bush"), Map.entry("toughasnails.hyperthermia", "heat"),
+            Map.entry("onFire", "burning"), Map.entry("starve", HUNGER), Map.entry("sweetBerryBush", BERRY_BUSH), Map.entry("toughasnails.hyperthermia", "heat"),
             Map.entry(TAN_THIRST, "thirst"), Map.entry("wither", "withering"));
     private static final List<Heard> heard = new ArrayList<>();
     private static final List<String> hurts = new ArrayList<>();

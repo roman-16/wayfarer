@@ -28,6 +28,10 @@ final class Fishing {
     static void fish(Minecraft minecraft, String argument) {
         LocalPlayer player = minecraft.player;
         int wanted = argument.isBlank() ? 1 : Integer.parseInt(argument.strip());
+        if (player.isInWater() && !player.isPassenger()) {
+            Driver.fail("fish failed: you are in the water; fish from the shore or a boat");
+            return;
+        }
         if (!takeRod(player)) {
             return;
         }

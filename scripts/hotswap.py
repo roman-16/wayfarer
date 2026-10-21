@@ -211,6 +211,23 @@ def extended(before, now):
     )
 
 
+def lambdas(code):
+    _, _, methods = parse(code)
+    return {method for _, method, _ in methods if method.startswith("lambda$")}
+
+
+def lambda_number(method):
+    return int(method.split(" ")[0].rsplit("$", 1)[1])
+
+
+def renumbered(before, now):
+    earlier, later = lambdas(before), lambdas(now)
+    added = later - earlier
+    return bool(earlier - later) or bool(
+        earlier and added and min(map(lambda_number, added)) <= max(map(lambda_number, earlier))
+    )
+
+
 def skip_value(code, offset):
     tag = chr(code[offset])
     if tag == "e":
@@ -320,7 +337,9 @@ def swap(port, snapshot):
             references = debugger.loaded(path.removesuffix(".class"))
             if not references:
                 unloaded.append(path)
-            elif initialiser(before[path]) != initialiser(now[path]) and not extended(before[path], now[path]):
+            elif (
+                initialiser(before[path]) != initialiser(now[path]) and not extended(before[path], now[path])
+            ) or renumbered(before[path], now[path]):
                 restart.append(path)
             else:
                 definitions += [(reference, now[path]) for reference in references]

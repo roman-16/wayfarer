@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -35,6 +36,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -47,6 +49,7 @@ import top.theillusivec4.curios.common.network.client.CPacketPage;
 final class Hands {
     private static final int HOTBAR = 9;
     private static final int INVENTORY = 36;
+    private static final int FETCHES = 4;
     private static final int OFF_HAND = 40;
     private static final int ARMOUR_TOP = 8;
     private static final int TABLE_BLOCKS = 5;
@@ -125,12 +128,24 @@ final class Hands {
         String name = numbered ? argument.strip().substring(0, argument.strip().lastIndexOf(' ')).strip() : argument.strip();
         LocalPlayer player = minecraft.player;
         Inventory inventory = player.getInventory();
+        int to = numbered ? Integer.parseInt(last) - 1 : IntStream.range(0, HOTBAR).filter(index -> inventory.getItem(index).isEmpty()).findFirst().orElse(-1);
+        Optional<Slot> stored = minecraft.screen instanceof AbstractContainerScreen<?> ? stored(player, name) : Optional.empty();
+        if (stored.isPresent()) {
+            if (to < 0) {
+                Driver.fail("hotbar failed: the hotbar is full; name a slot, such as hotbar " + name + " 9");
+                return;
+            }
+            String taken = held(stored.get().getItem());
+            AbstractContainerMenu menu = player.containerMenu;
+            minecraft.gameMode.handleInventoryMouseClick(menu.containerId, stored.get().index, to, ClickType.SWAP, player);
+            settled(minecraft, () -> Driver.say("hotbar: " + taken + " from the " + minecraft.screen.getTitle().getString() + " in slot " + (to + 1)));
+            return;
+        }
         int from = slot(player, name);
         if (from < 0) {
             Driver.fail("hotbar failed: no " + name + " in the inventory");
             return;
         }
-        int to = numbered ? Integer.parseInt(last) - 1 : IntStream.range(0, HOTBAR).filter(index -> inventory.getItem(index).isEmpty()).findFirst().orElse(-1);
         if (from < HOTBAR && (!numbered || to == from)) {
             Driver.say("hotbar: " + held(inventory.getItem(from)) + " in slot " + (from + 1) + " already");
             return;
@@ -148,6 +163,27 @@ final class Hands {
                 Driver.say("hotbar: " + moved + " in slot " + (to + 1));
             });
         });
+    }
+
+    private static int free(Inventory inventory) {
+        for (int index = 0; index < HOTBAR; index++) {
+            if (inventory.getItem(index).isEmpty()) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
+    private static Optional<Slot> stored(LocalPlayer player, String name) {
+        Optional<Item> named = byId(name);
+        return player.containerMenu.slots.stream()
+                .filter(slot -> slot.container != player.getInventory() && slot.hasItem() && (slot.getItem().getHoverName().getString().equalsIgnoreCase(name.strip())
+                        || named.map(slot.getItem()::is).orElse(false)))
+                .max(Comparator.comparingInt(slot -> uses(slot.getItem())));
+    }
+
+    private static int uses(ItemStack stack) {
+        return stack.isDamageableItem() ? stack.getMaxDamage() - stack.getDamageValue() : stack.getCount();
     }
 
     static void wear(Minecraft minecraft, String name) {
@@ -241,6 +277,10 @@ final class Hands {
     }
 
     static void put(Minecraft minecraft, String argument) {
+        put(minecraft, argument, 0);
+    }
+
+    private static void put(Minecraft minecraft, String argument, int fetches) {
         String[] words = argument.strip().split(" ");
         boolean placed = words.length >= 4 && Arrays.stream(words, words.length - 3, words.length).allMatch(word -> word.matches("~?-?\\d*"));
         String name = placed ? String.join(" ", Arrays.copyOf(words, words.length - 3)) : argument.strip();
@@ -257,8 +297,20 @@ final class Hands {
             Driver.fail("put failed: no " + name + " in the inventory");
             return;
         }
+        if (slot >= INVENTORY || slot >= HOTBAR && fetches >= FETCHES) {
+            Driver.fail("put failed: " + name + " would not come into the hotbar; hotbar " + name + " first");
+            return;
+        }
         if (slot >= HOTBAR) {
-            Driver.fail("put failed: " + name + " is not in the hotbar; hotbar " + name + " first");
+            settled(minecraft, () -> {
+                int from = slot(player, name);
+                Inventory inventory = player.getInventory();
+                if (from >= HOTBAR && from < INVENTORY) {
+                    minecraft.gameMode.handleInventoryMouseClick(player.inventoryMenu.containerId, from, free(inventory) < 0 ? inventory.selected : free(inventory),
+                            ClickType.SWAP, player);
+                }
+                settled(minecraft, () -> put(minecraft, argument, fetches + 1));
+            });
             return;
         }
         ItemStack stack = player.getInventory().getItem(slot);
@@ -283,6 +335,25 @@ final class Hands {
         }
         Vec3 eyes = player.getEyePosition();
         double reach = player.blockInteractionRange();
+        String what = stack.getHoverName().getString();
+        VoxelShape cover = there.getShape(minecraft.level, target);
+        if (!cover.isEmpty()) {
+            Vec3 aim = cover.bounds().getCenter().add(Vec3.atLowerCornerOf(target));
+            if (eyes.distanceTo(aim) > reach) {
+                Driver.fail("put failed: out of reach, " + Math.round(eyes.distanceTo(aim)) + " blocks");
+                return;
+            }
+            BlockHitResult hit = minecraft.level.clip(new ClipContext(eyes, aim.add(aim.subtract(eyes).normalize().scale(BEYOND)), ClipContext.Block.OUTLINE,
+                    ClipContext.Fluid.NONE, player));
+            if (hit.getType() != HitResult.Type.BLOCK || !hit.getBlockPos().equals(target)) {
+                Driver.fail("put failed: the " + there.getBlock().getName().getString() + " there is hidden from here");
+                return;
+            }
+            player.getInventory().selected = slot;
+            Driver.click(minecraft, hit.getLocation(), clicked -> clicked instanceof BlockHitResult block && block.getBlockPos().equals(target), true, "put", what,
+                    missed -> settled(minecraft, () -> settled(minecraft, () -> placed(minecraft, target, what))));
+            return;
+        }
         List<Direction> against = Arrays.stream(Direction.values()).filter(side -> !minecraft.level.getBlockState(target.relative(side)).canBeReplaced()).toList();
         if (against.isEmpty()) {
             Driver.fail("put failed: nothing to put it against");
@@ -300,17 +371,18 @@ final class Hands {
         }
         Direction side = seen.get();
         BlockPos base = target.relative(side);
-        String what = stack.getHoverName().getString();
         player.getInventory().selected = slot;
         Driver.click(minecraft, face(target, side), hit -> hit instanceof BlockHitResult block && block.getBlockPos().equals(base)
-                && block.getDirection() == side.getOpposite(), true, "put", what, missed -> settled(minecraft, () -> settled(minecraft, () -> {
-                    BlockState now = minecraft.level.getBlockState(target);
-                    if (now.canBeReplaced()) {
-                        Driver.fail("put failed: " + what + " did not go down at " + target.toShortString());
-                    } else {
-                        Driver.say("put: " + now.getBlock().getName().getString() + " at " + target.toShortString());
-                    }
-                })));
+                && block.getDirection() == side.getOpposite(), true, "put", what, missed -> settled(minecraft, () -> settled(minecraft, () -> placed(minecraft, target, what))));
+    }
+
+    private static void placed(Minecraft minecraft, BlockPos target, String what) {
+        BlockState now = minecraft.level.getBlockState(target);
+        if (now.canBeReplaced()) {
+            Driver.fail("put failed: " + what + " did not go down at " + target.toShortString());
+        } else {
+            Driver.say("put: " + now.getBlock().getName().getString() + " at " + target.toShortString());
+        }
     }
 
     static Optional<BlockPos> table(Minecraft minecraft) {

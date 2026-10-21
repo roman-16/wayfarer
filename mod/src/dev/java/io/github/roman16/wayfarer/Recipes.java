@@ -31,6 +31,7 @@ import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -41,6 +42,7 @@ public final class Recipes implements IModPlugin {
     private static final int SMALL_GRID = 2;
     private static final int LARGE_GRID = 3;
     private static final int NAMED_CHOICES = 2;
+    private static final int OPEN_TICKS = 40;
     @Nullable
     private static IJeiRuntime jei;
 
@@ -104,13 +106,23 @@ public final class Recipes implements IModPlugin {
             Hands.open(minecraft, fill);
             return;
         }
+        IntStream.range(0, Inventory.getSelectionSize()).filter(slot -> player.getInventory().getItem(slot).isEmpty()).boxed().findFirst()
+                .or(() -> IntStream.range(0, Inventory.getSelectionSize()).filter(slot -> player.getInventory().getItem(slot).getItem() instanceof TieredItem).boxed().findFirst())
+                .ifPresent(slot -> player.getInventory().selected = slot);
         Driver.useAt(minecraft, table.get(), missed -> {
             if (missed != null) {
                 Driver.fail("craft failed: the click went to " + missed + ", not to the crafting table");
                 return;
             }
-            Driver.after(() -> player.containerMenu instanceof CraftingMenu && minecraft.screen != null, "the crafting table to open", () -> Driver.drawn("the crafting table",
-                    fill));
+            long from = minecraft.level.getGameTime();
+            Driver.after(() -> player.containerMenu instanceof CraftingMenu && minecraft.screen != null || minecraft.level.getGameTime() - from > OPEN_TICKS,
+                    "the crafting table to open", () -> {
+                        if (!(player.containerMenu instanceof CraftingMenu) || minecraft.screen == null) {
+                            Driver.fail("craft failed: the crafting table did not open at the click");
+                            return;
+                        }
+                        Driver.drawn("the crafting table", fill);
+                    });
         });
     }
 
@@ -196,9 +208,16 @@ public final class Recipes implements IModPlugin {
             minecraft.gameMode.handleInventoryMouseClick(menu.containerId, slot, 0, ClickType.PICKUP, player);
         }
         Driver.after(() -> menu.getSlot(RESULT).getItem().is(item), "the grid to show " + item.getDescription().getString(), () -> {
-            int count = menu.getSlot(RESULT).getItem().getCount();
+            int before = inventory.countItem(item);
             minecraft.gameMode.handleInventoryMouseClick(menu.containerId, RESULT, 0, ClickType.QUICK_MOVE, player);
             Hands.settled(minecraft, () -> {
+                int count = inventory.countItem(item) - before;
+                if (count <= 0) {
+                    Hands.close(minecraft);
+                    Driver.fail("craft failed: no room in the inventory for " + item.getDescription().getString() + (made > 0 ? " after " + made : "")
+                            + "; clear a slot and craft again");
+                    return;
+                }
                 int total = made + count;
                 if (total < wanted) {
                     fill(minecraft, plan, item, wanted, total, where);
