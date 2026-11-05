@@ -33,6 +33,7 @@ public final class Speech {
     @Nullable
     private static Voice playing;
     private static boolean paged;
+    private static int resting;
     private static float music = 1;
 
     private Speech() {}
@@ -56,13 +57,6 @@ public final class Speech {
         start(new Voice(clip, Talk.Source.HEAD, false));
     }
 
-    public static void after(String clip) {
-        waiting.add(new Voice(clip, Talk.Source.HEAD, true));
-        if (playing == null) {
-            next();
-        }
-    }
-
     public static void fade() {
         waiting.clear();
         if (playing != null) {
@@ -84,10 +78,6 @@ public final class Speech {
         }
     }
 
-    public static boolean speaking() {
-        return playing != null;
-    }
-
     public static float music() {
         return music;
     }
@@ -95,9 +85,12 @@ public final class Speech {
     static void tick(Minecraft minecraft) {
         if (playing != null && ended(minecraft, playing)) {
             playing = null;
+            resting = Balance.get().talk().beatTicks();
+        }
+        if (playing == null && !waiting.isEmpty() && --resting <= 0) {
             next();
         }
-        float wanted = playing == null ? 1 : Balance.get().talk().musicSixteenths() / WHOLE;
+        float wanted = playing == null && waiting.isEmpty() ? 1 : Balance.get().talk().musicSixteenths() / WHOLE;
         float step = TICK_MILLIS / (float) Stamp.VOICE_FADE_MILLIS;
         music = wanted < music ? Math.max(wanted, music - step) : Math.min(wanted, music + step);
     }
