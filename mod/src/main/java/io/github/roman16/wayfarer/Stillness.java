@@ -1,5 +1,8 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Caravan;
+import io.github.roman16.wayfarer.story.Engine;
+import io.github.roman16.wayfarer.story.Hold;
 import io.github.roman16.wayfarer.story.Talk;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -15,7 +18,7 @@ public final class Stillness {
 
     private static final String X = "x";
     private static final String Z = "z";
-    private static final String DAY = "day";
+    private static final String SINCE = "since";
     private static final String STAGE = "stage";
     private static final int CHECK_TICKS = 20;
     private static final long TICKS_PER_DAY = 24000;
@@ -40,7 +43,7 @@ public final class Stillness {
             return;
         }
         CompoundTag anchor = player.getData(Wayfarer.STILLNESS);
-        long today = player.server.overworld().getDayTime() / TICKS_PER_DAY;
+        long now = player.server.overworld().getDayTime();
         int before = anchor.getInt(STAGE);
         if (Journey.over(player.server)) {
             if (before != MOVING) {
@@ -49,11 +52,12 @@ public final class Stillness {
             return;
         }
         double away = Math.hypot(player.getX() - anchor.getInt(X), player.getZ() - anchor.getInt(Z));
-        if (!anchor.contains(DAY) || away > Balance.get().stillness().radiusBlocks()) {
+        if (!anchor.contains(SINCE) || away > Balance.get().stillness().radiusBlocks() || Caravan.within(player.server, player.level(), player.position())
+                || Hold.active(player.server) || Engine.sentNear(player, Balance.get().stillness().radiusBlocks())) {
             CompoundTag next = new CompoundTag();
             next.putInt(X, player.getBlockX());
             next.putInt(Z, player.getBlockZ());
-            next.putLong(DAY, today);
+            next.putLong(SINCE, now);
             next.putInt(STAGE, MOVING);
             player.setData(Wayfarer.STILLNESS, next);
             if (before != MOVING) {
@@ -61,7 +65,7 @@ public final class Stillness {
             }
             return;
         }
-        int stage = stage(today - anchor.getLong(DAY));
+        int stage = stage((now - anchor.getLong(SINCE)) / TICKS_PER_DAY);
         if (stage <= before) {
             return;
         }

@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer.story;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Fire;
+import io.github.roman16.wayfarer.Nights;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.Comparator;
 import java.util.List;
@@ -27,7 +28,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.entity.EntityTypeTest;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -54,7 +54,7 @@ final class Visit {
     static void tick(MinecraftServer server, Engine.Active active) {
         String visitor = active.step().with();
         Optional<BlockPos> fire = Places.place(server, Caravan.NAME);
-        if (visitor == null || fire.isEmpty() || Steps.started(active)) {
+        if (visitor == null || fire.isEmpty() || Steps.started(active) || Nights.hard(server)) {
             return;
         }
         if (active.scratch().getBoolean(COMING)) {
@@ -90,7 +90,7 @@ final class Visit {
         Vec3 away = away(server, fire);
         BlockPos ground = fire;
         for (int out = Balance.get().story().visitBlocks(); out <= OUT_OF_SIGHT_BLOCKS; out += SIGHT_STEP) {
-            ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.containing(Vec3.atBottomCenterOf(fire).add(away.scale(out))));
+            ground = Ground.above(level, BlockPos.containing(Vec3.atBottomCenterOf(fire).add(away.scale(out))));
             if (!People.seen(level, Vec3.atBottomCenterOf(ground))) {
                 break;
             }

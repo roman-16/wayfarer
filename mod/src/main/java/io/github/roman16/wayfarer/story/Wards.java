@@ -2,15 +2,19 @@ package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Graves;
+import io.github.roman16.wayfarer.Halls;
+import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobCategory;
@@ -18,6 +22,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DecoratedPotBlock;
 import net.minecraft.world.level.block.piston.PistonStructureResolver;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -30,6 +35,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityMobGriefingEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.BlockGrowFeatureEvent;
 import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.level.PistonEvent;
@@ -37,7 +43,13 @@ import net.neoforged.neoforge.event.level.PistonEvent;
 public final class Wards {
     private static final int GRIEF_REACH = 4;
     private static final double FOOT = 0.25;
+    private static final String BUILD = ".build";
     private static final String FOOTING = "footing";
+    private static final String HALL = "hall";
+    private static final int GROWTH_REACH = 8;
+    private static final int NEAR_BLOCKS = 8;
+    private static final int HELD_QUIET_BLOCKS = 128;
+    private static final TagKey<Block> HAND_LIGHTS = TagKey.create(Registries.BLOCK, Wayfarer.id("hand_lights"));
 
     private Wards() {}
 
@@ -58,6 +70,15 @@ public final class Wards {
         return wards;
     }
 
+    static boolean near(ServerLevel level, BlockPos pos) {
+        return wards(level.getServer()).stream().anyMatch(ward -> !ward.place().equals(Caravan.NAME) && ward.box().inflatedBy(NEAR_BLOCKS).isInside(pos));
+    }
+
+    static boolean within(ServerPlayer player) {
+        return player.level().dimension() == Level.OVERWORLD && wards(player.server).stream()
+                .anyMatch(ward -> !ward.place().equals(Caravan.NAME) && ward.box().isInside(player.blockPosition()));
+    }
+
     public static boolean guarded(LevelAccessor accessor, BlockPos pos) {
         return at(accessor, pos).isPresent();
     }
@@ -66,7 +87,8 @@ public final class Wards {
         if (!(accessor instanceof ServerLevel level) || level.dimension() != Level.OVERWORLD) {
             return Optional.empty();
         }
-        return wards(level.getServer()).stream().filter(ward -> ward.box().isInside(pos)).findFirst();
+        return wards(level.getServer()).stream().filter(ward -> ward.box().isInside(pos)).findFirst()
+                .or(() -> Clock.storied(level.getServer()) && Halls.built(level, pos) ? Optional.of(new Ward(HALL, new BoundingBox(pos))) : Optional.empty());
     }
 
     private static Optional<Ward> footing(LevelAccessor accessor, BlockPos pos) {
@@ -79,16 +101,24 @@ public final class Wards {
         return stood ? Optional.of(new Ward(FOOTING, new BoundingBox(pos))) : Optional.empty();
     }
 
+    private static boolean lit(LevelAccessor accessor, BlockPos pos) {
+        return accessor instanceof ServerLevel level && Progress.of(level.getServer()).lit.contains(pos.asLong());
+    }
+
     private static void refuse(Entity entity, Ward ward) {
+        refuse(entity, "wayfarer.ward." + ward.place());
+    }
+
+    private static void refuse(Entity entity, String key) {
         if (entity instanceof ServerPlayer player) {
-            player.displayClientMessage(Component.translatable("wayfarer.ward." + ward.place()).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
+            player.displayClientMessage(Component.translatable(key).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
         }
     }
 
     @SubscribeEvent
     public static void onLeftClick(PlayerInteractEvent.LeftClickBlock event) {
         if (event.getAction() == PlayerInteractEvent.LeftClickBlock.Action.START && !event.getEntity().isCreative()
-                && !Graves.grave(event.getLevel().getBlockState(event.getPos()))) {
+                && !Graves.grave(event.getLevel().getBlockState(event.getPos())) && !lit(event.getLevel(), event.getPos())) {
             at(event.getLevel(), event.getPos()).or(() -> footing(event.getLevel(), event.getPos())).ifPresent(ward -> {
                 event.setCanceled(true);
                 refuse(event.getEntity(), ward);
@@ -98,6 +128,12 @@ public final class Wards {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onBreak(BlockEvent.BreakEvent event) {
+        if (lit(event.getLevel(), event.getPos()) && event.getLevel() instanceof ServerLevel level) {
+            Progress progress = Progress.of(level.getServer());
+            progress.lit.remove(event.getPos().asLong());
+            progress.setDirty();
+            return;
+        }
         if (!event.getPlayer().isCreative() && !Graves.grave(event.getState())) {
             at(event.getLevel(), event.getPos()).or(() -> footing(event.getLevel(), event.getPos())).ifPresent(ward -> {
                 event.setCanceled(true);
@@ -111,9 +147,15 @@ public final class Wards {
         if (event.getEntity() instanceof ServerPlayer player && player.isCreative()) {
             return;
         }
+        if (event.getPlacedBlock().is(HAND_LIGHTS) && event.getLevel() instanceof ServerLevel level && at(level, event.getPos()).isPresent()) {
+            Progress progress = Progress.of(level.getServer());
+            progress.lit.add(event.getPos().asLong());
+            progress.setDirty();
+            return;
+        }
         at(event.getLevel(), event.getPos()).ifPresent(ward -> {
             event.setCanceled(true);
-            refuse(event.getEntity(), ward);
+            refuse(event.getEntity(), "wayfarer.ward." + ward.place() + BUILD);
             if (event.getEntity() instanceof ServerPlayer player) {
                 player.server.execute(() -> player.containerMenu.sendAllDataToRemote());
             }
@@ -191,7 +233,25 @@ public final class Wards {
     @SubscribeEvent
     public static void onPotentialSpawns(LevelEvent.PotentialSpawns event) {
         if (event.getMobCategory() == MobCategory.MONSTER && at(event.getLevel(), event.getPos()).filter(ward -> ward.place().equals(Diggers.NAME) || ward.place().equals(Frost.HALL) || ward.place().equals(Marsh.NAME)
-                || ward.place().equals(ReadingHouse.NAME)).isPresent()) {
+                || ward.place().equals(ReadingHouse.NAME)).isPresent()
+                || event.getMobCategory() == MobCategory.MONSTER && event.getLevel() instanceof ServerLevel level && (Act3.quiet(level, event.getPos()) || held(level, event.getPos()))) {
+            event.setCanceled(true);
+        }
+    }
+
+    private static boolean held(ServerLevel level, BlockPos pos) {
+        if (level.dimension() != Level.OVERWORLD || !Clock.storied(level.getServer())) {
+            return false;
+        }
+        Progress progress = Progress.of(level.getServer());
+        return progress.held.stream().map(progress::place).flatMap(Optional::stream)
+                .anyMatch(at -> at.distSqr(pos.atY(at.getY())) <= (double) HELD_QUIET_BLOCKS * HELD_QUIET_BLOCKS);
+    }
+
+    @SubscribeEvent
+    public static void onGrow(BlockGrowFeatureEvent event) {
+        if (event.getLevel() instanceof ServerLevel level && level.dimension() == Level.OVERWORLD
+                && wards(level.getServer()).stream().anyMatch(ward -> !ward.place().equals(Caravan.NAME) && ward.box().inflatedBy(GROWTH_REACH).isInside(event.getPos()))) {
             event.setCanceled(true);
         }
     }

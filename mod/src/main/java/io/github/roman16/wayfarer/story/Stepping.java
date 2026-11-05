@@ -92,15 +92,20 @@ public final class Stepping {
             }
             String name = goal.get();
             Component label = Component.translatable(Places.label(server, name));
-            if (Places.forget(server, name)) {
-                source.sendSuccess(() -> Component.translatable("wayfarer.step.again.ahead", label), true);
-            } else if (Places.rebuilds(name)) {
-                Places.unbuild(server, name);
-                source.sendSuccess(() -> Component.translatable("wayfarer.step.again.there", label), true);
-            } else {
+            if (Talk.busy()) {
+                source.sendFailure(Component.translatable("wayfarer.step.again.talk", label));
+                return 0;
+            }
+            if (Hold.active(server)) {
+                source.sendFailure(Component.translatable("wayfarer.step.again.hold", label));
+                return 0;
+            }
+            Places.Again again = Places.again(server, name);
+            if (again == Places.Again.NEVER) {
                 source.sendFailure(Component.translatable("wayfarer.step.again.never", label));
                 return 0;
             }
+            source.sendSuccess(() -> Component.translatable(again == Places.Again.AHEAD ? "wayfarer.step.again.ahead" : "wayfarer.step.again.there", label), true);
             Journal.syncAll(server);
             return 1;
         }).orElse(0);
@@ -112,6 +117,7 @@ public final class Stepping {
         return found(source, quest).map(active -> {
             Component heading = heading(source, active);
             Story.Step step = active.step();
+            Talk.drop(server);
             if (Progress.of(server).choice(active.quest().id(), step.id()).isEmpty()) {
                 step.choices().stream().filter(choice -> choice.refused() == null).findFirst()
                         .ifPresent(choice -> Engine.choose(server, active.quest().id(), step.id(), choice));

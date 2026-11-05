@@ -77,6 +77,8 @@ final class ReadingHouse {
         Home.Aim aim = Home.aim(camp, Caravan.way(server), balance.aheadBlocks());
         Vec3 ahead = Vec3.atLowerCornerOf(aim.from()).add(aim.way().scale(balance.aheadBlocks()));
         Unseen.Heights heights = new Unseen.Heights(level);
+        List<Unseen.Viewer> viewers = Unseen.viewers(level);
+        int view = server.getPlayerList().getViewDistance();
         int sea = level.getChunkSource().getGenerator().getSeaLevel();
         BlockPos best = null;
         double highest = -Double.MAX_VALUE;
@@ -88,7 +90,7 @@ final class ReadingHouse {
                     int x = (int) Math.round(ahead.x) + dx;
                     int z = (int) Math.round(ahead.z) + dz;
                     int y = heights.surface(x, z);
-                    if (strict && y > sea + HILL || !fits(heights, sea, x, y, z, strict)) {
+                    if (strict && y > sea + HILL || !fits(heights, sea, x, y, z, strict) || !Unseen.beyond(viewers, new Vec3(x, y, z), view)) {
                         continue;
                     }
                     int rough = rough(heights, x, y, z);
@@ -141,6 +143,20 @@ final class ReadingHouse {
         return most;
     }
 
+    static void unbuild(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        progress.places.remove(ORIGIN);
+        progress.setDirty();
+    }
+
+    static void forget(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        List.of(SITE, ORIGIN, NAME, "seat_" + STAIR, "seat_" + VAULT).forEach(progress.places::remove);
+        List.of(TURN, "seat_" + STAIR, "seat_" + VAULT).forEach(progress.yaws::remove);
+        progress.wards.remove(NAME);
+        progress.setDirty();
+    }
+
     static void tick(MinecraftServer server) {
         Progress progress = Progress.of(server);
         if (progress.place(SITE).isEmpty()) {
@@ -159,7 +175,7 @@ final class ReadingHouse {
     private static void build(MinecraftServer server, ServerLevel level, BlockPos site) {
         Progress progress = Progress.of(server);
         Rotation turn = turn(progress);
-        Camps.clearing(level, site.atY(Frost.top(level, site.getX(), site.getZ())), CLEARING, true);
+        Camps.clearing(level, site.atY(Ground.land(level, site.getX(), site.getZ())), CLEARING, true);
         BlockPos origin = Camps.place(level, HOUSE, site, turn);
         StructurePlaceSettings settings = Camps.settings(level, HOUSE, turn);
         int depth = PLAN.get().get("vault_depth").getAsInt();
@@ -184,6 +200,7 @@ final class ReadingHouse {
         float yaw = Frost.yaw(Vec3.atLowerCornerOf(lectern.subtract(ansel)).multiply(1, 0, 1));
         People.spawn(level, ANSEL_SKIN, Vec3.atBottomCenterOf(ansel), yaw, "fallen_back", Steps.CLUE + ANSEL);
         Frost.release(level, site);
+        Standing.keep(server, NAME);
         LOGGER.info("the Keepers' reading-house stands at {}, its door at {}, its vault {} blocks down", origin, progress.place(NAME).orElseThrow(), depth);
         Journal.syncAll(server);
     }

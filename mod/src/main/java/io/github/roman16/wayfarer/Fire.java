@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer;
 
 import io.github.roman16.wayfarer.story.Bell;
 import io.github.roman16.wayfarer.story.Hold;
+import io.github.roman16.wayfarer.story.Memories;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -56,8 +58,8 @@ public final class Fire {
     private Fire() {}
 
     public static boolean fears(Entity entity) {
-        return entity instanceof Mob
-                && entity instanceof Enemy
+        return entity instanceof Mob mob
+                && (entity instanceof Enemy || mob.getTarget() instanceof Player hunted && mob.getLastHurtByMob() != hunted)
                 && !(entity instanceof Raider)
                 && !(entity instanceof Warden)
                 && !(entity instanceof EnderDragon)
@@ -122,7 +124,8 @@ public final class Fire {
         Set<BlockPos> holding = new HashSet<>();
         for (ServerPlayer player : level.players()) {
             Optional<BlockPos> fire = Nights.fearless(player) || Hold.active(player.server) ? Optional.empty()
-                    : ringing.filter(camp -> inside(camp, player.position(), radius * 2)).or(() -> nearest(level, player.position(), radius));
+                    : ringing.filter(camp -> inside(camp, player.position(), radius * 2)).or(() -> nearest(level, player.position(), radius))
+                            .or(() -> Talk.listening(player) ? Optional.of(player.blockPosition()) : Optional.empty());
             if (fire.isPresent()) {
                 SHELTERED.put(player.getUUID(), fire.get());
                 holding.add(fire.get());
@@ -167,7 +170,7 @@ public final class Fire {
         if (!(event.getEntity() instanceof ServerPlayer player) || player.tickCount % REST_CHECK_TICKS != 0) {
             return;
         }
-        Optional<BlockPos> fire = Tents.isTent(player.level().dimension()) || Gaze.airborne(player) || player.isSpectator()
+        Optional<BlockPos> fire = Tents.isTent(player.level().dimension()) || Memories.dream(player.level()) || Gaze.airborne(player) || player.isSpectator()
                 ? Optional.empty()
                 : nearest(player.serverLevel(), player.position(), Balance.get().fire().restBlocks());
         if (fire.isEmpty()) {

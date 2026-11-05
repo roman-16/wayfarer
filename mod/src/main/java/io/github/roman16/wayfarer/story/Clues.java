@@ -2,7 +2,11 @@ package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -10,20 +14,25 @@ import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 final class Clues {
     static final String VEIL = Wayfarer.MODID + "_veil";
     static final String SEEN = Wayfarer.MODID + "_clue_seen";
+    private static final int REST_BELOW = 8;
     private static final float BOX = 1.0625f;
     private static final float MARKER_SCALE = 1.02f;
     private static final int FOUND_REACH = 64;
+    private static final int SEARCH_REACH = 128;
     private static final String DOOR = Wayfarer.MODID + "_door_glow";
     private static final float PRINT_DEPTH = 0.45f;
     private static final float PRINT_HEIGHT = 0.02f;
@@ -31,8 +40,25 @@ final class Clues {
 
     private Clues() {}
 
-    static List<Entity> marker(ServerLevel level, BlockPos at, String clue) {
+    static List<Entity> marker(ServerLevel level, BlockPos wanted, String clue) {
+        BlockPos at = wanted;
+        for (int drop = 0; drop < REST_BELOW && level.getBlockState(at).getCollisionShape(level, at).isEmpty()
+                && level.getBlockState(at.below()).getCollisionShape(level, at.below()).isEmpty() && level.getFluidState(at.below()).isEmpty(); drop++) {
+            at = at.below();
+        }
         return List.of(display(level, at, MARKER_SCALE, clue), box(level, Vec3.atBottomCenterOf(at), clue));
+    }
+
+    static Optional<BlockPos> nearest(ServerPlayer player, Engine.Active active) {
+        if (!active.step().spec().has("clues")) {
+            return Optional.empty();
+        }
+        List<String> found = Engine.found(active.scratch());
+        Set<String> left = active.step().spec().getAsJsonArray("clues").asList().stream().map(clue -> clue.getAsJsonObject().get("id").getAsString())
+                .filter(clue -> !found.contains(clue)).map(clue -> Steps.CLUE + clue).collect(Collectors.toSet());
+        return player.level().getEntities((Entity) null, player.getBoundingBox().inflate(SEARCH_REACH),
+                        entity -> entity.getTags().contains(Steps.CLUE_BOX) && entity.getTags().stream().anyMatch(left::contains)).stream()
+                .min(Comparator.comparingDouble(player::distanceToSqr)).map(Entity::blockPosition);
     }
 
     static void door(ServerLevel level, BlockPos lower, String clue) {
@@ -49,6 +75,7 @@ final class Clues {
                 continue;
             }
             entity.removeTag(Steps.CLUE + clue);
+            entity.addTag(Steps.FOUND + clue);
             if (entity instanceof Display) {
                 CompoundTag tag = entity.saveWithoutId(new CompoundTag());
                 tag.putInt("glow_color_override", Sense.SEEN);
@@ -114,6 +141,15 @@ final class Clues {
         CompoundTag tag = tag(state);
         tag.put("transformation", transformation(x, y, z, (1 - x) / 2, 0, (1 - z) / 2));
         return spawn(level, tag, at, clue);
+    }
+
+    static void through(ServerPlayer player, Entity box) {
+        Vec3 centre = box.getBoundingBox().getCenter();
+        BlockPos behind = BlockPos.containing(centre);
+        Vec3 towards = player.getEyePosition().subtract(Vec3.atCenterOf(behind));
+        Direction side = Direction.getNearest(towards.x, towards.y, towards.z);
+        Vec3 face = Vec3.atCenterOf(behind).add(Vec3.atLowerCornerOf(side.getNormal()).scale(0.5));
+        player.gameMode.useItemOn(player, player.level(), player.getMainHandItem(), InteractionHand.MAIN_HAND, new BlockHitResult(face, side, behind, false));
     }
 
     static Entity box(ServerLevel level, Vec3 at, String clue) {

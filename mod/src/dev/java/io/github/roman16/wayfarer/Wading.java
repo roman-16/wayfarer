@@ -34,7 +34,7 @@ final class Wading {
     static boolean boxed(Minecraft minecraft, BlockPos at) {
         for (BlockPos near : BlockPos.betweenClosed(at.offset(-NEAR_WATER, -1, -NEAR_WATER), at.offset(NEAR_WATER, 1, NEAR_WATER))) {
             FluidState fluid = minecraft.level.getFluidState(near);
-            if (fluid.is(FluidTags.WATER) && !fluid.isSource()) {
+            if (fluid.is(FluidTags.WATER) && (!fluid.isSource() || !minecraft.level.getFluidState(near.below(2)).is(FluidTags.WATER))) {
                 return true;
             }
         }

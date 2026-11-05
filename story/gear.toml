@@ -1,21 +1,24 @@
 opens = { claimed = "ash/evening" }
 
 [forge]
-already = "It's frost iron already."
-book_no_hammer = "Pretty book. Putting it on a tool needs a sound hammer, and mine's been cracked since the fire."
-book_wont = "It won't take what's in that book."
-half = "More than half whole. This hammer does no better. Bring it back when it's worn."
-here = "Here. Mind the edge."
-leave = "Leave it with me tonight."
-leave_half = "Leave it with me tonight. Halfway is the best this hammer does."
+already = "[gruff, amused] It's frost iron already."
+book_no_hammer = "[admiring, then rueful] Pretty book. Putting it on a tool needs a sound hammer, and mine's been cracked since the fire."
+book_wont = "[gruff] It won't take what's in that book."
+give = "[trusting] Leave it with Hob."
+half = "[gruff] More than half whole. This hammer does no better. Bring it back when it's worn."
+here = "[proud, gruff] Here. Mind the edge."
+keep = "[casual] Keep it for now."
+kept = "[shrugs] Suit yourself. You know where I sit."
+leave = "[helpful] Want me to see to it? You'll have it back at the next fire."
+leave_half = "[rueful] Want me to see to it? Halfway is the best this hammer does. You'll have it back at the next fire."
 lumps = { axe = 3, boots = 4, chestplate = 8, helmet = 5, hoe = 2, leggings = 7, pickaxe = 3, shovel = 1, sword = 2 }
-no_hammer = "Not till I have a hammer for it."
-not_mine = "That's not mine to make again. Hold it out with nothing in your other hand, and I'll mend it."
-not_yet = "Not till morning."
+no_hammer = "[grumbling] Not till I have a hammer for it."
+not_mine = "[patient] That's not mine to make again. Hold it out with nothing in your other hand, and I'll mend it."
+not_yet = "[gruff] Not till the fire."
 numbers = ["none", "one", "two", "three", "four", "five", "six", "seven", "eight"]
-room = "Make room. I'll not drop it in the mud."
-short = "{wants} {need}. You've {have}."
-whole = "It's whole. Nothing for me to do."
+short = "[counting, gruff] {wants} {need}. You've {have}."
+taken = "[brisk] Right. Off you go."
+whole = "[gruff] It's whole. Nothing for me to do."
 wants = { axe = "An axe needs", boots = "Boots need", chestplate = "A chestplate needs", helmet = "A helmet needs", hoe = "A hoe needs", leggings = "Leggings need", pickaxe = "A pickaxe needs", shovel = "A shovel needs", sword = "A sword needs" }
 
 [[lines]]
@@ -23,43 +26,43 @@ after = "the_lost_ore"
 by = "hob"
 carries = "minecraft:enchanted_book"
 id = "hob_book"
-text = "A book? Hold the piece out to me with the book in your other hand. I'll have it set by morning."
+text = "[interested] A book? Hold the piece out to me with the book in your other hand. I'll have it set by morning."
 
 [[lines]]
 before = "the_lost_ore"
 by = "hob"
 carries = "minecraft:enchanted_book"
 id = "hob_book_cracked"
-text = "A book? I can put its enchantment onto a tool or armour, overnight. Not with this cracked hammer, though."
+text = "[interested, then rueful] A book? I can put its enchantment onto a tool or armour, overnight. Not with this cracked hammer, though."
 
 [[lines]]
 by = "maud"
 carries = "sophisticatedbackpacks:gold_backpack"
 id = "maud_diamonds"
-text = "A bigger pack than that needs diamonds, and the open stone has none. Old mines have them, and the deep dark, if you dare go down."
+text = "[practical] A bigger pack than that needs diamonds, and the open stone has none. Old mines have them, [dry] and the deep dark, if you dare go down."
 
 [[lines]]
 by = "hob"
 id = "hob_dark"
-text = "A torch in your fist is a hand you can't swing with. Iron round the flame and a hook on your belt, and you've both hands back."
+text = "[gruff, practical] A torch in your fist is a hand you can't swing with. Iron round the flame and a hook on your belt, and you've both hands back."
 when = ["dark/torch"]
 
 [[lines]]
 by = "hob"
 id = "hob_metal"
-text = "Iron's good. But the Frost Walkers had a metal that never rusts and doesn't mind the cold. I've never seen it worked."
+text = "[wistful] Iron's good. But the Frost Walkers had a metal that never rusts and doesn't mind the cold. I've never seen it worked."
 when = ["armour/iron", "tools/iron", "weapons/hobs_blade"]
 
 [[lines]]
 by = "agna"
 id = "agna_cold"
-text = "Wool keeps you alive. The Frost Walkers walked on snow as if it were a road. They made shoes for it."
+text = "[practical] Wool keeps you alive. The Frost Walkers walked on snow as if it were a road. They made shoes for it."
 when = ["cold/wool"]
 
 [[lines]]
 by = "agna"
 id = "agna_heat"
-text = "Leaves keep the sun off. The Sand Singers live where nothing else can. Ask one how, if you ever meet one."
+text = "[practical] Leaves keep the sun off. The Sand Singers live where nothing else can, and they know how."
 when = ["heat/leaves"]
 
 [[rows]]
@@ -111,7 +114,7 @@ made = "Made at my bench."
 make = "Make a stone pickaxe: three cobblestone and two sticks in a crafting grid"
 name = "Wood and stone tools"
 needs = [
-  { count = 3, item = "minecraft:cobblestone", name = "cobblestone", where = "from stone, with any pickaxe" },
+  { count = 3, item = "minecraft:cobblestone", name = "cobblestone" },
 ]
 
 [[rows.things]]
@@ -123,7 +126,7 @@ made = "Made at my bench, with Hob's patterns."
 make = "Make a flint pickaxe: Hob's pickaxe pattern and three flint in a crafting grid, then the head and a rod"
 name = "Flint tools"
 needs = [
-  { count = 3, item = "minecraft:flint", name = "flint", where = "dug from gravel" },
+  { count = 3, item = "minecraft:flint", name = "flint" },
 ]
 
 [[rows.things]]
@@ -173,7 +176,7 @@ make = "Make a spyglass: two copper ingots and an amethyst shard in a crafting g
 name = "Spyglass"
 needs = [
   { count = 2, item = "minecraft:copper_ingot", name = "copper ingots", where = "smelted from ore in the hills' stone" },
-  { count = 1, item = "minecraft:amethyst_shard", name = "amethyst shard", where = "from the purple geodes deep under the ground" },
+  { count = 1, item = "minecraft:amethyst_shard", name = "amethyst shard" },
 ]
 
 [[rows]]
@@ -197,7 +200,7 @@ made = "Made at my bench."
 make = "Make a leather tunic: eight leather in a crafting grid"
 name = "Leather armour"
 needs = [
-  { count = 8, item = "minecraft:leather", name = "leather", where = "from cows" },
+  { count = 8, item = "minecraft:leather", name = "leather" },
 ]
 
 [[rows.things]]
@@ -584,8 +587,8 @@ made = "Made at my bench."
 make = "Make torches: coal or charcoal on a stick in a crafting grid"
 name = "Torch"
 needs = [
-  { count = 1, name = "coal or charcoal", tag = "minecraft:coals", where = "dug from stone, or burnt from logs in a furnace" },
-  { count = 1, item = "minecraft:stick", name = "stick", where = "split from planks" },
+  { count = 1, name = "coal or charcoal", tag = "minecraft:coals" },
+  { count = 1, item = "minecraft:stick", name = "stick" },
 ]
 
 [[rows.things]]
@@ -597,8 +600,8 @@ made = "Made at my bench."
 make = "Make a lantern: a torch ringed with eight iron nuggets in a crafting grid, then hang it in the lantern slot in your inventory"
 name = "Lantern"
 needs = [
-  { count = 8, item = "minecraft:iron_nugget", name = "iron nuggets", where = "an iron ingot broken up in a crafting grid" },
-  { count = 1, item = "minecraft:torch", name = "torch", where = "made at my bench" },
+  { count = 8, item = "minecraft:iron_nugget", name = "iron nuggets" },
+  { count = 1, item = "minecraft:torch", name = "torch" },
 ]
 
 [[rows.things]]
@@ -611,9 +614,9 @@ made = "Made at my bench."
 make = "Make a glowstick: a slime ball over a glow ink sac over a stick in a crafting grid"
 name = "Glowsticks"
 needs = [
-  { count = 1, item = "minecraft:glow_ink_sac", name = "glow ink sac", where = "from glow squids in deep water" },
-  { count = 1, item = "minecraft:slime_ball", name = "slime ball", where = "from slimes in swamps and deep caves" },
-  { count = 1, item = "minecraft:stick", name = "stick", where = "split from planks" },
+  { count = 1, item = "minecraft:glow_ink_sac", name = "glow ink sac" },
+  { count = 1, item = "minecraft:slime_ball", name = "slime ball" },
+  { count = 1, item = "minecraft:stick", name = "stick" },
 ]
 
 [[rows.things]]
@@ -713,7 +716,7 @@ make = "Make a hang glider: two leather wings and an iron frame in a crafting gr
 name = "Hang glider"
 needs = [
   { count = 6, item = "minecraft:iron_ingot", name = "iron ingots", where = "smelted from ore in caves and mountains" },
-  { count = 6, item = "minecraft:leather", name = "leather", where = "from cows" },
+  { count = 6, item = "minecraft:leather", name = "leather" },
 ]
 
 [[rows]]
@@ -737,7 +740,7 @@ made = "Made at my bench."
 make = "Make a wool coat: eight wool in a crafting grid"
 name = "Wool clothes"
 needs = [
-  { count = 8, name = "wool", tag = "minecraft:wool", where = "shorn from sheep" },
+  { count = 8, name = "wool", tag = "minecraft:wool" },
 ]
 
 [[rows.things]]
@@ -769,7 +772,7 @@ made = "Made at my bench."
 make = "Make a leaf tunic: eight leaves in a crafting grid"
 name = "Leaf clothes"
 needs = [
-  { count = 8, name = "leaves", tag = "minecraft:leaves", where = "cut from trees with shears" },
+  { count = 8, name = "leaves", tag = "minecraft:leaves" },
 ]
 
 [[rows.things]]

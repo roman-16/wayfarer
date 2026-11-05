@@ -13,7 +13,7 @@ SOUNDS = ROOT / "mod/src/main/resources/assets/wayfarer/sounds"
 DOWNLOADS = Path(tempfile.gettempdir()) / "wayfarer-sounds"
 AGENT = {"User-Agent": "roman-16/wayfarer"}
 LEVEL_UP_LUFS = -17
-TARGETS = {"frequent": LEVEL_UP_LUFS - 6, "loop": -30, "music": -18, "rare": LEVEL_UP_LUFS}
+TARGETS = {"frequent": LEVEL_UP_LUFS - 6, "loop": -30, "music": -18, "rare": LEVEL_UP_LUFS, "voice": LEVEL_UP_LUFS}
 TRUE_PEAK = -1.5
 SHORTEST_MEASURED = 0.5
 SEAM_SECONDS = 1
@@ -86,7 +86,7 @@ def seamless(source, work):
     return out
 
 
-def loudness(source, target, out):
+def loudness(source, target, out, rate=SAMPLE_RATE):
     if duration(source) < SHORTEST_MEASURED:
         peak = re.search(
             r"max_volume: (-?[\d.]+) dB",
@@ -111,7 +111,7 @@ def loudness(source, target, out):
         f":measured_LRA={measured['input_lra']}:measured_thresh={measured['input_thresh']}"
         f":offset={measured['target_offset']}:linear=true"
     )
-    ffmpeg("-i", source, "-af", second, "-ar", SAMPLE_RATE, "-c:a", "libvorbis", "-q:a", QUALITY, out)
+    ffmpeg("-i", source, "-af", second, "-ar", rate, "-c:a", "libvorbis", "-q:a", QUALITY, out)
 
 
 def make(name, spec, folder, target, loop):

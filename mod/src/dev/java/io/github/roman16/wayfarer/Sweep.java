@@ -37,18 +37,49 @@ final class Sweep {
         long[] turnedAt = {-1};
         long[] pressedAt = {-1};
         CompassPayload[] last = {HudState.compass};
+        float[] health = {player.getHealth()};
+        String[] found = {null};
+        long[] facedAt = {-1};
         Driver.after(() -> {
+            if (player.getHealth() < health[0] && !Body.answering()) {
+                Driver.stop("ember: stopped: you were hurt, health " + Math.round(player.getHealth()) + " of " + Math.round(player.getMaxHealth()) + ": "
+                        + Senses.lastKind());
+                return false;
+            }
+            health[0] = player.getHealth();
             if (Body.busy()) {
                 turnedAt[0] = -1;
                 Driver.progress();
                 return false;
             }
             CompassPayload reading = HudState.compass;
+            long now = minecraft.level.getGameTime();
             if (reading.mode() != CompassPayload.Mode.FAR) {
-                Driver.note("ember: the compass reads " + reading.mode().name().toLowerCase(Locale.ROOT) + ", so the ember shows no pull");
+                if (pressedAt[0] < 0) {
+                    KeyMapping.click(sense.getKey());
+                    pressedAt[0] = now;
+                    Driver.progress();
+                    return false;
+                }
+                if (now < pressedAt[0] + READ_TICKS) {
+                    return false;
+                }
+                Driver.note("ember: the compass reads " + reading.mode().name().toLowerCase(Locale.ROOT) + ", so the ember shows no pull; held up for its light");
                 return true;
             }
-            long now = minecraft.level.getGameTime();
+            if (found[0] != null) {
+                if (now >= pressedAt[0] + window - READ_TICKS && now >= pressedAt[0] + window + EXPIRY_TICKS) {
+                    KeyMapping.click(sense.getKey());
+                    pressedAt[0] = now;
+                }
+                if (reading == last[0] || now < facedAt[0] + SETTLE_TICKS) {
+                    last[0] = reading;
+                    return false;
+                }
+                Driver.note("ember: " + found[0]);
+                Body.faced();
+                return true;
+            }
             if (turnedAt[0] < 0) {
                 if (pressedAt[0] < 0 || now >= pressedAt[0] + window - READ_TICKS) {
                     if (pressedAt[0] >= 0 && now < pressedAt[0] + window + EXPIRY_TICKS) {
@@ -79,8 +110,9 @@ final class Sweep {
             if (index[0] < DIRECTIONS) {
                 return false;
             }
-            Driver.note("ember: " + summary(player, heats));
-            return true;
+            found[0] = summary(player, heats);
+            facedAt[0] = now;
+            return false;
         }, "holding up the ember, turning", null);
     }
 

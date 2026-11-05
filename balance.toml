@@ -1,6 +1,10 @@
 [after]
 home_blocks = 256
 
+[caravan]
+day_blocks = 1024
+far_blocks = 512
+
 [chase]
 caught_blocks = 4
 far_blocks = 128
@@ -22,13 +26,13 @@ run_from = "17:00"
 
 [compass]
 exact_blocks = 256
+far_blocks = 2048
+level_blocks = 8
 refresh_ticks = 20
 trail_blocks = 20
 
 [crossing]
-first_wave = 2
 retreat_seconds = 32
-wave_growth = 1
 wave_seconds = 128
 waves = 3
 
@@ -84,7 +88,7 @@ line_seconds = 3
 rest_blocks = 4
 
 [first_camp]
-ahead_blocks = 2048
+ahead_blocks = 1280
 lake_blocks = 512
 
 [first_village]
@@ -129,6 +133,7 @@ trail_blocks = 256
 trail_past_blocks = 48
 
 [gate]
+quiet_blocks = 32
 reach_blocks = 48
 
 [gaze]
@@ -163,9 +168,8 @@ gigabytes = 8
 blow_ticks = 32
 calm_seconds = 30
 door_strength = 128
-first_wave = 2
-keep_health = 32
-wave_growth = 1
+keep_health = 64
+side_waves = 2
 wave_seconds = 64
 waves = 4
 
@@ -181,7 +185,7 @@ away_blocks = 256
 kept_share = 0.5
 
 [shipyard]
-wreck_blocks = 256
+wreck_blocks = 64
 
 [marsh]
 ahead_blocks = 2048
@@ -205,8 +209,8 @@ fire_blocks = 4
 together_blocks = 32
 
 [nights]
-shine_per_creature = 16
-wave = 4
+wave_seconds = 64
+waves = 4
 
 [ore]
 coal = 0.5
@@ -238,6 +242,7 @@ gone_blocks = 64
 group_blocks = 128
 jitter_seconds = 60
 nearest_blocks = 64
+sea_blocks = 192
 voice_gap_seconds = 150
 wolves_seconds = 120
 
@@ -262,6 +267,7 @@ sea_blocks = 256
 [shine]
 act = [0, 16, 32]
 bell_found = 2
+found_most = 0.25
 found_shine = 128
 glow_light = 8
 notice_blocks_per_shine = 0.5
@@ -310,6 +316,7 @@ land_search_blocks = 8192
 radius_blocks = 35000
 
 [structures]
+clear_blocks = 64
 spread_factor = 6
 spread_features = ["campsite_structures", "yungsextras"]
 unspread = ["betterstrongholds:stronghold", "minecraft:ancient_cities"]
@@ -331,7 +338,9 @@ village = 768
 
 [story]
 arrive_blocks = 32
+beside_blocks = 64
 near_blocks = 8
+reach_days = 2
 rest_seconds = 30
 visit_blocks = 24
 
@@ -339,16 +348,21 @@ visit_blocks = 24
 again_seconds = 16
 arrive_most_seconds = 32
 arrive_seconds = 4
+beat_ticks = 8
 characters_per_second = 8
+evening_gap_seconds = 32
+evening_lines = 2
 hunted_blocks = 32
 lapse_seconds = 32
 least_seconds = 4
+music_sixteenths = 4
 pause_seconds = 16
 present_blocks = 16
 reach_blocks = 32
 safe_seconds = 4
 screen_seconds = 16
 start_blocks = 8
+voice_gain = 2
 wait_seconds = 32
 
 [tent]
@@ -500,17 +514,22 @@ quietest_decibels = -48
 vibration_ticks = 16
 
 [voyage]
-beside_blocks = 8
+beside_blocks = 4
 calm_seconds = 16
-first_wave = 2
 landfall_blocks = 256
 left_seconds = 32
 listing_damage = 192
 reach_blocks = 96
 rise_blocks = 16
-wave_growth = 2
 wave_seconds = 64
 waves = 3
+
+[waves]
+first = 2
+growth = 1
+ring_blocks = 32
+shine_per_creature = 16
+unseen_seconds = 32
 
 [waystones]
 blocks_per_food = 256
@@ -520,7 +539,7 @@ days_between_rain = 4
 rain_most_seconds = 576
 
 [wend_camp]
-ahead_blocks = 2048
+ahead_blocks = 512
 
 [world]
 coast_blocks = 4096

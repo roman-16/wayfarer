@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "YekTBCAkrhet84dqEVJh",
+  "id": "86c922c4",
+  "kept": "30.10.2026",
+  "preview": 3,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 1031502661,
+    "should_enhance": false,
+    "text": "Bram. I kept sheep, up the valley. Three nights back the grey coats took my boy. Davy. He's eleven. Their outpost's a day on, the way you're going. I'm no good with a blade. Please. Then I'll follow your smoke, and wait at the edge of it. Sit down, Davy. ...No. Over there, where I can see you. We'll camp with you, if you'll have us. I can mind animals. It's all I can do.",
+    "voice_description": "Native English, British, a plain rural English voice, a West Country lilt. Male, 40-50. Excellent quality. Persona: a shepherd from the hills, a gentle, simple man whose son was taken. Emotion: desperate, humble, worn, quietly grateful. A soft, slightly rough, plain voice, hesitant and earnest; not used to talking much, and not used to asking anyone for help."
+  }
+}

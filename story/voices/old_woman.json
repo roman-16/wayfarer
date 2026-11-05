@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "hCBqwvzrDiNNmZyjbTOr",
+  "id": "a06b76a4",
+  "kept": "04.11.2026",
+  "preview": 3,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 1056698160,
+    "should_enhance": false,
+    "text": "Hesper. I'm walking to the Keepers. Everyone says they'll take in anyone. Walk with me? They'll let us in. They have to. Sleep, little locks. Sleep, and keep what is ours. Sleep through the rain and the root and the years. Our stone sleeps. If you woke it, you knew our word, and you are welcome. We are sorry there is nobody left to say so.",
+    "voice_description": "Native English, British. Female, 70-80. Excellent quality. Persona: an old woman of the road and of a vanished people, a pilgrim with a staff, a grandmother who sang lullabies. Emotion: gentle, hopeful, frail, quietly sad, with a soft stubbornness. A soft, thin, warm old voice, slow and tender, a little breathy; it sings a lullaby the way it speaks, and never hardens."
+  }
+}

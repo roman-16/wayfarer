@@ -7,13 +7,19 @@ import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Clock;
+import io.github.roman16.wayfarer.Fire;
+import io.github.roman16.wayfarer.Firsts;
+import io.github.roman16.wayfarer.Handover;
 import io.github.roman16.wayfarer.Joining;
 import io.github.roman16.wayfarer.Journey;
+import io.github.roman16.wayfarer.Nights;
+import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.Record;
 import io.github.roman16.wayfarer.TentPitch;
 import io.github.roman16.wayfarer.Tents;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -27,13 +33,16 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+import java.util.function.ToIntFunction;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
+import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -50,6 +59,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
+import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -59,15 +69,19 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -78,6 +92,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.slf4j.Logger;
@@ -96,8 +111,13 @@ public final class Caravan {
     private static final Bundled<JsonArray> HOUSEHOLDS = Bundled.json("/wayfarer/story.json", story -> story.getAsJsonArray("caravan"));
     private static final int ANGLE_STEP = 15;
     private static final int AROUND = 32;
+    private static final int AWAY = 32;
     private static final int BUSH = 4;
+    private static final int CLEAR = 64;
     private static final int CHUNKS = 2;
+    private static final String FAR_CAMP = "far_camp";
+    private static final String LENT = "wayfarer_lent";
+    private static final String NEAR = "near";
     private static final int CROWDED = 2;
     private static final int CAMP_SAMPLE = 4;
     private static final int RISE = 4;
@@ -128,6 +148,7 @@ public final class Caravan {
     private static final int[] NUDGES = {0, 15, -15, 30, -30, 45, -45, 60, -60, 90, -90, 120, -120, 150, -150, 180};
     private static final int REACH = 8;
     private static final int REACH_OUT = 16;
+    private static final int WAY_OUT = 32;
     private static final int RING = 12;
     private static final int GRAZE = 8;
     private static final int SAFE = 16;
@@ -141,11 +162,20 @@ public final class Caravan {
     private static final int SEARCH_STEP = 32;
     private static final int SEEN_PASSES = 4;
     private static final int STEEP = 2;
+    private static final int SAFE_DROP = 3;
     private static final int SURVEY = 16;
+    private static final int TENT_NEAREST = 6;
+    private static final int TENT_SIZE = 5;
+    private static final int TENT_STEP = 2;
     private static final int TALLEST = 8;
     private static final int TRIES = 4;
-    private static final int AWAY = 32;
+    private static final int APPROACH_BLOCKS = 64;
+    private static final int CLIFF_BLOCKS = 8;
+    private static final int CLIFF_STEP = 4;
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_caravan", Comparator.comparingLong(ChunkPos::toLong));
+    private static final int TICKS_PER_SECOND = 20;
+    private static final double FREE_SIDE = 0.7;
+    private static final String FED = "fed:";
     private static final Set<Block> TRODDEN = Set.of(Blocks.ANDESITE, Blocks.COARSE_DIRT, Blocks.COBBLESTONE, Blocks.DIRT_PATH, Blocks.GRAVEL,
             Blocks.MOSSY_COBBLESTONE, Blocks.PODZOL, Blocks.ROOTED_DIRT);
     @Nullable
@@ -153,6 +183,7 @@ public final class Caravan {
     @Nullable
     private static Packing packing;
     private static long armed = -1;
+    private static long quietUntil;
     private static final Set<UUID> ARRIVED = new HashSet<>();
 
     private Caravan() {}
@@ -202,6 +233,7 @@ public final class Caravan {
 
     private static final class Search {
         private final BlockPos from;
+        private final boolean around;
         private final List<BlockPos> rejected = new ArrayList<>();
         private final List<Fallback> fallbacks = new ArrayList<>();
         private final Unseen.Heights heights;
@@ -213,8 +245,9 @@ public final class Caravan {
         private Stage stage = Stage.SEARCHING;
         private ChunkPos ticket = ChunkPos.ZERO;
 
-        private Search(ServerLevel level, BlockPos from) {
+        private Search(ServerLevel level, BlockPos from, boolean around) {
             this.from = from;
+            this.around = around;
             this.heights = new Unseen.Heights(level);
         }
     }
@@ -232,6 +265,8 @@ public final class Caravan {
         private final Map<BlockPos, BlockState> laid = new LinkedHashMap<>();
         private final List<BoundingBox> boxes = new ArrayList<>();
         private final List<Camped> camps = new ArrayList<>();
+        private long evened = -1;
+        private int evenings;
         private long welcomed = -1;
         private long seenOff = -1;
         @Nullable
@@ -263,6 +298,8 @@ public final class Caravan {
             CompoundTag greeted = tag.getCompound("greeted");
             greeted.getAllKeys().forEach(key -> camp.greeted.put(key, greeted.getInt(key)));
             camp.carried = tag.getCompound("carried");
+            camp.evened = tag.getLong("evened");
+            camp.evenings = tag.getInt("evenings");
             camp.welcomed = tag.getLong("welcomed");
             camp.seenOff = tag.getLong("seenOff");
             HolderGetter<Block> blocks = registries.lookupOrThrow(Registries.BLOCK);
@@ -303,6 +340,8 @@ public final class Caravan {
             this.greeted.forEach(greeted::putInt);
             tag.put("greeted", greeted);
             tag.put("carried", carried);
+            tag.putLong("evened", evened);
+            tag.putInt("evenings", evenings);
             tag.putLong("welcomed", welcomed);
             tag.putLong("seenOff", seenOff);
             tag.put("originals", states(originals));
@@ -446,13 +485,22 @@ public final class Caravan {
             Camp camp = Camp.of(player.server);
             camp.turnedBack = player.getGameProfile().getName();
             camp.setDirty();
-            Talk.notice(Component.translatable("wayfarer.caravan.chosen", player.getDisplayName()));
+            player.server.getPlayerList().getPlayers().forEach(member -> member.sendSystemMessage(Component.translatable("wayfarer.caravan.chosen", player.getDisplayName())
+                    .withStyle(ChatFormatting.GRAY)));
             headIn(player.server);
         }
     }
 
     static boolean homeward(ServerPlayer player) {
-        return heading(player) && Engine.tracked(player).map(active -> active.step().kind().equals(KIND) || !Steps.entered(active)).orElse(true);
+        return heading(player) && !Clock.camped(player) && !Wards.within(player) && !Memories.dreaming(player) && !beside(player)
+                && Engine.tracked(player).map(active -> active.step().kind().equals(KIND) || !Steps.entered(active) && !Steps.ownNight(active.step())).orElse(true);
+    }
+
+    private static boolean beside(ServerPlayer player) {
+        int beside = Balance.get().story().besideBlocks();
+        return Engine.tracked(player).filter(active -> !active.step().kind().equals(KIND)).flatMap(Steps::goal)
+                .flatMap(goal -> Places.aim(Progress.of(player.server), player, goal))
+                .filter(at -> Steps.horizontal(player.blockPosition(), at) <= (double) beside * beside).isPresent();
     }
 
     static void walkedOn(MinecraftServer server) {
@@ -531,6 +579,26 @@ public final class Caravan {
         return player.level().dimension() == Level.OVERWORLD && boxes(player.server).stream().anyMatch(box -> box.isInside(bed)) && !TentPitch.owns(player);
     }
 
+    static boolean near(MinecraftServer server) {
+        int reach = Balance.get().stillness().radiusBlocks();
+        return fire(server).map(fire -> Engine.players(server).stream().anyMatch(player -> player.blockPosition().closerThan(fire, reach))).orElse(false);
+    }
+
+    static boolean spareBed(MinecraftServer server) {
+        return !spareBeds(server).isEmpty();
+    }
+
+    public static List<BlockPos> spareBeds(MinecraftServer server) {
+        ServerLevel level = Engine.overworld(server);
+        return boxes(server).stream().flatMap(box -> BlockPos.betweenClosedStream(box).filter(pos -> level.isLoaded(pos) && level.getBlockState(pos).is(BlockTags.BEDS)
+                && level.getBlockState(pos).getValue(BedBlock.PART) == BedPart.HEAD && !level.getBlockState(pos).getValue(BedBlock.OCCUPIED)).map(BlockPos::immutable)).toList();
+    }
+
+    public static Optional<BlockPos> lentBed(ServerPlayer player) {
+        return TentPitch.owns(player) || player.level().dimension() != Level.OVERWORLD ? Optional.empty()
+                : standing(player.server).flatMap(camp -> spareBeds(player.server).stream().min(Comparator.comparingDouble(bed -> bed.distSqr(player.blockPosition()))));
+    }
+
     public static boolean met(MinecraftServer server) {
         return Progress.of(server).place(NAME).isPresent();
     }
@@ -576,7 +644,6 @@ public final class Caravan {
             case GONE -> {
                 if (!camp.heading && camp.ever && !Journey.over(server) && !Steps.holdsNight(server)
                         && Math.floorMod(level.getDayTime(), Clock.DAY) >= Clock.ticks(Balance.get().clock().runFrom())) {
-                    Talk.notice(Component.translatable("wayfarer.caravan.evening"));
                     headIn(server);
                 }
                 if (camp.heading) {
@@ -607,12 +674,16 @@ public final class Caravan {
                         armed = today;
                         Clock.caravan(level, camp.centre);
                     }
-                    if (arrived(server, level, camp) && camp.welcomed != camp.day && !Talk.busy()) {
+                    if (arrived(server, level, camp) && camp.welcomed != camp.day && !Talk.busy() && (Clock.nightfall()
+                            || Math.floorMod(level.getDayTime(), Clock.DAY) >= Clock.ticks(Balance.get().clock().runFrom()))) {
                         camp.welcomed = camp.day;
                         camp.setDirty();
                         Record.event(server, "camp", null, line -> line.addProperty("day", camp.day));
-                        greet(server, camp.day, "welcomes", Story.Person::welcomes);
+                        Engine.retell(server);
+                        greet(server, camp.day, "welcomes", returned(server) ? Story.Person::returns : Story.Person::welcomes);
+                        quietUntil = level.getGameTime() + (long) Balance.get().talk().eveningGapSeconds() * TICKS_PER_SECOND;
                     }
+                    evening(server, level, camp, today);
                 }
             }
             case PACKING -> {
@@ -632,6 +703,50 @@ public final class Caravan {
         }
     }
 
+    private static void evening(MinecraftServer server, ServerLevel level, Camp camp, long today) {
+        Balance.Talk talk = Balance.get().talk();
+        if (!Clock.nightfall() || camp.welcomed != camp.day || Nights.hard(server) || Hold.active(server)) {
+            return;
+        }
+        feed(server, camp, today);
+        if (Talk.busy() || level.getGameTime() < quietUntil || Engine.players(server).stream().noneMatch(Fire::resting)) {
+            return;
+        }
+        if (camp.evened != today) {
+            camp.evened = today;
+            camp.evenings = 0;
+        }
+        if (camp.evenings >= talk.eveningLines()) {
+            return;
+        }
+        camp.evenings++;
+        camp.setDirty();
+        quietUntil = level.getGameTime() + (long) talk.eveningGapSeconds() * TICKS_PER_SECOND;
+        greet(server, today, "evenings", Story.Person::evenings);
+    }
+
+    private static void feed(MinecraftServer server, Camp camp, long today) {
+        for (ServerPlayer player : Engine.players(server)) {
+            String key = FED + player.getStringUUID();
+            if (Fire.resting(player) && camp.greeted.getOrDefault(key, -1) != (int) today) {
+                camp.greeted.put(key, (int) today);
+                camp.setDirty();
+                ItemStack bowl = new ItemStack(Items.MUSHROOM_STEW);
+                CustomData.update(DataComponents.CUSTOM_DATA, bowl, tag -> tag.putBoolean(LENT, true));
+                Notices.given(player, List.of(bowl));
+                Handover.give(player, bowl.copy());
+                Talk.tell(player, Component.translatable("wayfarer.caravan.bowl"));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEaten(LivingEntityUseItemEvent.Finish event) {
+        if (event.getItem().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getBoolean(LENT) && event.getResultStack().is(Items.BOWL)) {
+            event.setResultStack(ItemStack.EMPTY);
+        }
+    }
+
     private static boolean arrived(MinecraftServer server, ServerLevel level, Camp camp) {
         int circle = Balance.get().fire().circleBlocks();
         boolean any = false;
@@ -642,6 +757,10 @@ public final class Caravan {
             }
         }
         return any;
+    }
+
+    private static boolean returned(MinecraftServer server) {
+        return Engine.players(server).stream().anyMatch(player -> player.getStats().getValue(Stats.CUSTOM.get(Stats.TIME_SINCE_DEATH)) < Clock.DAY);
     }
 
     private static void greet(MinecraftServer server, long day, String kind, Function<Story.Person, List<String>> said) {
@@ -670,7 +789,7 @@ public final class Caravan {
     private static boolean seen(MinecraftServer server, Entity body) {
         int reach = Balance.get().talk().reachBlocks();
         return Engine.players(server).stream().anyMatch(player -> player.level() == body.level() && player.distanceToSqr(body) <= (double) reach * reach
-                && player.hasLineOfSight(body));
+                && Sight.sees(player, body));
     }
 
     private static void start(MinecraftServer server, ServerLevel level, Camp camp) {
@@ -682,15 +801,34 @@ public final class Caravan {
         if (from.distSqr(before.atY(from.getY())) > (double) AWAY * AWAY) {
             camp.facing = (float) Math.toDegrees(Math.atan2(from.getZ() - before.getZ(), from.getX() - before.getX())) - 90;
         }
+        int nearest = nearest(server);
+        Optional<BlockPos> near = placed(server);
+        BlockPos origin = near.orElse(from);
+        double walked = Math.sqrt(from.distSqr(before.atY(from.getY())));
+        int day = Balance.get().caravan().dayBlocks();
+        if (near.isEmpty() && camp.ever && walked - day > nearest) {
+            Vec3 way = Vec3.atLowerCornerOf(from.subtract(before.atY(from.getY()))).multiply(1, 0, 1).normalize();
+            origin = BlockPos.containing(Vec3.atLowerCornerOf(from).subtract(way.scale(Math.min(walked - day, day))));
+        }
         camp.phase = Phase.SEARCHING;
-        camp.centre = from;
+        camp.centre = origin;
         camp.setDirty();
-        search = new Search(level, from);
+        search = new Search(level, origin, !origin.equals(from));
+    }
+
+    private static int nearest(MinecraftServer server) {
+        return (server.getPlayerList().getViewDistance() + CHUNKS + 2) * 16;
+    }
+
+    private static Optional<BlockPos> placed(MinecraftServer server) {
+        return Engine.active(server).stream().filter(active -> active.step().kind().equals(KIND) && active.step().spec().has(NEAR))
+                .map(active -> Engine.at(server, active.step().text(NEAR))).findFirst();
     }
 
     private static void search(MinecraftServer server, ServerLevel level, Camp camp) {
         if (search.pending == null) {
             int view = server.getPlayerList().getViewDistance();
+            boolean around = search.around;
             List<Unseen.Viewer> viewers = Unseen.viewers(level);
             Unseen.Heights heights = search.heights;
             List<BlockPos> rejected = List.copyOf(search.rejected);
@@ -700,7 +838,7 @@ public final class Caravan {
             int widest = Math.min(HALF_TURN, WIDEST_AHEAD + WIDER * search.seenPasses);
             int span = Math.min(FARTHEST, SEARCH_SPAN * (1 + search.seenPasses));
             search.pending = CompletableFuture.supplyAsync(() -> {
-                int nearest = (view + CHUNKS + 2) * 16;
+                int nearest = around ? 0 : (view + CHUNKS + 2) * 16;
                 List<Spot> spots = new ArrayList<>();
                 for (int distance = nearest; distance <= nearest + span; distance += SEARCH_STEP) {
                     for (int angle : angles(HALF_TURN)) {
@@ -738,6 +876,16 @@ public final class Caravan {
             settle(level, camp);
         } else {
             widen();
+        }
+    }
+
+    private static void far(MinecraftServer server, BlockPos centre) {
+        int far = Balance.get().caravan().farBlocks();
+        for (ServerPlayer player : Engine.players(server)) {
+            if (player.level().dimension() == Level.OVERWORLD && player.blockPosition().distSqr(centre.atY(player.getBlockY())) > (double) far * far
+                    && Firsts.first(player, FAR_CAMP)) {
+                Talk.tell(player, Component.translatable("wayfarer.first." + FAR_CAMP));
+            }
         }
     }
 
@@ -779,7 +927,8 @@ public final class Caravan {
     private static void load(MinecraftServer server, ServerLevel level, Camp camp) {
         Survey survey = survey(level, camp.centre);
         List<String> wishes = new ArrayList<>(survey.wishes());
-        String hard = survey.hard() == null ? build(level, camp, wishes) : survey.hard();
+        List<Runnable> seating = new ArrayList<>();
+        String hard = survey.hard() == null ? build(level, camp, wishes, seating) : survey.hard();
         level.getChunkSource().removeRegionTicket(TICKET, search.ticket, CHUNKS, search.ticket);
         if (hard == null && (search.settling || wishes.isEmpty())) {
             camp.originals.keySet().forEach(pos -> camp.laid.put(pos, level.getBlockState(pos)));
@@ -791,10 +940,15 @@ public final class Caravan {
             search = null;
             Progress.of(server).place(NAME, camp.centre);
             Journal.syncAll(server);
+            if (camp.heading) {
+                Talk.notice(Component.translatable("wayfarer.caravan.evening"));
+                far(server, camp.centre);
+            }
             if (ModList.get().isLoaded(TENTS)) {
                 TentPitch.bringBack(server, new Joining.Place(Level.OVERWORLD, camp.centre));
             }
             release(level, camp);
+            seating.forEach(Runnable::run);
             LOGGER.info("the caravan made camp at {}{}", camp.centre, wishes.isEmpty() ? "" : ", though " + String.join(", ", wishes));
             return;
         }
@@ -940,7 +1094,10 @@ public final class Caravan {
 
     @Nullable
     private static String misfit(Unseen.Heights heights, BlockPos centre) {
-        return heights.wet(centre.getX(), centre.getZ()) ? "in water" : null;
+        if (heights.wet(centre.getX(), centre.getZ())) {
+            return "in water";
+        }
+        return Sites.open(heights.biome(centre.getX(), heights.surface(centre.getX(), centre.getZ()), centre.getZ())) ? null : "under trees";
     }
 
     private static boolean snowy(Unseen.Heights heights, BlockPos centre) {
@@ -1007,15 +1164,24 @@ public final class Caravan {
         if (danger != null) {
             return new Survey(danger, List.of());
         }
-        String inside = neighbour(level, centre, REACH_OUT);
-        if (inside != null) {
-            return new Survey("%s in the way".formatted(inside), List.of());
+        int floor = ground(level, centre.getX(), centre.getZ());
+        if (roofed(level, centre.atY(floor))) {
+            return new Survey("rock over the fire", List.of());
+        }
+        String neighbour = neighbour(level, centre, CLEAR);
+        if (neighbour != null) {
+            return new Survey("%s within %d blocks".formatted(neighbour, CLEAR), List.of());
+        }
+        long players = Math.max(1, level.getServer().getPlayerList().getPlayers().stream().filter(player -> !player.isSpectator()).count());
+        int room = tentRoom(level, centre);
+        if (room < players) {
+            return new Survey("room for %d of %d tents".formatted(room, players), List.of());
+        }
+        if (!walkable(level, centre)) {
+            return new Survey("no way to walk %d blocks out from the fire".formatted(WAY_OUT), List.of());
         }
         List<String> wishes = new ArrayList<>();
-        String neighbour = neighbour(level, centre, REACH_OUT + AWAY);
-        if (neighbour != null) {
-            wishes.add("%s within %d blocks".formatted(neighbour, AWAY));
-        }
+        cliff(level, centre.atY(floor)).ifPresent(wishes::add);
         int columns = 0;
         int trees = 0;
         int water = 0;
@@ -1028,7 +1194,7 @@ public final class Caravan {
                 }
                 columns++;
                 int top = ground(level, centre.getX() + x, centre.getZ() + z);
-                if (level.getHeight(Heightmap.Types.MOTION_BLOCKING, centre.getX() + x, centre.getZ() + z) - 1 - top > BUSH) {
+                if (Ground.crown(level, centre.getX() + x, centre.getZ() + z) - top > BUSH) {
                     trees++;
                 } else if (!level.getBlockState(new BlockPos(centre.getX() + x, top, centre.getZ() + z)).getFluidState().isEmpty()) {
                     water++;
@@ -1050,6 +1216,111 @@ public final class Caravan {
         return new Survey(null, wishes);
     }
 
+    private static int tentRoom(ServerLevel level, BlockPos centre) {
+        List<BlockPos> taken = new ArrayList<>();
+        for (int x = -SURVEY; x <= SURVEY; x += TENT_STEP) {
+            for (int z = -SURVEY; z <= SURVEY; z += TENT_STEP) {
+                int far = x * x + z * z;
+                BlockPos spot = centre.offset(x, 0, z);
+                if (far < TENT_NEAREST * TENT_NEAREST || far > SURVEY * SURVEY
+                        || taken.stream().anyMatch(other -> Math.abs(other.getX() - spot.getX()) < TENT_SIZE && Math.abs(other.getZ() - spot.getZ()) < TENT_SIZE)) {
+                    continue;
+                }
+                if (flat(level, spot)) {
+                    taken.add(spot);
+                }
+            }
+        }
+        return taken.size();
+    }
+
+    private static boolean flat(ServerLevel level, BlockPos spot) {
+        int low = Integer.MAX_VALUE;
+        int high = Integer.MIN_VALUE;
+        for (int dx = -TENT_SIZE / 2; dx <= TENT_SIZE / 2; dx++) {
+            for (int dz = -TENT_SIZE / 2; dz <= TENT_SIZE / 2; dz++) {
+                int x = spot.getX() + dx;
+                int z = spot.getZ() + dz;
+                int top = ground(level, x, z);
+                if (!level.getBlockState(new BlockPos(x, top, z)).getFluidState().isEmpty() || Ground.crown(level, x, z) - top > BUSH) {
+                    return false;
+                }
+                low = Math.min(low, top);
+                high = Math.max(high, top);
+            }
+        }
+        return high - low <= 1;
+    }
+
+    private static boolean walkable(ServerLevel level, BlockPos centre) {
+        Map<Long, Integer> tops = new HashMap<>();
+        ToIntFunction<BlockPos> top = column -> tops.computeIfAbsent(column.asLong(), key -> ground(level, column.getX(), column.getZ()));
+        Set<BlockPos> seen = new HashSet<>(Set.of(centre.atY(0)));
+        ArrayDeque<BlockPos> frontier = new ArrayDeque<>(seen);
+        while (!frontier.isEmpty()) {
+            BlockPos at = frontier.poll();
+            if (at.distSqr(centre.atY(0)) >= (double) WAY_OUT * WAY_OUT) {
+                return true;
+            }
+            int here = top.applyAsInt(at);
+            for (Direction side : Direction.Plane.HORIZONTAL) {
+                BlockPos next = at.relative(side);
+                if (seen.contains(next)) {
+                    continue;
+                }
+                if (!level.isLoaded(next.atY(here))) {
+                    return true;
+                }
+                int there = top.applyAsInt(next);
+                if (there - here <= 1 && here - there <= SAFE_DROP
+                        && level.getBlockState(new BlockPos(next.getX(), there, next.getZ())).getFluidState().isEmpty()) {
+                    seen.add(next);
+                    frontier.add(next);
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean roofed(ServerLevel level, BlockPos ground) {
+        int sky = Ground.sky(level, ground.getX(), ground.getZ()) + 1;
+        for (int y = ground.getY() + 1; y < sky; y++) {
+            BlockState state = level.getBlockState(ground.atY(y));
+            if (!state.isAir() && !growth(state) && state.getFluidState().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static Optional<String> cliff(ServerLevel level, BlockPos ground) {
+        Optional<ServerPlayer> team = Engine.players(level.getServer()).stream().filter(player -> player.level() == level)
+                .min(Comparator.comparingDouble(player -> player.distanceToSqr(Vec3.atCenterOf(ground))));
+        if (team.isEmpty()) {
+            return Optional.empty();
+        }
+        Vec3 way = Vec3.atCenterOf(ground).subtract(team.get().position()).multiply(1, 0, 1);
+        double length = Math.min(way.length(), APPROACH_BLOCKS);
+        if (length < CLIFF_STEP) {
+            return Optional.empty();
+        }
+        Vec3 back = way.normalize().scale(-1);
+        int before = ground.getY();
+        for (double out = CLIFF_STEP; out <= length; out += CLIFF_STEP) {
+            int x = ground.getX() + (int) Math.round(back.x * out);
+            int z = ground.getZ() + (int) Math.round(back.z * out);
+            if (!level.isLoaded(new BlockPos(x, 0, z))) {
+                break;
+            }
+            int at = ground(level, x, z);
+            if (Math.abs(at - before) > CLIFF_BLOCKS) {
+                return Optional.of("a cliff of %d blocks on the way in".formatted(Math.abs(at - before)));
+            }
+            before = at;
+        }
+        return Optional.empty();
+    }
+
     @Nullable
     private static String danger(ServerLevel level, BlockPos centre) {
         int reach = REACH_OUT + SAFE;
@@ -1058,7 +1329,7 @@ public final class Caravan {
                 if (x * x + z * z > reach * reach) {
                     continue;
                 }
-                int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, centre.getX() + x, centre.getZ() + z) - 1;
+                int top = Ground.crown(level, centre.getX() + x, centre.getZ() + z);
                 for (int y = top - SAFE_BELOW; y <= top + SAFE_ABOVE; y++) {
                     BlockPos pos = new BlockPos(centre.getX() + x, y, centre.getZ() + z);
                     BlockState state = level.getBlockState(pos);
@@ -1101,10 +1372,16 @@ public final class Caravan {
                 }
             }
         }
+        camp.laid.forEach((pos, laid) -> {
+            if (laid.is(BlockTags.CAMPFIRES) && level.isLoaded(pos) && !CampfireBlock.isLitCampfire(level.getBlockState(pos))) {
+                level.setBlock(pos, laid.setValue(CampfireBlock.LIT, true), FLAGS);
+                LOGGER.info("the caravan's fire at {} was out; it burns again", pos);
+            }
+        });
     }
 
     @Nullable
-    private static String build(ServerLevel level, Camp camp, List<String> wishes) {
+    private static String build(ServerLevel level, Camp camp, List<String> wishes, List<Runnable> seating) {
         List<BoundingBox> taken = camp.boxes;
         taken.clear();
         List<BlockPos> shifts = new ArrayList<>();
@@ -1125,19 +1402,31 @@ public final class Caravan {
             return "no room for the fire";
         }
         camp.centre = fire.centre;
-        List<BlockPos> seats = new ArrayList<>();
-        BlockPos.betweenClosedStream(fire.box).filter(pos -> level.getBlockState(pos).is(Blocks.STRIPPED_SPRUCE_LOG))
-                .forEach(pos -> seats.add(pos.immutable()));
+        List<BlockPos> seats = seats(BlockPos.betweenClosedStream(fire.box).filter(pos -> level.getBlockState(pos).is(Blocks.STRIPPED_SPRUCE_LOG))
+                .map(BlockPos::immutable).toList(), fire.centre, camp.facing);
         List<JsonElement> households = households(level.getServer());
         long together = households.size();
         int slot = 0;
         for (JsonElement entry : households) {
-            pitch(level, camp, entry.getAsJsonObject(), camp.facing + 180 + 360.0 * slot++ / together, seats, taken, wishes);
+            pitch(level, camp, entry.getAsJsonObject(), camp.facing + 180 + 360.0 * slot++ / together, seats, taken, wishes, seating);
         }
         return null;
     }
 
-    private static void pitch(ServerLevel level, Camp camp, JsonObject household, double angle, List<BlockPos> seats, List<BoundingBox> taken, List<String> wishes) {
+    private static List<BlockPos> seats(List<BlockPos> logs, BlockPos fire, float facing) {
+        Vec3 front = Vec3.directionFromRotation(0, facing);
+        List<BlockPos> seats = new ArrayList<>(logs);
+        seats.stream().max(Comparator.comparingDouble(seat -> away(seat, fire).dot(front))).map(free -> away(free, fire))
+                .ifPresent(side -> seats.removeIf(seat -> away(seat, fire).dot(side) > FREE_SIDE));
+        return seats;
+    }
+
+    private static Vec3 away(BlockPos seat, BlockPos fire) {
+        return Vec3.atLowerCornerOf(seat.subtract(fire)).multiply(1, 0, 1).normalize();
+    }
+
+    private static void pitch(ServerLevel level, Camp camp, JsonObject household, double angle, List<BlockPos> seats, List<BoundingBox> taken, List<String> wishes,
+            List<Runnable> seating) {
         String piece = household.get("piece").getAsString();
         StructureTemplate template = level.getStructureManager().get(ResourceLocation.fromNamespaceAndPath(Wayfarer.MODID, "caravan/" + piece)).orElseThrow();
         int radius = 4 + Math.max(template.getSize().getX(), template.getSize().getZ()) / 2 + GAP
@@ -1156,10 +1445,10 @@ public final class Caravan {
         if (placed == null) {
             for (JsonObject person : people(level.getServer(), household)) {
                 boolean sits = !seats.isEmpty();
-                BlockPos spot = sits ? seats.removeFirst().above() : level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                        camp.centre.offset((int) Math.round(Math.cos(Math.toRadians(angle)) * STANDBY), 0, (int) Math.round(Math.sin(Math.toRadians(angle)) * STANDBY)));
+                BlockPos spot = sits ? seats.removeFirst().above() : Ground.above(level, camp.centre.offset((int) Math.round(Math.cos(Math.toRadians(angle)) * STANDBY), 0, (int) Math.round(Math.sin(Math.toRadians(angle)) * STANDBY)));
                 double yaw = Math.toDegrees(Math.atan2(camp.centre.getZ() - spot.getZ(), camp.centre.getX() - spot.getX())) - 90;
-                People.place(level, person.get("person").getAsString(), Vec3.atBottomCenterOf(spot), (float) yaw, sits ? SITTING : "standing");
+                String pose = sits ? SITTING : "standing";
+                seating.add(() -> People.place(level, person.get("person").getAsString(), Vec3.atBottomCenterOf(spot), (float) yaw, pose));
             }
             landmark(level, household, camp.centre, camp.centre.above());
             wishes.add("no room for its " + piece);
@@ -1177,7 +1466,9 @@ public final class Caravan {
                 pose = bench.isPresent() ? SITTING : SITTING_ON_THE_GROUND;
             }
             double yaw = Math.toDegrees(Math.atan2(camp.centre.getZ() - spot.getZ(), camp.centre.getX() - spot.getX())) - 90;
-            People.place(level, who.get("person").getAsString(), Vec3.atBottomCenterOf(spot), (float) yaw, pose);
+            BlockPos at = spot;
+            String posed = pose;
+            seating.add(() -> People.place(level, who.get("person").getAsString(), Vec3.atBottomCenterOf(at), (float) yaw, posed));
         }
     }
 
@@ -1190,11 +1481,13 @@ public final class Caravan {
         households(server).stream().map(JsonElement::getAsJsonObject).filter(household -> household.has(JOINS) && household.get(JOINS).getAsString().equals(person))
                 .findFirst().ifPresent(household -> {
                     Set<BlockPos> before = new HashSet<>(camp.originals.keySet());
-                    List<BlockPos> seats = new ArrayList<>(BlockPos.betweenClosedStream(camp.centre.offset(-SEAT_REACH, -1, -SEAT_REACH),
+                    List<BlockPos> seats = seats(BlockPos.betweenClosedStream(camp.centre.offset(-SEAT_REACH, -1, -SEAT_REACH),
                             camp.centre.offset(SEAT_REACH, 1, SEAT_REACH)).filter(pos -> level.getBlockState(pos).is(Blocks.STRIPPED_SPRUCE_LOG)
                                     && level.getEntities((Entity) null, new AABB(pos.above()), entity -> !(entity instanceof ServerPlayer)).isEmpty())
-                            .map(BlockPos::immutable).toList());
-                    pitch(level, camp, household, camp.facing + 180, seats, camp.boxes, new ArrayList<>());
+                            .map(BlockPos::immutable).toList(), camp.centre, camp.facing);
+                    List<Runnable> seating = new ArrayList<>();
+                    pitch(level, camp, household, camp.facing + 180, seats, camp.boxes, new ArrayList<>(), seating);
+                    seating.forEach(Runnable::run);
                     camp.originals.keySet().stream().filter(pos -> !before.contains(pos)).forEach(pos -> camp.laid.put(pos, level.getBlockState(pos)));
                     camp.setDirty();
                     LOGGER.info("{}'s household joins the standing camp at {}", person, camp.centre);
@@ -1263,7 +1556,7 @@ public final class Caravan {
             for (int z = footprint.minZ(); z <= footprint.maxZ(); z++) {
                 int top = ground(level, x, z);
                 BlockState ground = level.getBlockState(new BlockPos(x, top, z));
-                if (!ground.getFluidState().isEmpty() || level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1 - top > BUSH) {
+                if (!ground.getFluidState().isEmpty() || Ground.crown(level, x, z) - top > BUSH) {
                     return null;
                 }
                 tops.add(top);
@@ -1300,12 +1593,12 @@ public final class Caravan {
         Direction front = rotation.rotate(Direction.NORTH);
         BlockPos centre = at.atY(y);
         BlockPos door = centre.relative(front, template.getSize().getZ() / 2 + 1);
-        int doorY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, door.getX(), door.getZ()) - 1;
+        int doorY = Ground.land(level, door.getX(), door.getZ());
         return new Placed(box, centre, door.atY(doorY));
     }
 
     private static int ground(ServerLevel level, int x, int z) {
-        int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
+        int top = Ground.land(level, x, z);
         while (growth(level.getBlockState(new BlockPos(x, top, z)))) {
             top--;
         }
@@ -1313,7 +1606,8 @@ public final class Caravan {
     }
 
     private static boolean growth(BlockState state) {
-        return state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS) || !state.isAir() && state.canBeReplaced() && state.getFluidState().isEmpty();
+        return state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS) || state.is(Blocks.BROWN_MUSHROOM_BLOCK) || state.is(Blocks.RED_MUSHROOM_BLOCK)
+                || state.is(Blocks.MUSHROOM_STEM) || !state.isAir() && state.canBeReplaced() && state.getFluidState().isEmpty();
     }
 
     private static void terrace(ServerLevel level, Camp camp, int x, int z, int y) {
@@ -1367,7 +1661,7 @@ public final class Caravan {
             if (taken.stream().anyMatch(box -> box.isInside(x, box.minY(), z))) {
                 continue;
             }
-            BlockPos top = new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1, z);
+            BlockPos top = new BlockPos(x, Ground.land(level, x, z), z);
             BlockState ground = level.getBlockState(top);
             if (!ground.is(BlockTags.DIRT) || ground.is(Blocks.DIRT_PATH) || camp.originals.containsKey(top)) {
                 continue;
@@ -1385,7 +1679,7 @@ public final class Caravan {
         Direction out = Direction.getNearest(placed.front.getX() - placed.centre.getX(), 0, placed.front.getZ() - placed.centre.getZ());
         for (Direction aside : List.of(out.getClockWise(), out.getCounterClockWise())) {
             BlockPos column = placed.front.relative(aside, BENCH_ASIDE);
-            BlockPos seat = new BlockPos(column.getX(), level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column.getX(), column.getZ()), column.getZ());
+            BlockPos seat = new BlockPos(column.getX(), Ground.land(level, column.getX(), column.getZ()) + 1, column.getZ());
             BlockPos ground = seat.below();
             if (taken.stream().noneMatch(box -> box.isInside(seat)) && level.getBlockState(seat).canBeReplaced() && level.getBlockState(seat.above()).canBeReplaced()
                     && level.getBlockState(seat).getFluidState().isEmpty() && !level.getBlockState(ground).getCollisionShape(level, ground).isEmpty()) {

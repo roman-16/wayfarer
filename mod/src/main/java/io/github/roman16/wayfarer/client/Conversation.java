@@ -47,6 +47,7 @@ public final class Conversation {
     private static final int ANSWER_WIDTH = 160;
     private static final int OPAQUE = 0xFF;
     private static final int LOGGED = 32;
+    private static final int TICKS_PER_SECOND = 20;
     private static final String TICK_SOUND = "band_tick";
     private static final Deque<Shown> lines = new ArrayDeque<>();
     private static final Deque<Logged> log = new ArrayDeque<>();
@@ -73,7 +74,11 @@ public final class Conversation {
         while (lines.size() > KEPT) {
             lines.removeFirst();
         }
-        note(subtitle.by().isEmpty() ? subtitle.text().getString() : "<" + subtitle.by() + "> " + subtitle.text().getString());
+        if (!subtitle.clip().isEmpty()) {
+            Speech.band(subtitle.clip(), subtitle.source());
+        }
+        String said = subtitle.by().isEmpty() ? subtitle.text().getString() : "<" + subtitle.by() + "> " + subtitle.text().getString();
+        note(said + (subtitle.clip().isEmpty() ? " (silent)" : String.format(Locale.ROOT, " (voiced, %.1f s)", subtitle.ticks() / (float) TICKS_PER_SECOND)));
     }
 
     private static boolean quiet() {

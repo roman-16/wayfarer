@@ -1,4 +1,5 @@
 import contextlib
+import fcntl
 import json
 import os
 import re
@@ -8,8 +9,15 @@ import subprocess
 import time
 import uuid
 from datetime import datetime
+from pathlib import Path
 
+import tomllib
+
+ROOT = Path(__file__).resolve().parent.parent
 CHECK_SECONDS = 0.1
+CLAIM = "session"
+GAME_OVERHEAD_GIGABYTES = 4
+SEAT_PORTS = 10
 CHECKPOINT = "checkpoint.json"
 KEPT_CHECKPOINTS = 16
 NUMBERED = re.compile(r"\d{4}")
@@ -23,6 +31,145 @@ REPLY = re.compile(r"\[minecraft/MinecraftServer\]: (.*)$")
 
 class Failure(Exception):
     pass
+
+
+class Seat:
+    def __init__(self, kind, number, folder):
+        self.kind = kind
+        self.number = number
+        self.folder = folder
+
+    def offset(self):
+        return SEAT_PORTS * self.number
+
+    def owner(self):
+        claim = self.folder / CLAIM
+        return claim.read_text().strip() if claim.exists() else None
+
+
+def seat(kind):
+    session = os.environ.get("PI_SESSION_ID")
+    own = ROOT / "build" / kind
+    if not session:
+        return Seat(kind, 0, own)
+    base = ROOT / "build" / f"{kind}s"
+    base.mkdir(parents=True, exist_ok=True)
+    with locked(base / ".lock"):
+        numbered = sorted(
+            (int(folder.name), folder) for folder in base.iterdir() if folder.is_dir() and folder.name.isdigit()
+        )
+        for number, folder in numbered:
+            if (folder / CLAIM).exists() and (folder / CLAIM).read_text().strip() == session:
+                return Seat(kind, number, folder)
+        for number, folder in numbered:
+            if not playing(folder):
+                (folder / CLAIM).write_text(session)
+                return Seat(kind, number, folder)
+        number = numbered[-1][0] + 1 if numbered else 1
+        folder = base / str(number)
+        folder.mkdir()
+        (folder / CLAIM).write_text(session)
+        return Seat(kind, number, folder)
+
+
+def seats(kind):
+    found = [Seat(kind, 0, ROOT / "build" / kind)]
+    base = ROOT / "build" / f"{kind}s"
+    if base.exists():
+        found += [
+            Seat(kind, int(folder.name), folder)
+            for folder in sorted(base.iterdir())
+            if folder.is_dir() and folder.name.isdigit()
+        ]
+    return found
+
+
+def playing(folder):
+    return any(running(folder / "driver" / name) for name in ("launcher.pid", "game.pid", "server.pid"))
+
+
+@contextlib.contextmanager
+def locked(path):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+def room(kind):
+    available = next(
+        int(line.split()[1])
+        for line in Path("/proc/meminfo").read_text().splitlines()
+        if line.startswith("MemAvailable:")
+    )
+    heap = tomllib.loads((ROOT / "balance.toml").read_text())["heap"]["gigabytes"]
+    needed = (heap + GAME_OVERHEAD_GIGABYTES) * 1024 * 1024
+    if available >= needed:
+        return
+    others = [
+        f"session {other.owner() or 'of your own'}'s {other.kind}"
+        for other in seats("client") + seats("devserver")
+        if playing(other.folder)
+    ]
+    raise Failure(
+        f"{available // (1024 * 1024)} GB of memory free, a game needs {needed // (1024 * 1024)}; running: {', '.join(others) or 'nothing of the pack'}"
+    )
+
+
+def shared(seat_saves, store, kept_apart):
+    if seat_saves.resolve() == store.resolve():
+        return
+    seat_saves.mkdir(parents=True, exist_ok=True)
+    store.mkdir(parents=True, exist_ok=True)
+    for world in list(seat_saves.iterdir()):
+        if (
+            world.is_dir()
+            and not world.is_symlink()
+            and world.name not in kept_apart
+            and not opened(world)
+            and not (store / world.name).exists()
+        ):
+            shutil.move(str(world), store / world.name)
+            world.symlink_to(store / world.name)
+    for world in store.iterdir():
+        target = seat_saves / world.name
+        if world.is_dir() and world.name not in kept_apart and not target.exists() and not target.is_symlink():
+            target.symlink_to(world)
+    (seat_saves.parent / "allowed_symlinks.txt").write_text(f"[prefix]{store.resolve()}/\n")
+
+
+def borrowed(folder, store, world):
+    target = folder / world
+    if folder.resolve() == store.resolve() or target.exists() or target.is_symlink() or not (store / world).is_dir():
+        return
+    folder.mkdir(parents=True, exist_ok=True)
+    target.symlink_to(store / world)
+    (folder / "allowed_symlinks.txt").write_text(f"[prefix]{store.resolve()}/\n")
+
+
+def opened(world):
+    lock = world / "session.lock"
+    if not lock.exists():
+        return False
+    with lock.open("a") as handle:
+        try:
+            fcntl.lockf(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            return True
+        fcntl.lockf(handle, fcntl.LOCK_UN)
+    return False
+
+
+def holder(world_name, kind):
+    for other in seats(kind):
+        for name in ("save.json", "world.json"):
+            record = other.folder / "driver" / name
+            if playing(other.folder) and record.exists() and world_name in record.read_text():
+                return other
+    return None
 
 
 def running(pid_file):

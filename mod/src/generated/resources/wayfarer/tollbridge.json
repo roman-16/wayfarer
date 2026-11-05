@@ -746,6 +746,11 @@
       6
     ],
     "ground": 4,
+    "hatch": [
+      3,
+      5,
+      3
+    ],
     "margin": 1,
     "seats": {
       "agna": [

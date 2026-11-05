@@ -2,17 +2,23 @@ package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Journey;
+import io.github.roman16.wayfarer.Sea;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.QuartPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 final class Shores {
+    private static final TagKey<Item> BOATS = TagKey.create(Registries.ITEM, ResourceLocation.parse("wayfarer:ships"));
     private static final String SAID = "sea_said";
     private static final String SEA = "sea";
     private static final String STRANGER = "stranger";
@@ -32,10 +38,10 @@ final class Shores {
         ServerLevel level = Engine.overworld(server);
         for (ServerPlayer player : Engine.players(server)) {
             if (player.level().dimension() == Level.OVERWORLD && Engine.tracked(player).filter(tracked -> tracked.quest() == active.quest()).isPresent()
-                    && sea(level, player.position(), Vec3.atCenterOf(goal.get()))) {
+                    && !Sea.afloat(player) && sea(level, player.position(), Vec3.atCenterOf(goal.get()))) {
                 active.scratch().putBoolean(SAID, true);
                 Progress.of(server).setDirty();
-                Talk.say(active.quest().id(), null, new Story.Line(STRANGER, Scenes.voice(SEA)));
+                Talk.say(active.quest().id(), null, new Story.Line(STRANGER, Scenes.voice(SEA, player.getInventory().contains(BOATS) ? 1 : 0)));
                 return;
             }
         }
@@ -46,7 +52,7 @@ final class Shores {
         Vec3 way = to.subtract(from).multiply(1, 0, 1);
         int steps = (int) (way.length() / STEP_BLOCKS);
         int run = 0;
-        for (int index = 1; index <= steps; index++) {
+        for (int index = 1; index <= steps && (index - 1) * STEP_BLOCKS - run <= wanted; index++) {
             Vec3 at = from.add(way.scale((double) index / steps));
             boolean ocean = level.getUncachedNoiseBiome(QuartPos.fromBlock((int) at.x), QuartPos.fromBlock(level.getChunkSource().getGenerator().getSeaLevel()), QuartPos.fromBlock((int) at.z))
                     .is(BiomeTags.IS_OCEAN);

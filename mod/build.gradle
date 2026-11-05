@@ -3,7 +3,11 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.148'
 }
 
-version = mod_version
+var packVersion = providers.fileContents(layout.projectDirectory.file('../pack/pack.toml')).asText.get() =~ /(?m)^version = "(.+)"$/
+if (!packVersion.find()) {
+    throw new GradleException('pack/pack.toml names no version')
+}
+version = packVersion.group(1)
 group = mod_group_id
 
 base {
@@ -102,9 +106,9 @@ neoForge {
         [play: false, showroom: true].each { name, showroom ->
             create(name) {
                 client()
-                gameDirectory = file('../build/client')
+                gameDirectory = file(providers.environmentVariable('WAYFARER_GAME_DIRECTORY').orElse('../build/client').get())
                 jvmArgument "-Xmx${heapGigabytes}G"
-                jvmArguments.addAll swappable(client_swap_port)
+                jvmArguments.addAll swappable(providers.environmentVariable('WAYFARER_SWAP_PORT').orElse(client_swap_port).get())
                 jvmArguments.add hotswapAgentArgument
                 programArguments.addAll '--fml.mixinConfig', "${mod_id}.dev.mixins.json", '--height', '720', '--username', 'Wayfarer', '--width', '1280'
                 sourceSet = sourceSets.dev
@@ -129,9 +133,9 @@ neoForge {
         }
         server {
             server()
-            gameDirectory = file('../build/devserver')
+            gameDirectory = file(providers.environmentVariable('WAYFARER_GAME_DIRECTORY').orElse('../build/devserver').get())
             jvmArgument "-Xmx${heapGigabytes}G"
-            jvmArguments.addAll swappable(server_swap_port)
+            jvmArguments.addAll swappable(providers.environmentVariable('WAYFARER_SWAP_PORT').orElse(server_swap_port).get())
             jvmArguments.add hotswapAgentArgument
             programArguments.add '--nogui'
             sourceSet = sourceSets.dev
@@ -210,8 +214,8 @@ var generateModMetadata = tasks.register('generateModMetadata', ProcessResources
             mod_id                    : mod_id,
             mod_license               : mod_license,
             mod_name                  : mod_name,
-            mod_version               : mod_version,
             neo_version               : neo_version,
+            version                   : version,
     ]
     inputs.properties replaceProperties
     expand replaceProperties

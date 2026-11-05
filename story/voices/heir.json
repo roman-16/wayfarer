@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "M1D97ms3GjikIUDPsW6k",
+  "id": "09a24e51",
+  "kept": "03.11.2026",
+  "preview": 3,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 2139559376,
+    "should_enhance": false,
+    "text": "The Grass King's son, since you're too polite to ask. I've been here four days. It won't lift for me. I want a world where everything is seen, and nothing hides in the dark. No thieves. No war. That someone watches. Someone always watched. I'd only make it kind. Lift it. I'll take it from you at the gate.",
+    "voice_description": "Native English, British, a refined, aristocratic voice. Male, 35-45. Excellent quality. Persona: the son of a fallen king who leads a cult of zealots, a charming idealist who believes the world should be watched for its own good. Emotion: calm, courteous, amused, quietly dangerous, utterly convinced. A smooth, cultured, mellow voice, unhurried and polite, never raised; the menace lies in how reasonable he sounds."
+  }
+}

@@ -50,6 +50,7 @@ public final class Bell {
 
     static void tick(MinecraftServer server) {
         Progress progress = Progress.of(server);
+        carried(server, progress);
         Optional<BlockPos> bell = progress.place(PLACE);
         if (bell.isEmpty()) {
             return;
@@ -68,6 +69,17 @@ public final class Bell {
             tolled = day;
             Sounds.play(level, bell.get().getCenter(), TOLL);
         }
+    }
+
+    private static void carried(MinecraftServer server, Progress progress) {
+        Optional<BlockPos> fallen = progress.place(Tollbridge.BELL);
+        ServerLevel level = Engine.overworld(server);
+        if (fallen.isEmpty() || !progress.choices.containsKey(DECIDED) || !level.isLoaded(fallen.get()) || !level.getBlockState(fallen.get()).is(Wayfarer.TOLLBRIDGE_BELL)
+                || People.seen(level, fallen.get().getCenter())) {
+            return;
+        }
+        level.setBlock(fallen.get(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        LOGGER.info("the caravan took Maud's bell from {}", fallen.get());
     }
 
     @SubscribeEvent

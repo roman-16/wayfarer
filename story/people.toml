@@ -1,94 +1,116 @@
 [agna]
 color = "green"
+evenings = [
+  "[firm] Eat what's in the pot. All of it.",
+  "[motherly] Take your boots off by the fire. Your feet need the air.",
+  "[softly] If you can't sleep, lie still anyway. It helps.",
+  "[gently] Drink some water before you lie down.",
+]
 mornings = [
-  "Eat something before you go. Then go on; we'll follow.",
-  "Go. I'll keep the child from running after you.",
-  "Drink before you walk, not after. Go on.",
-  "If you cut yourself today, wash it. Then walk.",
+  "[brisk] Eat something before you go. Then go on; we'll follow.",
+  "[a tired laugh] Go. We'll follow, and I'll keep the child from running after you.",
+  "[practical] Drink before you walk, not after. Go on; we're right behind you.",
+  "[stern] If you cut yourself today, wash it. We'll follow your marks.",
 ]
 name = "Agna"
 remarks = [
-  "Eat something. You look like a ghost.",
-  "If it hurts, show me. If it doesn't, walk.",
+  "[worried, brisk] Eat something. You look like a ghost.",
+  "[dry] If it hurts, show me. If it doesn't, walk.",
+]
+returns = [
+  "[sharp, then softer] Sit down. Let me see you. [quietly] You came back from further than most.",
+  "[low] Breathe. Slowly. [firm] You're here, and you're staying by this fire tonight.",
 ]
 unnamed = "A woman in green"
 welcomes = [
-  "Back in one piece. Sit, let me look at you.",
-  "There you are. Eat before you do anything else.",
-  "Show me your hands. ...Fine. Go and get warm.",
-  "Sit before you fall down. Then tell me where it hurts.",
+  "[relieved] Back in one piece. [brisk] Sit, let me look at you.",
+  "[warm] There you are. Eat before you do anything else.",
+  "[brisk] Show me your hands. [pause] ...Fine. Go and get warm.",
+  "[tutting] Sit before you fall down. Then tell me where it hurts.",
 ]
 
 [alruna]
 color = "blue"
+evenings = [
+  "[intent] Say it again, slower. I want to write it right.",
+  "[shy, pleased] I wrote down your day. Tell me if I got it wrong.",
+  "[content] The fire's good for reading. Sit closer.",
+  "[softly] Tonight I'll just listen. I'll ask you everything tomorrow.",
+]
 mornings = [
-  "I'll walk with the wagons. My feet aren't used to this yet.",
-  "Go on. I'm writing down yesterday before I lose it.",
-  "Go on. I'll ask you everything tonight.",
-  "Walk carefully. I've only just started writing you down.",
+  "[rueful] I'll walk with the wagons, on your marks. My feet aren't used to this yet.",
+  "[distracted, scribbling] Go on, we'll follow. I'm writing down yesterday before I lose it.",
+  "[eager] Go on. I'll ask you everything tonight.",
+  "[earnest] Walk carefully. We follow where you walk.",
 ]
 name = "Alruna"
 remarks = [
-  "Master Ansel copied that book three times. I can still smell the smoke on it.",
-  "Everything the Keepers wrote down, and none of them ever walked this far.",
+  "[wistful] Master Ansel copied that book three times. [quietly] I can still smell the smoke on it.",
+  "[wondering] Everything the Keepers wrote down, and none of them ever walked this far.",
 ]
 unnamed = "A young woman in grey"
 welcomes = [
-  "You're back. Tell me where you went. Slowly.",
-  "I saved you a seat. And a page.",
-  "Sit down before you forget it. Whatever it was.",
-  "There's room by the fire. You talk; I'll write.",
+  "[eager] You're back. Tell me where you went. [laughs] Slowly.",
+  "[bright] I saved you a seat. And a page.",
+  "[eager] Sit down before you forget it. Whatever it was.",
+  "[warm] There's room by the fire. You talk; I'll write.",
 ]
 
 [bram]
 color = "green"
 name = "Bram"
-remarks = ["Davy's eaten. That's something. Go on."]
+remarks = ["[tired, quiet] Davy's eaten. That's something. Go on."]
 unnamed = "A herder"
 
 [bram_son]
 color = "green"
 name = "Davy"
-remarks = ["Nothing looks at me now. Not even him."]
+remarks = ["[flat, sad] Nothing looks at me now. [quietly] Not even him."]
 unnamed = "A boy in grey"
 
 [brannoc]
 color = "gray"
 name = "Brannoc"
-remarks = ["Tell him I'm well."]
+remarks = ["[cool] Tell him I'm well."]
 unnamed = "A man in grey"
 
 [cadoc]
 color = "dark_aqua"
+evenings = [
+  "[quietly] I'll sit at the edge. Old habit.",
+  "[low] Nothing followed the wagons today. I watched the road behind.",
+  "[quietly] Sleep. I'll keep watch for the first hours.",
+  "[softly, surprised at himself] Grey coats don't sit at fires like this. I'm glad I do now.",
+]
 mornings = [
-  "Go on ahead. I'll keep to the back, where I'm no trouble.",
-  "Mind the ridges today. Grey coats see a long way.",
-  "I'll walk at the back. Nobody wants a grey coat in front.",
-  "If you see banners, don't wave. Come back.",
+  "[dry] Go on ahead. I'll keep to the back, where I'm no trouble.",
+  "[low, warning] Mind the ridges today. Grey coats see a long way. We follow your marks.",
+  "[bitter, dry] I'll walk at the back. Nobody wants a grey coat in front.",
+  "[dry] If you see banners, don't wave. Come back to the wagons; they'll be on your marks.",
 ]
 name = "Cadoc"
-remarks = ["Don't ask about the scar.", "I sleep with my boots on, ready to run. Habit."]
+remarks = ["[curt, guarded] Don't ask about the scar.", "[dry] I sleep with my boots on, ready to run. Habit."]
 unnamed = "A wounded man"
 
 [captive_1]
 color = "white"
 name = "A child"
-remarks = ["Are you one of them?"]
+remarks = ["[frightened whisper] Don't hurt me. I didn't do anything."]
 
 [captive_2]
 color = "white"
 name = "A boy"
-remarks = ["I wasn't crying."]
+remarks = ["[sniffs, defiant] I wasn't crying."]
 
 [captive_3]
 color = "white"
 name = "A girl"
-remarks = ["Is it far?"]
+remarks = ["[small, tired] I don't know how far I can walk."]
 
 [cecily]
 color = "yellow"
 name = "Cecily"
-remarks = ["I'm not tired. I'm not."]
+remarks = ["[coughing, stubborn] I'm not tired. I'm not."]
 unnamed = "A feverish girl"
 
 [dicer]
@@ -97,17 +119,17 @@ name = "The dicer"
 road = true
 
 [drifa]
-cold = ["Don't talk to me. You know why.", "You kept it. Live with that."]
+cold = ["[cold, hurt] Don't talk to me. You know why.", "[bitter] You kept it. Live with that."]
 color = "white"
 mornings = [
-  "I'll walk the ridge. Don't wait for me.",
-  "Snow's coming off the high ground. Walk fast.",
-  "Tracks are freshest at first light. Go now.",
-  "I'll find you. I always find what I'm following.",
+  "[curt] I'll walk the ridge. Don't wait for me.",
+  "[sniffing the air] Snow's coming off the high ground. Walk fast.",
+  "[brisk] Tracks are freshest at first light. Go now.",
+  "[cool, certain] I'll find you. I always find what I'm following.",
 ]
 name = "Drifa"
 people = "drifa"
-remarks = ["Twenty winters. I can wait a few days more.", "Don't stand behind me."]
+remarks = ["[cold, patient] Twenty winters. I can wait a few days more.", "[sharp] Don't stand behind me."]
 unnamed = "A woman in furs"
 
 [drowned_1]
@@ -132,7 +154,7 @@ unnamed = "A pale figure"
 color = "light_purple"
 name = "Edda"
 people = "edda"
-remarks = ["Mind the hull. It bites splinters.", "The sea's flat today. It lies."]
+remarks = ["[gruff] Mind the hull. It bites splinters.", "[dark, dry] The sea's flat today. It lies."]
 unnamed = "A woman with a mallet"
 
 [fisher]
@@ -155,23 +177,23 @@ color = "gray"
 name = "A Gazebound"
 road = true
 shouts = [
-  "There! The ember! Take it!",
-  "To me! The one with the ember is here!",
-  "Don't let them get away! The heir wants that ember whole!",
-  "Grey, to me! Cut them off!",
+  "[shouts] There! The ember! Take it!",
+  "[bellowing] To me! The one with the ember is here!",
+  "[shouts, harsh] Don't let them get away! The heir wants that ember whole!",
+  "[barking] Grey, to me! Cut them off!",
 ]
 unnamed = "A man in grey"
 
 [heir]
 color = "gold"
 name = "The heir"
-remarks = ["Not here. Not yet.", "Lift it. I'll take it from you at the gate."]
+remarks = ["[smiling, soft] Not here. Not yet.", "[pleasant, quietly dangerous] Lift it. I'll take it from you at the gate."]
 unnamed = "A man in fine grey"
 
 [heirs_sister]
 color = "gold"
 name = "Linnet"
-remarks = ["Tell him. That's all I ask."]
+remarks = ["[quietly, pleading] Tell him. That's all I ask."]
 unnamed = "A woman in ochre"
 
 [herder]
@@ -181,23 +203,32 @@ road = true
 
 [hob]
 color = "red"
+evenings = [
+  "[gruff, caring] Hold your hands to the fire. Cold hands drop blades.",
+  "[content] Good wood tonight. It burns slow.",
+  "[dry] Rest your legs. The road won't get shorter for standing.",
+  "[gruff] Whatever needs mending, leave it by the cart. I'll see to it.",
+]
 mornings = [
-  "We'll be packing a while yet. Go on ahead.",
-  "Cart's loaded by noon. Walk on, we'll find your marks.",
-  "Wheel's squeaking again. Go on, I'll catch you up.",
-  "Keep your blade dry. Go on, we'll be along.",
+  "[grunting] We'll be packing a while yet. Go on ahead.",
+  "[gruff] Cart's loaded by noon. Walk on, we'll find your marks.",
+  "[grumbling] Wheel's squeaking again. Go on, I'll catch you up.",
+  "[gruff] Keep your blade dry. Go on, we'll be along.",
 ]
 name = "Hob"
 remarks = [
-  "Bring me that blade when it's dull.",
-  "Don't mind me. I think better with a hammer in my hand.",
+  "[firm] Bring me that blade when it's dull.",
+  "[a gruff chuckle] Don't mind me. I think better with a hammer in my hand.",
+]
+returns = [
+  "[gruff] You're back. Good. [low] Don't make a habit of it.",
 ]
 unnamed = "A big man"
 welcomes = [
-  "There you are. Fire's going.",
-  "You found us, then. Pot's on.",
-  "Sit. Your boots can wait till morning.",
-  "Anything gone dull, give it here. I'll look at it by the fire.",
+  "[gruff, warm] There you are. Fire's going.",
+  "[pleased, gruff] You found us, then. Pot's on.",
+  "[gruff] Sit. Your boots can wait till morning.",
+  "[practical] Anything gone dull, give it here. I'll look at it by the fire.",
 ]
 
 [malgven]
@@ -213,32 +244,41 @@ unnamed = "A girl in grey"
 
 [maud]
 color = "aqua"
-lends = "Mind the pots."
+evenings = [
+  "[dry] Sit while you can. Nobody sits on the road.",
+  "[brisk] We pack at first light. Don't be the last.",
+  "[firm] Eat first. Whatever you saw today will keep.",
+  "[brisk] Count the wagons for me. [pause] ...Good. All here.",
+]
+lends = "[sharp] Mind the pots."
 mornings = [
-  "We're packing up. Go on ahead; we'll follow your marks.",
-  "Don't wait for us. Look for our smoke tonight.",
-  "Walk ahead. If it's bad, come back and say so.",
-  "We follow your marks. Leave good ones.",
+  "[brisk] We're packing up. Go on ahead; we'll follow your marks.",
+  "[firm] Don't wait for us. Look for our smoke tonight.",
+  "[plain] Walk ahead. If it's bad, come back and say so.",
+  "[dry] We follow your marks. Leave good ones.",
 ]
 name = "Maud"
 remarks = [
-  "We follow your marks. Don't make me regret it.",
-  "The bell's still with us. So are we.",
+  "[pointed] We follow your marks. Don't make me regret it.",
+  "[quiet pride] The bell's still with us. So are we.",
+]
+returns = [
+  "[quietly] We kept your place by the fire. [hesitant] We didn't know if we should.",
 ]
 unnamed = "A grey-haired woman"
 welcomes = [
-  "There you are. Sit, and tell me what's ahead.",
-  "Good. You're all back.",
-  "You're late. Sit. What did you see?",
-  "Fire's lit and nobody's missing. Good.",
+  "[brisk] There you are. Sit, and tell me what's ahead.",
+  "[relieved, dry] Good. You're all back.",
+  "[sharp] You're late. Sit, and eat first. The rest can wait.",
+  "[satisfied] Fire's lit and nobody's missing. Good.",
 ]
 
-[morwen]
+[murdo]
 color = "aqua"
-name = "Morwen"
-people = "morwen"
-remarks = ["Sleep while the sun's up. That's when we do.", "The bay's been kind to us. Don't make me regret you."]
-unnamed = "A woman with a net"
+name = "Murdo"
+people = "murdo"
+remarks = ["[calm] Sleep while the sun's up. That's when we do.", "[quiet, measured] The bay's been kind to us. Don't make me regret you."]
+unnamed = "A man with a net"
 
 [newcomer]
 color = "white"
@@ -252,8 +292,8 @@ unnamed = "A boy in grey"
 [oldest_keeper]
 color = "dark_purple"
 name = "The oldest Keeper"
-remarks = ["Sit. You've walked far enough to be listened to."]
-unnamed = "An old woman in a Keeper's hood"
+remarks = ["[grave, weary] Sit. You've walked far enough to be listened to."]
+unnamed = "An old man in a Keeper's hood"
 
 [pedlar]
 color = "white"
@@ -263,57 +303,66 @@ road = true
 [pilgrim]
 color = "gray"
 name = "Hesper"
-remarks = ["They'll let us in. They have to."]
+remarks = ["[hopeful, stubborn] They'll let us in. They have to."]
 unnamed = "A pilgrim with a staff"
 
 [pip]
 color = "yellow"
+evenings = [
+  "[pleading] One day you'll tell me about the road. All of it.",
+  "[sleepy] I counted the stars. I lost count at forty.",
+  "[curious] Is it far, where we're going? [pause] ...You don't know either.",
+  "[yawns] I'm not tired. I'm only closing my eyes.",
+]
 mornings = [
-  "Can I walk with you today? ...Fine. Go on, then.",
-  "Maud says we're slow. Go on, we'll catch up!",
-  "I'll watch for you tonight. From the very first smoke.",
-  "Agna says I have to stay. One day I won't.",
+  "[hopeful] I want to walk with you today. [pause] [sulky] ...Fine. We'll follow, then.",
+  "[cheerful] We're slow, I know. Go on, we'll catch up!",
+  "[earnest] I'll watch for you tonight. From the very first smoke.",
+  "[grumbling] Agna says I have to follow with the wagons. [determined] One day I'll walk in front.",
 ]
 name = "Pip"
 remarks = [
-  "Where are we going tomorrow?",
-  "I practised walking quiet. Like you.",
+  "[curious] I wonder where we're going tomorrow.",
+  "[proud whisper] I practised walking quiet. Like you.",
+]
+returns = [
+  "[small, shaky] They said you fell. [fierce] I didn't believe them.",
 ]
 unnamed = "A child"
 welcomes = [
-  "You're back! What did you see?",
-  "I watched for you all day!",
-  "I kept your place by the fire. Nobody sat in it. Nearly nobody.",
-  "Did you see anything? Anything at all?",
+  "[excited] You're back! I want to hear everything you saw.",
+  "[eager] I watched for you all day!",
+  "[proud] I kept your place by the fire. Nobody sat in it. [sheepish] Nearly nobody.",
+  "[eager] I bet you saw something. I always miss everything.",
 ]
 
 [rue]
-cold = ["She turns her back on you.", "Thief. Off my porch."]
+cold = ["[turning her back, cold] Nothing for you here. Not any more.", "[hissing] Thief. Off my porch."]
 color = "dark_green"
 name = "Rue"
 people = "witches"
-remarks = ["Mud and water, light-bearer. That's all there is out here."]
+remarks = ["[dry, sour] Mud and water, light-bearer. That's all there is out here."]
 unnamed = "An old woman"
 
 [sedge]
-cold = ["She spits in the water and won't look at you."]
+cold = ["[spits] Go on. Get off our water."]
 color = "green"
 name = "Sedge"
 people = "witches"
-remarks = ["Mind where you put your feet. The bog keeps what it gets."]
+remarks = ["[flat, grim] Mind where you put your feet. The bog keeps what it gets."]
 unnamed = "A hard-faced woman"
 
 [sefa]
 color = "yellow"
 name = "Sefa"
 people = "sefa"
-remarks = ["...and the sand lay still, and the worm went under the hill.", "Keep your heads covered. The sun out here eats fools first."]
+remarks = ["[singing softly] ...and the sand lay still, and the worm went under the hill.", "[teasing] Keep your heads covered. The sun out here eats fools first."]
 unnamed = "A singing woman"
 
 [settled_wayfarer]
 color = "gray"
 name = "Oswin"
-remarks = ["Sit. The fire's warm. That's all a man needs."]
+remarks = ["[weary, content] Sit. The fire's warm. That's all a man needs."]
 unnamed = "An old man by a cold hearth"
 
 [stranger]
@@ -324,26 +373,31 @@ unnamed = "The stranger"
 voice = true
 
 [tansy]
-cold = ["She won't meet your eyes. Maybe she's afraid to."]
+cold = ["[quietly, not meeting your eyes] Don't. Just... don't look at me."]
 color = "light_purple"
 name = "Tansy"
 people = "witches"
-remarks = ["Don't look at me like that. I saw what I saw."]
+remarks = ["[defensive, uneasy] Don't look at me like that. I saw what I saw."]
 unnamed = "A young woman"
 
 [tide_warden_1]
 color = "dark_aqua"
-name = "A warden"
+name = "A Tide warden"
 people = "tide_warden_1"
-remarks = ["...", "I don't know why. I just did."]
-unnamed = "A warden"
+remarks = ["...", "[puzzled] I don't know why. I just did."]
+unnamed = "A guard with a trident"
 
 [tide_warden_2]
 color = "dark_aqua"
-name = "A warden"
+name = "A Tide warden"
 people = "tide_warden_2"
-remarks = ["Don't ask me. My knees asked."]
-unnamed = "A warden"
+remarks = ["[bemused] Don't ask me. My knees asked."]
+unnamed = "A guard with a trident"
+
+[tide_fisher]
+color = "aqua"
+name = "A Tide fisher"
+road = true
 
 [traveller]
 color = "white"
@@ -352,41 +406,42 @@ road = true
 
 [villager]
 color = "yellow"
+creature = "minecraft:villager"
 name = "A villager"
 road = true
 
 [villager.acts]
 1 = [
-  "Strangers bring the burning. One trade, then go.",
-  "Keep that ember in your pocket while you're in our street.",
-  "We were a bigger town once. Then the burning came.",
-  "Trade's done. Don't linger near the well; people talk.",
+  "[wary, curt] Strangers bring the burning. One trade, then go.",
+  "[nervous whisper] Keep that ember in your pocket while you're in our street.",
+  "[tired, sad] We were a bigger town once. Then the burning came.",
+  "[low, quick] Trade's done. Don't linger near the well; people talk.",
 ]
 2 = [
-  "Men in grey came asking about someone with a glowing coal. We told them nothing.",
-  "One trade. The grey coats count our visitors.",
-  "They say someone walks with a fire in their hand again. ...Don't tell me if it's you.",
-  "You've come a long way. Go on further; it's safer for us both.",
+  "[quietly] Men in grey came asking about someone with a glowing coal. We told them nothing.",
+  "[nervous] One trade. The grey coats count our visitors.",
+  "[hushed] They say someone walks with a fire in their hand again. [pause] ...Don't tell me if it's you.",
+  "[gentle, wary] You've come a long way. Go on further; it's safer for us both.",
 ]
 3 = [
-  "Banners went by at dawn. Grey ones. Trade quick.",
-  "If you're going where I think you're going, take bread. Take two.",
-  "Nobody's slept well in weeks. Here. Go.",
-  "One trade, then go. And whatever you're doing out there, finish it.",
+  "[urgent, low] Banners went by at dawn. Grey ones. Trade quick.",
+  "[kindly] If you're going where I think you're going, take bread. Take two.",
+  "[tired] Nobody's slept well in weeks. Here. Go.",
+  "[quiet, earnest] One trade, then go. And whatever you're doing out there, finish it.",
 ]
 finale = [
-  "It's quiet now. Quieter than I remember. Stay for supper, if you like.",
-  "My daughter asked about the walking fire. I told her it went home.",
+  "[warm, wondering] It's quiet now. Quieter than I remember. Stay for supper, if you like.",
+  "[softly, fond] My daughter asked about the walking fire. I told her it went home.",
 ]
 prologue = [
-  "Strangers bring the burning. One trade, then go.",
-  "Keep that ember in your pocket while you're in our street.",
+  "[wary, curt] Strangers bring the burning. One trade, then go.",
+  "[nervous whisper] Keep that ember in your pocket while you're in our street.",
 ]
 
 [warden]
 color = "gold"
-name = "The warden"
-remarks = ["The ward holds. For now."]
+name = "The gate warden"
+remarks = ["[grave] The ward holds. For now."]
 unnamed = "An old man in ochre"
 
 [wend_reading]
@@ -397,5 +452,5 @@ unnamed = "A man reading"
 [wil]
 color = "dark_aqua"
 name = "Wil"
-remarks = ["Mind the hoops. They roll."]
+remarks = ["[grumbling] Mind the hoops. They roll."]
 unnamed = "An old cooper"

@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "qM4EGvcfgC3oN4QoL2XN",
+  "id": "9b52d9fe",
+  "kept": "04.11.2026",
+  "preview": 2,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 1494499843,
+    "should_enhance": false,
+    "text": "Here. Bread's yesterday's, but it's bread. Keep off the ridges today. There were men in grey up there at first light, asking at every fire. I've seen nothing! I sell needles, that's all! Bones, traveller? Day 9. Land. A bay where they fish by night and nothing comes for them. Day 14. Halfway, by the stars. It's back. It follows the lamp, so the lamp's out. It follows anyway.",
+    "voice_description": "Native English, British, a plain everyday Midlands accent. Male, 30-40. Excellent quality. Persona: an ordinary working man of the roads and the coast, a herder, a pedlar, a fisherman, a sailor keeping a log. Emotion: plain, friendly, wary, quick to fear, honest. A clear, natural, mid-pitched voice, conversational and unpolished; easy to listen to, with no strong character of its own, so it can be many men."
+  }
+}

@@ -40,8 +40,8 @@ public final class Demo {
         double turn = (double) player.level().getGameTime() / (COMPANION.get("seconds").getAsInt() * TICKS_PER_SECOND);
         int x = (int) Math.round(centre.get(0).getAsInt() + radius * Math.cos(turn * 2 * Math.PI));
         int z = (int) Math.round(centre.get(1).getAsInt() + radius * Math.sin(turn * 2 * Math.PI));
-        event.markers().add(new CompassPayload.Marker(CompassPayload.Kind.TEAMMATE, COMPANION.get("name").getAsString(), x, z));
-        event.markers().add(new CompassPayload.Marker(CompassPayload.Kind.GRAVE, "", GRAVE.get(0).getAsInt(), GRAVE.get(1).getAsInt()));
+        event.markers().add(new CompassPayload.Marker(CompassPayload.Kind.TEAMMATE, COMPANION.get("name").getAsString(), x, player.getBlockY(), z));
+        event.markers().add(new CompassPayload.Marker(CompassPayload.Kind.GRAVE, "", GRAVE.get(0).getAsInt(), player.getBlockY(), GRAVE.get(1).getAsInt()));
     }
 
     private static Compass.Aim target(JsonObject target) {

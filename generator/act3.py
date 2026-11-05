@@ -145,6 +145,8 @@ def house(orders):
     t.set((HATCH[0], FLOOR, HATCH[1]), AIR)
     for y in range(1, FLOOR + 1):
         t.set((HATCH[0], y, HATCH[1]), "minecraft:ladder", facing="north", waterlogged=False)
+    for y in range(1, FLOOR):
+        t.set((HATCH[0], y, HATCH[1] + 1), CELLAR_STONE)
     x0, z0, x1, z1 = CAGE
     for x in range(x0, x1 + 1):
         for z in range(z0, z1 + 1):
@@ -248,9 +250,17 @@ def positions():
         },
         "graves": {"empty": [EMPTY_GRAVE[0], 1, EMPTY_GRAVE[1] - 2], "size": [GRAVES[0], GRAVES[1], GRAVES[2]]},
         "house": {
+            "bars": [
+                [x, y, z]
+                for x in range(CAGE[0], CAGE[2] + 1)
+                for z in range(CAGE[1], CAGE[3] + 1)
+                for y in range(1, FLOOR)
+                if x in (CAGE[0], CAGE[2]) or z in (CAGE[1], CAGE[3])
+            ],
             "cage": [[CAGE[0] + 1, 1, CAGE[1] + 1], [CAGE[0] + 2, 1, CAGE[1] + 2], [CAGE[0] + 3, 1, CAGE[1] + 1]],
             "chair": list(CHAIR),
             "desk": list(DESK),
+            "floor": FLOOR,
             "front": [HOUSE[0] // 2, FLOOR + 1, -2],
             "size": list(HOUSE),
             "stand": list(STAND),

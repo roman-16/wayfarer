@@ -179,8 +179,8 @@
     "model": "easy_npc:humanoid_slim",
     "scale": 1.0
   },
-  "morwen": {
-    "model": "easy_npc:humanoid_slim",
+  "murdo": {
+    "model": "easy_npc:humanoid",
     "scale": 1.0
   },
   "newcomer": {
@@ -192,7 +192,7 @@
     "scale": 0.75
   },
   "oldest_keeper": {
-    "model": "easy_npc:humanoid_slim",
+    "model": "easy_npc:humanoid",
     "scale": 0.95
   },
   "pilgrim": {

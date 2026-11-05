@@ -6,6 +6,7 @@ spacing = 189
 
 [eyes.black]
 act = 2
+climate = "any"
 biomes = [
   "#c:is_beach",
   "#c:is_stony_shores",
@@ -14,49 +15,53 @@ biomes = [
 ]
 people = "The Tide Folk"
 lore = [
-  "We are the Tide Folk, and this is our bay. Nothing comes up out of it at night, so our boats go out with lamps lit, and we eat.",
-  "The Drowned City's last swam in on a winter tide with their stone in a net between them, and asked us to keep it from the eye that drowned them. We swore on the fire pit.",
-  "If you are reading this, you carry a fire in your hand, and you know what lies on our stone. Take what you must. Leave us the dark.",
+  "[calm, proud] We are the Tide Folk, and this is our bay. Nothing comes up out of it at night, so our boats go out with lamps lit, and we eat.",
+  "[grave] The Drowned City's last swam in on a winter tide with their stone in a net between them, and asked us to keep it from the eye that drowned them. We swore on the fire pit.",
+  "[quiet, pleading] If you are reading this, you carry a fire in your hand, and you know what lies on our stone. Take what you must. [softly] Leave us the dark.",
 ]
 
 
 [eyes.cold]
 act = 1
+climate = "cold"
 story = true
 biomes = ["#c:is_snowy", "#c:is_icy"]
 people = "The Frost Walkers"
 lore = [
-  "We are the Frost Walkers. We walk all summer and come home to this hall for the winter, to the stone that remembers.",
-  "Tonight someone came down the stair while we slept. When the lamps were lit again, the stone was empty. The young ones ran up after him.",
-  "I am too old for the stair. The shouting up there has stopped. I can hear the snow.",
-  "One of ours is still out on the hunt. If she comes home, tell her not to wait for us. Tell her to keep walking.",
+  "[proud, steady] We are the Frost Walkers. We walk all summer and come home to this hall for the winter, to the stone that remembers.",
+  "[urgent, shaken] Tonight someone came down the stair while we slept. When the lamps were lit again, the stone was empty. The young ones ran up after him.",
+  "[frail, quiet] I am too old for the stair. [pause] The shouting up there has stopped. [whispers] I can hear the snow.",
+  "[tender, fading] One of ours is still out on the hunt. If she comes home, tell her not to wait for us. [voice breaking] Tell her to keep walking.",
 ]
 
 
 [eyes.corrupted]
 act = 3
+climate = "any"
 biomes = ["#c:is_savanna", "#minecraft:is_savanna"]
 people = "The Grass Kingdom"
 lore = [
-  "The Grass Kingdom was given its shard to hide. Its king kept it instead, on a throne, where everyone could see it.",
-  "The shard showed him what the dragon sees, and he wanted more. He was the first of the Gazebound.",
-  "His own people tore the shard from his crown and sealed it here. The throne is dust. Do not keep what you carry.",
+  "[stern] The Grass Kingdom was given its shard to hide. Its king kept it instead, on a throne, where everyone could see it.",
+  "[grave] The shard showed him what the dragon sees, and he wanted more. [pause] He was the first of the Gazebound.",
+  "[stern, proud] His own people tore the shard from his crown and sealed it here. The throne is dust. [firm] Do not keep what you carry.",
 ]
 
 
 [eyes.cryptic]
 act = 3
+climate = "any"
 biomes = ["#c:is_mountain", "#minecraft:is_mountain"]
 people = "The Scribes of the Peaks"
 lore = [
-  "The Scribes climbed as high as the land would let them and wrote down everything the shard whispered.",
-  "Most of it was madness. Some of it was the way the true gate was built, and why it must never be built again.",
-  "We burned the madness and kept the rest. The shard we leave to you. Read before you carry it.",
+  "[precise, hushed] The Scribes climbed as high as the land would let them and wrote down everything the shard whispered.",
+  "[haunted] Most of it was madness. Some of it was the way the true gate was built, [grave] and why it must never be built again.",
+  "[austere] We burned the madness and kept the rest. The shard we leave to you. [pause] Read before you carry it.",
 ]
 
 
 [eyes.evil]
 act = 1
+climate = "any"
 story = true
 biomes = [
   "#c:is_plains",
@@ -66,72 +71,78 @@ biomes = [
 ]
 people = "The First Village"
 lore = [
-  "The First Village was built by Wayfarers who swore they would only stay one winter.",
-  "They stayed a hundred. Their priests said the shard in their temple kept them safe. It was the shard that kept them seen.",
-  "When the gaze came, the last priest carried it out into the grass and buried it here. The village is gone. The grass remembers.",
+  "[gentle, rueful] The First Village was built by Wayfarers who swore they would only stay one winter.",
+  "[sorrowful] They stayed a hundred. Their priests said the shard in their temple kept them safe. [pause] It was the shard that kept them seen.",
+  "[softly] When the gaze came, the last priest carried it out into the grass and buried it here. The village is gone. [pause] The grass remembers.",
 ]
 
 
 [eyes.exotic]
 act = 2
+climate = "hot"
 biomes = ["#c:is_badlands", "#minecraft:is_badlands"]
 empty = true
 people = "The Drowned City"
 lore = [
-  "We were the Drowned City, the most beautiful place on the coast. Beautiful things are seen. The eye looked at us for one summer, and the sea came up and took the city.",
-  "The few of us left climbed up here to our hall in the red rock and lifted our stone's shard, and carried it down to the one bay on the coast the eye could not see.",
-  "The Tide Folk keep it now, under their fire pit. If you came here for it, you came to the wrong shore.",
+  "[wistful, proud] We were the Drowned City, the most beautiful place on the coast. [pause] Beautiful things are seen. The eye looked at us for one summer, and the sea came up and took the city.",
+  "[sorrowful] The few of us left climbed up here to our hall in the red rock and lifted our stone's shard, and carried it down to the one bay on the coast the eye could not see.",
+  "[cool, a faint smile] The Tide Folk keep it now, under their fire pit. If you came here for it, you came to the wrong shore.",
 ]
 
 
 [eyes.lost]
 act = 1
+climate = "any"
 story = true
 biomes = ["#c:is_forest", "#minecraft:is_forest"]
 people = "The Diggers"
 lore = [
-  "We dug down because the eye in the sky cannot see through stone. The shard hums on its stone in this hall, and while it hums, the ground above us stays dark to that eye.",
-  "Our children grew up under lamps and never missed the sun. But the seams near the hall ran out, and the young ones wanted to follow the ore down, past the shard's ground.",
-  "We go down with them tonight. If you are reading this, we did not come back up. Take the shard if you must, and walk softly in the deep.",
+  "[steady, plain] We dug down because the eye in the sky cannot see through stone. The shard hums on its stone in this hall, and while it hums, the ground above us stays dark to that eye.",
+  "[fond, then heavy] Our children grew up under lamps and never missed the sun. But the seams near the hall ran out, and the young ones wanted to follow the ore down, past the shard's ground.",
+  "[resigned, quiet] We go down with them tonight. [pause] If you are reading this, we did not come back up. Take the shard if you must, and walk softly in the deep.",
 ]
 
 
 [eyes.magical]
 act = 3
+climate = "any"
 biomes = ["#c:is_dark_forest", "minecraft:dark_forest"]
 people = "The Shadow Circle"
 lore = [
-  "The Shadow Circle learned to bend the shard's light into spells. The Illagers learned from them, and learned the wrong lessons.",
-  "Their mansions in the dark woods are copies of our halls, built by people who wanted the shard's power without its burden.",
-  "The burden is the point. Carry it.",
+  "[grave, scornful] The Shadow Circle learned to bend the shard's light into spells. The Illagers learned from them, and learned the wrong lessons.",
+  "[contemptuous] Their mansions in the dark woods are copies of our halls, built by people who wanted the shard's power without its burden.",
+  "[commanding, low] The burden is the point. [pause] Carry it.",
 ]
 
 
 [eyes.old]
 act = 2
+climate = "hot"
 biomes = ["#c:is_desert", "minecraft:desert"]
 empty = true
 people = "The Sand Singers"
 lore = [
-  "We are the Sand Singers. We dug this hall under the dunes and set our stone in it, and sang to it, and the desert was quiet around us.",
-  "One summer the deep sand opened and something came up and swallowed the stone whole. It grew. It sees. Nothing on two legs crosses its ground, so no raider troubles us now.",
-  "We sing to it, and it lets us be. If you have come for our stone, it is in the worm. Walk softly.",
+  "[melodic, warm] We are the Sand Singers. We dug this hall under the dunes and set our stone in it, and sang to it, and the desert was quiet around us.",
+  "[hushed] One summer the deep sand opened and something came up and swallowed the stone whole. It grew. It sees. Nothing on two legs crosses its ground, so no raider troubles us now.",
+  "[gentle, teasing] We sing to it, and it lets us be. If you have come for our stone, it is in the worm. [whispers] Walk softly.",
 ]
 
 
 [eyes.rogue]
 act = 2
+climate = "any"
 biomes = ["#c:is_jungle", "#minecraft:is_jungle"]
 people = "The Jungle Folk"
 lore = [
-  "We were the Jungle Folk. Our shard taught us how red dust carries a thought from one stone to the next, and we built locks that never slept.",
-  "The eye looked for our stone for a hundred summers and never found the way in. So it looked at us instead, one by one, until nobody was left to open the locks.",
-  "Our stone sleeps. If you woke it, you knew our word, and you are welcome. We are sorry there is nobody left to say so.",
+  "[gentle, proud] We were the Jungle Folk. Our shard taught us how red dust carries a thought from one stone to the next, and we built locks that never slept.",
+  "[sad] The eye looked for our stone for a hundred summers and never found the way in. So it looked at us instead, one by one, [pause] until nobody was left to open the locks.",
+  "[tender] Our stone sleeps. If you woke it, you knew our word, and you are welcome. [softly] We are sorry there is nobody left to say so.",
 ]
 
 
 [eyes.undead]
 act = 3
+climate = "any"
 biomes = [
   "minecraft:old_growth_pine_taiga",
   "minecraft:old_growth_spruce_taiga",
@@ -139,14 +150,15 @@ biomes = [
 ]
 people = "The Grave Keepers"
 lore = [
-  "The Grave Keepers buried the Wayfarers who fell on the road, under the oldest trees, where the ground is soft.",
-  "They noticed that the dead are never seen by the gaze, and they took the undead shard to hide among them.",
-  "We are among them now. Take the shard and keep walking. We will keep the graves.",
+  "[hushed, calm] The Grave Keepers buried the Wayfarers who fell on the road, under the oldest trees, where the ground is soft.",
+  "[hushed] They noticed that the dead are never seen by the gaze, and they took the undead shard to hide among them.",
+  "[serene, whispering] We are among them now. Take the shard and keep walking. [softly] We will keep the graves.",
 ]
 
 
 [eyes.witch]
 act = 1
+climate = "any"
 story = true
 biomes = ["#c:is_swamp", "minecraft:mangrove_swamp", "minecraft:swamp"]
 people = "The Marsh Mothers"

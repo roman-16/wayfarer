@@ -5,10 +5,12 @@ import io.github.roman16.wayfarer.Shine;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.raid.Raider;
+import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.FinalizeSpawnEvent;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
@@ -43,7 +45,8 @@ public final class Foes {
 
     @SubscribeEvent
     public static void onSpawnCheck(MobSpawnEvent.PositionCheck event) {
-        if (WILD.contains(event.getSpawnType()) && !arrived(BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()), act)) {
+        if (WILD.contains(event.getSpawnType()) && (!arrived(BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()), act) || owned(event.getLevel().getLevel(),
+                event.getEntity().blockPosition()))) {
             event.setResult(MobSpawnEvent.PositionCheck.Result.FAIL);
         }
     }
@@ -52,8 +55,13 @@ public final class Foes {
     public static void onSpawn(FinalizeSpawnEvent event) {
         boolean wild = WILD.contains(event.getSpawnType())
                 || event.getSpawnType() == MobSpawnType.EVENT && event.getEntity() instanceof Raider raider && raider.getCurrentRaid() != null;
-        if (wild && !arrived(BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()), act)) {
+        if (wild && (!arrived(BuiltInRegistries.ENTITY_TYPE.getKey(event.getEntity().getType()), act) || owned(event.getEntity().level(),
+                event.getEntity().blockPosition()))) {
             event.setSpawnCancelled(true);
         }
+    }
+
+    private static boolean owned(Level level, BlockPos pos) {
+        return Memories.dream(level) || Hold.ground(level, pos);
     }
 }

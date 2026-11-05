@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
@@ -337,7 +336,7 @@ final class Shipyard {
         BlockPos dry = null;
         for (int along = -REFINE; along <= REFINE; along++) {
             BlockPos column = BlockPos.containing(Vec3.atLowerCornerOf(site).add(axis.scale(along)));
-            int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column.getX(), column.getZ()) - 1;
+            int top = Ground.land(level, column.getX(), column.getZ());
             boolean wet = top < sea && water(level, column.atY(top));
             if (!wet) {
                 dry = column;
@@ -402,7 +401,7 @@ final class Shipyard {
             double angle = Math.PI * 2 * step / SAMPLES;
             int x = centre.getX() + (int) Math.round(Math.cos(angle) * SURROUND);
             int z = centre.getZ() + (int) Math.round(Math.sin(angle) * SURROUND);
-            BlockPos top = new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1, z);
+            BlockPos top = new BlockPos(x, Ground.land(level, x, z), z);
             BlockState state = level.getBlockState(top);
             if (state.getFluidState().isEmpty() && state.isCollisionShapeFullBlock(level, top) && !state.is(BlockTags.LOGS)) {
                 seen.merge(state.getBlock().defaultBlockState(), 1, Integer::sum);
@@ -501,6 +500,7 @@ final class Shipyard {
         level.getStructureManager().getOrCreate(HULL).placeInWorld(level, origin, origin, Camps.settings(level, HULL, turn), level.random, Block.UPDATE_CLIENTS);
         progress.place(LAUNCH, progress.place(NAME).orElse(origin));
         progress.setDirty();
+        Standing.keep(server, NAME);
         progress.place(SITE).ifPresent(site -> release(level, site));
         LOGGER.info("the hull on the shipyard's slip is finished");
     }

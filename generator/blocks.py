@@ -115,6 +115,9 @@ class Material:
         return blocks
 
 
+WALKTHROUGH = ("_carpet", "rail", "torch", "short_grass", "fern", "_button", "_pressure_plate")
+
+
 class Template:
     def __init__(self):
         self.blocks = {}
@@ -145,10 +148,64 @@ class Template:
                 if below is None or not bears(below[0], dict(below[1])):
                     yield (name, (x, y, z))
 
+    def walkable(self, pos):
+        found = self.blocks.get(tuple(pos))
+        return found is None or found[0] == AIR or found[0].split(":", 1)[1].endswith(WALKTHROUGH)
+
+    def shut_in(self):
+        beds = [pos for pos, (name, _, _) in self.blocks.items() if name.endswith("_bed")]
+        if not beds:
+            return []
+        low = [min(pos[axis] for pos in self.blocks) for axis in range(3)]
+        high = [max(pos[axis] for pos in self.blocks) for axis in range(3)]
+
+        def standable(x, y, z):
+            if not (self.walkable((x, y, z)) and self.walkable((x, y + 1, z))):
+                return False
+            below = self.blocks.get((x, y - 1, z))
+            return y - 1 == low[1] and below is None or below is not None and not self.walkable((x, y - 1, z))
+
+        land = low[1] + 1
+        reached = {
+            (x, land, z)
+            for x in range(low[0] - 1, high[0] + 2)
+            for z in range(low[2] - 1, high[2] + 2)
+            if not (low[0] <= x <= high[0] and low[2] <= z <= high[2]) and standable(x, land, z)
+        }
+        frontier = list(reached)
+        while frontier:
+            x, y, z = frontier.pop()
+            for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                nx, nz = x + dx, z + dz
+                if not (low[0] - 1 <= nx <= high[0] + 1 and low[2] - 1 <= nz <= high[2] + 1):
+                    continue
+                for ny in (y + 1, y, y - 1, y - 2, y - 3):
+                    if (nx, ny, nz) in reached or not standable(nx, ny, nz):
+                        continue
+                    if ny > y and not self.walkable((x, y + 2, z)):
+                        continue
+                    if ny < y and not all(self.walkable((nx, k, nz)) for k in range(ny, y + 2)):
+                        continue
+                    reached.add((nx, ny, nz))
+                    frontier.append((nx, ny, nz))
+                    break
+        return [
+            bed
+            for bed in beds
+            if not any(
+                (bed[0] + dx, y, bed[2] + dz) in reached
+                for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1))
+                for y in (bed[1], bed[1] + 1)
+            )
+        ]
+
     def save(self, path, size=None):
         loose = sorted(self.unsupported())
         if loose:
             raise ValueError(f"{path.parent.name}/{path.name}: blocks without support: {loose[:6]}")
+        shut = sorted(self.shut_in())
+        if shut:
+            raise ValueError(f"{path.parent.name}/{path.name}: no two-high way from outside to its bed at {shut[0]}")
         if size is None:
             size = [max(pos[axis] for pos in self.blocks) + 1 for axis in range(3)]
         palette = []

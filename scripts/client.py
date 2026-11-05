@@ -15,12 +15,15 @@ from pathlib import Path
 
 import drive
 import hotswap
+import instance
 import states
 import tomllib
 from drive import Failure, crashes, running
 
 ROOT = Path(__file__).resolve().parent.parent
-CLIENT = ROOT / "build/client"
+SEAT = drive.seat("client")
+CLIENT = SEAT.folder
+STORE = ROOT / "build/client/saves"
 DRIVER = CLIENT / "driver"
 LAUNCHER = DRIVER / "launcher.pid"
 GAME = DRIVER / "game.pid"
@@ -28,8 +31,10 @@ LAUNCHED = DRIVER / "launched.json"
 WORLD = DRIVER / "world.json"
 SAVE = DRIVER / "save.json"
 SAVES = CLIENT / "saves"
-CHECKPOINTS = CLIENT / "checkpoints"
+CHECKPOINTS = ROOT / "build/client/checkpoints"
 SHOT_NAME = re.compile(r"t(\d{4})")
+NUMBERS = re.compile(r"-?\d+")
+KEPT_APART = {"chat", "check", "checkpoint", "heard", "hud", "inspect", "screenshot", "seen", "state", "talk", "view"}
 RUN_FOLDER = "%Y-%m-%d_%H-%M"
 REBUILT = {"play", "play-lean", "showroom", "showroom-lean", "state", "state-lean"}
 VIEW_WIDTH = 1280
@@ -101,8 +106,6 @@ MINIMUM_MHZ = 1100
 MINIMUM_THREADS = 12
 MINIMUM_MHZ_LIMIT = 1200
 OTHERS_PERCENT = 5
-DEV_SERVER = ROOT / "build/devserver"
-DEV_SERVER_ADDRESS = "localhost:25566"
 SERVER_FAR_VIEW = CLIENT / "Distant_Horizons_server_data"
 PERF = re.compile(r"(\d+) fps on average over \d+ s, 1% low (\d+) fps, worst frame (\d+) ms")
 STANDING = re.compile(r"(-?[\d.]+) -?[\d.]+ (-?[\d.]+) facing")
@@ -220,8 +223,15 @@ def launch(world, timeout, visible, mode, state, rebuild, seed, processors=None,
     shutil.rmtree(SCREENSHOTS, ignore_errors=True)
     before = crashes(CRASHES)
     command = ["just", "showroom" if world == "showroom" else "play", mode]
+    try:
+        drive.room("client")
+    except Failure as failure:
+        sys.exit(f"start failed: {failure}")
+    drive.shared(SAVES, STORE, REBUILT)
     environment = screen(visible, size) | {
         "WAYFARER_DRIVEN": "true",
+        "WAYFARER_GAME_DIRECTORY": str(CLIENT),
+        "WAYFARER_SWAP_PORT": str(hotswap.port("client_swap_port") + SEAT.offset()),
         "WAYFARER_SEED": "" if seed is None else str(seed),
         "WAYFARER_WORLD": save or "",
     }
@@ -233,19 +243,20 @@ def launch(world, timeout, visible, mode, state, rebuild, seed, processors=None,
         start = states.prepare(cache, CLIENT / "saves" / ("state-lean" if mode == "lean" else "state"), rebuild)
         environment |= {"WAYFARER_STATE": state, "WAYFARER_STATE_CACHE": str(cache)}
     started = time.monotonic()
-    with LAUNCH_LOG.open("w") as log:
-        process = subprocess.Popen(
-            command,
-            cwd=ROOT,
-            env=environment,
-            stdin=subprocess.DEVNULL,
-            stdout=log,
-            stderr=subprocess.STDOUT,
-            start_new_session=True,
-        )
-    LAUNCHER.write_text(str(process.pid))
     try:
-        report = wait_done(timeout, before)
+        with drive.locked(ROOT / "build/launch.lock"):
+            with LAUNCH_LOG.open("w") as log:
+                process = subprocess.Popen(
+                    command,
+                    cwd=ROOT,
+                    env=environment,
+                    stdin=subprocess.DEVNULL,
+                    stdout=log,
+                    stderr=subprocess.STDOUT,
+                    start_new_session=True,
+                )
+            LAUNCHER.write_text(str(process.pid))
+            report = wait_done(timeout, before)
     except SystemExit:
         with contextlib.suppress(ProcessLookupError):
             os.killpg(process.pid, signal.SIGKILL)
@@ -320,7 +331,7 @@ def relaunching(launched, digests, mode, visible, size):
 
 def swap_in():
     try:
-        result = hotswap.swap(hotswap.port("client_swap_port"), SNAPSHOT)
+        result = hotswap.swap(hotswap.port("client_swap_port") + SEAT.offset(), SNAPSHOT)
     except Failure as failure:
         sys.exit(str(failure))
     if result["listeners"]:
@@ -335,9 +346,7 @@ def swapped():
     return [f"{', '.join(result['needs a restart'])} needs a restart"] if result["needs a restart"] else []
 
 
-def ensure(
-    world, timeout, visible, mode, state=None, rebuild=False, anew=False, seed=None, size=SCREEN_SIZE, save=None
-):
+def ensure(world, timeout, visible, mode, state=None, rebuild=False, seed=None, size=SCREEN_SIZE, save=None):
     launched, opened = current()
     digests = states.digests()
     reasons = relaunching(launched, digests, mode, visible, size) or swapped()
@@ -353,7 +362,7 @@ def ensure(
         reloaded = "textures, models, fonts, sounds and lang reloaded, "
     data = states.changed(launched["digests"], digests, ("data",))
     record(digests, mode, visible, size)
-    if world == "showroom" and opened["world"] == "showroom" and not anew and not data:
+    if world == "showroom" and opened["world"] == "showroom" and not data:
         print("the client is running in the showroom" + (f" ({reloaded.removesuffix(', ')})" if reloaded else ""))
         return
     if world == "save" and opened == {"state": save, "world": "save"} and SAVE.exists() and not data:
@@ -386,7 +395,9 @@ def start(arguments):
         launched, _ = current()
         if relaunching(launched, states.digests(), arguments.mode, arguments.visible, SCREEN_SIZE) or swapped():
             ensure("showroom", arguments.timeout, arguments.visible, arguments.mode)
-        batch(["leave"], arguments.timeout)
+        skipped = [line for line in batch(["leave"], arguments.timeout).splitlines() if line.startswith("skipped:")]
+        if skipped:
+            sys.exit(f"leaving for the title failed: {skipped[0].removeprefix('skipped: ')}")
         print("the client stands at the title screen")
         return
     if arguments.state:
@@ -395,6 +406,13 @@ def start(arguments):
         sys.exit(
             f"{arguments.world} is the dev client's own world, made anew by its start mode; open a save of your own"
         )
+    drive.shared(SAVES, STORE, REBUILT)
+    if arguments.world:
+        other = drive.holder(arguments.world, "client")
+        if other is not None and other.folder != CLIENT:
+            sys.exit(
+                f'start failed: "{arguments.world}" is open in session {other.owner() or "of your own"}\'s client; ask that session to leave it'
+            )
     if arguments.world and not (SAVES / arguments.world / "level.dat").exists():
         saves = sorted(path.name for path in SAVES.iterdir() if (path / "level.dat").exists()) if SAVES.exists() else []
         sys.exit(f"no save {arguments.world}; the saves are: {', '.join(saves) or 'none'}")
@@ -451,7 +469,13 @@ def rewind(step, timeout):
             "step": step,
             "error": [f"rewind failed: {world.name} has {len(kept_ones)} checkpoint{'s' * (len(kept_ones) != 1)}"],
         }
-    batch(["leave"], timeout)
+    left = batch(["leave"], timeout)
+    unleft = [line for line in left.splitlines() if line.startswith(("error:", "skipped:"))]
+    if unleft:
+        return {
+            "step": step,
+            "error": [f"rewind failed: the world did not close, so its save stays as it is: {unleft[0]}"],
+        }
     back_to = drive.rewound(world, kept_ones[-back])
     report = batch([f"enter save {world.name}", "hud"], timeout)
     errors = [line.removeprefix("error: ") for line in report.splitlines() if line.startswith("error:")]
@@ -559,7 +583,30 @@ def parse(report):
             entries[-1]["state"] = json.loads(Path(value.removeprefix(STATE)).read_text())
             continue
         entries[-1].setdefault(key, []).append(json.loads(value) if key in ("hud", "inspect", "seen") else value)
+    for entry in entries:
+        for key, value in entry.items():
+            if isinstance(value, list) and key not in KEPT_APART:
+                entry[key] = collapsed(value)
     return entries
+
+
+def collapsed(lines):
+    kept = []
+    counts = {}
+    for line in lines:
+        if not isinstance(line, str):
+            kept.append(line)
+            continue
+        shape = NUMBERS.sub("#", line)
+        if shape in counts:
+            counts[shape][1] += 1
+            continue
+        counts[shape] = [len(kept), 1]
+        kept.append(line)
+    for index, count in counts.values():
+        if count > 1:
+            kept[index] = f"{kept[index]} ({count} times)"
+    return kept
 
 
 def compare(step, timeout):
@@ -592,7 +639,7 @@ def views(step, timeout):
     return {"step": step, "sheet": str(target)} | ({"error": errors} if errors else {})
 
 
-def sides(name, timeout, chosen=tuple(SIDES)):
+def sides(name, timeout):
     report = batch(["/wayfarer workshop bounds"], timeout)
     found = BOUNDS.search(report)
     if not found:
@@ -601,7 +648,7 @@ def sides(name, timeout, chosen=tuple(SIDES)):
     centre = [(low[axis] + high[axis]) / 2 for axis in range(3)]
     corners = [[(low, high)[(index >> axis) & 1][axis] - centre[axis] for axis in range(3)] for index in range(8)]
     steps = ["gui off", "/gamemode spectator"]
-    for label in chosen:
+    for label in SIDES:
         direction = SIDES[label]
         distance = framed(direction, corners)
         length = math.hypot(*direction)
@@ -609,7 +656,7 @@ def sides(name, timeout, chosen=tuple(SIDES)):
         steps += view(f"workshop-{name}-{label}", (eye[0], eye[1] - EYE_HEIGHT, eye[2]), centre, WORKSHOP)
     entries = parse(batch([*steps, "/gamemode creative", "gui on"], timeout))
     errors = [error for entry in entries for error in entry.get("error", [])]
-    return [(label, f"workshop-{name}-{label}") for label in chosen], errors
+    return [(label, f"workshop-{name}-{label}") for label in SIDES], errors
 
 
 def framed(direction, corners):
@@ -822,7 +869,9 @@ def bench(arguments):
     if minimum and shutil.which("nvidia-smi") is None:
         sys.exit("bench --minimum needs nvidia-smi to check the graphics card's clock")
     steps = MINIMUM_STEPS if minimum else BENCH_STEPS
-    places = (("alone", []), ("server", [f"join {DEV_SERVER_ADDRESS}"])) if minimum else (("alone", []),)
+    dev_server = drive.seat("devserver")
+    address = f"localhost:{instance.DEV_SERVER_PORTS['server'] + dev_server.offset()}"
+    places = (("alone", []), ("server", [f"join {address}"])) if minimum else (("alone", []),)
     nvidia = shutil.which("nvidia-smi")
     locking = minimum and not at_pc()
     for ending in (signal.SIGHUP, signal.SIGTERM):
@@ -869,7 +918,7 @@ def measure(minimum, cpus, steps, places, weather):
                 env=os.environ | {"WAYFARER_PROCESSORS": str(len(others))},
                 check=True,
             )
-            for pid in games(DEV_SERVER):
+            for pid in games(drive.seat("devserver").folder):
                 pin(pid, ",".join(map(str, others)))
             shutil.rmtree(SERVER_FAR_VIEW, ignore_errors=True)
             launch("play", START_SECONDS, False, "shipped", None, False, BENCH_SEED, MINIMUM_THREADS)

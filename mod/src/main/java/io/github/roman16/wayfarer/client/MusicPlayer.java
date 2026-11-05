@@ -34,6 +34,10 @@ public final class MusicPlayer {
         LOGGER.info("story music {} {}", play.piece(), play.loop() ? "looping" : "once");
     }
 
+    static void stop() {
+        fade();
+    }
+
     public static boolean playing(String piece) {
         return playing != null && playing.piece.equals(piece);
     }
@@ -60,13 +64,14 @@ public final class MusicPlayer {
 
         @Override
         public void tick() {
-            if (fading < 0) {
-                return;
+            float faded = 1;
+            if (fading >= 0) {
+                faded = (float) fading / FADE_TICKS;
+                if (fading-- == 0) {
+                    stop();
+                }
             }
-            volume = (float) fading / FADE_TICKS;
-            if (fading-- == 0) {
-                stop();
-            }
+            volume = faded * Speech.music();
         }
     }
 }

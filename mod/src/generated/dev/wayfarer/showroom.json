@@ -23,6 +23,7 @@
   },
   "steps": [
     "settle",
+    "/gamemode creative",
     "/execute in wayfarer:showroom run tp @s 0.5 21 0.5",
     "settle",
     "/gamerule doDaylightCycle false",

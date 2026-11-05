@@ -15,7 +15,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.monster.Pillager;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 
@@ -66,7 +65,7 @@ final class Chase {
         for (int turned = 0; turned < FULL_TURN; turned += TURN_STEP) {
             Vec3 bent = way.yRot((float) Math.toRadians(turned % (2 * TURN_STEP) == 0 ? turned / 2 : -turned / 2));
             Vec3 next = horse.position().add(bent.scale(pace));
-            BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.containing(next));
+            BlockPos ground = Ground.above(level, BlockPos.containing(next));
             if (level.getFluidState(ground.below()).isEmpty() && level.getFluidState(ground).isEmpty() && Math.abs(ground.getY() - horse.getY()) <= 1) {
                 float yaw = (float) Math.toDegrees(Math.atan2(-bent.x, bent.z));
                 horse.moveTo(next.x, ground.getY(), next.z, yaw, 0);
@@ -83,7 +82,7 @@ final class Chase {
             return null;
         }
         Vec3 side = player.getLookAngle().multiply(1, 0, 1).normalize().scale(Balance.get().chase().startBlocks());
-        BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.containing(player.position().add(side)));
+        BlockPos ground = Ground.above(level, BlockPos.containing(player.position().add(side)));
         horse.moveTo(ground.getX() + 0.5, ground.getY(), ground.getZ() + 0.5, 0, 0);
         horse.setNoAi(true);
         horse.setInvulnerable(true);

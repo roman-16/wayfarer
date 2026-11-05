@@ -401,7 +401,7 @@ The catch-up lives in the quest engine (`systems.md`, M1), and the distances and
 
 ### D12 People: a world to talk to
 
-- The world has people to talk to: travellers on the road, the peoples in their camps, the Gazebound, and characters who come back, such as the herder, the caravan's elder and Malgven. The pack builds them with Easy NPC, and in phase 6 every one of them is voiced (`narration.md`).
+- The world has people to talk to: travellers on the road, the peoples in their camps, the Gazebound, and characters who come back, such as the herder, the caravan's elder and Malgven. The pack builds them with Easy NPC, and every one of them is voiced (`narration.md`).
 
 ```text
 The herder looks up from his fire. "You again. The dogs remember you."

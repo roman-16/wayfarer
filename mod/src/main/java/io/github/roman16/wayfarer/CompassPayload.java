@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 public record CompassPayload(
         Mode mode,
         int heat,
+        boolean distant,
         List<ResourceLocation> claimed,
         List<Marker> markers,
         Shelter shelter,
@@ -23,6 +24,7 @@ public record CompassPayload(
         FAR,
         HIDDEN,
         LOST,
+        MARKED,
         RISING
     }
 
@@ -40,20 +42,21 @@ public record CompassPayload(
         HALL
     }
 
-    public record Marker(Kind kind, String name, int x, int z) {}
+    public record Marker(Kind kind, String name, int x, int y, int z) {}
 
     public static final Type<CompassPayload> TYPE = new Type<>(Wayfarer.id("compass"));
     public static final StreamCodec<FriendlyByteBuf, CompassPayload> STREAM_CODEC = StreamCodec.ofMember(CompassPayload::write, CompassPayload::new);
     public static CompassPayload hidden(List<ResourceLocation> claimed) {
-        return new CompassPayload(Mode.HIDDEN, 0, claimed, List.of(), Shelter.NONE, false);
+        return new CompassPayload(Mode.HIDDEN, 0, false, claimed, List.of(), Shelter.NONE, false);
     }
 
     private CompassPayload(FriendlyByteBuf buf) {
         this(
                 buf.readEnum(Mode.class),
                 buf.readVarInt(),
+                buf.readBoolean(),
                 buf.readList(FriendlyByteBuf::readResourceLocation),
-                buf.readList(marker -> new Marker(marker.readEnum(Kind.class), marker.readUtf(), marker.readVarInt(), marker.readVarInt())),
+                buf.readList(marker -> new Marker(marker.readEnum(Kind.class), marker.readUtf(), marker.readVarInt(), marker.readVarInt(), marker.readVarInt())),
                 buf.readEnum(Shelter.class),
                 buf.readBoolean());
     }
@@ -61,11 +64,13 @@ public record CompassPayload(
     private void write(FriendlyByteBuf buf) {
         buf.writeEnum(mode);
         buf.writeVarInt(heat);
+        buf.writeBoolean(distant);
         buf.writeCollection(claimed, FriendlyByteBuf::writeResourceLocation);
         buf.writeCollection(markers, (out, marker) -> {
             out.writeEnum(marker.kind());
             out.writeUtf(marker.name());
             out.writeVarInt(marker.x());
+            out.writeVarInt(marker.y());
             out.writeVarInt(marker.z());
         });
         buf.writeEnum(shelter);

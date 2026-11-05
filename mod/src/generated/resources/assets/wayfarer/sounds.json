@@ -133,6 +133,24 @@
     ],
     "subtitle": "subtitles.wayfarer.gazebound_horn"
   },
+  "great_worm.death": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.generic.death",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.great_worm.death"
+  },
+  "great_worm.hurt": {
+    "sounds": [
+      {
+        "name": "minecraft:entity.generic.hurt",
+        "type": "event"
+      }
+    ],
+    "subtitle": "subtitles.wayfarer.great_worm.hurt"
+  },
   "hard_night": {
     "sounds": [
       {
@@ -204,6 +222,14 @@
       }
     ],
     "subtitle": "subtitles.wayfarer.smoke_gust"
+  },
+  "story_music.ending": {
+    "sounds": [
+      {
+        "name": "wayfarer:music/ending",
+        "stream": true
+      }
+    ]
   },
   "story_music.first_camp": {
     "sounds": [

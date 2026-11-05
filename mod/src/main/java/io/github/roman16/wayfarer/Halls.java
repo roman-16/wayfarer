@@ -58,6 +58,11 @@ public final class Halls {
         return within ? Optional.ofNullable(level.registryAccess().registryOrThrow(Registries.STRUCTURE).getKey(hall)) : Optional.empty();
     }
 
+    public static boolean built(ServerLevel level, BlockPos pos) {
+        StructureStart start = level.structureManager().getStructureWithPieceAt(pos, ALL);
+        return start.isValid() && start.getStructure() instanceof HallStructure;
+    }
+
     public static boolean inside(ServerPlayer player) {
         return inside(player.serverLevel(), player.blockPosition()).isPresent();
     }
@@ -119,7 +124,9 @@ public final class Halls {
             return;
         }
         int taken = Journey.claimed(player.server).size();
-        Talk.notice(Component.translatable("wayfarer.hall.claimed", player.getDisplayName(), eyeName(hall), taken));
+        player.displayClientMessage(Component.translatable("wayfarer.hall.count", taken).withStyle(ChatFormatting.GRAY), true);
+        player.server.getPlayerList().getPlayers().stream().filter(other -> other != player)
+                .forEach(other -> other.sendSystemMessage(Component.translatable("wayfarer.hall.claimed", player.getDisplayName(), eyeName(hall)).withStyle(ChatFormatting.GRAY)));
         if (taken == 1) {
             Talk.notice(Component.translatable("wayfarer.hall.sinks"));
         }

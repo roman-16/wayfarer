@@ -21,6 +21,7 @@ import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
@@ -43,6 +44,8 @@ import org.slf4j.Logger;
 
 public final class Mine {
     static final String NAME = "frost_mine";
+    private static final int AHEAD_DAYS = 2;
+    private static final int SEARCH_STEP = 64;
     static final String DEEP = "frost_mine_deep";
     static final String CART = "frost_mine_cart";
     private static final String SITE = "frost_mine_site";
@@ -89,35 +92,54 @@ public final class Mine {
         if (progress.place(SITE).isPresent()) {
             return;
         }
-        BlockPos stair = progress.place(Frost.HALL).orElseThrow(() -> new IllegalStateException("the Frost Walkers' mine needs their hall first"));
-        BlockPos house = progress.place(Frost.HOUSE_SITE).orElse(stair);
-        Vec3 away = Vec3.atLowerCornerOf(stair.subtract(house)).multiply(1, 0, 1);
+        BlockPos hall = progress.place(Frost.HALL).orElseThrow(() -> new IllegalStateException("the Frost Walkers' mine needs their hall first"));
+        BlockPos house = progress.place(Frost.HOUSE_SITE).orElse(hall);
+        List<ServerPlayer> team = Engine.players(server).stream().filter(player -> player.level().dimension() == Level.OVERWORLD).toList();
+        BlockPos at = team.isEmpty() ? hall : BlockPos.containing(team.stream().mapToDouble(ServerPlayer::getX).average().orElseThrow(), hall.getY(),
+                team.stream().mapToDouble(ServerPlayer::getZ).average().orElseThrow());
+        int ahead = AHEAD_DAYS * Balance.get().caravan().dayBlocks();
+        boolean behind = at.distSqr(hall) > (double) ahead * ahead;
+        Vec3 away = behind ? Caravan.way(server) : Vec3.atLowerCornerOf(hall.subtract(house)).multiply(1, 0, 1);
         away = away.lengthSqr() == 0 ? new Vec3(1, 0, 0) : away.normalize();
         ServerLevel level = Engine.overworld(server);
         Unseen.Heights heights = new Unseen.Heights(level);
         int reach = Balance.get().frost().mineBlocks();
+        BlockPos origin = behind ? at : hall;
         BlockPos site = null;
-        for (int turned = 0; turned <= TURN_MOST_DEGREES && site == null; turned += TURN_STEP_DEGREES) {
-            for (int sign : turned == 0 ? new int[] {1} : new int[] {1, -1}) {
-                Vec3 at = Vec3.atLowerCornerOf(stair).add(away.yRot((float) Math.toRadians(turned * sign)).scale(reach));
-                int x = (int) Math.round(at.x);
-                int z = (int) Math.round(at.z);
-                if (site == null && !heights.wet(x, z) && Frost.snowy(heights, x, z) && Frost.flat(heights, x, z)) {
-                    site = new BlockPos(x, heights.surface(x, z), z);
+        for (int out = reach; out <= (behind ? ahead : reach) && site == null; out += SEARCH_STEP) {
+            for (int turned = 0; turned <= TURN_MOST_DEGREES && site == null; turned += TURN_STEP_DEGREES) {
+                for (int sign : turned == 0 ? new int[] {1} : new int[] {1, -1}) {
+                    Vec3 spot = Vec3.atLowerCornerOf(origin).add(away.yRot((float) Math.toRadians(turned * sign)).scale(out));
+                    int x = (int) Math.round(spot.x);
+                    int z = (int) Math.round(spot.z);
+                    if (site == null && !heights.wet(x, z) && Frost.snowy(heights, x, z) && Frost.flat(heights, x, z)) {
+                        site = new BlockPos(x, heights.surface(x, z), z);
+                    }
                 }
             }
         }
         if (site == null) {
-            Vec3 at = Vec3.atLowerCornerOf(stair).add(away.scale(reach));
-            site = new BlockPos((int) Math.round(at.x), heights.surface((int) Math.round(at.x), (int) Math.round(at.z)), (int) Math.round(at.z));
+            origin = hall;
+            away = Vec3.atLowerCornerOf(hall.subtract(house)).multiply(1, 0, 1);
+            away = away.lengthSqr() == 0 ? new Vec3(1, 0, 0) : away.normalize();
+            Vec3 spot = Vec3.atLowerCornerOf(hall).add(away.scale(reach));
+            site = new BlockPos((int) Math.round(spot.x), heights.surface((int) Math.round(spot.x), (int) Math.round(spot.z)), (int) Math.round(spot.z));
         }
-        Vec3 from = Vec3.atLowerCornerOf(site.subtract(stair)).multiply(1, 0, 1).normalize();
-        Vec3 cart = Vec3.atBottomCenterOf(stair).add(from.scale(CART_OUT));
+        Vec3 from = Vec3.atLowerCornerOf(site.subtract(origin)).multiply(1, 0, 1).normalize();
+        Vec3 stair = Vec3.atBottomCenterOf(site).subtract(from.scale(reach));
+        Vec3 cart = stair.add(from.scale(CART_OUT));
         progress.place(SITE, site);
         progress.place(CART, BlockPos.containing(cart.x, heights.surface((int) Math.floor(cart.x), (int) Math.floor(cart.z)), cart.z));
         progress.yaws.put(TURN, (float) Frost.facing(from).ordinal());
         progress.setDirty();
         LOGGER.info("the Frost Walkers' old mine lies at {}, its ore cart by the hall's stair at {}", site, progress.place(CART).orElseThrow());
+    }
+
+    static void unbuild(MinecraftServer server, String name) {
+        Progress progress = Progress.of(server);
+        progress.places.remove(NAME);
+        List.of(CART_CLUE, LAID).forEach(progress.scratch(LAID)::remove);
+        progress.setDirty();
     }
 
     static void tick(MinecraftServer server) {
@@ -147,7 +169,7 @@ public final class Mine {
         JsonObject head = plan.getAsJsonObject("head");
         int reach = shaft(head).getX() + 1;
         BlockPos site = flattest(level, found, reach);
-        int ground = Frost.top(level, site.getX(), site.getZ());
+        int ground = Ground.land(level, site.getX(), site.getZ());
         progress.place(SITE, site.atY(ground));
         Camps.clearing(level, site.atY(ground), CLEARING, true);
         level(level, site, ground, reach);
@@ -174,6 +196,7 @@ public final class Mine {
         progress.place(HIGH, new BlockPos(box.maxX(), box.maxY(), box.maxZ()));
         progress.setDirty();
         Frost.release(level, found);
+        Standing.keep(server, NAME);
         LOGGER.info("the Frost Walkers' old mine stands at {}, {} stages down to the old wall at {}", site.atY(ground), stages, chamberAt);
         Journal.syncAll(server);
     }
@@ -189,7 +212,7 @@ public final class Mine {
                 boolean wet = false;
                 for (int x = -reach; x <= reach; x++) {
                     for (int z = -reach; z <= reach; z++) {
-                        int top = Frost.top(level, centre.getX() + x, centre.getZ() + z);
+                        int top = Ground.land(level, centre.getX() + x, centre.getZ() + z);
                         high = Math.max(high, top);
                         low = Math.min(low, top);
                         wet |= !level.getFluidState(new BlockPos(centre.getX() + x, top, centre.getZ() + z)).isEmpty();
@@ -208,7 +231,7 @@ public final class Mine {
     private static void level(ServerLevel level, BlockPos site, int ground, int reach) {
         for (int x = -reach; x <= reach; x++) {
             for (int z = -reach; z <= reach; z++) {
-                int top = Frost.top(level, site.getX() + x, site.getZ() + z);
+                int top = Ground.land(level, site.getX() + x, site.getZ() + z);
                 BlockPos column = new BlockPos(site.getX() + x, top, site.getZ() + z);
                 BlockState surface = level.getBlockState(column);
                 for (int y = ground + 1; y <= top + 1 + LEVEL_ABOVE; y++) {
@@ -253,7 +276,7 @@ public final class Mine {
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
                 BlockPos drift = at.offset(dx, 0, dz);
-                BlockPos above = drift.atY(Frost.top(level, drift.getX(), drift.getZ()) + 1);
+                BlockPos above = drift.atY(Ground.land(level, drift.getX(), drift.getZ()) + 1);
                 if ((dx != 0 || dz != 0) && (level.getBlockState(above).isAir() || level.getBlockState(above).is(Blocks.SNOW))
                         && level.getBlockState(above.below()).isFaceSturdy(level, above.below(), Direction.UP)) {
                     level.setBlock(above, Blocks.SNOW.defaultBlockState().setValue(SnowLayerBlock.LAYERS, DRIFT_LAYERS), Block.UPDATE_CLIENTS);
@@ -272,7 +295,7 @@ public final class Mine {
                 rut(level, new Rut(here.add(across.scale(side * RUT_APART)), along), RUTS);
             }
         }
-        Clues.box(level, start.add(along.scale(RUTS_SHOWN * RUT_STEP / 2)).add(0, ground(level, start) - start.y, 0), RUTS_CLUE);
+        Clues.box(level, start.add(along.scale(RUTS_SHOWN * RUT_STEP / 2)).add(0, Ground.surface(level, (int) Math.floor(start.x), (int) Math.floor(start.z)) - start.y, 0), RUTS_CLUE);
         progress.scratch(LAID).putBoolean(CART_CLUE, true);
         progress.setDirty();
         Frost.release(level, at);
@@ -348,7 +371,7 @@ public final class Mine {
     private static void rut(ServerLevel level, Rut rut, String clue) {
         int x = (int) Math.floor(rut.at().x);
         int z = (int) Math.floor(rut.at().z);
-        int top = Frost.top(level, x, z);
+        int top = Ground.land(level, x, z);
         BlockPos ground = new BlockPos(x, top, z);
         BlockState below = level.getBlockState(ground);
         if (!level.getFluidState(ground).isEmpty() || below.is(Blocks.ICE) || below.is(BlockTags.LEAVES)) {
@@ -356,25 +379,15 @@ public final class Mine {
         }
         BlockState above = level.getBlockState(ground.above());
         boolean snow = above.is(Blocks.SNOW) || below.is(Blocks.SNOW_BLOCK) || below.is(Blocks.POWDER_SNOW);
-        double y = surface(level, x, z);
+        double y = Ground.surface(level, x, z);
         BlockState worn = snow ? Blocks.LIGHT_GRAY_CONCRETE_POWDER.defaultBlockState() : Blocks.GRAVEL.defaultBlockState();
         Clues.mark(level, new Vec3(rut.at().x, y + 0.01, rut.at().z), worn, RUT_WIDTH, RUT_LENGTH, rut.along(), clue);
     }
 
     private static double snowTop(Level level, int x, int z) {
-        int top = Frost.top(level, x, z);
+        int top = Ground.land(level, x, z);
         BlockState above = level.getBlockState(new BlockPos(x, top + 1, z));
         return above.is(Blocks.SNOW) ? top + 1 + above.getValue(SnowLayerBlock.LAYERS) / 8.0 : top + 1;
-    }
-
-    private static double surface(Level level, int x, int z) {
-        int top = Frost.top(level, x, z);
-        BlockState above = level.getBlockState(new BlockPos(x, top + 1, z));
-        return above.is(Blocks.SNOW) ? top + 1 + (above.getValue(SnowLayerBlock.LAYERS) - 1) / 8.0 : top + 1;
-    }
-
-    private static double ground(Level level, Vec3 at) {
-        return Frost.top(level, (int) Math.floor(at.x), (int) Math.floor(at.z)) + 1;
     }
 
     private static BlockPos local(JsonArray xyz) {

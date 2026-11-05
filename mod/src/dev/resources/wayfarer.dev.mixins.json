@@ -6,7 +6,7 @@
     "GuiMixin",
     "LevelRendererMixin",
     "MinecraftMixin",
-    "PanoramaPickMixin",
+    "MultiPlayerGameModeMixin",
     "PanoramaRendererMixin",
     "ParticleEngineAccessor",
     "ParticularCounterMixin",

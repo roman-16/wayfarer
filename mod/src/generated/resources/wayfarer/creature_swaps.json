@@ -1,0 +1,12 @@
+{
+  "minecraft:blaze": "minecraft:skeleton",
+  "minecraft:ghast": "minecraft:phantom",
+  "minecraft:hoglin": "minecraft:zombie",
+  "minecraft:magma_cube": "minecraft:slime",
+  "minecraft:piglin": "minecraft:zombie",
+  "minecraft:piglin_brute": "minecraft:vindicator",
+  "minecraft:strider": "minecraft:zombie",
+  "minecraft:wither_skeleton": "minecraft:skeleton",
+  "minecraft:zoglin": "minecraft:zombie",
+  "minecraft:zombified_piglin": "minecraft:zombie"
+}

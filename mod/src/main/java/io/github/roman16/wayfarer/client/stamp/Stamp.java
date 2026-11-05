@@ -36,6 +36,9 @@ public final class Stamp {
     public static final ResourceLocation PANEL = sprite("panel");
     public static final ResourceLocation PANEL_CLEAR = sprite("panel_clear");
     public static final ResourceLocation PLATE = sprite("plate");
+    public static final ResourceLocation PLAY = sprite("play");
+    public static final ResourceLocation PLAY_HIGHLIGHTED = sprite("play_highlighted");
+    public static final int PLAY_SIZE = 9;
     public static final ResourceLocation RIBBON = sprite("ribbon");
     public static final ResourceLocation RIBBON_ACTIVE = sprite("ribbon_active");
     public static final ResourceLocation RING = sprite("ring");
@@ -76,6 +79,8 @@ public final class Stamp {
     public static final int BURN_OUT_MILLIS = TOKENS.getAsJsonObject("motion").get("burn_out").getAsInt();
     public static final int LINGER_MILLIS = TOKENS.getAsJsonObject("motion").get("linger").getAsInt();
     public static final int READ_MILLIS = TOKENS.getAsJsonObject("motion").get("read").getAsInt();
+    public static final int RECAP_HOLD_MILLIS = TOKENS.getAsJsonObject("motion").get("recap_hold").getAsInt();
+    public static final int VOICE_FADE_MILLIS = TOKENS.getAsJsonObject("motion").get("voice_fade").getAsInt();
 
     private Stamp() {
     }

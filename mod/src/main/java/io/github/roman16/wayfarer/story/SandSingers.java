@@ -40,7 +40,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
@@ -94,6 +93,12 @@ public final class SandSingers {
 
     static void reset() {
         SITE.reset();
+    }
+
+    static void unbuild(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        SITE.forget(progress);
+        List.of(CAMP_ORIGIN, LAIR_SITE, LAIR_BUILT, LAIR).forEach(progress.places::remove);
     }
 
     static boolean ready(MinecraftServer server, String name) {
@@ -165,18 +170,19 @@ public final class SandSingers {
         for (int index = 0; index < 2; index++) {
             Entity camel = EntityType.CAMEL.create(level);
             if (camel != null) {
-                camel.moveTo(fire.getX() + 4 + index * 2, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, fire.getX() + 4, fire.getZ() + 4),
+                camel.moveTo(fire.getX() + 4 + index * 2, Ground.land(level, fire.getX() + 4, fire.getZ() + 4) + 1,
                         fire.getZ() + 4, index * 90f, 0);
                 level.addFreshEntity(camel);
             }
         }
+        Standing.keep(server, NAME);
         LOGGER.info("the Sand Singers' camp stands at {}", origin);
         Journal.syncAll(server);
     }
 
     private static void lair(MinecraftServer server, ServerLevel level, BlockPos site) {
         Progress progress = Progress.of(server);
-        int floor = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, site.getX(), site.getZ()) - 1;
+        int floor = Ground.land(level, site.getX(), site.getZ());
         for (int dx = -BOWL; dx <= BOWL; dx++) {
             for (int dz = -BOWL; dz <= BOWL; dz++) {
                 double distance = Math.sqrt(dx * dx + dz * dz);
@@ -185,7 +191,7 @@ public final class SandSingers {
                 }
                 int x = site.getX() + dx;
                 int z = site.getZ() + dz;
-                int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+                int top = Ground.land(level, x, z) + 1;
                 int bottom = floor - (int) Math.round(BOWL_DEPTH * (1 - distance / BOWL));
                 for (int y = bottom + 1; y <= Math.max(top, floor) + BOWL_DEPTH * 2; y++) {
                     level.setBlock(new BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
@@ -201,10 +207,10 @@ public final class SandSingers {
             if (Math.floorMod(index * 7, 3) == 0) {
                 continue;
             }
-            BlockPos bone = new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), z);
+            BlockPos bone = new BlockPos(x, Ground.land(level, x, z) + 1, z);
             level.setBlock(bone, Blocks.BONE_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS);
         }
-        BlockPos spear = new BlockPos(site.getX(), level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, site.getX(), site.getZ()), site.getZ());
+        BlockPos spear = new BlockPos(site.getX(), Ground.land(level, site.getX(), site.getZ()) + 1, site.getZ());
         level.setBlock(spear, Blocks.SPRUCE_FENCE.defaultBlockState(), Block.UPDATE_CLIENTS);
         Clues.marker(level, spear, "spear");
         progress.place(LAIR, spear);
@@ -277,7 +283,7 @@ public final class SandSingers {
         if (body == null) {
             return;
         }
-        int floor = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) Math.floor(at.x), (int) Math.floor(at.z));
+        int floor = Ground.land(level, (int) Math.floor(at.x), (int) Math.floor(at.z)) + 1;
         body.moveTo(at.x, floor - STILL, at.z, 0, 0);
         long team = Math.max(1, Engine.players(server).stream().filter(player -> player.level() == level).count());
         double most = worm.health() + (double) worm.healthPerPlayer() * (team - 1);
@@ -318,7 +324,7 @@ public final class SandSingers {
         CompoundTag scratch = active.scratch();
         Balance.Worm worm = Balance.get().worm();
         Optional<BlockPos> lair = Places.place(server, LAIR);
-        if (lair.isEmpty()) {
+        if (lair.isEmpty() || Progress.of(server).choices.containsKey(active.quest().id() + "/" + active.step().id())) {
             return;
         }
         long now = level.getGameTime();

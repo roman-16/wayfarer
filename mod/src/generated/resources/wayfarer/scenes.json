@@ -13,6 +13,39 @@
       "Somebody left in a hurry. Or didn't."
     ]
   },
+  "fishers": {
+    "again": [
+      "Row on. We've a net to haul before the light goes.",
+      "Keep that coal of yours covered out here."
+    ],
+    "gift": "You're out far. Here, take these. Eat before dark, and be ashore by then.",
+    "gifts": [
+      {
+        "count": 2,
+        "id": "minecraft:cod"
+      }
+    ],
+    "seen": "A small boat rides the swell ahead, two people in it, hauling a net.",
+    "voice": [
+      "Fishers. They come out by day and go home before dark. Sensible people."
+    ],
+    "warning": "Don't stop out here after dark. Something lives under this water, and it comes up to look at lights."
+  },
+  "flotsam": {
+    "clues": {
+      "barrel": "A barrel lashed to a broken plank. Whatever rammed this boat came from underneath."
+    },
+    "seen": "Planks and a split hull drift on the swell, and a barrel bobbing among them.",
+    "voice": [
+      "Somebody's boat. Row past it, and keep rowing."
+    ]
+  },
+  "grey_sails": {
+    "seen": "Far off, a boat with men in grey in it, rowing hard. None of them looks your way.",
+    "voice": [
+      "Grey coats on the water. Keep your light low and let them go."
+    ]
+  },
   "herder": {
     "again": [
       "Go on, then. Safe road.",
@@ -61,11 +94,12 @@
     "choices": [
       {
         "id": "step_in",
-        "reply": "You step out onto the road.",
+        "reply": "You step out onto the road. One of them draws and comes at you. The other two stand back to watch.",
         "text": "Step in."
       },
       {
         "id": "hide",
+        "near": "trees",
         "reply": "You get off the road and into the trees.",
         "text": "Hide in the trees."
       },
@@ -93,6 +127,9 @@
     ],
     "won": [
       {
+        "text": "The other two look at the man in the dirt, then at you, and back away up the road."
+      },
+      {
         "by": "traveller",
         "text": "You... you came out for me. Nobody comes out."
       },
@@ -113,7 +150,15 @@
   },
   "sea": {
     "voice": [
-      "It pulls out over the water. You'll want a boat."
+      "It pulls out over the water. You'll want a boat.",
+      "It pulls out over the water again. Get your boat wet."
+    ]
+  },
+  "swell": {
+    "seen_back": "Something long rolls under the swell, far off. Then nothing.",
+    "seen_dolphins": "Dolphins come up beside you and keep pace a while.",
+    "voice": [
+      "Don't look for it. It's looking already."
     ]
   },
   "traveller": {

@@ -22,11 +22,14 @@ import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.CanPlayerSleepEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -42,8 +45,10 @@ public final class Nights {
     private static final String CELESTIALS = "enhancedcelestials2core";
     private static final String RED_MOON = "enhancedcelestials2defaultlunarevents:blood_moon";
     private static final long TICKS_PER_DAY = 24000;
+    static final String HORDE = Wayfarer.MODID + "_horde";
     private static final long DUSK = 12000;
     private static final long MIDNIGHT = 18000;
+    private static final int WATCH_BLOCKS = 128;
     private static final long MOONRISE = 12500;
     private static final long MOON_FADE = 100;
     private static final int CHECK_TICKS = 20;
@@ -58,6 +63,7 @@ public final class Nights {
         long rolled = -1;
         long hunted = -1;
         long freed = -1;
+        long calm = -1;
         final Set<UUID> free = new HashSet<>();
 
         static State load(CompoundTag tag, HolderLookup.Provider registries) {
@@ -69,6 +75,7 @@ public final class Nights {
             state.rolled = tag.contains("rolled") ? tag.getLong("rolled") : -1;
             state.hunted = tag.contains("hunted") ? tag.getLong("hunted") : -1;
             state.freed = tag.contains("freed") ? tag.getLong("freed") : -1;
+            state.calm = tag.contains("calm") ? tag.getLong("calm") : -1;
             tag.getList("free", Tag.TAG_INT_ARRAY).forEach(id -> state.free.add(NbtUtils.loadUUID(id)));
             return state;
         }
@@ -82,6 +89,7 @@ public final class Nights {
             tag.putLong("rolled", rolled);
             tag.putLong("hunted", hunted);
             tag.putLong("freed", freed);
+            tag.putLong("calm", calm);
             ListTag ids = new ListTag();
             free.forEach(id -> ids.add(NbtUtils.createUUID(id)));
             tag.put("free", ids);
@@ -158,12 +166,16 @@ public final class Nights {
             state.rolled = day;
             state.setDirty();
             boolean told = Engine.main(server).filter(active -> active.step().spec().has(AWAKE)).isPresent();
-            if (state.red != day && !told && !Hold.active(server) && !Journey.over(server) && (After.hunted(server) || level.getRandom().nextDouble() < found(server))) {
+            boolean rests = state.hunted == day - 1 || state.calm == day;
+            if (state.red != day && !told && !Hold.active(server) && !Journey.over(server) && (After.hunted(server) || !rests && level.getRandom().nextDouble() < found(server))) {
                 state.hunted = day;
                 server.getPlayerList().getPlayers().stream().filter(player -> !After.sheltered(player)).forEach(Nights::uneasy);
             }
         }
         if (state.dawn != day) {
+            if (state.dawn >= 0 && state.hunted == day - 1 && ModList.get().isLoaded(HORDES)) {
+                NeoForge.EVENT_BUS.post(new NightEndedEvent(server, Waves.reached()));
+            }
             state.dawn = day;
             state.setDirty();
             Deeds.dawn(server);
@@ -181,6 +193,12 @@ public final class Nights {
                 }
             }
         }
+        if (time < DUSK && !Hold.active(server)) {
+            level.getEntities(EntityTypeTest.forClass(Mob.class), mob -> mob.getTags().contains(HORDE) && !Leaving.leaving(mob)).forEach(mob -> {
+                Player nearest = level.getNearestPlayer(mob, -1);
+                Leaving.send(mob, nearest != null ? nearest.position() : mob.position());
+            });
+        }
         if (time >= DUSK && state.dusk != day) {
             state.dusk = day;
             state.setDirty();
@@ -191,6 +209,12 @@ public final class Nights {
                         Tents.eject(player);
                     }
                 }
+            }
+        }
+        for (ServerPlayer player : level.players()) {
+            if (sleepless(player) && night(level) && !Hold.active(server)) {
+                Waves.watch(player, level.getEntitiesOfClass(Mob.class, player.getBoundingBox().inflate(WATCH_BLOCKS),
+                        mob -> mob.getTags().contains(HORDE) && mob.isAlive() && !Leaving.leaving(mob)));
             }
         }
         if (time >= MIDNIGHT && state.horde != day) {
@@ -206,6 +230,13 @@ public final class Nights {
                 }
             }
         }
+    }
+
+    public static void calm(MinecraftServer server) {
+        ServerLevel level = server.overworld();
+        State state = state(level);
+        state.calm = level.getDayTime() / TICKS_PER_DAY;
+        state.setDirty();
     }
 
     private static boolean letGo(ServerPlayer player) {
@@ -270,7 +301,7 @@ public final class Nights {
 
     public static double found(int shine, boolean bell) {
         Balance.Shine balance = Balance.get().shine();
-        return (double) shine / balance.foundShine() * (bell ? balance.bellFound() : 1);
+        return Math.min(balance.foundMost(), (double) shine / balance.foundShine() * (bell ? balance.bellFound() : 1));
     }
 
     private static void uneasy(ServerPlayer player) {

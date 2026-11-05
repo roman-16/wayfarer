@@ -20,6 +20,7 @@ Then read the text around the change as the player meets it: `just script` write
 - **Plain words.** No fantasy vocabulary for its own sake, no capitalised Concepts beyond the lore's own names (the Eye, the ember, the gaze, the Keepers, the Gazebound, the Twelve Peoples, the halls, the calling stones, the frames).
 - **The rule, then the reason.** When text explains a mechanic, say what happens and why the world makes it happen: "It will not take root: roots are stillness, and the ember withers what a Wayfarer plants."
 - **Hopeful at the end of each piece.** The world is hard; the text is not bleak.
+- **Written for the ear.** Every line is read aloud (`design/narration.md`), so it carries its performance as audio tags where the delivery changes (`[sighs]`, `[voice breaking]`, `[pause]`), as the `sound` skill's Voices says; the game never shows them, so a tag never carries what the player must read. Narration never quotes a person: the narrator says what happens and the person their own words, on a line of their own. A word only the game knows is one of a few recorded forms or not spoken at all.
 
 ## What the player knows
 
@@ -66,4 +67,4 @@ A moment that matters is played as a scene on the band, line by line, never told
 | An enchantment's name with its icon, and a description for one that has none | `generator/enchantments.toml` |
 | Another mod's text the pack rewords | `mod/src/main/resources/assets/<that mod's namespace>/lang/en_us.json`; only a file in the same namespace reliably wins |
 
-All text is English. After editing, run `just generate` for generated text; `just lint`, run by the `finish` skill, fails on a translation key the code uses but the language file does not name, and on a book title or page too long for Minecraft.
+All text is English. After editing, run `just generate` for generated text and `just voice record` for every line written or rewritten; `just lint`, run by the `finish` skill, fails on a translation key the code uses but the language file does not name, and on a book title or page too long for Minecraft.

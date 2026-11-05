@@ -6,6 +6,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.roman16.wayfarer.story.After;
 import io.github.roman16.wayfarer.story.Caravan;
+import io.github.roman16.wayfarer.story.People;
+import io.github.roman16.wayfarer.story.Sight;
 import io.github.roman16.wayfarer.story.Story;
 import io.github.roman16.wayfarer.story.Talk;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -173,7 +175,8 @@ public final class Cuts {
             if (Talk.busy()) {
                 event.setProblem(Player.BedSleepingProblem.OTHER_PROBLEM);
                 player.displayClientMessage(Component.translatable("wayfarer.tent.story").withStyle(ChatFormatting.GRAY), true);
-            } else if (LENT.getOrDefault(player.getUUID(), -1L) != night) {
+            } else if (event.getProblem() == null && LENT.getOrDefault(player.getUUID(), -1L) != night
+                    && People.find(player.server, LENDER).filter(lender -> Sight.sees(player, lender)).isPresent()) {
                 LENT.put(player.getUUID(), night);
                 Talk.say(Talk.ROAD, Vec3.atCenterOf(event.getPos()), new Story.Line(LENDER, Story.get().people().get(LENDER).lends()));
             }

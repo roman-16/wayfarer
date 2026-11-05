@@ -2,6 +2,7 @@
   "client": [
     "AccessibilityOptionsScreenMixin",
     "BookViewScreenAccessor",
+    "ChannelGainMixin",
     "CloudHeightMixin",
     "CombatRollHudMixin",
     "ConnectScreenAccessor",
@@ -31,9 +32,12 @@
     "PickUpNotifierEntryMixin",
     "PickUpNotifierItemAccessor",
     "ReactiveMusicIdleMixin",
+    "ReceivingLevelScreenMixin",
     "SeedGenBudgetMixin",
     "SeedGenSharingMixin",
     "SodiumConfigOrderMixin",
+    "SoundEngineVoiceMixin",
+    "SoundOptionsScreenMixin",
     "SpriteLoaderMixin",
     "SpyglassImprovementsReachMixin",
     "SubtleEffectsEndRemasteredCompatMixin",
@@ -41,6 +45,7 @@
     "TextureImageMixin",
     "TitleScreenMixin",
     "ToastComponentMixin",
+    "VoicechatMicrophoneMixin",
     "WorldOpenFlowsMixin"
   ],
   "compatibilityLevel": "JAVA_21",
@@ -49,6 +54,7 @@
   },
   "minVersion": "0.8",
   "mixins": [
+    "BisonThreatMixin",
     "CarvedPumpkinBlockMixin",
     "ChunkGeneratorMixin",
     "ChunkGeneratorStructureStateMixin",
@@ -83,6 +89,8 @@
     "TemplateStructurePieceMixin",
     "ToughAsNailsClothesMixin",
     "ToughAsNailsSeasonMixin",
+    "ToughAsNailsShelterMixin",
+    "ToughAsNailsStarveMixin",
     "ToughAsNailsTargetMixin",
     "WaystonesPlacedMixin"
   ],

@@ -27,13 +27,9 @@ public final class Panorama {
         if (sets.isEmpty()) {
             return;
         }
-        String set = pick(sets);
+        String set = sets.get(RandomSource.create().nextInt(sets.size()));
         for (int face = 0; face < faces.length; face++) {
             faces[face] = TITLE.withPath(FOLDER + "/" + set + FACE + face + ".png");
         }
-    }
-
-    static String pick(List<String> sets) {
-        return sets.get(RandomSource.create().nextInt(sets.size()));
     }
 }

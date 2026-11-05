@@ -132,7 +132,23 @@ DEAD = [
 ]
 
 
+EASY_NPC_LYING = {"sleeping": "along"}
+
+
+def lies(bones):
+    pitch, _, roll = bones["Body"]["rotation"]
+    if abs(pitch) == 90:
+        return "along"
+    if abs(roll) == 90:
+        return "across"
+    return None
+
+
 def write(main):
+    lying = {name: lies(bones) for name, bones in POSES.items() if lies(bones)} | EASY_NPC_LYING
+    index = main / "wayfarer/lying.json"
+    index.parent.mkdir(parents=True, exist_ok=True)
+    index.write_text(json.dumps(dict(sorted(lying.items())), indent=2) + "\n")
     for name, bones in POSES.items():
         path = main / f"data/wayfarer/poses/humanoid/{name}.json"
         path.parent.mkdir(parents=True, exist_ok=True)

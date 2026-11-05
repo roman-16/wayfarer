@@ -44,7 +44,6 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -242,7 +241,7 @@ final class Marsh {
         Rotation turn = turn(server);
         StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(turn);
         BlockPos pool = local(PLAN.get().getAsJsonObject("places").getAsJsonArray("pool"));
-        int water = top(level, site.getX(), site.getZ());
+        int water = Ground.land(level, site.getX(), site.getZ());
         BlockPos hall = new BlockPos(site.getX(), water - pool.getY(), site.getZ()).subtract(turned(settings, pool.atY(0)));
         build(level, hall, turn);
         progress.place(ORIGIN, hall);
@@ -342,7 +341,7 @@ final class Marsh {
                 }
                 int wx = centre.getX() + x;
                 int wz = centre.getZ() + z;
-                int y = top(level, wx, wz);
+                int y = Ground.land(level, wx, wz);
                 for (int up = y + 1; up <= y + CLEAR * 2; up++) {
                     BlockPos above = new BlockPos(wx, up, wz);
                     BlockState state = level.getBlockState(above);
@@ -392,18 +391,9 @@ final class Marsh {
                 double reach = TREE_FREE + (radius - TREE_FREE) * ((index * 37 % TREES) + 0.5) / TREES;
                 int x = centre.getX() + (int) Math.round(Math.cos(angle) * reach);
                 int z = centre.getZ() + (int) Math.round(Math.sin(angle) * reach);
-                tree.value().place(level, level.getChunkSource().getGenerator(), level.random, new BlockPos(x, top(level, x, z) + 1, z));
+                tree.value().place(level, level.getChunkSource().getGenerator(), level.random, new BlockPos(x, Ground.land(level, x, z) + 1, z));
             }
         });
-    }
-
-    private static int top(Level level, int x, int z) {
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1, z);
-        while (pos.getY() > level.getMinBuildHeight() && level.getFluidState(pos).isEmpty()
-                && (level.getBlockState(pos).is(BlockTags.LOGS) || level.getBlockState(pos).is(Blocks.MANGROVE_ROOTS) || level.getBlockState(pos).canBeReplaced())) {
-            pos.move(0, -1, 0);
-        }
-        return pos.getY();
     }
 
     private static void watch(MinecraftServer server) {
@@ -472,7 +462,7 @@ final class Marsh {
     static void move(MinecraftServer server, int x, int z) {
         Progress progress = Progress.of(server);
         List.of(SITE, BOG, ORIGIN).forEach(progress.places::remove);
-        progress.place(SITE, new BlockPos(x, top(Engine.overworld(server), x, z), z));
+        progress.place(SITE, new BlockPos(x, Ground.land(Engine.overworld(server), x, z), z));
         progress.setDirty();
     }
 

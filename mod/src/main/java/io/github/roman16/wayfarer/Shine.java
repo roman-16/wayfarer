@@ -1,7 +1,9 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Ground;
 import io.github.roman16.wayfarer.story.Progress;
 import io.github.roman16.wayfarer.story.Story;
+import io.github.roman16.wayfarer.story.Talk;
 import java.lang.reflect.Field;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -25,7 +27,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -163,8 +164,8 @@ public final class Shine {
         if (!level.isLoaded(column)) {
             return;
         }
-        BlockPos pos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column);
-        if (Fire.nearest(level, pos.getCenter(), Balance.get().fire().circleBlocks()).isPresent()) {
+        BlockPos pos = Ground.above(level, column);
+        if (Fire.nearest(level, pos.getCenter(), Balance.get().fire().circleBlocks()).isPresent() || Talk.listening(player)) {
             return;
         }
         Optional<MobSpawnSettings.SpawnerData> picked = level.getBiome(pos).value().getMobSettings().getMobs(MobCategory.MONSTER).getRandom(random);

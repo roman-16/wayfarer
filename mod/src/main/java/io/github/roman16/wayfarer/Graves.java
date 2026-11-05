@@ -1,8 +1,11 @@
 package io.github.roman16.wayfarer;
 
 import de.maxhenkel.gravestone.GraveUtils;
+import de.maxhenkel.gravestone.blocks.GraveStoneBlock;
 import de.maxhenkel.gravestone.tileentity.GraveStoneTileEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -67,9 +70,20 @@ public final class Graves {
         }
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.SUCCESS);
-        if (event.getEntity() instanceof ServerPlayer player && event.getLevel().getBlockEntity(event.getPos()) instanceof GraveStoneTileEntity grave
-                && player.getUUID().equals(grave.getDeath().getPlayerUUID()) && GraveUtils.canBreakGrave(player.level(), player, event.getPos())
-                && player.gameMode.destroyBlock(event.getPos())) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || !(event.getLevel().getBlockEntity(event.getPos()) instanceof GraveStoneTileEntity grave)
+                || !player.getUUID().equals(grave.getDeath().getPlayerUUID()) || !GraveUtils.canBreakGrave(player.level(), player, event.getPos())
+                || !(event.getLevel().getBlockState(event.getPos()).getBlock() instanceof GraveStoneBlock block)) {
+            return;
+        }
+        NonNullList<ItemStack> rest = block.fillPlayerInventory(player, grave.getDeath());
+        if (!rest.isEmpty()) {
+            grave.getDeath().getAdditionalItems().addAll(rest);
+            grave.setChanged();
+            restore(player);
+            player.displayClientMessage(Component.translatable("wayfarer.grave.rest").withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
+        if (player.gameMode.destroyBlock(event.getPos())) {
             Notices.written(player, new ItemStack(BuiltInRegistries.ITEM.get(GRAVESTONE)), Component.translatable("wayfarer.notice.things"));
             Record.event(player.server, "grave", player);
         }

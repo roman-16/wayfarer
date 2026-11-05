@@ -6,8 +6,8 @@ import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
-import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.CallingStoneBlockEntity;
+import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -44,7 +44,6 @@ import net.minecraft.world.level.block.SnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -181,7 +180,7 @@ final class FirstVillage {
                 }
                 int wx = centre.getX() + x;
                 int wz = centre.getZ() + z;
-                BlockPos top = new BlockPos(wx, level.getHeight(Heightmap.Types.WORLD_SURFACE, wx, wz) - 1, wz);
+                BlockPos top = new BlockPos(wx, Ground.sky(level, wx, wz), wz);
                 while (top.getY() > level.getMinBuildHeight()) {
                     BlockState state = level.getBlockState(top);
                     if (state.is(Blocks.SNOW_BLOCK)) {
@@ -239,10 +238,10 @@ final class FirstVillage {
     private static void build(MinecraftServer server, ServerLevel level, BlockPos site) {
         Progress progress = Progress.of(server);
         Rotation turn = Rotation.values()[progress.yaws.getOrDefault(TURN, 0f).intValue()];
-        Camps.clearing(level, site.atY(Frost.top(level, site.getX(), site.getZ())), CLEARING, false);
+        Camps.clearing(level, site.atY(Ground.land(level, site.getX(), site.getZ())), CLEARING, false);
         Places.Hall hall = Places.raise(level, EVIL, site);
         Places.empty(level, hall.stone());
-        BlockPos well = hall.stair();
+        BlockPos well = hall.threshold();
         progress.place(GREEN).ifPresent(any -> green(level, well));
         JsonObject plan = PLAN.get();
         List<BoundingBox> boxes = new ArrayList<>(List.of(BoundingBox.fromCorners(well, well)));
@@ -298,7 +297,7 @@ final class FirstVillage {
 
     private static boolean wet(ServerLevel level, BlockPos centre, int reach) {
         for (BlockPos column : BlockPos.betweenClosed(centre.offset(-reach, 0, -reach), centre.offset(reach, 0, reach))) {
-            BlockPos top = column.atY(level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column.getX(), column.getZ()) - 1);
+            BlockPos top = column.atY(Ground.land(level, column.getX(), column.getZ()));
             if (!level.getFluidState(top).isEmpty() || level.getBlockState(top).is(BlockTags.ICE)) {
                 return true;
             }
@@ -331,13 +330,13 @@ final class FirstVillage {
         BlockPos melt = progress.place(MELT).orElseThrow();
         dream.setBlock(melt, Blocks.LAVA_CAULDRON.defaultBlockState(), Block.UPDATE_ALL);
         Vec3 centre = Vec3.atBottomCenterOf(melt);
-        dream.setBlock(ground(dream, melt.offset(-1, 0, 3)), Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true), Block.UPDATE_ALL);
-        BlockPos bronze = ground(dream, melt.offset(3, 0, -2));
+        dream.setBlock(Ground.above(dream, melt.offset(-1, 0, 3)), Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, true), Block.UPDATE_ALL);
+        BlockPos bronze = Ground.above(dream, melt.offset(3, 0, -2));
         dream.setBlock(bronze, Blocks.WEATHERED_COPPER.defaultBlockState(), Block.UPDATE_ALL);
         dream.setBlock(bronze.above(), Blocks.EXPOSED_CUT_COPPER_SLAB.defaultBlockState(), Block.UPDATE_ALL);
-        dream.setBlock(ground(dream, melt.offset(4, 0, -1)), Blocks.OXIDIZED_COPPER.defaultBlockState(), Block.UPDATE_ALL);
+        dream.setBlock(Ground.above(dream, melt.offset(4, 0, -1)), Blocks.OXIDIZED_COPPER.defaultBlockState(), Block.UPDATE_ALL);
         for (Founder founder : FOUNDERS) {
-            Vec3 feet = Vec3.atBottomCenterOf(ground(dream, melt.offset(founder.dx(), 0, founder.dz())));
+            Vec3 feet = Vec3.atBottomCenterOf(Ground.above(dream, melt.offset(founder.dx(), 0, founder.dz())));
             Entity body = People.spawn(dream, founder.skin(), feet, Frost.yaw(centre.subtract(feet).multiply(1, 0, 1)), founder.pose(), Memories.ROLE + FOUNDER);
             if (founder.dx() > 0 && body instanceof LivingEntity living) {
                 living.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SHOVEL));
@@ -345,10 +344,6 @@ final class FirstVillage {
         }
         riders(dream, well);
         return true;
-    }
-
-    private static BlockPos ground(ServerLevel level, BlockPos column) {
-        return column.atY(level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column.getX(), column.getZ()));
     }
 
     private static void riders(ServerLevel dream, BlockPos well) {
@@ -359,7 +354,7 @@ final class FirstVillage {
             Vec3 way = new Vec3(Math.cos(angle), 0, Math.sin(angle));
             int x = (int) Math.floor(well.getX() + way.x * RIDGE);
             int z = (int) Math.floor(well.getZ() + way.z * RIDGE);
-            int y = dream.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+            int y = Ground.land(dream, x, z) + 1;
             if (y > highest) {
                 highest = y;
                 ridge = way;
@@ -376,9 +371,9 @@ final class FirstVillage {
             if (horse == null || rider == null) {
                 continue;
             }
-            horse.moveTo(at.x, Frost.top(dream, x, z) + 1, at.z, yaw, 0);
+            horse.moveTo(at.x, Ground.land(dream, x, z) + 1, at.z, yaw, 0);
             horse.setYHeadRot(yaw);
-            rider.moveTo(at.x, Frost.top(dream, x, z) + 1, at.z, yaw, 0);
+            rider.moveTo(at.x, Ground.land(dream, x, z) + 1, at.z, yaw, 0);
             rider.setYHeadRot(yaw);
             for (Mob mob : new Mob[] {horse, rider}) {
                 mob.setNoAi(true);

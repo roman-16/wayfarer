@@ -22,7 +22,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -86,7 +85,6 @@ public final class StoryDev {
     private static final String MAP = "map";
     @Nullable
     private static Run run;
-    private static Map<UUID, Set<String>> marks = Map.of();
 
     private StoryDev() {}
 
@@ -155,9 +153,6 @@ public final class StoryDev {
                                 .executes(context -> said(context.getSource(), StringArgumentType.getString(context, "line")))))
                         .then(Commands.literal("unclaim").then(Commands.argument("reward", StringArgumentType.greedyString())
                                 .executes(context -> unclaim(context.getSource(), StringArgumentType.getString(context, "reward")))))
-                        .then(Commands.literal("marks")
-                                .then(Commands.literal("keep").executes(context -> keepMarks(context.getSource())))
-                                .then(Commands.literal("restore").executes(context -> restoreMarks(context.getSource()))))
                         .then(Commands.literal("memory").then(Commands.argument("step", StringArgumentType.word())
                                 .executes(context -> memory(context.getSource(), StringArgumentType.getString(context, "step")))))
                         .then(Commands.literal("marsh").then(Commands.argument("x", IntegerArgumentType.integer())
@@ -200,28 +195,6 @@ public final class StoryDev {
         source.getServer().getPlayerList().getPlayers().forEach(Tasks::refresh);
         source.sendSuccess(() -> Component.literal("story: " + line + " was said"), false);
         return 1;
-    }
-
-    private static int keepMarks(CommandSourceStack source) {
-        marks = copy(Progress.of(source.getServer()).seen);
-        source.sendSuccess(() -> Component.literal("story: the journal's marks are kept"), false);
-        return 1;
-    }
-
-    private static int restoreMarks(CommandSourceStack source) {
-        Progress progress = Progress.of(source.getServer());
-        progress.seen.clear();
-        progress.seen.putAll(copy(marks));
-        progress.setDirty();
-        Journal.syncAll(source.getServer());
-        source.sendSuccess(() -> Component.literal("story: the journal's marks stand as kept"), false);
-        return 1;
-    }
-
-    private static Map<UUID, Set<String>> copy(Map<UUID, Set<String>> seen) {
-        Map<UUID, Set<String>> copied = new LinkedHashMap<>();
-        seen.forEach((player, entries) -> copied.put(player, new LinkedHashSet<>(entries)));
-        return copied;
     }
 
     static boolean playing() {

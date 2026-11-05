@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
+import io.github.roman16.wayfarer.Handover;
 import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayDeque;
@@ -71,7 +72,7 @@ public final class Dice {
 
     private sealed interface Beat permits Said, Then, Ask {}
 
-    private record Said(@Nullable String by, String text) implements Beat {}
+    private record Said(@Nullable String by, String text, @Nullable Component shown) implements Beat {}
 
     private record Then(Runnable run) implements Beat {}
 
@@ -83,7 +84,6 @@ public final class Dice {
         private final Deque<Beat> script = new ArrayDeque<>();
         private ItemStack stake = ItemStack.EMPTY;
         private ItemStack theirs = ItemStack.EMPTY;
-        private String theirWords = "";
         private boolean playing;
         private int mine;
         private int their;
@@ -95,12 +95,20 @@ public final class Dice {
             this.dicer = dicer;
         }
 
-        private void say(String text) {
-            script.add(new Said(null, text));
+        private void say(String text, Component shown) {
+            script.add(new Said(null, text, shown));
         }
 
-        private void speak(String text) {
-            script.add(new Said(DICER, text));
+        private void speak(String text, @Nullable Component shown) {
+            script.add(new Said(DICER, text, shown));
+        }
+
+        private Component score() {
+            return Component.translatable("wayfarer.dice.score", pot, mine, their, TARGET);
+        }
+
+        private Component threw(int a, int b) {
+            return Component.translatable("wayfarer.dice.throw", a, b, pot, mine, their, TARGET);
         }
     }
 
@@ -113,7 +121,7 @@ public final class Dice {
         }
         Game game = new Game(player.getUUID(), body);
         games.put(body.getUUID(), game);
-        game.speak(fill(text("offer"), Map.of("target", TARGET)));
+        game.speak(text("offer"), Component.translatable("wayfarer.dice.mark", TARGET));
         boolean empty = player.getMainHandItem().isEmpty();
         game.script.add(new Ask(List.of(choice(PLAY, text(empty ? "play_empty" : PLAY)), choice(NO, text(NO))), (chooser, chosen) -> {
             if (chosen.id().equals(PLAY)) {
@@ -131,7 +139,6 @@ public final class Dice {
         if (!game.stake.isEmpty()) {
             JsonObject pick = purse(player);
             game.theirs = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(pick.get("item").getAsString())), pick.get("count").getAsInt());
-            game.theirWords = pick.get("words").getAsString();
         }
         game.playing = true;
         Progress progress = Progress.of(player.server);
@@ -140,7 +147,8 @@ public final class Dice {
             progress.setDirty();
             Engine.open(player.server);
         }
-        game.speak(game.stake.isEmpty() ? text("stake_empty") : fill(text("stake"), Map.of("stake", name(game.stake), "theirs", game.theirWords)));
+        game.speak(game.stake.isEmpty() ? text("stake_empty") : text("stake"),
+                game.stake.isEmpty() ? null : Component.translatable("wayfarer.dice.stakes", name(game.stake), name(game.theirs), TARGET));
         throwOnce(player.server, game);
     }
 
@@ -153,12 +161,12 @@ public final class Dice {
         int b = roll(game);
         if (a == 1 || b == 1) {
             game.pot = 0;
-            game.say(fill(text("one"), Map.of("a", a, "b", b)));
+            game.say(text("one"), game.threw(a, b));
             theirTurn(server, game);
             return;
         }
         game.pot += a + b;
-        game.say(fill(text("throw"), values(game, a, b)));
+        game.say(text("throw"), game.threw(a, b));
         if (game.mine + game.pot >= TARGET) {
             game.mine += game.pot;
             end(server, game, true);
@@ -169,8 +177,8 @@ public final class Dice {
                 throwOnce(server, game);
             } else {
                 game.mine += game.pot;
-                game.say(fill(text(BANK), Map.of("pot", game.pot, "mine", game.mine)));
                 game.pot = 0;
+                game.say(text(BANK), game.score());
                 theirTurn(server, game);
             }
         }));
@@ -183,11 +191,11 @@ public final class Dice {
             int b = roll(game);
             if (a == 1 || b == 1) {
                 game.pot = 0;
-                game.say(fill(text("their_one"), Map.of("a", a, "b", b)));
+                game.say(text("their_one"), game.threw(a, b));
                 break;
             }
             game.pot += a + b;
-            game.say(fill(text("their_throw"), Map.of("a", a, "b", b, "pot", game.pot)));
+            game.say(text("their_throw"), game.threw(a, b));
             if (game.their + game.pot >= TARGET) {
                 game.their += game.pot;
                 end(server, game, false);
@@ -195,7 +203,8 @@ public final class Dice {
             }
             if (game.pot >= Math.min(STOP, TARGET - game.their)) {
                 game.their += game.pot;
-                game.say(fill(text("their_bank"), Map.of("pot", game.pot, "theirs", game.their)));
+                game.pot = 0;
+                game.say(text("their_bank"), game.score());
                 break;
             }
         }
@@ -204,7 +213,9 @@ public final class Dice {
     }
 
     private static void end(MinecraftServer server, Game game, boolean won) {
-        game.say(fill(text(won ? "win" : "lose"), Map.of("mine", game.mine, "theirs", game.their)));
+        game.pot = 0;
+        game.say(text(won ? "win" : "lose"), game.score());
+        game.speak(text(won ? "fair" : "better_luck"), null);
         game.script.add(new Then(() -> {
             games.remove(game.dicer.getUUID());
             ServerPlayer player = server.getPlayerList().getPlayer(game.player);
@@ -227,7 +238,7 @@ public final class Dice {
             Talk.withdraw(player);
             give(player, game.stake);
             if (game.playing) {
-                tell(server, game, null, text("walked"));
+                tell(server, game, DICER, text("walked"));
             }
         }
     }
@@ -238,8 +249,11 @@ public final class Dice {
             Beat beat = game.script.poll();
             switch (beat) {
                 case Said said -> {
-                    tell(server, game, said.by(), said.text());
-                    game.next = now + Talk.reading(said.text());
+                    game.next = now + tell(server, game, said.by(), said.text());
+                    ServerPlayer player = server.getPlayerList().getPlayer(game.player);
+                    if (said.shown() != null && player != null) {
+                        player.displayClientMessage(said.shown(), true);
+                    }
                 }
                 case Then then -> then.run().run();
                 case Ask ask -> {
@@ -252,9 +266,9 @@ public final class Dice {
         }
     }
 
-    private static void tell(MinecraftServer server, Game game, @Nullable String by, String text) {
+    private static long tell(MinecraftServer server, Game game, @Nullable String by, String text) {
         int reach = Balance.get().talk().reachBlocks();
-        Talk.tell(server.getPlayerList().getPlayers().stream()
+        return Talk.tell(server.getPlayerList().getPlayers().stream()
                 .filter(listener -> listener.level() == game.dicer.level() && listener.distanceToSqr(game.dicer) <= (double) reach * reach).toList(),
                 by, Component.literal(text));
     }
@@ -268,9 +282,7 @@ public final class Dice {
             return;
         }
         Notices.given(player, List.of(stack.copy()));
-        if (!player.getInventory().add(stack.copy())) {
-            player.drop(stack.copy(), false);
-        }
+        Handover.give(player, stack.copy());
     }
 
     private static JsonObject purse(ServerPlayer player) {
@@ -282,24 +294,12 @@ public final class Dice {
         return 1 + game.dicer.level().getRandom().nextInt(SIDES);
     }
 
-    private static Map<String, Object> values(Game game, int a, int b) {
-        return Map.of("a", a, "b", b, "pot", game.pot, "mine", game.mine, "theirs", game.their);
-    }
-
     private static Story.Choice choice(String id, String text) {
         return new Story.Choice(id, text, "", null, null, null);
     }
 
     private static String text(String key) {
         return TEXT.get().get(key).getAsString();
-    }
-
-    private static String fill(String text, Map<String, ?> values) {
-        String filled = text;
-        for (Map.Entry<String, ?> entry : values.entrySet()) {
-            filled = filled.replace("{" + entry.getKey() + "}", String.valueOf(entry.getValue()));
-        }
-        return filled;
     }
 
     @SubscribeEvent

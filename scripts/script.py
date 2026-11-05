@@ -2,6 +2,7 @@ import json
 import re
 from pathlib import Path
 
+import spoken
 import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -26,18 +27,6 @@ NOTICES = (
     "ward",
 )
 KEY = re.compile(r"%s")
-
-
-def ordered(quests):
-    done = set()
-    left = list(quests)
-    order = []
-    while left:
-        ready = next((quest for quest in left if set(quest.get("after", [])) <= done), left[0])
-        left.remove(ready)
-        done.add(ready["id"])
-        order.append(ready)
-    return order
 
 
 KNOWN = set()
@@ -69,12 +58,10 @@ def step(people, lang, memories, quest, spec):
         needs = f" [needs {choice['needs']}]" if "needs" in choice else ""
         when = f" [when {choice['when']}]" if "when" in choice else ""
         out.append(f"   {number} {choice['text']}{needs}{when}")
-        out.append(
-            f"       {speaker(people, spec.get('with') or next((line.get('by') for line in reversed(spec.get('lines', [])) if line.get('by')), None)):<10} {choice['reply']}"
-        )
+        out.append(f"       {speaker(people, spoken.replier(spec, choice)):<10} {choice['reply']}")
     for clue in spec.get("clues", []):
         out.append(f"CLUE       {clue['text']}")
-    out.append(f"PANEL      {spec['objective']}")
+    out.append(f"PANEL      {spec.get('objective', lang['wayfarer.caravan.objective'])}")
     for name in spec.get("tasks", []):
         out.append(f"TASK       {task(lang, name)}")
     for person, remarks in sorted(spec.get("remarks", {}).items()):
@@ -115,7 +102,7 @@ def main():
         "Every line, answer, task and notice, in the order a player meets them. Written by `just script`.",
         "",
     ]
-    for quest in ordered(quests["quests"]):
+    for quest in spoken.ordered(quests["quests"]):
         opens = ", ".join(
             filter(
                 None,
@@ -135,9 +122,14 @@ def main():
         out.append("")
         for spec in quest["steps"]:
             out += step(people, lang, memories, quest, spec)
-    out += ["## People when clicked, at the fire", ""]
+    out += ["## Years later", "", "TELLER is Pip, or the narrator when Pip was lost.", ""]
+    for leaf in quests["epilogue"]:
+        teller = "TELLER" if leaf.get("told") else speaker(people, leaf.get("by"))
+        when = f" [when {', '.join(leaf['when'])}]" if leaf.get("when") else ""
+        out.append(f"{teller:<10} {leaf['text']}{when}")
+    out += ["", "## People when clicked, at the fire", ""]
     for person, spec in sorted(people.items()):
-        for kind in ("welcomes", "mornings", "remarks"):
+        for kind in ("welcomes", "returns", "evenings", "mornings", "remarks"):
             for line in spec.get(kind, []):
                 out.append(f"{speaker(people, person):<10} ({kind}) {line}")
     out += ["", "## Notices and refusals", ""]

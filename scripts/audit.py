@@ -10,6 +10,7 @@ import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
 MODS_TOML = ROOT / "mod/src/main/templates/META-INF/neoforge.mods.toml"
+NETHER_BIOMES = {"basalt_deltas", "crimson_forest", "soul_sand_valley", "warped_forest"}
 OVERRIDES = [
     ROOT / "mod/src/main/resources/data",
     ROOT / "mod/src/generated/resources/data",
@@ -221,15 +222,45 @@ def portals(jars):
         archive.close()
 
 
+def nether_biomes(biomes):
+    names = biomes if isinstance(biomes, list) else [biomes]
+    return all(isinstance(name, str) and ("nether" in name or name.split(":")[-1] in NETHER_BIOMES) for name in names)
+
+
+def creatures(jars):
+    nether = set(tomllib.loads((ROOT / "generator/nether.toml").read_text())["creatures"])
+    for jar in jars:
+        with zipfile.ZipFile(jar) as archive:
+            for name in archive.namelist():
+                parts = name.split("/")
+                if (
+                    len(parts) < 5
+                    or parts[0] != "data"
+                    or parts[2:4] not in (["neoforge", "biome_modifier"], ["forge", "biome_modifier"])
+                ):
+                    continue
+                try:
+                    data = json.loads(archive.read(name))
+                except ValueError:
+                    continue
+                if not isinstance(data, dict) or data.get("type") not in ("neoforge:add_spawns", "forge:add_spawns"):
+                    continue
+                spawners = data.get("spawners", [])
+                spawners = spawners if isinstance(spawners, list) else [spawners]
+                spawned = sorted({spawner.get("type") for spawner in spawners if isinstance(spawner, dict)} & nether)
+                if spawned and not nether_biomes(data.get("biomes", [])):
+                    yield f"{name} ({jar.name}) adds the Nether's {', '.join(spawned)} to the Overworld: override it in mod/src/main/resources/data with no Nether creature"
+
+
 def main():
     jars = sorted(Path(sys.argv[1]).glob("*.jar"))
-    findings = [*recipes(jars), *features(jars), *portals(jars), *load_order(jars)]
+    findings = [*recipes(jars), *features(jars), *portals(jars), *load_order(jars), *creatures(jars)]
     for finding in findings:
         print(finding)
     if findings:
         sys.exit(f"{len(findings)} audit findings")
     print(
-        "no recipe needs a Nether-only item, no structure generates a lit Nether portal, every replaced file loads after its mod, and every structure-like feature is spread or natural"
+        "no recipe needs a Nether-only item, no structure generates a lit Nether portal, no mod spawns a Nether creature in the Overworld, every replaced file loads after its mod, and every structure-like feature is spread or natural"
     )
 
 

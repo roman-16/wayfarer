@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer;
 
 import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Talk;
+import io.github.roman16.wayfarer.story.Tasks;
 import io.github.roman16.wayfarer.story.Wards;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public final class TentPitch {
             return;
         }
         ItemStack held = event.getItemStack();
-        if (held.getItem() instanceof TentItem && event.getHand() == InteractionHand.MAIN_HAND) {
+        if (held.getItem() instanceof TentItem && event.getHand() == InteractionHand.MAIN_HAND && !Clicks.answers(player, event.getLevel(), event.getPos())) {
             event.setCanceled(true);
             event.setCancellationResult(InteractionResult.SUCCESS);
             if (player instanceof ServerPlayer serverPlayer) {
@@ -144,6 +145,7 @@ public final class TentPitch {
         state.tents.removeIf(pitched -> pitched.id() == tent.getId());
         state.tents.add(new Joining.Pitched(player.getUUID(), new Joining.Place(level.dimension(), door.immutable()), tent.getId()));
         state.setDirty();
+        Tasks.refresh(player);
         Sounds.play(level, door.getCenter(), TENT_PITCHED);
         Record.event(player.server, "tent pitched", player);
     }
@@ -250,13 +252,11 @@ public final class TentPitch {
         Record.event(player.server, "tent packed", player);
         TentPlacer.getInstance().removeTent(player.level(), door.getBlockPos(), pitched.getType(), TentPlacer.getOverworldSize(pitched.getSize()),
                 door.getDirection());
-        ItemStack item = pitched.asItem();
-        if (!player.getInventory().add(item)) {
-            player.drop(item, false);
-        }
+        Handover.give(player, pitched.asItem());
         Joining.State state = Joining.State.of(player.server);
         state.tents.removeIf(tent -> tent.id() == pitched.getId());
         state.setDirty();
+        Tasks.refresh(player);
     }
 
     public static List<Joining.Pitched> mine(ServerPlayer player) {
@@ -400,9 +400,7 @@ public final class TentPitch {
             TentPlacer.getInstance().removeTent(level, pos, pitched.getType(), TentPlacer.getOverworldSize(pitched.getSize()), door.getDirection());
             ItemStack item = pitched.asItem();
             ItemStack shown = item.copy();
-            if (!player.getInventory().add(item)) {
-                player.drop(item, false);
-            }
+            Handover.give(player, item);
             Notices.given(player, List.of(shown));
             brought = true;
         }

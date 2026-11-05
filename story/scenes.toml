@@ -1,73 +1,97 @@
 [scenes.cache]
-voice = ["That camp. Somebody sat there too long. Go and look."]
+voice = ["[low] That camp. Somebody sat there too long. Go and look."]
 
 [scenes.cart]
-clues.mule = "The mule lies dead in its traces. Hoofprints lead off into the reeds, wide apart, running."
-clues.tracks = "Hoofprints, wide apart. Something ran from here as fast as it could, and it was not the mule."
-voice = ["Somebody left in a hurry. Or didn't."]
+clues.mule = "The mule lies dead in its traces. [uneasy] Hoofprints lead off into the reeds, wide apart, running."
+clues.tracks = "Hoofprints, wide apart. Something ran from here as fast as it could, [pause] and it was not the mule."
+voice = ["[dry] Somebody left in a hurry. [pause] Or didn't."]
+
+[scenes.fishers]
+again = ["[busy, cheerful] Row on. We've a net to haul before the light goes.", "[uneasy] Keep that coal of yours covered out here."]
+gift = "[calling across the water, friendly] You're out far. Here, take these. Eat before dark, and be ashore by then."
+gifts = [{ count = 2, id = "minecraft:cod" }]
+seen = "A small boat rides the swell ahead, two people in it, hauling a net."
+voice = ["[approving, dry] Fishers. They come out by day and go home before dark. Sensible people."]
+warning = "[warning, low] Don't stop out here after dark. Something lives under this water, and it comes up to look at lights."
+
+[scenes.flotsam]
+clues.barrel = "A barrel lashed to a broken plank. [uneasy] Whatever rammed this boat came from underneath."
+seen = "Planks and a split hull drift on the swell, and a barrel bobbing among them."
+voice = ["[low] Somebody's boat. Row past it, and keep rowing."]
+
+[scenes.grey_sails]
+seen = "Far off, a boat with men in grey in it, rowing hard. [pause] None of them looks your way."
+voice = ["[low, warning] Grey coats on the water. Keep your light low and let them go."]
 
 [scenes.herder]
-again = ["Go on, then. Safe road.", "Mind the sheep. They mind nobody."]
-gift = "Here. Bread's yesterday's, but it's bread."
+again = ["[kindly] Go on, then. Safe road.", "[amused] Mind the sheep. They mind nobody."]
+gift = "[friendly] Here. Bread's yesterday's, [chuckles] but it's bread."
 gifts = [{ count = 2, id = "minecraft:bread" }]
-voice = ["A herder. Sheep don't care who's watching. I envied them once."]
-warning = "Keep off the ridges today. There were men in grey up there at first light, asking at every fire."
+voice = ["[wry] A herder. Sheep don't care who's watching. I envied them once."]
+warning = "[low, warning] Keep off the ridges today. There were men in grey up there at first light, asking at every fire."
 
 [scenes.pack]
-clues.pack = "A pack lies in the road, its straps cut. Needles spill out of it. Of the man who carried it, nothing."
-voice = ["You walked on. So did I, once."]
+clues.pack = "A pack lies in the road, its straps cut. Needles spill out of it. [pause] Of the man who carried it, nothing."
+voice = ["[quietly] You walked on. So did I, once."]
 
 [scenes.pedlar]
-greeting = "A trade or two, then I'm gone. Strangers bring trouble, and I've had my share."
-voice = ["A pedlar. Count your fingers after you shake his hand."]
+greeting = "[nervous, quick] A trade or two, then I'm gone. Strangers bring trouble, and I've had my share."
+voice = ["[dry] A pedlar. Count your fingers after you shake his hand."]
 
 [scenes.questioning]
 ask = [
-  { text = "On the road ahead, three men in grey stand around a traveller on his knees." },
-  { by = "gazebound", text = "Seen anyone with a glowing coal in their hand?" },
-  { by = "traveller", text = "I've seen nothing! I sell needles, that's all!" },
+  { text = "[tense] On the road ahead, three men in grey stand around a traveller on his knees." },
+  { by = "gazebound", text = "[cold, menacing] Seen anyone with a glowing coal in their hand?" },
+  { by = "traveller", text = "[terrified, pleading] I've seen nothing! I sell needles, that's all!" },
 ]
 hid = [
-  { by = "gazebound", text = "Nothing, he says. Take his purse for the lie." },
-  { text = "They take his purse and walk on, laughing." },
-  { by = "traveller", text = "I saw you in the trees! I hope it finds you, whatever you are!" },
+  { by = "gazebound", text = "[sneering] Nothing, he says. [cold] Take his purse for the lie." },
+  { text = "They take his purse and walk on, [pause] laughing." },
+  { by = "traveller", text = "[shouts, bitter, sobbing] I saw you in the trees! I hope it finds you, whatever you are!" },
 ]
-voice = ["They're asking after you. Don't stand there."]
+voice = ["[urgent, low] They're asking after you. Don't stand there."]
 won = [
-  { by = "traveller", text = "You... you came out for me. Nobody comes out." },
-  { by = "traveller", text = "Listen. Further on there's a burnt-out place. Whoever lived there buried what they had. Nobody came back for it." },
+  { text = "The other two look at the man in the dirt, then at you, [pause] and back away up the road." },
+  { by = "traveller", text = "[breathless, stunned] You... you came out for me. [voice shaking] Nobody comes out." },
+  { by = "traveller", text = "[low, grateful] Listen. Further on there's a burnt-out place. Whoever lived there buried what they had. Nobody came back for it." },
 ]
 
 [[scenes.questioning.choices]]
 id = "step_in"
-reply = "You step out onto the road."
-text = "Step in."
+reply = "You step out onto the road. [tense] One of them draws and comes at you. The other two stand back to watch."
+text = "[resolute] Step in."
 
 [[scenes.questioning.choices]]
 id = "hide"
+near = "trees"
 reply = "You get off the road and into the trees."
-text = "Hide in the trees."
+text = "[urgent whisper] Hide in the trees."
 
 [[scenes.questioning.choices]]
 id = "walk_on"
-reply = "You keep walking. Behind you, nobody calls out."
-text = "Keep walking."
+reply = "You keep walking. [pause] Behind you, nobody calls out."
+text = "[quietly] Keep walking."
 
 [scenes.ridge]
 names = ["gazebound"]
-seen = "On the ridge, a line of figures in grey, walking. None of them looks down."
-voice = ["Gazebound. The heir's people. Keep low and let them pass."]
+seen = "On the ridge, a line of figures in grey, walking. [pause] None of them looks down."
+voice = ["[whispers] Gazebound. The heir's people. Keep low and let them pass."]
+
+[scenes.swell]
+seen_back = "Something long rolls under the swell, far off. Then nothing."
+seen_dolphins = "Dolphins come up beside you and keep pace a while."
+voice = ["[low, uneasy] Don't look for it. It's looking already."]
 
 [scenes.sea]
-voice = ["It pulls out over the water. You'll want a boat."]
+voice = ["[dry] It pulls out over the water. You'll want a boat.", "[amused] It pulls out over the water again. Get your boat wet."]
 
 [scenes.traveller]
-clues.traveller = "A traveller lies by the road, cut open over the heart, like the dead in Tollbridge. The purse on the belt is still full."
-voice = ["They walked alone, at night. Don't."]
+clues.traveller = "[grim] A traveller lies by the road, cut open over the heart, like the dead in Tollbridge. [pause] The purse on the belt is still full."
+voice = ["[grave] They walked alone, at night. Don't."]
 
 [scenes.trunk]
-voice = ["Somebody's bridge, or the wind's. Mind your feet."]
+voice = ["[dry] Somebody's bridge, or the wind's. Mind your feet."]
 
 [scenes.wolves]
-seen = "Wolves on the ridge, keeping pace. They don't come closer."
-voice = ["Hungry. Not that hungry. Yet."]
+seen = "[tense] Wolves on the ridge, keeping pace. They don't come closer."
+voice = ["[dry, low] Hungry. Not that hungry. [pause] Yet."]

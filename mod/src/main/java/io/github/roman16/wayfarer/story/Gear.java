@@ -116,7 +116,8 @@ public final class Gear {
             int carried = need.carried(player);
             if (carried < need.count()) {
                 open.put(TASK + "/" + thing.key() + "/" + index,
-                        Component.translatable("wayfarer.task.gear.need", capitalised(need.name()), carried, need.count(), need.where()));
+                        need.where().isEmpty() ? Component.translatable("wayfarer.task.gear.need_bare", capitalised(need.name()), carried, need.count())
+                                : Component.translatable("wayfarer.task.gear.need", capitalised(need.name()), carried, need.count(), need.where()));
             }
         }
         open.put(TASK + "/" + thing.key(), Component.literal(thing.make()));
@@ -393,7 +394,7 @@ public final class Gear {
                 JsonObject need = element.getAsJsonObject();
                 needs.add(new Need(need.has("item") ? ResourceLocation.parse(need.get("item").getAsString()) : null,
                         need.has("tag") ? ResourceLocation.parse(need.get("tag").getAsString()) : null, need.get("count").getAsInt(),
-                        need.get("name").getAsString(), need.get("where").getAsString()));
+                        need.get("name").getAsString(), need.has("where") ? need.get("where").getAsString() : ""));
             }
         }
         List<JsonObject> have = thing.has("have") ? thing.getAsJsonArray("have").asList().stream().map(JsonElement::getAsJsonObject).toList() : List.of();

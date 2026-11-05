@@ -1,9 +1,11 @@
 package io.github.roman16.wayfarer.mixin;
 
 import de.maxhenkel.gravestone.GraveUtils;
+import io.github.roman16.wayfarer.story.Sight;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Unique;
@@ -15,6 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(targets = "de.maxhenkel.gravestone.GraveUtils", remap = false)
 abstract class GravestonePlaceMixin {
     private static final int BESIDE = 8;
+    private static final double EYES = 1.62;
+    private static final int OPEN_SIDES = 2;
     private static final int DRY_RISE = 8;
     private static final int RISE = 2;
 
@@ -23,13 +27,22 @@ abstract class GravestonePlaceMixin {
         if (level.isOutsideBuildHeight(fell)) {
             return;
         }
-        BlockPos.findClosestMatch(fell, BESIDE, DRY_RISE, at -> wayfarer$open(level, at) && level.getFluidState(at).isEmpty() && level.getFluidState(at.above()).isEmpty())
+        Vec3 eyes = Vec3.atBottomCenterOf(fell).add(0, EYES, 0);
+        BlockPos.findClosestMatch(fell, BESIDE, DRY_RISE, at -> wayfarer$open(level, at) && wayfarer$seen(level, eyes, at) && level.getFluidState(at).isEmpty()
+                        && level.getFluidState(at.above()).isEmpty())
+                .or(() -> BlockPos.findClosestMatch(fell, BESIDE, DRY_RISE, at -> wayfarer$open(level, at) && level.getFluidState(at).isEmpty()))
                 .or(() -> BlockPos.findClosestMatch(fell, BESIDE, RISE, at -> wayfarer$open(level, at)))
                 .ifPresent(at -> place.setReturnValue(at.immutable()));
     }
 
     @Unique
     private static boolean wayfarer$open(Level level, BlockPos at) {
-        return GraveUtils.isReplaceable(level, at) && level.getBlockState(at.below()).isFaceSturdy(level, at.below(), Direction.UP);
+        return GraveUtils.isReplaceable(level, at) && GraveUtils.isReplaceable(level, at.above()) && level.getBlockState(at.below()).isFaceSturdy(level, at.below(), Direction.UP);
+    }
+
+    @Unique
+    private static boolean wayfarer$seen(Level level, Vec3 eyes, BlockPos at) {
+        return Direction.Plane.HORIZONTAL.stream().filter(side -> GraveUtils.isReplaceable(level, at.relative(side))).count() >= OPEN_SIDES
+                && Sight.clear(level, eyes, Vec3.atCenterOf(at));
     }
 }

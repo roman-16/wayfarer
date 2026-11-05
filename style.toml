@@ -8,6 +8,8 @@ burn_out = 256
 kindle = 256
 linger = 8192
 read = 64
+recap_hold = 1024
+voice_fade = 1024
 
 [ramps]
 ash = ["#161311", "#201B18", "#2B2420", "#38302A", "#4A4038"]

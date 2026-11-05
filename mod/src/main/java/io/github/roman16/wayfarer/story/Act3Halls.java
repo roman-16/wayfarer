@@ -5,9 +5,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Bundled;
-import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.CallingStoneBlockEntity;
+import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.Wayfarer;
+import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +19,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
@@ -50,7 +50,11 @@ final class Act3Halls {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final String BUILT = "_built";
     private static final String TURN = "_turn";
+    private static final String CAGE_OPEN = "mansion_cage_open";
     private static final String GATE_OPEN = "ward_gate_open";
+    private static final String MANSION_CELLAR = "the_cellar";
+    private static final String MANSION_CHILDREN = "children";
+    private static final String MANSION_QUEST = "the_mansion";
     private static final String WARD_QUEST = "the_ward";
     private static final String WARD_DUEL = "the_champion";
     private static final int COVER = 10;
@@ -76,6 +80,18 @@ final class Act3Halls {
             case GRAVEYARD, GRAVEYARD_STONE -> GRAVEYARD_SITE;
             default -> throw new IllegalStateException("act 3 has no hall place " + name);
         };
+    }
+
+    static void unbuild(MinecraftServer server, String name) {
+        Progress progress = Progress.of(server);
+        site(name).forget(progress);
+        switch (name) {
+            case WARD, WARD_STONE, WARD_CHAMPION, WARD_LINES -> List.of(WARD + BUILT, WARD_LINES, GATE_OPEN).forEach(progress.places::remove);
+            case MANSION_HALL, MANSION, MANSION_STAND -> List.of(MANSION + BUILT, CAGE_OPEN).forEach(progress.places::remove);
+            case SCRIBES, SCRIBES_STONE -> progress.places.remove(SCRIBES + BUILT);
+            default -> progress.places.remove(GRAVEYARD + BUILT);
+        }
+        progress.setDirty();
     }
 
     static void reset() {
@@ -109,6 +125,10 @@ final class Act3Halls {
         build(server, level, GRAVEYARD_SITE, GRAVEYARD, Act3Halls::graveyard);
         if (progress.place(WARD + BUILT).isPresent() && progress.place(GATE_OPEN).isEmpty() && duelWon(progress)) {
             open(server, level);
+        }
+        if (progress.place(MANSION + BUILT).isPresent() && progress.place(CAGE_OPEN).isEmpty()
+                && progress.choice(MANSION_QUEST, MANSION_CELLAR).filter(MANSION_CHILDREN::equals).isPresent()) {
+            openCage(server, level);
         }
     }
 
@@ -164,14 +184,15 @@ final class Act3Halls {
         progress.place(WARD_STONE, stone);
         seat(progress, "ward_warden", stone, top);
         progress.setDirty();
+        Standing.keep(server, WARD);
         LOGGER.info("the Grass Kingdom's gatehouse stands at {}, its stone at {}", origin, stone);
     }
 
     private static void lines(Progress progress, ServerLevel level, BlockPos centre, Vec3 out) {
         BlockPos far = BlockPos.containing(Vec3.atLowerCornerOf(centre).add(out.scale(CAMP + BEYOND_CAMP)));
         level.getChunk(far);
-        BlockPos ground = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, far);
-        BlockPos fire = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, BlockPos.containing(Vec3.atLowerCornerOf(ground).add(out.scale(FIRE_AWAY))));
+        BlockPos ground = Ground.above(level, far);
+        BlockPos fire = Ground.above(level, BlockPos.containing(Vec3.atLowerCornerOf(ground).add(out.scale(FIRE_AWAY))));
         level.setBlock(fire, Blocks.CAMPFIRE.defaultBlockState(), Block.UPDATE_ALL);
         progress.place(WARD_LINES, ground);
         progress.place("seat_" + WARD_LINES, ground);
@@ -181,7 +202,7 @@ final class Act3Halls {
     static boolean past(MinecraftServer server, ServerLevel dream) {
         Progress progress = Progress.of(server);
         Rotation turn = Rotation.values()[progress.yaws.getOrDefault(MANSION + TURN, 0f).intValue()];
-        Camps.build(dream, HOUSE, progress.place(MANSION + "_origin").orElseThrow(), turn);
+        Camps.build(dream, HOUSE, progress.place(MANSION + "_origin").orElseThrow(), turn, PLAN.get().getAsJsonObject("house").get("floor").getAsInt());
         return true;
     }
 
@@ -204,7 +225,24 @@ final class Act3Halls {
         level.playSound(null, origin, SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, 0.5f);
         progress.place(GATE_OPEN, origin);
         progress.setDirty();
+        Standing.keep(server, WARD);
         LOGGER.info("the Grass Kingdom opens its gate at {}", origin);
+    }
+
+    private static void openCage(MinecraftServer server, ServerLevel level) {
+        Progress progress = Progress.of(server);
+        BlockPos origin = progress.place(MANSION + "_origin").orElseThrow();
+        if (!level.isLoaded(origin)) {
+            return;
+        }
+        Rotation turn = Rotation.values()[progress.yaws.getOrDefault(MANSION + TURN, 0f).intValue()];
+        StructurePlaceSettings settings = Camps.settings(level, HOUSE, turn);
+        for (JsonElement bar : PLAN.get().getAsJsonObject("house").getAsJsonArray("bars")) {
+            level.destroyBlock(origin.offset(StructureTemplate.calculateRelativePosition(settings, Prologue.vector(bar.getAsJsonArray()))), false);
+        }
+        progress.place(CAGE_OPEN, origin);
+        progress.setDirty();
+        Standing.keep(server, MANSION);
     }
 
     private static void mansion(MinecraftServer server, ServerLevel level, BlockPos top, BlockPos stone) {
@@ -214,9 +252,10 @@ final class Act3Halls {
         Rotation turn = Frost.facing(out.scale(-1));
         StructureTemplate template = level.getStructureManager().getOrCreate(HOUSE);
         BlockPos centre = Camps.dryBeside(level, top, out.yRot((float) Math.toRadians(45)), HOUSE_AWAY, template.getSize().getX() / 2);
-        BlockPos origin = Camps.place(level, HOUSE, centre, turn);
-        StructurePlaceSettings settings = Camps.settings(level, HOUSE, turn);
         JsonObject plan = PLAN.get().getAsJsonObject("house");
+        BlockPos origin = Camps.place(level, HOUSE, centre, turn, plan.get("floor").getAsInt());
+        StructurePlaceSettings settings = Camps.settings(level, HOUSE, turn);
+        Camps.approach(level, local(origin, settings, plan, "front"), centre);
         BlockPos stand = local(origin, settings, plan, "stand");
         level.setBlock(stand, Wayfarer.CALLING_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
         if (level.getBlockEntity(stand) instanceof CallingStoneBlockEntity calling) {
@@ -238,6 +277,7 @@ final class Act3Halls {
         Clues.marker(level, local(origin, settings, plan, "chair"), "chair");
         Clues.print(level, top, "tracks");
         progress.setDirty();
+        Standing.keep(server, MANSION);
         LOGGER.info("the Gazebound house stands at {}, the Shadow Circle's shard on a stand at {}", origin, stand);
     }
 

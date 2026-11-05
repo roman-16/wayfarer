@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Camps;
+import io.github.roman16.wayfarer.Handover;
 import io.github.roman16.wayfarer.Heat;
 import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.NotchedLog;
@@ -17,10 +18,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
@@ -44,9 +47,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -62,7 +65,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.phys.Vec3;
@@ -72,6 +74,7 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -80,6 +83,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.slf4j.Logger;
 
 public final class Memories {
+    private static final int BESIDE_REACH = 4;
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final ResourceKey<net.minecraft.world.level.dimension.DimensionType> DREAM_TYPE =
             ResourceKey.create(Registries.DIMENSION_TYPE, Wayfarer.id("dream"));
@@ -125,6 +129,7 @@ public final class Memories {
         private final ServerLevel level;
         private final BlockPos stone;
         private final Map<UUID, Vec3> arrivals = new LinkedHashMap<>();
+        private final Set<BlockPos> put = new HashSet<>();
         private Vec3 anchor;
         private final Map<UUID, Return> dreamers = new LinkedHashMap<>();
         private Phase phase = Phase.MAKING;
@@ -208,6 +213,20 @@ public final class Memories {
         return Optional.empty();
     }
 
+    private static Vec3 clearOfFire(ServerLevel level, Vec3 arrival) {
+        BlockPos at = BlockPos.containing(arrival);
+        Optional<BlockPos> fire = BlockPos.betweenClosedStream(at.offset(-1, -1, -1), at.offset(1, 1, 1))
+                .filter(pos -> level.getBlockState(pos).is(BlockTags.CAMPFIRES) || level.getBlockState(pos).is(BlockTags.FIRE)).map(BlockPos::immutable)
+                .min(Comparator.comparingDouble(pos -> pos.distToCenterSqr(arrival)));
+        if (fire.isEmpty()) {
+            return arrival;
+        }
+        Vec3 centre = Vec3.atBottomCenterOf(fire.get());
+        Vec3 away = arrival.subtract(centre).multiply(1, 0, 1);
+        Vec3 out = away.lengthSqr() < 0.01 ? new Vec3(0, 0, 1) : away.normalize();
+        return new Vec3(centre.x + out.x * Balance.get().memory().arrivalBlocks() / 2.0, arrival.y, centre.z + out.z * Balance.get().memory().arrivalBlocks() / 2.0);
+    }
+
     public static Optional<BlockPos> fire(Level level, BlockPos at) {
         int reach = Balance.get().memory().fireBlocks();
         return BlockPos.betweenClosedStream(at.offset(-reach, -reach, -reach), at.offset(reach, reach, reach))
@@ -236,11 +255,6 @@ public final class Memories {
             }
         }
         return true;
-    }
-
-    private static boolean standable(BlockPos at) {
-        return dream.level.getBlockState(at).isAir() && dream.level.getBlockState(at.above()).isAir()
-                && dream.level.getBlockState(at.below()).isFaceSturdy(dream.level, at.below(), Direction.UP);
     }
 
     public static boolean dream(Level level) {
@@ -275,8 +289,12 @@ public final class Memories {
         if (!dreaming(player) || dream.phase != Phase.DREAMING) {
             return Optional.empty();
         }
+        Story.Step step = dream.current();
+        String objective = step.kind().equals("gather") && step.spec().has("count")
+                ? step.objective().replace("{carried}", String.valueOf(Math.min(carried(player, step), step.number("count")))).replace("{count}", step.text("count"))
+                : step.objective().replace("{away}", String.valueOf(Places.leaving(dream.memory.place())));
         return Optional.of(new Tasks.Panel(Component.translatable("wayfarer.journal.memory"), Component.literal(dream.memory.title()),
-                Component.literal(dream.current().objective()), List.of(), List.of()));
+                Component.literal(objective), List.of(), List.of()));
     }
 
     private static void begin(MinecraftServer server, Story.Memory memory, @Nullable Engine.Active active, BlockPos stone, BlockPos gathering) {
@@ -359,14 +377,37 @@ public final class Memories {
         }
     }
 
-    private static void arrive(ServerPlayer player, Vec3 arrival, Return from) {
+    private static Vec3 beside(Vec3 wanted) {
+        BlockPos at = BlockPos.containing(wanted);
+        for (int reach = 0; reach <= BESIDE_REACH; reach++) {
+            for (int dx = -reach; dx <= reach; dx++) {
+                for (int dz = -reach; dz <= reach; dz++) {
+                    BlockPos cell = at.offset(dx, 0, dz);
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) == reach && open(cell) && open(cell.above())
+                            && !dream.level.getBlockState(cell.below()).getCollisionShape(dream.level, cell.below()).isEmpty()) {
+                        return new Vec3(cell.getX() + 0.5, cell.getY(), cell.getZ() + 0.5);
+                    }
+                }
+            }
+        }
+        return wanted;
+    }
+
+    private static boolean open(BlockPos cell) {
+        return dream.level.getBlockState(cell).getCollisionShape(dream.level, cell).isEmpty();
+    }
+
+    private static void arrive(ServerPlayer player, Vec3 wanted, Return from) {
+        Vec3 arrival = beside(clearOfFire(dream.level, wanted));
         BlockPos feet = BlockPos.containing(arrival);
-        while (!dream.level.getBlockState(feet).getCollisionShape(dream.level, feet).isEmpty()
-                || !dream.level.getBlockState(feet.above()).getCollisionShape(dream.level, feet.above()).isEmpty()) {
+        while (!open(feet) || !open(feet.above())) {
             feet = feet.above();
         }
+        Vec3 toward = dream.anchor.subtract(arrival).multiply(1, 0, 1);
+        float yaw = toward.lengthSqr() < 1 ? from.yRot() : (float) Math.toDegrees(Math.atan2(-toward.x, toward.z));
         dream.arrivals.put(player.getUUID(), new Vec3(arrival.x, feet.getY(), arrival.z));
-        player.teleportTo(dream.level, arrival.x, feet.getY(), arrival.z, from.yRot(), from.xRot());
+        player.teleportTo(dream.level, arrival.x, feet.getY(), arrival.z, yaw, 0);
+        player.resetFallDistance();
         player.getInventory().clearContent();
         List<ItemStack> kit = dream.memory.kit().stream().map(item -> Engine.stack(player, dream.memory.id(), item)).toList();
         Notices.given(player, kit);
@@ -416,28 +457,38 @@ public final class Memories {
         if (step.spec().has("meets")) {
             leader.ifPresent(player -> meet(player, step.text("meets")));
         }
+        if (step.spec().has("douses")) {
+            fire(dream.level, dream.stone).ifPresent(fire -> dream.level.setBlock(fire, dream.level.getBlockState(fire).setValue(CampfireBlock.LIT, false), Block.UPDATE_ALL));
+        }
     }
 
     private static void meet(ServerPlayer dreamer, String person) {
-        Vec3 ahead = dreamer.position().add(Vec3.directionFromRotation(0, dreamer.getYRot()).scale(MEETING_BLOCKS));
-        BlockPos level = BlockPos.containing(ahead.x, dreamer.getY(), ahead.z);
-        Vec3 at = standable(level) ? Vec3.atBottomCenterOf(level)
-                : new Vec3(ahead.x, dream.level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(ahead.x), Mth.floor(ahead.z)), ahead.z);
-        float yaw = dreamer.getYRot() + 180;
+        Vec3 centre = Vec3.atBottomCenterOf(dream.stone.above());
+        Vec3 at = People.ring(dream.level, centre, dreamer.position(), MEETING_BLOCKS, 1).getFirst();
+        Vec3 toward = centre.subtract(at);
+        float yaw = (float) Math.toDegrees(Math.atan2(-toward.x, toward.z));
+        Optional<Vec3> offstage = People.offstage(dream.level, at);
+        Vec3 from = offstage.orElse(at);
+        Entity body;
         if (People.skinned(person)) {
-            Entity body = People.spawn(dream.level, person, at, yaw, "standing", ROLE + person);
+            body = People.spawn(dream.level, person, from, yaw, "standing", ROLE + person);
             if (Story.get().people().containsKey(person)) {
                 body.setCustomName(Component.literal(People.label(dream.level.getServer(), person)));
             }
-            return;
+        } else {
+            Mob grey = EntityType.VINDICATOR.create(dream.level);
+            grey.moveTo(from.x, from.y, from.z, yaw, 0);
+            grey.setYHeadRot(yaw);
+            grey.setNoAi(true);
+            grey.setInvulnerable(true);
+            grey.setSilent(true);
+            grey.addTag(ROLE + person);
+            dream.level.addFreshEntity(grey);
+            body = grey;
         }
-        Mob grey = EntityType.VINDICATOR.create(dream.level);
-        grey.moveTo(at.x, at.y, at.z, yaw, 0);
-        grey.setYHeadRot(yaw);
-        grey.setNoAi(true);
-        grey.setInvulnerable(true);
-        grey.addTag(ROLE + person);
-        dream.level.addFreshEntity(grey);
+        if (offstage.isPresent()) {
+            People.approach(body, at, yaw);
+        }
     }
 
     private static boolean done(MinecraftServer server, Story.Step step) {
@@ -568,9 +619,27 @@ public final class Memories {
         if (!(event.getLevel() instanceof Level level) || !dream(level) || !(event.getPlayer() instanceof ServerPlayer player)) {
             return;
         }
+        if (dream != null && level == dream.level && dream.put.remove(event.getPos())) {
+            return;
+        }
         if (dream == null || level != dream.level || dream.phase != Phase.DREAMING || !gathered(player.server, event.getPos(), event.getState())) {
             event.setCanceled(true);
             player.displayClientMessage(Component.translatable("wayfarer.memory.kept").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onDrops(BlockDropsEvent event) {
+        if (dream != null && event.getLevel() == dream.level && event.getBreaker() instanceof ServerPlayer player) {
+            event.getDrops().forEach(drop -> Handover.give(player, drop.getItem()));
+            event.getDrops().clear();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlace(BlockEvent.EntityPlaceEvent event) {
+        if (dream != null && event.getLevel() == dream.level && event.getEntity() instanceof ServerPlayer) {
+            dream.put.add(event.getPos().immutable());
         }
     }
 
@@ -720,6 +789,7 @@ public final class Memories {
             }
             player.teleportTo(level == null ? player.server.overworld() : level, entry.getDouble("x"), entry.getDouble("y"), entry.getDouble("z"),
                     entry.getFloat("yRot"), entry.getFloat("xRot"));
+            player.resetFallDistance();
         }
     }
 }

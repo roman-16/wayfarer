@@ -9,13 +9,17 @@ import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.CompassEvent;
 import io.github.roman16.wayfarer.CompassPayload;
+import io.github.roman16.wayfarer.Handover;
 import io.github.roman16.wayfarer.Journey;
+import io.github.roman16.wayfarer.Leaving;
 import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.Record;
+import io.github.roman16.wayfarer.Sea;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -25,11 +29,13 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -55,20 +61,21 @@ import net.minecraft.world.entity.animal.horse.Horse;
 import net.minecraft.world.entity.animal.horse.Variant;
 import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.entity.npc.WanderingTrader;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.BarrelBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.entity.BarrelBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.Tags;
@@ -81,6 +88,11 @@ import org.slf4j.Logger;
 public final class Scenes {
     static final String TAG = Wayfarer.MODID + "_scene";
     static final String CACHE = "cache";
+    private static final double ROLL_LENGTH = 4;
+    private static final int ROLL_SPLASHES = 64;
+    private static final double ROWING = 3;
+    private static final int BRING_BLOCKS = 16;
+    private static final int LAND_NEAR = 16;
     private static final String NAME = "wayfarer_scenes";
     private static final String GAZEBOUND = "gazebound";
     private static final String RUMOUR = "rumour";
@@ -92,6 +104,7 @@ public final class Scenes {
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Bundled<JsonObject> TEXT = Bundled.json("/wayfarer/scenes.json");
     private static final List<String> ROAD = List.of("cart", "herder", "pedlar", "questioning", "ridge", TRAVELLER, "trunk", "wolves");
+    private static final List<String> SEA = List.of("fishers", "flotsam", "grey_sails", "swell");
     private static final List<String> LIVING = List.of("road_01", "road_02", "road_03", "road_04", "road_05", "road_10", "road_11");
     private static final List<String> DEAD = List.of("road_dead_01", "road_dead_02");
     private static final TagKey<Structure> RUINS = TagKey.create(Registries.STRUCTURE, Wayfarer.id("owners/ruin"));
@@ -193,6 +206,7 @@ public final class Scenes {
         private final List<Scene> scenes = new ArrayList<>();
         private final Map<UUID, Long> due = new HashMap<>();
         private final List<String> recent = new ArrayList<>();
+        private final Set<String> asked = new HashSet<>();
         private long taken = -1;
         private boolean packFound;
         private long voiceAt = Long.MIN_VALUE;
@@ -210,6 +224,7 @@ public final class Scenes {
             CompoundTag due = tag.getCompound("due");
             due.getAllKeys().forEach(player -> ledger.due.put(UUID.fromString(player), due.getLong(player)));
             tag.getList("recent", Tag.TAG_STRING).forEach(entry -> ledger.recent.add(entry.getAsString()));
+            tag.getList("asked", Tag.TAG_STRING).forEach(entry -> ledger.asked.add(entry.getAsString()));
             ledger.taken = tag.getLong("taken");
             ledger.packFound = tag.getBoolean("pack_found");
             ledger.voiceAt = tag.getLong("voice_at");
@@ -231,6 +246,9 @@ public final class Scenes {
             ListTag recent = new ListTag();
             this.recent.forEach(kind -> recent.add(StringTag.valueOf(kind)));
             tag.put("recent", recent);
+            ListTag asked = new ListTag();
+            this.asked.forEach(kind -> asked.add(StringTag.valueOf(kind)));
+            tag.put("asked", asked);
             tag.putLong("taken", taken);
             tag.putBoolean("pack_found", packFound);
             tag.putLong("voice_at", voiceAt);
@@ -270,7 +288,7 @@ public final class Scenes {
                     && group.stream().anyMatch(player -> scene.centre.closerToCenterThan(player.position(), APART)));
             if (!waiting && !near) {
                 group.stream().filter(player -> headings.containsKey(player.getUUID())).findFirst().ifPresent(leader -> {
-                    List<String> kinds = kinds(server, ledger, level.getRandom());
+                    List<String> kinds = Sea.afloat(leader) && Sea.open(level, leader.blockPosition()) ? sea(ledger, level) : kinds(server, ledger, level.getRandom());
                     if (!place(server, level, ledger, leader, group, players, kinds)) {
                         group.forEach(player -> ledger.due.put(player.getUUID(), now + RETRY_SECONDS * TICKS_PER_SECOND));
                         LOGGER.info("no road scene fits ahead of {} yet: {}", leader.getScoreboardName(), kinds);
@@ -306,7 +324,7 @@ public final class Scenes {
         }
         BlockPos rumour = Ledger.of(server).rumour;
         if (rumour != null) {
-            event.markers().add(new CompassPayload.Marker(CompassPayload.Kind.LEAD, "wayfarer.place." + RUMOUR, rumour.getX(), rumour.getZ()));
+            event.markers().add(new CompassPayload.Marker(CompassPayload.Kind.LEAD, "wayfarer.place." + RUMOUR, rumour.getX(), rumour.getY(), rumour.getZ()));
         }
     }
 
@@ -318,24 +336,25 @@ public final class Scenes {
         Scene scene = found.get();
         Ledger ledger = Ledger.of(player.server);
         JsonObject text = text(scene.kind);
-        if (scene.kind.equals("herder") && People.who(target).filter(role -> role.equals("herder")).isPresent()) {
+        Optional<String> giver = People.who(target).filter(role -> role.equals("herder") || role.equals("tide_fisher"));
+        if (giver.isPresent()) {
             if (scene.greeted.add(player.getUUID())) {
                 boolean gift = scene.state.equals("gift");
-                Deeds.herder(player, gift ? "gift" : "warning");
-                Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line("herder", text.get(gift ? "gift" : "warning").getAsString()));
+                if (giver.get().equals("herder")) {
+                    Deeds.herder(player, gift ? "gift" : "warning");
+                }
+                Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(giver.get(), text.get(gift ? "gift" : "warning").getAsString()));
                 if (gift) {
                     for (JsonElement item : text.getAsJsonArray("gifts")) {
                         ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(item.getAsJsonObject().get("id").getAsString())),
                                 item.getAsJsonObject().get("count").getAsInt());
                         Notices.given(player, List.of(stack));
-                        if (!player.getInventory().add(stack)) {
-                            player.drop(stack, false);
-                        }
+                        Handover.give(player, stack);
                     }
                 }
-            } else if (Talk.again(player.server, "herder")) {
+            } else if (Talk.again(player.server, giver.get())) {
                 JsonArray again = text.getAsJsonArray("again");
-                Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line("herder", again.get(player.getRandom().nextInt(again.size())).getAsString()));
+                Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(giver.get(), again.get(player.getRandom().nextInt(again.size())).getAsString()));
             }
             ledger.setDirty();
             return true;
@@ -370,7 +389,11 @@ public final class Scenes {
     }
 
     static String voice(String kind) {
-        return text(kind).getAsJsonArray("voice").get(0).getAsString();
+        return voice(kind, 0);
+    }
+
+    static String voice(String kind, int which) {
+        return text(kind).getAsJsonArray("voice").get(which).getAsString();
     }
 
     private static JsonObject text(String kind) {
@@ -427,11 +450,19 @@ public final class Scenes {
         }
         List<String> kinds = new ArrayList<>(ROAD);
         kinds.removeAll(ledger.recent);
+        kinds.removeAll(ledger.asked);
         Collections.shuffle(kinds, new Random(random.nextLong()));
         long today = Math.floorDiv(Engine.overworld(server).getDayTime(), Clock.DAY);
         if (ledger.taken >= 0 && today > ledger.taken && !ledger.packFound && ledger.scenes.stream().noneMatch(scene -> scene.kind.equals("pack"))) {
             kinds.addFirst("pack");
         }
+        return kinds;
+    }
+
+    private static List<String> sea(Ledger ledger, ServerLevel level) {
+        List<String> kinds = new ArrayList<>(SEA);
+        kinds.removeAll(ledger.recent);
+        Collections.shuffle(kinds, new Random(level.getRandom().nextLong()));
         return kinds;
     }
 
@@ -449,7 +480,7 @@ public final class Scenes {
             if (spot.isPresent()) {
                 Scene scene = build(level, kind, spot.get(), leader);
                 ledger.scenes.add(scene);
-                if (ROAD.contains(kind)) {
+                if (ROAD.contains(kind) || SEA.contains(kind)) {
                     ledger.recent.add(kind);
                     while (ledger.recent.size() > RECENT) {
                         ledger.recent.removeFirst();
@@ -470,9 +501,11 @@ public final class Scenes {
         Vec3 heading = headings.get(leader.getUUID());
         Balance.Scenes balance = Balance.get().scenes();
         boolean high = kind.equals("ridge") || kind.equals("wolves");
-        int from = high ? balance.farthestBlocks() - balance.nearestBlocks() / 2 : balance.nearestBlocks();
+        boolean afloat = SEA.contains(kind);
+        int from = afloat ? balance.farthestBlocks() : high ? balance.farthestBlocks() - balance.nearestBlocks() / 2 : balance.nearestBlocks();
+        int to = afloat ? balance.seaBlocks() : balance.farthestBlocks();
         int radius = radius(level, kind);
-        for (int distance = from; distance <= balance.farthestBlocks(); distance += SCAN_STEP) {
+        for (int distance = from; distance <= to; distance += SCAN_STEP) {
             for (int angle : angles()) {
                 Vec3 way = heading.yRot((float) Math.toRadians(angle));
                 int x = (int) Math.floor(leader.getX() + way.x * distance);
@@ -481,7 +514,11 @@ public final class Scenes {
                     continue;
                 }
                 BlockPos ground = ground(level, x, z);
-                if (wet(level, ground) || !even(level, ground, radius) || inWard(level, ground, radius) || crowded(level, ground)
+                if (afloat) {
+                    if (!wet(level, ground) || !Sea.open(level, ground) || crowded(level, ground) || !fits(level, kind, ground, way)) {
+                        continue;
+                    }
+                } else if (wet(level, ground) || !even(level, ground, radius) || inWard(level, ground, radius) || crowded(level, ground)
                         || high && ground.getY() < leader.getBlockY() + HIGHER || !fits(level, kind, ground, way)) {
                     continue;
                 }
@@ -515,8 +552,10 @@ public final class Scenes {
                 yield biome.is(Tags.Biomes.IS_PLAINS) || biome.is(Tags.Biomes.IS_SAVANNA);
             }
             case "cart" -> water(level, ground) != null;
+            case "fishers" -> level.isDay() && !level.isRaining();
+            case "flotsam", "grey_sails", "swell" -> true;
             case "trunk" -> gorge(level, ground, way);
-            default -> !level.getBiome(ground).is(BiomeTags.IS_OCEAN);
+            default -> !level.getBiome(ground).is(BiomeTags.IS_OCEAN) && Sites.open(level.getBiome(ground));
         };
     }
 
@@ -541,7 +580,7 @@ public final class Scenes {
     }
 
     private static BlockPos ground(ServerLevel level, int x, int z) {
-        return new BlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1, z);
+        return new BlockPos(x, Ground.land(level, x, z), z);
     }
 
     private static boolean wet(ServerLevel level, BlockPos ground) {
@@ -598,8 +637,7 @@ public final class Scenes {
             if (point.distanceToSqr(eye) > (double) farthest * farthest || !level.isLoaded(BlockPos.containing(point))) {
                 continue;
             }
-            BlockHitResult hit = level.clip(new ClipContext(eye, point, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, player));
-            if (hit.getType() == HitResult.Type.MISS || hit.getLocation().distanceToSqr(point) < 2.25) {
+            if (Sight.hit(level, eye, point).map(hit -> hit.distanceToSqr(point) < 2.25).orElse(true)) {
                 return true;
             }
         }
@@ -676,7 +714,16 @@ public final class Scenes {
                 }
             }
             case CACHE -> cache(level, scene, settings, origin);
+            case "fishers" -> fishers(level, scene, spot.centre(), random);
+            case "flotsam" -> flotsam(level, scene, spot.centre(), random);
+            case "grey_sails" -> greySails(level, scene, spot.centre(), headings.get(leader.getUUID()));
+            case "swell" -> scene.state = level.isDay() && random.nextBoolean() ? "back" : "dolphins";
             default -> {}
+        }
+        if (scene.kind.equals("swell") && scene.state.equals("dolphins")) {
+            for (int dolphin = 0; dolphin < 3; dolphin++) {
+                spawn(level, scene, EntityType.DOLPHIN.create(level), Vec3.atBottomCenterOf(spot.centre().offset(dolphin * 2 - 2, 0, dolphin % 2)), random.nextFloat() * 360);
+            }
         }
         return scene;
     }
@@ -686,7 +733,8 @@ public final class Scenes {
         scene.entities.add(entity.getUUID());
     }
 
-    private static void spawn(ServerLevel level, Scene scene, Mob mob, Vec3 at, float yaw) {
+    private static void spawn(ServerLevel level, Scene scene, Mob mob, Vec3 wanted, float yaw) {
+        Vec3 at = Ground.stand(level, wanted);
         mob.moveTo(at.x, at.y, at.z, yaw, 0);
         mob.setYHeadRot(yaw);
         EventHooks.finalizeMobSpawn(mob, level, level.getCurrentDifficultyAt(BlockPos.containing(at)), MobSpawnType.EVENT, null);
@@ -733,6 +781,66 @@ public final class Scenes {
             guard.setNoAi(true);
             guard.addTag(TAG + "_" + GAZEBOUND);
         }
+    }
+
+    private static Boat boat(ServerLevel level, Scene scene, Vec3 at, float yaw) {
+        Boat boat = EntityType.BOAT.create(level);
+        boat.moveTo(at.x, at.y, at.z, yaw, 0);
+        add(scene, boat);
+        level.addFreshEntity(boat);
+        return boat;
+    }
+
+    private static void fishers(ServerLevel level, Scene scene, BlockPos surface, RandomSource random) {
+        scene.state = random.nextBoolean() ? "gift" : "warning";
+        Boat boat = boat(level, scene, Vec3.atBottomCenterOf(surface.above()), random.nextFloat() * 360);
+        for (int fisher = 0; fisher < 2; fisher++) {
+            Entity body = People.role(level, "tide_fisher", pick(LIVING, random), boat.position(), boat.getYRot(), "sitting", TAG);
+            add(scene, body);
+            body.startRiding(boat, true);
+        }
+    }
+
+    private static void flotsam(ServerLevel level, Scene scene, BlockPos surface, RandomSource random) {
+        BlockPos barrel = surface;
+        scene.originals.putIfAbsent(barrel, level.getBlockState(barrel));
+        level.setBlock(barrel, Blocks.BARREL.defaultBlockState().setValue(BarrelBlock.FACING, Direction.UP), FLAGS);
+        if (level.getBlockEntity(barrel) instanceof BarrelBlockEntity kept) {
+            kept.setItem(0, new ItemStack(Items.BREAD, 2));
+            kept.setItem(1, new ItemStack(Items.STRING, 3));
+        }
+        for (int plank = 0; plank < 5; plank++) {
+            BlockPos at = surface.offset(random.nextInt(7) - 3, 0, random.nextInt(7) - 3);
+            if (!at.equals(barrel) && !level.getFluidState(at).isEmpty()) {
+                scene.originals.putIfAbsent(at, level.getBlockState(at));
+                level.setBlock(at, (plank % 2 == 0 ? Blocks.SPRUCE_SLAB : Blocks.DARK_OAK_SLAB).defaultBlockState().setValue(SlabBlock.WATERLOGGED, true), FLAGS);
+            }
+        }
+        Clues.marker(level, barrel, clue("flotsam", "barrel")).forEach(entity -> add(scene, entity));
+    }
+
+    private static void greySails(ServerLevel level, Scene scene, BlockPos surface, Vec3 heading) {
+        Vec3 across = new Vec3(-heading.z, 0, heading.x);
+        Boat boat = boat(level, scene, Vec3.atBottomCenterOf(surface.above()), (float) Math.toDegrees(Math.atan2(-across.x, across.z)));
+        for (int rower = 0; rower < 2; rower++) {
+            Mob grey = EntityType.PILLAGER.create(level);
+            grey.moveTo(boat.getX(), boat.getY(), boat.getZ(), boat.getYRot(), 0);
+            grey.setNoAi(true);
+            grey.setSilent(true);
+            grey.setPersistenceRequired();
+            add(scene, grey);
+            level.addFreshEntity(grey);
+            grey.startRiding(boat, true);
+        }
+    }
+
+    private static void row(ServerLevel level, Scene scene) {
+        scene.entities.stream().map(level::getEntity).filter(entity -> entity instanceof Boat).forEach(boat -> {
+            Vec3 ahead = boat.position().add(Vec3.directionFromRotation(0, boat.getYRot()).scale(ROWING));
+            if (!level.getFluidState(BlockPos.containing(ahead.x, boat.getY() - 0.5, ahead.z)).isEmpty()) {
+                boat.moveTo(ahead.x, boat.getY(), ahead.z, boat.getYRot(), 0);
+            }
+        });
     }
 
     private static void ridge(ServerLevel level, Scene scene, BlockPos centre, Vec3 heading) {
@@ -782,9 +890,10 @@ public final class Scenes {
 
     private static void watch(MinecraftServer server, ServerLevel level, Ledger ledger, Scene scene, List<ServerPlayer> players) {
         List<Vec3> corners = corners(scene.centre, radius(level, scene.kind));
-        List<ServerPlayer> seeing = players.stream().filter(player -> sees(level, player, corners)).toList();
+        List<ServerPlayer> seeing = players.stream().filter(player -> sees(level, player, corners) || scene.entities.stream().map(level::getEntity)
+                .anyMatch(entity -> entity != null && entity.isAlive() && Sight.sees(player, entity))).toList();
         boolean visible = !seeing.isEmpty();
-        if (ROAD.contains(scene.kind)) {
+        if (ROAD.contains(scene.kind) || SEA.contains(scene.kind)) {
             seeing.forEach(player -> Deeds.scene(player, scene.centre));
         }
         if (visible && !scene.seen) {
@@ -794,6 +903,7 @@ public final class Scenes {
         switch (scene.kind) {
             case "questioning" -> question(server, level, ledger, scene, players);
             case "wolves" -> shadow(level, scene, players);
+            case "grey_sails" -> row(level, scene);
             case CACHE -> {
                 if (Progress.of(server).done(CACHE_QUEST)) {
                     scene.entities.stream().map(level::getEntity).filter(entity -> entity != null).forEach(Entity::discard);
@@ -817,8 +927,14 @@ public final class Scenes {
 
     private static void seen(MinecraftServer server, Ledger ledger, Scene scene) {
         JsonObject text = text(scene.kind);
-        if (text.has("seen")) {
-            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(null, text.get("seen").getAsString()));
+        String seen = text.has("seen_" + scene.state) ? "seen_" + scene.state : "seen";
+        if (text.has(seen)) {
+            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(null, text.get(seen).getAsString()));
+        }
+        if (scene.kind.equals("swell") && scene.state.equals("back")) {
+            ServerLevel level = Engine.overworld(server);
+            level.sendParticles(ParticleTypes.SPLASH, scene.centre.getX() + 0.5, scene.centre.getY() + 1, scene.centre.getZ() + 0.5, ROLL_SPLASHES, ROLL_LENGTH, 0.2, 1, 0.1);
+            level.sendParticles(ParticleTypes.BUBBLE_POP, scene.centre.getX() + 0.5, scene.centre.getY() + 1, scene.centre.getZ() + 0.5, ROLL_SPLASHES, ROLL_LENGTH, 0.1, 1, 0.05);
         }
         long now = server.overworld().getGameTime();
         boolean story = scene.kind.equals(CACHE);
@@ -826,7 +942,7 @@ public final class Scenes {
         if (text.has("voice") && !text.has("ask") && !Journey.claimed(server).isEmpty() && (story || now - ledger.voiceAt >= gap)) {
             JsonArray voice = text.getAsJsonArray("voice");
             List<String> names = text.has("names") ? text.getAsJsonArray("names").asList().stream().map(JsonElement::getAsString).toList() : List.of();
-            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(STRANGER, voice.get(server.overworld().getRandom().nextInt(voice.size())).getAsString(), names, null, null, false, null, null, null, null));
+            Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(STRANGER, voice.get(server.overworld().getRandom().nextInt(voice.size())).getAsString(), names, null, null, false, null, null, null, null, null, null));
             ledger.voiceAt = now;
         }
         if (story) {
@@ -844,13 +960,15 @@ public final class Scenes {
         switch (scene.state) {
             case "" -> {
                 List<ServerPlayer> near = players.stream().filter(player -> player.position().closerThan(Vec3.atCenterOf(scene.centre), ask)).toList();
-                if (scene.seen && !Talk.busy() && !near.isEmpty() && near.stream().allMatch(Talk::free)) {
+                if (scene.seen && !Talk.busy() && !near.isEmpty() && near.stream().allMatch(Talk::free) && near.stream().anyMatch(player -> facing(level, scene, player))) {
                     scene.state = "asked";
+                    ledger.asked.add(scene.kind);
                     Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), lines(text.getAsJsonArray("ask")), Talk.Placeholders.NONE);
                     if (!Journey.claimed(server).isEmpty()) {
                         Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), new Story.Line(STRANGER, text.getAsJsonArray("voice").get(0).getAsString()));
                     }
                     List<Story.Choice> choices = text.getAsJsonArray("choices").asList().stream().map(JsonElement::getAsJsonObject)
+                            .filter(choice -> !choice.has("near") || near(level, scene.centre, choice.get("near").getAsString()))
                             .map(choice -> new Story.Choice(choice.get("id").getAsString(), choice.get("text").getAsString(), choice.get("reply").getAsString(),
                                     null, null, null))
                             .toList();
@@ -859,16 +977,61 @@ public final class Scenes {
                 }
             }
             case "fighting" -> {
+                bring(level, scene);
                 boolean standing = scene.entities.stream().map(level::getEntity)
-                        .anyMatch(entity -> entity != null && entity.isAlive() && entity.getTags().contains(TAG + "_" + GAZEBOUND));
+                        .anyMatch(entity -> entity instanceof Mob guard && guard.isAlive() && !guard.isNoAi() && guard.getTags().contains(TAG + "_" + GAZEBOUND));
                 if (!standing && level.isPositionEntityTicking(scene.centre)) {
                     scene.state = "won";
+                    scene.entities.stream().map(level::getEntity).filter(entity -> entity instanceof Mob guard && guard.isAlive()
+                            && guard.getTags().contains(TAG + "_" + GAZEBOUND)).map(entity -> (Mob) entity).forEach(watcher -> {
+                                watcher.setNoAi(false);
+                                Leaving.send(watcher, Vec3.atCenterOf(scene.centre));
+                            });
                     Talk.say(Talk.ROAD, Vec3.atCenterOf(scene.centre), lines(text.getAsJsonArray("won")), Talk.Placeholders.NONE);
                     Talk.then(Talk.ROAD, Vec3.atCenterOf(scene.centre), () -> rumourAhead(server, level, scene));
                 }
             }
+            case "walked", "hid" -> {
+                if (!Talk.busy()) {
+                    scene.entities.stream().map(level::getEntity).filter(entity -> entity != null && entity.getTags().contains(TAG + "_" + GAZEBOUND)
+                            && players.stream().noneMatch(player -> Sight.sees(player, entity))).forEach(Entity::discard);
+                }
+            }
             default -> {}
         }
+    }
+
+    private static boolean near(ServerLevel level, BlockPos centre, String land) {
+        Predicate<BlockState> what = switch (land) {
+            case "trees" -> state -> state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES);
+            case "water" -> state -> !state.getFluidState().isEmpty();
+            case "rocks" -> state -> state.is(BlockTags.BASE_STONE_OVERWORLD);
+            default -> throw new IllegalArgumentException("a scene's answer is near " + land + ", which no rule reads");
+        };
+        for (int dx = -LAND_NEAR; dx <= LAND_NEAR; dx += 2) {
+            for (int dz = -LAND_NEAR; dz <= LAND_NEAR; dz += 2) {
+                BlockPos column = centre.offset(dx, 0, dz);
+                for (int y = Ground.land(level, column.getX(), column.getZ()); y <= Ground.crown(level, column.getX(), column.getZ()) + 1; y++) {
+                    if (what.test(level.getBlockState(column.atY(y)))) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private static void bring(ServerLevel level, Scene scene) {
+        scene.entities.stream().map(level::getEntity).filter(entity -> entity instanceof Mob guard && guard.isAlive() && !guard.isNoAi()
+                && guard.getTarget() != null && guard.distanceTo(guard.getTarget()) > BRING_BLOCKS && !People.seen(level, guard.position()))
+                .map(entity -> (Mob) entity).forEach(guard -> People.offstage(level, Ground.stand(level, guard.getTarget().position()))
+                        .filter(spot -> spot.distanceTo(guard.getTarget().position()) < guard.distanceTo(guard.getTarget()))
+                        .ifPresent(spot -> guard.moveTo(spot.x, spot.y, spot.z, guard.getYRot(), 0)));
+    }
+
+    private static boolean facing(ServerLevel level, Scene scene, ServerPlayer player) {
+        return scene.entities.stream().map(level::getEntity).anyMatch(entity -> entity != null && entity.getTags().contains(TAG + "_" + GAZEBOUND)
+                && Sight.sees(player, entity));
     }
 
     private static void chosen(ServerPlayer player, Scene scene, Story.Choice choice) {
@@ -885,7 +1048,7 @@ public final class Scenes {
                 case "step_in" -> {
                     scene.state = "fighting";
                     scene.entities.stream().map(level::getEntity).filter(entity -> entity instanceof Mob && entity.getTags().contains(TAG + "_" + GAZEBOUND))
-                            .map(entity -> (Mob) entity).forEach(guard -> {
+                            .map(entity -> (Mob) entity).min(Comparator.comparingDouble(guard -> guard.distanceToSqr(player))).ifPresent(guard -> {
                                 guard.setNoAi(false);
                                 guard.setTarget(player);
                             });
@@ -901,6 +1064,12 @@ public final class Scenes {
             }
             ledger.setDirty();
         }
+    }
+
+    static void resume(MinecraftServer server) {
+        Ledger ledger = Ledger.of(server);
+        ledger.scenes.stream().filter(scene -> scene.state.equals("asked")).forEach(scene -> scene.state = "");
+        ledger.setDirty();
     }
 
     private static void lapsed(MinecraftServer server, Scene scene) {
@@ -950,6 +1119,11 @@ public final class Scenes {
         }
         Vec3 heading = headings.getOrDefault(leader.getUUID(), Vec3.directionFromRotation(0, leader.getYRot()));
         for (UUID id : scene.entities) {
+            if (leaving && level.getEntity(id) instanceof Mob gone && players.stream().noneMatch(player -> Sight.sees(player, gone)
+                    || player.distanceTo(gone) <= LEAVE_BLOCKS)) {
+                gone.discard();
+                continue;
+            }
             if (level.getEntity(id) instanceof Mob wolf && wolf.isAlive() && wolf.getTarget() == null) {
                 Vec3 side = wolf.position().subtract(leader.position()).multiply(1, 0, 1);
                 Vec3 across = new Vec3(-heading.z, 0, heading.x);

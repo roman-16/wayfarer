@@ -1,3 +1,7 @@
+[creatures.great_worm]
+death = "minecraft:entity.generic.death"
+hurt = "minecraft:entity.generic.hurt"
+
 [effects.answer_chosen]
 credit = "aturax_leatherBookUI_92, by GeoffAturax"
 cut = { fade_out = 0.025, length = 0.25 }
@@ -299,6 +303,13 @@ licence = "CC0 1.0"
 page = "https://freesound.org/people/cabusta9/sounds/444710"
 slider = "players"
 
+[music.ending]
+credit = "The Long Way Home, by Scott Buckley"
+cut = { fade_in = 1 }
+downloaded = "21.10.2026"
+licence = "CC BY 4.0"
+page = "https://www.scottbuckley.com.au/library/the-long-way-home/"
+
 [music.first_camp]
 credit = "Home Was You, by Scott Buckley"
 downloaded = "08.10.2026"
@@ -320,11 +331,12 @@ licence = "CC BY 4.0"
 page = "https://www.scottbuckley.com.au/library/white-dawn/"
 
 [music.hold]
-credit = "Heartfelt Battle (loop), by request"
-downloaded = "05.10.2026"
-licence = "CC0 1.0"
+credit = "Battle in the Winter, by Johan Brodd"
+cut = { length = 228, start = 8 }
+downloaded = "21.10.2026"
+licence = "CC BY 3.0"
 loop = true
-page = "https://opengameart.org/content/heartfelt-battle-loopable-fantasy-stringspianohorn"
+page = "https://opengameart.org/content/battle-in-the-winter"
 
 [music.wend_camp]
 credit = "A Dragon's Lullabye, by Scott Buckley"

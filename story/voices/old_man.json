@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "kXS2dNumMD2ODMoSSTNQ",
+  "id": "a6da7597",
+  "kept": "03.11.2026",
+  "preview": 2,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 529249757,
+    "should_enhance": false,
+    "text": "Oswin. I walked for forty years. Then I met a woman with a garden, and I stopped. She's gone now. The coal's going too. I'm tired. Sit. The fire's warm. That's all a man needs. Maud sent you? Maud's alive? Well. Of course she is. Spring. I meant to go. The roof needed mending, and then the garden. One more winter here. I'll walk in spring.",
+    "voice_description": "Native English, British, a plain rural English voice. Male, 65-75. Excellent quality. Persona: an old villager or craftsman who has settled down after a long life; homely, tired, set in his ways. Emotion: weary, gentle, grumbling, fond. A warm, round, slightly croaky old voice, unhurried and conversational, like an old man by his own hearth; soft and close when he writes in his journal."
+  }
+}

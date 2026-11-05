@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer.client;
 import io.github.roman16.wayfarer.CompassPayload;
 import io.github.roman16.wayfarer.GazePayload;
 import io.github.roman16.wayfarer.HudState;
+import io.github.roman16.wayfarer.LastUse;
 import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.NightPayload;
 import io.github.roman16.wayfarer.Wayfarer;
@@ -33,6 +34,7 @@ import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
@@ -59,7 +61,7 @@ public final class WayfarerClient {
     private static final String TITLE = "title";
 
     public WayfarerClient(IEventBus modBus, ModContainer container) {
-        container.registerConfig(ModConfig.Type.CLIENT, HudSize.SPEC);
+        container.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
         if (ModList.get().isLoaded(INVMOVE) && ModList.get().isLoaded(JEI)) {
             InvMoveLink.register();
         }
@@ -88,6 +90,7 @@ public final class WayfarerClient {
             }
         });
         modBus.addListener(EntityRenderersEvent.AddLayers.class, Eyes::register);
+        modBus.addListener(RegisterItemDecorationsEvent.class, Worn::register);
         modBus.addListener(FMLClientSetupEvent.class, event -> {
             CuriosRendererRegistry.register(Items.LANTERN, BeltLanternRenderer::new);
             CuriosRendererRegistry.register(Items.SOUL_LANTERN, BeltLanternRenderer::new);
@@ -105,6 +108,14 @@ public final class WayfarerClient {
         NeoForge.EVENT_BUS.addListener(ViewportEvent.ComputeFov.class, FarSight::zoom);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, FarSight::mark);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, Ending::tick);
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Speech.tick(Minecraft.getInstance()));
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Reading.tick(Minecraft.getInstance()));
+        NeoForge.EVENT_BUS.addListener(ScreenEvent.Init.Post.class, Reading::init);
+        NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingIn.class, YourVoice::loggingIn);
+        NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingOut.class, event -> {
+            Speech.stop();
+            Reading.leave();
+        });
         NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingOut.class, Ending::leave);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> OwnInventory.tick(Minecraft.getInstance()));
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Closing.class, event -> HeldLight.follow());
@@ -134,6 +145,9 @@ public final class WayfarerClient {
         NeoForge.EVENT_BUS.addListener(ItemTooltipEvent.class, event -> {
             if (event.getItemStack().is(Items.ENCHANTED_BOOK)) {
                 event.getToolTip().add(Component.translatable("item.wayfarer.enchanted_book.smith").withColor(Stamp.QUIET));
+            }
+            if (LastUse.lastUse(event.getItemStack())) {
+                event.getToolTip().add(1, Component.translatable("wayfarer.gear.bare").withColor(Stamp.QUIET));
             }
         });
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, ItemTooltipEvent.class, Tooltips::maker);

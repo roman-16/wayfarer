@@ -1,8 +1,7 @@
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
-modVersion := `sed --quiet 's/^mod_version=//p' mod/gradle.properties`
 packVersion := `sed --quiet 's/^version = "\(.*\)"$/\1/p' pack/pack.toml`
-jar := "mod/build/libs/wayfarer-" + modVersion + ".jar"
+jar := "mod/build/libs/wayfarer-" + packVersion + ".jar"
 
 export JAVA_HOME := env("DEVBOX_PACKAGES_DIR") / "lib/openjdk"
 
@@ -14,13 +13,13 @@ build:
 clean:
     rm --recursive --force build dist mod/build mod/run
 
-[doc("Record the exaroton server's console, status, memory, tick time, log, world sizes and the play record with each player's frame rate into exaroton/ until interrupted")]
+[doc("Record the exaroton server's console, status, memory, tick time, log, world sizes, region files that vanish or shrink, and the play record with each player's frame rate into exaroton/ until interrupted")]
 exaroton server="":
     python3 scripts/exaroton.py {{ server }}
 
-[doc("Carry the exaroton server's road into a fresh world under exaroton/: download its world, pack what stands in it into its players, grow a new world from a random seed played to the team's step with their own answers, and lay their story and things into it; `just carry <server> upload` puts the carried world on the server and switches to it")]
-carry server="" step="":
-    python3 scripts/carry.py {{ server }} {{ if step == "upload" { "--upload" } else if step == "" { "" } else { error("the word after the server is upload, or nothing") } }}
+[doc("Carry the exaroton server's road into a fresh world under exaroton/: download its world, pack what stands in it into its players, grow a new world from a random seed played to the team's step with their own answers, and lay their story and things into it; `just carry <server> <quest/step>` carries it back to that step of the main quest under way, and `just carry <server> upload` puts the carried world on the server and switches to it")]
+carry server="" word="":
+    python3 scripts/carry.py {{ server }} {{ if word == "upload" { "--upload" } else if word == "" { "" } else { "--step " + quote(word) } }}
 
 [doc("Boot the whole pack on a headless dedicated server after auditing its jars, and check the world with /locate")]
 boot: build boot-server
@@ -31,17 +30,13 @@ boot-server:
     python3 scripts/audit.py build/server/mods
     python3 scripts/boot.py build/server
 
-[doc("Shoot the gallery's pictures in the dev client from gallery/shots.toml and write its pages; names choose shots or folders, such as journal or hud/compass, all when none are named")]
-gallery *folders:
-    python3 scripts/gallery.py {{ folders }}
-
 [doc("Run the mod's game tests headless")]
 gametest:
     cd mod && ./gradlew runGameTestServer
 
 [doc("Regenerate the halls, structure sets, templates, removals, textures and the quest book from their sources and balance.toml")]
 generate:
-    python3 generator/generate.py
+    PYTHONPATH=scripts python3 generator/generate.py
 
 [doc("Compile the Wayfarer mod and its dev code, and copy their resources where the running dev client and server read them")]
 compile:
@@ -50,14 +45,14 @@ compile:
 [doc("Run the dev server in the foreground: the whole pack but Distant Horizons and SeedGen, with the Wayfarer mod's dev code, in build/devserver; `just devserver lean` loads only the Wayfarer mod and what it needs, and `just devserver far` adds Distant Horizons and SeedGen, each in a world of its own")]
 devserver mode="full":
     [ -n "${WAYFARER_DRIVEN:-}" ] || python3 scripts/server.py stop
-    python3 scripts/instance.py devserver build/devserver --mode {{ mode }}
+    python3 scripts/instance.py devserver "${WAYFARER_GAME_DIRECTORY:-build/devserver}" --mode {{ mode }}
     cd mod && ./gradlew --console=plain runServer
 
 [doc("Fix and format everything fixable, then lint with no findings allowed")]
 lint: generate compile
     ruff format generator scripts
     ruff check --fix generator scripts
-    taplo format balance.toml gallery/shots.toml generator/*.toml
+    taplo format balance.toml generator/*.toml
     just --fmt --unstable
     cd pack && packwiz refresh
     python3 scripts/rules.py
@@ -79,8 +74,8 @@ pack: build
 [doc("Open the pack in a dev client on a fresh natural world, played in survival the way a player meets it; `just play lean` loads only the Wayfarer mod and what it needs, in a world of its own; `just play far` keeps Distant Horizons' far view on")]
 play mode="full":
     [ -n "${WAYFARER_DRIVEN:-}" ] || python3 scripts/client.py stop
-    python3 scripts/instance.py client build/client --mode {{ mode }}
-    python3 scripts/instance.py fresh build/client play --mode {{ mode }}
+    python3 scripts/instance.py client "${WAYFARER_GAME_DIRECTORY:-build/client}" --mode {{ mode }}
+    python3 scripts/instance.py fresh "${WAYFARER_GAME_DIRECTORY:-build/client}" play --mode {{ mode }}
     cd mod && WAYFARER_LEAN={{ if mode == "lean" { "true" } else { "false" } }} LD_LIBRARY_PATH="$DEVBOX_PACKAGES_DIR/lib:/run/opengl-driver/lib" ./gradlew runPlay
 
 [doc("Turn a play record into a report: each step's time, every stall with what the players did, said and looked at, the choices, deaths and rewinds, workarounds, screens, frames and a map of everyone's paths, from an exaroton session, a playthrough's folder or a save; `--since <time>` keeps only what came after that moment, such as a playthrough's start from its run.json")]
@@ -104,8 +99,8 @@ survey apply="": build
 [doc("Open the pack in a dev client in the showroom: a flat dimension rebuilt each launch with every hall and item and a compass demo, beside an empty workshop and a kept natural world; `just showroom lean` loads only the Wayfarer mod and what it needs, in a save of its own; `just showroom far` keeps Distant Horizons' far view on")]
 showroom mode="full":
     [ -n "${WAYFARER_DRIVEN:-}" ] || python3 scripts/client.py stop
-    python3 scripts/instance.py client build/client --mode {{ mode }}
-    python3 scripts/instance.py fresh build/client showroom --mode {{ mode }}
+    python3 scripts/instance.py client "${WAYFARER_GAME_DIRECTORY:-build/client}" --mode {{ mode }}
+    python3 scripts/instance.py fresh "${WAYFARER_GAME_DIRECTORY:-build/client}" showroom --mode {{ mode }}
     cd mod && WAYFARER_LEAN={{ if mode == "lean" { "true" } else { "false" } }} LD_LIBRARY_PATH="$DEVBOX_PACKAGES_DIR/lib:/run/opengl-driver/lib" ./gradlew runShowroom
 
 [doc("Write everything the pack contains, from every mod, into build/reports/: every registry with its entries, the content of every data-driven one, every tag and every recipe; starts the dev server and stops it after")]
@@ -114,7 +109,7 @@ registries:
     python3 scripts/server.py run "wayfarer registries {{ justfile_directory() }}/build/reports"
     python3 scripts/server.py stop
 
-[doc("Ask an audio model about sound files, through OpenRouter with pi's own sign-in, after a brief on the pack's sound: just hear \"<question>\" [--context <label>=<file>]... [--each] <label>=<file>...; --each asks about every clip in its own call, all at once, and --plain leaves the brief out")]
+[doc("Ask an audio model about sound files, each in its own call, through OpenRouter with pi's own sign-in, after a brief on the pack's sound: just hear \"<question>\" [--tries <n>] [--plain] <label>=<file>...; --tries asks n times and prints the median score, --plain leaves the brief out")]
 [positional-arguments]
 hear *arguments:
     python3 scripts/hear.py "$@"
@@ -122,6 +117,11 @@ hear *arguments:
 [doc("Fetch, cut and loudness-match the pack's own sounds from story/sounds.toml into the mod's assets; names choose which, and a missing piece of music is made either way")]
 sounds *names:
     python3 scripts/sounds.py {{ names }}
+
+[doc("Design, keep, save and record the story's voices with ElevenLabs from story/voices.toml: alone it shows the cast, the account and what is left to record; `design <voice> [count] [--like]`, `try <voice> <preview>...`, `keep <voice> <preview>`, `save <voice> [--rebuilt]`, `drop <voice>`, `record <voice|group|group:line>... [--again]` and `prune`")]
+[positional-arguments]
+voice *arguments:
+    python3 scripts/voice.py "$@"
 
 [doc("Fetch the Vanilla Tweaks resource and crafting tweaks listed in generator/tweaks.toml into generator/tweaks/, which just generate writes into the mod")]
 tweaks:

@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "VMzMFE7b7sphTXLBwqHI",
+  "id": "20f14907",
+  "kept": "03.11.2026",
+  "preview": 3,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 1120400427,
+    "should_enhance": false,
+    "text": "Don't touch it. It's not for sailing. Edda. The last shipwright on this coast. Nobody wants a boat that goes anywhere. Nobody crosses that water. My man tried, three summers back. Nine days. He made it across in nine days. It was coming home that killed him. Coming home to me. The sea's flat today. It lies.",
+    "voice_description": "Native English, British, a plain coastal Cornish voice. Female, 40-50. Excellent quality. Persona: the last shipwright on a lonely coast, a widow whose husband the sea took. Emotion: blunt, stubborn, guarded, grief held tight, a dry gallows humour. A firm, slightly husky working woman's voice, short and plain, used to shouting over wind and hammering; it catches only when she speaks of him."
+  }
+}

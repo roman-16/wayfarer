@@ -39,7 +39,7 @@ final class Inspect {
     static String creature(ServerPlayer player, ResourceLocation id) {
         EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.getOptional(id)
                 .orElseThrow(() -> new IllegalArgumentException("there is no creature called " + id));
-        Entity nearest = player.serverLevel().getEntities(type, player.getBoundingBox().inflate(REACH), entity -> entity != player).stream()
+        Entity nearest = player.serverLevel().getEntities(type, player.getBoundingBox().inflate(REACH), entity -> entity != player && !Senses.story(entity)).stream()
                 .min(Comparator.comparingDouble(player::distanceToSqr))
                 .orElseThrow(() -> new IllegalArgumentException("no " + id + " within " + REACH + " blocks"));
         JsonObject result = new JsonObject();

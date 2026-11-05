@@ -35,9 +35,12 @@ ARROW = [
     "...##....",
     "....#....",
 ]
+PLAY = ["#....", "##...", "###..", "####.", "###..", "##...", "#...."]
 LOCK = ["..###..", ".#...#.", ".#...#.", "#######", "##...##", "###.###", "###.###", "#######"]
 OPEN_LOCK = ["..###..", ".#...#.", ".#.....", "#######", "##...##", "###.###", "###.###", "#######"]
 MARKS = {
+    "above": ["..#..", ".###.", "#####"],
+    "below": ["#####", ".###.", "..#.."],
     "fire": ["..#..", "..##.", ".###.", ".####", "#####", "##.##", ".###."],
     "grave": [".###.", "#####", "##.##", "#...#", "##.##", "#####"],
     "hall": ["..#..", ".###.", "#####", "#...#", "#.#.#", "#.#.#", "#####"],
@@ -45,6 +48,7 @@ MARKS = {
     "pointer": ["#####", ".###.", "..#.."],
     "right": ["#...", "##..", "###.", "####", "###.", "##..", "#..."],
     "tent": ["...#...", "..###..", ".##.##.", "##...##", "#######"],
+    "worn": ["##..", ".#..", ".##.", "..#."],
 }
 WHITE = (255, 254, 253, 255)
 ICONS = {
@@ -617,6 +621,12 @@ def page_arrow(tokens, forward, highlighted):
     return canvas, None
 
 
+def play(tokens, highlighted):
+    canvas = Canvas(9, 9)
+    canvas.shape(PLAY, 2, 1, tokens.text["ink_red"] if highlighted else tokens.text["ink"])
+    return canvas, None
+
+
 def slider(tokens, name, highlighted):
     canvas = inset(tokens, name, 200, 20, fill=("ash", 0))
     if highlighted:
@@ -927,6 +937,8 @@ def write(main, spec, glyphs):
         "keycap": keycap(tokens, "keycap"),
         "mark": glyph(MARK, tokens("ember", 3), tokens("ember", 0)),
         "mark_ink": glyph(MARK, tokens.text["ink_red"]),
+        "play": play(tokens, False),
+        "play_highlighted": play(tokens, True),
         "page_left": page(tokens, "page_left", "left"),
         "page_right": page(tokens, "page_right", "right"),
         "page_scroller": page_scroller(tokens, "page_scroller", False),

@@ -4,10 +4,13 @@ import io.github.roman16.wayfarer.story.Talk;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -17,19 +20,37 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LanternBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityTravelToDimensionEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerWakeUpEvent;
+import net.neoforged.neoforge.event.level.BlockDropsEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.level.SleepFinishedTimeEvent;
 
 public final class Tents {
+    private static final String LIT = "wayfarer_lit";
+    private static final int LANTERN_IN = 2;
+    private static final int LIT_REACH = 8;
+    private static final int BED_FROM_DOOR = 2;
+    private static final int WALL_WEIGHT = 16;
     private static final String NAMESPACE = "nomadictents";
     private static final String SPAWN_DIMENSION = "spawn_dim";
     private static final String SPAWN_POINT = "spawnpoint";
@@ -40,8 +61,29 @@ public final class Tents {
 
     private Tents() {}
 
+    private static final class Lit extends SavedData {
+        private boolean done;
+
+        private Lit(boolean done) {
+            this.done = done;
+        }
+
+        @Override
+        public CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
+            return tag;
+        }
+    }
+
     public static boolean isTent(ResourceKey<Level> dimension) {
         return dimension.location().getNamespace().equals(NAMESPACE);
+    }
+
+    @SubscribeEvent
+    public static void onDrops(BlockDropsEvent event) {
+        if (isTent(event.getLevel().dimension()) && event.getBreaker() instanceof ServerPlayer player) {
+            event.getDrops().forEach(drop -> Handover.give(player, drop.getItem()));
+            event.getDrops().clear();
+        }
     }
 
     @SubscribeEvent
@@ -95,6 +137,70 @@ public final class Tents {
             event.setCanceled(true);
             player.displayClientMessage(Component.translatable("wayfarer.night.tent").withStyle(ChatFormatting.RED), true);
         }
+    }
+
+    @SubscribeEvent
+    public static void onArrive(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player && isTent(event.getTo())) {
+            light(player.serverLevel(), player, player.blockPosition(), player.getDirection());
+        }
+    }
+
+    private static void light(ServerLevel level, ServerPlayer player, BlockPos door, Direction inward) {
+        Lit lit = level.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new Lit(false), (tag, registries) -> new Lit(true), null), LIT);
+        if (lit.done) {
+            return;
+        }
+        lit.done = true;
+        lit.setDirty();
+        furnish(level, player, door);
+        if (BlockPos.betweenClosedStream(door.offset(-LIT_REACH, -1, -LIT_REACH), door.offset(LIT_REACH, LIT_REACH, LIT_REACH))
+                .anyMatch(pos -> level.getBlockState(pos).getLightEmission(level, pos) > 0)) {
+            return;
+        }
+        BlockPos under = door.relative(inward, LANTERN_IN);
+        for (int up = 1; up <= LIT_REACH; up++) {
+            BlockPos hang = under.above(up);
+            if (!level.getBlockState(hang.above()).isAir() && level.getBlockState(hang).isAir()) {
+                level.setBlock(hang, Blocks.LANTERN.defaultBlockState().setValue(LanternBlock.HANGING, true), Block.UPDATE_ALL);
+                return;
+            }
+        }
+    }
+
+    private static void furnish(ServerLevel level, ServerPlayer player, BlockPos door) {
+        int slot = IntStream.range(0, player.getInventory().items.size()).filter(index -> player.getInventory().items.get(index).is(ItemTags.BEDS)).findFirst().orElse(-1);
+        if (slot < 0 || BlockPos.betweenClosedStream(door.offset(-LIT_REACH, -1, -LIT_REACH), door.offset(LIT_REACH, LIT_REACH, LIT_REACH))
+                .anyMatch(pos -> level.getBlockState(pos).is(BlockTags.BEDS))) {
+            return;
+        }
+        ItemStack stack = player.getInventory().items.get(slot);
+        if (!(stack.getItem() instanceof BlockItem item) || !(item.getBlock() instanceof BedBlock bed)) {
+            return;
+        }
+        BlockPos.betweenClosedStream(door.offset(-LIT_REACH, -1, -LIT_REACH), door.offset(LIT_REACH, 1, LIT_REACH)).map(BlockPos::immutable)
+                .flatMap(foot -> Direction.Plane.HORIZONTAL.stream().map(way -> new Laid(foot, way)))
+                .filter(laid -> fits(level, laid.foot()) && fits(level, laid.foot().relative(laid.way())) && !laid.foot().closerThan(door, BED_FROM_DOOR)
+                        && !laid.foot().relative(laid.way()).closerThan(door, BED_FROM_DOOR))
+                .max(Comparator.comparingDouble(laid -> walls(level, laid) * WALL_WEIGHT + laid.foot().distSqr(door)))
+                .ifPresent(laid -> {
+                    BlockState foot = bed.defaultBlockState().setValue(BedBlock.FACING, laid.way());
+                    level.setBlock(laid.foot(), foot, Block.UPDATE_ALL);
+                    level.setBlock(laid.foot().relative(laid.way()), foot.setValue(BedBlock.PART, BedPart.HEAD), Block.UPDATE_ALL);
+                    stack.shrink(1);
+                });
+    }
+
+    private record Laid(BlockPos foot, Direction way) {}
+
+    private static boolean fits(ServerLevel level, BlockPos pos) {
+        return level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir() && level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP)
+                && Direction.Plane.HORIZONTAL.stream().noneMatch(side -> level.getBlockState(pos.relative(side)).is(BlockTags.CAMPFIRES));
+    }
+
+    private static long walls(ServerLevel level, Laid laid) {
+        return Stream.of(laid.foot(), laid.foot().relative(laid.way())).flatMap(pos -> Direction.Plane.HORIZONTAL.stream().map(pos::relative))
+                .filter(pos -> !level.getBlockState(pos).isAir() && !level.getBlockState(pos).is(BlockTags.BEDS)).count();
     }
 
     @SubscribeEvent

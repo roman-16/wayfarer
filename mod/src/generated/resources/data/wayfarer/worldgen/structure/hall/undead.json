@@ -1,5 +1,6 @@
 {
   "biomes": "#wayfarer:has_structure/hall/undead",
+  "climate": "any",
   "layout": {
     "cover": 3,
     "door": [

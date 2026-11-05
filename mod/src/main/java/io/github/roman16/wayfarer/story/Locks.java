@@ -72,6 +72,12 @@ final class Locks {
         SITE.reset();
     }
 
+    static void unbuild(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        SITE.forget(progress);
+        List.of(ORIGIN, STONE).forEach(progress.places::remove);
+    }
+
     static boolean ready(MinecraftServer server, String name) {
         return Progress.of(server).place(name.equals(STONE) ? STONE : ORIGIN).isPresent();
     }
@@ -151,11 +157,14 @@ final class Locks {
         progress.place(ORIGIN, origin);
         progress.yaws.put(TURN, (float) turn.ordinal());
         progress.place(NAME, world(progress, level, PLAN.get().getAsJsonArray("front")));
+        Camps.approach(level, world(progress, level, PLAN.get().getAsJsonArray("front")), centre);
+        Camps.approach(level, world(progress, level, PLAN.get().getAsJsonArray("back")), centre);
         progress.ward(NAME, template.getBoundingBox(settings, origin));
         progress.setDirty();
         for (JsonElement mark : PLAN.get().getAsJsonArray("marks")) {
             Clues.display(level, world(progress, level, mark.getAsJsonArray()), 1.02f, MARK);
         }
+        Standing.keep(server, NAME);
         LOGGER.info("the Jungle Folk's lock house stands at {}, turned {}", origin, turn);
         Journal.syncAll(server);
     }

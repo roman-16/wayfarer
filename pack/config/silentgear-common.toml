@@ -1,3 +1,6 @@
+[gear]
+	send_broken_message = false
+
 [item.blueprint]
 	spawn_with_starter_blueprints = false
 

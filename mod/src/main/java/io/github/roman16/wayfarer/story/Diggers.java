@@ -29,7 +29,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -71,6 +70,7 @@ final class Diggers {
         private ChunkPos ticket = ChunkPos.ZERO;
         private int radius;
         private final Deque<BoundingBox> slices = new ArrayDeque<>();
+        private final Deque<Site> others = new ArrayDeque<>();
         @Nullable
         private StructurePlaceSettings settings;
         private BlockPos tunnelsAt = BlockPos.ZERO;
@@ -127,7 +127,11 @@ final class Diggers {
         if (!build.searching.isDone()) {
             return;
         }
-        Site best = build.searching.join().getFirst();
+        build.others.addAll(build.searching.join());
+        choose(level, progress, build.others.poll());
+    }
+
+    private static void choose(ServerLevel level, Progress progress, Site best) {
         progress.place(SITE, best.centre());
         progress.yaws.put(TURN, (float) best.turn().ordinal());
         progress.setDirty();
@@ -196,10 +200,18 @@ final class Diggers {
         StructurePlaceSettings settings = Underground.settings(site.turn());
         JsonObject entrance = PLAN.get().getAsJsonObject("entrance");
         JsonObject tunnels = PLAN.get().getAsJsonObject("tunnels");
-        int surface = ground(level, site.centre().getX(), site.centre().getZ());
+        int surface = Ground.land(level, site.centre().getX(), site.centre().getZ());
         BlockPos centre = vector(entrance.getAsJsonArray("centre"));
-        build.entranceAt = new BlockPos(site.centre().getX(), surface - centre.getY(), site.centre().getZ())
-                .subtract(turned(settings, centre.atY(0)));
+        BlockPos entranceAt = new BlockPos(site.centre().getX(), surface - centre.getY(), site.centre().getZ()).subtract(turned(settings, centre.atY(0)));
+        BoundingBox mouth = template(level, "entrance").getBoundingBox(settings, entranceAt);
+        boolean wet = BlockPos.betweenClosedStream(mouth.minX(), 0, mouth.minZ(), mouth.maxX(), 0, mouth.maxZ())
+                .anyMatch(column -> Ground.wet(level, column.getX(), column.getZ()));
+        if (wet && !build.others.isEmpty()) {
+            level.getChunkSource().removeRegionTicket(TICKET, build.ticket, build.radius, build.ticket);
+            choose(level, Progress.of(level.getServer()), build.others.poll());
+            return;
+        }
+        build.entranceAt = entranceAt;
         build.tunnelsAt = build.entranceAt.offset(turned(settings, vector(entrance.getAsJsonArray("join")).subtract(vector(tunnels.getAsJsonArray("join")))));
         build.settings = settings;
         clear(level, template(level, "entrance").getBoundingBox(settings, build.entranceAt));
@@ -227,6 +239,8 @@ final class Diggers {
         BlockPos door = entranceAt.offset(turned(settings, vector(entrance.getAsJsonArray("mouth"))));
         progress.place(NAME, door);
         progress.place(HALL, tunnelsAt.offset(turned(settings, vector(tunnels.getAsJsonArray("stone")))));
+        progress.place(HALL + Places.ENTRANCE, door);
+        progress.rooms.put(HALL, List.of(template(level, "tunnels").getBoundingBox(settings, tunnelsAt), template(level, "entrance").getBoundingBox(settings, entranceAt)));
         JsonObject hall = tunnels.getAsJsonObject("hall");
         progress.ward(NAME, BoundingBox.fromCorners(tunnelsAt.offset(turned(settings, vector(hall.getAsJsonArray("from")))),
                 tunnelsAt.offset(turned(settings, vector(hall.getAsJsonArray("to"))))));
@@ -259,15 +273,6 @@ final class Diggers {
 
     private static void track(ServerLevel level, BlockPos at) {
         Clues.display(level, at, TRACK_SCALE, NAME);
-    }
-
-    private static int ground(ServerLevel level, int x, int z) {
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), z);
-        while (pos.getY() > level.getMinBuildHeight() && (level.getBlockState(pos).isAir() || level.getBlockState(pos).is(BlockTags.LOGS)
-                || level.getBlockState(pos).canBeReplaced())) {
-            pos.move(0, -1, 0);
-        }
-        return pos.getY();
     }
 
     private static BlockPos turned(StructurePlaceSettings settings, BlockPos local) {

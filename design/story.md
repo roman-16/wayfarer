@@ -159,11 +159,13 @@ It raises, for phase 2: the real names and text of every hall and gift, through 
 
   | Door | The world after |
   |---|---|
-  | Blind it | The road's rules end: no hordes, no stillness, no ember's hunger, and the sky is the player's. What D7 cut comes back: planting, breeding, beds, chests. The last quest is "Build a home" |
+  | Blind it | The road's rules end: no hordes, no stillness, no ember's hunger, and the sky is the player's. What D7 cut comes back: planting, breeding, beds, chests. The last quest is A Home, a bed under the player's own roof |
   | Give it its sight | The home the dragon promised: one place where nothing comes at night, and there what D7 cut comes back. Everywhere else the gaze sees all, its creatures hunt every night and towns burn |
-  | Keep the oath | The road goes on as it is: the player stays a Wayfarer under its rules and cannot settle, and one day passes the ember on |
-  | Close the Eye | The gaze is gone, so the rules end and what D7 cut comes back, as with Blind it. If Pip survived the breaking, the player plays on as Pip, grown, carrying their ember, with "Build a home" ahead; in a team, every player does. If Pip did not survive, the world is gone for the player: they never wake again |
+  | Keep the oath | The road goes on as it is: the player stays a Wayfarer under its rules and cannot settle, and one day passes the ember on. The last quest is "The Road Goes On", an evening at the caravan's fire |
+  | Close the Eye | The gaze is gone, so the rules end and what D7 cut comes back, as with Blind it. If Pip survived the breaking, the player plays on as Pip, grown, carrying their ember, with Pip's Road ahead, a home of Pip's own; in a team, every player does. If Pip did not survive, the world is gone for the player: they never wake again |
 
+
+- **Years later** every door ends with what became of the caravan's people and of the player, told by a grown Pip, or by the narrator when Pip was lost (S53).
 
 **Why:** The lore's oldest line about the dragon is that its eye was never allowed to close, so the merciful door is the one that closes it, saving the world and the voice the player grew to like at the price of the player alone. Opening the closed doors through trust and through Alruna lets the road decide the last choice, the count of shards makes every shard left behind matter even at the end, and a world that changes with the door makes the choice something the player goes on living in; Pip carries the merciful door only if the player kept Pip alive.
 
@@ -410,7 +412,7 @@ Finale, the frame:
 |---|---|---|---|---|---|
 | F1 | The Gate | The frame, the heir's band in its hall | Hold, then a memory: finding the player by the road and giving them the ember | Strength | Malgven breaks Wend's seal, reads his letter and turns on her band, and his real last whisper surfaces (S4) |
 | F2 | The Doors | The frame | Choose: two thirds of the team for the door, and for Close the Eye one steps forward (S5) | | Blind it is the dragon fight in the End; the other doors are their scenes (S8) |
-| F3 | After | Wherever the door leaves the player | | | Blind it and Close the Eye: "Build a home". Give it its sight: the promised home. Keep the oath: the road goes on (S8) |
+| F3 | After | Wherever the door leaves the player | | | Blind it: A Home. Close the Eye: Pip's Road, or the world gone when Pip was lost. Give it its sight: The Promised Home. Keep the oath: The Road Goes On (S8). Then Years later (S53) |
 
 That makes 36 main quests, within D8's 30 to 40. Escort and Tame, and Raid from Act 2, belong to side quests.
 
@@ -1455,10 +1457,10 @@ Shore    Land. Pale dunes, and beyond them hills nobody you know has ever walked
 2.3 step by step, as `acts.md` builds it (step 14). Every line is a placeholder for the `lore` skill. It opens when 2.2 ends and waits in the journal until it is tracked. Its title reads "The Bay" until the Tide Folk are named.
 
 1. **The pull.** Tracked, the ember pulls by feeling to the nearest of the Tide Folk's halls the world grew in Act 2's band (M40), and knows its place within 256 blocks. Around it the quest puts down the Tide Folk's village out of sight: a few huts on stilts above the tideline, boats drawn up on the sand, drying racks of fish, nets, and a fire pit of black stones that is never lit by day. By day the village sleeps; they fish by night.
-2. **The bow.** As the team walks in, two of their wardens step out with tridents, and stop, and bow low to the player, both at once. Nobody told them to. Their elder, Morwen, comes out of the nearest hut and stares at them: "They've never bowed to anyone. Not to me. Not to my mother." Nobody knows why, the player least of all (it is the first sign of what the player is, S4; nothing explains it until the first reveal).
-3. **Morwen.** The talk. She knows a Wayfarer by the light; her grandmother told of them. Their bay is hallowed: nothing comes up at night, so their boats can go out with lamps lit. Under the fire pit lies the reason: their stone, and on it two shards, theirs and the Drowned City's, which that city's last people brought them generations ago under an oath to keep it from the gaze. Answers: "A shipwright sent us." (she remembers Edda's husband, the man in the patched boat who ate with them and would not stay: trust), "Why do they bow?" ("I hoped you'd tell me."), and "We're looking for a valley past the sea." ("There's no valley. There's sea, and then more sea, and then the cold."). Then: "They bowed. I've no right to keep you out of anything. Come and see what you'd be taking."
-4. **The hall.** She leads them down under the fire pit into the hall. Its lectern holds the Tide Folk's own account, rewritten to its fate (S26). On the stone's dais lie two shards side by side, the second on a stone of its own the Drowned City's last set beside the first.
-5. **The decision.** At the stone: the voice, "Both. They've had their share of safe nights." Morwen: "Ours keeps the gaze off our boats. Theirs keeps the deep things out of the bay. Take one, and we fish close in, and go hungry. Take both, and we don't fish at all." Four answers:
+2. **The bow.** As the team walks in, two of their wardens step out with tridents, and stop, and bow low to the player, both at once. Nobody told them to. Their elder, Murdo, comes out of the nearest hut and stares at them: "They've never bowed to anyone. Not to me. Not to my father." Nobody knows why, the player least of all (it is the first sign of what the player is, S4; nothing explains it until the first reveal).
+3. **Murdo.** The talk. He knows a Wayfarer by the light; his grandmother told of them. Their bay is hallowed: nothing comes up at night, so their boats can go out with lamps lit. Under the fire pit lies the reason: their stone, and on it two shards, theirs and the Drowned City's, which that city's last people brought them generations ago under an oath to keep it from the gaze. Answers: "A shipwright sent us." (he remembers Edda's husband, the man in the patched boat who ate with them and would not stay: trust), "Why do they bow?" ("I hoped you'd tell me."), and "We're looking for a valley past the sea." ("There's no valley. There's sea, and then more sea, and then the cold."). Then: "They bowed. I've no right to keep you out of anything. Come and see what you'd be taking."
+4. **The hall.** He leads them down under the fire pit into the hall. Its lectern holds the Tide Folk's own account, rewritten to its fate (S26). On the stone's dais lie two shards side by side, the second on a stone of its own the Drowned City's last set beside the first.
+5. **The decision.** At the stone: the voice, "Both. They've had their share of safe nights." Murdo: "Ours keeps the gaze off our boats. Theirs keeps the deep things out of the bay. Take one, and we fish close in, and go hungry. Take both, and we don't fish at all." Four answers:
    - **Take both:** Deep-sight and Stare; the bay goes dark to them, and their boats are seen; they will starve unless Night Fishing (T2) saves them. Their trust is lost.
    - **Take the Tide Folk's:** Deep-sight; the gaze can see their boats, so they fish only close inshore. Their trust drops.
    - **Take the Drowned City's:** Stare; the oath is broken and the deep things come back into the bay at night. Their trust drops.
@@ -1467,23 +1469,23 @@ Shore    Land. Pale dunes, and beyond them hills nobody you know has ever walked
 
 ```text
 Bay      Two wardens step out with tridents, and stop, and bow low to you. Both at once.
-         <A woman with a net> They've never bowed to anyone. Not to me. Not to my mother.
+         <A man with a net> They've never bowed to anyone. Not to me. Not to my father.
 Hall     Two shards lie side by side on the dais, one on a stone of its own.
          <Wend> Both. They've had their share of safe nights.
-         <Morwen> Take one, and we fish close in, and go hungry. Take both, and we don't fish at all.
+         <Murdo> Take one, and we fish close in, and go hungry. Take both, and we don't fish at all.
 ```
 
 **Edge cases.**
-- Walking off before the decision: the village and the hall stay; Morwen waits in the hall until the choice is made, then goes back to her hut.
+- Walking off before the decision: the village and the hall stay; Murdo waits in the hall until the choice is made, then goes back to his hut.
 - Taking a shard without the talk (straight down to the stone): the stone asks first, as every shard step does; the choice decides.
 - In a team, two thirds decide (D11, as every decision).
 - Breaking into the village: the huts are warded, as every place the story makes.
-- Arriving at night: the boats are out, lamps on the water, and the village is empty but for Morwen at the fire pit; the wardens bow on the beach.
+- Arriving at night: the boats are out, lamps on the water, and the village is empty but for Murdo at the fire pit; the wardens bow on the beach.
 - A team that found the hall before tracking the quest (D6): what they took counts, and the decision offers only what is left.
 
 **Alone and in a team.** Alone the player decides; in a team two thirds do.
 
-**Where it lives.** People: Morwen, the Tide Folk; Words: the Tide Folk, the Drowned City; Pages: the Tide Folk's account. The gifts on the Charms page.
+**Where it lives.** People: Murdo, the Tide Folk; Words: the Tide Folk, the Drowned City; Pages: the Tide Folk's account. The gifts on the Charms page.
 
 **Sound.** None of its own: the village by day is quiet, and the decision has the shard's own sounds.
 
@@ -1708,7 +1710,7 @@ The side quests whose outcome decides who lives at the Hollow (S46): C1 The Miss
 
 **C1 The Missing** (Maud; Track; Act 1, the evening after 1.6 opens).
 
-1. At the fire Maud asks: Wil the cooper, the last of Tollbridge, went to his sister's village up the valley the spring before the town burned. The compass marks the nearest village to the caravan, which the quest takes as his sister's.
+1. At the fire Maud asks: Wil the cooper, the last of Tollbridge, went to his sister's village up the valley the spring before the town burned. The compass marks the nearest village ahead of the caravan within a day's walk, which the quest takes as his sister's; when none stands there, the quest raises one ahead, so the road never sends the player a day back the way the caravan came. The same holds for every village an errand asks for.
 2. In the village Wil stands by the well (an Easy NPC put at the village's meeting place when the team comes near, out of sight). He knows the night has come closer every week, and he's tired of running.
 3. Answers: "Come with us." (he packs and walks to the caravan, and pitches a tent at its edge from then on) or "Stay, then." (he stays). Either way Maud knows he lived, which is what C1 decides at the Hollow.
 4. At the fire Maud: "Wil. Still alive. Still stubborn." (stayed) or "Wil. Sit, you old fool. Sit by me." (came).
@@ -1740,7 +1742,7 @@ The side quests whose outcome decides who lives at the Hollow (S46): C1 The Miss
 
 1. A potter's girl of the caravan, Cecily, burns with a fever Agna cannot break: "The marsh fever. The Tide Folk's healer can. If she gets there before the third dawn." Escort Cecily to the Tide Folk's bay (2.3) before the third dawn.
 2. Cecily walks with the player, slowly, coughing; she keeps up across water and is put back beside the player if they are carried far apart. Each dawn the band says how many are left.
-3. At the bay Morwen takes her in: seaweed, salt, and a brew that "hides you from what looks". She writes the remedy down for Agna (a book in Pages).
+3. At the bay Murdo takes her in: seaweed, salt, and a brew that "hides you from what looks". He writes the remedy down for Agna (a book in Pages).
 4. At the fire Agna reads it: "Seaweed, salt, and something that hides you. So that's what I was missing." That is what C6 decides at the Hollow.
 5. Late (the third dawn passes on the road): Cecily dies on the way; the quest ends, and Agna never learns the remedy.
 
@@ -1817,7 +1819,7 @@ The Ward, the Mansion and the Scribes open together after Wings and come in any 
 
 **3.9 The Keepers' Door** (by count, the evening after Act 3's fourth hall).
 
-1. The compass marks the nearest stronghold of the far ring. In its hall of the frame wait the Keepers, old Wayfarers who would not walk; their watch stands at the stair.
+1. The compass marks the nearest stronghold of the far ring; until the player is inside a hall, the compass marks its way in, never its stone or its frame deep under it. In its hall of the frame wait the Keepers, old Wayfarers who would not walk; their watch stands at the stair. The Keepers keep their hall: once they wait there, no monster lives or spawns within 32 blocks of the frame and its spawners are gone (`[gate]` `quiet_blocks`), and the oldest stands on free floor in sight of it.
 2. **Sneak**: the Keepers' watchers (people with lanterns) see a player within 8 blocks who is not crouching; seen, the watch calls, and the Keepers come. Either way they catch the player at the frame (sneaking only decides whether they come quietly).
 3. The oldest Keeper looks at the ember, and then at the player's eyes: "The thirteenth." The second reveal: the Eye's last piece is in the player, and was put there when Wend gave them the ember; that is why a frame takes what is brought. The gaze, quietly: "Yes."
 
@@ -1836,7 +1838,7 @@ The Ward, the Mansion and the Scribes open together after Wings and come in any 
 **F1 The Gate** (opens with 3.9, at the stronghold's frame).
 
 1. The heir's band comes down the stronghold's stair: a hold of the act's size at the frame (named fights scale with the team, M37).
-2. Malgven is with them. If the team ate or kept her bread and spoke her fair (1.5, 2.9), she breaks Wend's seal on the letter she carried for thirty winters, reads it, and turns on her band: the hold ends. Otherwise the hold runs its waves.
+2. Malgven is with them. If the team ate or kept her bread and spoke her fair (1.5, 2.9), she breaks Wend's seal on the letter she carried for thirty winters, reads it, and turns on her band: the hold ends before its first wave ("Her staff cracks across the stair, and the band breaks back the way it came."). Otherwise the hold runs its waves, which come up the stronghold's passages to the hall of the frame.
 3. A memory, at the frame: the night of the prologue, from Wend's side. The player plays him dying at the Last Camp, finding a face by the road, and giving it the ember; his real last whisper surfaces under the mask: "...don't let it look at them..." (S4).
 
 **F2 The Doors** (at the frame, with the shards the team carries).
@@ -1848,7 +1850,7 @@ The team chooses (two thirds, M3) among the doors that are open (S8): Blind it (
 - **Keep the oath**: the shards go back to the peoples who trust the player; the road goes on.
 - **Close the Eye**: whoever steps into the frame first is the one (S5); the Eye closes.
 
-**F3 After.** Each door's world (S8) and its last line; "Build a home" where a door gives one.
+**F3 After.** Each door's world (S8) and its last quest: A Home after Blind it, Pip's Road after Close the Eye with Pip alive, The Promised Home after Give it its sight, The Road Goes On after Keep the oath. Once a last quest's closing lines have been said, Years later (S53) and the credits turn on the ending's dark screen (M14).
 
 **Edge cases.** A team that never learned `close_words` sees Close the Eye closed, with the line that says what would open it; the same for Keep the oath. Dying in the hold sends the player back to the stronghold's entrance; the hold keeps its wave. A team that already set the shards into the frame by hand before F2 has chosen Blind it.
 
@@ -1858,7 +1860,7 @@ The team chooses (two thirds, M3) among the doors that are open (S8): Blind it (
 
 The side quests of Act 2's evenings that read what the main road decided (S6). Every line is a placeholder for the `lore` skill.
 
-- **T2 Night Fishing** (after 2.3): Morwen asks the player out with the Tide Folk's boats, and the afternoon passes at the bay until dark, as it does at the caravan's fire. If any of the bay's shards was taken, their boats are seen now: a hold on the bay at night. If none was taken, a night's fishing among friends, and a share of the catch.
+- **T2 Night Fishing** (after 2.3): Murdo asks the player out with the Tide Folk's boats, and the afternoon passes at the bay until dark, as it does at the caravan's fire. If any of the bay's shards was taken, their boats are seen now: a hold on the bay at night. If none was taken, a night's fishing among friends, and a share of the catch.
 - **T3 The Raiders** (after 2.6): Sefa sends word. If the worm was killed, raiders come down on the Sand Singers' camp at night, the afternoon passing at their fire first: a hold of the heir's men. If it was spared, they sing the player the worm's song, and the second time the man with the coal turns round.
 - **W1 The Burning** (after 2.5): the nearest village to the caravan, doors barred; the afternoon passes there, and the gaze comes for it at night: a hold, and in the morning half its roofs are gone.
 - **W3 The Quarrel** (after C3, while Drifa is with the caravan): Drifa against Cadoc at the fire. Settle it and both stay; side with one and the other leaves the caravan (and so is not there at the Hollow).
@@ -1880,7 +1882,7 @@ Every line is a placeholder for the `lore` skill.
 
 ### S52 The remaining side quests in detail
 
-Every line is a placeholder for the `lore` skill. Each is built from the step kinds the main road already uses; every place goes up out of sight, ahead of the caravan, as the errands' places do (S47).
+Every line is a placeholder for the `lore` skill. Each is built from the step kinds the main road already uses; every place goes up out of sight, ahead along the main road's pull where that is known and ahead of the caravan otherwise, as the errands' places do (S47).
 
 | Quest | Opens | Steps | Outcome |
 |---|---|---|---|
@@ -1907,6 +1909,40 @@ Edge cases:
 - **Read early.** A page read before its step is reached counts when the step begins.
 
 **Why:** Each closes a thread the main road opened and leaves to the side: a child taken, a scar's cost, the Cities' fall, Malgven's care, the plan's author, the gaze's beasts.
+
+### S53 Years later: what became of them, told by a grown Pip
+
+Every door ends the same way: once its last quest's closing lines have been said, the screen goes dark and the epilogue turns, leaf by leaf, years after the door. Pip, grown, tells children at a fire what became of the caravan's people and of the player, the way Tollbridge once told its children Wayfarer stories. When the hollow took Pip, the narrator tells it and says who is missing, Pip first. Then the credits turn. Every line is written with the `lore` skill.
+
+```text
+You wake in a bed under your own roof. Nobody is watching. Nothing is coming.
+Years later. A house by a river, and children round its fire who have never seen anything come out of the dark.
+Pip      "My mam said Wayfarers weren't real. Then one came down into our cellar, with fire in their hand."
+Pip      "Hob made ploughs after. He said a plough was harder to get right than a sword."
+Pip      "The hollow took Maud and Cadoc. I still set their places at the fire."
+Pip      "Our Wayfarer built a house, and stayed. In the old stories, none of them ever stayed."
+A girl at the fire asks if the Wayfarers in the stories were real.
+Pip      "I was there."
+Wayfarer › Made by Roman. › … › Thank you for walking the road.        [ Walk on ]
+```
+
+- **What it tells, door by door.** Each door opens on its own scene: Blind it, a house by a river; Give it its sight, the walled last camp and its ring of stones; Keep the oath, a fire at a river crossing, where Pip holds the ember if the player promised it ("If it comes to that, it's yours.") and someone else does if not; Close the Eye with Pip alive, the house the player built as Pip; with Pip lost, a town that never burned, where someone tells the children about the Wayfarer who walked into the frame.
+- **The caravan's people.** One leaf for each person who lived through the hollow, saying what became of what they wanted, as far as the door allows (`lore.md`, The ending): Maud, Hob, Agna, Cadoc, Drifa, Alruna, and Bram and Davy when C4 brought them. Those the hollow took share one leaf, Pip named first and the rest by name; a person who left before the hollow or never joined has none.
+- **Pip's own answers come back.** Under Keep the oath and Close the Eye a child asks Pip "Are you a Wayfarer?", and Pip answers with what the player told Pip in the cellar (P3): "I suppose I am." or "I don't know what I am."
+- **Alone and in a team.** A line that names the player says "our Wayfarer" when one player walked the world and "our Wayfarers" when more did, counted from everyone who has ever joined it; the narrator says "you", which fits both.
+- **On the dark screen.** A spoken leaf shows its speaker's name in gold above the line in quotes; a narrated one shows the line alone. Each stays as long as it takes to read (`style.toml` `[motion]` `read`, at least `linger`), and a click or a key turns it sooner. The credits follow on the same screen and end on its button: Walk on, or Start a new road in the world that is gone.
+- **Where it lives.** The Afterwards ribbon of the journal keeps The ending, which plays the epilogue and the credits again. In the world that is gone it turns after the pages for every people met and before the sculk's line and the credits, every time the world is opened.
+
+**Edge cases.**
+- **Offline when it plays, or left halfway:** it opens by itself only for those online as the last quest's lines end, and only once; The ending on the Afterwards ribbon, whose gold dot a player who joins later finds, plays it again.
+- **Death:** a player dead when it opens reads it, and finds the death screen again when it closes.
+- **A screen in the way:** it waits behind the band's own rules for the closing lines, then opens over whatever screen stands; Escape does nothing, and the last leaf waits for its button.
+- **Pip alive but Pip's Ember never asked:** it counts as not promised. Under Close the Eye after "It goes in the ground with me.", Pip says so, and carries the ember anyway.
+- **The server stopped during the closing lines:** it does not open again by itself; The ending plays it.
+
+**Sound.** The Long Way Home (`sound.md`) begins with the first leaf of Years later, once, and fades over three seconds when the button is pressed.
+
+**Why:** Fallout's and Dragon Age's slides tell what became of the peoples, which the Afterwards pages do; the eight at the fire, whom the player sat with every evening for twenty-five hours, are told nowhere else. Pip first called the player a Wayfarer "like in the stories", so Pip telling it to children makes the player's road the next story Tollbridge tells, and a narrator who misses Pip keeps the hollow's heaviest loss from being undone.
 
 ## Open
 

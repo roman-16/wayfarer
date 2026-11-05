@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
+import io.github.roman16.wayfarer.story.People;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -17,10 +18,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -37,6 +40,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -56,6 +60,9 @@ import toughasnails.api.temperature.TemperatureHelper;
 
 final class Senses {
     static final String FALL = "a fall";
+    private static final String CACTUS = "cactus";
+    private static final double PRICK_REACH = 1;
+    private static final long DAWN = 22500;
     private static final double AROUND_BLOCKS = 32;
     private static final double GLOW_BLOCKS = 96;
     private static final int AROUND_LIMIT = 12;
@@ -82,15 +89,17 @@ final class Senses {
     private static final String TOUGH_AS_NAILS = "toughasnails";
     private static final String TAN_THIRST = "toughasnails.thirst";
     static final String BERRY_BUSH = "a berry bush";
+    static final String COLD = "cold";
+    static final String HEAT = "heat";
     static final String HUNGER = "hunger";
     private static final Set<SoundSource> HEARD = Set.of(SoundSource.AMBIENT, SoundSource.BLOCKS, SoundSource.HOSTILE, SoundSource.NEUTRAL,
             SoundSource.PLAYERS, SoundSource.WEATHER);
     private static final String[] SIDES = {"behind", "behind-left", "left", "ahead-left", "ahead", "ahead-right", "right", "behind-right", "behind"};
     private static final Map<String, String> KINDS = Map.ofEntries(Map.entry("cactus", "a cactus"), Map.entry("campfire", "fire"), Map.entry("cramming", "crowding"),
             Map.entry("drown", "drowning"), Map.entry("dryout", "drying out"), Map.entry("fall", FALL), Map.entry("fallingBlock", "a falling block"),
-            Map.entry("flyIntoWall", "a wall"), Map.entry("freeze", "cold"), Map.entry("hotFloor", "a hot floor"), Map.entry("inFire", "fire"),
+            Map.entry("flyIntoWall", "a wall"), Map.entry("freeze", COLD), Map.entry("hotFloor", "a hot floor"), Map.entry("inFire", "fire"),
             Map.entry("inWall", "a wall around the head"), Map.entry("lava", "lava"), Map.entry("lightningBolt", "lightning"), Map.entry("magic", "poison"),
-            Map.entry("onFire", "burning"), Map.entry("starve", HUNGER), Map.entry("sweetBerryBush", BERRY_BUSH), Map.entry("toughasnails.hyperthermia", "heat"),
+            Map.entry("onFire", "burning"), Map.entry("starve", HUNGER), Map.entry("sweetBerryBush", BERRY_BUSH), Map.entry("toughasnails.hyperthermia", HEAT),
             Map.entry(TAN_THIRST, "thirst"), Map.entry("wither", "withering"));
     private static final List<Heard> heard = new ArrayList<>();
     private static final List<String> hurts = new ArrayList<>();
@@ -98,6 +107,7 @@ final class Senses {
     private static Entity lastAttacker;
     private static long lastHurt = Long.MIN_VALUE / 2;
     private static String lastKind = "something";
+    private static boolean pricked;
     private static float lastHealth = -1;
     @Nullable
     private static String lastTemperature;
@@ -160,11 +170,16 @@ final class Senses {
         Vec3 from = source == null ? null : source.getSourcePosition() != null ? source.getSourcePosition() : attacker == null ? null : attacker.position();
         String side = from == null ? "" : " from " + side(player, from);
         lastKind = kind(minecraft, source);
+        pricked = source != null && source.getMsgId().equals(CACTUS);
         hurts.add(Math.max(1, Math.round(amount)) + side + ": " + lastKind);
     }
 
     static String lastKind() {
         return lastKind;
+    }
+
+    static boolean pricked() {
+        return pricked;
     }
 
     private static String kind(Minecraft minecraft, @Nullable DamageSource source) {
@@ -177,6 +192,11 @@ final class Senses {
         }
         if (source.getMsgId().equals(TAN_THIRST) && minecraft.player.getFoodData().getFoodLevel() == 0) {
             return HUNGER;
+        }
+        if (source.getMsgId().equals(CACTUS) && BlockPos.betweenClosedStream(minecraft.player.getBoundingBox().inflate(PRICK_REACH))
+                .noneMatch(pos -> minecraft.level.getBlockState(pos).is(Blocks.CACTUS))) {
+            return minecraft.level.getEntities(minecraft.player, minecraft.player.getBoundingBox().inflate(PRICK_REACH), entity -> entity instanceof LivingEntity).stream()
+                    .min(Comparator.comparingDouble(minecraft.player::distanceToSqr)).map(Senses::describe).orElse("something unseen");
         }
         return KINDS.getOrDefault(source.getMsgId(), source.getMsgId());
     }
@@ -249,7 +269,7 @@ final class Senses {
             }
         }
         body.add("hotbar", hotbar);
-        body.addProperty("time", time(minecraft.level.getDayTime()));
+        body.addProperty("time", time(dayTime(minecraft)));
         String weather = weather(minecraft);
         if (weather != null) {
             body.addProperty("weather", weather);
@@ -399,7 +419,15 @@ final class Senses {
     }
 
     static boolean hostile(Entity entity) {
-        return (entity instanceof Enemy || entity.getType().getCategory() == MobCategory.MONSTER) && !(entity instanceof EasyNPC<?>) && !(entity instanceof Mob mob && mob.isNoAi()) && !(entity instanceof Player);
+        return (entity instanceof Enemy || entity.getType().getCategory() == MobCategory.MONSTER) && !story(entity) && !(entity instanceof Player);
+    }
+
+    static boolean water(Level level, BlockPos pos) {
+        return level.getFluidState(pos).is(FluidTags.WATER) && level.getBlockState(pos).getCollisionShape(level, pos).isEmpty();
+    }
+
+    static boolean story(Entity entity) {
+        return entity instanceof EasyNPC<?> || entity instanceof Mob mob && mob.isNoAi() || entity.getTags().contains(People.TAG);
     }
 
     static boolean gone(Entity entity) {
@@ -443,11 +471,16 @@ final class Senses {
         return minutes > 0 ? minutes + " min" : "under a minute";
     }
 
+    static long dayTime(Minecraft minecraft) {
+        IntegratedServer server = minecraft.getSingleplayerServer();
+        return server != null ? server.overworld().getDayTime() : minecraft.level.getDayTime();
+    }
+
     static String time(long dayTime) {
-        long day = dayTime / TICKS_PER_DAY + 1;
+        long day = (dayTime + TICKS_PER_DAY - DAWN) / TICKS_PER_DAY + 1;
         long tick = dayTime % TICKS_PER_DAY;
         String part = tick < 1000 ? "dawn" : tick < 5000 ? "morning" : tick < 7000 ? "noon" : tick < 11500 ? "afternoon" : tick < 13500 ? "dusk"
-                : tick < 22500 ? "night" : "dawn";
+                : tick < DAWN ? "night" : "dawn";
         return "day " + day + ", " + part;
     }
 
@@ -474,6 +507,11 @@ final class Senses {
         return Temperature.level(player) + change + Temperature.overheating(player) + frozen;
     }
 
+    static boolean exposed(LocalPlayer player, String kind) {
+        return kind.equals(HEAT) ? ModList.get().isLoaded(TOUGH_AS_NAILS) && Temperature.hyperthermic(player)
+                : kind.equals(COLD) && player.getPercentFrozen() > 0;
+    }
+
     private static void feel(LocalPlayer player) {
         if (!ModList.get().isLoaded(TOUGH_AS_NAILS)) {
             return;
@@ -497,6 +535,10 @@ final class Senses {
 
         static boolean warmer(String level, String than) {
             return List.of(NAMES).indexOf(level) > List.of(NAMES).indexOf(than);
+        }
+
+        static boolean hyperthermic(LocalPlayer player) {
+            return TemperatureHelper.getPercentHyperthermic(player) > 0;
         }
 
         static String overheating(LocalPlayer player) {

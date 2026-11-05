@@ -8,6 +8,7 @@ import enchantments
 import fonts
 import png
 import poses
+import spoken
 import stamp
 import tomllib
 import tweaks
@@ -228,6 +229,7 @@ def showroom(eyes):
     half = len(items) // 2 + 1
     lines = [
         "settle",
+        "/gamemode creative",
         f"/execute in wayfarer:showroom run tp @s 0.5 {y + 20} 0.5",
         "settle",
         "/gamerule doDaylightCycle false",
@@ -379,6 +381,7 @@ def story(quests, cast, skins, caravan_households):
                 person: spec | ({} if spec.get("road") else {"skin": person}) for person, spec in sorted(cast.items())
             },
             "caravan": caravan_households["households"],
+            "epilogue": quests["epilogue"],
             "memories": quests["memories"],
             "quests": quests["quests"],
         },
@@ -414,6 +417,14 @@ def sounds(spec):
             **{
                 f"story_music.{piece}": {"sounds": [{"name": f"wayfarer:music/{piece}", "stream": True}]}
                 for piece in spec["music"]
+            },
+            **{
+                f"{creature}.{kind}": {
+                    "sounds": [{"name": event, "type": "event"}],
+                    "subtitle": f"subtitles.wayfarer.{creature}.{kind}",
+                }
+                for creature, voices in spec["creatures"].items()
+                for kind, event in voices.items()
             },
             **{
                 name: {
@@ -696,6 +707,7 @@ def worldgen(eyes, layouts, acts, balance):
             MAIN / f"data/wayfarer/worldgen/structure/hall/{eye}.json",
             {
                 "biomes": f"#wayfarer:has_structure/hall/{eye}",
+                "climate": spec["climate"],
                 "layout": layout,
                 "pieces": {"entrance": f"wayfarer:hall/{eye}/entrance", "hall": f"wayfarer:hall/{eye}/hall"},
                 "shaft": {
@@ -870,10 +882,10 @@ def stores(loot):
 
 
 def main():
-    source = tomllib.loads((ROOT / "generator/eyes.toml").read_text())
+    source = spoken.shown_data(tomllib.loads((ROOT / "generator/eyes.toml").read_text()))
     eyes = source["eyes"]
     balance = tomllib.loads((ROOT / "balance.toml").read_text())
-    written = tomllib.loads((ROOT / "story/books.toml").read_text())
+    written = spoken.shown_data(tomllib.loads((ROOT / "story/books.toml").read_text()))
     for directory in (DEV, ENDREM_EYES, MAIN):
         shutil.rmtree(directory, ignore_errors=True)
     layouts = dict(halls(eyes))
@@ -886,7 +898,9 @@ def main():
     write_json(DEV / "wayfarer/noise.json", tomllib.loads((ROOT / "generator/noise.toml").read_text()))
     labelled_faces(tomllib.loads((ROOT / "generator/faces.toml").read_text()))
     owners(tomllib.loads((ROOT / "generator/owners.toml").read_text()), balance)
-    write_json(MAIN / "wayfarer/swaps.json", tomllib.loads((ROOT / "generator/nether.toml").read_text())["swaps"])
+    nether = tomllib.loads((ROOT / "generator/nether.toml").read_text())
+    write_json(MAIN / "wayfarer/creature_swaps.json", nether["creatures"])
+    write_json(MAIN / "wayfarer/swaps.json", nether["swaps"])
     camp().save(MAIN / "data/wayfarer/structure/last_camp.nbt")
     grave().save(MAIN / "data/wayfarer/structure/last_camp/grave.nbt")
     write_json(
@@ -951,15 +965,18 @@ def main():
     people(skins)
     poses.write(MAIN)
     story(
-        tomllib.loads((ROOT / "story/quests.toml").read_text()),
-        tomllib.loads((ROOT / "story/people.toml").read_text()),
+        spoken.shown_data(tomllib.loads((ROOT / "story/quests.toml").read_text())),
+        spoken.shown_data(tomllib.loads((ROOT / "story/people.toml").read_text())),
         skins,
         tomllib.loads((ROOT / "story/caravan.toml").read_text()),
     )
     write_json(DEV / "wayfarer/states.json", tomllib.loads((ROOT / "story/states.toml").read_text()))
-    write_json(MAIN / "wayfarer/gear.json", tomllib.loads((ROOT / "story/gear.toml").read_text()))
-    write_json(MAIN / "wayfarer/scenes.json", tomllib.loads((ROOT / "story/scenes.toml").read_text())["scenes"])
-    write_json(MAIN / "wayfarer/dice.json", tomllib.loads((ROOT / "story/dice.toml").read_text()))
+    write_json(MAIN / "wayfarer/gear.json", spoken.shown_data(tomllib.loads((ROOT / "story/gear.toml").read_text())))
+    write_json(
+        MAIN / "wayfarer/scenes.json",
+        spoken.shown_data(tomllib.loads((ROOT / "story/scenes.toml").read_text())["scenes"]),
+    )
+    write_json(MAIN / "wayfarer/dice.json", spoken.shown_data(tomllib.loads((ROOT / "story/dice.toml").read_text())))
     music = tomllib.loads((ROOT / "story/sounds.toml").read_text())
     tweaked = tomllib.loads((ROOT / "generator/tweaks.toml").read_text())
     sounds(music)
@@ -970,6 +987,7 @@ def main():
     shaders()
     tweaks.write(MAIN, tomllib.loads((ROOT / "generator/nether.toml").read_text()), tweaked)
     enchantments.write(MAIN, tomllib.loads((ROOT / "generator/enchantments.toml").read_text()))
+    spoken.write_index()
 
 
 main()

@@ -29,6 +29,9 @@ ASYNC = re.compile(r"(?m)^\s*locateCommandEnabled = false$")
 CONCURRENT = re.compile(r"(?m)^maxConcurrentLocates = \d+$")
 CONCURRENT_SEARCHES = 8
 REJECTED = re.compile(r"Tried to load invalid item|Couldn't parse element .*\]:wayfarer:")
+STRONGHOLD = "betterstrongholds:stronghold"
+SEA_LEVEL = 63
+NOT_LOADED = "That position is not loaded"
 
 
 def question(structure, at):
@@ -51,6 +54,42 @@ def locate(server, structures, at=None):
     return {structure: found or None for structure, found in zip(structures, answers, strict=True)}
 
 
+def answered(expected):
+    return lambda said: said if any(word in said for word in expected) else None
+
+
+def ring(server, strongholds):
+    found = set()
+    for index in range(strongholds["count"] * 2):
+        angle = math.tau * index / (strongholds["count"] * 2)
+        at = (
+            round(strongholds["radius_blocks"] * math.cos(angle)),
+            round(strongholds["radius_blocks"] * math.sin(angle)),
+        )
+        hit = locate(server, [STRONGHOLD], at)[STRONGHOLD]
+        if hit:
+            found.add((hit[1], hit[2]))
+    return sorted(found)
+
+
+def at_sea(server, x, z):
+    server.asks([(f"forceload add {x} {z}", answered(["force loaded", "already"]))], LOCATE_SECONDS)
+    deadline = time.monotonic() + LOCATE_SECONDS
+    try:
+        while True:
+            [said] = server.asks(
+                [(f"execute if biome {x} {SEA_LEVEL} {z} #minecraft:is_ocean", answered(["Test ", NOT_LOADED]))],
+                LOCATE_SECONDS,
+            )
+            if NOT_LOADED not in said:
+                return said.startswith("Test passed")
+            if time.monotonic() > deadline:
+                raise Failure(f"the chunk at {x}, {z} did not load within {LOCATE_SECONDS} s")
+            time.sleep(1)
+    finally:
+        server.asks([(f"forceload remove {x} {z}", answered(["no longer", "not marked", "Unmarked"]))], LOCATE_SECONDS)
+
+
 def check(server):
     balance = tomllib.loads((ROOT / "balance.toml").read_text())
     strongholds = balance["strongholds"]
@@ -63,14 +102,19 @@ def check(server):
     cut = tomllib.loads((ROOT / "generator/owners.toml").read_text())["cut"]
     halls = {eye: f"wayfarer:hall/{eye}" for eye in eyes}
     owners = {kind: f"#wayfarer:owners/{kind}" for kind in kinds}
-    found = locate(server, ["betterstrongholds:stronghold", *halls.values(), *owners.values(), *cut])
+    found = locate(server, [STRONGHOLD, *halls.values(), *owners.values(), *cut])
     failures = []
-    ring = found["betterstrongholds:stronghold"][0] if found["betterstrongholds:stronghold"] else None
+    nearest = found[STRONGHOLD][0] if found[STRONGHOLD] else None
     low = strongholds["radius_blocks"] - strongholds["jitter_blocks"] - BIOME_SHIFT_BLOCKS * 4
     high = strongholds["radius_blocks"] + strongholds["jitter_blocks"] + BIOME_SHIFT_BLOCKS * 4
-    print(f"nearest stronghold: {ring} blocks")
-    if ring is None or not low <= ring <= high:
-        failures.append(f"the nearest stronghold is {ring} blocks from spawn, not {low}-{high}")
+    print(f"nearest stronghold: {nearest} blocks")
+    if nearest is None or not low <= nearest <= high:
+        failures.append(f"the nearest stronghold is {nearest} blocks from spawn, not {low}-{high}")
+    placed = ring(server, strongholds)
+    print(f"strongholds on the ring: {len(placed)} of {strongholds['count']}")
+    if len(placed) != strongholds["count"]:
+        failures.append(f"the ring has {len(placed)} strongholds, not {strongholds['count']}")
+    failures += [f"the stronghold at {x}, {z} lies under the sea" for x, z in placed if at_sea(server, x, z)]
     for eye, structure in halls.items():
         print(f"nearest {eye} hall: {found[structure][0] if found[structure] else None} blocks")
         if found[structure] is None:

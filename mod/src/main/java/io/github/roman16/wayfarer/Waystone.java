@@ -44,7 +44,7 @@ public final class Waystone {
             return;
         }
         ItemStack held = event.getItemStack();
-        if (held.is(BuiltInRegistries.ITEM.get(OwnStone.STONE))) {
+        if (held.is(BuiltInRegistries.ITEM.get(OwnStone.STONE)) && !Clicks.answers(player, event.getLevel(), event.getPos())) {
             if (!OwnStone.owns(player, held)) {
                 event.setCanceled(true);
                 player.displayClientMessage(Component.translatable("wayfarer.stone.not_yours").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
@@ -161,10 +161,7 @@ public final class Waystone {
             }
         }
         WaystonesAPI.removeWaystoneFromDatabase(player.server, waystone);
-        ItemStack stone = OwnStone.stone(player);
-        if (!player.getInventory().add(stone)) {
-            player.drop(stone, false);
-        }
+        Handover.give(player, OwnStone.stone(player));
         player.displayClientMessage(Component.translatable("wayfarer.stone.taken_up").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
     }
 }

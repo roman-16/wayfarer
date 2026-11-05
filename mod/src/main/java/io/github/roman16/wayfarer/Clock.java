@@ -173,15 +173,17 @@ public final class Clock {
             arrive(level, now, after);
             return;
         }
-        if (mode == Mode.NIGHTFALL && now >= target) {
+        if (mode == Mode.NIGHTFALL && now >= target || mode == Mode.EASE && now >= target && Math.floorMod(now, DAY) >= ticks(Balance.get().clock().evening())) {
             mode = Mode.EVENING;
+            caravan = null;
+            rested.clear();
             speed(level);
             return;
         }
         if (server.getTickCount() % CHECK_TICKS != 0) {
             return;
         }
-        if (mode == Mode.EASE && caravan != null) {
+        if (mode == Mode.EASE) {
             evening(server, level, now);
         }
         speed(level);
@@ -196,13 +198,13 @@ public final class Clock {
         int share = Balance.get().sleep().playersPercentage();
         if (Math.floorMod(now, DAY) >= ticks(clock.runFrom())) {
             int reach = clock.caravanBlocks();
-            long near = players.stream().filter(player -> near(player, level, reach)).count();
+            long near = players.stream().filter(player -> caravan != null && near(player, level, reach) || camped(player)).count();
             if (near * 100 >= (long) players.size() * share) {
                 begin(level, now, clock.duskRunSeconds());
             }
             return;
         }
-        long sat = players.stream().filter(player -> rested.contains(player.getUUID())).count();
+        long sat = players.stream().filter(player -> rested.contains(player.getUUID()) || camped(player)).count();
         if (sat * 100 >= (long) players.size() * share) {
             begin(level, now, clock.afternoonSeconds());
         }
@@ -210,9 +212,18 @@ public final class Clock {
 
     @SubscribeEvent
     public static void onRest(RestEvent event) {
-        if (mode == Mode.EASE && caravan != null && event.fire().closerThan(caravan, Balance.get().fire().restBlocks())) {
+        if (mode != Mode.EASE) {
+            return;
+        }
+        if (caravan != null && event.fire().closerThan(caravan, Balance.get().fire().restBlocks())) {
             rested.add(event.player().getUUID());
         }
+    }
+
+    public static boolean camped(ServerPlayer player) {
+        ServerLevel level = player.serverLevel();
+        return Fire.resting(player) && Fire.nearest(level, player.position(), Balance.get().fire().restBlocks())
+                .filter(fire -> Tents.pitchedNear(level, fire, Balance.get().tent().fireBlocks())).isPresent();
     }
 
     private static boolean near(ServerPlayer player, ServerLevel level, int blocks) {

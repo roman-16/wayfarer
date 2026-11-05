@@ -49,13 +49,17 @@ public final class Duel {
         ServerLevel level = Engine.overworld(server);
         CompoundTag scratch = active.scratch();
         Optional<BlockPos> at = Places.place(server, step.text("at"));
-        if (at.isEmpty() || !level.areEntitiesLoaded(ChunkPos.asLong(at.get()))) {
+        if (won(server, active) || at.isEmpty() || !level.areEntitiesLoaded(ChunkPos.asLong(at.get()))) {
             return;
         }
         Entity foe = scratch.hasUUID(BODY) ? level.getEntity(scratch.getUUID(BODY)) : null;
         if (foe == null && (!step.spec().has(NIGHT) || level.isNight())) {
             spawn(server, active, level, at.get());
         }
+    }
+
+    private static boolean won(MinecraftServer server, Engine.Active active) {
+        return WON.equals(Progress.of(server).choices.get(active.quest().id() + "/" + active.step().id()));
     }
 
     private static void spawn(MinecraftServer server, Engine.Active active, ServerLevel level, BlockPos at) {

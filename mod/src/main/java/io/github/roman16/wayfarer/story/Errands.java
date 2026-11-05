@@ -50,7 +50,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LecternBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
@@ -144,7 +143,8 @@ public final class Errands {
                     Pair<BlockPos, Holder<Structure>> found = level.getChunkSource().getGenerator().findNearestMapStructure(level,
                             level.registryAccess().registryOrThrow(Registries.STRUCTURE).getTag(VILLAGES).map(set -> (HolderSet<Structure>) set)
                                     .orElse(HolderSet.direct()), from, Balance.get().errands().searchChunks(), false);
-                    BlockPos site = found != null ? surface(level, found.getFirst()) : ahead(server, from, ahead, (biome, at) -> true, 0);
+                    BlockPos site = found != null && before(server, from, found.getFirst(), ahead * 2) && away(progress, name, found.getFirst())
+                            ? surface(level, found.getFirst()) : ahead(server, from, ahead, (biome, at) -> away(progress, name, at), 0);
                     progress.place(name + SITE, site);
                     progress.place(name, site);
                     progress.setDirty();
@@ -154,7 +154,7 @@ public final class Errands {
             case OUTPOST, RITE, BRAM -> {
                 Outpost outpost = RAISED_OUTPOSTS.stream().filter(raised -> raised.name().equals(name)).findFirst().orElseThrow();
                 if (progress.place(name + SITE).isEmpty()) {
-                    BlockPos site = ahead(server, from, ahead, (biome, at) -> true, outpost.bias());
+                    BlockPos site = ahead(server, from, ahead, (biome, at) -> Sites.open(biome) && away(progress, name, at), outpost.bias());
                     progress.place(name + SITE, site);
                     progress.place(name, site);
                     progress.setDirty();
@@ -215,6 +215,18 @@ public final class Errands {
         hollowing = null;
     }
 
+    static void unbuild(MinecraftServer server, String name) {
+        Progress progress = Progress.of(server);
+        switch (name) {
+            case OUTPOST, RITE, BRAM -> RAISED_OUTPOSTS.stream().filter(raised -> raised.name().equals(name))
+                    .forEach(raised -> progress.places.remove("seat_" + raised.person()));
+            case CAIRNS -> progress.places.remove(CAIRNS_ORIGIN);
+            case SEAL -> List.of(SEAL_ORIGIN, SEAL_OPEN).forEach(progress.places::remove);
+            default -> progress.places.remove(name + BUILT);
+        }
+        progress.setDirty();
+    }
+
     static void tick(MinecraftServer server) {
         Progress progress = Progress.of(server);
         ServerLevel level = Engine.overworld(server);
@@ -271,6 +283,11 @@ public final class Errands {
         return true;
     }
 
+    private static boolean before(MinecraftServer server, BlockPos from, BlockPos found, int reach) {
+        Vec3 to = Vec3.atLowerCornerOf(found.subtract(from)).multiply(1, 0, 1);
+        return to.lengthSqr() <= (double) reach * reach && to.dot(pull(server, from).orElseGet(() -> Caravan.way(server))) >= 0;
+    }
+
     private static boolean grass(Holder<Biome> biome, BlockPos at) {
         return biome.is(BiomeTags.IS_SAVANNA) || biome.is(Tags.Biomes.IS_PLAINS);
     }
@@ -282,9 +299,15 @@ public final class Errands {
         return fits.test(heights.biome(found.getX(), found.getY(), found.getZ()), found) ? Optional.of(found) : Optional.empty();
     }
 
+    private static Optional<Vec3> pull(MinecraftServer server, BlockPos from) {
+        Progress progress = Progress.of(server);
+        return Engine.main(server).filter(active -> active.step().spec().has("place")).flatMap(active -> Places.aim(progress, active.step().text("place")))
+                .map(goal -> Vec3.atLowerCornerOf(goal.subtract(from)).multiply(1, 0, 1)).filter(way -> way.lengthSqr() > 1).map(Vec3::normalize);
+    }
+
     private static BlockPos ahead(MinecraftServer server, BlockPos from, int distance, BiPredicate<Holder<Biome>, BlockPos> fits, int bias) {
         ServerLevel level = Engine.overworld(server);
-        Vec3 way = Caravan.way(server).yRot((float) Math.toRadians(bias));
+        Vec3 way = pull(server, from).orElseGet(() -> Caravan.way(server)).yRot((float) Math.toRadians(bias));
         Unseen.Heights heights = new Unseen.Heights(level);
         BlockPos dry = null;
         for (int turned = 0; turned <= WIDEST; turned += TURN_STEP) {
@@ -405,7 +428,14 @@ public final class Errands {
                 break;
             }
         }
-        BlockPos middle = grown.or(() -> raise(level, kinds(level, VILLAGES), site).map(start -> start.getBoundingBox().getCenter())).orElse(site);
+        Optional<ResourceLocation> standing = grown.isPresent() ? Optional.empty() : Places.crowded(level, site);
+        Optional<BlockPos> stands = standing.isPresent() ? Optional.empty()
+                : grown.or(() -> raise(level, kinds(level, VILLAGES), site).map(start -> start.getBoundingBox().getCenter()));
+        if (stands.isEmpty()) {
+            refuse(server, name, site, standing);
+            return;
+        }
+        BlockPos middle = stands.get();
         String person = switch (name) {
             case MISSING -> "wil";
             case SETTLED -> "settled_wayfarer";
@@ -415,15 +445,42 @@ public final class Errands {
         progress.place(name, progress.place("seat_" + person).orElseThrow());
         progress.place(name + BUILT, middle);
         progress.setDirty();
+        Standing.keep(server, name);
         LOGGER.info("the village for {} stands round {}", name, middle);
+    }
+
+    static List<String> seatedOutposts(Progress progress) {
+        return RAISED_OUTPOSTS.stream().filter(outpost -> progress.place("seat_" + outpost.person()).isPresent()).map(Outpost::name).toList();
+    }
+
+    private static boolean away(Progress progress, String name, BlockPos at) {
+        int apart = Balance.get().structures().clearBlocks() * 4;
+        return progress.clearOfRefused(name, at, apart);
+    }
+
+    private static void refuse(MinecraftServer server, String name, BlockPos site, Optional<ResourceLocation> standing) {
+        Progress progress = Progress.of(server);
+        LOGGER.warn("{} could not stand at {}{}; the quest looks for other ground", name, site.toShortString(), standing.map(beside -> ", beside " + beside).orElse(""));
+        progress.refuse(name, site);
+        progress.places.remove(name + SITE);
+        progress.places.remove(name);
+        progress.setDirty();
+        find(server, name);
     }
 
     private static void outpost(MinecraftServer server, ServerLevel level, Outpost outpost, BlockPos site) {
         Progress progress = Progress.of(server);
         BlockPos from = progress.place(Caravan.NAME).orElse(site);
-        Optional<BoundingBox> box = raise(level, kinds(level, OUTPOSTS), site).map(StructureStart::getBoundingBox);
-        BlockPos middle = box.map(BoundingBox::getCenter).orElse(site);
-        int reach = box.map(found -> Math.max(found.getXSpan(), found.getZSpan()) / 2 + STAND_OFF).orElse(STAND_OFF);
+        Optional<ResourceLocation> standing = Places.crowded(level, site);
+        Optional<StructureStart> raised = standing.isPresent() ? Optional.empty() : raise(level, kinds(level, OUTPOSTS), site);
+        if (raised.isEmpty()) {
+            refuse(server, outpost.name(), site, standing);
+            return;
+        }
+        progress.rooms.put(outpost.name(), raised.get().getPieces().stream().map(StructurePiece::getBoundingBox).toList());
+        Optional<BoundingBox> box = raised.map(StructureStart::getBoundingBox);
+        BlockPos middle = box.get().getCenter();
+        int reach = Math.max(box.get().getXSpan(), box.get().getZSpan()) / 2 + STAND_OFF;
         Vec3 toward = Vec3.atLowerCornerOf(from.subtract(middle)).multiply(1, 0, 1);
         Vec3 out = toward.lengthSqr() < 1 ? new Vec3(1, 0, 0) : toward.normalize();
         BlockPos foot = BlockPos.containing(Vec3.atLowerCornerOf(middle).add(out.scale(reach)));
@@ -484,6 +541,7 @@ public final class Errands {
         progress.place(name, at);
         progress.place(name + BUILT, at);
         progress.setDirty();
+        Standing.keep(server, name);
         LOGGER.info("the errand's {} stands at {}", name, at);
         Journal.syncAll(server);
         hollowing = null;
@@ -632,7 +690,7 @@ public final class Errands {
 
     private static BlockPos standing(ServerLevel level, BlockPos at) {
         level.getChunk(at);
-        return level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at);
+        return Ground.above(level, at);
     }
 
     private static void cairns(MinecraftServer server, ServerLevel level, BlockPos site) {
@@ -648,6 +706,7 @@ public final class Errands {
         progress.ward(CAIRNS, level.getStructureManager().getOrCreate(RING).getBoundingBox(Camps.settings(level, RING, Rotation.NONE), origin));
         progress.setDirty();
         Camps.snow(level, centre, PLAN.get().getAsJsonObject("cairns").getAsJsonArray("size").get(0).getAsInt());
+        Standing.keep(server, CAIRNS);
         LOGGER.info("the cairn ring stands at {}", origin);
         Journal.syncAll(server);
     }
@@ -667,6 +726,7 @@ public final class Errands {
         for (int index = 0; index < MARKS.length; index++) {
             Clues.marker(level, world(level, origin, turn, marks.get(index).getAsJsonArray()), MARKS[index]);
         }
+        Standing.keep(server, SEAL);
         LOGGER.info("the Keepers' sealed house stands at {}, turned {}", origin, turn);
         Journal.syncAll(server);
     }
@@ -684,6 +744,7 @@ public final class Errands {
         level.playSound(null, origin, SoundEvents.SAND_BREAK, SoundSource.BLOCKS, 1, 0.6f);
         progress.place(SEAL_OPEN, origin);
         progress.setDirty();
+        Standing.keep(server, SEAL);
         LOGGER.info("the Keepers' seal crumbles at {}", origin);
     }
 

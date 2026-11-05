@@ -45,7 +45,7 @@ public final class Respawn {
         Component told;
         if (friend.isPresent()) {
             at = Joining.ground(server, Joining.beside(friend.get()));
-            told = Component.translatable("wayfarer.respawn.friend", friend.get().getDisplayName());
+            told = Component.translatable("wayfarer.respawn.friend");
         } else {
             Optional<GlobalPos> last = player.hasData(Wayfarer.LAST_FIRE) ? Optional.of(player.getData(Wayfarer.LAST_FIRE)) : Optional.empty();
             Optional<GlobalPos> caravan = Caravan.standing(server).map(camp -> GlobalPos.of(Level.OVERWORLD, camp));

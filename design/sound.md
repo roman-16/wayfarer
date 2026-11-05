@@ -36,11 +36,11 @@ Each quest adds its moments here as it is built, along the road's curve (`story.
 | The stranger's death (P1), from his cough through the burial, swelling in over sixteen seconds and low under the lines | What We Don't Say, piano, strings, winds and voice, its first four minutes, once | Scott Buckley, CC BY 4.0, [scottbuckley.com.au](https://www.scottbuckley.com.au/library/what-we-dont-say/) |
 | The stranger presses the ember into the player's hand (P1) | mystic 2, ambient magic | Zixem, CC0, [Freesound](https://freesound.org/people/Zixem/sounds/69506) |
 | The ember wakes at dusk (P2) | Magic 2.Wouw+SinePad, a soft warm swell | gsb1039, CC0, [Freesound](https://freesound.org/people/gsb1039/sounds/430894) |
-| The hold at the cellar door (P3), and every horde night | Heartfelt Battle, looping while it lasts | request, CC0, OpenGameArt |
+| The hold at the cellar door (P3), and every horde night | Battle in the Winter, cold strings over a low pulse, 0:08 to 3:56, looping while it lasts | Johan Brodd, CC BY 3.0, [OpenGameArt](https://opengameart.org/content/battle-in-the-winter) |
 | The dawn after the hold (P3) | Emotional Original Soundtrack - BETTER LIFE, piano and strings from its thirtieth second, once | Magmi.Soundtracks, CC BY 4.0, [Freesound](https://freesound.org/people/Magmi.Soundtracks/sounds/522207) |
 | The evening at the caravan's first fire (P3) | Amberlight, soft piano with strings coming in under it, once, from its start | Scott Buckley, CC BY 4.0, [scottbuckley.com.au](https://www.scottbuckley.com.au/library/amberlight/) |
 | The Gazebound's horn: across the water at the ford before anything shows (1.3), and calling them back after; theirs wherever they come later | Battle_horn_1, one breathy war-horn blast | kirmm, CC0, [Freesound](https://freesound.org/people/kirmm/sounds/392180) |
-| The battle piece at the ford (1.3) | Heartfelt Battle, looping while the hold lasts | request, CC0, OpenGameArt |
+| The battle piece at the ford (1.3) | Battle in the Winter, looping while the hold lasts | As at every hold |
 | The first memory, His First Camp (1.2), from waking in it until waking from it | Home Was You, piano, strings and accordion, once | Scott Buckley, CC BY 4.0, [scottbuckley.com.au](https://www.scottbuckley.com.au/library/home-was-you/) |
 | A shard is taken | Glass-metal Resonant Transition 13, glass and metal resonating | newlocknew, CC-BY 4.0, [Freesound](https://freesound.org/people/newlocknew/sounds/711059) |
 | True-sight shows a false wall, first beside the Marsh Mothers' calling stone (1.4) | 9. Esfumar Vanish, a soft smoky whoosh, its 1.7 s middle | cabusta9, CC0, [Freesound](https://freesound.org/people/cabusta9/sounds/444710) |
@@ -72,12 +72,13 @@ Each quest adds its moments here as it is built, along the road's curve (`story.
 | The band speaks after a quiet moment: the first line of a talk or a lone notice (I4) | Wood Click 1, a tiny dry wood tap | Sawuare, CC0, [Freesound](https://freesound.org/people/Sawuare/sounds/500926) |
 | The second memory, The Theft (1.7), from waking in it until the lake | Desolate (Part II), its first 160 s, once | Matthew Pablo, CC BY 3.0, [OpenGameArt](https://opengameart.org/content/desolate) |
 | The third memory, The Bell (1.10), from waking in it until waking from it | Memories of a Lost Autumn, harp, accordion and flute, once | InspectorJ, CC BY 3.0, [OpenGameArt](https://opengameart.org/content/memories-of-a-lost-autumn-rpg-orchestral-essentials-conversation-music) |
-| The red moon's hold at the caravan (1.10) | Heartfelt Battle, looping until the last wave | request, CC0, OpenGameArt |
+| The red moon's hold at the caravan (1.10) | Battle in the Winter, looping until the last wave | As at every hold |
 | Maud's bell, rung once each evening as the camp goes up while the team keeps it (1.10) | Church Bell 10, one stroke of a large bell, its tail eased out | nomiqbomi, CC0, [Freesound](https://freesound.org/people/nomiqbomi/sounds/578542) |
 | The Name at the caravan's fire (1.11), from the hooded woman's first line to her leaving | Forget Me Not, solo piano, its first 160 s, once | Kistol, CC0, [OpenGameArt](https://opengameart.org/content/forget-me-not) |
 | The night on the water (2.2), beside Maud's boat while the sea's beast and the drowned come | The battle piece, looping | As at every hold |
 | Act 2's first morning (2.2), from the first sight of the far shore over the landing | White Dawn, slow strings and pads lifting, 4 s to 100 s, fading over the last 16 s, once | Scott Buckley, CC BY 4.0, [scottbuckley.com.au](https://www.scottbuckley.com.au/library/white-dawn/) |
 | His last camp (2.5), the memory of the night he gave in, from its first line | A Dragon's Lullabye, harp and strings, a dark lullaby, once | Scott Buckley, CC BY 4.0, [scottbuckley.com.au](https://www.scottbuckley.com.au/library/a-dragons-lullabye/) |
+| Years later and the credits after every door (`story.md`, S53), from the first leaf, fading over three seconds when the button is pressed | The Long Way Home, soft piano with strings under it, once | Scott Buckley, CC BY 4.0, [scottbuckley.com.au](https://www.scottbuckley.com.au/library/the-long-way-home/) |
 | The title screen and the loading screens after it, until the world shows (`interface.md`, I6) | FORGIVENESS, piano, strings and a music box, looping | Magmi.Soundtracks, CC0, [Freesound](https://freesound.org/people/Magmi.Soundtracks/sounds/478246) |
 
 Every sound the pack makes for its own things is its own, from a free library, chosen by ear; where a file is cut or faded, the table says so.
@@ -105,12 +106,13 @@ Every sound the pack makes for its own things is its own, from a free library, c
   | Ambient | The fire's circle, the caravan's camp, a burning town, a calling stone |
   | Hostile | The gaze's creatures rising and crumbling, the blows on a door, the hard night's horn |
   | Master | The interface: the banners, a task ticked, a journal entry, a page, an answer, as vanilla's own clicks are |
-  | Voice | The narrator (`narration.md`, N1) |
+  | Voice | Every voice the story speaks, the narrator's and the people's (`narration.md`) |
 
 - The story wins, friends are left alone: Reactive Music fades out under a story piece and the land's sounds play on; while the narrator reads, all music dips to half and the land's sounds to two thirds, and comes back after. Simple Voice Chat lowers nothing and nothing lowers it; each player sets it with its own slider.
 - How loud a sound is follows how often it comes, measured beside what plays around it: a rare moment, a shard, the ember waking, a quest done, the horn, as loud as vanilla's level-up; a frequent one, flaring, guttering, a tick, a page, an answer, about half that; a loop, the camp, a burning town, a calling stone, under the land's own ambience, swelling as the player comes near and fading with distance.
+- A voice plays at twice the gain its sliders give it (`balance.toml` `[talk]` `voice_gain`): its clips stay as loud as vanilla's level-up, and a line said beside the fire carries over the land, the music and the wind, with the player's sliders where vanilla leaves them.
 
-**Why:** A player who finds the horn too loud reaches for Hostile, and one who wants quiet menus for Master, as they do in vanilla. A sound heard thirty times in a search has to be quiet to stay welcome, and a moment that comes twelve times in the whole game can afford to be heard; friends talking is the player's own business, so voice chat is left to its own slider.
+**Why:** A player who finds the horn too loud reaches for Hostile, and one who wants quiet menus for Master, as they do in vanilla. A sound heard thirty times in a search has to be quiet to stay welcome, and a moment that comes twelve times in the whole game can afford to be heard; friends talking is the player's own business, so voice chat is left to its own slider. Voices matched to the level-up sank under the land at full sliders, and the clips cannot be made louder without crushing their peaks, so the game raises them.
 
 ## Open
 

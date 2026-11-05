@@ -6,6 +6,7 @@ import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.Wayfarer;
+import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -44,6 +45,8 @@ final class WendCamp {
         BlockPos from = Caravan.last(server);
         Vec3 way = Caravan.way(server);
         Unseen.Heights heights = new Unseen.Heights(level);
+        List<Unseen.Viewer> viewers = Unseen.viewers(level);
+        int view = server.getPlayerList().getViewDistance();
         BlockPos spot = null;
         BlockPos dry = null;
         for (int turned = 0; turned <= WIDEST && spot == null; turned += TURN_STEP) {
@@ -52,7 +55,7 @@ final class WendCamp {
                 for (int out = ahead; out >= ahead / 2 && spot == null; out -= SAMPLE) {
                     int x = from.getX() + (int) Math.round(bent.x * out);
                     int z = from.getZ() + (int) Math.round(bent.z * out);
-                    if (heights.wet(x, z)) {
+                    if (heights.wet(x, z) || !Unseen.beyond(viewers, new Vec3(x, heights.surface(x, z), z), view) || refused(progress, x, z)) {
                         continue;
                     }
                     BlockPos at = new BlockPos(x, heights.surface(x, z), z);
@@ -83,8 +86,28 @@ final class WendCamp {
         LOGGER.info("his last camp lies at {}", spot);
     }
 
+    private static boolean refused(Progress progress, int x, int z) {
+        int apart = Balance.get().structures().clearBlocks() * 4;
+        return !progress.clearOfRefused(NAME, new BlockPos(x, 0, z), apart);
+    }
+
     static boolean ready(MinecraftServer server) {
         return Progress.of(server).place(ORIGIN).isPresent();
+    }
+
+    static void unbuild(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        progress.places.remove(ORIGIN);
+        progress.setDirty();
+    }
+
+    static void forget(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        List.of(SPOT, ORIGIN, NAME, CHAIR).forEach(progress.places::remove);
+        progress.refused.remove(NAME);
+        progress.yaws.remove(TURN);
+        progress.wards.remove(NAME);
+        progress.setDirty();
     }
 
     static void tick(MinecraftServer server) {
@@ -92,6 +115,16 @@ final class WendCamp {
         Optional<BlockPos> spot = progress.place(SPOT);
         ServerLevel level = Engine.overworld(server);
         if (spot.isEmpty() || progress.place(ORIGIN).isPresent() || !HallSearch.loaded(level, spot.get())) {
+            return;
+        }
+        Optional<ResourceLocation> standing = Places.crowded(level, spot.get());
+        if (standing.isPresent()) {
+            HallSearch.release(level, spot.get());
+            LOGGER.warn("his last camp would stand beside {} at {}; it looks for other ground", standing.get(), spot.get().toShortString());
+            progress.refuse(NAME, spot.get());
+            List.of(SPOT, NAME).forEach(progress.places::remove);
+            progress.setDirty();
+            find(server);
             return;
         }
         Rotation turn = turn(server);
@@ -104,6 +137,7 @@ final class WendCamp {
         HallSearch.release(level, spot.get());
         Clues.marker(level, world(server, "chair"), "journal");
         Clues.marker(level, world(server, "hearth"), "hearthstone");
+        Standing.keep(server, NAME);
         LOGGER.info("his last camp stands at {}, turned {}", origin, turn);
         Journal.syncAll(server);
     }

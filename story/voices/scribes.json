@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "nEAYZE2c3suybwOUt3g2",
+  "id": "ad0c5ae8",
+  "kept": "05.11.2026",
+  "preview": 1,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 2022576658,
+    "should_enhance": false,
+    "text": "The Scribes climbed as high as the land would let them and wrote down everything the shard whispered. Most of it was madness. Some of it was the way the true gate was built, and why it must never be built again. We burned the madness and kept the rest. The shard we leave to you. Read before you carry it.",
+    "voice_description": "Native English, British, a precise, educated English voice. Male, 40-50. Excellent quality. Persona: a scholar of an order of hermit scribes who lived on the highest peaks and wrote down what an ancient relic whispered to them, some of it madness. Emotion: austere, precise, intense, quietly haunted, solemn. A thin, dry, clipped voice, careful and exact, every word chosen; a hollow calm, as if still listening to something far away."
+  }
+}

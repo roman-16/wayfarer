@@ -1,6 +1,6 @@
 ---
 name: finish
-description: Finish everything built since the last commit, so the user can commit it - the gates, a newcomer's walkthrough of what a player meets, the gallery's shots for what changed, and a report with what the user plays. Use when the user calls it, or asks to run the gates, walk the work through or shoot the gallery. Development runs none of this.
+description: Finish everything built since the last commit, so the user can commit it - the gates, a newcomer's walkthrough of what a player meets, and a report with what the user plays. Use when the user calls it, or asks to run the gates or walk the work through. Development runs none of this.
 ---
 
 # Finish
@@ -10,14 +10,14 @@ Development checks each change in the running game as far as the change needs, a
 ## The scope
 
 - Everything uncommitted: `git status --short --untracked-files=all` and `git diff HEAD --stat`. When this session already finished part of it, only what changed since.
-- From the files, list what a player meets that changed: steps, screens, the HUD, people, creatures, places, items, sounds, text, mods and their configs. That list decides the walkthrough, the shots and the playtest rows.
+- From the files, list what a player meets that changed: steps, screens, the HUD, people, creatures, places, items, sounds, text, mods and their configs. That list decides the walkthrough and the playtest rows.
 - When nothing a player meets changed (tooling, tests, documents), only the gates run.
 
 ## The order
 
-1. `just lint`, fixing every finding.
+1. `just voice record`, which records every line the change wrote or rewrote, then `just lint`, fixing every finding. The report names what was recorded, what it cost and the scenes to hear.
 2. The walkthrough of the list, fixing every finding.
-3. The shots: new ones for every new facet, then `just gallery` with only the scope's shots, and `just test` started detached beside it, since they run beside each other.
+3. `just test`.
 4. The report.
 
 A fix after a step means its earlier steps run again for what the fix touched.
@@ -47,43 +47,6 @@ Play as the `playthrough` skill plays, with its hands and eyes, over this scope 
 
 Fix every finding in the code, the text (`lore` skill) or the look (`art` skill); a finding that needs a decision goes to the user as an Open question in its design document. Read both logs for what the work caused: `log` on the client driver, `build/devserver/logs/latest.log`.
 
-## The gallery
-
-The user sees the work through `gallery/`, which git keeps, so a commit shows which pictures are new and which changed. `gallery/shots.toml` lists every shot: its `id` (the path of its pictures), a `caption` saying what it shows, where it is taken (`at`: `showroom` or a state such as `ash/the_cellar`), the driver `steps` that set it up, and its `kind`:
-
-| Kind | Pictures |
-|---|---|
-| `screen` | A screen over the world, such as the journal, one PNG at interface scale 3 (`<id>.png`) |
-| `hud` | The world with the HUD as the player sees it, one JPEG at scale 3 (`<id>.jpg`) |
-| `views` | Everything the steps put in the workshop, from the front, the side, above and three-quarters (`<id>/<side>.jpg`) |
-| `tour` | A hall or the Last Camp (`subject`) through the tour's cameras (`<id>/<camera>.jpg`) |
-
-One shot of each screen layout and HUD element also lists `scales = [2, 3, 4]` and is taken at each of those interface scales (`<id>-2.png` and so on), so the gallery shows once that the layout fits at every size; every other shot of it is one picture at scale 3. A folder holds two or more pictures: a shot that would stand alone in one takes the folder's name as its `id` instead.
-
-Every change to something a player sees adds or updates its shots, one for each facet the player can meet: each ribbon and entry of a screen, each state it shows (empty, waiting, done, unfolded), each side of a thing, and each step of the story that shows it. Then `just gallery` shoots only what the scope can show, named one by one or by the narrowest folder, since a story state's shot takes 20 to 30 s and the whole gallery about half an hour:
-
-| What changed | What is shot |
-|---|---|
-| One journal page, its code or its text | That page's shots |
-| The journal's frame, ribbons or list | `journal` |
-| One HUD element | The `hud` shots that show it |
-| A creature, block, item or model | Its `views` shot |
-| A hall or the Last Camp | Its `tour` shot |
-| A story line or step | The shots at the states that show it |
-| The stamp (`style.toml`, the fonts, its sprites) | Every screen and HUD shot |
-| Code, data or text no screen shows; tools, tests, documents | Nothing |
-
-```console
-$ setsid nohup just gallery journal/gear hud/banner-begun > /tmp/gallery.log 2>&1 < /dev/null & echo $! > /tmp/gallery.pid
-$ tail --pid="$(cat /tmp/gallery.pid)" -f /dev/null
-```
-
-A shot's `after` steps put back what its steps changed beyond the world, such as an option. A screen shot rests the pointer in the corner, or, when its steps point at something themselves, such as a tooltip or a map marker's name, moves there again from the corner once the world stands still and the scale is set, since a screen drawn anew forgets what was pointed at until the pointer moves. A shot of a screen outside the world, such as the title or a loading screen, says `outside = true`: it starts in its world and leaves it with `leave`, and the next shot opens its world again. A facet the story reaches only slowly is set up by a dev command among the shot's steps: `/wayfarer story unclaim <reward>` hands a taken reward back, `/wayfarer story said <line>` marks a line of `story/gear.toml` said, `/wayfarer story gear <row>` shows a Gear row, and `/wayfarer story deed <deed>` earns a deed for the player.
-
-Shots in the story run in the story's order, and at each state those that only look (screens, the HUD, the journal, no command) come first: a shot that leaves the story, the HUD, the journal and the inventory as its opening left them is followed in the same opening, and any other shot makes the next one open its state anew, so no shot depends on another (the driver's `digest` compares them). The showroom's shots share one opening, and a `views` shot starts from a cleared workshop. A shot hides the chat unless it says `chat = true`, and the world stands still while it is shot (the driver's `still`): a state's shots are taken 128 ticks after it opened, with animated textures on their first frame, no particles and the HUD's own motion held, so a screen of something unchanged comes out pixel for pixel the same. A HUD or world picture can still differ by a few hundred pixels where another mod moves on its own; that is noise, not a change.
-
-A picture whose every pixel matches the one in `gallery/` (within 2%) keeps its file, so git shows only what moved. `just gallery` writes a page per folder and an index (`gallery/README.md`) with every picture under its caption, deletes the pictures no shot names, and prints what is new, changed and deleted; `just lint` fails while a shot lacks its pictures, a picture lacks its shot, or a page is out of date. A failed run prints the shots it did not reach (`the rest: just gallery ...`): fix the cause and shoot only those.
-
 ## The report
 
 Answer first, then only what the user needs:
@@ -91,5 +54,4 @@ Answer first, then only what the user needs:
 - **Finished**, with what the gates said.
 - **Found and fixed**, one line each.
 - **Not checked**, and why.
-- **Gallery**: the pictures that are new and changed, with their folders' pages.
-- **For you to play**: the `playtest` skill's rows the scope touched, one line each (where to go, what to do, what should happen), leaving out what a picture already shows.
+- **For you to play**: the `playtest` skill's rows the scope touched, one line each (where to go, what to do, what should happen).

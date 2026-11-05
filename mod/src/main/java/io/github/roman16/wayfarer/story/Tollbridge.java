@@ -34,7 +34,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
@@ -48,7 +47,6 @@ import net.minecraft.world.level.block.SnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
@@ -191,6 +189,13 @@ public final class Tollbridge {
 
     static void reset() {
         build = null;
+    }
+
+    static void unbuild(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        progress.place(NAME).ifPresent(centre -> progress.place(SITE, centre));
+        List.of(NAME, BELL, CELLAR).forEach(progress.places::remove);
+        progress.setDirty();
     }
 
     static void tick(MinecraftServer server) {
@@ -794,24 +799,12 @@ public final class Tollbridge {
     }
 
     private static boolean wet(ServerLevel level, Town town, int x, int z) {
-        int top = ground(level, x, z);
+        int top = Ground.land(level, x, z);
         return !level.getBlockState(new BlockPos(x, top, z)).getFluidState().isEmpty();
     }
 
     private static int height(ServerLevel level, Town town, BlockPos at) {
-        return town.grounds.computeIfAbsent(BlockPos.asLong(at.getX(), 0, at.getZ()), key -> ground(level, at.getX(), at.getZ()));
-    }
-
-    private static int ground(ServerLevel level, int x, int z) {
-        int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1;
-        while (growth(level.getBlockState(new BlockPos(x, top, z)))) {
-            top--;
-        }
-        return top;
-    }
-
-    private static boolean growth(BlockState state) {
-        return state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS) || !state.isAir() && state.canBeReplaced() && state.getFluidState().isEmpty();
+        return town.grounds.computeIfAbsent(BlockPos.asLong(at.getX(), 0, at.getZ()), key -> Ground.land(level, at.getX(), at.getZ()));
     }
 
     private static void ground(ServerLevel level) {
@@ -828,7 +821,7 @@ public final class Tollbridge {
                 if (street || square || inside(town.taken, x, z, 2)) {
                     clear(level, x, z);
                 }
-                int top = ground(level, x, z);
+                int top = Ground.land(level, x, z);
                 BlockPos surface = new BlockPos(x, top, z);
                 if (!level.getFluidState(surface).isEmpty()) {
                     continue;
@@ -877,8 +870,8 @@ public final class Tollbridge {
     }
 
     private static void clear(ServerLevel level, int x, int z) {
-        int top = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) - 1;
-        int floor = ground(level, x, z);
+        int top = Ground.sky(level, x, z);
+        int floor = Ground.land(level, x, z);
         for (int y = top; y > floor && y > top - TREE_REACH; y--) {
             BlockPos pos = new BlockPos(x, y, z);
             if (!level.getBlockState(pos).isAir()) {
@@ -908,7 +901,7 @@ public final class Tollbridge {
             for (long path : lot.paths()) {
                 BlockPos column = BlockPos.of(path);
                 clear(level, column.getX(), column.getZ());
-                BlockPos surface = new BlockPos(column.getX(), ground(level, column.getX(), column.getZ()), column.getZ());
+                BlockPos surface = new BlockPos(column.getX(), Ground.land(level, column.getX(), column.getZ()), column.getZ());
                 if (level.getFluidState(surface).isEmpty()) {
                     level.setBlock(surface, pick(street, surface), FLAGS);
                 }
@@ -927,7 +920,7 @@ public final class Tollbridge {
         List<Integer> heights = new ArrayList<>();
         for (int x = box.minX() + margin; x <= box.maxX() - margin; x++) {
             for (int z = box.minZ() + margin; z <= box.maxZ() - margin; z++) {
-                heights.add(ground(level, x, z));
+                heights.add(Ground.land(level, x, z));
             }
         }
         heights.sort(Integer::compare);
@@ -938,11 +931,11 @@ public final class Tollbridge {
         for (int x = box.minX(); x <= box.maxX(); x++) {
             for (int z = box.minZ(); z <= box.maxZ(); z++) {
                 boolean inner = x >= box.minX() + margin && x <= box.maxX() - margin && z >= box.minZ() + margin && z <= box.maxZ() - margin;
-                int column = ground(level, x, z);
+                int column = Ground.land(level, x, z);
                 BlockState surface = level.getBlockState(new BlockPos(x, column, z));
                 for (int y = floor + 1; y <= Math.max(top, column); y++) {
                     BlockPos pos = new BlockPos(x, y, z);
-                    if (!level.getBlockState(pos).isAir() && (inner || y <= column || growth(level.getBlockState(pos)))) {
+                    if (!level.getBlockState(pos).isAir() && (inner || y <= column || Ground.cover(level.getBlockState(pos)))) {
                         level.setBlock(pos, Blocks.AIR.defaultBlockState(), FLAGS);
                     }
                 }
@@ -1012,12 +1005,12 @@ public final class Tollbridge {
         Placed tower = build.placed.getFirst();
         Rotation turn = tower.lot().rotation();
         JsonArray bell = tower().getAsJsonArray("bell");
-        BlockPos bellAt = surface(level, world(tower, bell.get(0).getAsInt(), 0, bell.get(1).getAsInt())).above();
+        BlockPos bellAt = Ground.land(level, world(tower, bell.get(0).getAsInt(), 0, bell.get(1).getAsInt())).above();
         Direction facing = turn.rotate(Direction.byName(tower().get("bell_facing").getAsString()));
         level.setBlock(bellAt, Wayfarer.TOLLBRIDGE_BELL.get().defaultBlockState().setValue(TollbridgeBell.FACING, facing).setValue(TollbridgeBell.FALLEN, true), FLAGS);
         progress.place(BELL, bellAt);
         JsonArray seat = tower().getAsJsonArray("bell_seat");
-        BlockPos seatAt = surface(level, world(tower, seat.get(0).getAsInt(), 0, seat.get(1).getAsInt())).above();
+        BlockPos seatAt = Ground.land(level, world(tower, seat.get(0).getAsInt(), 0, seat.get(1).getAsInt())).above();
         progress.place("seat_" + BELL, seatAt);
         progress.yaws.put("seat_" + BELL, (float) yaw(seatAt, bellAt));
         List<BlockPos> taken = new ArrayList<>(List.of(seatAt));
@@ -1043,10 +1036,11 @@ public final class Tollbridge {
         build.placed.stream().filter(placed -> placed.lot().piece().equals("inn")).findFirst()
                 .ifPresentOrElse(inn -> Clues.marker(level, world(inn, PLAN.get().getAsJsonArray("strongbox")), "strongbox"), () -> unlaid(progress, "strongbox"));
         Clues.door(level, world(tower, tower().getAsJsonArray("clue")), "cellar");
+        Clues.marker(level, world(tower, tower().getAsJsonArray("hatch")), "cellar");
         if (tracks(level, town) == 0) {
             unlaid(progress, "tracks");
         }
-        progress.place(NAME, surface(level, town.centre));
+        progress.place(NAME, Ground.land(level, town.centre));
         progress.places.remove(SITE);
         int reach = town.radius + SAMPLE;
         Burning.hold(level, new BoundingBox(town.centre.getX() - reach, level.getMinBuildHeight(), town.centre.getZ() - reach,
@@ -1075,7 +1069,7 @@ public final class Tollbridge {
         List<BlockPos> laid = new ArrayList<>();
         if (town.well != null) {
             BoundingBox box = box(town.well);
-            lay(level, town, surface(level, new BlockPos(box.minX() - 1, 0, box.minZ() + (box.maxZ() - box.minZ()) / 2)).above(), dead.get("well").getAsString(),
+            lay(level, town, Ground.land(level, new BlockPos(box.minX() - 1, 0, box.minZ() + (box.maxZ() - box.minZ()) / 2)).above(), dead.get("well").getAsString(),
                     "well", laid);
         } else {
             unlaid(progress, "well");
@@ -1083,7 +1077,7 @@ public final class Tollbridge {
         List<Placed> homes = new ArrayList<>(build.placed.stream().filter(placed -> !placed.lot().paths().isEmpty()).toList());
         Collections.shuffle(homes, new Random(town.random.nextLong()));
         if (!homes.isEmpty()) {
-            lay(level, town, surface(level, BlockPos.of(homes.getFirst().lot().paths().getFirst())).above(), dead.get("doorway").getAsString(), "doorway", laid);
+            lay(level, town, Ground.land(level, BlockPos.of(homes.getFirst().lot().paths().getFirst())).above(), dead.get("doorway").getAsString(), "doorway", laid);
         } else {
             unlaid(progress, "doorway");
         }
@@ -1102,12 +1096,12 @@ public final class Tollbridge {
             if (doors-- <= 0) {
                 break;
             }
-            lay(level, town, surface(level, BlockPos.of(home.lot().paths().getLast())).above(), skins.removeFirst(), null, laid);
+            lay(level, town, Ground.land(level, BlockPos.of(home.lot().paths().getLast())).above(), skins.removeFirst(), null, laid);
         }
         List<Long> streets = new ArrayList<>(town.main);
         Collections.shuffle(streets, new Random(town.random.nextLong()));
         for (long street : streets) {
-            BlockPos cell = surface(level, BlockPos.of(street)).above();
+            BlockPos cell = Ground.land(level, BlockPos.of(street)).above();
             if (skins.isEmpty()) {
                 break;
             }
@@ -1139,9 +1133,9 @@ public final class Tollbridge {
         Entity body = People.spawn(level, skin, Vec3.atBottomCenterOf(at), town.random.nextFloat() * 360, pose, DEAD);
         if (clue != null) {
             body.addTag(Steps.CLUE + clue);
-            Clues.box(level, Vec3.atBottomCenterOf(at), clue, LYING_REACH, LYING_HEIGHT);
+            Clues.box(level, body.position(), clue, LYING_REACH, LYING_HEIGHT);
         }
-        laid.add(at);
+        laid.add(body.blockPosition());
     }
 
     private static int tracks(ServerLevel level, Town town) {
@@ -1149,7 +1143,7 @@ public final class Tollbridge {
         int print = 0;
         for (; print < TRACKS && 2 + print * 2 < street.size(); print++) {
             Cell cell = street.get(2 + print * 2);
-            Clues.print(level, surface(level, cell.at().relative(cell.way().getClockWise(), print % 2)).above(), "tracks");
+            Clues.print(level, Ground.land(level, cell.at().relative(cell.way().getClockWise(), print % 2)).above(), "tracks");
         }
         return print;
     }
@@ -1158,7 +1152,7 @@ public final class Tollbridge {
         for (int radius = BELL_NEAR; radius <= BELL_FAR; radius++) {
             for (int step = 0; step < BELL_DIRECTIONS; step++) {
                 double angle = Math.PI * 2 * step / BELL_DIRECTIONS;
-                BlockPos at = surface(level, bell.offset((int) Math.round(Math.cos(angle) * radius), 0, (int) Math.round(Math.sin(angle) * radius))).above();
+                BlockPos at = Ground.land(level, bell.offset((int) Math.round(Math.cos(angle) * radius), 0, (int) Math.round(Math.sin(angle) * radius))).above();
                 if (Math.abs(at.getY() - bell.getY()) <= 1 && level.getBlockState(at).isAir() && level.getBlockState(at.above()).isAir()
                         && taken.stream().allMatch(other -> other.distManhattan(at) >= 2)) {
                     return Optional.of(at);
@@ -1166,10 +1160,6 @@ public final class Tollbridge {
             }
         }
         return Optional.empty();
-    }
-
-    private static BlockPos surface(ServerLevel level, BlockPos column) {
-        return column.atY(level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column.getX(), column.getZ()) - 1);
     }
 
     private static double yaw(BlockPos from, BlockPos to) {

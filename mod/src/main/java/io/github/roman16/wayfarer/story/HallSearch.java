@@ -3,9 +3,12 @@ package io.github.roman16.wayfarer.story;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
-import io.github.roman16.wayfarer.EntrancePiece;
+import io.github.roman16.wayfarer.Climate;
+import io.github.roman16.wayfarer.HallStructure;
+import io.github.roman16.wayfarer.ShaftPiece;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
@@ -39,7 +42,7 @@ final class HallSearch {
 
     private HallSearch() {}
 
-    record Found(BlockPos entrance, BoundingBox box) {}
+    record Found(BlockPos entrance, BoundingBox box, List<BoundingBox> rooms) {}
 
     static Optional<Found> nearest(ServerLevel level, ResourceLocation id, BlockPos from) {
         Holder<Structure> hall = holder(level, id);
@@ -56,25 +59,28 @@ final class HallSearch {
         if (start == null || !start.isValid()) {
             return Optional.empty();
         }
-        BoundingBox entrance = start.getPieces().stream().filter(piece -> piece instanceof EntrancePiece).map(StructurePiece::getBoundingBox).findFirst()
-                .orElse(start.getBoundingBox());
-        return Optional.of(new Found(new BlockPos(entrance.getCenter().getX(), entrance.maxY(), entrance.getCenter().getZ()), start.getBoundingBox()));
+        return start.getPieces().stream().filter(piece -> piece instanceof ShaftPiece).map(piece -> ((ShaftPiece) piece).threshold()).findFirst()
+                .map(threshold -> new Found(threshold, start.getBoundingBox(), start.getPieces().stream().map(StructurePiece::getBoundingBox).toList()));
     }
 
     private static Holder<Structure> holder(ServerLevel level, ResourceLocation hall) {
         return level.registryAccess().registryOrThrow(Registries.STRUCTURE).getHolderOrThrow(ResourceKey.create(Registries.STRUCTURE, hall));
     }
 
-    static CompletableFuture<Optional<BlockPos>> ground(ServerLevel level, ResourceLocation hall, BlockPos from, int inner, int outer, Optional<BlockPos> avoid) {
+    static CompletableFuture<Optional<BlockPos>> ground(ServerLevel level, ResourceLocation hall, BlockPos from, int inner, int outer, List<BlockPos> avoid) {
         HolderSet<Biome> fits = holder(level, hall).value().biomes();
+        Climate climate = ((HallStructure) holder(level, hall).value()).climate();
         Unseen.Heights heights = new Unseen.Heights(level);
         int sea = level.getChunkSource().getGenerator().getSeaLevel();
         Balance.Halls halls = Balance.get().halls();
         Vec3 flat = new Vec3(from.getX(), 0, from.getZ());
         Vec3 origin = flat.length() >= inner || flat.lengthSqr() < 1 ? flat : flat.normalize().scale(inner);
-        Predicate<BlockPos> clear = at -> avoid.map(failed -> failed.distSqr(at.atY(failed.getY())) > (double) AVOID_BLOCKS * AVOID_BLOCKS).orElse(true);
-        return CompletableFuture.supplyAsync(() -> sample(heights, origin, halls, inner, outer, sea, biome -> fits.contains(biome), clear)
-                .or(() -> sample(heights, origin, halls, inner, outer, sea, biome -> true, clear)), Util.backgroundExecutor());
+        List<BlockPos> refused = List.copyOf(avoid);
+        Predicate<BlockPos> clear = at -> refused.stream().allMatch(failed -> failed.distSqr(at.atY(failed.getY())) > (double) AVOID_BLOCKS * AVOID_BLOCKS);
+        List<Predicate<Holder<Biome>>> passes = List.of(biome -> fits.contains(biome) && climate.fits(biome), climate::fits,
+                biome -> fits.contains(biome) && climate.bears(biome), climate::bears);
+        return CompletableFuture.supplyAsync(() -> passes.stream().map(pass -> sample(heights, origin, halls, inner, outer, sea, pass, clear))
+                .flatMap(Optional::stream).findFirst(), Util.backgroundExecutor());
     }
 
     private static Optional<BlockPos> sample(Unseen.Heights heights, Vec3 origin, Balance.Halls halls, int inner, int outer, int sea,
@@ -96,7 +102,7 @@ final class HallSearch {
 
     static Found raise(ServerLevel level, ResourceLocation id, BlockPos site) {
         Places.Hall hall = Places.raise(level, id, site);
-        return new Found(hall.stair(), hall.box());
+        return new Found(hall.threshold(), hall.box(), hall.rooms());
     }
 
     static boolean loaded(ServerLevel level, BlockPos site) {

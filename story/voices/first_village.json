@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "Ia8SJX8mTub6OcZkYHFG",
+  "id": "451ccaee",
+  "kept": "05.11.2026",
+  "preview": 1,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 511074764,
+    "should_enhance": false,
+    "text": "The First Village was built by Wayfarers who swore they would only stay one winter. They stayed a hundred. Their priests said the shard in their temple kept them safe. It was the shard that kept them seen. When the gaze came, the last priest carried it out into the grass and buried it here. The village is gone. The grass remembers.",
+    "voice_description": "Native English, British, a soft, gentle southern English voice. Male, 65-75. Excellent quality. Persona: the last priest of an old village founded by wanderers who stayed too long, telling how his people fell. Emotion: rueful, gentle, sorrowful, humble, quietly reverent. A soft, warm, slightly hoarse old voice, slow and kindly, like a sermon given to an empty church."
+  }
+}

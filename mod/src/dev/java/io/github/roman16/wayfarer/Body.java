@@ -6,6 +6,8 @@ import baritone.api.pathing.goals.GoalBlock;
 import baritone.api.pathing.goals.GoalNear;
 import baritone.api.pathing.goals.GoalRunAway;
 import baritone.api.pathing.goals.GoalXZ;
+import io.github.roman16.wayfarer.story.Hold;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -15,16 +17,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import javax.annotation.Nullable;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.FlyingMob;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
@@ -37,6 +41,7 @@ import net.minecraft.world.item.TridentItem;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.entity.CampfireBlockEntity;
@@ -46,6 +51,11 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 final class Body {
+    private static final int AIR_SEARCH_CELLS = 4096;
+    private static final int AIR_SEARCH_REACH = 16;
+    private static final int AIR_SEARCH_TICKS = 20;
+    private static final int LAVA_NEAR = 2;
+    private static final int LAVA_CLEAR = 4;
     private static final int REACTION_TICKS = 5;
     private static final double THREAT_BLOCKS = 6;
     private static final double SEEN_ATTACKER_BLOCKS = 16;
@@ -67,6 +77,8 @@ final class Body {
     private static final int REPATH_TICKS = 10;
     private static final int FLEE_TICKS = 200;
     private static final int RETURN_TICKS = 400;
+    private static final int UNREACHED_TICKS = 400;
+    private static final double CLOSER_BLOCKS = 1;
     private static final int BACK_OFF_TICKS = 256;
     private static final int BREATHE_TICKS = 200;
     private static final int STEP_OUT_TICKS = 60;
@@ -94,15 +106,22 @@ final class Body {
     private static final List<String> said = new ArrayList<>();
     private static final Set<Integer> passed = new HashSet<>();
     private static final Set<Integer> letGo = new HashSet<>();
+    private static final Set<Integer> steppedOff = new HashSet<>();
+    private static final Set<Integer> unreached = new HashSet<>();
+    @Nullable
+    private static BlockPos air;
     private static Doing doing = Doing.NOTHING;
     @Nullable
     private static Entity target;
     private static List<Entity> foes = List.of();
     private static long ticks;
     private static int strikes;
+    private static double closest;
+    private static long closerAt;
     private static float healthFrom;
     private static int foodFrom;
     private static int slotFrom;
+    private static float pitchFrom;
     private static int countFrom;
     private static String eating = "";
     private static String fled = "";
@@ -123,8 +142,23 @@ final class Body {
     private static boolean finished;
     @Nullable
     private static String handBack;
+    @Nullable
+    private static Float facing;
+    private static boolean ducking;
 
     private Body() {}
+
+    static float facing(LocalPlayer player) {
+        return facing == null ? player.getYRot() : facing;
+    }
+
+    static void faced() {
+        facing = null;
+    }
+
+    static void duck(boolean through) {
+        ducking = through;
+    }
 
     static void tick(Minecraft minecraft, @Nullable Legs.Kind leg) {
         LocalPlayer player = minecraft.player;
@@ -145,6 +179,9 @@ final class Body {
         tread(minecraft, doing == Doing.NOTHING && deep(player) && (standing || leg == Legs.Kind.LISTEN));
         foes = foes(minecraft, leg);
         noticed = foes.isEmpty() ? 0 : noticed + 1;
+        if (ducking && doing.ordinal() > Doing.QUENCH.ordinal()) {
+            end(minecraft, "let the " + doing() + " go for the tent");
+        }
         Doing wanted = wanted(minecraft, leg);
         if (wanted != Doing.NOTHING && (doing == Doing.NOTHING || wanted.ordinal() < doing.ordinal())) {
             if (doing != Doing.NOTHING) {
@@ -218,9 +255,11 @@ final class Body {
 
     static void forget() {
         doing = Doing.NOTHING;
+        facing = null;
         target = null;
         home = null;
         refuge = null;
+        ducking = false;
         fledAt = Long.MIN_VALUE / 2;
         foes = List.of();
         noticed = 0;
@@ -228,6 +267,8 @@ final class Body {
         breathedAt = Long.MIN_VALUE / 2;
         passed.clear();
         letGo.clear();
+        steppedOff.clear();
+        unreached.clear();
         said.clear();
         tookOver = false;
         treading = false;
@@ -254,6 +295,9 @@ final class Body {
         if (player.isOnFire() && !player.isInWater() && water(minecraft) != null) {
             return Doing.QUENCH;
         }
+        if (ducking) {
+            return Doing.NOTHING;
+        }
         if (creeper(minecraft) != null) {
             return Doing.BACK_OFF;
         }
@@ -264,15 +308,22 @@ final class Body {
         boolean reachable = !deep(nearest) || deep(player);
         boolean hurt = player.getHealth() <= player.getMaxHealth() * LOW_SHARE;
         boolean able = armed(player) && !hurt && foes.size() <= MOST_FOES && reachable;
-        boolean near = reach(player, nearest) <= REACH_BLOCKS || reach(player, nearest) <= REACH_BLOCKS * 2 && Senses.hurtLately(minecraft, REPATH_TICKS)
+        boolean near = reach(player, nearest) <= REACH_BLOCKS || !holding(minecraft) && !unreached.contains(nearest.getId())
+                && (reach(player, nearest) <= REACH_BLOCKS * 2 && Senses.hurtLately(minecraft, REPATH_TICKS)
                 || (home == null || flat(nearest.position(), home) <= PURSUIT_BLOCKS)
-                && (!letGo.contains(nearest.getId()) || nearest.distanceTo(player) <= PURSUIT_BLOCKS);
+                && (!letGo.contains(nearest.getId()) || nearest.distanceTo(player) <= PURSUIT_BLOCKS));
         if (able && near || hurt && cornered(minecraft, nearest)) {
             return doing == Doing.FLEE && able ? Doing.FLEE : Doing.FIGHT;
         }
         if (leg == Legs.Kind.GO || leg == Legs.Kind.FOLLOW) {
-            walkOn(player, !armed(player) ? "unarmed" : foes.size() > MOST_FOES ? "outnumbered" : hurt ? "too hurt to fight"
-                    : !reachable ? "it is in deep water" : "it keeps its distance");
+            walkOn(player, reason(player, nearest, reachable, hurt));
+            return Doing.NOTHING;
+        }
+        if (holding(minecraft) && able) {
+            return Doing.NOTHING;
+        }
+        Refuge shelter = able ? null : refuge(minecraft);
+        if (shelter != null && !shelter.name().equals(GOAL) && flat(player.position(), shelter.at()) <= SAFE_BLOCKS) {
             return Doing.NOTHING;
         }
         boolean struck = Senses.hurtLately(minecraft, REPATH_TICKS);
@@ -297,9 +348,14 @@ final class Body {
         if (hostile && home == null) {
             home = player.position();
         }
+        if (facing == null && leg == null) {
+            facing = player.getYRot();
+        }
         doing = next;
         ticks = 0;
         strikes = 0;
+        closest = Double.MAX_VALUE;
+        closerAt = 0;
         healthFrom = player.getHealth();
         foodFrom = player.getFoodData().getFoodLevel();
         started = false;
@@ -316,6 +372,11 @@ final class Body {
             player.getInventory().selected = food(player);
             countFrom = player.getMainHandItem().getCount();
             eating = player.getMainHandItem().getHoverName().getString().toLowerCase(Locale.ROOT);
+            pitchFrom = player.getXRot();
+            if (minecraft.hitResult != null && minecraft.hitResult.getType() != HitResult.Type.MISS) {
+                player.setXRot(Legs.LOOK_UP);
+                player.xRotO = Legs.LOOK_UP;
+            }
         }
     }
 
@@ -331,7 +392,14 @@ final class Body {
                     end(minecraft, "could not reach air, air " + air(player));
                     handBack = "under water and no way up, air " + air(player);
                 } else {
-                    player.setXRot(UPWARD);
+                    if (ticks % AIR_SEARCH_TICKS == 1) {
+                        air = nearestAir(minecraft);
+                    }
+                    if (air != null) {
+                        player.lookAt(EntityAnchorArgument.Anchor.EYES, Vec3.atCenterOf(air));
+                    } else {
+                        player.setXRot(UPWARD);
+                    }
                     minecraft.options.keyShift.setDown(false);
                     minecraft.options.keyJump.setDown(true);
                     minecraft.options.keyUp.setDown(true);
@@ -381,6 +449,13 @@ final class Body {
         }
         double distance = creeper.distanceTo(player);
         boolean hissing = hissing((Creeper) creeper);
+        if (backFrom == null) {
+            backFrom = player.position();
+        }
+        if (flat(player.position(), backFrom) >= RUN_BLOCKS) {
+            end(minecraft, "backed off " + RUN_BLOCKS + " blocks from a creeper and held there, health " + health(player));
+            return;
+        }
         Entity attacker = Senses.hurtLately(minecraft, REPATH_TICKS) ? Senses.lastAttacker() : null;
         boolean pressed = attacker != null && attacker != creeper && attacker.isAlive() && reach(player, attacker) <= REACH_BLOCKS && distance > CREEPER_BLOCKS;
         if (!hissing && distance >= CREEPER_CLEAR_BLOCKS || pressed || ticks > BACK_OFF_TICKS) {
@@ -395,6 +470,9 @@ final class Body {
             baritone().getCustomGoalProcess().setGoalAndPath(new GoalRunAway(CREEPER_CLEAR_BLOCKS, creeper.blockPosition()));
         }
     }
+
+    @Nullable
+    private static Vec3 backFrom;
 
     private static boolean knockBack(Minecraft minecraft, Entity creeper) {
         LocalPlayer player = minecraft.player;
@@ -418,6 +496,14 @@ final class Body {
         }
         if (foe == null || !foe.isAlive() || foe.isRemoved()) {
             end(minecraft, "struck " + (foe == null ? "it" : Senses.describe(foe)) + " " + times(strikes) + ", it fell; health " + fromTo(player));
+            return;
+        }
+        if (holding(minecraft) && reach(player, foe) > REACH_BLOCKS) {
+            if (letGo.add(foe.getId())) {
+                said.add("held my ground in the hold; " + Senses.describe(foe) + " is " + Math.round(reach(player, foe)) + " blocks " + Senses.side(player, foe.position())
+                        + ", out of reach; health " + fromTo(player));
+            }
+            stop(minecraft, true);
             return;
         }
         double out = flat(player.position(), home);
@@ -447,9 +533,37 @@ final class Body {
             end(minecraft, Senses.describe(foe) + " went into deep water: left it; health " + fromTo(player));
             return;
         }
-        if (strike(minecraft, foe, ticks, false)) {
-            strikes++;
+        List<BlockPos> lava = lava(minecraft);
+        if (!lava.isEmpty()) {
+            if (ticks % REPATH_TICKS == 1 || !baritone().getCustomGoalProcess().isActive()) {
+                if (steppedOff.add(foe.getId())) {
+                    said.add("stepped away from the lava to fight " + Senses.describe(foe));
+                }
+                baritone().getCustomGoalProcess().setGoalAndPath(new GoalRunAway(LAVA_CLEAR, lava.toArray(BlockPos[]::new)));
+            }
+            return;
         }
+        double distance = reach(player, foe);
+        if (distance < closest - CLOSER_BLOCKS) {
+            closest = distance;
+            closerAt = ticks;
+        }
+        if (distance > REACH_BLOCKS && ticks - closerAt > UNREACHED_TICKS) {
+            unreached.add(foe.getId());
+            end(minecraft, "could not get within reach of " + Senses.describe(foe) + " for " + UNREACHED_TICKS / SharedConstants.TICKS_PER_SECOND
+                    + " s, " + Math.round(distance) + " blocks " + Senses.side(player, foe.position()) + ": left it; health " + fromTo(player));
+            return;
+        }
+        if (strike(minecraft, foe, ticks, holding(minecraft))) {
+            strikes++;
+            closerAt = ticks;
+        }
+    }
+
+    private static List<BlockPos> lava(Minecraft minecraft) {
+        BlockPos feet = minecraft.player.blockPosition();
+        return BlockPos.betweenClosedStream(feet.offset(-LAVA_NEAR, -1, -LAVA_NEAR), feet.offset(LAVA_NEAR, 0, LAVA_NEAR))
+                .filter(pos -> minecraft.level.getFluidState(pos).is(FluidTags.LAVA)).map(BlockPos::immutable).toList();
     }
 
     static boolean strike(Minecraft minecraft, Entity foe, long tick, boolean stand) {
@@ -525,6 +639,7 @@ final class Body {
         if (eaten) {
             minecraft.options.keyUse.setDown(false);
             player.getInventory().selected = slotFrom;
+            player.setXRot(pitchFrom);
             fedAt = minecraft.level.getGameTime();
             end(minecraft, "ate " + eating + ", food " + foodFrom + " → " + player.getFoodData().getFoodLevel());
             return;
@@ -532,6 +647,7 @@ final class Body {
         if (!foes.isEmpty() || ticks > EAT_TICKS) {
             minecraft.options.keyUse.setDown(false);
             player.getInventory().selected = slotFrom;
+            player.setXRot(pitchFrom);
             end(minecraft, foes.isEmpty() ? "could not eat " + eating : "stopped eating: " + Senses.describe(foes.getFirst()) + " came");
             return;
         }
@@ -540,6 +656,7 @@ final class Body {
     }
 
     private static void end(Minecraft minecraft, @Nullable String line) {
+        backFrom = null;
         if (line != null) {
             said.add(line);
         }
@@ -716,7 +833,7 @@ final class Body {
     }
 
     static boolean deep(Entity entity) {
-        return entity.isUnderWater() || entity.isInWater() && entity.level().getFluidState(entity.blockPosition().below()).is(FluidTags.WATER);
+        return entity.isUnderWater() || entity.isInWater() && Senses.water(entity.level(), entity.blockPosition().below());
     }
 
     private static boolean aimed(Minecraft minecraft, Entity foe) {
@@ -727,6 +844,27 @@ final class Body {
 
     private static double reach(LocalPlayer player, Entity foe) {
         return Math.max(0, foe.distanceTo(player) - foe.getBbWidth() / 2);
+    }
+
+    private static boolean holding(Minecraft minecraft) {
+        IntegratedServer server = minecraft.getSingleplayerServer();
+        return server != null && Hold.active(server);
+    }
+
+    private static String reason(LocalPlayer player, Entity nearest, boolean reachable, boolean hurt) {
+        if (!armed(player)) {
+            return "nothing to fight with in the hotbar";
+        }
+        if (foes.size() > MOST_FOES) {
+            return "outnumbered, " + foes.size() + " foes at once";
+        }
+        if (hurt) {
+            return "too hurt to fight, health " + health(player);
+        }
+        if (!reachable) {
+            return "it is in deep water";
+        }
+        return "it keeps its distance, " + Math.round(reach(player, nearest)) + " blocks";
     }
 
     private static void walkOn(LocalPlayer player, String why) {
@@ -764,6 +902,31 @@ final class Body {
 
     private static String health(LocalPlayer player) {
         return Math.round(player.getHealth()) + " of " + Math.round(player.getMaxHealth());
+    }
+
+    @Nullable
+    private static BlockPos nearestAir(Minecraft minecraft) {
+        BlockPos head = BlockPos.containing(minecraft.player.getEyePosition());
+        ArrayDeque<BlockPos> open = new ArrayDeque<>(List.of(head));
+        Set<BlockPos> seen = new HashSet<>(List.of(head));
+        while (!open.isEmpty() && seen.size() <= AIR_SEARCH_CELLS) {
+            BlockPos cell = open.poll();
+            for (Direction side : Direction.values()) {
+                BlockPos next = cell.relative(side);
+                if (next.distManhattan(head) > AIR_SEARCH_REACH || !seen.add(next)) {
+                    continue;
+                }
+                BlockState state = minecraft.level.getBlockState(next);
+                boolean empty = state.getCollisionShape(minecraft.level, next).isEmpty();
+                if (empty && state.getFluidState().isEmpty()) {
+                    return next;
+                }
+                if (empty && state.getFluidState().is(FluidTags.WATER)) {
+                    open.add(next);
+                }
+            }
+        }
+        return null;
     }
 
     private static String air(LocalPlayer player) {

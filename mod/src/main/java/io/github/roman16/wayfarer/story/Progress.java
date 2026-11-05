@@ -1,6 +1,8 @@
 package io.github.roman16.wayfarer.story;
 
+import io.github.roman16.wayfarer.Climate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -8,9 +10,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.StringTag;
@@ -41,9 +45,16 @@ public final class Progress extends SavedData {
     final Map<String, Float> yaws = new LinkedHashMap<>();
     final Map<String, UUID> bodies = new LinkedHashMap<>();
     final Map<String, BoundingBox> wards = new LinkedHashMap<>();
+    final Map<String, List<BoundingBox>> rooms = new LinkedHashMap<>();
+    final Map<String, List<BlockPos>> refused = new LinkedHashMap<>();
     final Map<String, Standing.Witness> witnesses = new LinkedHashMap<>();
     final Set<String> gifts = new LinkedHashSet<>();
+    final List<String> carried = new ArrayList<>();
+    final Set<Climate> crossed = new LinkedHashSet<>();
+    long crossedDay;
+    final Set<String> held = new LinkedHashSet<>();
     final Set<String> joined = new LinkedHashSet<>();
+    final Set<Long> lit = new LinkedHashSet<>();
     final Set<String> named = new LinkedHashSet<>();
     final Set<String> unlaid = new LinkedHashSet<>();
     final Set<String> visited = new LinkedHashSet<>();
@@ -98,6 +109,27 @@ public final class Progress extends SavedData {
     public void place(String name, BlockPos pos) {
         places.put(name, pos.immutable());
         setDirty();
+    }
+
+    void refuse(String name, BlockPos site) {
+        refused.computeIfAbsent(name, key -> new ArrayList<>()).add(site.immutable());
+        setDirty();
+    }
+
+    List<BlockPos> refused(String name) {
+        return refused.getOrDefault(name, List.of());
+    }
+
+    boolean clearOfRefused(String name, BlockPos at, int apart) {
+        return refused(name).stream().noneMatch(site -> site.distSqr(at.atY(site.getY())) <= (double) apart * apart);
+    }
+
+    private static BoundingBox box(int[] corners) {
+        return new BoundingBox(corners[0], corners[1], corners[2], corners[3], corners[4], corners[5]);
+    }
+
+    private static int[] corners(BoundingBox box) {
+        return new int[] {box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ()};
     }
 
     void ward(String name, BoundingBox box) {
@@ -191,17 +223,25 @@ public final class Progress extends SavedData {
         CompoundTag bodies = tag.getCompound("bodies");
         bodies.getAllKeys().forEach(key -> progress.bodies.put(key, bodies.getUUID(key)));
         CompoundTag wards = tag.getCompound("wards");
-        wards.getAllKeys().forEach(key -> {
-            int[] box = wards.getIntArray(key);
-            progress.wards.put(key, new BoundingBox(box[0], box[1], box[2], box[3], box[4], box[5]));
-        });
+        wards.getAllKeys().forEach(key -> progress.wards.put(key, box(wards.getIntArray(key))));
+        CompoundTag rooms = tag.getCompound("rooms");
+        rooms.getAllKeys().forEach(key -> progress.rooms.put(key, rooms.getList(key, Tag.TAG_INT_ARRAY).stream().map(room -> box(((IntArrayTag) room).getAsIntArray()))
+                .toList()));
+        CompoundTag refused = tag.getCompound("refused");
+        refused.getAllKeys().forEach(key -> progress.refused.put(key, Arrays.stream(refused.getLongArray(key)).mapToObj(BlockPos::of)
+                .collect(Collectors.toCollection(ArrayList::new))));
         CompoundTag witnesses = tag.getCompound("witnesses");
         witnesses.getAllKeys().forEach(key -> {
             CompoundTag witness = witnesses.getCompound(key);
             progress.witnesses.put(key, new Standing.Witness(BlockPos.of(witness.getLong("centre")), strings(witness.getList("blocks", Tag.TAG_STRING))));
         });
         progress.gifts.addAll(strings(tag.getList("gifts", Tag.TAG_STRING)));
+        strings(tag.getList("crossed", Tag.TAG_STRING)).forEach(climate -> progress.crossed.add(Climate.valueOf(climate)));
+        progress.crossedDay = tag.getLong("crossed_day");
+        progress.carried.addAll(strings(tag.getList("carried", Tag.TAG_STRING)));
+        progress.held.addAll(strings(tag.getList("held", Tag.TAG_STRING)));
         progress.joined.addAll(strings(tag.getList("joined", Tag.TAG_STRING)));
+        Arrays.stream(tag.getLongArray("lit")).forEach(progress.lit::add);
         progress.named.addAll(strings(tag.getList("named", Tag.TAG_STRING)));
         progress.unlaid.addAll(strings(tag.getList("unlaid", Tag.TAG_STRING)));
         progress.visited.addAll(strings(tag.getList("visited", Tag.TAG_STRING)));
@@ -271,8 +311,18 @@ public final class Progress extends SavedData {
         this.bodies.forEach(bodies::putUUID);
         tag.put("bodies", bodies);
         CompoundTag wards = new CompoundTag();
-        this.wards.forEach((name, box) -> wards.putIntArray(name, new int[] {box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ()}));
+        this.wards.forEach((name, box) -> wards.putIntArray(name, corners(box)));
         tag.put("wards", wards);
+        CompoundTag rooms = new CompoundTag();
+        this.rooms.forEach((name, boxes) -> {
+            ListTag list = new ListTag();
+            boxes.forEach(box -> list.add(new IntArrayTag(corners(box))));
+            rooms.put(name, list);
+        });
+        tag.put("rooms", rooms);
+        CompoundTag refused = new CompoundTag();
+        this.refused.forEach((name, sites) -> refused.putLongArray(name, sites.stream().mapToLong(BlockPos::asLong).toArray()));
+        tag.put("refused", refused);
         CompoundTag witnesses = new CompoundTag();
         this.witnesses.forEach((name, witness) -> {
             CompoundTag entry = new CompoundTag();
@@ -282,7 +332,12 @@ public final class Progress extends SavedData {
         });
         tag.put("witnesses", witnesses);
         tag.put("gifts", list(List.copyOf(gifts)));
+        tag.put("crossed", list(crossed.stream().map(Climate::name).toList()));
+        tag.putLong("crossed_day", crossedDay);
+        tag.put("carried", list(carried));
+        tag.put("held", list(List.copyOf(held)));
         tag.put("joined", list(List.copyOf(joined)));
+        tag.putLongArray("lit", lit.stream().mapToLong(Long::longValue).toArray());
         tag.put("named", list(List.copyOf(named)));
         tag.put("unlaid", list(List.copyOf(unlaid)));
         tag.put("visited", list(List.copyOf(visited)));

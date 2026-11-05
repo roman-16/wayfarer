@@ -3,6 +3,9 @@ package io.github.roman16.wayfarer.story;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
+import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Clock;
+import io.github.roman16.wayfarer.Fire;
 import io.github.roman16.wayfarer.Library;
 import io.github.roman16.wayfarer.Shine;
 import io.github.roman16.wayfarer.Stones;
@@ -11,9 +14,11 @@ import io.netty.buffer.ByteBuf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
+import net.minecraft.locale.Language;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -23,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Journal {
+    private static final String OBJECTIVES = "objectives";
     private static final List<String> PLACES = List.of(Caravan.NAME, Prologue.LAST_CAMP, Tollbridge.NAME);
 
     private static final int COUNT_BLOCKS = 16;
@@ -215,6 +221,7 @@ public final class Journal {
         }
         view.add("stones", stones);
         view.add("afterwards", Afterwards.view(player.server));
+        view.add("epilogue", Epilogue.view(player.server));
         view.add("deeds", Deeds.view(player));
         JsonArray gifts = new JsonArray();
         progress.gifts.forEach(gifts::add);
@@ -225,7 +232,13 @@ public final class Journal {
 
     static String objective(ServerPlayer player, Engine.Active active) {
         Story.Step step = active.step();
-        String objective = step.objective().replace("{found}", String.valueOf(Engine.found(active.scratch()).size()))
+        if (step.kind().equals(Caravan.KIND) && !step.spec().has("objective")) {
+            String where = Clock.camped(player) ? ".camp" : Clock.atCaravan(player) || Caravan.fire(player.server).filter(fire -> Fire.inside(fire, player.position(),
+                    Balance.get().fire().circleBlocks())).isPresent() ? ".fire" : Caravan.standing(player.server).isEmpty() ? ".day" : "";
+            return Language.getInstance().getOrDefault("wayfarer.caravan.objective" + where);
+        }
+        String objective = outcome(player.server, active).filter(ended -> step.spec().has(OBJECTIVES) && step.spec().getAsJsonObject(OBJECTIVES).has(ended))
+                .map(ended -> step.spec().getAsJsonObject(OBJECTIVES).get(ended).getAsString()).orElse(step.objective()).replace("{found}", String.valueOf(Engine.found(active.scratch()).size()))
                 .replace("{needed}", step.spec().has("needed") ? String.valueOf(Steps.needed(player.server, active)) : "");
         if (step.kind().equals("wins")) {
             objective = objective.replace("{won}", String.valueOf(Math.min(Steps.won(player.server, active), step.number("count")))).replace("{count}", step.text("count"));
@@ -245,6 +258,10 @@ public final class Journal {
             objective = objective.replace("{left}", String.valueOf(Math.ceilDiv(left, COUNT_BLOCKS) * COUNT_BLOCKS));
         }
         return objective;
+    }
+
+    private static Optional<String> outcome(MinecraftServer server, Engine.Active active) {
+        return Progress.of(server).choice(active.quest().id(), active.step().id()).or(() -> Hold.failed(active) ? Optional.of(Hold.FAILED) : Optional.empty());
     }
 
     private static JsonArray entries(Map<String, List<String>> lines, java.util.function.Function<String, String> title) {

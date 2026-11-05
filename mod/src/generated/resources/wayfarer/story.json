@@ -112,6 +112,468 @@
       "piece": "lean_to"
     }
   ],
+  "epilogue": [
+    {
+      "text": "Years later. A house by a river, and children round its fire who have never seen anything come out of the dark.",
+      "when": [
+        "the_doors/the_doors=blind"
+      ]
+    },
+    {
+      "text": "Years later. The caravan's last camp, walled now, with a ring of stones where the safe ground ends.",
+      "when": [
+        "the_doors/the_doors=sight"
+      ]
+    },
+    {
+      "text": "Years later. A fire at a river crossing. A traveller sits by it with a coal in cupped hands: Pip, grown.",
+      "when": [
+        "pips_ember/the_ember=yours",
+        "the_doors/the_doors=oath"
+      ]
+    },
+    {
+      "text": "Years later. A fire at a river crossing, and the caravan round it, still walking.",
+      "when": [
+        "!pips_ember/the_ember=yours",
+        "the_doors/the_doors=oath"
+      ]
+    },
+    {
+      "text": "Many years later. The house you built, Pip, and children round its fire. The ember burns in a lamp by the door.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=close"
+      ]
+    },
+    {
+      "text": "Years later. A fire in a town that never burned. Someone tells the children about the Wayfarer who walked into the frame.",
+      "when": [
+        "the_doors/the_doors=close",
+        "the_hollow/pip=lost"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "My mam said Wayfarers weren't real. Then one came down into our cellar, with fire in their hand.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "alone",
+        "the_doors/the_doors=blind"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "My mam said Wayfarers weren't real. Then they came down into our cellar, with fire in their hands.",
+      "when": [
+        "!alone",
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=blind"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "It promised us one place where nothing comes at night. It kept its promise. Only the one place.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=sight"
+      ]
+    },
+    {
+      "text": "The gaze promised one place where nothing comes at night, and it kept its promise. Only the one place.",
+      "when": [
+        "the_doors/the_doors=sight",
+        "the_hollow/pip=lost"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "They gave it to me at the caravan's fire one winter. I said I'd keep walking, and I did.",
+      "when": [
+        "pips_ember/the_ember=yours",
+        "the_doors/the_doors=oath"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "They gave the ember to a girl at a fire in the hills. Not to me.",
+      "when": [
+        "!pips_ember/the_ember=yours",
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=oath"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "I told them once I didn't want it. I still don't. Mostly.",
+      "when": [
+        "pips_ember/the_ember=ground",
+        "the_doors/the_doors=oath"
+      ]
+    },
+    {
+      "text": "One winter you gave the ember to someone kind at a fire, and walked on without it.",
+      "when": [
+        "the_doors/the_doors=oath",
+        "the_hollow/pip=lost"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "The one I followed walked into the frame, and the Eye closed. It was the first dark it ever had.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=close"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "They told me once their ember would go in the ground with them. They left it with me instead.",
+      "when": [
+        "pips_ember/the_ember=ground",
+        "the_doors/the_doors=close"
+      ]
+    },
+    {
+      "text": "Maud's bell hung over a town that never burned. She rang it every morning until she died, very old, still giving orders.",
+      "told": true,
+      "when": [
+        "!the_bell/the_bell=melt",
+        "the_doors/the_doors=blind|close",
+        "the_hollow/maud=lives"
+      ]
+    },
+    {
+      "text": "Maud never had a bell again, but she lived to be very old, in a town that never burned.",
+      "told": true,
+      "when": [
+        "the_bell/the_bell=melt",
+        "the_doors/the_doors=blind|close",
+        "the_hollow/maud=lives"
+      ]
+    },
+    {
+      "text": "Maud counted everyone in at dusk, every night. She never once thanked the thing that made the home.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=sight",
+        "the_hollow/maud=lives"
+      ]
+    },
+    {
+      "text": "Maud walked with the caravan until she could not walk any more, and every evening she still asked how far.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=oath",
+        "the_hollow/maud=lives"
+      ]
+    },
+    {
+      "text": "Hob made ploughs after. He said a plough was harder to get right than a sword.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=blind|close",
+        "the_hollow/hob=lives"
+      ]
+    },
+    {
+      "text": "Hob made blades for the edge of the home, every day, and never once a plough.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=sight",
+        "the_hollow/hob=lives"
+      ]
+    },
+    {
+      "text": "Hob kept the caravan's blades sharp. Same road as yesterday, he said, every morning.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=oath",
+        "the_hollow/hob=lives"
+      ]
+    },
+    {
+      "text": "Agna brought the first children born under an empty sky into the world.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=blind|close",
+        "the_hollow/agna=lives"
+      ]
+    },
+    {
+      "text": "Agna kept the sick alive inside the stones, and went out for herbs only by daylight.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=sight",
+        "the_hollow/agna=lives"
+      ]
+    },
+    {
+      "text": "Agna healed people all along the road, and taught her remedy to anyone who asked.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=oath",
+        "the_hollow/agna=lives"
+      ]
+    },
+    {
+      "text": "Cadoc stopped running. He worked the fields, and slept through every night.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=blind|close",
+        "the_hollow/cadoc=lives"
+      ]
+    },
+    {
+      "text": "Cadoc kept the gate of the home. He said he had stopped running, and this time he meant it.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=sight",
+        "the_hollow/cadoc=lives"
+      ]
+    },
+    {
+      "text": "Cadoc never stopped running, but he ran with the caravan now, and sometimes he laughed.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=oath",
+        "the_hollow/cadoc=lives"
+      ]
+    },
+    {
+      "text": "Drifa went back to the snow, and lived by her people's cairns.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=blind|close",
+        "the_hollow/drifa=lives"
+      ]
+    },
+    {
+      "text": "Drifa went back to her people's cairns in the snow, and kept watch over them every night.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=sight",
+        "the_hollow/drifa=lives"
+      ]
+    },
+    {
+      "text": "Drifa walked with the caravan, a little apart from the others, as she always had.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=oath",
+        "the_hollow/drifa=lives"
+      ]
+    },
+    {
+      "text": "Alruna went to see the world the Keepers only guarded, and wrote all of it down.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=blind|close",
+        "the_hollow/alruna=lives"
+      ]
+    },
+    {
+      "text": "Alruna wrote everything down, since nobody inside the stones could go and see it.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=sight",
+        "the_hollow/alruna=lives"
+      ]
+    },
+    {
+      "text": "Alruna walked with the caravan, and read the old script to anyone who sat by her.",
+      "told": true,
+      "when": [
+        "the_doors/the_doors=oath",
+        "the_hollow/alruna=lives"
+      ]
+    },
+    {
+      "text": "Bram kept sheep again, and learned to look at his son.",
+      "told": true,
+      "when": [
+        "joined:bram",
+        "the_doors/the_doors=blind|close"
+      ]
+    },
+    {
+      "text": "Davy was the only one who walked past the stones at night. The creatures still passed him by.",
+      "told": true,
+      "when": [
+        "joined:bram",
+        "the_doors/the_doors=sight"
+      ]
+    },
+    {
+      "text": "Bram kept the caravan's animals, and Davy kept watch at night. Nothing ever came for him.",
+      "told": true,
+      "when": [
+        "joined:bram",
+        "the_doors/the_doors=oath"
+      ]
+    },
+    {
+      "by": "pip",
+      "lost": true,
+      "text": "The hollow took {lost}. I still set their places at the fire.",
+      "when": [
+        "!the_hollow/pip=lost"
+      ]
+    },
+    {
+      "lost": true,
+      "text": "The hollow took {lost}. Nobody tells it the way Pip would have.",
+      "when": [
+        "the_hollow/pip=lost"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "Our Wayfarer built a house, and stayed. In the old stories, none of them ever stayed.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "alone",
+        "the_doors/the_doors=blind"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "Our Wayfarers built a house, and stayed. In the old stories, none of them ever stayed.",
+      "when": [
+        "!alone",
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=blind"
+      ]
+    },
+    {
+      "text": "A girl at the fire asks if the Wayfarers in the stories were real.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=blind"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "I was there.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=blind"
+      ]
+    },
+    {
+      "text": "You built a house by the river, and stayed. In the old stories, no Wayfarer ever stayed.",
+      "when": [
+        "the_doors/the_doors=blind",
+        "the_hollow/pip=lost"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "Our Wayfarer is still here. They never go past the stones after dark. None of us do.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "alone",
+        "the_doors/the_doors=sight"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "Our Wayfarers are still here. They never go past the stones after dark. None of us do.",
+      "when": [
+        "!alone",
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=sight"
+      ]
+    },
+    {
+      "text": "A boy at the fire asks what is out there, past the stones.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=sight"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "Everything we left behind. One day someone will carry a light out there again.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=sight"
+      ]
+    },
+    {
+      "text": "You are still there. You never go past the stones after dark. Nobody does.",
+      "when": [
+        "the_doors/the_doors=sight",
+        "the_hollow/pip=lost"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "We still walk. Every evening I look for their fire on the road ahead.",
+      "when": [
+        "!pips_ember/the_ember=yours",
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=oath"
+      ]
+    },
+    {
+      "text": "A child at the fire asks Pip if he is a Wayfarer.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "the_doors/the_doors=close"
+      ]
+    },
+    {
+      "text": "A child at the fire asks Pip if he is a Wayfarer.",
+      "when": [
+        "pips_ember/the_ember=yours",
+        "the_doors/the_doors=oath"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "I suppose I am.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "ash/the_cellar=wayfarer",
+        "the_doors/the_doors=close"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "I suppose I am.",
+      "when": [
+        "ash/the_cellar=wayfarer",
+        "pips_ember/the_ember=yours",
+        "the_doors/the_doors=oath"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "I don't know what I am.",
+      "when": [
+        "!the_hollow/pip=lost",
+        "ash/the_cellar=unsure",
+        "the_doors/the_doors=close"
+      ]
+    },
+    {
+      "by": "pip",
+      "text": "I don't know what I am.",
+      "when": [
+        "ash/the_cellar=unsure",
+        "pips_ember/the_ember=yours",
+        "the_doors/the_doors=oath"
+      ]
+    },
+    {
+      "text": "Nothing has looked down on the town since, and the children sleep through the night.",
+      "when": [
+        "the_doors/the_doors=close",
+        "the_hollow/pip=lost"
+      ]
+    }
+  ],
   "memories": [
     {
       "id": "first_camp",
@@ -138,10 +600,15 @@
               "text": "Fifty summers ago. The pines are young, the hearthstone is clean, and the hands are yours, but younger."
             },
             {
-              "text": "You say it aloud, to nobody: \"Three pines, a lake, and nobody. This'll do.\""
+              "text": "You say it aloud, to nobody."
+            },
+            {
+              "by": "stranger",
+              "text": "Three pines, a lake, and nobody. This'll do.",
+              "voice": "wend_reading"
             }
           ],
-          "objective": "Take wood from the fallen pine: break its logs with the axe.",
+          "objective": "Take wood from the fallen pine: break its logs with the axe: {carried}/{count}.",
           "tag": "minecraft:logs"
         },
         {
@@ -297,7 +764,7 @@
               "text": "Well, finder?"
             },
             {
-              "text": "You tell him: \"Empty. Someone beat us to it.\""
+              "text": "You tell him the hall was empty, that someone beat you to it."
             }
           ],
           "meets": "gazebound",
@@ -515,11 +982,16 @@
           "objective": "Eat."
         },
         {
+          "douses": true,
           "id": "morning",
           "kind": "say",
           "lines": [
             {
-              "text": "In the morning you write in the journal: \"Tomorrow I will walk on.\""
+              "text": "In the morning you write in the journal."
+            },
+            {
+              "text": "Tomorrow I will walk on.",
+              "voice": "book:An old Wayfarer"
             },
             {
               "text": "The fire goes out. You don't walk on."
@@ -566,7 +1038,7 @@
               "text": "Run."
             }
           ],
-          "objective": "Run: get away from the bowl."
+          "objective": "Run: get {away} blocks from the bowl."
         }
       ],
       "title": "The Worm"
@@ -682,7 +1154,11 @@
           "kind": "say",
           "lines": [
             {
-              "text": "You press the ember into their hand. Under the voice that has worn yours for thirty winters, faint, older, your own: \"...don't let it look at them...\""
+              "text": "You press the ember into their hand. Under the voice that has worn yours for thirty winters, faint, older, your own."
+            },
+            {
+              "text": "...don't let it look at them...",
+              "voice": "wend_reading"
             }
           ],
           "objective": "Remember.",
@@ -695,16 +1171,26 @@
   "people": {
     "agna": {
       "color": "green",
+      "evenings": [
+        "Eat what's in the pot. All of it.",
+        "Take your boots off by the fire. Your feet need the air.",
+        "If you can't sleep, lie still anyway. It helps.",
+        "Drink some water before you lie down."
+      ],
       "mornings": [
         "Eat something before you go. Then go on; we'll follow.",
-        "Go. I'll keep the child from running after you.",
-        "Drink before you walk, not after. Go on.",
-        "If you cut yourself today, wash it. Then walk."
+        "Go. We'll follow, and I'll keep the child from running after you.",
+        "Drink before you walk, not after. Go on; we're right behind you.",
+        "If you cut yourself today, wash it. We'll follow your marks."
       ],
       "name": "Agna",
       "remarks": [
         "Eat something. You look like a ghost.",
         "If it hurts, show me. If it doesn't, walk."
+      ],
+      "returns": [
+        "Sit down. Let me see you. You came back from further than most.",
+        "Breathe. Slowly. You're here, and you're staying by this fire tonight."
       ],
       "skin": "agna",
       "unnamed": "A woman in green",
@@ -717,11 +1203,17 @@
     },
     "alruna": {
       "color": "blue",
+      "evenings": [
+        "Say it again, slower. I want to write it right.",
+        "I wrote down your day. Tell me if I got it wrong.",
+        "The fire's good for reading. Sit closer.",
+        "Tonight I'll just listen. I'll ask you everything tomorrow."
+      ],
       "mornings": [
-        "I'll walk with the wagons. My feet aren't used to this yet.",
-        "Go on. I'm writing down yesterday before I lose it.",
+        "I'll walk with the wagons, on your marks. My feet aren't used to this yet.",
+        "Go on, we'll follow. I'm writing down yesterday before I lose it.",
         "Go on. I'll ask you everything tonight.",
-        "Walk carefully. I've only just started writing you down."
+        "Walk carefully. We follow where you walk."
       ],
       "name": "Alruna",
       "remarks": [
@@ -766,11 +1258,17 @@
     },
     "cadoc": {
       "color": "dark_aqua",
+      "evenings": [
+        "I'll sit at the edge. Old habit.",
+        "Nothing followed the wagons today. I watched the road behind.",
+        "Sleep. I'll keep watch for the first hours.",
+        "Grey coats don't sit at fires like this. I'm glad I do now."
+      ],
       "mornings": [
         "Go on ahead. I'll keep to the back, where I'm no trouble.",
-        "Mind the ridges today. Grey coats see a long way.",
+        "Mind the ridges today. Grey coats see a long way. We follow your marks.",
         "I'll walk at the back. Nobody wants a grey coat in front.",
-        "If you see banners, don't wave. Come back."
+        "If you see banners, don't wave. Come back to the wagons; they'll be on your marks."
       ],
       "name": "Cadoc",
       "remarks": [
@@ -784,7 +1282,7 @@
       "color": "white",
       "name": "A child",
       "remarks": [
-        "Are you one of them?"
+        "Don't hurt me. I didn't do anything."
       ],
       "skin": "captive_1"
     },
@@ -800,7 +1298,7 @@
       "color": "white",
       "name": "A girl",
       "remarks": [
-        "Is it far?"
+        "I don't know how far I can walk."
       ],
       "skin": "captive_3"
     },
@@ -926,6 +1424,12 @@
     },
     "hob": {
       "color": "red",
+      "evenings": [
+        "Hold your hands to the fire. Cold hands drop blades.",
+        "Good wood tonight. It burns slow.",
+        "Rest your legs. The road won't get shorter for standing.",
+        "Whatever needs mending, leave it by the cart. I'll see to it."
+      ],
       "mornings": [
         "We'll be packing a while yet. Go on ahead.",
         "Cart's loaded by noon. Walk on, we'll find your marks.",
@@ -936,6 +1440,9 @@
       "remarks": [
         "Bring me that blade when it's dull.",
         "Don't mind me. I think better with a hammer in my hand."
+      ],
+      "returns": [
+        "You're back. Good. Don't make a habit of it."
       ],
       "skin": "hob",
       "unnamed": "A big man",
@@ -961,6 +1468,12 @@
     },
     "maud": {
       "color": "aqua",
+      "evenings": [
+        "Sit while you can. Nobody sits on the road.",
+        "We pack at first light. Don't be the last.",
+        "Eat first. Whatever you saw today will keep.",
+        "Count the wagons for me. ...Good. All here."
+      ],
       "lends": "Mind the pots.",
       "mornings": [
         "We're packing up. Go on ahead; we'll follow your marks.",
@@ -973,25 +1486,28 @@
         "We follow your marks. Don't make me regret it.",
         "The bell's still with us. So are we."
       ],
+      "returns": [
+        "We kept your place by the fire. We didn't know if we should."
+      ],
       "skin": "maud",
       "unnamed": "A grey-haired woman",
       "welcomes": [
         "There you are. Sit, and tell me what's ahead.",
         "Good. You're all back.",
-        "You're late. Sit. What did you see?",
+        "You're late. Sit, and eat first. The rest can wait.",
         "Fire's lit and nobody's missing. Good."
       ]
     },
-    "morwen": {
+    "murdo": {
       "color": "aqua",
-      "name": "Morwen",
-      "people": "morwen",
+      "name": "Murdo",
+      "people": "murdo",
       "remarks": [
         "Sleep while the sun's up. That's when we do.",
         "The bay's been kind to us. Don't make me regret you."
       ],
-      "skin": "morwen",
-      "unnamed": "A woman with a net"
+      "skin": "murdo",
+      "unnamed": "A man with a net"
     },
     "newcomer": {
       "color": "white",
@@ -1011,7 +1527,7 @@
         "Sit. You've walked far enough to be listened to."
       ],
       "skin": "oldest_keeper",
-      "unnamed": "An old woman in a Keeper's hood"
+      "unnamed": "An old man in a Keeper's hood"
     },
     "pedlar": {
       "color": "white",
@@ -1029,29 +1545,38 @@
     },
     "pip": {
       "color": "yellow",
+      "evenings": [
+        "One day you'll tell me about the road. All of it.",
+        "I counted the stars. I lost count at forty.",
+        "Is it far, where we're going? ...You don't know either.",
+        "I'm not tired. I'm only closing my eyes."
+      ],
       "mornings": [
-        "Can I walk with you today? ...Fine. Go on, then.",
-        "Maud says we're slow. Go on, we'll catch up!",
+        "I want to walk with you today. ...Fine. We'll follow, then.",
+        "We're slow, I know. Go on, we'll catch up!",
         "I'll watch for you tonight. From the very first smoke.",
-        "Agna says I have to stay. One day I won't."
+        "Agna says I have to follow with the wagons. One day I'll walk in front."
       ],
       "name": "Pip",
       "remarks": [
-        "Where are we going tomorrow?",
+        "I wonder where we're going tomorrow.",
         "I practised walking quiet. Like you."
+      ],
+      "returns": [
+        "They said you fell. I didn't believe them."
       ],
       "skin": "pip",
       "unnamed": "A child",
       "welcomes": [
-        "You're back! What did you see?",
+        "You're back! I want to hear everything you saw.",
         "I watched for you all day!",
         "I kept your place by the fire. Nobody sat in it. Nearly nobody.",
-        "Did you see anything? Anything at all?"
+        "I bet you saw something. I always miss everything."
       ]
     },
     "rue": {
       "cold": [
-        "She turns her back on you.",
+        "Nothing for you here. Not any more.",
         "Thief. Off my porch."
       ],
       "color": "dark_green",
@@ -1065,7 +1590,7 @@
     },
     "sedge": {
       "cold": [
-        "She spits in the water and won't look at you."
+        "Go on. Get off our water."
       ],
       "color": "green",
       "name": "Sedge",
@@ -1108,7 +1633,7 @@
     },
     "tansy": {
       "cold": [
-        "She won't meet your eyes. Maybe she's afraid to."
+        "Don't. Just... don't look at me."
       ],
       "color": "light_purple",
       "name": "Tansy",
@@ -1119,26 +1644,31 @@
       "skin": "tansy",
       "unnamed": "A young woman"
     },
+    "tide_fisher": {
+      "color": "aqua",
+      "name": "A Tide fisher",
+      "road": true
+    },
     "tide_warden_1": {
       "color": "dark_aqua",
-      "name": "A warden",
+      "name": "A Tide warden",
       "people": "tide_warden_1",
       "remarks": [
         "...",
         "I don't know why. I just did."
       ],
       "skin": "tide_warden_1",
-      "unnamed": "A warden"
+      "unnamed": "A guard with a trident"
     },
     "tide_warden_2": {
       "color": "dark_aqua",
-      "name": "A warden",
+      "name": "A Tide warden",
       "people": "tide_warden_2",
       "remarks": [
         "Don't ask me. My knees asked."
       ],
       "skin": "tide_warden_2",
-      "unnamed": "A warden"
+      "unnamed": "A guard with a trident"
     },
     "traveller": {
       "color": "white",
@@ -1175,12 +1705,13 @@
         ]
       },
       "color": "yellow",
+      "creature": "minecraft:villager",
       "name": "A villager",
       "road": true
     },
     "warden": {
       "color": "gold",
-      "name": "The warden",
+      "name": "The gate warden",
       "remarks": [
         "The ward holds. For now."
       ],
@@ -1496,7 +2027,7 @@
               "text": "It wakes on new ground, he said. Maybe it remembers what you can't."
             }
           ],
-          "objective": "Find new ground for the ember: {left} blocks to go.",
+          "objective": "Find new ground for the ember, far from his fire: {left} blocks to go.",
           "story": [
             "I walked away from his fire. He knew who I was, and the ember is all I have of that, so I took it somewhere new."
           ],
@@ -1576,7 +2107,7 @@
           ],
           "id": "the_town",
           "kind": "reach",
-          "objective": "Go to the burning town, tonight.",
+          "objective": "Go to the burning town.",
           "place": "tollbridge",
           "tasks": [
             "pack",
@@ -1721,10 +2252,6 @@
             {
               "by": "agna",
               "text": "Pip. Come here. ...Sit down, you. You're shaking."
-            },
-            {
-              "by": "hob",
-              "text": "Here. I made it for a man who won't be fetching it now."
             }
           ],
           "objective": "Rest by their fire.",
@@ -1743,12 +2270,16 @@
               "Sit, if you're staying. We've nothing to give you but the fire."
             ],
             "pip": [
-              "Is it warm? The fire in your hand? Can I hold it?",
+              "Is it warm? The fire you carry. Can I hold it?",
               "Mam used to sing at the fire."
             ]
           },
           "reward": {
             "claimed": "Hob's blade is plain and heavy, and sharper than it looks.",
+            "given": {
+              "by": "hob",
+              "text": "Here. I made it for a man who won't be fetching it now."
+            },
             "items": [
               {
                 "id": "minecraft:iron_sword",
@@ -1790,6 +2321,9 @@
           ],
           "music": "hold",
           "objective": "Hold the cellar door until morning.",
+          "objectives": {
+            "failed": "The door gave way. Choose to try the night again."
+          },
           "people": {
             "maud": "She asked what I brought with me when they came back. I think she meant the ember."
           },
@@ -1926,7 +2460,6 @@
               "text": "Go on ahead. We'll be by water before dark. Look for our smoke."
             }
           ],
-          "objective": "Make for their smoke.",
           "remarks": {
             "agna": [
               "Sit. You can rest here for the rest of the day."
@@ -2116,7 +2649,7 @@
         {
           "done": [
             {
-              "text": "The drift opens into a hall, cut square and high. On a stone at its far end, something hums."
+              "text": "The drift opens into a small square hall, cut into the rock under a timber roof. On a stone at its far end, something hums."
             }
           ],
           "id": "tunnels",
@@ -2171,7 +2704,7 @@
           "kind": "shard",
           "lines": [
             {
-              "text": "On the stone lies a sliver of something like dark glass. It hums, and the ember in your hand hums back."
+              "text": "Over the stone hangs a ring of red glass, like an eye. It hums, and the ember in your hand hums back."
             }
           ],
           "objective": "Take it from the stone: right-click it.",
@@ -2194,7 +2727,6 @@
               "text": "Go on, back to your caravan. Don't mind me. I'll be quiet. Mostly."
             }
           ],
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -2205,7 +2737,7 @@
           "lines": [
             {
               "by": "maud",
-              "text": "You came back different. What's in that hand now?"
+              "text": "You came back different. Something in that hand has changed."
             },
             {
               "by": "stranger",
@@ -2326,7 +2858,11 @@
           ],
           "done": [
             {
-              "text": "The note: \"For whoever carries his light now. Eat. - M.\""
+              "text": "A folded note, signed M."
+            },
+            {
+              "text": "For whoever carries his light now. Eat.",
+              "voice": "malgven"
             },
             {
               "by": "stranger",
@@ -2363,6 +2899,12 @@
           ]
         },
         {
+          "done": [
+            {
+              "by": "agna",
+              "text": "You smell of old pine smoke. Sit down and eat before you tell me anything."
+            }
+          ],
           "id": "the_caravan",
           "kind": "caravan",
           "lines": [
@@ -2371,7 +2913,6 @@
               "text": "Back to the caravan. I've seen what I wanted to see."
             }
           ],
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -2407,7 +2948,11 @@
           ],
           "done": [
             {
-              "text": "The note: \"Across the sea already. He'd have been proud of you, the old fool. Eat something warm tonight. - M.\""
+              "text": "A note, signed M. again."
+            },
+            {
+              "text": "Across the sea already. He'd have been proud of you, the old fool. Eat something warm tonight.",
+              "voice": "malgven"
             }
           ],
           "id": "the_bundle",
@@ -2462,7 +3007,11 @@
           ],
           "done": [
             {
-              "text": "The note, in the same hand: \"You fly now. I never could keep up with him either. Eat. He never ate enough either. - M.\""
+              "text": "The note, in the same hand, signed M."
+            },
+            {
+              "text": "You fly now. I never could keep up with him either. Eat. He never ate enough either.",
+              "voice": "malgven"
             }
           ],
           "id": "the_last_bundle",
@@ -2568,6 +3117,9 @@
           ],
           "music": "hold",
           "objective": "Keep the wounded man alive while they come across the ford.",
+          "objectives": {
+            "failed": "The wounded man went down. Choose to try the ford again."
+          },
           "remarks": {
             "cadoc": [
               "Hold the bank. Hit them while they're still in the water.",
@@ -2672,7 +3224,6 @@
               "text": "Go on ahead. I'll follow your smoke. I'm good at following smoke."
             }
           ],
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -3189,7 +3740,7 @@
           "kind": "shard",
           "lines": [
             {
-              "text": "On the stone lies a sliver like the first, humming, and the ember hums back."
+              "text": "Over the stone hangs a glass eye like the first, humming, and the ember hums back."
             }
           ],
           "objective": "Take it from the stone: right-click it.",
@@ -3299,6 +3850,12 @@
           "when": "shard=leave"
         },
         {
+          "done": [
+            {
+              "by": "agna",
+              "text": "Marsh mud to the knees. Boots off, and sit nearer the fire."
+            }
+          ],
           "id": "the_caravan",
           "kind": "caravan",
           "lines": [
@@ -3307,7 +3864,6 @@
               "text": "Back to your caravan. Mind the bog on the way out."
             }
           ],
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -3568,7 +4124,7 @@
           "with": "cadoc"
         }
       ],
-      "summary": "The voice says someone has been following our smoke since his first camp. Sit at the caravan's fire tonight.",
+      "summary": "The voice says someone has been following our smoke since his first camp. He wants me at the caravan's fire when night comes.",
       "title": "The Hooded Traveller"
     },
     {
@@ -3774,10 +4330,10 @@
           "lines": [
             {
               "by": "drifa",
+              "night": "Go on to your people. Night or not, I'll come and look at them.",
               "text": "Go on to your people. I'll come and look at them before dark."
             }
           ],
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -3788,6 +4344,7 @@
           "lines": [
             {
               "by": "maud",
+              "night": "Your hunter came in after dark. Sat down at the edge of the light and counted us. Twice.",
               "text": "Your hunter came in at dusk. Sat down at the edge of the light and counted us. Twice."
             },
             {
@@ -3992,6 +4549,22 @@
           ]
         },
         {
+          "done": [
+            {
+              "by": "drifa",
+              "text": "I know whose fire you carry now. I'll sit on the far side of it.",
+              "when": "the_theft/who=told"
+            },
+            {
+              "by": "drifa",
+              "text": "You saw something down there. I can wait.",
+              "when": "the_theft/who=hid"
+            },
+            {
+              "by": "cadoc",
+              "text": "She sat down across from me. She hasn't looked away from my coat once."
+            }
+          ],
           "id": "the_caravan",
           "kind": "caravan",
           "moves": {
@@ -4000,7 +4573,6 @@
               "pose": "sitting"
             }
           },
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -4049,7 +4621,7 @@
         {
           "asking": [
             {
-              "text": "On a flat stone at the bottom lies a sliver like the others, and the ember hums back at it."
+              "text": "Over a flat stone at the bottom hangs a glass eye like the others, and the ember hums back at it."
             },
             {
               "by": "stranger",
@@ -4117,14 +4689,13 @@
           "kind": "caravan",
           "lines": [
             {
-              "text": "The shard sinks into the ember. The dark under the ice thins, as if your eyes had grown used to it."
+              "text": "The shard sinks into the ember. The dark under the ice thins: from now on the dark shows what's in it, dimly."
             },
             {
               "by": "stranger",
               "text": "Three. She'll hate you for it. Better her than the gaze."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "I kept the third shard. Since then the dark shows me what's in it, dimly."
           ],
@@ -4145,7 +4716,6 @@
               "text": "Soft. That's one the gaze can come for."
             }
           ],
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ],
@@ -4318,7 +4888,11 @@
           ],
           "done": [
             {
-              "text": "A voice comes up the stair, thin and shaking: \"Stay where you are. I have a knife.\""
+              "text": "A voice comes up the stair, thin and shaking."
+            },
+            {
+              "by": "alruna",
+              "text": "Stay where you are. I have a knife."
             }
           ],
           "id": "the_ashes",
@@ -4529,7 +5103,6 @@
               "text": "Go on to your people. I'll bury him first. I know where he wanted to lie."
             }
           ],
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -4674,7 +5247,6 @@
           "id": "the_caravan",
           "kind": "caravan",
           "moon": "red",
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -4713,6 +5285,9 @@
           },
           "music": "hold",
           "objective": "Hold the camp until morning. Keep them off the bell.",
+          "objectives": {
+            "failed": "Maud fell. Choose to try the night again."
+          },
           "remarks": {
             "agna": [
               "Pip, behind the wagon. Now."
@@ -4825,6 +5400,12 @@
           "with": "maud"
         },
         {
+          "done": [
+            {
+              "by": "pip",
+              "text": "Maud won't talk to anyone. Not even me."
+            }
+          ],
           "id": "melted",
           "kind": "caravan",
           "lines": [
@@ -4832,7 +5413,7 @@
               "text": "Hob fires the forge without a word. By noon the bell is a puddle of bronze, and the shard lies in it, cooling."
             },
             {
-              "text": "The shard sinks into the ember. A warmth spreads out from your chest, like standing close to a fire."
+              "text": "The shard sinks into the ember. A warmth spreads out from your chest: from now on the ember warms you like a fire."
             },
             {
               "text": "Maud watches the bronze run. Then she turns her back on you."
@@ -4842,7 +5423,6 @@
               "text": "She won't forgive you. Better angry and alive."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "Since the bell's shard the ember warms me like a fire."
           ],
@@ -4858,6 +5438,10 @@
           "done": [
             {
               "text": "As the camp goes up, Maud rings her bell, once. All night nothing comes near the fire."
+            },
+            {
+              "by": "pip",
+              "text": "Maud let me touch the bell. It's still warm from ringing."
             }
           ],
           "id": "kept",
@@ -4871,7 +5455,6 @@
               "text": "Soft. Every night it rings, they'll hear it."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "Maud rings her bell each evening as the camp goes up. Nothing comes near the fire while it rings."
           ],
@@ -5028,7 +5611,7 @@
           "with": "maud"
         }
       ],
-      "summary": "The voice says the hooded woman is following our smoke again. Sit at the caravan's fire tonight.",
+      "summary": "The voice says the hooded woman is following our smoke again. He wants me at the caravan's fire when night comes.",
       "title": "The Name"
     },
     {
@@ -5145,7 +5728,7 @@
             {
               "id": "log",
               "last": true,
-              "text": "His log, wrapped in oilcloth and still dry. Near the end: \"Day 9. Land. A bay where they fish by night and nothing comes for them.\""
+              "text": "His log, wrapped in oilcloth and still dry. Near the end, the day he found land: a bay where they fish by night, and nothing comes for them."
             }
           ],
           "done": [
@@ -5254,7 +5837,6 @@
               "pose": "standing"
             }
           },
-          "objective": "Make for the caravan's smoke.",
           "remarks": {
             "hob": [
               "A shipwright! I'm going down at first light to watch her work."
@@ -5316,7 +5898,7 @@
             ]
           },
           "reward": {
-            "claimed": "You walk her round to the jetty. She sits low and steady in the water.",
+            "claimed": "Edda's Cog is yours, small enough to carry. Put her in the water when you sail.",
             "items": [
               {
                 "id": "smallships:oak_cog",
@@ -5396,7 +5978,8 @@
           "leaves": [
             "maud"
           ],
-          "objective": "Make for the caravan's smoke. Tonight it camps by the shore.",
+          "near": "shipyard",
+          "objective": "Make for the caravan's smoke. It camps by the shore.",
           "tasks": [
             "rest"
           ]
@@ -5415,13 +5998,17 @@
             },
             {
               "by": "maud",
+              "text": "Carry iron nuggets and planks. If a hull opens out there, that's what closes it."
+            },
+            {
+              "by": "maud",
               "text": "You lead. We'll keep your light in sight, and our lamps hooded."
             }
           ],
           "objective": "Sit with Maud at the fire.",
           "remarks": {
             "pip": [
-              "Is it far? Is it farther than the river?"
+              "I bet it's farther than the river."
             ]
           },
           "story": [
@@ -5441,7 +6028,7 @@
           "id": "the_open_sea",
           "kind": "sail",
           "known": "feeling",
-          "objective": "Put to sea in your ship and sail for open water.",
+          "objective": "Put to sea and sail for open water.",
           "place": "far_shore",
           "story": [
             "We put to sea at night, the caravan's boats behind my light."
@@ -5473,6 +6060,9 @@
           "listing": "Maud's boat sits low in the water.",
           "music": "hold",
           "objective": "Keep Maud's boat afloat until morning.",
+          "objectives": {
+            "sunk": "Maud's boat is gone. See the others through to morning."
+          },
           "story": [
             "Out on the open water something came up from below for Maud's boat, and pale dead things climbed out of the sea."
           ],
@@ -5587,13 +6177,13 @@
           "known": "feeling",
           "lines": [
             {
-              "text": "The ember tugs along the shore, towards something it knows."
+              "text": "The ember tugs towards something it knows."
             }
           ],
           "moves": {
-            "morwen": {
+            "murdo": {
               "holds": "minecraft:fishing_rod",
-              "place": "tide_morwen",
+              "place": "tide_murdo",
               "pose": "standing"
             },
             "tide_warden_1": {
@@ -5622,7 +6212,7 @@
             {
               "id": "shipwright",
               "reply": "...The man in the patched boat. He ate with us and wouldn't stay. He's dead, then. I'm sorry.",
-              "story": "I told Morwen a shipwright sent us. She remembered Edda's husband.",
+              "story": "I told Murdo a shipwright sent us. He remembered Edda's husband.",
               "text": "A shipwright sent us.",
               "trusts": {
                 "tide_folk": 1
@@ -5631,46 +6221,46 @@
             {
               "id": "bow",
               "reply": "I hoped you'd tell me.",
-              "story": "I asked Morwen why the wardens bowed. She hoped I would know.",
+              "story": "I asked Murdo why the wardens bowed. He hoped I would know.",
               "text": "Why do they bow?"
             },
             {
               "id": "valley",
               "reply": "There's no valley. There's sea, and more sea, and then the cold.",
-              "story": "I asked Morwen about the valley past the sea. There's no valley, she says. Only sea, and then the cold.",
+              "story": "I asked Murdo about the valley past the sea. There's no valley, he says. Only sea, and then the cold.",
               "text": "We're looking for a valley past the sea."
             }
           ],
-          "id": "morwen",
+          "id": "murdo",
           "kind": "talk",
           "lines": [
             {
-              "by": "morwen",
-              "text": "They've never bowed to anyone. Not to me. Not to my mother."
+              "by": "murdo",
+              "text": "They've never bowed to anyone. Not to me. Not to my father."
             },
             {
-              "text": "She looks from the wardens to the ember in your hand, and back."
+              "text": "He looks from the wardens to the ember in your hand, and back."
             },
             {
-              "by": "morwen",
+              "by": "murdo",
               "names": [
-                "morwen"
+                "murdo"
               ],
-              "text": "Morwen. I keep this bay, as my mother did."
+              "text": "Murdo. I keep this bay, as my father did."
             },
             {
-              "by": "morwen",
+              "by": "murdo",
               "text": "My grandmother told of people who carried a fire in their hand. Wayfarers. She said one would come for what's under the fire pit."
             },
             {
-              "by": "morwen",
+              "by": "murdo",
               "names": [
                 "tide_folk"
               ],
               "text": "We're the Tide Folk, what's left of us. Nothing comes up out of this bay at night, so our boats go out with lamps lit, and we eat."
             },
             {
-              "by": "morwen",
+              "by": "murdo",
               "names": [
                 "drowned_city"
               ],
@@ -5678,9 +6268,9 @@
             }
           ],
           "moves": {
-            "morwen": {
+            "murdo": {
               "holds": "minecraft:fishing_rod",
-              "place": "tide_morwen",
+              "place": "tide_murdo",
               "pose": "standing"
             },
             "tide_warden_1": {
@@ -5696,12 +6286,12 @@
           },
           "objective": "Talk to the woman with the net.",
           "people": {
-            "morwen": "Morwen keeps the Tide Folk's bay, as her mother did. Under their fire pit lie two shards, theirs and the Drowned City's, and they keep the bay safe at night."
+            "murdo": "Murdo keeps the Tide Folk's bay, as his father did. Under their fire pit lie two shards, theirs and the Drowned City's, and they keep the bay safe at night."
           },
           "story": [
-            "Morwen keeps the Tide Folk's bay. Nothing comes up out of it at night, because of two shards under their fire pit: theirs, and the Drowned City's, sworn into their keeping."
+            "Murdo keeps the Tide Folk's bay. Nothing comes up out of it at night, because of two shards under their fire pit: theirs, and the Drowned City's, sworn into their keeping."
           ],
-          "with": "morwen",
+          "with": "murdo",
           "words": {
             "drowned_city": "A city on the coast, the most beautiful in the world, until the sea took it. Its last people swam their shard to the Tide Folk and made them swear to keep it.",
             "tide_folk": "The people of a bay across the sea. Nothing comes up out of their bay at night, so they fish by lamplight."
@@ -5717,13 +6307,13 @@
           "kind": "reach",
           "lines": [
             {
-              "by": "morwen",
+              "by": "murdo",
               "text": "They bowed. I've no right to keep you out of anything."
             },
             {
-              "by": "morwen",
+              "by": "murdo",
               "moves": {
-                "morwen": {
+                "murdo": {
                   "place": "tide_inside",
                   "pose": "standing"
                 }
@@ -5732,16 +6322,16 @@
             }
           ],
           "moves": {
-            "morwen": {
+            "murdo": {
               "holds": "minecraft:fishing_rod",
-              "place": "tide_morwen",
+              "place": "tide_murdo",
               "pose": "standing"
             }
           },
-          "objective": "Follow Morwen down under the fire pit.",
+          "objective": "Follow Murdo down under the fire pit.",
           "place": "tide_hall",
           "story": [
-            "Morwen took me down under the fire pit into the Tide Folk's hall, where two shards lie side by side."
+            "Murdo took me down under the fire pit into the Tide Folk's hall, where two shards lie side by side."
           ]
         },
         {
@@ -5751,11 +6341,11 @@
               "text": "Both. They've had their share of safe nights."
             },
             {
-              "by": "morwen",
+              "by": "murdo",
               "text": "Ours keeps the eye off our boats. Theirs keeps the deep things out of the bay."
             },
             {
-              "by": "morwen",
+              "by": "murdo",
               "text": "Take one, and we fish close in, and go hungry. Take both, and we don't fish at all."
             }
           ],
@@ -5764,8 +6354,9 @@
           "choices": [
             {
               "id": "both",
-              "reply": "Morwen watches you lift them. She doesn't say anything at all.",
-              "story": "I took both shards. Morwen didn't say anything at all.",
+              "narrated": true,
+              "reply": "Murdo watches you lift them. He doesn't say anything at all.",
+              "story": "I took both shards. Murdo didn't say anything at all.",
               "takes": [
                 "black",
                 "exotic"
@@ -5801,7 +6392,8 @@
             },
             {
               "id": "none",
-              "reply": "Morwen lets out a breath she's been holding since the beach.",
+              "narrated": true,
+              "reply": "Murdo lets out a breath he's been holding since the beach.",
               "story": "I left both shards on the Tide Folk's stone.",
               "text": "Leave them both.",
               "trusts": {
@@ -5820,7 +6412,7 @@
           "id": "the_shards",
           "kind": "shard",
           "moves": {
-            "morwen": {
+            "murdo": {
               "place": "tide_inside",
               "pose": "standing"
             }
@@ -5829,7 +6421,7 @@
           "story": [
             "On the Tide Folk's stone lay two shards, theirs and the Drowned City's."
           ],
-          "with": "morwen"
+          "with": "murdo"
         },
         {
           "id": "both",
@@ -5843,7 +6435,6 @@
               "text": "Two at once. You're learning."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "Since the Tide Folk's shards the water shows far and clear, and the weaker things of the night flee my look."
           ],
@@ -5861,14 +6452,13 @@
           "kind": "caravan",
           "lines": [
             {
-              "text": "The shard sinks into the ember. Under the water, far down, the dark goes clear."
+              "text": "The shard sinks into the ember. Under the water, far down, the dark goes clear: from now on you see far under water."
             },
             {
               "by": "stranger",
               "text": "And the other one? Soft."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "Since the Tide Folk's shard the water shows far and clear."
           ],
@@ -5885,14 +6475,13 @@
           "kind": "caravan",
           "lines": [
             {
-              "text": "The shard sinks into the ember. Whatever looks at you now looks away first."
+              "text": "The shard sinks into the ember. From now on the weaker things of the night run from your look."
             },
             {
               "by": "stranger",
               "text": "And theirs? Soft."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "Since the Drowned City's shard the weaker things of the night flee my look."
           ],
@@ -5913,14 +6502,13 @@
               "text": "Two. You left two. Do you know how far we came for those?"
             }
           ],
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ],
           "when": "the_shards=none"
         }
       ],
-      "summary": "The ember pulls along this new coast, towards something it knows. Hold it up, turn until it flares, and walk that way.",
+      "summary": "The ember pulls towards something it knows, somewhere by the sea. Hold it up, turn until it flares, and walk that way.",
       "title": "The Bay"
     },
     {
@@ -5942,13 +6530,13 @@
           "known": "feeling",
           "lines": [
             {
-              "text": "The ember tugs inland, towards red rock and heat."
+              "text": "The ember tugs towards red rock and heat."
             }
           ],
           "objective": "Follow the pull: walk where the ember flares.",
           "place": "dry",
           "story": [
-            "The ember pulled inland across the sea's far shore, to a hall in the red canyons, its stone empty."
+            "Across the sea the ember pulled me on to a hall in the red canyons, its stone empty."
           ],
           "tasks": [
             "sweep"
@@ -5990,6 +6578,18 @@
           }
         },
         {
+          "done": [
+            {
+              "by": "agna",
+              "text": "You're burnt through. Drink, then drink again, then sleep.",
+              "when": "land:hot"
+            },
+            {
+              "by": "agna",
+              "text": "You're frozen through. Sit close to the fire, and eat something hot.",
+              "when": "land:cold"
+            }
+          ],
           "id": "the_caravan",
           "kind": "caravan",
           "lines": [
@@ -6014,13 +6614,12 @@
               "when": "the_tide_folk/the_shards=none"
             }
           ],
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
         }
       ],
-      "summary": "The ember pulls inland, towards red canyons and heat. Hold it up, turn until it flares, and walk that way. Cross them by night, or in shade.",
+      "summary": "The ember pulls towards red canyons and heat, wherever they lie. Hold it up, turn until it flares, and walk that way. Cross them by night, or in shade.",
       "title": "The Red Canyons"
     },
     {
@@ -6059,7 +6658,7 @@
           "clues": [
             {
               "id": "journal",
-              "text": "A journal on the chair, the ink gone brown. The last page: \"Tomorrow I will walk on. I wrote that yesterday too.\""
+              "text": "A journal on the chair, the ink gone brown. On the last page he wrote that he would walk on tomorrow, and that he wrote the same the day before."
             },
             {
               "id": "hearthstone",
@@ -6109,7 +6708,6 @@
               "text": "...Enough of that. Walk."
             }
           ],
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -6237,12 +6835,14 @@
               {
                 "id": "toughasnails:leaf_helmet",
                 "name": "Sand Singers' Hood",
-                "tooltip": "Woven from palm and reed. Keeps the sun off your head."
+                "tooltip": "Woven from palm and reed. Keeps the sun off your head.",
+                "worn": true
               },
               {
                 "id": "toughasnails:leaf_chestplate",
                 "name": "Sand Singers' Shade",
-                "tooltip": "Woven from palm and reed. Keeps the sun off your back."
+                "tooltip": "Woven from palm and reed. Keeps the sun off your back.",
+                "worn": true
               },
               {
                 "id": "minecraft:goat_horn",
@@ -6275,7 +6875,7 @@
           "lines": [
             {
               "by": "sefa",
-              "text": "Its ground is that way. A morning's walk. Walk softly."
+              "text": "Its ground is that way. Not far. Walk softly."
             }
           ],
           "objective": "Find the worm's ground.",
@@ -6307,6 +6907,9 @@
           "killed": [
             {
               "text": "The worm shudders and sinks into the sand, and does not come up. Where it lay, something hums."
+            },
+            {
+              "text": "Behind the dunes, the singing stops."
             }
           ],
           "kind": "worm",
@@ -6337,14 +6940,18 @@
           "kind": "caravan",
           "lines": [
             {
-              "text": "The shard sinks into the ember. Far off, the horizon sharpens, as if you could reach out and touch it."
+              "text": "The shard sinks into the ember. Far off, the horizon sharpens: from now on far places show sharp through a spyglass."
             },
             {
               "by": "stranger",
               "text": "And a worm. You're better at this than he was."
             }
           ],
-          "objective": "Make for their smoke.",
+          "remarks": {
+            "agna": [
+              "The Sand Singers kept that worm the way we keep a fire. Who keeps the raiders off them now?"
+            ]
+          },
           "story": [
             "I killed the worm, and took the shard out of it. Far places show sharp through a spyglass now. The Sand Singers have no protector."
           ],
@@ -6365,7 +6972,6 @@
               "text": "It's a worm. You left a shard in a worm."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "I left the worm alive, and the shard in it. The Sand Singers keep their protector."
           ],
@@ -6392,7 +6998,6 @@
         {
           "id": "the_caravan",
           "kind": "caravan",
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -6467,7 +7072,7 @@
           "with": "cadoc"
         }
       ],
-      "summary": "Cadoc keeps watching you across the fire. Sit with them tonight.",
+      "summary": "Cadoc keeps watching me across the fire. I mean to sit with them when night comes.",
       "title": "Your Eyes"
     },
     {
@@ -6623,7 +7228,7 @@
             {
               "id": "take",
               "leaves": "heir",
-              "reply": "He folds his maps. \"At the gate, then.\" His men follow him up the stair.",
+              "reply": "At the gate, then.",
               "story": "I took the Jungle Folk's shard. The heir folded his maps and said he'd see me at the gate.",
               "takes": [
                 "rogue"
@@ -6633,7 +7238,7 @@
             {
               "id": "leave",
               "leaves": "heir",
-              "reply": "He looks at you a long time. \"Then it sleeps here, and we both come back for it.\" His men follow him up the stair.",
+              "reply": "Then it sleeps here, and we both come back for it.",
               "story": "I left the Jungle Folk's shard asleep on their stone. The heir said we'd both come back for it.",
               "text": "Leave it asleep."
             }
@@ -6656,6 +7261,12 @@
           "with": "heir"
         },
         {
+          "done": [
+            {
+              "by": "cadoc",
+              "text": "The Grass King's son, out in the jungle himself. Whatever he wants, he wants it badly."
+            }
+          ],
           "id": "taken",
           "kind": "caravan",
           "lines": [
@@ -6667,7 +7278,6 @@
               "text": "He's right about one thing. Someone always watched."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "I carry the Jungle Folk's shard. The voice says the heir is right about one thing: someone always watched."
           ],
@@ -6677,6 +7287,12 @@
           "when": "the_shard=take"
         },
         {
+          "done": [
+            {
+              "by": "cadoc",
+              "text": "The Grass King's son, out in the jungle himself. Whatever he wants, he wants it badly."
+            }
+          ],
           "id": "left",
           "kind": "caravan",
           "lines": [
@@ -6685,7 +7301,6 @@
               "text": "You left it for him to sit beside. He's patient. So am I."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "I left the Jungle Folk's shard asleep. The voice says it is patient."
           ],
@@ -6777,7 +7392,7 @@
           "with": "malgven"
         }
       ],
-      "summary": "The voice says the hooded woman is following our smoke again. Sit at the caravan's fire tonight.",
+      "summary": "The voice says the hooded woman is following our smoke again. He wants me at the caravan's fire when night comes.",
       "title": "The Hooded Woman's Warning"
     },
     {
@@ -6801,7 +7416,6 @@
           "id": "the_caravan",
           "kind": "caravan",
           "moon": "red",
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -6943,7 +7557,7 @@
           }
         }
       ],
-      "summary": "The voice says the valley is close, and wants the caravan to camp in the hollow tonight.",
+      "summary": "The voice says the valley is close, and wants the caravan to camp in the hollow.",
       "title": "The Hollow"
     },
     {
@@ -7092,7 +7706,8 @@
                 "id": "minecraft:leather_chestplate",
                 "mark": "robe",
                 "name": "Gazebound Robe",
-                "tooltip": "Grey, with an open eye on the breast. Their kind won't turn on you in it, unless you strike first."
+                "tooltip": "Grey, with an open eye on the breast. Their kind won't turn on you in it, unless you strike first.",
+                "worn": true
               }
             ],
             "text": "a grey robe with an open eye on the breast.",
@@ -7122,6 +7737,18 @@
           ]
         },
         {
+          "done": [
+            {
+              "by": "pip",
+              "text": "You were up in the sky! Could you see us? Were we tiny?",
+              "when": "the_hollow/pip=lives"
+            },
+            {
+              "by": "agna",
+              "text": "Feet on the ground again. Good. Sit.",
+              "when": "the_hollow/agna=lives"
+            }
+          ],
           "id": "the_caravan",
           "kind": "caravan",
           "lines": [
@@ -7145,14 +7772,13 @@
       "kind": "main",
       "road": [
         {
-          "text": "You wake tired, as if you had walked all night."
+          "text": "A tiredness comes over you, as if you had walked all night."
         }
       ],
       "steps": [
         {
           "id": "the_caravan",
           "kind": "caravan",
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -7161,6 +7787,10 @@
           "done": [
             {
               "text": "You wake with a start. In the dream you looked down at the world from very high, and it was very small, and everything in it stood still."
+            },
+            {
+              "text": "At the fire you tell them what you saw.",
+              "when": "!the_hollow/agna=lost"
             },
             {
               "by": "agna",
@@ -7187,7 +7817,7 @@
           ]
         }
       ],
-      "summary": "You wake tired, as if you had walked all night. Sit at the fire tonight.",
+      "summary": "A tiredness came over me, as if I had walked all night. I mean to sit at the fire when night comes.",
       "title": "The Dreaming"
     },
     {
@@ -7361,18 +7991,29 @@
           "when": "the_seal=take"
         },
         {
+          "done": [
+            {
+              "by": "maud",
+              "text": "An army at the walls. Sleep while you can; armies march at dawn.",
+              "when": "the_hollow/maud=lives"
+            },
+            {
+              "by": "hob",
+              "text": "Eat. Whatever comes at dawn, it won't wait for you to eat.",
+              "when": "the_hollow/hob=lives"
+            }
+          ],
           "id": "taken",
           "kind": "caravan",
           "lines": [
             {
-              "text": "The shard sinks into the ember. Above, the things that hunt from the sky lose you, and circle."
+              "text": "The shard sinks into the ember. Above, the things that hunt from the sky lose you, and circle: from now on they don't see you."
             },
             {
               "by": "stranger",
               "text": "He has his ancestors' land back, if he wants it. He'll want it."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "Since the Grass Kingdom's shard the things of the sky don't see me."
           ],
@@ -7385,6 +8026,18 @@
           }
         },
         {
+          "done": [
+            {
+              "by": "maud",
+              "text": "An army at the walls. Sleep while you can; armies march at dawn.",
+              "when": "the_hollow/maud=lives"
+            },
+            {
+              "by": "hob",
+              "text": "Eat. Whatever comes at dawn, it won't wait for you to eat.",
+              "when": "the_hollow/hob=lives"
+            }
+          ],
           "id": "left",
           "kind": "caravan",
           "lines": [
@@ -7393,7 +8046,6 @@
               "text": "A kingdom that trusts you. How useful. How sweet."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "The Grass Kingdom stands, and trusts me."
           ],
@@ -7462,7 +8114,7 @@
             {
               "id": "ledger",
               "opens": "wend/ledger",
-              "text": "A ledger in his hand. The halls he found for them, one by one, and on the last page: \"The girl. Malgven. Mine now.\""
+              "text": "A ledger in his hand: the halls he found for them, one by one. On the last page, a girl's name, Malgven, and two words after it: mine now."
             }
           ],
           "id": "his_room",
@@ -7517,7 +8169,7 @@
             {
               "id": "children",
               "narrated": true,
-              "reply": "You break the cage and run with them, out into the trees.",
+              "reply": "You break the cage. The children scramble up the ladder and out into the trees.",
               "story": "I broke the cage and got the children out, and left the shard.",
               "text": "Open the cage."
             }
@@ -7550,18 +8202,29 @@
           ]
         },
         {
+          "done": [
+            {
+              "by": "agna",
+              "text": "You look like you've seen a grave opened. Sit by me.",
+              "when": "the_hollow/agna=lives"
+            },
+            {
+              "by": "hob",
+              "text": "Sit down. You're shaking.",
+              "when": "the_hollow/hob=lives"
+            }
+          ],
           "id": "shard",
           "kind": "caravan",
           "lines": [
             {
-              "text": "The shard sinks into the ember. In the dark, what hunts stops noticing you, as long as you walk."
+              "text": "The shard sinks into the ember. From now on, at night, the night's creatures don't notice you as long as you walk and don't run."
             },
             {
               "by": "stranger",
               "text": "Good. Don't look back."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "Since the Shadow Circle's shard, the night's creatures don't notice me unless I run."
           ],
@@ -7577,6 +8240,16 @@
           "done": [
             {
               "text": "The children sleep in a heap by the fire, and the caravan's people take turns to watch them."
+            },
+            {
+              "by": "agna",
+              "text": "Three more to feed. We'll manage. We always have.",
+              "when": "the_hollow/agna=lives"
+            },
+            {
+              "by": "hob",
+              "text": "Three more. I'll find them blankets.",
+              "when": "the_hollow/hob=lives"
             }
           ],
           "id": "children",
@@ -7640,7 +8313,11 @@
           "at": "scribes_stone",
           "done": [
             {
-              "text": "The book he stopped at speaks of a thirteenth shard. \"The one that walks.\""
+              "text": "The book he stopped at speaks of a thirteenth shard."
+            },
+            {
+              "text": "The one that walks.",
+              "voice": "book:The Scribes of the Peaks"
             },
             {
               "by": "alruna",
@@ -7720,14 +8397,25 @@
           ]
         },
         {
+          "done": [
+            {
+              "by": "alruna",
+              "text": "Close it, not break it. I'll copy those words out tonight, so they can't be lost.",
+              "when": "the_hollow/alruna=lives"
+            },
+            {
+              "by": "agna",
+              "text": "You've been up near the snow. Come to the fire.",
+              "when": "the_hollow/agna=lives"
+            }
+          ],
           "id": "taken",
           "kind": "caravan",
           "lines": [
             {
-              "text": "The shard sinks into the ember. Held up against a blow, it would burst like a lamp."
+              "text": "The shard sinks into the ember. Hold the ember up when something strikes you, and it bursts: the night's creatures near you crumble. Then it needs a fire before it bursts again."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "Since the Scribes' shard the ember flares when the night strikes at me while I hold it up, and what's near crumbles."
           ],
@@ -7740,6 +8428,18 @@
           }
         },
         {
+          "done": [
+            {
+              "by": "alruna",
+              "text": "Close it, not break it. I'll copy those words out tonight, so they can't be lost.",
+              "when": "the_hollow/alruna=lives"
+            },
+            {
+              "by": "agna",
+              "text": "You've been up near the snow. Come to the fire.",
+              "when": "the_hollow/agna=lives"
+            }
+          ],
           "id": "left",
           "kind": "caravan",
           "lines": [
@@ -7748,7 +8448,6 @@
               "text": "You read too much. He did too."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "I left the Scribes' shard."
           ],
@@ -7774,7 +8473,7 @@
         {
           "done": [
             {
-              "text": "Rows of graves under old pines, each with a circle and a line cut on its stone. Wayfarers, all of them."
+              "text": "Rows of graves under old trees, each with a circle and a line cut on its stone. Wayfarers, all of them."
             }
           ],
           "id": "the_pull",
@@ -7782,13 +8481,13 @@
           "known": "feeling",
           "lines": [
             {
-              "text": "The ember tugs into the old pines."
+              "text": "The ember tugs into the old forest."
             }
           ],
           "objective": "Follow the pull: walk where the ember flares.",
           "place": "graveyard",
           "story": [
-            "The ember pulled to the Grave Keepers' graveyard, rows of Wayfarers under old pines."
+            "The ember pulled to the Grave Keepers' graveyard, rows of Wayfarers under old trees."
           ],
           "tasks": [
             "sweep"
@@ -7887,14 +8586,25 @@
           "when": "the_shard=take"
         },
         {
+          "done": [
+            {
+              "by": "maud",
+              "text": "A red moon, and you out among graves. Sit where I can see you.",
+              "when": "the_hollow/maud=lives"
+            },
+            {
+              "by": "agna",
+              "text": "Graveyard dirt on your hands. Wash, then eat.",
+              "when": "the_hollow/agna=lives"
+            }
+          ],
           "id": "taken",
           "kind": "caravan",
           "lines": [
             {
-              "text": "The shard sinks into the ember. When you crouch, its light sinks to nothing, like a dead man's."
+              "text": "The shard sinks into the ember. While you crouch, its light sinks like a dead man's, and the night's creatures lose you."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "Since the Grave Keepers' shard, when I crouch my light sinks like a dead man's, and the night's creatures lose me."
           ],
@@ -7907,6 +8617,18 @@
           }
         },
         {
+          "done": [
+            {
+              "by": "maud",
+              "text": "A red moon, and you out among graves. Sit where I can see you.",
+              "when": "the_hollow/maud=lives"
+            },
+            {
+              "by": "agna",
+              "text": "Graveyard dirt on your hands. Wash, then eat.",
+              "when": "the_hollow/agna=lives"
+            }
+          ],
           "id": "left",
           "kind": "caravan",
           "lines": [
@@ -7915,7 +8637,6 @@
               "text": "His grave, and you left it full of nothing. She'll be pleased."
             }
           ],
-          "objective": "Make for their smoke.",
           "story": [
             "I left the Grave Keepers' shard with their dead."
           ],
@@ -7925,7 +8646,7 @@
           "when": "the_shard=leave"
         }
       ],
-      "summary": "The ember pulls into old pines, towards a hall among graves. Hold it up, turn until it flares, and walk that way.",
+      "summary": "The ember pulls into an old forest, towards a hall among graves. Hold it up, turn until it flares, and walk that way.",
       "title": "The Empty Grave"
     },
     {
@@ -7942,7 +8663,6 @@
         {
           "id": "the_caravan",
           "kind": "caravan",
-          "objective": "Make for their smoke.",
           "tasks": [
             "rest"
           ]
@@ -7982,6 +8702,16 @@
           "done": [
             {
               "text": "The child has held your hand all the way back to the fire, and won't let go until morning."
+            },
+            {
+              "by": "maud",
+              "text": "Count them again. ...All here. Good.",
+              "when": "the_hollow/maud=lives"
+            },
+            {
+              "by": "agna",
+              "text": "Give the child here. Nobody's taking anyone tonight.",
+              "when": "the_hollow/agna=lives"
             }
           ],
           "id": "back",
@@ -7992,7 +8722,7 @@
           ]
         }
       ],
-      "summary": "Riders in grey kept pace with the wagons today. Sit at the fire tonight, and keep the children close.",
+      "summary": "Riders in grey kept pace with the wagons. I mean to sit at the fire when night comes, and keep the children close.",
       "title": "The Rider"
     },
     {
@@ -8057,7 +8787,7 @@
           "kind": "talk",
           "lines": [
             {
-              "text": "The oldest of them looks at the ember. Then she looks at your eyes, and doesn't look away."
+              "text": "The oldest of them looks at the ember. Then he looks at your eyes, and doesn't look away."
             },
             {
               "by": "oldest_keeper",
@@ -8079,7 +8809,7 @@
           },
           "objective": "Face the Keepers at the frame.",
           "people": {
-            "oldest_keeper": "The oldest of the Keepers at the frame. She named me: the thirteenth."
+            "oldest_keeper": "The oldest of the Keepers at the frame. He named me: the thirteenth."
           },
           "story": [
             "The oldest Keeper named me the thirteenth: the Eye's last piece, put in me when Wend gave me the ember. A frame takes whatever of the Eye it's brought."
@@ -8103,6 +8833,7 @@
       "steps": [
         {
           "at": "keepers",
+          "ends": "!the_hooded_traveller/the_bread=burn",
           "id": "the_band",
           "kind": "hold",
           "lines": [
@@ -8134,6 +8865,10 @@
           "id": "the_letter",
           "kind": "say",
           "lines": [
+            {
+              "text": "Her staff cracks across the stair, and the band breaks back the way it came.",
+              "when": "!the_hooded_traveller/the_bread=burn"
+            },
             {
               "by": "malgven",
               "text": "He wrote it the night he gave you the ember. Thirty winters I carried it, and never read it.",
@@ -8168,6 +8903,7 @@
           ],
           "memory": "the_last_night",
           "objective": "Touch the frame: right-click it.",
+          "place": "keepers",
           "story": [
             "At the frame the ember showed me Wend's last night: he knew what he gave me. His last words were his own: don't let it look at them."
           ],
@@ -8233,7 +8969,7 @@
               "pose": "standing"
             }
           },
-          "objective": "Choose a door: press its number.",
+          "objective": "Face the oldest Keeper at the frame.",
           "story": [
             "At the frame I had to choose what it does with the Eye."
           ],
@@ -8467,7 +9203,6 @@
           "id": "came",
           "joins": "wil",
           "kind": "caravan",
-          "objective": "Make for their smoke.",
           "story": [
             "Wil came with us. Maud made him sit by her at the fire."
           ],
@@ -8683,7 +9418,7 @@
         {
           "arrived": [
             {
-              "text": "Cecily sits down in the sand and doesn't get up. Morwen comes down the beach at a run."
+              "text": "Cecily sits down in the sand and doesn't get up. Murdo comes down the beach at a run."
             }
           ],
           "dawns": 3,
@@ -8706,8 +9441,11 @@
           ],
           "objective": "Walk Cecily to the Tide Folk's bay before the third dawn.",
           "place": "tide",
+          "stories": {
+            "late": []
+          },
           "story": [
-            "I walked Cecily towards the Tide Folk's bay, slowly, with the dawns counting down."
+            "I walked Cecily to the Tide Folk's bay, slowly, with the dawns counting down."
           ],
           "who": "cecily"
         },
@@ -8715,37 +9453,37 @@
           "calls": 8,
           "done": [
             {
-              "text": "Morwen writes it down for your healer: bladderwrack, salt, a night in the bay's water."
+              "text": "Murdo writes it down for your healer: bladderwrack, salt, a night in the bay's water."
             }
           ],
-          "id": "morwen",
+          "id": "murdo",
           "kind": "talk",
           "leaves": [
             "cecily"
           ],
           "lines": [
             {
-              "by": "morwen",
+              "by": "murdo",
               "text": "Marsh fever. Give her here."
             },
             {
-              "by": "morwen",
+              "by": "murdo",
               "text": "Bladderwrack and salt, steeped in our water. It breaks the fever, and for a day the night's creatures look past you. We use it on the boats."
             }
           ],
           "moves": {
-            "morwen": {
-              "place": "tide_morwen",
+            "murdo": {
+              "place": "tide_murdo",
               "pose": "standing"
             }
           },
-          "objective": "Give Cecily to Morwen.",
+          "objective": "Give Cecily to Murdo.",
           "page": "tide/remedy",
           "story": [
-            "Morwen took Cecily in and broke her fever, and wrote the remedy down for Agna. For a day, the night's creatures look past whoever drinks it."
+            "Murdo took Cecily in and broke her fever, and wrote the remedy down for Agna. For a day, the night's creatures look past whoever drinks it."
           ],
           "when": "the_way=arrived",
-          "with": "morwen"
+          "with": "murdo"
         },
         {
           "calls": 16,
@@ -8769,7 +9507,7 @@
             "agna": "She learned the Tide Folk's remedy, which breaks the marsh fever and hides whoever drinks it for a day."
           },
           "story": [
-            "Agna learned the Tide Folk's remedy from Morwen's note. Cecily lives."
+            "Agna learned the Tide Folk's remedy from Murdo's note. Cecily lives."
           ],
           "when": "the_way=arrived",
           "with": "agna"
@@ -8808,7 +9546,7 @@
       "kind": "side",
       "road": [
         {
-          "by": "morwen",
+          "by": "murdo",
           "text": "The boats go out tonight, for the first time since you came to our stone. Find me by them before dark. I have something to ask you."
         }
       ],
@@ -8819,28 +9557,28 @@
           "kind": "talk",
           "lines": [
             {
-              "by": "morwen",
+              "by": "murdo",
               "text": "The boats go out tonight. Come with them.",
               "when": "the_tide_folk/the_shards=none"
             },
             {
-              "by": "morwen",
+              "by": "murdo",
               "text": "The boats go out tonight, and something will see them now. Come with them. Please.",
               "when": "!the_tide_folk/the_shards=none"
             }
           ],
           "moves": {
-            "morwen": {
-              "place": "tide_morwen",
+            "murdo": {
+              "place": "tide_murdo",
               "pose": "standing"
             }
           },
-          "objective": "Hear Morwen out at the bay.",
+          "objective": "Hear Murdo out at the bay.",
           "place": "tide",
           "story": [
-            "Morwen asked me to go out with the Tide Folk's boats at night."
+            "Murdo asked me to go out with the Tide Folk's boats at night."
           ],
-          "with": "morwen"
+          "with": "murdo"
         },
         {
           "id": "dusk",
@@ -8862,7 +9600,7 @@
               "text": "Lanterns on the black water. Then, from the deep, things climbing up the hulls."
             },
             {
-              "by": "morwen",
+              "by": "murdo",
               "text": "They see us now! Hold them off the boats!"
             }
           ],
@@ -8882,7 +9620,7 @@
               "text": "Lanterns on black water, and nets coming up full. Nothing comes. Somebody sings, badly."
             },
             {
-              "by": "morwen",
+              "by": "murdo",
               "text": "Like it was before. Take some home."
             }
           ],
@@ -8901,7 +9639,7 @@
             "title": "The Catch"
           },
           "story": [
-            "I fished with the Tide Folk at night, and nothing came. Like it was before, Morwen said."
+            "I fished with the Tide Folk at night, and nothing came. Like it was before, Murdo said."
           ],
           "when": "the_tide_folk/the_shards=none"
         },
@@ -8916,7 +9654,7 @@
           "objective": "Stay out with the boats until morning."
         }
       ],
-      "summary": "Morwen has something to ask you. Find her by the boats before dark.",
+      "summary": "Murdo has something to ask you. Find him by the boats before dark.",
       "title": "Night Fishing"
     },
     {
@@ -9257,8 +9995,7 @@
       "kind": "side",
       "road": [
         {
-          "by": "warden",
-          "text": "Now that the walls have held, I have a message for our far villages. A word, at the stone, before you go on."
+          "text": "A runner from the Grass Kingdom finds you. The warden has a message for their far villages, and wants a word at the stone before you go on."
         }
       ],
       "steps": [
@@ -9544,7 +10281,11 @@
           "count": 1,
           "done": [
             {
-              "text": "The dicer pushes a folded chart across with the stakes. \"Fair's fair. Somebody bet it to me once. I never had the legs for it.\""
+              "text": "The dicer pushes a folded chart across with the stakes."
+            },
+            {
+              "by": "dicer",
+              "text": "Fair's fair. Somebody bet it to me once. I never had the legs for it."
             }
           ],
           "id": "the_chart",
@@ -9585,7 +10326,7 @@
       "road": [
         {
           "by": "hob",
-          "text": "We're near the Frost Walkers' old ground now. Come by the fire one evening: I want a word about their metal."
+          "text": "Drifa's people mined a metal no fire of mine can melt. Come by the fire one evening: I want a word about it."
         }
       ],
       "steps": [
@@ -9612,7 +10353,7 @@
             },
             {
               "by": "hob",
-              "text": "They'd have dug it near their hall. You don't haul ore through deep snow."
+              "text": "They mined wherever the snow lies deep. Hold up that ember of yours in the next snow we cross."
             }
           ],
           "objective": "Hear Hob out at the caravan: right-click him.",
@@ -9622,11 +10363,11 @@
           "place": "frost_mine_cart",
           "remarks": {
             "hob": [
-              "We're near the Frost Walkers' old ground now. Come by the fire one evening: I want a word about their metal."
+              "Come by the fire one evening: I want a word about the Frost Walkers' metal."
             ]
           },
           "story": [
-            "Hob wants the Frost Walkers' metal, frost iron, to make a hammer worth the name. They'd have dug it near their hall."
+            "Hob wants the Frost Walkers' metal, frost iron, to make a hammer worth the name. They mined wherever the snow lies deep."
           ],
           "with": "hob",
           "words": {
@@ -9652,10 +10393,10 @@
           "id": "the_cart",
           "kind": "clues",
           "needed": 2,
-          "objective": "Look round the Frost Walkers' stair for where they hauled their ore: {found}/{needed}.",
+          "objective": "Look for where the Frost Walkers hauled their ore: {found}/{needed}.",
           "place": "frost_mine_cart",
           "story": [
-            "By the stair to the Frost Walkers' hall lay an old ore cart, and ruts worn into the rock ran off into the snow."
+            "In the snow lay an old ore cart of the Frost Walkers, and ruts worn into the rock ran off from it."
           ],
           "tasks": [
             "search"
@@ -9796,7 +10537,11 @@
           ],
           "done": [
             {
-              "text": "The journal's last page reads: \"One more winter here. The ember is so small now. I'll walk in spring.\""
+              "text": "The journal's last page."
+            },
+            {
+              "text": "One more winter here. The ember is so small now. I'll walk in spring.",
+              "voice": "book:A Wayfarer"
             },
             {
               "by": "stranger",
@@ -9880,7 +10625,7 @@
         }
       ],
       "summary": "Pip wants a horse, like the Wayfarers in the stories. Any horse will do, Pip says, as long as it's brown.",
-      "title": "The Road"
+      "title": "A Horse for Pip"
     },
     {
       "act": "1",
@@ -9921,7 +10666,17 @@
               "text": "Bram. I kept sheep, up the valley. Three nights back the grey coats took my boy. Davy. He's eleven."
             },
             {
-              "text": "At the edge of the light, Cadoc looks away. \"Eleven. They'll have marked him by now.\""
+              "moves": {
+                "cadoc": {
+                  "place": "fire_2",
+                  "pose": "sitting"
+                }
+              },
+              "text": "At the edge of the light, Cadoc looks away."
+            },
+            {
+              "by": "cadoc",
+              "text": "Eleven. They'll have marked him by now."
             },
             {
               "by": "bram",
@@ -10149,21 +10904,24 @@
         {
           "clues": [
             {
+              "by": "pip",
               "id": "den",
-              "text": "Pip crouches at the hole. \"It's warm in there. Something's asleep.\""
+              "text": "It's warm in there. Something's asleep."
             },
             {
+              "by": "pip",
               "id": "print_1",
-              "text": "Pip puts a finger in the print. \"Four toes, no claws dragging. A fox. Walking, not running.\""
+              "text": "Four toes, no claws dragging. A fox. Walking, not running."
             },
             {
+              "by": "pip",
               "id": "print_2",
-              "text": "Pip looks from one print to the next. \"Only one set. It was alone. And it wasn't scared of anything.\""
+              "text": "Only one set. It was alone. And it wasn't scared of anything."
             }
           ],
           "done": [
             {
-              "text": "Pip sits back on their heels, grinning, with dirt on their nose."
+              "text": "Pip sits back on his heels, grinning, with dirt on his nose."
             }
           ],
           "id": "the_prints",
@@ -10193,7 +10951,6 @@
           ],
           "id": "the_caravan",
           "kind": "caravan",
-          "objective": "Make for their smoke.",
           "story": [
             "Pip told the whole caravan about the fox."
           ],
@@ -10230,7 +10987,7 @@
           "lines": [
             {
               "by": "cadoc",
-              "text": "There's a rite at the outpost ahead. Tonight, or near it. Novices take the scar there."
+              "text": "There was a rite at the outpost ahead, last night. Novices take the scar there."
             },
             {
               "by": "cadoc",
@@ -10252,7 +11009,7 @@
         {
           "done": [
             {
-              "text": "You're too late. The rite is over, and the outpost is quiet."
+              "text": "The rite is over, and the outpost is quiet."
             },
             {
               "text": "A boy in grey lies on his back at the foot of the tower. He isn't breathing."
@@ -10263,7 +11020,7 @@
           "lines": [
             {
               "by": "stranger",
-              "text": "Quietly, now. They don't like to be watched at it."
+              "text": "Quietly, now. Some of them may still be there."
             }
           ],
           "moves": {
@@ -10272,10 +11029,10 @@
               "pose": "sleeping"
             }
           },
-          "objective": "Find the outpost where the rite is held. Keep low.",
+          "objective": "Find the outpost where the rite was held. Keep low.",
           "place": "rite",
           "story": [
-            "I went to see the rite, and came too late. A novice lay dead at the foot of the tower."
+            "I went to see where the rite was held. A novice lay dead at the foot of the tower."
           ]
         },
         {
@@ -10334,7 +11091,6 @@
           ],
           "id": "the_caravan",
           "kind": "caravan",
-          "objective": "Make for their smoke.",
           "story": [
             "The dead novice was fifteen. Whatever looked into him didn't let go."
           ],
@@ -10343,7 +11099,7 @@
           ]
         }
       ],
-      "summary": "Cadoc wants you at the fire tonight. There's something he says you should see.",
+      "summary": "Cadoc wants me at the fire when night comes. There's something he says I should see.",
       "title": "The Scar of the Searched",
       "when": [
         "!the_hollow/cadoc=lost"
@@ -10359,7 +11115,7 @@
       "road": [
         {
           "by": "pip",
-          "text": "The Sand Singers told me about a horse! I'll tell you at the fire."
+          "text": "The Sand Singers told me about a horse! Sit with me and I'll tell you."
         }
       ],
       "steps": [
@@ -10380,7 +11136,7 @@
           "objective": "Hear Pip out at the fire.",
           "remarks": {
             "pip": [
-              "The Sand Singers told me about a horse! I'll tell you at the fire."
+              "The Sand Singers told me about a horse! Sit with me and I'll tell you."
             ]
           },
           "story": [
@@ -10426,7 +11182,7 @@
           ]
         }
       ],
-      "summary": "Pip heard about a horse, and will tell you at the fire.",
+      "summary": "Pip heard about a horse from the Sand Singers, and wants to tell me about it.",
       "title": "The Horse That Never Sleeps",
       "when": [
         "!the_hollow/pip=lost"
@@ -10559,7 +11315,7 @@
       "road": [
         {
           "by": "pip",
-          "text": "You woke up so tired today. Can I ask you something at the fire? Just us."
+          "text": "You woke up so tired today. I want to ask you something at the fire. Just us."
         }
       ],
       "steps": [
@@ -10594,7 +11350,7 @@
           "objective": "Hear Pip out at the fire.",
           "remarks": {
             "pip": [
-              "You woke up so tired today. Can I ask you something at the fire? Just us."
+              "You woke up so tired today. I want to ask you something at the fire. Just us."
             ]
           },
           "story": [
@@ -10713,6 +11469,55 @@
       "title": "The Promised Home",
       "when": [
         "the_doors/the_doors=sight"
+      ]
+    },
+    {
+      "act": "finale",
+      "after": [
+        "the_doors"
+      ],
+      "id": "the_road_goes_on",
+      "kind": "main",
+      "steps": [
+        {
+          "done": [
+            {
+              "text": "The fire is the same fire. There are fewer faces round it now, and they make room for you."
+            },
+            {
+              "by": "agna",
+              "text": "So. We walk on. Eat first.",
+              "when": "!the_hollow/agna=lost"
+            },
+            {
+              "by": "hob",
+              "text": "Same road as yesterday. I'll keep the blades sharp.",
+              "when": "!the_hollow/hob=lost"
+            },
+            {
+              "by": "pip",
+              "text": "Can I carry the ember one day?",
+              "when": "!the_hollow/pip=lost"
+            },
+            {
+              "by": "stranger",
+              "text": "One day. Not yet. Walk, little light."
+            }
+          ],
+          "id": "the_fire",
+          "kind": "caravan",
+          "story": [
+            "I kept the oath. The shards went back to their peoples, and I sat at the caravan's fire with whoever was left. The road goes on."
+          ],
+          "tasks": [
+            "rest"
+          ]
+        }
+      ],
+      "summary": "The shards went back to the peoples, and the gaze stays half-blind. The caravan walks on, and so do I. Make for their smoke.",
+      "title": "The Road Goes On",
+      "when": [
+        "the_doors/the_doors=oath"
       ]
     }
   ]

@@ -7,26 +7,33 @@ import io.github.roman16.wayfarer.Bundled;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
+import net.minecraft.locale.Language;
 import net.minecraft.resources.ResourceLocation;
 
-public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String, Person> people) {
+public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String, Person> people, List<Leaf> epilogue) {
+    private static final String CARAVAN_OBJECTIVE = "wayfarer.caravan.objective";
     private static final Bundled<Story> STORY = Bundled.json("/wayfarer/story.json", Story::load);
     private static final Set<String> HALL_KINDS = Set.of("shard", "vision", "worm");
     private static final Set<String> STAGE = Set.of("faces", "leaves", "moves", "poses");
 
-    public record Person(String id, String name, @Nullable String unnamed, ChatFormatting color, List<String> mornings, List<String> remarks, boolean voice,
-            @Nullable String people, List<String> cold, List<String> welcomes, Map<String, String> renamed, Map<String, List<String>> acts, List<String> shouts, @Nullable String lends) {}
+    public record Person(String id, String name, @Nullable String unnamed, ChatFormatting color, List<String> evenings, List<String> mornings, List<String> remarks, boolean voice,
+            @Nullable String people, List<String> cold, List<String> welcomes, List<String> returns, Map<String, String> renamed, Map<String, List<String>> acts,
+            List<String> shouts, @Nullable String lends, @Nullable ResourceLocation creature) {}
 
     public record Line(@Nullable String by, String text, List<String> names, @Nullable String sound, @Nullable String music, boolean pause,
-            @Nullable String vanishes, @Nullable ResourceLocation left, @Nullable String when, @Nullable JsonObject stage) {
+            @Nullable String vanishes, @Nullable ResourceLocation left, @Nullable String when, @Nullable JsonObject stage, @Nullable String night, @Nullable String voice) {
         public Line(@Nullable String by, String text) {
-            this(by, text, List.of(), null, null, false, null, null, null, null);
+            this(by, text, List.of(), null, null, false, null, null, null, null, null, null);
+        }
+
+        public String said(boolean dark) {
+            return dark && night != null ? night : text;
         }
     }
 
@@ -40,11 +47,11 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
 
     public record Item(@Nullable ResourceLocation id, @Nullable ResourceLocation tag, int count, @Nullable String name, @Nullable String book, boolean own,
             @Nullable ResourceLocation potion, @Nullable String tooltip, @Nullable ResourceLocation instrument, @Nullable String dyed, @Nullable String mark, @Nullable String map,
-            @Nullable String tent) {}
+            @Nullable String tent, boolean worn) {}
 
-    public record Reward(String key, String title, String text, String claimed, List<Item> items) {}
+    public record Reward(String key, String title, String text, @Nullable Line given, String claimed, List<Item> items) {}
 
-    public record Clue(String id, String text, boolean last, @Nullable String opens) {}
+    public record Clue(String id, String text, boolean last, @Nullable String opens, @Nullable String by) {}
 
     public record Step(
             String id,
@@ -83,6 +90,8 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
     }
 
     public record Memory(String id, String title, String place, List<Item> kit, @Nullable String music, boolean night, List<Step> steps) {}
+
+    public record Leaf(@Nullable String by, boolean lost, String text, boolean told, List<String> when) {}
 
     public record Quest(String id, String kind, String act, List<String> after, List<String> when, int halls, List<Line> road, @Nullable String found,
             @Nullable String read, String title, Map<String, String> renamed, String summary, @Nullable Reward reward, List<Step> steps) {
@@ -127,14 +136,20 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
             JsonObject person = entry.getValue().getAsJsonObject();
             people.put(entry.getKey(), new Person(entry.getKey(), person.get("name").getAsString(),
                     person.has("unnamed") ? person.get("unnamed").getAsString() : null, ChatFormatting.getByName(person.get("color").getAsString()),
-                    strings(person, "mornings"), strings(person, "remarks"), person.has("voice") && person.get("voice").getAsBoolean(),
-                    person.has("people") ? person.get("people").getAsString() : null, strings(person, "cold"), strings(person, "welcomes"), names(person),
-                    acts(person), strings(person, "shouts"), person.has("lends") ? person.get("lends").getAsString() : null));
+                    strings(person, "evenings"), strings(person, "mornings"), strings(person, "remarks"), person.has("voice") && person.get("voice").getAsBoolean(),
+                    person.has("people") ? person.get("people").getAsString() : null, strings(person, "cold"), strings(person, "welcomes"), strings(person, "returns"), names(person),
+                    acts(person), strings(person, "shouts"), person.has("lends") ? person.get("lends").getAsString() : null,
+                    person.has("creature") ? ResourceLocation.parse(person.get("creature").getAsString()) : null));
         });
         List<Quest> quests = json.getAsJsonArray("quests").asList().stream().map(JsonElement::getAsJsonObject).map(Story::quest).toList();
         Map<String, Memory> memories = new LinkedHashMap<>();
         list(json, "memories", Story::memory).forEach(memory -> memories.put(memory.id(), memory));
-        return new Story(quests, Map.copyOf(memories), Map.copyOf(people));
+        return new Story(quests, Map.copyOf(memories), Map.copyOf(people), list(json, "epilogue", Story::leaf));
+    }
+
+    private static Leaf leaf(JsonObject leaf) {
+        return new Leaf(leaf.has("by") ? leaf.get("by").getAsString() : null, flag(leaf, "lost"), leaf.get("text").getAsString(), flag(leaf, "told"),
+                strings(leaf, "when"));
     }
 
     private static Map<String, String> names(JsonObject person) {
@@ -164,16 +179,27 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
 
     private static Step step(String quest, JsonObject step) {
         String id = step.get("id").getAsString();
-        return new Step(id, step.get("kind").getAsString(), step.get("objective").getAsString(), list(step, "lines", Story::line),
+        return new Step(id, step.get("kind").getAsString(), objective(step), list(step, "lines", Story::line),
                 list(step, "done", Story::line), list(step, "choices", choice -> choice(quest + "/" + id, choice)), list(step, "clues", Story::clue),
                 strings(step, "story"), texts(step, "people"), texts(step, "words"), remarks(step), reward(quest + "/" + id, step), step);
+    }
+
+    private static String objective(JsonObject step) {
+        if (step.has("objective")) {
+            return step.get("objective").getAsString();
+        }
+        if (step.get("kind").getAsString().equals(Caravan.KIND)) {
+            return Language.getInstance().getOrDefault(CARAVAN_OBJECTIVE);
+        }
+        throw new IllegalStateException("step " + step.get("id").getAsString() + " has no objective");
     }
 
     private static Line line(JsonObject line) {
         return new Line(line.has("by") ? line.get("by").getAsString() : null, line.get("text").getAsString(), strings(line, "names"),
                 line.has("sound") ? line.get("sound").getAsString() : null, line.has("music") ? line.get("music").getAsString() : null, flag(line, "pause"),
                 line.has("vanishes") ? line.get("vanishes").getAsString() : null, line.has("left") ? ResourceLocation.parse(line.get("left").getAsString()) : null,
-                line.has("when") ? line.get("when").getAsString() : null, STAGE.stream().anyMatch(line::has) ? line : null);
+                line.has("when") ? line.get("when").getAsString() : null, STAGE.stream().anyMatch(line::has) ? line : null,
+                line.has("night") ? line.get("night").getAsString() : null, line.has("voice") ? line.get("voice").getAsString() : null);
     }
 
     private static Choice choice(String step, JsonObject choice) {
@@ -198,7 +224,8 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
     }
 
     private static Clue clue(JsonObject clue) {
-        return new Clue(clue.get("id").getAsString(), clue.get("text").getAsString(), flag(clue, "last"), clue.has("opens") ? clue.get("opens").getAsString() : null);
+        return new Clue(clue.get("id").getAsString(), clue.get("text").getAsString(), flag(clue, "last"), clue.has("opens") ? clue.get("opens").getAsString() : null,
+                clue.has("by") ? clue.get("by").getAsString() : null);
     }
 
     @Nullable
@@ -208,7 +235,8 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
         }
         JsonObject reward = owner.getAsJsonObject("reward");
         List<Item> items = list(reward, "items", Story::item);
-        return new Reward(key, reward.get("title").getAsString(), reward.get("text").getAsString(), reward.get("claimed").getAsString(), items);
+        return new Reward(key, reward.get("title").getAsString(), reward.get("text").getAsString(),
+                reward.has("given") ? line(reward.getAsJsonObject("given")) : null, reward.get("claimed").getAsString(), items);
     }
 
     private static Item item(JsonObject item) {
@@ -218,7 +246,7 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
                 flag(item, "own"), item.has("potion") ? ResourceLocation.parse(item.get("potion").getAsString()) : null,
                 item.has("tooltip") ? item.get("tooltip").getAsString() : null, item.has("instrument") ? ResourceLocation.parse(item.get("instrument").getAsString()) : null,
                 item.has("dyed") ? item.get("dyed").getAsString() : null, item.has("mark") ? item.get("mark").getAsString() : null,
-                item.has("map") ? item.get("map").getAsString() : null, item.has("tent") ? item.get("tent").getAsString() : null);
+                item.has("map") ? item.get("map").getAsString() : null, item.has("tent") ? item.get("tent").getAsString() : null, flag(item, "worn"));
     }
 
     private static <T> List<T> list(JsonObject owner, String key, Function<JsonObject, T> read) {

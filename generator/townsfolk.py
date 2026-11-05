@@ -615,7 +615,7 @@ TIDE_CLOTHS = [CLOTHS[0], CLOTHS[7], CLOTHS[10], CLOTHS[11]]
 
 def tidefolk():
     return {
-        "morwen": person("tide/morwen", "old_woman", "living", cloths=[CLOTHS[11]]),
+        "murdo": person("tide/murdo", "old_man", "living", cloths=[CLOTHS[11]]),
         "tide_warden_1": person("tide/warden/1", "man", "living", cloths=[CLOTHS[7]]),
         "tide_warden_2": person("tide/warden/2", "woman", "living", cloths=[CLOTHS[10]]),
     }
@@ -700,9 +700,9 @@ def act3folk():
         "heirs_sister": person("act3/heirs_sister", "woman", "living", cloths=[GRASS_CLOTHS[1]]),
         "oldest_keeper": keeper(
             "act3/oldest_keeper",
-            "old_woman",
+            "old_man",
             "living",
-            {"hair": GREYS[0], "hood": KEEPER_HOOD, "style": "long", "tone": TONES[1]},
+            {"beard": True, "hair": GREYS[0], "hood": KEEPER_HOOD, "style": "long", "tone": TONES[1]},
         ),
         "pilgrim": person("act3/pilgrim", "old_woman", "living"),
         "settled_wayfarer": person("act2/settled_wayfarer", "old_man", "living"),

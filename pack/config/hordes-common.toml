@@ -40,7 +40,7 @@
 	#Time in ticks the event lasts for
 	hordeSpawnDuration = 6000
 	#Time in ticks between spawns for the horde spawn event.
-	hordeSpawnInterval = 600
+	hordeSpawnInterval = 20
 	#What time of day does the horde event start? eg 18000 is midnight with default day length.
 	hordeStartTime = 18000
 	#Amount of days a horde event can be randomly delayed by

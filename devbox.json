@@ -8,6 +8,7 @@
     "libGL": "latest",
     "libpulseaudio": "latest",
     "packwiz": "latest",
+    "path:nix/elevenlabs-cli": "",
     "pngquant": "latest",
     "python": "3.14",
     "ripgrep": "latest",

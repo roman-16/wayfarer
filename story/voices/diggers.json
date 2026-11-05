@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "TURa8RD30UrJr8Ccvy2z",
+  "id": "4f4ecf6e",
+  "kept": "05.11.2026",
+  "preview": 3,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 1997714255,
+    "should_enhance": false,
+    "text": "We dug down because the eye in the sky cannot see through stone. The shard hums on its stone in this hall, and while it hums, the ground above us stays dark to that eye. Our children grew up under lamps and never missed the sun. But the seams near the hall ran out, and the young ones wanted to follow the ore down, past the shard's ground. We go down with them tonight. If you are reading this, we did not come back up. Take the shard if you must, and walk softly in the deep.",
+    "voice_description": "Native English, British, a broad Yorkshire mining accent. Male, 55-65. Excellent quality. Persona: an elder of a people of miners who lived underground for generations and wrote a last message before going down into the deep. Emotion: steady, plain, proud, quietly resigned, tender towards the young. A deep, earthy, gravelly voice, slow and measured, with the weight of stone in it; matter-of-fact even about the end."
+  }
+}

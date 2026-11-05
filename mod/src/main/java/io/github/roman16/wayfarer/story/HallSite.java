@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer.story;
 
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -16,7 +17,6 @@ import org.slf4j.Logger;
 
 final class HallSite {
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final String FAILED = "_failed";
     private final String prefix;
     private final ResourceLocation hall;
     private final String goal;
@@ -58,7 +58,7 @@ final class HallSite {
         Balance.World world = Balance.get().world();
         searching = HallSearch.ground(level, hall, from, act == 2 ? world.homeBlocks() + world.seaBlocks() - world.shoreBlocks() : Balance.get().halls().actThreeFromBlocks(),
                 act == 2 ? Balance.get().halls().actThreeFromBlocks() : Balance.get().strongholds().radiusBlocks() + world.lastSeaPastRingBlocks(),
-                progress.place(prefix + FAILED));
+                progress.refused(prefix));
     }
 
     void tick(MinecraftServer server) {
@@ -87,10 +87,14 @@ final class HallSite {
         progress.place(prefix + "_raise").filter(site -> entrance(progress).isEmpty() && HallSearch.loaded(level, site)).ifPresent(site -> {
             HallSearch.release(level, site);
             try {
+                Optional<ResourceLocation> standing = Places.crowded(level, site);
+                if (standing.isPresent()) {
+                    throw new IllegalStateException(hall + " would stand beside " + standing.get() + " at " + site.toShortString());
+                }
                 record(server, HallSearch.raise(level, hall, site));
             } catch (IllegalStateException failure) {
                 LOGGER.warn("{}; the quest looks for other ground", failure.getMessage());
-                progress.place(prefix + FAILED, site);
+                progress.refuse(prefix, site);
                 progress.places.remove(prefix + "_raise");
                 progress.setDirty();
                 find(server, site);
@@ -102,6 +106,13 @@ final class HallSite {
         searching = null;
     }
 
+    void forget(Progress progress) {
+        List.of(prefix + "_entrance", prefix + "_box_low", prefix + "_box_high", goal).forEach(progress.places::remove);
+        progress.rooms.remove(prefix);
+        progress.refused.remove(prefix);
+        progress.setDirty();
+    }
+
     private void record(MinecraftServer server, HallSearch.Found found) {
         Progress progress = Progress.of(server);
         BoundingBox box = found.box();
@@ -109,6 +120,7 @@ final class HallSite {
         progress.place(goal, found.entrance());
         progress.place(prefix + "_box_low", new BlockPos(box.minX(), box.minY(), box.minZ()));
         progress.place(prefix + "_box_high", new BlockPos(box.maxX(), box.maxY(), box.maxZ()));
+        progress.rooms.put(prefix, found.rooms());
         progress.setDirty();
         LOGGER.info("{} is at {}, its way down at {}", hall, box, found.entrance());
         Journal.syncAll(server);

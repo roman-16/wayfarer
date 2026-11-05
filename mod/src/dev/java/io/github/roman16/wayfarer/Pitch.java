@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,8 +34,9 @@ import nomadictents.item.TentItem;
 @EventBusSubscriber(modid = Wayfarer.MODID)
 public final class Pitch {
     private static final int RADIUS = 24;
-    private static final int STAND = 2;
+    static final int STAND = 2;
     private static final int FIRE_CLEAR = 2;
+    private static final int FLOOR_REACH = 4;
     private static final String UNDERFOOT = "wayfarer.tent.underfoot";
     @Nullable
     private static volatile Found found;
@@ -104,18 +106,29 @@ public final class Pitch {
                 .sorted(Comparator.comparingDouble(column -> column.distSqr(at)))
                 .toList();
         for (BlockPos column : columns) {
-            BlockPos door = column.atY(level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column.getX(), column.getZ()));
-            if (door.distSqr(at) > RADIUS * RADIUS || !level.getFluidState(door).isEmpty() || !level.getFluidState(door.below()).isEmpty()) {
-                continue;
-            }
-            for (Direction facing : Direction.Plane.HORIZONTAL) {
-                Optional<Component> refused = TentPitch.refusal(player, held, door, facing).map(TentPitch.Refusal::why);
-                if (standable(level, door.relative(facing.getOpposite(), STAND)) && clear(level, door, facing) && (refused.isEmpty() || underfoot(refused.get()))) {
-                    return new Found(door, facing.get2DDataValue(), "");
+            for (BlockPos door : doors(level, column, at)) {
+                if (door.distSqr(at) > RADIUS * RADIUS || !level.getFluidState(door).isEmpty() || !level.getFluidState(door.below()).isEmpty()) {
+                    continue;
+                }
+                for (Direction facing : Direction.Plane.HORIZONTAL) {
+                    Optional<Component> refused = TentPitch.refusal(player, held, door, facing).map(TentPitch.Refusal::why);
+                    if (standable(level, door.relative(facing.getOpposite(), STAND)) && clear(level, door, facing)
+                            && (refused.isEmpty() || underfoot(refused.get()))) {
+                        return new Found(door, facing.get2DDataValue(), "");
+                    }
                 }
             }
         }
         return new Found(BlockPos.ZERO, 0, "no ground flat and clear enough for the tent within " + RADIUS + " blocks");
+    }
+
+    private static List<BlockPos> doors(ServerLevel level, BlockPos column, BlockPos at) {
+        BlockPos surface = column.atY(level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, column.getX(), column.getZ()));
+        Stream<BlockPos> floors = IntStream.rangeClosed(-FLOOR_REACH, FLOOR_REACH).mapToObj(dy -> column.atY(at.getY() + dy))
+                .sorted(Comparator.comparingInt(door -> Math.abs(door.getY() - at.getY())))
+                .filter(door -> !door.equals(surface) && level.getBlockState(door).isAir()
+                        && !level.getBlockState(door.below()).getCollisionShape(level, door.below()).isEmpty());
+        return Stream.concat(floors, Stream.of(surface)).toList();
     }
 
     private static boolean standable(ServerLevel level, BlockPos feet) {

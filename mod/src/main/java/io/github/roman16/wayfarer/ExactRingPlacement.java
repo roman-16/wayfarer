@@ -1,6 +1,6 @@
 package io.github.roman16.wayfarer;
 
-import com.mojang.datafixers.util.Pair;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.QuartPos;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.levelgen.structure.placement.ConcentricRingsStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
+import org.slf4j.Logger;
 
 @SuppressWarnings("deprecation")
 public class ExactRingPlacement extends ConcentricRingsStructurePlacement {
@@ -35,8 +37,10 @@ public class ExactRingPlacement extends ConcentricRingsStructurePlacement {
                 .apply(instance, ExactRingPlacement::new);
     });
 
-    private static final int BIOME_SEARCH_BLOCKS = 112;
-    private static final int ARC_STEP_BLOCKS = BIOME_SEARCH_BLOCKS * 2;
+    private static final int ARC_STEP_BLOCKS = 32;
+    private static final long INLAND = Climate.quantizeCoord(0.03f);
+    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final int SEA_LEVEL = 63;
 
     private final int jitterBlocks;
     private final int radiusBlocks;
@@ -74,22 +78,25 @@ public class ExactRingPlacement extends ConcentricRingsStructurePlacement {
             double radius = radiusBlocks + (random.nextDouble() * 2 - 1) * jitterBlocks;
             int x = (int) Math.round(Math.cos(angle) * radius);
             int z = (int) Math.round(Math.sin(angle) * radius);
-            RandomSource search = random.fork();
-            positions.add(CompletableFuture.supplyAsync(() -> new ChunkPos(land(biomeSource, sampler, search, angle, radius)
-                    .orElse(new BlockPos(x, 0, z))), Util.backgroundExecutor()));
+            positions.add(CompletableFuture.supplyAsync(() -> new ChunkPos(land(biomeSource, sampler, angle, radius).orElseGet(() -> {
+                LOGGER.warn("no land within {} blocks along the ring at {}, {}: the stronghold stays at the ring's point", Balance.get().strongholds().landSearchBlocks(), x, z);
+                return new BlockPos(x, SEA_LEVEL, z);
+            })), Util.backgroundExecutor()));
         }
         return Util.sequence(positions);
     }
 
-    private Optional<BlockPos> land(BiomeSource biomeSource, Climate.Sampler sampler, RandomSource search, double angle, double radius) {
+    private Optional<BlockPos> land(BiomeSource biomeSource, Climate.Sampler sampler, double angle, double radius) {
         int steps = Balance.get().strongholds().landSearchBlocks() / ARC_STEP_BLOCKS;
         for (int step = 0; step <= steps * 2; step++) {
             int along = (step + 1) / 2 * (step % 2 == 0 ? 1 : -1);
             double turned = angle + along * ARC_STEP_BLOCKS / radius;
-            Pair<BlockPos, ?> found = biomeSource.findBiomeHorizontal((int) Math.round(Math.cos(turned) * radius), 0, (int) Math.round(Math.sin(turned) * radius),
-                    BIOME_SEARCH_BLOCKS, preferredBiomes()::contains, search, sampler);
-            if (found != null) {
-                return Optional.of(found.getFirst());
+            BlockPos at = new BlockPos((int) Math.round(Math.cos(turned) * radius), SEA_LEVEL, (int) Math.round(Math.sin(turned) * radius));
+            int quartX = QuartPos.fromBlock(at.getX());
+            int quartY = QuartPos.fromBlock(at.getY());
+            int quartZ = QuartPos.fromBlock(at.getZ());
+            if (sampler.sample(quartX, quartY, quartZ).continentalness() >= INLAND && preferredBiomes().contains(biomeSource.getNoiseBiome(quartX, quartY, quartZ, sampler))) {
+                return Optional.of(at);
             }
         }
         return Optional.empty();

@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "2EPcBYBjd4SHTL5XqhEp",
+  "id": "aa891449",
+  "kept": "28.10.2026",
+  "preview": 3,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 2146671663,
+    "should_enhance": false,
+    "text": "Don't look so surprised. Did you think I'd let you carry it alone? A frame. You'll know one when you see it. No more burning towns. I made my first camp by a lake, under three pines. I'd like to see it again. She can't hear me. Only you can. Half-blind, then. As I've always been. Walk, little light.",
+    "voice_description": "Native English, British, a light northern English accent. Male, 60-70. Excellent quality. Persona: an old wanderer who has walked the roads all his life. Emotion: warm, wry, tired. A low, weathered, slightly gravelly voice with dry humour under it. Speaks unhurried and close, like a man talking across a campfire at night, in short sentences with small pauses."
+  }
+}

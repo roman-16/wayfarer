@@ -97,7 +97,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Why can I not settle? | A heart that stays shines. Stay within about 256 blocks of one place and on the second day the ember dims; on the third the gaze finds me |
 | Why do seeds not take? | Roots are stillness, and the ember withers whatever a Wayfarer plants, so the gaze never finds it growing |
 | Why will animals not breed near me? | They feel the gaze in the ember |
-| Why am I always hungry? | The ember burns what I eat: a Wayfarer eats twice what a settled person does, unless the ember is warm from a fire. It burns on the water too |
+| Why am I always hungry? | The ember burns what I eat: a Wayfarer eats four times what a settled person does, unless the ember is warm from a fire. It burns on the water too |
 | Why does varied food make me stronger? | The ember lives on what is new, and that is true of food as much as sights |
 | Where do I wake after a fall? | The ember is bound to fire and to its kin: it brings me back to the nearest warmth it knows, a friend's ember, or else the last fire I sat by |
 | What happens to my things when I fall? | The road keeps them under a stone where I fell, until I come back; the compass marks the stone |
@@ -138,7 +138,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Who is Edda? | The last shipwright on the home land's coast. Nobody crosses the sea, and her husband tried three summers ago: he made landfall on the far shore, at a bay where people fish by night and nothing comes for them, and the sea took him on the way home. His wreck and his log lay on the beach near her yard, and she would build no hull for sailing until someone read the log to its end |
 | Why has nobody crossed the sea? | Something lives below the open water and comes up at night to look at a light; boats that go out past the last headland do not come back. The coast's people fish within sight of land |
 | Who is Cadoc? | A Gazebound deserter, an Illager born to the Grass Kingdom's outcasts, with their scar over his heart. He served under the stranger for six winters and will not say his name; he knows Malgven from the stranger's company and will not say hers either, and she lets him be; the heir hunts him, and his brother still serves at the outpost above the ford where the caravan found him |
-| Who is Morwen? | The Tide Folk's elder. Her people keep two shards on one stone under their fire pit, their own and the Drowned City's, and the guardians of their bay bow to anyone who carries an ember. She will not stop a Wayfarer who takes them, only say what it costs |
+| Who is Murdo? | The Tide Folk's elder. His people keep two shards on one stone under their fire pit, their own and the Drowned City's, and the guardians of their bay bow to anyone who carries an ember. He will not stop a Wayfarer who takes them, only say what it costs |
 | Who were the Drowned City's last people? | The few left when the sea took the most beautiful city on the coast. They climbed to their hall in the red canyons, lifted their shard and carried it to the one bay the eye could not see, the Tide Folk's, and swore the Tide Folk to keep it |
 | Who is Sefa? | The Sand Singers' singer. She sings the worm's song, and the song of the man with a coal in his hand who fought it and ran, which is the funniest they have |
 | Who was the girl in grey? | Malgven, as a child. Thirty winters ago, at Wend's last camp, she held out the Gazebound's bread with both hands, a tiny eye stitched on her coat, and he took it and stopped walking |
@@ -194,7 +194,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 
 | Door | What it answers | What it gives | What it costs | The world after |
 |---|---|---|---|---|
-| Blind it | I believe Wend | The Eye set and the dragon killed while it is half-blind; the fewer shards set, the blinder it fights | The voice I grew to like dies with it | The road's rules end, and planting, breeding, beds and chests come back: "Build a home" |
+| Blind it | I believe Wend | The Eye set and the dragon killed while it is half-blind; the fewer shards set, the blinder it fights | The voice I grew to like dies with it | The road's rules end, and planting, breeding, beds and chests come back, and I build a home |
 | Give it its sight | I believe the voice | The home it promised, where nothing comes at night | Every lit window shines in its sight again, and it cannot look away; only the lands where I left a shard stay dark | What the road forbade comes back only in that home; everywhere else its creatures hunt every night |
 | Keep the oath | I refuse what I am | Every shard given back to the peoples who trust me, and the road | No home: one day I pass the ember on | The road goes on |
 | Close the Eye | I accept what I am | I step into the frame, and the Eye, with me in it, closes for good. The dragon does not die; for the first time it sleeps, and the gaze ends | Myself | The rules end as with Blind it. If Pip lived, I walk on as Pip, grown, carrying my ember; if not, the world is gone for me |
@@ -204,3 +204,16 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | What opens Keep the oath? | The trust of at least two of the living peoples, who take the shards back and hide them again |
 | What opens Close the Eye? | The words that close an Eye, which only the Scribes' books hold and only Alruna can read, or what she taught me of them |
 | Does any door end the silence? | No. Far below, in the deep dark, the sculk creeps on |
+
+What became of the caravan's people, years later, for each who lived through the hollow (Pip tells it, or the narrator when the hollow took Pip):
+
+| Who | The gaze gone (Blind it, Close the Eye) | Give it its sight | Keep the oath |
+|---|---|---|---|
+| Maud | Her bell hangs over a town that never burns, and she rings it every morning until she dies, very old; if her bell was melted, she has no bell again, but lives as long | She counts everyone in at dusk, and never once thanks the thing that made the home | She walks with the caravan until she cannot, still asking how far |
+| Hob | He makes ploughs, and says a plough is harder to get right than a sword | He makes blades for the home's edge, and never a plough | He keeps the caravan's blades sharp |
+| Agna | She brings the first children born under an empty sky into the world | She keeps the sick alive inside the stones, and gathers herbs only by daylight | She heals along the road, and teaches her remedy to anyone who asks |
+| Cadoc | He stops running, works the fields and sleeps through the night | He keeps the home's gate, and has stopped running | He runs with the caravan, and sometimes laughs |
+| Drifa | She goes back to the snow and lives by her people's cairns | She keeps watch over her people's cairns in the snow | She walks with the caravan, a little apart |
+| Alruna | She goes to see the world the Keepers only guarded, and writes it down | She writes everything down, since nobody inside the stones can go and see it | She walks with the caravan, reading the old script to anyone who sits by her |
+| Bram and Davy | Bram keeps sheep again, and learns to look at his son | Davy alone walks past the stones at night, and the creatures still pass him by | Bram keeps the caravan's animals, and Davy keeps watch at night |
+| Pip | Under Blind it, Pip tells the children about the Wayfarers who came down into the cellar, and was there; under Close the Eye, Pip carries the ember and the house is Pip's own | Pip stays inside the stones and believes someone will carry a light out again | Pip carries the ember if the player promised it, and keeps walking; otherwise someone kind at a fire carries it, and Pip still walks with the caravan |

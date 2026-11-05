@@ -3,8 +3,10 @@ package io.github.roman16.wayfarer.story;
 import com.mojang.logging.LogUtils;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.MinecraftServer;
@@ -20,6 +22,8 @@ final class Standing {
     private static final int REACH = 3;
     private static final int LOAD_RADIUS = 1;
     private static final int BEYOND_VIEW_BLOCKS = 64;
+    private static final String PLACE = "place";
+    private static final Set<String> CHECKED = new HashSet<>();
 
     record Witness(BlockPos centre, List<String> blocks) {}
 
@@ -43,6 +47,15 @@ final class Standing {
         for (Map.Entry<String, Witness> entry : List.copyOf(progress.witnesses.entrySet())) {
             BlockPos centre = entry.getValue().centre();
             ChunkPos chunk = new ChunkPos(centre);
+            if (behind(server, entry.getKey())) {
+                level.getChunkSource().removeRegionTicket(TICKET, chunk, LOAD_RADIUS, chunk);
+                progress.witnesses.remove(entry.getKey());
+                progress.setDirty();
+                continue;
+            }
+            if (CHECKED.contains(entry.getKey())) {
+                continue;
+            }
             if (Engine.players(server).stream().noneMatch(player -> near(player, level, centre, reach))) {
                 level.getChunkSource().removeRegionTicket(TICKET, chunk, LOAD_RADIUS, chunk);
                 continue;
@@ -52,8 +65,7 @@ final class Standing {
                 continue;
             }
             level.getChunkSource().removeRegionTicket(TICKET, chunk, LOAD_RADIUS, chunk);
-            progress.witnesses.remove(entry.getKey());
-            progress.setDirty();
+            CHECKED.add(entry.getKey());
             List<String> now = blocks(level, centre);
             List<String> then = entry.getValue().blocks();
             long same = 0;
@@ -64,9 +76,20 @@ final class Standing {
             }
             if (same * 2 < then.size()) {
                 LOGGER.warn("the story place {} at {} is gone, {} of {} of its blocks stand; it goes up again", entry.getKey(), centre, same, then.size());
-                Places.unbuild(server, entry.getKey());
+                Places.rebuild(server, entry.getKey());
             }
         }
+    }
+
+    static void reset() {
+        CHECKED.clear();
+    }
+
+    private static boolean behind(MinecraftServer server, String place) {
+        Progress progress = Progress.of(server);
+        List<Story.Quest> using = Story.get().quests().stream()
+                .filter(quest -> quest.steps().stream().anyMatch(step -> step.spec().has(PLACE) && step.text(PLACE).equals(place))).toList();
+        return !using.isEmpty() && using.stream().allMatch(quest -> progress.done(quest.id()));
     }
 
     private static boolean near(ServerPlayer player, ServerLevel level, BlockPos centre, int reach) {

@@ -11,8 +11,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(Monster.class)
 abstract class MonsterRestMixin {
     @Inject(method = "isPreventingPlayerRest", at = @At("HEAD"), cancellable = true)
-    private void wayfarer$peopleAreNoMonsters(Player player, CallbackInfoReturnable<Boolean> info) {
-        if ((Object) this instanceof EasyNPC<?>) {
+    private void wayfarer$onlyMonstersInSight(Player player, CallbackInfoReturnable<Boolean> info) {
+        if ((Object) this instanceof EasyNPC<?> || !((Monster) (Object) this).hasLineOfSight(player)) {
             info.setReturnValue(false);
         }
     }

@@ -17,7 +17,7 @@ Everything a player sees has to look as if it was always in Minecraft: the same 
    $ python3 scripts/client.py run workshop 'spawn wayfarer:worm' 'beside minecraft:zombie' 'views worm'
    ```
 
-4. **Show it to the user.** Before a look is final, put its pictures from the workshop or the driver to the user with the `questionnaire` tool, the recommended one first; its gallery shots come with the `finish` skill.
+4. **Show it to the user.** Before a look is final, put its pictures from the workshop or the driver to the user with the `questionnaire` tool, the recommended one first.
 
 ## The order of work
 

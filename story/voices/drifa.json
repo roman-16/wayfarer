@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "qMzHFghSbQTl63ZxDnCv",
+  "id": "01689004",
+  "kept": "30.10.2026",
+  "preview": 2,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 481896614,
+    "should_enhance": false,
+    "text": "You came. Down, then. Someone took it. I want a name. Well? Who was it? Then it's mine to bury, when we find it. Not his. Twenty winters. I can wait a few days more. Don't stand behind me. My people wintered on this shore once, in the snow. Walk with me. I don't want to do it alone. There. They're home.",
+    "voice_description": "English with a light Scandinavian accent. Female, 35-45. Excellent quality. Persona: a lone hunter from the snows, the last of her people, carrying a long grief and a cold anger. Emotion: cold, curt, guarded, grieving underneath. A low, cool, steady voice with a clipped, sparing delivery; few words, no warmth spent on strangers, breaking only when she speaks of her dead."
+  }
+}

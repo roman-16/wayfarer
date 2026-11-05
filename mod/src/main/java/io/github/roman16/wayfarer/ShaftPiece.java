@@ -163,6 +163,20 @@ public final class ShaftPiece extends StructurePiece {
         this.design = Design.load(context.registryAccess().lookupOrThrow(Registries.BLOCK), tag.getCompound(DESIGN));
     }
 
+    public BlockPos threshold() {
+        int size = design.style().size;
+        int middle = size / 2;
+        if (design.style() == Style.LADDER) {
+            return place(origin, rotation, middle, top, middle);
+        }
+        return switch (exit) {
+            case SOUTH -> place(origin, rotation, middle, top, size);
+            case NORTH -> place(origin, rotation, middle, top, -1);
+            case EAST -> place(origin, rotation, size, top, middle);
+            default -> place(origin, rotation, -1, top, middle);
+        };
+    }
+
     private static BoundingBox box(BlockPos origin, Rotation rotation, int floor, int top, int size) {
         return BoundingBox.fromCorners(place(origin, rotation, 0, floor - 2, 0), place(origin, rotation, size - 1, top - 1, size - 1));
     }

@@ -3,10 +3,13 @@
     "already": "It's frost iron already.",
     "book_no_hammer": "Pretty book. Putting it on a tool needs a sound hammer, and mine's been cracked since the fire.",
     "book_wont": "It won't take what's in that book.",
+    "give": "Leave it with Hob.",
     "half": "More than half whole. This hammer does no better. Bring it back when it's worn.",
     "here": "Here. Mind the edge.",
-    "leave": "Leave it with me tonight.",
-    "leave_half": "Leave it with me tonight. Halfway is the best this hammer does.",
+    "keep": "Keep it for now.",
+    "kept": "Suit yourself. You know where I sit.",
+    "leave": "Want me to see to it? You'll have it back at the next fire.",
+    "leave_half": "Want me to see to it? Halfway is the best this hammer does. You'll have it back at the next fire.",
     "lumps": {
       "axe": 3,
       "boots": 4,
@@ -20,7 +23,7 @@
     },
     "no_hammer": "Not till I have a hammer for it.",
     "not_mine": "That's not mine to make again. Hold it out with nothing in your other hand, and I'll mend it.",
-    "not_yet": "Not till morning.",
+    "not_yet": "Not till the fire.",
     "numbers": [
       "none",
       "one",
@@ -32,8 +35,8 @@
       "seven",
       "eight"
     ],
-    "room": "Make room. I'll not drop it in the mud.",
     "short": "{wants} {need}. You've {have}.",
+    "taken": "Right. Off you go.",
     "wants": {
       "axe": "An axe needs",
       "boots": "Boots need",
@@ -97,7 +100,7 @@
     {
       "by": "agna",
       "id": "agna_heat",
-      "text": "Leaves keep the sun off. The Sand Singers live where nothing else can. Ask one how, if you ever meet one.",
+      "text": "Leaves keep the sun off. The Sand Singers live where nothing else can, and they know how.",
       "when": [
         "heat/leaves"
       ]
@@ -189,8 +192,7 @@
             {
               "count": 3,
               "item": "minecraft:cobblestone",
-              "name": "cobblestone",
-              "where": "from stone, with any pickaxe"
+              "name": "cobblestone"
             }
           ]
         },
@@ -211,8 +213,7 @@
             {
               "count": 3,
               "item": "minecraft:flint",
-              "name": "flint",
-              "where": "dug from gravel"
+              "name": "flint"
             }
           ]
         },
@@ -305,8 +306,7 @@
             {
               "count": 1,
               "item": "minecraft:amethyst_shard",
-              "name": "amethyst shard",
-              "where": "from the purple geodes deep under the ground"
+              "name": "amethyst shard"
             }
           ]
         }
@@ -346,8 +346,7 @@
             {
               "count": 8,
               "item": "minecraft:leather",
-              "name": "leather",
-              "where": "from cows"
+              "name": "leather"
             }
           ]
         },
@@ -1028,14 +1027,12 @@
             {
               "count": 1,
               "name": "coal or charcoal",
-              "tag": "minecraft:coals",
-              "where": "dug from stone, or burnt from logs in a furnace"
+              "tag": "minecraft:coals"
             },
             {
               "count": 1,
               "item": "minecraft:stick",
-              "name": "stick",
-              "where": "split from planks"
+              "name": "stick"
             }
           ]
         },
@@ -1058,14 +1055,12 @@
             {
               "count": 8,
               "item": "minecraft:iron_nugget",
-              "name": "iron nuggets",
-              "where": "an iron ingot broken up in a crafting grid"
+              "name": "iron nuggets"
             },
             {
               "count": 1,
               "item": "minecraft:torch",
-              "name": "torch",
-              "where": "made at my bench"
+              "name": "torch"
             }
           ]
         },
@@ -1086,20 +1081,17 @@
             {
               "count": 1,
               "item": "minecraft:glow_ink_sac",
-              "name": "glow ink sac",
-              "where": "from glow squids in deep water"
+              "name": "glow ink sac"
             },
             {
               "count": 1,
               "item": "minecraft:slime_ball",
-              "name": "slime ball",
-              "where": "from slimes in swamps and deep caves"
+              "name": "slime ball"
             },
             {
               "count": 1,
               "item": "minecraft:stick",
-              "name": "stick",
-              "where": "split from planks"
+              "name": "stick"
             }
           ]
         },
@@ -1280,8 +1272,7 @@
             {
               "count": 6,
               "item": "minecraft:leather",
-              "name": "leather",
-              "where": "from cows"
+              "name": "leather"
             }
           ]
         }
@@ -1322,8 +1313,7 @@
             {
               "count": 8,
               "name": "wool",
-              "tag": "minecraft:wool",
-              "where": "shorn from sheep"
+              "tag": "minecraft:wool"
             }
           ]
         },
@@ -1375,8 +1365,7 @@
             {
               "count": 8,
               "name": "leaves",
-              "tag": "minecraft:leaves",
-              "where": "cut from trees with shears"
+              "tag": "minecraft:leaves"
             }
           ]
         },

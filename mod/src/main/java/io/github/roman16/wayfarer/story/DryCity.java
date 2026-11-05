@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer.story;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Wayfarer;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -22,7 +23,7 @@ final class DryCity {
     private static final String UNTIL = "vision_until";
     private static final HallSite SITE = new HallSite(NAME, Wayfarer.id("hall/exotic"), NAME, 2);
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static final double AROUND = 1.5;
+    private static final double AROUND = 3;
     private static final int TICKS_PER_SECOND = 20;
     private static final int SPARKS = 24;
 
@@ -35,6 +36,12 @@ final class DryCity {
 
     static void reset() {
         SITE.reset();
+    }
+
+    static void unbuild(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        SITE.forget(progress);
+        progress.places.remove(STONE);
     }
 
     static boolean ready(MinecraftServer server, String name) {
@@ -77,10 +84,12 @@ final class DryCity {
         Story.Step step = active.step();
         List<String> figures = step.spec().getAsJsonArray("figures").asList().stream().map(element -> element.getAsString()).toList();
         Vec3 centre = Vec3.atBottomCenterOf(stone);
+        Vec3 viewer = Engine.players(server).stream().filter(player -> player.level() == level)
+                .min(Comparator.comparingDouble(player -> player.distanceToSqr(centre))).map(Entity::position).orElse(centre);
+        List<Vec3> spots = People.ring(level, centre, viewer, AROUND, figures.size());
         for (int index = 0; index < figures.size(); index++) {
-            double angle = Math.PI * 2 * index / figures.size();
-            Vec3 at = centre.add(Math.cos(angle) * AROUND, 0, Math.sin(angle) * AROUND);
-            Entity body = People.person(level, figures.get(index), at, Frost.yaw(centre.subtract(at)), "standing");
+            Vec3 at = spots.get(index);
+            Entity body = People.appear(level, figures.get(index), at, Frost.yaw(centre.subtract(at)), "standing");
             spark(level, body);
         }
         CompoundTag scratch = active.scratch();
@@ -89,7 +98,10 @@ final class DryCity {
         Talk.say(active.quest().id(), centre, step.lines("seen"), Engine.fill(Progress.of(server)));
         Talk.then(active.quest().id(), () -> {
             Vec3 out = Vec3.atBottomCenterOf(Places.place(server, step.text("toward")).orElse(stone));
-            figures.forEach(figure -> People.walk(server, figure, out, People.WALKING));
+            List<Vec3> ends = People.ring(level, out, centre, AROUND, figures.size());
+            for (int index = 0; index < figures.size(); index++) {
+                People.walk(server, figures.get(index), ends.get(index), People.WALKING);
+            }
             scratch.putLong(UNTIL, level.getGameTime() + (long) step.number("fades") * TICKS_PER_SECOND);
             Progress.of(server).setDirty();
         });

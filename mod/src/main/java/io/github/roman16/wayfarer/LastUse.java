@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer;
 import io.github.roman16.wayfarer.story.Progress;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.List;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -31,11 +32,11 @@ public final class LastUse {
     }
 
     public static void worn(ServerPlayer player, ItemStack stack) {
-        if (!lastUse(stack) || !Firsts.first(player, "last_use")) {
+        if (!lastUse(stack)) {
             return;
         }
-        Talk.tell(player, Component.translatable("wayfarer.gear.worn", stack.getHoverName()));
-        if (Progress.of(player.server).met(SMITH)) {
+        player.displayClientMessage(Component.translatable("wayfarer.gear.worn", stack.getHoverName()).withStyle(ChatFormatting.GRAY), true);
+        if (Firsts.first(player, "last_use") && Progress.of(player.server).met(SMITH)) {
             Talk.tell(List.of(player), SMITH, Component.translatable("wayfarer.gear.smith"));
         }
     }

@@ -9,7 +9,7 @@ FIRE = (CENTRE, CENTRE)
 GRAVE = (2, 9)
 HEADSTONE = (1, 1)
 STRANGER = (5.4, 1, 7.5, 270)
-WAKE = (9.5, 1, 7.5, 90)
+WAKE = (9.5, 1, 10.5, 126)
 GROUND = Material(
     "camp/ground",
     [

@@ -3,9 +3,11 @@ package io.github.roman16.wayfarer.story;
 import de.markusbordihn.easynpc.data.attribute.EntityAttributes;
 import de.markusbordihn.easynpc.entity.easynpc.data.AttributeDataCapable;
 import io.github.roman16.wayfarer.Balance;
-import io.github.roman16.wayfarer.Daylight;
+import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Fire;
+import io.github.roman16.wayfarer.Leaving;
 import io.github.roman16.wayfarer.Sounds;
+import io.github.roman16.wayfarer.Waves;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,10 +22,12 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -44,8 +48,8 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import net.neoforged.bus.api.EventPriority;
@@ -54,6 +58,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.MobSpawnEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
@@ -62,13 +67,16 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 public final class Hold {
     private static final String KEEP = Wayfarer.MODID + "_keep";
     private static final String DOOR = "door";
+    private static final String ENDS = "ends";
     private static final String DOOR_BLOW = "door_blow";
     private static final String DOOR_STATE = "door_state";
     private static final String WAVE = "wave";
-    private static final String FAILED = "failed";
+    static final String FAILED = "failed";
     private static final String RETRY = "retry";
     private static final String TABLE = Wayfarer.MODID + ":gaze";
     private static final String TABLE_KEY = "table";
+    private static final String SIDE = "_side";
+    private static final String HORDE_TABLES = "horde_data/tables/";
     private static final String KEEP_KEY = "keep";
     private static final String FROM = "from";
     private static final String FOES = "foes";
@@ -82,6 +90,12 @@ public final class Hold {
     private static final int CRACKS = -Wayfarer.MODID.hashCode();
     private static final int DOOR_SEARCH = 16;
     static final int REACH = 96;
+    private static final int DOOR_WORK = 4;
+    private static final int WAITING_SECONDS = 64;
+    private static final int UNDER_FAR = 32;
+    private static final int UNDER_NEAR = 12;
+    private static final int UNDER_RISE = 8;
+    private static final int UNDER_STEP = 2;
     private static final String OUTLINED = Wayfarer.MODID + "_besieging";
     private static final int REPATH_TICKS = 20;
     private static final int TICKS_PER_SECOND = 20;
@@ -101,6 +115,12 @@ public final class Hold {
         private final Set<UUID> monsters = new HashSet<>();
         private final long started;
         private boolean spawned;
+        private boolean unreached;
+        private long unseenSince = -1;
+        private long toldWaiting = -1;
+        private final Set<UUID> cried = new HashSet<>();
+        @Nullable
+        private List<Vec3> below;
         private int strain;
         private long waveStarted = -1;
 
@@ -162,6 +182,10 @@ public final class Hold {
         return running != null;
     }
 
+    static boolean ground(Level level, BlockPos pos) {
+        return running != null && level.dimension() == Level.OVERWORLD && pos.closerThan(running.at, REACH);
+    }
+
     static void start(MinecraftServer server, Engine.Active active) {
         BlockPos at = Engine.at(server, active.step().text("at"));
         ServerLevel level = Engine.overworld(server);
@@ -200,6 +224,24 @@ public final class Hold {
         }
     }
 
+    private static String base(Engine.Active active) {
+        return active.step().spec().has(TABLE_KEY) ? Wayfarer.MODID + ":" + active.step().text(TABLE_KEY) : TABLE;
+    }
+
+    private static String table(MinecraftServer server, Engine.Active active) {
+        String base = base(active);
+        ResourceLocation side = ResourceLocation.parse(base + SIDE);
+        return !main(active) && server.getResourceManager().getResource(side.withPath(path -> HORDE_TABLES + path + ".json")).isPresent() ? side.toString() : base;
+    }
+
+    private static boolean main(Engine.Active active) {
+        return active.quest().kind().equals("main");
+    }
+
+    private static int waves(Engine.Active active, Balance.Hold hold) {
+        return main(active) ? hold.waves() : hold.sideWaves();
+    }
+
     static void tick(MinecraftServer server, Engine.Active active) {
         if (running == null || !running.quest.equals(active.quest().id()) || active.scratch().getBoolean(FAILED)) {
             return;
@@ -208,7 +250,7 @@ public final class Hold {
         Balance.Hold hold = Balance.get().hold();
         Balance.Crossing crossing = Balance.get().crossing();
         boolean across = crossing(active);
-        int waves = across ? crossing.waves() : hold.waves();
+        int waves = across ? crossing.waves() : waves(active, hold);
         long now = level.getGameTime();
         int wave = active.scratch().getInt(WAVE);
         if (!defended(server)) {
@@ -229,10 +271,23 @@ public final class Hold {
             if (!across && wave == 0 && (now - running.started < (long) hold.calmSeconds() * TICKS_PER_SECOND || Talk.busy())) {
                 return;
             }
+            if (!across && wave == 0 && base(active).equals(TABLE) && level.isDay()) {
+                if (Clock.passed()) {
+                    Balance.Clock clock = Balance.get().clock();
+                    Clock.pass(level, clock.dusk(), clock.afternoonSeconds(), clock.night());
+                }
+                return;
+            }
+            if (wave == 0 && active.step().spec().has(ENDS) && Engine.holds(Progress.of(server), active.step().text(ENDS))) {
+                end(server, active, level);
+                Engine.complete(server, active);
+                return;
+            }
             nearest(server, running.at).ifPresent(player -> {
                 keep(active).forEach(person -> People.find(server, person).filter(body -> !body.getTags().contains(KEEP)).ifPresent(Hold::vulnerable));
                 running.waveStarted = now;
                 running.spawned = false;
+                running.cried.clear();
                 Talk.notice(Component.literal(active.step().text("wave").replace("{wave}", String.valueOf(wave + 1))
                         .replace("{waves}", String.valueOf(waves))).withStyle(ChatFormatting.DARK_RED));
                 if (across) {
@@ -241,8 +296,8 @@ public final class Hold {
                     cross(server, active, level, wave, crossing);
                 } else {
                     long team = Math.max(1, Engine.players(server).stream().filter(member -> member.level().dimension() == Level.OVERWORLD).count());
-                    command(server, "hordes spawnWave %s %d %s".formatted(player.getScoreboardName(), (hold.firstWave() + hold.waveGrowth() * wave) * team,
-                            active.step().spec().has(TABLE_KEY) ? Wayfarer.MODID + ":" + active.step().text(TABLE_KEY) : TABLE));
+                    command(server, "hordes spawnWave %s %d %s".formatted(player.getScoreboardName(), Waves.size(server, wave, team),
+                            table(server, active)));
                 }
             });
             return;
@@ -250,13 +305,38 @@ public final class Hold {
         blows(level, now, hold);
         long elapsed = now - running.waveStarted;
         long ticks = (long) (across ? crossing.waveSeconds() : hold.waveSeconds()) * TICKS_PER_SECOND;
-        boolean cleared = running.spawned && level.getEntitiesOfClass(Monster.class, new AABB(running.at).inflate(REACH),
-                monster -> monster.isAlive() && running.monsters.contains(monster.getUUID())).isEmpty();
+        List<Monster> standing = level.getEntitiesOfClass(Monster.class, new AABB(running.at).inflate(REACH),
+                monster -> monster.isAlive() && running.monsters.contains(monster.getUUID()));
+        boolean cleared = running.spawned && standing.isEmpty();
+        List<ServerPlayer> alive = Engine.players(server).stream().filter(ServerPlayer::isAlive).toList();
+        boolean working = standing.stream().anyMatch(monster -> alive.stream().anyMatch(monster::hasLineOfSight)
+                || running.door != null && monster.blockPosition().closerThan(running.door, DOOR_WORK)
+                || monster.getNavigation().getPath() != null && monster.getNavigation().getPath().canReach());
+        running.unreached = !across && running.spawned && !cleared && !working;
+        if (running.unreached) {
+            if (running.toldWaiting < 0 || now - running.toldWaiting >= (long) WAITING_SECONDS * TICKS_PER_SECOND) {
+                running.toldWaiting = now;
+                Talk.notice(Component.translatable(running.door == null ? "wayfarer.hold.waiting" : "wayfarer.hold.waiting_door"));
+            }
+            running.waveStarted++;
+            if (running.unseenSince < 0) {
+                running.unseenSince = now;
+            } else if (now - running.unseenSince >= (long) Balance.get().waves().unseenSeconds() * TICKS_PER_SECOND) {
+                standing.forEach(monster -> ring(level, monster));
+                running.unseenSince = -1;
+            }
+            return;
+        }
+        running.unseenSince = -1;
         if (cleared && elapsed >= TICKS_PER_SECOND || elapsed >= ticks) {
             running.waveStarted = -1;
             active.scratch().putInt(WAVE, wave + 1);
             Progress.of(server).setDirty();
         }
+    }
+
+    public static boolean unreached() {
+        return running != null && running.unreached;
     }
 
     private static boolean defended(MinecraftServer server) {
@@ -273,15 +353,14 @@ public final class Hold {
         List<String> foes = new ArrayList<>();
         active.step().spec().getAsJsonArray(FOES).forEach(foe -> foes.add(foe.getAsString()));
         long players = Math.max(1, Engine.players(server).stream().filter(player -> player.level().dimension() == Level.OVERWORLD).count());
-        long count = (crossing.firstWave() + (long) crossing.waveGrowth() * wave) * players;
+        int count = Waves.size(server, wave, players);
         for (int index = 0; index < count; index++) {
             int which = index;
             EntityType.byString(foes.get(index % foes.size())).map(type -> type.create(level)).ifPresent(entity -> {
                 if (!(entity instanceof Mob mob)) {
                     return;
                 }
-                BlockPos at = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                        from.offset(level.random.nextInt(SPREAD * 2 + 1) - SPREAD, 0, level.random.nextInt(SPREAD * 2 + 1) - SPREAD));
+                BlockPos at = Ground.above(level, from.offset(level.random.nextInt(SPREAD * 2 + 1) - SPREAD, 0, level.random.nextInt(SPREAD * 2 + 1) - SPREAD));
                 mob.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, level.random.nextFloat() * 360, 0);
                 if (wave == 0 && which == 0 && mob instanceof PatrollingMonster patrol) {
                     patrol.setPatrolLeader(true);
@@ -380,12 +459,13 @@ public final class Hold {
     }
 
     private static void end(MinecraftServer server, Engine.Active active, ServerLevel level) {
+        Progress.of(server).held.add(active.step().text("at"));
+        Progress.of(server).setDirty();
         if (crossing(active)) {
             retreat(server, active, level);
         }
-        running.monsters.stream().map(level::getEntity).filter(entity -> entity instanceof Mob mob && mob.isAlive() && !mob.getTags().contains(RETREAT)
-                        && !level.canSeeSky(mob.blockPosition()))
-                .forEach(entity -> Daylight.crumble(level, (Mob) entity));
+        running.monsters.stream().map(level::getEntity).filter(entity -> entity instanceof Mob mob && mob.isAlive() && !mob.getTags().contains(RETREAT))
+                .forEach(entity -> Leaving.send((Mob) entity, Vec3.atCenterOf(running.at)));
         for (String person : keep(active)) {
             People.find(server, person).ifPresent(Hold::guarded);
         }
@@ -449,7 +529,7 @@ public final class Hold {
             event.setCanceled(true);
             return;
         }
-        if (running != null && event.getNewAboutToBeSetTarget() != null && event.getNewAboutToBeSetTarget().getTags().contains(KEEP)) {
+        if (running != null && event.getNewAboutToBeSetTarget() != null && event.getNewAboutToBeSetTarget().getTags().contains(KEEP) && !Leaving.leaving(event.getEntity())) {
             event.setCanceled(false);
         }
     }
@@ -479,6 +559,57 @@ public final class Hold {
         if (running != null && !running.across) {
             mob.addTag(WAVE_SPAWN);
         }
+    }
+
+    private static void ring(ServerLevel level, Monster monster) {
+        Optional<Vec3> below = underground(level);
+        if (below.isPresent()) {
+            monster.moveTo(below.get().x, below.get().y, below.get().z, monster.getYRot(), 0);
+            return;
+        }
+        Waves.ring(level, monster, running.at);
+    }
+
+    @SubscribeEvent
+    public static void onHurt(LivingDamageEvent.Post event) {
+        LivingEntity kept = event.getEntity();
+        if (running == null || !kept.getTags().contains(KEEP) || !kept.isAlive() || !running.cried.add(kept.getUUID())) {
+            return;
+        }
+        People.who(kept).ifPresent(person -> Talk.notice(Component.translatable("wayfarer.hold.cry", People.label(kept.getServer(), person))
+                .withStyle(ChatFormatting.DARK_RED)));
+    }
+
+    static boolean failed(Engine.Active active) {
+        return active.scratch().getBoolean(FAILED);
+    }
+
+    public static Optional<Vec3> underground(ServerLevel level) {
+        if (running == null || running.across || level.dimension() != Level.OVERWORLD || level.canSeeSky(running.at.above())) {
+            return Optional.empty();
+        }
+        if (running.below == null) {
+            running.below = new ArrayList<>();
+            BlockPos at = running.at;
+            for (int dx = -UNDER_FAR; dx <= UNDER_FAR; dx += UNDER_STEP) {
+                for (int dz = -UNDER_FAR; dz <= UNDER_FAR; dz += UNDER_STEP) {
+                    int flat = dx * dx + dz * dz;
+                    if (flat < UNDER_NEAR * UNDER_NEAR || flat > UNDER_FAR * UNDER_FAR) {
+                        continue;
+                    }
+                    for (int dy = -UNDER_RISE; dy <= UNDER_RISE; dy++) {
+                        BlockPos feet = at.offset(dx, dy, dz);
+                        if (level.isLoaded(feet) && level.getBlockState(feet).getCollisionShape(level, feet).isEmpty() && level.getFluidState(feet).isEmpty()
+                                && level.getBlockState(feet.above()).getCollisionShape(level, feet.above()).isEmpty()
+                                && level.getBlockState(feet.below()).isFaceSturdy(level, feet.below(), Direction.UP) && level.getFluidState(feet.below()).isEmpty()
+                                && !People.seen(level, Vec3.atBottomCenterOf(feet))) {
+                            running.below.add(Vec3.atBottomCenterOf(feet));
+                        }
+                    }
+                }
+            }
+        }
+        return running.below.isEmpty() ? Optional.empty() : Optional.of(running.below.get(level.random.nextInt(running.below.size())));
     }
 
     @SubscribeEvent

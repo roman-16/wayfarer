@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import io.github.roman16.wayfarer.HudState;
+import io.github.roman16.wayfarer.Narration;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.github.roman16.wayfarer.client.stamp.Inline;
 import io.github.roman16.wayfarer.client.stamp.Stamp;
@@ -83,6 +84,8 @@ public final class JournalScreen extends Screen {
     private static final Map<Tab, String> CHOSEN_ENTRY = new EnumMap<>(Tab.class);
     private static final Map<String, String> CHOSEN_THING = new HashMap<>();
     private static final Set<String> MARKED = new HashSet<>();
+    private static final String JOURNAL = "journal:";
+    private static String voiced = "";
     private static final String CHAPTER = "chapter";
     private final Set<String> seen = new HashSet<>();
     private boolean doneUnfolded;
@@ -244,6 +247,16 @@ public final class JournalScreen extends Screen {
         }
         things = new ArrayList<>();
         page = page(chosen);
+        List<String> voices = voices(chosen);
+        String voicing = chosen == null ? "" : chosen.key();
+        if (!voicing.equals(voiced)) {
+            voiced = voicing;
+            if (!voices.isEmpty() && Reading.once(JOURNAL + voicing)) {
+                Speech.pages(voices);
+            } else {
+                Speech.stopPages();
+            }
+        }
         slots = chosen != null && chosen.kind() == Kind.REWARD ? stacks(chosen.data()) : List.of();
         int ribbonY = top + COVER_EDGE + RIBBON_GAP * 2;
         Shelf shelf = ribbons.getFirst().shelf;
@@ -262,6 +275,12 @@ public final class JournalScreen extends Screen {
         things.forEach(this::addWidget);
         place();
         acting = 0;
+        if (!voices.isEmpty()) {
+            action("wayfarer.journal.hear", () -> Speech.pages(voices));
+        }
+        if (open == Tab.AFTERWARDS) {
+            action("wayfarer.journal.ending", () -> Ending.credits(view.getAsJsonArray("epilogue").toString()));
+        }
         if (chosen != null && chosen.kind() == Kind.GEAR) {
             gearActions(chosen.data());
         }
@@ -366,8 +385,9 @@ public final class JournalScreen extends Screen {
             }
             chosen.getAsJsonArray("needs").forEach(element -> {
                 JsonObject need = element.getAsJsonObject();
-                add(lines, Component.translatable("wayfarer.gear.need", need.get("count").getAsInt(), need.get("name").getAsString(),
-                        need.get("where").getAsString()), 0, INK, width);
+                String where = need.get("where").getAsString();
+                add(lines, where.isEmpty() ? Component.translatable("wayfarer.gear.need_bare", need.get("count").getAsInt(), need.get("name").getAsString())
+                        : Component.translatable("wayfarer.gear.need", need.get("count").getAsInt(), need.get("name").getAsString(), where), 0, INK, width);
             });
             if (!chosen.get("mystery").getAsBoolean()) {
                 add(lines, Component.literal(chosen.get("made").getAsString()), 0, QUIET_INK, width);
@@ -388,6 +408,12 @@ public final class JournalScreen extends Screen {
 
     private static boolean selectable(Entry entry) {
         return entry.kind() != Kind.FOLD && entry.kind() != Kind.HEADING;
+    }
+
+    @Override
+    public void removed() {
+        voiced = "";
+        Speech.stopPages();
     }
 
     private void see(Entry entry) {
@@ -582,6 +608,30 @@ public final class JournalScreen extends Screen {
             case FOLD, HEADING -> {}
         }
         return lines;
+    }
+
+    private static List<String> voices(@Nullable Entry entry) {
+        if (entry == null) {
+            return List.of();
+        }
+        JsonObject data = entry.data();
+        String voice = YourVoice.chosen().id();
+        List<Optional<Narration.Clip>> clips = new ArrayList<>();
+        switch (entry.kind()) {
+            case QUEST, DONE -> {
+                clips.add(Narration.chosen(voice, data.get("summary").getAsString()));
+                data.getAsJsonArray("story").forEach(told -> clips.add(Narration.chosen(voice, told.getAsString())));
+            }
+            case LINES -> data.getAsJsonArray("lines").forEach(line -> clips.add(Narration.chosen(voice, line.getAsString())));
+            case DEED -> clips.add(Narration.chosen(voice, Component.translatable("wayfarer.deed." + data.get("key").getAsString() + ".line").getString()));
+            case AFTERWARD -> {
+                clips.add(Narration.said(null, Afterward.hall(data).getString(), false));
+                clips.add(Narration.said(null, Afterward.door(data).getString(), false));
+            }
+            case BOOK -> data.getAsJsonArray("pages").forEach(text -> clips.add(Narration.page(text.getAsString())));
+            default -> {}
+        }
+        return clips.stream().flatMap(Optional::stream).map(Narration.Clip::path).toList();
     }
 
     private List<ItemStack> stacks(JsonObject reward) {

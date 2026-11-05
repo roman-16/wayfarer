@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer.client;
 
+import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.CompassPayload;
 import io.github.roman16.wayfarer.GazePayload;
 import io.github.roman16.wayfarer.HudState;
@@ -175,15 +176,31 @@ public final class Hud {
             return null;
         }
         return switch (reading.mode()) {
-            case BARE -> null;
+            case BARE, MARKED -> null;
             case AIR, COLD, DIM, HIDDEN, LOST, RISING -> new Urgent(List.of(new Run(Component.translatable(caption(reading.mode())), Stamp.LABEL)), -1, null);
-            case FAR -> new Urgent(List.of(new Run(Component.translatable("wayfarer.compass.ember"), Stamp.LABEL), new Run(Component.literal(" · "), Stamp.DIM),
-                    new Run(Component.translatable(heatKey(reading.heat())), heatColor(reading.heat()))), -1, null);
+            case FAR -> new Urgent(far(reading), -1, null);
         };
+    }
+
+    private static List<Run> far(CompassPayload reading) {
+        List<Run> runs = new ArrayList<>(List.of(new Run(Component.translatable("wayfarer.compass.ember"), Stamp.LABEL), new Run(Component.literal(" · "), Stamp.DIM),
+                gone() ? new Run(Component.translatable("wayfarer.compass.dark"), Stamp.DIM)
+                        : new Run(Component.translatable(heatKey(reading.heat())), heatColor(reading.heat()))));
+        if (reading.distant() && !gone()) {
+            runs.add(new Run(Component.literal(", "), Stamp.DIM));
+            runs.add(new Run(Component.translatable("wayfarer.compass.far"), Stamp.LABEL));
+        }
+        return runs;
     }
 
     public static String heatKey(int heat) {
         return "wayfarer.compass." + HEAT[heat + 2];
+    }
+
+    private static boolean gone() {
+        long glow = Balance.get().sense().glowSeconds() * 1000L;
+        long since = Util.getMillis() - sensedAt;
+        return since >= glow && since < Stamp.LINGER_MILLIS && emberAt <= sensedAt + glow;
     }
 
     public static void sensed() {
@@ -488,7 +505,12 @@ public final class Hud {
             }
             taken.add(new int[] {x - half, x + half});
             graphics.blitSprite(Stamp.PLATE, x - half, y, half * 2 + 1, PLATE_HEIGHT);
-            graphics.drawString(font, text, x - font.width(text) / 2 + 1, y + PLATE_TEXT, marker.kind() == CompassPayload.Kind.GOAL ? Stamp.GOLD : Stamp.BONE, true);
+            int color = marker.kind() == CompassPayload.Kind.GOAL ? Stamp.GOLD : Stamp.BONE;
+            graphics.drawString(font, text, x - font.width(text) / 2 + 1, y + PLATE_TEXT, color, true);
+            int rise = marker.y() - player.getBlockY();
+            if (marker.kind() != CompassPayload.Kind.TEAMMATE && Math.abs(rise) > Balance.get().compass().levelBlocks()) {
+                Stamp.tinted(graphics, Stamp.compass(rise > 0 ? "above" : "below"), x + half + 1, y + PLATE_TEXT, 5, 3, color);
+            }
         }
         return !taken.isEmpty();
     }

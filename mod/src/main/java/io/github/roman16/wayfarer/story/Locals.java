@@ -8,21 +8,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.monster.AbstractIllager;
 import net.minecraft.world.entity.npc.Villager;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
-import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class Locals {
-    private static final String VILLAGER = "villager";
     private static final String GAZEBOUND = "gazebound";
-    private static final int CHECK_TICKS = 20;
     private static final int SHOUT_GAP_TICKS = 320;
-    private static final int SPOTTED_BLOCKS = 32;
     private static final Map<UUID, Long> SPOKE = new HashMap<>();
     private static final Set<UUID> SHOUTED = new HashSet<>();
     private static int shoutedAt = -SHOUT_GAP_TICKS;
@@ -40,32 +39,26 @@ public final class Locals {
         if (spoke != null && spoke == day) {
             return;
         }
-        List<String> lines = Story.get().person(VILLAGER).acts().get(act(player.server));
+        ResourceLocation kind = BuiltInRegistries.ENTITY_TYPE.getKey(villager.getType());
+        Optional<Story.Person> speaker = Story.get().people().values().stream().filter(person -> kind.equals(person.creature())).findFirst();
+        List<String> lines = speaker.map(person -> person.acts().get(act(player.server))).orElse(null);
         if (lines == null || lines.isEmpty()) {
             return;
         }
         int pick = Math.floorMod(villager.getUUID().hashCode() + (int) day, lines.size());
-        Talk.say(Talk.ROAD, villager.position(), new Story.Line(VILLAGER, lines.get(pick)));
+        Talk.say(Talk.ROAD, villager.position(), new Story.Line(speaker.get().id(), lines.get(pick)));
     }
 
     @SubscribeEvent
-    public static void onServerTick(ServerTickEvent.Post event) {
-        MinecraftServer server = event.getServer();
-        if (server.getTickCount() % CHECK_TICKS != 0 || server.getTickCount() - shoutedAt < SHOUT_GAP_TICKS || !Engine.running(server) || Talk.busy()) {
+    public static void onSpotted(LivingChangeTargetEvent event) {
+        if (!(event.getEntity() instanceof AbstractIllager illager) || !(event.getNewAboutToBeSetTarget() instanceof ServerPlayer player) || !illager.isAlive()
+                || SHOUTED.contains(illager.getUUID()) || !Engine.running(player.server) || player.server.getTickCount() - shoutedAt < SHOUT_GAP_TICKS) {
             return;
         }
-        for (ServerPlayer player : Engine.players(server)) {
-            Optional<AbstractIllager> spotted = player.serverLevel().getEntitiesOfClass(AbstractIllager.class, player.getBoundingBox().inflate(SPOTTED_BLOCKS),
-                    illager -> illager.getTarget() == player && !SHOUTED.contains(illager.getUUID())).stream().findFirst();
-            if (spotted.isPresent()) {
-                AbstractIllager illager = spotted.get();
-                SHOUTED.add(illager.getUUID());
-                shoutedAt = server.getTickCount();
-                List<String> shouts = Story.get().person(GAZEBOUND).shouts();
-                Talk.say(Talk.ROAD, illager.position(), new Story.Line(GAZEBOUND, shouts.get(Math.floorMod(illager.getUUID().hashCode(), shouts.size()))));
-                return;
-            }
-        }
+        SHOUTED.add(illager.getUUID());
+        shoutedAt = player.server.getTickCount();
+        List<String> shouts = Story.get().person(GAZEBOUND).shouts();
+        Talk.say(Talk.ROAD, illager.position(), new Story.Line(GAZEBOUND, shouts.get(Math.floorMod(illager.getUUID().hashCode(), shouts.size()))));
     }
 
     @SubscribeEvent

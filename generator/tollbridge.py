@@ -487,6 +487,16 @@ def tower():
             t.set((x, g, z), "minecraft:stone_bricks" if edge else "minecraft:cobblestone")
     for x in range(lo + 1, lo + 5):
         t.set((x, g, lo + 1), AIR)
+    for x in range(lo + 1, lo + 4):
+        t.set(
+            (x, g + 1, lo + 2),
+            "minecraft:dark_oak_trapdoor",
+            facing="south",
+            half="bottom",
+            open=True,
+            powered=False,
+            waterlogged=False,
+        )
     for i, x in enumerate(range(lo + 4, lo, -1)):
         y = g - i
         t.set(
@@ -1035,6 +1045,7 @@ def plan():
             "bell_facing": "east",
             "bell_seat": list(BELL_SEAT),
             "clue": [mid, CELLAR + 1, hi],
+            "hatch": [lo + 2, CELLAR + 1, lo + 2],
             "door": [mid, hi],
             "fire": [hi - 1, 1, hi - 1],
             "ground": CELLAR,

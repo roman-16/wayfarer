@@ -44,6 +44,7 @@ import io.github.roman16.wayfarer.story.Talk;
 import io.github.roman16.wayfarer.story.Tasks;
 import io.github.roman16.wayfarer.story.Tollbridge;
 import io.github.roman16.wayfarer.story.Trail;
+import io.github.roman16.wayfarer.story.Voyage;
 import io.github.roman16.wayfarer.story.Wards;
 import io.github.roman16.wayfarer.worm.GreatWorms;
 import java.util.List;
@@ -65,7 +66,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -298,9 +298,11 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Gaze.class);
         NeoForge.EVENT_BUS.register(Gear.class);
         NeoForge.EVENT_BUS.register(Graves.class);
+        NeoForge.EVENT_BUS.register(Hearts.class);
         NeoForge.EVENT_BUS.register(Hold.class);
         NeoForge.EVENT_BUS.register(Joining.class);
         NeoForge.EVENT_BUS.register(LastUse.class);
+        NeoForge.EVENT_BUS.register(Leaving.class);
         NeoForge.EVENT_BUS.register(Locals.class);
         NeoForge.EVENT_BUS.register(Memories.class);
         NeoForge.EVENT_BUS.register(Mine.class);
@@ -333,9 +335,11 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Veils.class);
         NeoForge.EVENT_BUS.register(Stillness.class);
         NeoForge.EVENT_BUS.register(Talk.class);
+        NeoForge.EVENT_BUS.register(Narration.class);
         NeoForge.EVENT_BUS.register(Tasks.class);
         NeoForge.EVENT_BUS.register(Tents.class);
         NeoForge.EVENT_BUS.register(Trail.class);
+        NeoForge.EVENT_BUS.register(Voyage.class);
         NeoForge.EVENT_BUS.register(Wards.class);
         NeoForge.EVENT_BUS.register(Weather.class);
         NeoForge.EVENT_BUS.register(WorldSetup.class);
@@ -370,6 +374,7 @@ public final class Wayfarer {
         registrar.playToServer(Talk.Pick.TYPE, Talk.Pick.STREAM_CODEC, (payload, context) -> Talk.pick((ServerPlayer) context.player(), payload.index()));
         registrar.playToServer(Talk.Screen.TYPE, Talk.Screen.STREAM_CODEC, (payload, context) -> Talk.screen((ServerPlayer) context.player(), payload.open()));
         registrar.playToClient(Talk.Subtitle.TYPE, Talk.Subtitle.STREAM_CODEC, (payload, context) -> Conversation.hear(payload));
+        registrar.playToServer(Narration.Chosen.TYPE, Narration.Chosen.STREAM_CODEC, (payload, context) -> Narration.choose((ServerPlayer) context.player(), payload.voice()));
         registrar.playToServer(Gear.Track.TYPE, Gear.Track.STREAM_CODEC, (payload, context) -> Gear.track((ServerPlayer) context.player(), payload.thing()));
         registrar.playToClient(Journal.View.TYPE, Journal.View.STREAM_CODEC, (payload, context) -> JournalScreen.show(payload.json()));
         registrar.playToServer(Journal.Claim.TYPE, Journal.Claim.STREAM_CODEC,
@@ -397,7 +402,8 @@ public final class Wayfarer {
         registrar.playToClient(CompassPayload.TYPE, CompassPayload.STREAM_CODEC, (payload, context) -> HudState.compass = payload);
         registrar.playToClient(GazePayload.TYPE, GazePayload.STREAM_CODEC, (payload, context) -> HudState.gaze = payload);
         registrar.playToClient(NightPayload.TYPE, NightPayload.STREAM_CODEC, (payload, context) -> HudState.night = payload);
-        registrar.playToClient(After.Ending.TYPE, After.Ending.STREAM_CODEC, (payload, context) -> Ending.show(payload.afterwards()));
+        registrar.playToClient(After.Credits.TYPE, After.Credits.STREAM_CODEC, (payload, context) -> Ending.credits(payload.epilogue()));
+        registrar.playToClient(After.Ending.TYPE, After.Ending.STREAM_CODEC, (payload, context) -> Ending.show(payload.afterwards(), payload.epilogue()));
         registrar.playToClient(Afterwards.Open.TYPE, Afterwards.Open.STREAM_CODEC, (payload, context) -> JournalScreen.afterwards());
         registrar.playToClient(After.Skin.TYPE, After.Skin.STREAM_CODEC, (payload, context) -> Ending.skin(payload.player(), payload.texture()));
         registrar.playToClient(Memories.Flash.TYPE, Memories.Flash.STREAM_CODEC, (payload, context) -> Flash.show(payload));

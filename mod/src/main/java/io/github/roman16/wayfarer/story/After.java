@@ -32,6 +32,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public final class After {
     static final String DOORS = "the_doors";
     static final String HOME = "home";
+    private static final String FINALE = "finale";
     private static final String BLIND = "blind";
     private static final String SIGHT = "sight";
     private static final String CLOSE = "close";
@@ -44,9 +45,10 @@ public final class After {
 
     private After() {}
 
-    public record Ending(String afterwards) implements CustomPacketPayload {
+    public record Ending(String afterwards, String epilogue) implements CustomPacketPayload {
         public static final Type<Ending> TYPE = new Type<>(Wayfarer.id("ending"));
-        public static final StreamCodec<ByteBuf, Ending> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(Ending::new, Ending::afterwards);
+        public static final StreamCodec<ByteBuf, Ending> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.STRING_UTF8, Ending::afterwards,
+                ByteBufCodecs.STRING_UTF8, Ending::epilogue, Ending::new);
 
         @Override
         public Type<Ending> type() {
@@ -62,6 +64,22 @@ public final class After {
         @Override
         public Type<Skin> type() {
             return TYPE;
+        }
+    }
+
+    public record Credits(String epilogue) implements CustomPacketPayload {
+        public static final Type<Credits> TYPE = new Type<>(Wayfarer.id("credits"));
+        public static final StreamCodec<ByteBuf, Credits> STREAM_CODEC = ByteBufCodecs.STRING_UTF8.map(Credits::new, Credits::epilogue);
+
+        @Override
+        public Type<Credits> type() {
+            return TYPE;
+        }
+    }
+
+    static void done(MinecraftServer server, Story.Quest quest) {
+        if (quest.act().equals(FINALE) && quest.after().contains(DOORS)) {
+            Talk.then(quest.id(), () -> PacketDistributor.sendToAllPlayers(new Credits(Epilogue.view(server).toString())));
         }
     }
 
@@ -120,7 +138,7 @@ public final class After {
 
     private static void greet(ServerPlayer player) {
         if (gone(player.server)) {
-            PacketDistributor.sendToPlayer(player, new Ending(Afterwards.view(player.server).toString()));
+            PacketDistributor.sendToPlayer(player, new Ending(Afterwards.view(player.server).toString(), Epilogue.view(player.server).toString()));
         }
         if (pip(player.server)) {
             player.server.getPlayerList().getPlayers().forEach(member -> PacketDistributor.sendToPlayer(player, new Skin(member.getUUID().toString(), PIP_SKIN)));

@@ -36,6 +36,12 @@ final class Escort {
             Progress.of(server).setDirty();
         }
         Places.build(server, active.step().text("place"));
+        ServerLevel level = Engine.overworld(server);
+        String who = active.step().text(WHO);
+        int reach = Balance.get().talk().reachBlocks();
+        Engine.players(server).stream().filter(player -> player.level() == level).findFirst()
+                .filter(player -> People.find(server, who).filter(body -> body.level() == level && body.distanceTo(player) <= reach).isEmpty())
+                .ifPresent(player -> People.catchUp(level, who, player.position(), player.getYRot()));
     }
 
     static void tick(MinecraftServer server, Engine.Active active) {

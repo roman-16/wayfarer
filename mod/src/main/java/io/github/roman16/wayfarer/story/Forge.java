@@ -5,6 +5,7 @@ import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.FrostIron;
+import io.github.roman16.wayfarer.Handover;
 import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
@@ -36,26 +37,33 @@ final class Forge {
     private static final String PIECE = "piece";
     private static final String WITH = "with";
     private static final String JOB = "job";
-    private static final String DAY = "day";
+    private static final String KEEP = "keep";
+    private static final String LEAVE = "leave";
+    private static final String READY = "ready";
+    private static final String SLOT = "slot";
     private static final Bundled<JsonObject> LINES = Bundled.json("/wayfarer/gear.json", json -> json.getAsJsonObject(SCRATCH));
 
     private Forge() {}
 
     private enum Job { BOOK, FORGE, MEND }
 
-    private record Order(ItemStack piece, Job job, ItemStack with, long day) {}
+    private record Order(ItemStack piece, Job job, ItemStack with, long ready, int slot) {}
 
     static boolean interact(ServerPlayer player, Entity body) {
         if (People.who(body).filter(SMITH::equals).isEmpty() || !body.isAlive()) {
             return false;
         }
         MinecraftServer server = player.server;
-        long today = Math.floorDiv(Engine.overworld(server).getDayTime(), Clock.DAY);
+        long now = Engine.overworld(server).getDayTime();
         List<Order> orders = orders(server, player);
-        if (orders.stream().anyMatch(order -> order.day() < today)) {
-            hand(player, body, orders, today);
+        if (orders.stream().anyMatch(order -> order.ready() <= now)) {
+            hand(player, body, orders, now);
             return true;
         }
+        if (!Talk.free(player)) {
+            return false;
+        }
+        long ready = ready(now);
         ItemStack held = player.getMainHandItem();
         if (!held.isDamageableItem()) {
             if (orders.isEmpty()) {
@@ -67,27 +75,26 @@ final class Forge {
         boolean hammer = Progress.of(server).done(QUEST);
         ItemStack other = player.getOffhandItem();
         if (other.is(Wayfarer.RAW_FROST_IRON)) {
-            forge(player, body, held, hammer, orders, today);
+            forge(player, body, held, hammer, ready);
         } else if (other.is(Items.ENCHANTED_BOOK)) {
-            book(player, body, held, other, hammer, orders, today);
+            book(player, body, held, other, hammer, ready);
         } else {
-            mend(player, body, held, hammer, orders, today);
+            mend(player, body, held, hammer, ready);
         }
         return true;
     }
 
-    private static void mend(ServerPlayer player, Entity body, ItemStack held, boolean hammer, List<Order> orders, long today) {
+    private static void mend(ServerPlayer player, Entity body, ItemStack held, boolean hammer, long ready) {
         if (!held.isDamaged()) {
             say(player, body, line("whole"));
         } else if (!hammer && held.getDamageValue() <= held.getMaxDamage() / 2) {
             say(player, body, line("half"));
         } else {
-            take(player, body, new Order(held.copy(), Job.MEND, ItemStack.EMPTY, today), orders, hammer ? "leave" : "leave_half");
-            held.setCount(0);
+            ask(player, body, new Order(held.copy(), Job.MEND, ItemStack.EMPTY, ready, player.getInventory().selected), hammer ? LEAVE : "leave_half", () -> {});
         }
     }
 
-    private static void forge(ServerPlayer player, Entity body, ItemStack held, boolean hammer, List<Order> orders, long today) {
+    private static void forge(ServerPlayer player, Entity body, ItemStack held, boolean hammer, long ready) {
         if (!hammer) {
             say(player, body, line("no_hammer"));
             return;
@@ -110,19 +117,19 @@ final class Forge {
                     .replace("{need}", number(need)).replace("{have}", number(have)));
             return;
         }
-        int left = need;
-        for (ItemStack stack : allStacks(player)) {
-            if (left > 0 && stack.is(Wayfarer.RAW_FROST_IRON)) {
-                int used = Math.min(left, stack.getCount());
-                stack.shrink(used);
-                left -= used;
+        ask(player, body, new Order(held.copy(), Job.FORGE, new ItemStack(Wayfarer.RAW_FROST_IRON.get(), need), ready, player.getInventory().selected), LEAVE, () -> {
+            int left = need;
+            for (ItemStack stack : allStacks(player)) {
+                if (left > 0 && stack.is(Wayfarer.RAW_FROST_IRON)) {
+                    int used = Math.min(left, stack.getCount());
+                    stack.shrink(used);
+                    left -= used;
+                }
             }
-        }
-        take(player, body, new Order(held.copy(), Job.FORGE, new ItemStack(Wayfarer.RAW_FROST_IRON.get(), need), today), orders, "leave");
-        held.setCount(0);
+        });
     }
 
-    private static void book(ServerPlayer player, Entity body, ItemStack held, ItemStack book, boolean hammer, List<Order> orders, long today) {
+    private static void book(ServerPlayer player, Entity body, ItemStack held, ItemStack book, boolean hammer, long ready) {
         if (!hammer) {
             say(player, body, line("book_no_hammer"));
             return;
@@ -131,9 +138,8 @@ final class Forge {
             say(player, body, line("book_wont"));
             return;
         }
-        take(player, body, new Order(held.copy(), Job.BOOK, book.copyWithCount(1), today), orders, "leave");
-        held.setCount(0);
-        book.shrink(1);
+        ask(player, body, new Order(held.copy(), Job.BOOK, book.copyWithCount(1), ready, player.getInventory().selected), LEAVE,
+                () -> player.getOffhandItem().shrink(1));
     }
 
     private static Map<Holder<Enchantment>, Integer> fitting(ItemStack piece, ItemStack book) {
@@ -150,31 +156,43 @@ final class Forge {
         return fits;
     }
 
-    private static void take(ServerPlayer player, Entity body, Order order, List<Order> orders, String said) {
-        List<Order> kept = new ArrayList<>(orders);
-        kept.add(order);
-        save(player, kept);
-        say(player, body, line(said));
+    private static long ready(long now) {
+        long evening = Math.floorDiv(now, Clock.DAY) * Clock.DAY + Clock.ticks(Balance.get().clock().evening());
+        return now < evening ? evening : Math.floorDiv(now, Clock.DAY) * Clock.DAY + Clock.DAY;
     }
 
-    private static void hand(ServerPlayer player, Entity body, List<Order> orders, long today) {
+    private static void ask(ServerPlayer player, Entity body, Order order, String said, Runnable consumed) {
+        say(player, body, line(said));
+        Talk.offerTo(player, List.of(new Story.Choice(LEAVE, line("give"), "", null, null, null), new Story.Choice(KEEP, line(KEEP), "", null, null, null)),
+                (answered, choice) -> {
+                    ItemStack piece = answered.getInventory().getItem(order.slot());
+                    if (!choice.id().equals(LEAVE) || !ItemStack.matches(piece, order.piece())) {
+                        say(answered, body, line("kept"));
+                        return;
+                    }
+                    consumed.run();
+                    piece.setCount(0);
+                    List<Order> kept = new ArrayList<>(orders(answered.server, answered));
+                    kept.add(order);
+                    save(answered, kept);
+                    say(answered, body, line("taken"));
+                });
+    }
+
+    private static void hand(ServerPlayer player, Entity body, List<Order> orders, long now) {
         boolean hammer = Progress.of(player.server).done(QUEST);
         List<Order> kept = new ArrayList<>();
         for (Order order : orders) {
-            if (order.day() >= today) {
+            if (order.ready() > now) {
                 kept.add(order);
                 continue;
             }
             ItemStack made = work(order, hammer);
-            ItemStack shown = made.copy();
-            if (player.getInventory().add(made)) {
-                Notices.given(player, List.of(shown));
-            } else {
-                kept.add(order);
-            }
+            Notices.given(player, List.of(made.copy()));
+            Handover.give(player, made, order.slot());
         }
         save(player, kept);
-        say(player, body, line(kept.stream().anyMatch(order -> order.day() < today) ? "room" : "here"));
+        say(player, body, line("here"));
     }
 
     private static ItemStack work(Order order, boolean hammer) {
@@ -206,7 +224,8 @@ final class Forge {
             CompoundTag tag = (CompoundTag) element;
             ItemStack piece = ItemStack.parseOptional(registries, tag.getCompound(PIECE));
             if (!piece.isEmpty()) {
-                orders.add(new Order(piece, Job.valueOf(tag.getString(JOB)), ItemStack.parseOptional(registries, tag.getCompound(WITH)), tag.getLong(DAY)));
+                orders.add(new Order(piece, Job.valueOf(tag.getString(JOB)), ItemStack.parseOptional(registries, tag.getCompound(WITH)), tag.getLong(READY),
+                        tag.getInt(SLOT)));
             }
         }
         return orders;
@@ -222,7 +241,8 @@ final class Forge {
             if (!order.with().isEmpty()) {
                 tag.put(WITH, order.with().save(registries));
             }
-            tag.putLong(DAY, order.day());
+            tag.putLong(READY, order.ready());
+            tag.putInt(SLOT, order.slot());
             list.add(tag);
         }
         Progress progress = Progress.of(player.server);

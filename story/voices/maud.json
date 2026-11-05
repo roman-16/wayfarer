@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "tdnSycRB4BUswMx3rKqq",
+  "id": "ca295e39",
+  "kept": "29.10.2026",
+  "preview": 3,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 605658741,
+    "should_enhance": false,
+    "text": "They never come back. What did you bring? The bell comes with us. It rang for every child born in Tollbridge. It comes. Hob, the cart. You brought one of the men in grey to our fire. So. Your dead man says there's a valley past the sea where nothing comes at night. Ask him again how far. Boats. Forty-five summers on the river, and now boats.",
+    "voice_description": "Native English, British, a plain rural English voice. Female, 55-65. Excellent quality. Persona: the elder of a burnt river town, leading its last survivors. Emotion: steady, dry, guarded, tender underneath. A low, firm, slightly hoarse voice, practical and unhurried; short plain sentences from someone used to being listened to, with a hard edge of doubt and a dry humour."
+  }
+}

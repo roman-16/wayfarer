@@ -65,7 +65,7 @@ Journal   [charred leather cover, iron corners]  parchment pages, a leather spin
 | Meter | Cells of the gaze's violet | The gaze |
 | Icons | White, tinted where drawn | The journal's ribbons, the compass's tent, stone, hall and fire |
 
-The dev client's style board (driver step `board`, gallery `interface/board/`) shows every component in every state.
+The dev client's style board (driver step `board`) shows every component in every state.
 
 ### L6 Coverage: vanilla's and the mods' interfaces
 

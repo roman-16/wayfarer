@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "RF0zVRytsGXOKM9kbUmX",
+  "id": "e0f52b47",
+  "kept": "03.11.2026",
+  "preview": 3,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 1876522489,
+    "should_enhance": false,
+    "text": "Murdo. I keep this bay, as my father did. We're the Tide Folk, what's left of us. Nothing comes up out of this bay at night, so our boats go out with lamps lit, and we eat. There's no valley. There's sea, and more sea, and then the cold. Ours keeps the eye off our boats. Theirs keeps the deep things out of the bay. The bay's been kind to us. Don't make me regret you.",
+    "voice_description": "Native English, Scottish, a soft island lilt from the Hebrides. Male, 50-60. Excellent quality. Persona: the elder of a small fishing people on a hidden bay, who keeps his people's old promise. Emotion: calm, dignified, guarded, honest, with a quiet sorrow. A low, clear, weathered voice, steady and plain-spoken, used to wind and sea; warm with his own people, careful with strangers."
+  }
+}

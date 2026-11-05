@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.QuartPos;
@@ -48,26 +49,40 @@ public final class HallStructure extends Structure {
 
     public static final MapCodec<HallStructure> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
                     settingsCodec(instance),
+                    Climate.CODEC.fieldOf("climate").forGetter(HallStructure::climate),
                     Layout.CODEC.fieldOf("layout").forGetter(HallStructure::layout),
                     Pieces.CODEC.fieldOf("pieces").forGetter(HallStructure::pieces),
                     ShaftPiece.Design.CODEC.fieldOf("shaft").forGetter(HallStructure::shaft))
             .apply(instance, HallStructure::new));
 
+    private static final int SKYLIGHT_SHORE = 2;
+    private static final int LANDING_BLOCKS = 2;
     private static final int MIN_DEPTH = 6;
 
     private record Column(int floor, boolean wet) {}
 
-    private record Plan(Rotation rotation, BlockPos hall, BlockPos shaft, int floor, int top, Direction exit, Optional<Column> light) {}
+    private record Plan(Rotation rotation, BlockPos hall, BlockPos shaft, int floor, int top, Direction exit, Optional<Column> light, boolean landing) {
 
+        private boolean better(@Nullable Plan than) {
+            return than == null || landing && !than.landing || landing == than.landing && top - floor < than.top() - than.floor();
+        }
+    }
+
+    private final Climate climate;
     private final Layout layout;
     private final Pieces pieces;
     private final ShaftPiece.Design shaft;
 
-    public HallStructure(StructureSettings settings, Layout layout, Pieces pieces, ShaftPiece.Design shaft) {
+    public HallStructure(StructureSettings settings, Climate climate, Layout layout, Pieces pieces, ShaftPiece.Design shaft) {
         super(settings);
+        this.climate = climate;
         this.layout = layout;
         this.pieces = pieces;
         this.shaft = shaft;
+    }
+
+    public Climate climate() {
+        return climate;
     }
 
     public Layout layout() {
@@ -96,7 +111,7 @@ public final class HallStructure extends Structure {
                 QuartPos.fromBlock(surface.getY()),
                 QuartPos.fromBlock(surface.getZ()),
                 context.randomState().sampler());
-        if (!context.validBiome().test(biome)) {
+        if (!context.validBiome().test(biome) || !climate.fits(biome)) {
             return Optional.empty();
         }
         return plan(context, center).map(plan -> new GenerationStub(surface, builder -> build(builder, context, plan)));
@@ -107,7 +122,7 @@ public final class HallStructure extends Structure {
         Plan best = null;
         for (Rotation rotation : Rotation.values()) {
             Plan plan = plan(context, rotation, hall, center);
-            if (plan != null && (best == null || plan.top() - plan.floor() < best.top() - best.floor())) {
+            if (plan != null && plan.better(best)) {
                 best = plan;
             }
         }
@@ -145,21 +160,27 @@ public final class HallStructure extends Structure {
             if (floor - layout.door().getY() <= context.heightAccessor().getMinBuildHeight() + 1) {
                 continue;
             }
-            if (best == null || depth < best.top() - best.floor()) {
-                Optional<Column> light = layout.oculus().map(oculus -> column(context, place(corner, oculus.at(), rotation)));
-                best = new Plan(rotation, corner.atY(floor - layout.door().getY()), shaft, floor, top, exit, light);
+            boolean landing = Math.abs(column(context, place(shaft, outside(exit, size, LANDING_BLOCKS), rotation)).floor() - top) <= 1;
+            Plan plan = new Plan(rotation, corner.atY(floor - layout.door().getY()), shaft, floor, top, exit, Optional.empty(), landing);
+            if (plan.better(best)) {
+                Optional<Column> light = layout.oculus().map(oculus -> skylight(context, place(corner, oculus.at(), rotation)));
+                best = new Plan(rotation, plan.hall(), shaft, floor, top, exit, light, landing);
             }
         }
         return best;
     }
 
     private static BlockPos outside(Direction exit, int size) {
+        return outside(exit, size, 0);
+    }
+
+    private static BlockPos outside(Direction exit, int size, int beyond) {
         int middle = size / 2;
         return switch (exit) {
-            case SOUTH -> new BlockPos(middle, 0, size);
-            case NORTH -> new BlockPos(middle, 0, -1);
-            case EAST -> new BlockPos(size, 0, middle);
-            default -> new BlockPos(-1, 0, middle);
+            case SOUTH -> new BlockPos(middle, 0, size + beyond);
+            case NORTH -> new BlockPos(middle, 0, -1 - beyond);
+            case EAST -> new BlockPos(size + beyond, 0, middle);
+            default -> new BlockPos(-1 - beyond, 0, middle);
         };
     }
 
@@ -212,6 +233,17 @@ public final class HallStructure extends Structure {
 
     private static BlockPos place(BlockPos origin, BlockPos local, Rotation rotation) {
         return origin.offset(turn(local, rotation));
+    }
+
+    private static Column skylight(GenerationContext context, BlockPos pos) {
+        Column middle = column(context, pos);
+        boolean wet = middle.wet();
+        for (int dx = -SKYLIGHT_SHORE; dx <= SKYLIGHT_SHORE && !wet; dx += SKYLIGHT_SHORE) {
+            for (int dz = -SKYLIGHT_SHORE; dz <= SKYLIGHT_SHORE && !wet; dz += SKYLIGHT_SHORE) {
+                wet = column(context, pos.offset(dx, 0, dz)).wet();
+            }
+        }
+        return new Column(middle.floor(), wet);
     }
 
     private static Column column(GenerationContext context, BlockPos pos) {

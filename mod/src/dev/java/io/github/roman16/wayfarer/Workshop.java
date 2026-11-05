@@ -107,21 +107,7 @@ public final class Workshop {
                                         StringArgumentType.getString(context, "skin"), StringArgumentType.getString(context, "pose"))))))
                         .then(adding("beside", Kind.BESIDE))
                         .then(Commands.literal("bounds").executes(context -> bounds(context.getSource())))
-                        .then(Commands.literal("clear").executes(context -> clear(context.getSource())))
-                        .then(Commands.literal("unsign").executes(context -> unsign(context.getSource())))));
-    }
-
-    private static int unsign(CommandSourceStack source) {
-        ServerLevel level = level(source);
-        if (level == null) {
-            source.sendFailure(Component.literal("workshop failed: there is no wayfarer:workshop world"));
-            return 0;
-        }
-        signs.forEach(sign -> level.setBlock(sign, Blocks.AIR.defaultBlockState(), QUIET));
-        int taken = signs.size();
-        signs.clear();
-        source.sendSuccess(() -> Component.literal("workshop: took away " + taken + " name signs"), false);
-        return 1;
+                        .then(Commands.literal("clear").executes(context -> clear(context.getSource())))));
     }
 
     private static LiteralArgumentBuilder<CommandSourceStack> adding(String name, Kind kind) {

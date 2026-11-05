@@ -1,5 +1,6 @@
 {
   "biomes": "#wayfarer:has_structure/hall/cold",
+  "climate": "cold",
   "layout": {
     "cover": 3,
     "door": [

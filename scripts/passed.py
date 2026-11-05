@@ -7,6 +7,8 @@ import sys
 import zipfile
 from pathlib import Path
 
+import tomllib
+
 ROOT = Path(__file__).resolve().parent.parent
 RECORD = ROOT / "build/passed.json"
 CLIENT_ONLY = re.compile(r"^(assets/|io/github/roman16/wayfarer/client/)")
@@ -36,7 +38,7 @@ INPUTS = (
 
 
 def jar():
-    version = re.search(r"(?m)^mod_version=(.*)$", (ROOT / "mod/gradle.properties").read_text()).group(1)
+    version = tomllib.loads((ROOT / "pack/pack.toml").read_text())["version"]
     return ROOT / f"mod/build/libs/wayfarer-{version}.jar"
 
 

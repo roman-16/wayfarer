@@ -56,7 +56,10 @@ public final class Road {
                         .requires(source -> source.hasPermission(OWNER))
                         .then(Commands.literal("pack").executes(context -> pack(context.getSource())))
                         .then(Commands.literal("follow").then(Commands.argument("save", StringArgumentType.string())
-                                .executes(context -> follow(context.getSource(), Path.of(StringArgumentType.getString(context, "save"))))))));
+                                .executes(context -> follow(context.getSource(), Path.of(StringArgumentType.getString(context, "save")), null))
+                                .then(Commands.argument("step", StringArgumentType.greedyString())
+                                        .executes(context -> follow(context.getSource(), Path.of(StringArgumentType.getString(context, "save")),
+                                                StringArgumentType.getString(context, "step"))))))));
     }
 
     @SubscribeEvent
@@ -118,7 +121,7 @@ public final class Road {
         return true;
     }
 
-    private static int follow(CommandSourceStack source, Path save) {
+    private static int follow(CommandSourceStack source, Path save, @Nullable String back) {
         MinecraftServer server = source.getServer();
         Path data = save.resolve("data");
         Progress old;
@@ -134,13 +137,35 @@ public final class Road {
             source.sendFailure(Component.literal("road failed: cannot read the story in " + save + ": " + exception.getMessage()));
             return 0;
         }
-        Optional<String> target = Story.get().quests().stream().filter(quest -> quest.kind().equals(Engine.MAIN) && old.open(quest.id())).findFirst()
-                .map(quest -> quest.id() + "/" + quest.steps().get(old.step(quest.id())).id());
-        if (target.isEmpty()) {
+        Optional<Story.Quest> under = Story.get().quests().stream().filter(quest -> quest.kind().equals(Engine.MAIN) && old.open(quest.id())).findFirst();
+        if (under.isEmpty()) {
             source.sendFailure(Component.literal("road failed: the story has ended on this world; there is no step to carry it to"));
             return 0;
         }
-        return StoryDev.begin(source, target.get(), null, new StoryDev.Way(Map.copyOf(old.choices), old.stone, () -> lay(source, old, caravan, target.get())));
+        Story.Quest quest = under.get();
+        String reached = quest.id() + "/" + quest.steps().get(old.step(quest.id())).id();
+        if (back != null) {
+            Optional<String> refused = behind(quest, old.step(quest.id()), reached, back);
+            if (refused.isPresent()) {
+                source.sendFailure(Component.literal("road failed: " + refused.get()));
+                return 0;
+            }
+        }
+        String target = back != null ? back : reached;
+        return StoryDev.begin(source, target, null, new StoryDev.Way(Map.copyOf(old.choices), old.stone, () -> lay(source, old, caravan, target)));
+    }
+
+    private static Optional<String> behind(Story.Quest quest, int at, String reached, String back) {
+        String[] parts = back.split("/", 2);
+        if (parts.length != 2 || !parts[0].equals(quest.id())) {
+            return Optional.of(back + " is not a step of " + quest.id() + ", which the road stands at");
+        }
+        for (int index = 0; index < quest.steps().size(); index++) {
+            if (quest.steps().get(index).id().equals(parts[1])) {
+                return index <= at ? Optional.empty() : Optional.of(back + " is ahead of the road, which stands at " + reached);
+            }
+        }
+        return Optional.of(quest.id() + " has no step " + parts[1]);
     }
 
     private static CompoundTag read(Path file) throws IOException {
@@ -150,7 +175,10 @@ public final class Road {
     private static void lay(CommandSourceStack source, Progress old, CompoundTag caravan, String target) {
         MinecraftServer server = source.getServer();
         Progress fresh = Progress.of(server);
+        String carried = target.substring(0, target.indexOf('/'));
+        int begun = fresh.step(carried);
         replace(fresh.steps, old.steps);
+        fresh.steps.put(carried, begun);
         Map<String, CompoundTag> grown = new LinkedHashMap<>(fresh.scratch);
         fresh.scratch.clear();
         old.scratch.forEach((key, kept) -> {

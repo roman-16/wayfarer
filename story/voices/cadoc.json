@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "cuTWv9ZwtRKrEPuZ7q5E",
+  "id": "58c7c7e1",
+  "kept": "29.10.2026",
+  "preview": 3,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 401494286,
+    "should_enhance": false,
+    "text": "I know that light. I'd know it anywhere. He's dead, then. Good. ...No. Not good. I've pitched my tent at the edge of the light. Your people shouldn't have to sleep next to a grey coat. It's true. Captain Wend. I served under him six winters. I never said it. It's not a name you say twice. They're not hunting you. They're herding you.",
+    "voice_description": "Native English, British. Male, 30-40. Excellent quality. Persona: a deserter from a cult's army, scarred, watchful, always ready to run. Emotion: quiet, guarded, haunted, with a dry, bitter wit. A low, rough, tired voice, clipped and plain, in short sentences, never raised; softer when he speaks of his brother."
+  }
+}

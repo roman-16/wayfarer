@@ -10,6 +10,7 @@ import io.github.roman16.wayfarer.Wayfarer;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -18,19 +19,21 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
@@ -75,6 +78,8 @@ final class Act3 {
     private static final String[] GRAVES = {"grave_1", "grave_2", "grave_3"};
     private static final int WOUNDED_RING = 5;
     private static final int GRAVE_RING = 9;
+    private static final int OPEN_TURNS = 4;
+    private static final double OPEN_STEP = 16;
     private static final int TURN_STEP = 20;
     private static final int WIDEST = 120;
     private static final int SAMPLE = 64;
@@ -119,6 +124,17 @@ final class Act3 {
         }
     }
 
+    static void unbuild(MinecraftServer server, String name) {
+        Progress progress = Progress.of(server);
+        switch (name) {
+            case HOLLOW -> progress.places.remove(HOLLOW_MARKED);
+            case AIRFIELD -> progress.places.remove(AIRFIELD_ORIGIN);
+            case KEEPERS -> List.of(KEEPERS_FRAME, FRAME_MARKED).forEach(progress.places::remove);
+            default -> throw new IllegalStateException("act 3 has no place " + name);
+        }
+        progress.setDirty();
+    }
+
     static boolean ready(MinecraftServer server, String name) {
         Progress progress = Progress.of(server);
         return switch (name) {
@@ -155,16 +171,17 @@ final class Act3 {
     private static void mark(MinecraftServer server, ServerLevel level, BlockPos centre) {
         Progress progress = Progress.of(server);
         for (int index = 0; index < WOUNDED.length; index++) {
-            Clues.marker(level, ground(level, around(centre, WOUNDED_RING, index * 120.0 + 30)), WOUNDED[index]);
+            Clues.marker(level, open(server, level, centre, WOUNDED_RING, index * 120.0 + 30), WOUNDED[index]);
         }
         for (int index = 0; index < GRAVES.length; index++) {
-            BlockPos grave = ground(level, around(centre, GRAVE_RING, index * 120.0 + 90));
+            BlockPos grave = open(server, level, centre, GRAVE_RING, index * 120.0 + 90);
             level.setBlock(grave, Blocks.COARSE_DIRT.defaultBlockState(), Block.UPDATE_ALL);
             level.setBlock(grave.above(), Blocks.ROOTED_DIRT.defaultBlockState(), Block.UPDATE_ALL);
             Clues.marker(level, grave.above(), GRAVES[index]);
         }
         progress.place(HOLLOW_MARKED, centre);
         progress.setDirty();
+        Standing.keep(server, HOLLOW);
         LOGGER.info("the hollow's wounded and dead lie round {}", centre);
     }
 
@@ -202,9 +219,8 @@ final class Act3 {
         BlockPos at = frame.orElse(site);
         clear(level, new BoundingBox(at.getX() - FRAME_REACH, at.getY() - FRAME_SEARCH, at.getZ() - FRAME_REACH, at.getX() + FRAME_REACH,
                 at.getY() + FRAME_SEARCH * 2, at.getZ() + FRAME_REACH));
-        BlockPos seat = BlockPos.betweenClosedStream(at.offset(-FRAME_REACH, -FRAME_SEARCH, -FRAME_REACH), at.offset(FRAME_REACH, FRAME_SEARCH * 2, FRAME_REACH))
-                .filter(pos -> floor(level, pos) && Math.abs(pos.getX() - at.getX()) + Math.abs(pos.getZ() - at.getZ()) >= FRAME_SEARCH * 2 && sees(level, pos, at))
-                .map(BlockPos::immutable).min(Comparator.comparingDouble(pos -> pos.distSqr(at))).orElse(at.above());
+        keep(level, at);
+        BlockPos seat = seat(level, at);
         progress.place(KEEPERS_FRAME, at);
         progress.place(KEEPERS, seat);
         progress.place("seat_keepers_oldest", seat);
@@ -212,6 +228,46 @@ final class Act3 {
         progress.setDirty();
         LOGGER.info("the Keepers' frame is at {}{}", at, frame.isPresent() ? "" : " (no frame block found; the stronghold's middle)");
         Journal.syncAll(server);
+    }
+
+    public static boolean quiet(ServerLevel level, BlockPos pos) {
+        int reach = Balance.get().gate().quietBlocks();
+        return level.dimension() == Level.OVERWORLD && Progress.of(level.getServer()).place(KEEPERS_FRAME).filter(frame -> frame.closerThan(pos, reach)).isPresent();
+    }
+
+    private static void keep(ServerLevel level, BlockPos frame) {
+        int reach = Balance.get().gate().quietBlocks();
+        int spawners = 0;
+        for (BlockPos pos : BlockPos.betweenClosed(frame.offset(-reach, -reach, -reach), frame.offset(reach, reach, reach))) {
+            if (level.getBlockState(pos).is(Blocks.SPAWNER)) {
+                level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                spawners++;
+            }
+        }
+        List<Monster> monsters = level.getEntitiesOfClass(Monster.class, new AABB(frame).inflate(reach), Monster::isAlive);
+        monsters.forEach(Entity::discard);
+        LOGGER.info("the Keepers keep their hall: {} spawners and {} monsters gone within {} blocks of the frame", spawners, monsters.size(), reach);
+    }
+
+    private static BlockPos seat(ServerLevel level, BlockPos frame) {
+        List<Predicate<BlockPos>> wishes = List.of(
+                pos -> floor(level, pos) && apart(pos, frame) && sees(level, pos, frame),
+                pos -> Ground.standable(level, Vec3.atBottomCenterOf(pos)) && apart(pos, frame) && sees(level, pos, frame),
+                pos -> Ground.standable(level, Vec3.atBottomCenterOf(pos)) && apart(pos, frame),
+                pos -> Ground.standable(level, Vec3.atBottomCenterOf(pos)));
+        for (Predicate<BlockPos> wish : wishes) {
+            Optional<BlockPos> found = BlockPos.betweenClosedStream(frame.offset(-FRAME_REACH, -FRAME_SEARCH, -FRAME_REACH), frame.offset(FRAME_REACH, FRAME_SEARCH * 2, FRAME_REACH))
+                    .filter(wish).map(BlockPos::immutable).min(Comparator.comparingDouble(pos -> pos.distSqr(frame)));
+            if (found.isPresent()) {
+                return found.get();
+            }
+        }
+        LOGGER.warn("no free floor within {} blocks of the Keepers' frame at {}", FRAME_REACH, frame);
+        return frame.above();
+    }
+
+    private static boolean apart(BlockPos pos, BlockPos frame) {
+        return Math.abs(pos.getX() - frame.getX()) + Math.abs(pos.getZ() - frame.getZ()) >= FRAME_SEARCH * 2;
     }
 
     private static void clear(ServerLevel level, BoundingBox room) {
@@ -249,12 +305,7 @@ final class Act3 {
     }
 
     private static boolean floor(ServerLevel level, BlockPos pos) {
-        return BlockPos.betweenClosedStream(pos.offset(-FLOOR_REACH, 0, -FLOOR_REACH), pos.offset(FLOOR_REACH, 0, FLOOR_REACH)).allMatch(near -> standable(level, near));
-    }
-
-    private static boolean standable(ServerLevel level, BlockPos pos) {
-        return level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir() && level.getBlockState(pos.below()).isSolidRender(level, pos.below())
-                && level.getFluidState(pos.below()).isEmpty();
+        return BlockPos.betweenClosedStream(pos.offset(-FLOOR_REACH, 0, -FLOOR_REACH), pos.offset(FLOOR_REACH, 0, FLOOR_REACH)).allMatch(near -> Ground.standable(level, Vec3.atBottomCenterOf(near)));
     }
 
     private static BlockPos around(BlockPos centre, int ring, double degrees) {
@@ -262,9 +313,20 @@ final class Act3 {
         return centre.offset((int) Math.round(Math.cos(angle) * ring), 0, (int) Math.round(Math.sin(angle) * ring));
     }
 
-    private static BlockPos ground(ServerLevel level, BlockPos at) {
-        level.getChunk(at);
-        return level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at).below();
+    private static BlockPos open(MinecraftServer server, ServerLevel level, BlockPos centre, int ring, double degrees) {
+        List<BoundingBox> camp = Caravan.boxes(server);
+        for (int turn = 0; turn <= OPEN_TURNS; turn++) {
+            for (int side : turn == 0 ? new int[] {1} : new int[] {1, -1}) {
+                for (int out = 0; out <= ring; out += WOUNDED_RING) {
+                    BlockPos spot = Ground.land(level, around(centre, ring + out, degrees + side * turn * OPEN_STEP));
+                    if (camp.stream().noneMatch(box -> box.inflatedBy(1).isInside(spot)) && !level.getBlockState(spot).is(BlockTags.WOOL)
+                            && level.getFluidState(spot).isEmpty()) {
+                        return spot;
+                    }
+                }
+            }
+        }
+        return Ground.land(level, around(centre, ring, degrees));
     }
 
     static BlockPos high(MinecraftServer server, BlockPos from) {
@@ -309,6 +371,7 @@ final class Act3 {
         progress.ward(AIRFIELD, level.getStructureManager().getOrCreate(FIELD).getBoundingBox(Camps.settings(level, FIELD, turn), origin));
         progress.setDirty();
         Clues.marker(level, world(level, origin, turn, plan, "rack"), "robes");
+        Standing.keep(server, AIRFIELD);
         LOGGER.info("the Gazebound airfield stands at {}, turned {}", origin, turn);
         Journal.syncAll(server);
     }

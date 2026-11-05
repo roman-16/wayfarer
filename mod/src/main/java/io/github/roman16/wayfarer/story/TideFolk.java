@@ -4,10 +4,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Bundled;
+import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.Journey;
-import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Wayfarer;
+import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,9 +17,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
@@ -52,6 +53,12 @@ final class TideFolk {
         SITE.reset();
     }
 
+    static void unbuild(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        SITE.forget(progress);
+        List.of(VILLAGE, HALL).forEach(progress.places::remove);
+    }
+
     static boolean ready(MinecraftServer server, String name) {
         Progress progress = Progress.of(server);
         return name.equals(HALL) ? progress.place(HALL).isPresent() : progress.place(VILLAGE).isPresent();
@@ -80,7 +87,7 @@ final class TideFolk {
             int wet = 0;
             for (int out = LOOK / 3; out <= LOOK; out += LOOK / 3) {
                 BlockPos at = top.relative(side, out);
-                BlockPos surface = new BlockPos(at.getX(), level.getHeight(Heightmap.Types.WORLD_SURFACE, at.getX(), at.getZ()) - 1, at.getZ());
+                BlockPos surface = new BlockPos(at.getX(), Ground.sky(level, at.getX(), at.getZ()), at.getZ());
                 if (surface.getY() < sea && level.getFluidState(surface).is(FluidTags.WATER)) {
                     wet++;
                 }
@@ -102,18 +109,19 @@ final class TideFolk {
         BlockPos origin = Camps.place(level, TEMPLATE, centre, turn);
         StructurePlaceSettings settings = Camps.settings(level, TEMPLATE, turn);
         JsonObject plan = PLAN.get();
-        seat(progress, origin, settings, turn, "tide_morwen", plan.getAsJsonArray("morwen"));
+        seat(progress, origin, settings, turn, "tide_murdo", plan.getAsJsonArray("murdo"));
         JsonArray wardens = plan.getAsJsonArray("wardens");
         for (int index = 0; index < WARDENS.length; index++) {
             BlockPos at = origin.offset(StructureTemplate.calculateRelativePosition(settings, Prologue.vector(wardens.get(index).getAsJsonArray())));
             Vec3 toward = Vec3.atLowerCornerOf(top.subtract(at)).multiply(1, 0, 1).normalize().add(sea.scale(-1)).normalize();
-            progress.place("seat_" + WARDENS[index], at.atY(level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at.getX(), at.getZ())));
+            progress.place("seat_" + WARDENS[index], Ground.above(level, at));
             progress.yaws.put("seat_" + WARDENS[index], Frost.yaw(toward));
         }
         progress.place(VILLAGE, origin);
-        progress.place(NAME, origin.offset(StructureTemplate.calculateRelativePosition(settings, Prologue.vector(plan.getAsJsonArray("morwen")))));
+        progress.place(NAME, origin.offset(StructureTemplate.calculateRelativePosition(settings, Prologue.vector(plan.getAsJsonArray("murdo")))));
         progress.ward(NAME, level.getStructureManager().getOrCreate(TEMPLATE).getBoundingBox(settings, origin));
         progress.setDirty();
+        Standing.keep(server, NAME);
         LOGGER.info("the Tide Folk's village stands at {}, turned {}", origin, turn);
         Journal.syncAll(server);
     }
@@ -147,15 +155,18 @@ final class TideFolk {
                 }
             }
         }
-        if (beside != null) {
-            level.setBlock(beside, Wayfarer.CALLING_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
-            if (level.getBlockEntity(beside) instanceof CallingStoneBlockEntity second) {
-                second.hold(Journey.claimed(server).contains(SECOND_HALL) ? Optional.empty() : Optional.of(SECOND_HALL));
-            }
-            progress.place(SECOND, beside);
+        if (beside == null) {
+            beside = stone.relative(Direction.Plane.HORIZONTAL.getRandomDirection(level.random), DAIS[0]);
+            level.setBlock(beside.below(), level.getBlockState(stone.below()), Block.UPDATE_ALL);
+            level.setBlock(beside.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         }
+        level.setBlock(beside, Wayfarer.CALLING_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
+        if (level.getBlockEntity(beside) instanceof CallingStoneBlockEntity second) {
+            second.hold(Journey.claimed(server).contains(SECOND_HALL) ? Optional.empty() : Optional.of(SECOND_HALL));
+        }
+        progress.place(SECOND, beside);
         Vec3 inward = Vec3.atLowerCornerOf(SITE.entrance(progress).orElse(stone).subtract(stone)).multiply(1, 0, 1).normalize();
-        Vec3 aside = beside != null ? Vec3.atLowerCornerOf(stone.subtract(beside)).normalize() : new Vec3(-inward.z, 0, inward.x);
+        Vec3 aside = Vec3.atLowerCornerOf(stone.subtract(beside)).normalize();
         BlockPos seat = BlockPos.containing(Vec3.atLowerCornerOf(stone).add(aside.scale(HALL_SEAT)));
         progress.place("seat_tide_inside", seat);
         progress.yaws.put("seat_tide_inside", Frost.yaw(inward));

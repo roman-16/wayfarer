@@ -8,4 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface BookViewScreenAccessor {
     @Accessor("currentPage")
     int wayfarer$page();
+
+    @Accessor("bookAccess")
+    BookViewScreen.BookAccess wayfarer$book();
 }

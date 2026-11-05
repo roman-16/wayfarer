@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.HexFormat;
 import java.util.LinkedHashMap;
@@ -48,12 +49,14 @@ import java.util.UUID;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.function.BiConsumer;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import javax.annotation.Nullable;
 import net.minecraft.SharedConstants;
@@ -98,7 +101,9 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Interaction;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -106,11 +111,13 @@ import net.minecraft.world.item.BoatItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
+import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.WorldOptions;
@@ -141,6 +148,12 @@ import org.slf4j.Logger;
 
 @EventBusSubscriber(modid = Wayfarer.MODID, value = Dist.CLIENT)
 public final class Driver {
+    private static final int BOARD_TICKS = 60;
+    private static final int BOARD_TRIES = 4;
+    private static final int FETCH_BLOCKS = 8;
+    private static final int FETCH_TICKS = 200;
+    private static final int CLICK_TRIES = 3;
+    private static final int PLANT_CLEARS = 4;
     private static final int SCROLL_TURNS = 32;
     private static final boolean SHOWROOM = Boolean.getBoolean(Wayfarer.MODID + ".showroom");
     private static final String WORLD_SUFFIX = Boolean.getBoolean(Wayfarer.MODID + ".lean") ? "-lean" : "";
@@ -151,7 +164,9 @@ public final class Driver {
     private static final String STATE_CACHE = System.getProperty(Wayfarer.MODID + ".state.cache", "");
     private static final String STATE_WORLD = "state" + WORLD_SUFFIX;
     private static final String SAVE = System.getProperty(Wayfarer.MODID + ".world", "");
+    private static final Set<String> DESIGNING = Set.of("digest", "find", "inspect", "log", "pos", "screen");
     private static final Set<String> LOOKING = Set.of("log", "pos", "screen", "shot");
+    private static final Set<String> UNSKIPPED = Set.of("leave", "log", "pos", "screen", "shot");
     private static final String STOPPED = "stopped:";
     private static final long CHECKPOINT_TICKS = 2048;
     private static final long KEEP_CHECK_MILLIS = 128;
@@ -189,8 +204,10 @@ public final class Driver {
     private static final Method MOUSE_PRESS = mouse("onPress", long.class, int.class, int.class, int.class);
     private static final Method MOUSE_SCROLL = mouse("onScroll", long.class, double.class, double.class);
     private static final int PITCH_TICKS = 40;
+    private static final int DOOR_NEAR = 2;
     private static final int LAUNCH_BLOCKS = 4;
     private static final double LAUNCH_CLEAR = 2;
+    private static final int LAUNCH_ROOM = 3;
     private static final int DIG_TICKS = 400;
     private static final int LAST_SECONDS = 8;
     private static final int SECOND_TICKS = 20;
@@ -199,6 +216,7 @@ public final class Driver {
     private static final int LAUNCH_TICKS = 40;
     private static final int STEP_IN_TICKS = 200;
     private static final double STEP_IN_BLOCKS = 64;
+    private static final double STEP_IN_REACH = 8;
     private static final int TAKE_BOAT_TICKS = 100;
     private static final int SHORE_REACH = 4;
     private static final int DOOR_TICKS = 40;
@@ -216,9 +234,15 @@ public final class Driver {
     private static final String BARITONE = "baritoe";
     private static final double INTERACT_REACH = 8;
     private static final double REACH_MARGIN = 0.25;
+    private static final double BEYOND_BOX = 0.0625;
+    private static final int REACH_NEAR = 2;
+    private static final List<Double> AIMS = List.of(0.125, 0.5, 0.875);
+    private static final double BED_REACH = 2;
     private static final int REWALK_TICKS = 10;
     private static final int SLOT_SIZE = 16;
+    private static final int BOAT_TRIES = 2;
     private static final double HALF = 0.5;
+    private static final double INSET = 0.0625;
     private static final String SHIFT = "shift";
     private static final int IDLE_FPS = 5;
     private static final int WINDOW_WIDTH = 1280;
@@ -239,6 +263,7 @@ public final class Driver {
     private static boolean opened;
     private static boolean running;
     private static boolean turns;
+    private static boolean designing;
     private static boolean stopping;
     private static boolean mourned;
     private static volatile boolean keeping;
@@ -260,6 +285,8 @@ public final class Driver {
     private static long frames;
     private static long framesFrom = -1;
     private static BooleanSupplier until;
+    private static boolean controlling;
+    private static long clicks;
     private static boolean shifting;
     private static Runnable then;
     private static CompassPayload compassFrom;
@@ -375,7 +402,7 @@ public final class Driver {
                 return;
             }
             String step = steps.peek();
-            if (stopping && !LOOKING.contains(step.split(" ", 2)[0])) {
+            if (stopping && !UNSKIPPED.contains(step.split(" ", 2)[0])) {
                 steps.poll();
                 if (stepped) {
                     observe(minecraft);
@@ -481,7 +508,7 @@ public final class Driver {
     }
 
     public static boolean betweenTurns() {
-        return turns && (!running || keeping);
+        return turns && (!running || keeping || designing);
     }
 
     public static boolean panoramic() {
@@ -712,7 +739,7 @@ public final class Driver {
     }
 
     private static boolean sync(Minecraft minecraft) {
-        if (synced) {
+        if (synced || minecraft.getConnection() == null) {
             return true;
         }
         if (!asking) {
@@ -1028,7 +1055,8 @@ public final class Driver {
         }
         boolean quiet = StreamSupport.stream(minecraft.level.entitiesForRendering().spliterator(), false)
                 .noneMatch(entity -> Senses.hostile(entity) && entity.isAlive() && entity.distanceTo(player) <= SAFE_BLOCKS);
-        return quiet && player.getHealth() >= player.getMaxHealth() / 2 && (player.onGround() || player.getVehicle() instanceof Boat) && !player.isInWater() && !player.isOnFire()
+        boolean overdue = minecraft.level.getGameTime() - lastCheckpoint >= CHECKPOINT_TICKS * 2;
+        return quiet && (overdue || player.getHealth() >= player.getMaxHealth() / 2) && (player.onGround() || player.getVehicle() instanceof Boat) && !player.isInWater() && !player.isOnFire()
                 && minecraft.level.getGameTime() - talkedAt >= TALK_QUIET_TICKS && !Senses.hurtLately(minecraft, RECENT_HURT_TICKS);
     }
 
@@ -1038,7 +1066,8 @@ public final class Driver {
             note("error: checkpoint needs a world the client opened itself; the dev server keeps its own with server.py's checkpoint step");
             return;
         }
-        String where = Senses.time(minecraft.level.getDayTime()) + ", at " + minecraft.player.blockPosition().toShortString();
+        String where = Senses.time(Senses.dayTime(minecraft)) + ", at " + minecraft.player.blockPosition().toShortString() + ", health "
+                + Math.round(minecraft.player.getHealth()) + " of " + Math.round(minecraft.player.getMaxHealth());
         Path folder = minecraft.gameDirectory.toPath().resolve("driver");
         lastCheckpoint = minecraft.level.getGameTime();
         keeping = true;
@@ -1087,7 +1116,12 @@ public final class Driver {
         }
     }
 
+    static void stop(String reason) {
+        halt(reason);
+    }
+
     private static void halt(String reason) {
+        duck(false);
         if (ModList.get().isLoaded(BARITONE)) {
             Legs.cancel(Minecraft.getInstance());
         }
@@ -1107,6 +1141,7 @@ public final class Driver {
     }
 
     private static void stopBatch(Path folder, String reason) {
+        duck(false);
         if (ModList.get().isLoaded(BARITONE)) {
             Legs.cancel(Minecraft.getInstance());
         }
@@ -1148,6 +1183,7 @@ public final class Driver {
     private static void run(Minecraft minecraft, String step) {
         String[] words = step.split(" ", 2);
         String argument = words.length > 1 ? words[1] : "";
+        designing = DESIGNING.contains(words[0]);
         switch (words[0]) {
             case "await" -> {
                 int index = heard(argument);
@@ -1159,7 +1195,7 @@ public final class Driver {
                 until = () -> minecraft.getOverlay() == null;
                 waitingOn = "the loading screen to fade";
             }
-            case "beside", "clear", "person", "place", "spawn" -> command(minecraft, "wayfarer workshop " + step);
+            case "beside", "clear", "person", "place", "spawn" -> own("wayfarer workshop " + step);
             case "board" -> {
                 if (StyleBoard.PAGES.contains(argument)) {
                     minecraft.setScreen(new StyleBoard(argument));
@@ -1195,7 +1231,8 @@ public final class Driver {
             case "find" -> find(minecraft, argument);
             case "forget" -> JournalScreen.firstPage();
             case "graphics" -> graphics(argument);
-            case "eat", "fight", "follow", "go", "idle", "listen", "row" -> legs(minecraft, step.split(" ", 2)[0], argument);
+            case "eat" -> Hands.clear(minecraft, () -> legs(minecraft, "eat", argument));
+            case "fight", "follow", "go", "idle", "listen", "row" -> legs(minecraft, step.split(" ", 2)[0], argument);
             case "gather" -> gather(minecraft, argument);
             case "embark" -> embark(minecraft);
             case "cheat" -> cheat(argument);
@@ -1203,9 +1240,9 @@ public final class Driver {
             case "dismount" -> dismount(minecraft);
             case "hotbar" -> Hands.hotbar(minecraft, argument);
             case "ember" -> Sweep.read(minecraft);
-            case "fish" -> Fishing.fish(minecraft, argument);
-            case "pitch" -> pitch(minecraft);
-            case "put" -> Hands.put(minecraft, argument);
+            case "fish" -> Hands.clear(minecraft, () -> Fishing.fish(minecraft, argument));
+            case "pitch" -> Hands.clear(minecraft, () -> pitch(minecraft));
+            case "put" -> Hands.clear(minecraft, () -> Hands.put(minecraft, argument));
             case "wear" -> Hands.wear(minecraft, argument);
             case "fly" -> fly(minecraft.player, argument.equals("on"));
             case "gui" -> minecraft.options.hideGui = argument.equals("off");
@@ -1246,7 +1283,7 @@ public final class Driver {
             case "pause" -> minecraft.pauseGame(false);
             case "point" -> {
                 if (minecraft.screen == null) {
-                    note("error: no screen to point at");
+                    fail("no screen to point at");
                 } else {
                     String[] at = argument.split(" ");
                     point(minecraft, Double.parseDouble(at[0]), Double.parseDouble(at[1]));
@@ -1279,10 +1316,10 @@ public final class Driver {
                 framesFrom = -1;
                 shot(minecraft, argument);
             }
-            case "state" -> command(minecraft, "wayfarer state");
+            case "state" -> own("wayfarer state");
             case "still" -> still(minecraft, argument);
             case "story" -> story(minecraft, argument);
-            case "use" -> use(minecraft, argument);
+            case "use" -> Hands.clear(minecraft, () -> use(minecraft, argument));
             case "vsync" -> minecraft.options.enableVsync().set(argument.equals("on"));
             case "turn" -> Legs.turn(minecraft, argument);
             case "turns" -> turn(minecraft, argument.equals("on"));
@@ -1295,7 +1332,7 @@ public final class Driver {
             case "skin" -> note(Dressed.wear(minecraft, argument));
             case "sky" -> sky(minecraft, Integer.parseInt(argument));
             case "wait" -> waiting = Integer.parseInt(argument);
-            case "workshop" -> command(minecraft, "wayfarer workshop enter");
+            case "workshop" -> own("wayfarer workshop enter");
             default -> {
                 if (step.startsWith("/")) {
                     command(minecraft, step.substring(1));
@@ -1344,13 +1381,13 @@ public final class Driver {
     }
 
     private static void still(Minecraft minecraft, String ticks) {
-        command(minecraft, ticks.isEmpty() ? "wayfarer still" : "wayfarer still " + ticks);
+        own(ticks.isEmpty() ? "wayfarer still" : "wayfarer still " + ticks);
         waitingOn = "the world to stand still";
         until = () -> sync(minecraft) && Still.standing(minecraft);
         then = () -> {
             note(Still.hold(minecraft));
             if (!ticks.isEmpty()) {
-                command(minecraft, "wayfarer still");
+                own("wayfarer still");
             }
         };
     }
@@ -1483,6 +1520,11 @@ public final class Driver {
         if (gui.wayfarer$bar() != null && gui.wayfarer$barTime() > 0) {
             json.addProperty("bar", gui.wayfarer$bar().getString());
         }
+        if (!HudState.banners.isEmpty()) {
+            JsonArray banners = new JsonArray();
+            HudState.banners.forEach(banner -> banners.add(banner.label().getString() + ": " + banner.title().getString()));
+            json.add("banner", banners);
+        }
         String aimed = Senses.crosshair(minecraft);
         if (aimed != null) {
             json.addProperty("crosshair", aimed);
@@ -1496,6 +1538,7 @@ public final class Driver {
         json.addProperty("mode", reading.mode().name().toLowerCase(Locale.ROOT));
         if (reading.mode() == CompassPayload.Mode.FAR) {
             json.addProperty("ember", Component.translatable(Hud.heatKey(reading.heat())).getString());
+            json.addProperty("far", reading.distant());
         }
         JsonArray markers = new JsonArray();
         for (CompassPayload.Marker marker : reading.markers()) {
@@ -1617,7 +1660,7 @@ public final class Driver {
         int radius = words.length > 1 ? Integer.parseInt(words[1]) : FIND_RADIUS;
         Block block = BuiltInRegistries.BLOCK.getOptional(id).orElse(null);
         if (block == null) {
-            note("error: no block " + id);
+            fail("no block " + id);
             return;
         }
         BlockPos center = minecraft.player.blockPosition();
@@ -1669,14 +1712,16 @@ public final class Driver {
                     if (on) {
                         KeyMapping.click(mapping.getKey());
                     }
-                }, () -> note("error: no key mapping " + parts[0]));
+                }, () -> fail("no key mapping " + parts[0]));
     }
 
     private static void key(Minecraft minecraft, String name) {
+        Screen before = minecraft.screen;
         if (name.equals("escape")) {
             if (minecraft.screen != null) {
                 minecraft.screen.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0);
             }
+            answer(minecraft, "key", before, () -> {});
             return;
         }
         if (!name.startsWith("key.")) {
@@ -1695,20 +1740,27 @@ public final class Driver {
             }
             InputConstants.Key pressed = InputConstants.getKey("key.keyboard." + parts[parts.length - 1]);
             long window = minecraft.getWindow().getWindow();
+            controlling = (modifiers & GLFW.GLFW_MOD_CONTROL) != 0;
             minecraft.keyboardHandler.keyPress(window, pressed.getValue(), 0, GLFW.GLFW_PRESS, modifiers);
             minecraft.keyboardHandler.keyPress(window, pressed.getValue(), 0, GLFW.GLFW_RELEASE, modifiers);
             if (minecraft.screen == null) {
                 List<KeyMapping> bound = Arrays.stream(minecraft.options.keyMappings).filter(mapping -> mapping.getKey().equals(pressed)).toList();
                 long[] taken = {-1};
                 int[] ticks = {0};
-                until = () -> {
+                after(() -> {
                     if (taken[0] < 0 && (bound.stream().allMatch(mapping -> clicks(mapping) == 0) || ++ticks[0] > 1)) {
                         bound.forEach(Driver::unclick);
                         taken[0] = frames;
                     }
                     return taken[0] >= 0 && frames > taken[0];
-                };
+                }, "the key to be taken", () -> {
+                    controlling = false;
+                    answer(minecraft, "key", before, () -> {});
+                });
+                return;
             }
+            controlling = false;
+            answer(minecraft, "key", before, () -> {});
             return;
         }
         Arrays.stream(minecraft.options.keyMappings)
@@ -1723,18 +1775,20 @@ public final class Driver {
                     } else {
                         KeyMapping.click(mapping.getKey());
                     }
-                    if (minecraft.screen == null) {
+                    if (minecraft.screen == null && before == null) {
                         long[] taken = {-1};
                         int[] ticks = {0};
-                        until = () -> {
+                        after(() -> {
                             if (taken[0] < 0 && (clicks(mapping) == 0 || ++ticks[0] > 1)) {
                                 unclick(mapping);
                                 taken[0] = frames;
                             }
                             return taken[0] >= 0 && frames > taken[0];
-                        };
+                        }, "the key to be taken", () -> answer(minecraft, "key", before, () -> {}));
+                    } else {
+                        answer(minecraft, "key", before, () -> {});
                     }
-                }, () -> note("error: no key mapping " + name));
+                }, () -> fail("no key mapping " + name));
     }
 
     private static int clicks(KeyMapping mapping) {
@@ -1753,6 +1807,10 @@ public final class Driver {
         }
     }
 
+    public static boolean controlling() {
+        return controlling;
+    }
+
     public static boolean shifting() {
         return shifting;
     }
@@ -1764,11 +1822,12 @@ public final class Driver {
             return;
         }
         if (minecraft.screen == null) {
-            note("error: no screen to click");
+            fail("no screen to click");
             return;
         }
         point(minecraft, x, y);
         long moved = frames;
+        Screen before = minecraft.screen;
         until = () -> {
             if (frames <= moved + SETTLE_FRAMES) {
                 return false;
@@ -1780,6 +1839,7 @@ public final class Driver {
             shifting = false;
             return true;
         };
+        then = () -> answer(minecraft, "click", before, () -> {});
     }
 
     private static void scroll(Minecraft minecraft, double x, double y, double lines) {
@@ -1819,32 +1879,83 @@ public final class Driver {
                     + found.door().toShortString() + ", its door facing " + found.direction().getOpposite().getSerializedName());
             long[] ticks = {0};
             after(() -> {
-                if (player.blockPosition().equals(stand)) {
+                BlockPos feet = player.blockPosition();
+                Direction inward = found.direction();
+                int outside = (found.door().getX() - feet.getX()) * inward.getStepX() + (found.door().getZ() - feet.getZ()) * inward.getStepZ();
+                if (Math.abs(feet.getX() - stand.getX()) <= 1 && Math.abs(feet.getZ() - stand.getZ()) <= 1 && Math.abs(feet.getY() - stand.getY()) <= 1
+                        && outside >= Pitch.STAND) {
                     Legs.halt();
                     return true;
                 }
                 if (ticks[0]++ % REWALK_TICKS == 0) {
-                    Legs.walkTo(stand, 0);
+                    Legs.walkTo(stand, 1);
                 }
                 progressed = player.getDeltaMovement().horizontalDistanceSqr() > 0 ? System.nanoTime() : progressed;
                 return false;
             }, "walking to the tent's spot at " + stand.toShortString(), () -> {
+                duck(true);
                 player.getInventory().selected = slot;
-                BlockState spot = minecraft.level.getBlockState(found.door());
-                useAt(minecraft, spot.isAir() ? found.door().below() : found.door(), missed -> {
-                    long[] waited = {0};
-                    after(() -> minecraft.level.getBlockState(found.door()).getBlock() instanceof TentDoorBlock || waited[0]++ > PITCH_TICKS,
-                            "the tent going up", () -> {
-                                if (minecraft.level.getBlockState(found.door()).getBlock() instanceof TentDoorBlock) {
-                                    note("pitch: the tent stands at " + found.door().toShortString());
-                                } else {
-                                    fail("pitch failed: the tent did not go up at " + found.door().toShortString()
-                                            + (missed == null ? "; the action bar says why" : "; the click went to " + missed));
-                                }
-                            });
-                });
+                clearPlant(minecraft, found.door(), WAY_CLEARS, () -> pitchAt(minecraft, found));
             });
         });
+    }
+
+    private static void clearPlant(Minecraft minecraft, BlockPos pos, int clears, Runnable then) {
+        BlockState there = minecraft.level.getBlockState(pos);
+        if (there.isAir() || !there.getCollisionShape(minecraft.level, pos).isEmpty() || !soft(minecraft, pos) || clears <= 0) {
+            then.run();
+            return;
+        }
+        within(minecraft, pos, at -> {
+            minecraft.player.lookAt(EntityAnchorArgument.Anchor.EYES, at);
+            drawn("the crosshair to settle on the " + there.getBlock().getName().getString(), () -> {
+                if (!(minecraft.hitResult instanceof BlockHitResult plant) || plant.getType() != HitResult.Type.BLOCK || !soft(minecraft, plant.getBlockPos())
+                        || !minecraft.level.getBlockState(plant.getBlockPos()).getCollisionShape(minecraft.level, plant.getBlockPos()).isEmpty()) {
+                    then.run();
+                    return;
+                }
+                breakBlock(minecraft, plant.getBlockPos(), plant.getDirection(), "pitch", hand -> clearPlant(minecraft, pos, clears - 1, then),
+                        () -> clearPlant(minecraft, pos, clears, then));
+            });
+        });
+    }
+
+    private static void pitchAt(Minecraft minecraft, Pitch.Found found) {
+        BlockState spot = minecraft.level.getBlockState(found.door());
+        BlockPos ground = spot.isAir() ? found.door().below() : found.door();
+        Vec3 top = spot.isAir() ? Vec3.atCenterOf(ground).add(0, HALF, 0)
+                : spot.getShape(minecraft.level, ground).isEmpty() ? Vec3.atCenterOf(ground) : spot.getShape(minecraft.level, ground).bounds().getCenter().add(Vec3.atLowerCornerOf(ground));
+        Vec3 look = top.subtract(minecraft.player.getEyePosition());
+        boolean far = look.length() > minecraft.player.blockInteractionRange() - REACH_MARGIN;
+        if ((far || Direction.fromYRot(Mth.atan2(look.z, look.x) * Mth.RAD_TO_DEG - 90) != found.direction()) && !minecraft.player.blockPosition().equals(found.stand())) {
+            Legs.walkTo(found.stand(), 0);
+            after(() -> minecraft.player.blockPosition().equals(found.stand()), "stepping onto the tent's spot at " + found.stand().toShortString(), () -> {
+                Legs.halt();
+                pitchAt(minecraft, found);
+            });
+            return;
+        }
+        click(minecraft, top, hit -> hit instanceof BlockHitResult aimed && aimed.getBlockPos().equals(ground) && (!spot.isAir() || aimed.getDirection() == Direction.UP),
+                true, "pitch", "the ground where the door goes", missed -> {
+            long[] waited = {0};
+            after(() -> pitched(minecraft, found.door()).isPresent() || waited[0]++ > PITCH_TICKS, "the tent going up", () -> {
+                Optional<BlockPos> door = pitched(minecraft, found.door());
+                if (door.isPresent()) {
+                    duck(false);
+                    note("pitch: the tent stands at " + door.get().toShortString());
+                } else {
+                    fail("pitch failed: no tent's door stands within " + DOOR_NEAR + " blocks of " + found.door().toShortString()
+                            + (missed == null ? "; the action bar says why" : "; the click went to " + missed));
+                }
+            });
+        });
+    }
+
+    private static Optional<BlockPos> pitched(Minecraft minecraft, BlockPos near) {
+        return BlockPos.betweenClosedStream(near.offset(-DOOR_NEAR, -DOOR_NEAR, -DOOR_NEAR), near.offset(DOOR_NEAR, DOOR_NEAR, DOOR_NEAR))
+                .filter(pos -> minecraft.level.getBlockState(pos).getBlock() instanceof TentDoorBlock)
+                .map(BlockPos::immutable)
+                .min(Comparator.comparingDouble(pos -> pos.distSqr(near)));
     }
 
     private static void point(Minecraft minecraft, double x, double y) {
@@ -1874,8 +1985,9 @@ public final class Driver {
             if (!target.isAlive() || target.isRemoved()) {
                 return true;
             }
-            player.lookAt(EntityAnchorArgument.Anchor.EYES, target.getBoundingBox().getCenter());
-            boolean near = target.getBoundingBox().distanceToSqr(player.getEyePosition()) <= reach * reach;
+            Vec3 aim = aim(minecraft, target).orElse(target.getBoundingBox().getCenter());
+            player.lookAt(EntityAnchorArgument.Anchor.EYES, aim);
+            boolean near = entry(target, player.getEyePosition(), aim) <= reach;
             if (near || minecraft.level.getGameTime() - from > STEP_IN_TICKS) {
                 if (ModList.get().isLoaded(BARITONE)) {
                     Legs.halt();
@@ -1887,7 +1999,7 @@ public final class Driver {
                 return true;
             }
             if (ticks[0]++ % REWALK_TICKS == 0) {
-                Legs.walkTo(target.blockPosition(), 1);
+                Legs.walkTo(BlockPos.containing(aim), REACH_NEAR);
             }
             progressed = System.nanoTime();
             return false;
@@ -1901,11 +2013,27 @@ public final class Driver {
     }
 
     static void click(Minecraft minecraft, Vec3 at, Predicate<HitResult> onTarget, boolean strict, String verb, String what, Consumer<String> done) {
+        click(minecraft, at, onTarget, strict, verb, what, done, true);
+    }
+
+    private static void click(Minecraft minecraft, Vec3 at, Predicate<HitResult> onTarget, boolean strict, String verb, String what, Consumer<String> done, boolean stepIn) {
         minecraft.player.lookAt(EntityAnchorArgument.Anchor.EYES, at);
-        drawn("the crosshair to settle on " + what, () -> {
+        int turned = minecraft.player.tickCount;
+        after(() -> minecraft.player.tickCount > turned, "the turn to reach the server", () -> drawn("the crosshair to settle on " + what, () -> {
             String aimed = Senses.aimed(minecraft);
+            LocalPlayer player = minecraft.player;
+            if (aimed == null && stepIn && ModList.get().isLoaded(BARITONE) && player.getEyePosition().distanceTo(at) <= STEP_IN_REACH) {
+                Legs.walkTo(BlockPos.containing(at), 1);
+                long walked = minecraft.level.getGameTime();
+                after(() -> player.getEyePosition().distanceTo(at) <= player.blockInteractionRange() - REACH_MARGIN || minecraft.level.getGameTime() - walked > STEP_IN_TICKS,
+                        "stepping within reach of " + what, () -> {
+                            Legs.halt();
+                            click(minecraft, at, onTarget, strict, verb, what, done, false);
+                        });
+                return;
+            }
             if (aimed == null) {
-                fail(verb + " failed: nothing within reach there, " + Math.round(minecraft.player.getEyePosition().distanceTo(at)) + " blocks");
+                fail(verb + " failed: nothing within reach there, " + Math.round(player.getEyePosition().distanceTo(at)) + " blocks to " + what);
                 return;
             }
             boolean hit = onTarget.test(minecraft.hitResult);
@@ -1913,11 +2041,42 @@ public final class Driver {
                 fail(verb + " failed: the click would go to " + aimed + ", not to " + what);
                 return;
             }
-            KeyMapping.click(minecraft.options.keyUse.getKey());
-            after(() -> clicks(minecraft.options.keyUse) == 0, "the click", () -> {
-                synced = false;
-                done.accept(hit ? null : aimed);
-            });
+            Screen before = minecraft.screen;
+            press(minecraft, verb, CLICK_TRIES, () -> answer(minecraft, verb, before, () -> done.accept(hit ? null : aimed)));
+        }));
+    }
+
+    public static void clicked() {
+        clicks++;
+    }
+
+    private static void press(Minecraft minecraft, String verb, int tries, Runnable then) {
+        after(() -> minecraft.player.getAttackStrengthScale(0) >= 1, "the hand to settle after a swing", () -> tap(minecraft, verb, tries, then));
+    }
+
+    private static void tap(Minecraft minecraft, String verb, int tries, Runnable then) {
+        long before = clicks;
+        KeyMapping.click(minecraft.options.keyUse.getKey());
+        after(() -> clicks(minecraft.options.keyUse) == 0, "the click", () -> {
+            if (clicks > before) {
+                then.run();
+                return;
+            }
+            LocalPlayer player = minecraft.player;
+            String why = minecraft.gameMode.isDestroying() ? "a block was still being broken" : player.isUsingItem() ? "the hand was busy using " + player.getUseItem().getHoverName().getString()
+                    : player.isHandsBusy() ? "the hands were busy" : "the game took no click";
+            if (tries <= 1) {
+                fail(verb + " failed: the game swallowed the click: " + why);
+                return;
+            }
+            note(verb + ": the game swallowed the click (" + why + "), clicking again");
+            if (minecraft.gameMode.isDestroying()) {
+                minecraft.gameMode.stopDestroyBlock();
+            }
+            if (player.isUsingItem()) {
+                minecraft.gameMode.releaseUsingItem(player);
+            }
+            after(() -> !minecraft.gameMode.isDestroying() && !player.isUsingItem(), "the hands to be free", () -> press(minecraft, verb, tries - 1, then));
         });
     }
 
@@ -1952,8 +2111,12 @@ public final class Driver {
 
     private static void face(Minecraft minecraft, String argument) {
         String[] xyz = argument.split(" ");
-        BlockPos here = minecraft.player.blockPosition();
-        minecraft.player.lookAt(EntityAnchorArgument.Anchor.EYES, new Vec3(axis(xyz[0], here.getX()), axis(xyz[1], here.getY()), axis(xyz[2], here.getZ())));
+        LocalPlayer player = minecraft.player;
+        BlockPos here = player.blockPosition();
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, new Vec3(axis(xyz[0], here.getX()), axis(xyz[1], here.getY()), axis(xyz[2], here.getZ())));
+        Body.faced();
+        int from = player.tickCount;
+        after(() -> player.tickCount > from, "the turn to reach the server", () -> Hands.settled(minecraft, () -> {}));
     }
 
     private static void use(Minecraft minecraft, String argument) {
@@ -1962,10 +2125,15 @@ public final class Driver {
             return;
         }
         String[] xyz = argument.split(" ");
-        BlockPos pos = block(minecraft, xyz[0], xyz[1], xyz[2]);
+        BlockPos asked = block(minecraft, xyz[0], xyz[1], xyz[2]);
+        BlockPos pos = door(minecraft, asked) ? asked : BlockPos.betweenClosedStream(asked.offset(-1, -1, -1), asked.offset(1, 1, 1)).filter(near -> door(minecraft, near))
+                .map(BlockPos::immutable).min(Comparator.comparingInt(near -> near.distManhattan(asked))).orElse(asked);
+        if (!pos.equals(asked)) {
+            note("use: the tent's door is beside " + asked.toShortString() + "; using the door at " + pos.toShortString());
+        }
         String name = minecraft.level.getBlockState(pos).getBlock().getName().getString();
         Optional<Entity> box = StreamSupport.stream(minecraft.level.entitiesForRendering().spliterator(), false)
-                .filter(entity -> entity instanceof Interaction && entity.getBoundingBox().intersects(new AABB(pos)))
+                .filter(entity -> entity instanceof Interaction && new AABB(pos).intersects(entity.getBoundingBox()))
                 .min(Comparator.comparingDouble(entity -> entity.distanceTo(minecraft.player)));
         if (box.isPresent()) {
             clickOn(minecraft, box.get(), "use", missed -> note(missed == null ? "use: the interaction box over " + name
@@ -1973,13 +2141,22 @@ public final class Driver {
             return;
         }
         boolean crossing = door(minecraft, pos) && !minecraft.options.keyShift.isDown();
+        ResourceKey<Level> outside = minecraft.level.dimension();
+        duck(crossing);
         useAt(minecraft, pos, missed -> {
             if (missed == null && crossing) {
-                through(minecraft, pos, name, DOOR_TRIES);
+                through(minecraft, pos, name, DOOR_TRIES, outside);
                 return;
             }
+            duck(false);
             note(missed == null ? "use: " + name : "use: the click went to " + missed + ", not to " + name);
         });
+    }
+
+    private static void duck(boolean through) {
+        if (ModList.get().isLoaded(BARITONE)) {
+            Body.duck(through);
+        }
     }
 
     private static boolean door(Minecraft minecraft, BlockPos pos) {
@@ -1987,19 +2164,21 @@ public final class Driver {
         return key.getNamespace().equals(TENTS) && key.getPath().endsWith("_door");
     }
 
-    private static void through(Minecraft minecraft, BlockPos pos, String name, int tries) {
-        ResourceKey<Level> from = minecraft.level.dimension();
+    private static void through(Minecraft minecraft, BlockPos pos, String name, int tries, ResourceKey<Level> from) {
         long start = minecraft.level.getGameTime();
         after(() -> minecraft.level.dimension() != from || minecraft.level.getGameTime() - start > DOOR_TICKS, "the tent's door to take the player through", () -> {
             if (minecraft.level.dimension() != from) {
+                duck(false);
                 note("use: " + name + ", and through it");
             } else if (tries <= 1) {
+                duck(false);
                 fail("use failed: the " + name + " did not take the player through");
             } else {
                 useAt(minecraft, pos, missed -> {
                     if (missed == null) {
-                        through(minecraft, pos, name, tries - 1);
+                        through(minecraft, pos, name, tries - 1, from);
                     } else {
+                        duck(false);
                         fail("use failed: the click went to " + missed + ", not to the " + name);
                     }
                 });
@@ -2008,11 +2187,48 @@ public final class Driver {
     }
 
     static void useAt(Minecraft minecraft, BlockPos pos, Consumer<String> done) {
+        useAt(minecraft, pos, EnumSet.noneOf(Direction.class), done);
+    }
+
+    private static Optional<Entity> boxBefore(Minecraft minecraft, Vec3 at, BlockPos pos) {
+        Vec3 eyes = minecraft.player.getEyePosition();
+        return StreamSupport.stream(minecraft.level.entitiesForRendering().spliterator(), false)
+                .filter(entity -> entity instanceof Interaction && !new AABB(pos).intersects(entity.getBoundingBox()) && entity.getBoundingBox().clip(eyes, at).isPresent())
+                .findFirst();
+    }
+
+    private static void useAt(Minecraft minecraft, BlockPos pos, Set<Direction> avoid, Consumer<String> done) {
         Block block = minecraft.level.getBlockState(pos).getBlock();
-        within(minecraft, pos, at -> click(minecraft, at,
+        within(minecraft, pos, avoid, (at, face) -> {
+            if (boxBefore(minecraft, at, pos).isPresent() && avoid.size() < Direction.values().length - 1) {
+                avoid.add(face);
+                note("use: another interaction box stands before the " + face.getName() + " face of " + block.getName().getString() + "; walking round");
+                useAt(minecraft, pos, avoid, done);
+                return;
+            }
+            useFrom(minecraft, pos, block, at, done);
+        });
+    }
+
+    private static void useFrom(Minecraft minecraft, BlockPos pos, Block block, Vec3 wanted, Consumer<String> done) {
+        Vec3 at = seenPoint(minecraft, pos).orElse(wanted);
+        cleared(minecraft, pos, at, PLANT_CLEARS, () -> click(minecraft, at,
                 hit -> hit instanceof BlockHitResult aimed && (aimed.getBlockPos().equals(pos)
-                        || aimed.getBlockPos().distManhattan(pos) == 1 && minecraft.level.getBlockState(aimed.getBlockPos()).is(block)),
+                        || aimed.getBlockPos().distManhattan(pos) == 1 && minecraft.level.getBlockState(aimed.getBlockPos()).is(block))
+                        || hit instanceof EntityHitResult box && box.getEntity() instanceof Interaction && new AABB(pos).intersects(box.getEntity().getBoundingBox()),
                 false, "use", block.getName().getString(), done));
+    }
+
+    private static void cleared(Minecraft minecraft, BlockPos pos, Vec3 at, int left, Runnable then) {
+        LocalPlayer player = minecraft.player;
+        BlockHitResult hit = minecraft.level.clip(new ClipContext(player.getEyePosition(), at, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
+        if (left > 0 && hit.getType() == HitResult.Type.BLOCK && !hit.getBlockPos().equals(pos)
+                && minecraft.level.getBlockState(hit.getBlockPos()).getCollisionShape(minecraft.level, hit.getBlockPos()).isEmpty() && soft(minecraft, hit.getBlockPos())) {
+            player.lookAt(EntityAnchorArgument.Anchor.EYES, Vec3.atCenterOf(hit.getBlockPos()));
+            breakBlock(minecraft, hit.getBlockPos(), hit.getDirection(), "use", broken -> cleared(minecraft, pos, at, left - 1, then), then);
+            return;
+        }
+        then.run();
     }
 
     private static void dig(Minecraft minecraft, String argument) {
@@ -2092,10 +2308,59 @@ public final class Driver {
         return !state.hasBlockEntity() && state.getDestroySpeed(minecraft.level, pos) >= 0 && state.getDestroySpeed(minecraft.level, pos) <= SOFT_HARDNESS;
     }
 
+    private static double entry(Entity target, Vec3 eyes, Vec3 at) {
+        AABB box = target.getBoundingBox();
+        Vec3 beyond = at.add(at.subtract(eyes).normalize().scale(BEYOND_BOX));
+        return box.contains(eyes) ? 0 : box.clip(eyes, beyond).map(eyes::distanceTo).orElse(eyes.distanceTo(at));
+    }
+
+    private static Optional<Vec3> aim(Minecraft minecraft, Entity target) {
+        Vec3 eyes = minecraft.player.getEyePosition();
+        AABB box = target.getBoundingBox();
+        if (box.contains(eyes)) {
+            return Optional.of(box.getCenter());
+        }
+        Vec3 best = null;
+        double nearest = Double.MAX_VALUE;
+        for (double x : AIMS) {
+            for (double y : AIMS) {
+                for (double z : AIMS) {
+                    Vec3 point = new Vec3(Mth.lerp(x, box.minX, box.maxX), Mth.lerp(y, box.minY, box.maxY), Mth.lerp(z, box.minZ, box.maxZ));
+                    double far = entry(target, eyes, point);
+                    Vec3 enters = eyes.add(point.subtract(eyes).normalize().scale(far));
+                    BlockHitResult blocked = minecraft.level.clip(new ClipContext(eyes, enters, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, minecraft.player));
+                    boolean clear = blocked.getType() == HitResult.Type.MISS || eyes.distanceTo(blocked.getLocation()) >= far - BEYOND_BOX;
+                    if (clear && far < nearest) {
+                        nearest = far;
+                        best = point;
+                    }
+                }
+            }
+        }
+        return Optional.ofNullable(best);
+    }
+
     private static void clearThenClick(Minecraft minecraft, Entity target, String verb, Consumer<String> done, int clears) {
-        Vec3 centre = target.getBoundingBox().getCenter();
+        clearThenClick(minecraft, target, verb, done, clears, true);
+    }
+
+    private static void clearThenClick(Minecraft minecraft, Entity target, String verb, Consumer<String> done, int clears, boolean roundable) {
+        Vec3 centre = aim(minecraft, target).orElse(target.getBoundingBox().getCenter());
         minecraft.player.lookAt(EntityAnchorArgument.Anchor.EYES, centre);
         drawn("the crosshair to settle on " + Senses.describe(target), () -> {
+            if (roundable && ModList.get().isLoaded(BARITONE) && minecraft.hitResult instanceof BlockHitResult blocked && blocked.getType() == HitResult.Type.BLOCK
+                    && !soft(minecraft, blocked.getBlockPos())) {
+                note(verb + ": " + minecraft.level.getBlockState(blocked.getBlockPos()).getBlock().getName().getString() + " stands between; walking round to "
+                        + Senses.describe(target));
+                Legs.walkTo(target.blockPosition(), 1);
+                long walked = minecraft.level.getGameTime();
+                after(() -> minecraft.player.hasLineOfSight(target) && minecraft.player.distanceTo(target) <= minecraft.player.entityInteractionRange() - REACH_MARGIN
+                        || minecraft.level.getGameTime() - walked > STEP_IN_TICKS, "walking round to " + Senses.describe(target), () -> {
+                    Legs.halt();
+                    clearThenClick(minecraft, target, verb, done, clears, false);
+                });
+                return;
+            }
             if (clears > 0 && minecraft.hitResult instanceof BlockHitResult hit && hit.getType() == HitResult.Type.BLOCK && soft(minecraft, hit.getBlockPos())) {
                 BlockPos way = hit.getBlockPos();
                 String name = minecraft.level.getBlockState(way).getBlock().getName().getString();
@@ -2110,28 +2375,45 @@ public final class Driver {
     }
 
     static void within(Minecraft minecraft, BlockPos pos, Consumer<Vec3> then) {
+        within(minecraft, pos, Set.of(), (at, face) -> then.accept(at));
+    }
+
+    static void within(Minecraft minecraft, BlockPos pos, Set<Direction> avoid, BiConsumer<Vec3, Direction> then) {
         Vec3 centre = Vec3.atCenterOf(pos);
         Vec3 towards = minecraft.player.getEyePosition().subtract(centre).normalize();
-        Direction face = Arrays.stream(Direction.values()).filter(side -> minecraft.level.getBlockState(pos.relative(side)).canBeReplaced())
-                .max(Comparator.comparingDouble(side -> side.getStepX() * towards.x + side.getStepY() * towards.y + side.getStepZ() * towards.z))
+        Comparator<Direction> facing = Comparator.comparingDouble(side -> side.getStepX() * towards.x + side.getStepY() * towards.y + side.getStepZ() * towards.z);
+        Direction face = Arrays.stream(Direction.values()).filter(side -> !avoid.contains(side)
+                        && minecraft.level.getBlockState(pos.relative(side)).getShape(minecraft.level, pos.relative(side)).isEmpty())
+                .max(facing)
+                .or(() -> Arrays.stream(Direction.values()).filter(side -> !avoid.contains(side) && minecraft.level.getBlockState(pos.relative(side)).canBeReplaced()).max(facing))
                 .orElse(Direction.getNearest(towards.x, towards.y, towards.z));
         VoxelShape shape = minecraft.level.getBlockState(pos).getShape(minecraft.level, pos);
         Vec3 at = shape.isEmpty() || shape.bounds().getSize() >= 1 ? centre.add(face.getStepX() * HALF, face.getStepY() * HALF, face.getStepZ() * HALF)
                 : shape.bounds().getCenter().add(Vec3.atLowerCornerOf(pos));
         Block block = minecraft.level.getBlockState(pos).getBlock();
         LocalPlayer player = minecraft.player;
-        double reach = player.blockInteractionRange() - REACH_MARGIN;
+        double reach = block instanceof BedBlock ? BED_REACH : player.blockInteractionRange() - REACH_MARGIN;
         long[] ticks = {0};
         long[] from = {minecraft.level.getGameTime()};
+        float[] health = {player.getHealth()};
         boolean far = player.getEyePosition().distanceTo(at) > STEP_IN_BLOCKS;
         after(() -> {
+            if (player.getHealth() < health[0] && !Body.answering()) {
+                if (ModList.get().isLoaded(BARITONE)) {
+                    Legs.halt();
+                }
+                stop("stopped: you were hurt, health " + Math.round(player.getHealth()) + " of " + Math.round(player.getMaxHealth()) + ": " + Senses.lastKind()
+                        + ", stepping within reach of " + block.getName().getString());
+                return false;
+            }
+            health[0] = player.getHealth();
             if (Body.acting()) {
                 from[0] = minecraft.level.getGameTime();
                 ticks[0] = 0;
                 progressed = System.nanoTime();
                 return false;
             }
-            boolean near = player.getEyePosition().distanceTo(at) <= reach;
+            boolean near = player.getEyePosition().distanceTo(at) <= reach && sees(minecraft, at, pos);
             if (near || far || !ModList.get().isLoaded(BARITONE) || minecraft.level.getGameTime() - from[0] > STEP_IN_TICKS) {
                 if (ModList.get().isLoaded(BARITONE) && ticks[0] > 0) {
                     Legs.halt();
@@ -2143,7 +2425,26 @@ public final class Driver {
             }
             progressed = System.nanoTime();
             return false;
-        }, "stepping within reach of " + block.getName().getString(), () -> then.accept(at));
+        }, "stepping within reach of " + block.getName().getString(), () -> then.accept(at, face));
+    }
+
+    private static Optional<Vec3> seenPoint(Minecraft minecraft, BlockPos pos) {
+        VoxelShape shape = minecraft.level.getBlockState(pos).getShape(minecraft.level, pos);
+        if (shape.isEmpty()) {
+            return Optional.empty();
+        }
+        Vec3 eyes = minecraft.player.getEyePosition();
+        return shape.toAabbs().stream().flatMap(part -> {
+            AABB box = part.move(pos);
+            Vec3 centre = box.getCenter();
+            return Stream.of(centre, new Vec3(centre.x, box.maxY - INSET, centre.z), new Vec3(centre.x, box.minY + INSET, centre.z));
+        }).filter(point -> minecraft.level.clip(new ClipContext(eyes, point.add(point.subtract(eyes).normalize().scale(INSET)), ClipContext.Block.OUTLINE,
+                ClipContext.Fluid.NONE, minecraft.player)).getBlockPos().equals(pos)).min(Comparator.comparingDouble(eyes::distanceToSqr));
+    }
+
+    private static boolean sees(Minecraft minecraft, Vec3 at, BlockPos pos) {
+        BlockHitResult hit = minecraft.level.clip(new ClipContext(minecraft.player.getEyePosition(), at, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, minecraft.player));
+        return hit.getType() == HitResult.Type.MISS || hit.getBlockPos().equals(pos);
     }
 
     private static void embark(Minecraft minecraft) {
@@ -2160,6 +2461,9 @@ public final class Driver {
 
     private static void launch(Minecraft minecraft) {
         LocalPlayer player = minecraft.player;
+        if (ModList.get().isLoaded(BARITONE)) {
+            Legs.halt();
+        }
         int slot = IntStream.range(0, Inventory.getSelectionSize()).filter(index -> player.getInventory().getItem(index).getItem() instanceof BoatItem)
                 .findFirst().orElse(-1);
         if (slot < 0) {
@@ -2169,11 +2473,15 @@ public final class Driver {
         BlockPos feet = player.blockPosition();
         Optional<BlockPos> water = BlockPos.betweenClosedStream(feet.offset(-LAUNCH_BLOCKS, -2, -LAUNCH_BLOCKS), feet.offset(LAUNCH_BLOCKS, 1, LAUNCH_BLOCKS))
                 .map(BlockPos::immutable)
-                .filter(pos -> BlockPos.betweenClosedStream(pos.offset(-1, 0, -1), pos.offset(1, 0, 1))
-                        .allMatch(around -> minecraft.level.getFluidState(around).is(FluidTags.WATER) && minecraft.level.getBlockState(around.above()).isAir())
-                        && minecraft.level.getBlockState(pos.above(2)).isAir()
-                        && Math.hypot(pos.getX() + HALF - player.getX(), pos.getZ() + HALF - player.getZ()) >= LAUNCH_CLEAR)
-                .min(Comparator.comparingDouble(pos -> Vec3.atCenterOf(pos).distanceTo(player.getEyePosition())));
+                .filter(pos -> room(minecraft, pos) > 0 && Math.hypot(pos.getX() + HALF - player.getX(), pos.getZ() + HALF - player.getZ()) >= LAUNCH_CLEAR
+                        && Vec3.atBottomCenterOf(pos).add(0, WATER_TOP, 0).distanceTo(player.getEyePosition()) < player.blockInteractionRange()
+                        && minecraft.level.clip(new ClipContext(player.getEyePosition(), Vec3.atBottomCenterOf(pos).add(0, WATER_TOP, 0), ClipContext.Block.COLLIDER,
+                                ClipContext.Fluid.NONE, player)).getType() == HitResult.Type.MISS
+                        && minecraft.level.clip(new ClipContext(player.getEyePosition(), Vec3.atBottomCenterOf(pos).add(0, WATER_TOP, 0), ClipContext.Block.COLLIDER,
+                                ClipContext.Fluid.ANY, player)).getBlockPos().equals(pos)
+                        && minecraft.level.getEntities(player, new AABB(pos).inflate(LAUNCH_CLEAR)).isEmpty())
+                .max(Comparator.comparingInt((BlockPos pos) -> room(minecraft, pos))
+                        .thenComparingDouble(pos -> -Vec3.atCenterOf(pos).distanceTo(player.getEyePosition())));
         if (water.isEmpty()) {
             fail("embark failed: no open water within " + LAUNCH_BLOCKS + " blocks to put the boat on");
             return;
@@ -2200,6 +2508,12 @@ public final class Driver {
         });
     }
 
+    private static int room(Minecraft minecraft, BlockPos pos) {
+        return IntStream.rangeClosed(1, LAUNCH_ROOM).takeWhile(reach -> BlockPos.betweenClosedStream(pos.offset(-reach, 0, -reach), pos.offset(reach, 0, reach))
+                .allMatch(around -> minecraft.level.getFluidState(around).is(FluidTags.WATER) && minecraft.level.getBlockState(around.above()).isAir()
+                        && minecraft.level.getBlockState(around.above(2)).isAir())).max().orElse(0);
+    }
+
     private static Optional<Entity> nearestBoat(Minecraft minecraft) {
         LocalPlayer player = minecraft.player;
         return StreamSupport.stream(minecraft.level.entitiesForRendering().spliterator(), false)
@@ -2219,12 +2533,30 @@ public final class Driver {
             return !player.isUnderWater();
         }, "coming up out of the water", () -> {
             minecraft.options.keyJump.setDown(false);
-            clickOn(minecraft, target, "embark", missed -> {
-                if (missed != null) {
-                    fail("embark failed: the click went to " + missed + ", not to the " + name);
+            boardTry(minecraft, target, name, BOARD_TRIES);
+        });
+    }
+
+    private static void boardTry(Minecraft minecraft, Entity target, String name, int tries) {
+        LocalPlayer player = minecraft.player;
+        clickOn(minecraft, target, "embark", missed -> {
+            if (missed != null) {
+                fail("embark failed: the click went to " + missed + ", not to the " + name);
+                return;
+            }
+            long from = minecraft.level.getGameTime();
+            after(() -> player.getVehicle() == target || minecraft.level.getGameTime() - from > BOARD_TICKS, "getting into the " + name, () -> {
+                if (player.getVehicle() == target) {
+                    note("embark: in the " + name);
                     return;
                 }
-                after(() -> player.getVehicle() == target, "getting into the " + name, () -> note("embark: in the " + name));
+                Optional<String> rider = target.getPassengers().stream().filter(passenger -> !(passenger instanceof Player)).findFirst().map(Senses::describe);
+                if (tries <= 1) {
+                    fail("embark failed: the " + name + " would not take the player" + rider.map(creature -> ": " + creature + " sits in it").orElse(""));
+                    return;
+                }
+                note("embark: the " + name + " did not take the player" + rider.map(creature -> ", " + creature + " sits in it").orElse("") + "; clicking again");
+                boardTry(minecraft, target, name, tries - 1);
             });
         });
     }
@@ -2243,10 +2575,11 @@ public final class Driver {
                     + ", and it is not bound");
             return;
         }
-        if (ridden instanceof Boat && !ashore(minecraft, ridden.blockPosition())) {
+        if (ridden instanceof Boat && !ashore(minecraft, ridden)) {
             fail("dismount failed: open water all round the " + ridden.getName().getString() + ", nowhere to stand; row to a shore first");
             return;
         }
+        float yaw = player.getYRot();
         minecraft.options.keyShift.setDown(true);
         dismount.ifPresent(mapping -> mapping.setDown(true));
         after(() -> {
@@ -2257,13 +2590,16 @@ public final class Driver {
             dismount.ifPresent(mapping -> mapping.setDown(false));
             note("dismount: " + (player.isInWater() ? "in the water" : "on foot") + " at " + player.blockPosition().toShortString());
             if (ridden instanceof Boat boat && !player.isInWater()) {
-                takeBoat(minecraft, boat);
+                takeBoat(minecraft, boat, yaw, BOAT_TRIES);
+            } else {
+                player.setYRot(yaw);
             }
         });
     }
 
-    static boolean ashore(Minecraft minecraft, BlockPos boat) {
-        return BlockPos.betweenClosedStream(boat.offset(-SHORE_REACH, -SHORE_REACH, -SHORE_REACH), boat.offset(SHORE_REACH, SHORE_REACH, SHORE_REACH)).anyMatch(ground -> {
+    static boolean ashore(Minecraft minecraft, Entity boat) {
+        AABB around = boat.getBoundingBox().inflate(SHORE_REACH);
+        return BlockPos.betweenClosedStream(BlockPos.containing(around.minX, around.minY, around.minZ), BlockPos.containing(around.maxX, around.maxY, around.maxZ)).anyMatch(ground -> {
             BlockPos feet = ground.above();
             return minecraft.level.getBlockState(ground).isFaceSturdy(minecraft.level, ground, Direction.UP)
                     && minecraft.level.getBlockState(feet).getCollisionShape(minecraft.level, feet).isEmpty()
@@ -2272,11 +2608,22 @@ public final class Driver {
         });
     }
 
-    private static void takeBoat(Minecraft minecraft, Boat boat) {
+    private static void takeBoat(Minecraft minecraft, Boat boat, float yaw, int tries) {
         LocalPlayer player = minecraft.player;
         String name = boat.getName().getString();
         Item item = boat.getPickResult().getItem();
         int carried = player.getInventory().countItem(item);
+        if (!boat.isRemoved() && boat.distanceTo(player) > player.entityInteractionRange() && tries > 0 && ModList.get().isLoaded(BARITONE)
+                && boat.distanceTo(player) <= FETCH_BLOCKS) {
+            Legs.walkTo(boat.blockPosition(), 2);
+            long walked = minecraft.level.getGameTime();
+            after(() -> boat.isRemoved() || boat.distanceTo(player) <= player.entityInteractionRange() - REACH_MARGIN || minecraft.level.getGameTime() - walked > FETCH_TICKS,
+                    "stepping within reach of the " + name, () -> {
+                        Legs.halt();
+                        takeBoat(minecraft, boat, yaw, tries - 1);
+                    });
+            return;
+        }
         long from = minecraft.level.getGameTime();
         int[] swings = {0};
         after(() -> {
@@ -2293,17 +2640,43 @@ public final class Driver {
             return false;
         }, "breaking the " + name + " to take it along", () -> {
             long dropped = minecraft.level.getGameTime();
-            after(() -> player.getInventory().countItem(item) > carried || minecraft.level.getGameTime() - dropped > PICKUP_TICKS, "picking the " + name + " up",
-                    () -> note("dismount: " + (!boat.isRemoved() ? "left the " + name + " on the water, out of reach"
-                            : player.getInventory().countItem(item) > carried ? "took the " + name + " along"
-                            : "broke the " + name + ", but it lies where it fell" + (player.getInventory().getFreeSlot() < 0 ? ": no room in the inventory" : ""))));
+            after(() -> player.getInventory().countItem(item) > carried || minecraft.level.getGameTime() - dropped > PICKUP_TICKS, "picking the " + name + " up", () -> {
+                Optional<ItemEntity> lying = minecraft.level.getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(FETCH_BLOCKS),
+                        drop -> drop.getItem().is(item)).stream().min(Comparator.comparingDouble(player::distanceToSqr));
+                if (boat.isRemoved() && player.getInventory().countItem(item) <= carried && lying.isPresent() && player.getInventory().getFreeSlot() >= 0
+                        && ModList.get().isLoaded(BARITONE)) {
+                    Legs.walkTo(lying.get().blockPosition(), 0);
+                    long walked = minecraft.level.getGameTime();
+                    after(() -> player.getInventory().countItem(item) > carried || lying.get().isRemoved() || minecraft.level.getGameTime() - walked > FETCH_TICKS,
+                            "walking over the " + name + " to pick it up", () -> {
+                                Legs.halt();
+                                player.setYRot(yaw);
+                                taken(minecraft, boat, name, item, carried);
+                            });
+                    return;
+                }
+                player.setYRot(yaw);
+                taken(minecraft, boat, name, item, carried);
+            });
         });
     }
 
+    private static void taken(Minecraft minecraft, Boat boat, String name, Item item, int carried) {
+        LocalPlayer player = minecraft.player;
+        note("dismount: " + (!boat.isRemoved() ? "left the " + name + " on the water, out of reach"
+                : player.getInventory().countItem(item) > carried ? "took the " + name + " along"
+                : "broke the " + name + ", but it lies where it fell" + (player.getInventory().getFreeSlot() < 0 ? ": no room in the inventory" : "")));
+    }
+
     private static void cheat(String command) {
-        PacketDistributor.sendToServer(new Cheat.Run(command.startsWith("/") ? command.substring(1) : command));
+        PacketDistributor.sendToServer(new Cheat.Run(command.startsWith("/") ? command.substring(1) : command, true));
         synced = false;
         note("cheat: kept in the play record as a workaround; write it into the log");
+    }
+
+    private static void own(String command) {
+        PacketDistributor.sendToServer(new Cheat.Run(command, false));
+        synced = false;
     }
 
     static void progress() {
@@ -2311,6 +2684,7 @@ public final class Driver {
     }
 
     static void fail(String why) {
+        duck(false);
         abandon();
         until = null;
         then = null;
@@ -2319,7 +2693,7 @@ public final class Driver {
     }
 
     private static void abandon() {
-        steps.removeIf(step -> !LOOKING.contains(step.split(" ", 2)[0]));
+        steps.removeIf(step -> !UNSKIPPED.contains(step.split(" ", 2)[0]));
     }
 
     static void after(BooleanSupplier condition, String what, Runnable next) {
@@ -2341,6 +2715,19 @@ public final class Driver {
         synced = false;
     }
 
+    static void answer(Minecraft minecraft, String verb, @Nullable Screen before, Runnable then) {
+        synced = false;
+        after(() -> sync(minecraft), "the server's answer to the " + verb, () -> drawn("what the " + verb + " opened", () -> {
+            then.run();
+            Screen now = minecraft.screen;
+            if (now != before && now != null) {
+                note(verb + ": " + now.getClass().getSimpleName() + " \"" + now.getTitle().getString() + "\" open");
+            } else if (now != before) {
+                note(verb + ": " + before.getClass().getSimpleName() + " closed");
+            }
+        }));
+    }
+
     static void say(String line) {
         note(line);
     }
@@ -2352,7 +2739,7 @@ public final class Driver {
         then = () -> {
             AbstractWidget widget = labelled(minecraft, label);
             if (widget == null) {
-                note("error: no widget labelled " + label);
+                fail("no widget labelled " + label);
                 return;
             }
             for (int turn = 0; turn < SCROLL_TURNS && minecraft.screen != null && widget.getY() + widget.getHeight() > minecraft.screen.height * 3 / 4; turn++) {

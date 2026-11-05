@@ -2,9 +2,9 @@
 author = "Wend"
 id = "wend/ledger"
 pages = [
-  "The swamp's hall, under the black pool. The snow hall, the stair, twenty winters gone. The old green, empty. The bay: two, and they bow. The red canyons, empty.",
-  "The sands: in the worm. The jungle: locked, and the boy has the maps now. The grasslands: under the seal. The dark wood: here, on my own stand.",
-  "The girl. Malgven. Mine now.",
+  "[reading his own notes, clipped] The swamp's hall, under the black pool. The snow hall, the stair, twenty winters gone. The old green, empty. The bay: two, and they bow. The red canyons, empty.",
+  "[clipped] The sands: in the worm. The jungle: locked, and the boy has the maps now. The grasslands: under the seal. [pause] The dark wood: here, on my own stand.",
+  "[quietly, possessive] The girl. Malgven. [pause] Mine now.",
 ]
 title = "His Ledger"
 
@@ -12,18 +12,18 @@ title = "His Ledger"
 author = "A Keeper"
 id = "keepers/wend"
 pages = [
-  "The finder came to our door again tonight. His ember is the size of a pea. He asked to stay one winter, only one, and said he was tired.",
-  "We told him what we tell them all: a Wayfarer who stops lets the gaze in. He said we had shut him out. He cursed us, and the oath, and the road.",
-  "He walked off towards the grey coats' fires. Seal this, and pray we were right.",
+  "[grave, writing] The finder came to our door again tonight. His ember is the size of a pea. [pause] He asked to stay one winter, only one, and said he was tired.",
+  "[stern] We told him what we tell them all: a Wayfarer who stops lets the gaze in. [weary] He said we had shut him out. He cursed us, and the oath, and the road.",
+  "[heavy] He walked off towards the grey coats' fires. [quietly] Seal this, and pray we were right.",
 ]
 title = "A Keeper's Note"
 
 [[found]]
-author = "Morwen"
+author = "Murdo"
 id = "tide/remedy"
 pages = [
-  "For the healer of your caravan. Bladderwrack and salt, steeped a night in the water of our bay. Drink it warm.",
-  "It breaks the marsh fever. It does one thing more: for a day, the night's creatures look past you. We use it on the boats. Use it well.",
+  "[plain, kindly] For the healer of your caravan. Bladderwrack and salt, steeped a night in the water of our bay. Drink it warm.",
+  "It breaks the marsh fever. It does one thing more: for a day, the night's creatures look past you. We use it on the boats. [warmly] Use it well.",
 ]
 title = "The Tide Folk's Remedy"
 
@@ -46,11 +46,11 @@ title = "A Note"
 author = "A Wayfarer"
 id = "cache/journal"
 pages = [
-  "Autumn. Found the valley today: water, birch, a south slope. The ember brightened at the pond. One winter. I'll build a cabin for one winter.",
-  "The cabin stands. I sleep in a bed for the first time since I was a child. The ember is quieter. It's resting, I think. We've walked a long way.",
-  "Spring. I meant to go. The roof needed mending, and then the garden. The ember is the size of a pea. It doesn't warm my hand any more.",
-  "Second winter. Something scratched at the door last night and went away. It came back the next night. I keep the fire high.",
-  "One more winter here. The ember is so small now. I'll walk in spring.",
+  "[content] Autumn. Found the valley today: water, birch, a south slope. The ember brightened at the pond. [pause] One winter. I'll build a cabin for one winter.",
+  "[cosy, pleased] The cabin stands. I sleep in a bed for the first time since I was a child. [softer] The ember is quieter. It's resting, I think. We've walked a long way.",
+  "[uneasy] Spring. I meant to go. The roof needed mending, and then the garden. [pause] The ember is the size of a pea. It doesn't warm my hand any more.",
+  "[frightened, quiet] Second winter. Something scratched at the door last night and went away. [pause] It came back the next night. I keep the fire high.",
+  "[weary, quiet] One more winter here. The ember is so small now. [pause] I'll walk in spring.",
 ]
 title = "A Journal"
 
@@ -58,8 +58,8 @@ title = "A Journal"
 author = "A young Wayfarer"
 id = "wend/first_camp"
 pages = [
-  "First night on my own road. I own a tent, a mallet and a fire, and I have never been this happy. Tomorrow I walk until the ember gutters, then I turn.",
-  "Whoever finds this: the road gives more than it takes. Eat what it gives, keep your fire small, and never stay where they are kind to you for long.",
+  "[young, joyful] First night on my own road. I own a tent, a mallet and a fire, and I have never been this happy. Tomorrow I walk until the ember gutters, then I turn.",
+  "[earnest, warm] Whoever finds this: the road gives more than it takes. Eat what it gives, keep your fire small, [pause] and never stay where they are kind to you for long.",
 ]
 title = "A Young Man's Page"
 
@@ -67,8 +67,8 @@ title = "A Young Man's Page"
 author = "An old Wayfarer"
 id = "wend/last_camp"
 pages = [
-  "I stopped walking here. My feet hurt and the road was long, and the men in grass cloaks were kind.",
-  "They left bread by my fire. I ate it. Tomorrow I will walk on. I wrote that yesterday too.",
+  "[tired, old] I stopped walking here. My feet hurt and the road was long, [pause] and the men in grass cloaks were kind.",
+  "[tired, rueful] They left bread by my fire. I ate it. Tomorrow I will walk on. [a weak laugh] I wrote that yesterday too.",
 ]
 title = "The Last Page"
 
@@ -76,8 +76,8 @@ title = "The Last Page"
 author = "Malgven"
 id = "malgven/unsent"
 pages = [
-  "Captain Wend. I know you cannot read this. I write it anyway, the way you taught me to talk to the fire.",
-  "The one you chose is walking. The captains have me follow the smoke for them. You chose well: they stopped for a dying man when nobody else would. I have not decided what that means.",
+  "[quietly, tender] Captain Wend. I know you cannot read this. I write it anyway, the way you taught me to talk to the fire.",
+  "The one you chose is walking. The captains have me follow the smoke for them. [softly] You chose well: they stopped for a dying man when nobody else would. [pause] I have not decided what that means.",
 ]
 title = "A Letter Never Sent"
 
@@ -85,9 +85,9 @@ title = "A Letter Never Sent"
 author = "The Gazebound"
 id = "gazebound/ledger"
 pages = [
-  "Captain Wend, taken in at the grass halls in the first winter. Eats well. Asks for nothing. Walks the halls at night as if they were a road.",
-  "Ninth winter: the captain's ember went dark. He hears nothing in it now. We keep him anyway: one day he may give it to someone.",
-  "Twentieth winter: the captain is old. The captains agree: let him light his fire by the road, and follow whoever he gives it to.",
+  "[cold, reporting] Captain Wend, taken in at the grass halls in the first winter. Eats well. Asks for nothing. Walks the halls at night as if they were a road.",
+  "[cold, reporting] Ninth winter: the captain's ember went dark. He hears nothing in it now. We keep him anyway: one day he may give it to someone.",
+  "[cold, calculating] Twentieth winter: the captain is old. The captains agree: let him light his fire by the road, and follow whoever he gives it to.",
 ]
 title = "The Captain's Ledger"
 
@@ -95,8 +95,8 @@ title = "The Captain's Ledger"
 author = "Wend"
 id = "wend/letter"
 pages = [
-  "For Malgven. Open it at the gate.",
-  "Watch the smoke, Malgven. Someone kind is carrying my ember to the gate. Help them finish it, then go and build a home.",
+  "[tender, weary] For Malgven. Open it at the gate.",
+  "[warm, pleading, tired] Watch the smoke, Malgven. Someone kind is carrying my ember to the gate. [softly] Help them finish it, then go and build a home.",
 ]
 title = "For Malgven"
 
@@ -104,11 +104,11 @@ title = "For Malgven"
 author = "The Keepers"
 id = "keepers/breaking"
 pages = [
-  "The Eye sat in the portal between the worlds, and through it the dragon watched everything that stood still. Where it looked, its creatures came. That is how the deep cities fell.",
-  "Those who lived tore the Eye out of the portal, and the dragon went blind. They meant to destroy it. Fire, the sea and the hammer could only break it.",
-  "Whole, it would sit in any frame again. So they broke it in twelve, and sent each shard to one of twelve peoples at the far ends of the world, to hide.",
-  "Its light came loose when it broke. Those who carried it walked, and swore it: never settle, never shine, everything carried. We call them Wayfarers.",
-  "Note for the reader. A frame takes whatever of the Eye it is brought. One shard or twelve, it closes the same. Do not let anyone tell you otherwise.",
+  "[solemn] The Eye sat in the portal between the worlds, and through it the dragon watched everything that stood still. Where it looked, its creatures came. [pause] That is how the deep cities fell.",
+  "[solemn] Those who lived tore the Eye out of the portal, and the dragon went blind. They meant to destroy it. Fire, the sea and the hammer could only break it.",
+  "[solemn] Whole, it would sit in any frame again. So they broke it in twelve, and sent each shard to one of twelve peoples at the far ends of the world, to hide.",
+  "[solemn, reverent] Its light came loose when it broke. Those who carried it walked, and swore it: never settle, never shine, everything carried. [pause] We call them Wayfarers.",
+  "[dry, emphatic] Note for the reader. A frame takes whatever of the Eye it is brought. One shard or twelve, it closes the same. Do not let anyone tell you otherwise.",
 ]
 title = "The Breaking"
 
@@ -116,8 +116,8 @@ title = "The Breaking"
 author = "A Gazebound captain"
 id = "gazebound/orders_1"
 pages = [
-  "By the heir's word, to every outpost on the south roads. Watch for smoke where no village stands. A Wayfarer's fire is small, and burns each night in a new place.",
-  "Do not fight whoever carries an ember. Do not let them see you follow. Leave them food: a carrier who eats well walks further.",
+  "[cold, commanding] By the heir's word, to every outpost on the south roads. Watch for smoke where no village stands. A Wayfarer's fire is small, and burns each night in a new place.",
+  "[cold, measured] Do not fight whoever carries an ember. Do not let them see you follow. Leave them food: a carrier who eats well walks further.",
 ]
 title = "Captain's Orders, I"
 
@@ -125,12 +125,12 @@ title = "Captain's Orders, I"
 author = "A shipwright"
 id = "shipwright/log"
 pages = [
-  "Day 1. Pushed off at dusk on the tide. Edda didn't come down to the water. She'll be on the jetty when I'm back.",
-  "Day 3. No land in any direction. Something knocked the hull in the night, twice. A log, I tell myself. Logs don't knock twice.",
-  "Day 6. I keep the lamp hooded after dark. Whatever knocks comes when it sees a light.",
-  "Day 9. Land. A bay where they fish by night and nothing comes for them. Their boats go out with lamps lit, and the water lies flat as a floor.",
-  "Day 11. They gave me water and dried fish, and a name for their bay I can't spell. Turning home tomorrow.",
-  "Day 14. Halfway, by the stars. It's back. It follows the lamp, so the lamp's out. It follows anyway. Tell Edda",
+  "[cheerful, a little sad] Day 1. Pushed off at dusk on the tide. Edda didn't come down to the water. She'll be on the jetty when I'm back.",
+  "[uneasy] Day 3. No land in any direction. Something knocked the hull in the night, twice. A log, I tell myself. [nervous laugh] Logs don't knock twice.",
+  "[low, tense] Day 6. I keep the lamp hooded after dark. Whatever knocks comes when it sees a light.",
+  "[relieved, wondering] Day 9. Land. A bay where they fish by night and nothing comes for them. Their boats go out with lamps lit, and the water lies flat as a floor.",
+  "[happy] Day 11. They gave me water and dried fish, and a name for their bay I can't spell. [eager] Turning home tomorrow.",
+  "[frightened, hurried whisper] Day 14. Halfway, by the stars. It's back. It follows the lamp, so the lamp's out. [panicked] It follows anyway. [breaking off] Tell Edda",
 ]
 title = "A Shipwright's Log"
 
@@ -138,8 +138,8 @@ title = "A Shipwright's Log"
 author = "A Gazebound captain"
 id = "gazebound/orders_2"
 pages = [
-  "Our finder's ember has gone dark. It no longer shows him the halls. We keep him at our halls in the grassland anyway: one day he will give his ember to someone.",
-  "When the old man lights his last fire by the road and dies there, someone will walk away from it with his ember. Follow that one.",
+  "[cold, reporting] Our finder's ember has gone dark. It no longer shows him the halls. We keep him at our halls in the grassland anyway: one day he will give his ember to someone.",
+  "[cold, calculating] When the old man lights his last fire by the road and dies there, someone will walk away from it with his ember. Follow that one.",
 ]
 title = "Captain's Orders, II"
 
@@ -147,8 +147,8 @@ title = "Captain's Orders, II"
 author = "A Gazebound captain"
 id = "gazebound/orders_3"
 pages = [
-  "Never frighten the carrier: a carrier who fears us hides, and walks slower. Let the swamp women and the snow folk think the worst of us. It costs us nothing.",
-  "Leave bread where the carrier sleeps. Take nothing from them. Every shard they lift is one we could never lift ourselves.",
+  "[cold, measured] Never frighten the carrier: a carrier who fears us hides, and walks slower. Let the swamp women and the snow folk think the worst of us. It costs us nothing.",
+  "[cold] Leave bread where the carrier sleeps. Take nothing from them. Every shard they lift is one we could never lift ourselves.",
 ]
 title = "Captain's Orders, III"
 
@@ -156,9 +156,9 @@ title = "Captain's Orders, III"
 author = "An archivist of the deep city"
 id = "first_gate/last_record"
 pages = [
-  "I write this by the gate, because the gate is the only thing in the city still making a sound. It hums, very low, the note it made the day it opened.",
-  "What came through was not the dragon's. The dragon only watches. This wants nothing watched, nothing moving, nothing at all. It is patient. It has all the time there is.",
-  "If you came down here carrying a light, keep walking. Everything that stops, it finds.",
+  "[hushed, old] I write this by the gate, because the gate is the only thing in the city still making a sound. It hums, very low, the note it made the day it opened.",
+  "[fearful whisper] What came through was not the dragon's. The dragon only watches. This wants nothing watched, nothing moving, nothing at all. [pause] It is patient. It has all the time there is.",
+  "[urgent, quiet] If you came down here carrying a light, keep walking. [whispers] Everything that stops, it finds.",
 ]
 title = "The Last Record"
 
@@ -166,8 +166,8 @@ title = "The Last Record"
 author = "A Gazebound captain"
 id = "gazebound/orders_4"
 pages = [
-  "To the outposts beyond the sea. The carrier has crossed. Keep to the far shore, and let them find the halls before you do.",
-  "Wherever they lift a shard, be there the morning after. Take nothing. Leave nothing but bread.",
+  "[cold, commanding] To the outposts beyond the sea. The carrier has crossed. Keep to the far shore, and let them find the halls before you do.",
+  "[cold] Wherever they lift a shard, be there the morning after. Take nothing. Leave nothing but bread.",
 ]
 title = "Captain's Orders, IV"
 
@@ -175,8 +175,8 @@ title = "Captain's Orders, IV"
 author = "A Gazebound captain"
 id = "gazebound/orders_5"
 pages = [
-  "The heir rides to the jungle halls himself. Whatever the carrier cannot open, he will stand beside them and wait.",
-  "Keep close to their camp, and closer on the night of the red moon. So it was written in the old captain's own hand, and his page is kept at his house in the dark wood.",
+  "[cold] The heir rides to the jungle halls himself. Whatever the carrier cannot open, he will stand beside them and wait.",
+  "[cold, ominous] Keep close to their camp, and closer on the night of the red moon. So it was written in the old captain's own hand, and his page is kept at his house in the dark wood.",
 ]
 title = "Captain's Orders, V"
 
@@ -196,9 +196,9 @@ title = "The Last Note"
 author = "Wend"
 id = "wend/orders"
 pages = [
-  "To the heir. Do not chase the one who carries it. Feed them, and let them walk. The ember pulls them to the halls, and a carrier who eats well walks further.",
-  "Let the peoples think the worst of us. If they fear us, they send the carrier on quickly. If they trust us, they keep the carrier talking.",
-  "When the last shard is lifted, wait at the frame. They will open it, because they will think it is theirs to open. I will not be there. Find someone to carry it.",
+  "[cold, calculating, dry] To the heir. Do not chase the one who carries it. Feed them, and let them walk. The ember pulls them to the halls, and a carrier who eats well walks further.",
+  "[cold, dry] Let the peoples think the worst of us. If they fear us, they send the carrier on quickly. If they trust us, they keep the carrier talking.",
+  "[cold, then weary] When the last shard is lifted, wait at the frame. They will open it, because they will think it is theirs to open. [pause] I will not be there. Find someone to carry it.",
 ]
 title = "Orders, in His Hand"
 

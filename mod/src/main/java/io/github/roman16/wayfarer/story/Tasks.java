@@ -28,7 +28,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
+import net.minecraft.locale.Language;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -39,6 +41,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -48,6 +52,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public final class Tasks {
+    private static final String READY = ".ready";
     private static final String SAIL = "key.smallships.ship_sail";
     public static final Set<String> STEP_TASKS = Set.of("bed", "bury", "campfire", "ember", "enter", "fire", "horse", "hull", "look", "map", "marks", "pack", "rest", "sail", "search", "stone", "sweep",
             "tent", "tracks");
@@ -64,13 +69,17 @@ public final class Tasks {
     private static final String DONE = "done";
     private static final int FADE_TICKS = 60;
     private static final int NEAR = 32;
+    private static final int TENT_REACH = 8;
     private static final int FOLLOWED = 64;
     private static final Map<UUID, Double> COMPASS_FROM = new HashMap<>();
     private static final Map<UUID, Panel> SENT = new HashMap<>();
     private static final Map<UUID, Map<String, Component>> OPEN = new HashMap<>();
     private static final Map<UUID, Map<String, Fading>> FADING = new HashMap<>();
+    private static final Map<UUID, Shown> SHOWN = new HashMap<>();
 
     private Tasks() {}
+
+    private record Shown(String quest, Component objective) {}
 
     public record Panel(Component kind, Component title, Component objective, List<Component> open, List<Component> done) implements CustomPacketPayload {
         public static final Type<Panel> TYPE = new Type<>(Wayfarer.id("panel"));
@@ -147,6 +156,7 @@ public final class Tasks {
         SENT.remove(player);
         OPEN.remove(player);
         FADING.remove(player);
+        SHOWN.remove(player);
         COMPASS_FROM.remove(player);
     }
 
@@ -188,15 +198,24 @@ public final class Tasks {
         } else if (Firsts.seen(player, FIRST + TALKED) && !Firsts.seen(player, FIRST + "conversations") && !Talk.busy()) {
             open.put("conversations", task("conversations", key(JOURNAL_KEY)));
         }
-        if (LastUse.lastUse(player.getMainHandItem()) && !Firsts.seen(player, FIRST + "mend")) {
-            open.put("mend", task("mend", Balance.get().fire().restBlocks()));
+        if (!Firsts.seen(player, FIRST + "mend")) {
+            Inventory pack = player.getInventory();
+            Stream.of(List.of(player.getMainHandItem()), pack.armor, pack.offhand, pack.items.subList(0, Inventory.getSelectionSize()),
+                    pack.items.subList(Inventory.getSelectionSize(), pack.items.size())).flatMap(List::stream).filter(LastUse::lastUse).findFirst()
+                    .ifPresent(bare -> open.put("mend", task("mend", bare.getHoverName(), Balance.get().fire().restBlocks())));
         }
         Engine.marked(player).ifPresent(goal -> compass(player, goal, open));
-        if (!Stones.mine(player).isEmpty()) {
+        int stones = Stones.mine(player).size();
+        if (stones == 1) {
             open.put("things", task("things"));
+        } else if (stones > 1) {
+            open.put("things", task("things.more", stones - 1));
         }
         if (ModList.get().isLoaded("toughasnails")) {
             Heat.task(player).ifPresent(id -> open.put(id, task(id)));
+        }
+        if (Hold.unreached()) {
+            open.put("unreached", task("unreached"));
         }
         if (ModList.get().isLoaded("silentgear")) {
             Patterns.task(player).ifPresent(id -> open.put(id, task(id)));
@@ -231,14 +250,30 @@ public final class Tasks {
             title = Component.literal(Engine.title(Progress.of(player.server), active.quest()));
             if (Steps.entered(active)) {
                 objective = Component.literal(Journal.objective(player, active));
+                SHOWN.put(player.getUUID(), new Shown(active.quest().id(), objective));
+            } else {
+                objective = Optional.ofNullable(SHOWN.get(player.getUUID())).filter(last -> last.quest().equals(active.quest().id())).map(Shown::objective)
+                        .orElse(objective);
             }
             tasks(player, active, open);
         } else if (Engine.active(server).stream().anyMatch(active -> !active.quest().act().equals(Engine.PROLOGUE))) {
             open.put("choose", task("choose", key(JOURNAL_KEY)));
         }
-        if (Clock.evening() && !Talk.busy() && Caravan.standing(server).isPresent() && !Tents.isTent(player.level().dimension()) && !player.isSleeping()
+        if (Clock.evening() && !Talk.busy() && (Caravan.standing(server).isPresent() || Clock.camped(player)) && !Tents.isTent(player.level().dimension())
+                && !player.isSleeping()
                 && !Nights.sleepless(player)) {
-            open.put("sleep", task(TentPitch.owns(player) ? "sleep" : "lent"));
+            if (TentPitch.owns(player)) {
+                open.put("sleep", task(Caravan.within(server, player.level(), player.position()) ? "sleep" : "sleep_own"));
+            } else if (Caravan.spareBed(server)) {
+                open.put("sleep", task("lent"));
+            }
+        }
+        if (Clock.evening() && Tents.isTent(player.level().dimension()) && BlockPos.betweenClosedStream(player.blockPosition().offset(-TENT_REACH, -2, -TENT_REACH),
+                player.blockPosition().offset(TENT_REACH, 2, TENT_REACH)).noneMatch(pos -> player.level().getBlockState(pos).is(BlockTags.BEDS))) {
+            open.put("tent_bed", task("tent_bed"));
+        }
+        if (Progress.of(server).gift(Sense.TRAIL_SIGHT) && !Firsts.seen(player, FIRST + "trail_sight")) {
+            open.put("trail_sight", task("trail_sight"));
         }
         if (OwnStone.carried(player) && !Firsts.seen(player, FIRST + "stone_set")) {
             open.put("stone_set", task("stone_set"));
@@ -268,6 +303,7 @@ public final class Tasks {
     }
 
     private static void tasks(ServerPlayer player, Engine.Active active, Map<String, Component> open) {
+        ahead(active, open);
         if (!active.step().spec().has("tasks") || !Steps.entered(active) || Talk.busy()) {
             return;
         }
@@ -278,6 +314,21 @@ public final class Tasks {
                 rest(player, active.step().kind(), rested(active), open);
             } else {
                 step(player, active, task.getAsString()).ifPresent(text -> open.put(task.getAsString(), text));
+            }
+        }
+    }
+
+    private static void ahead(Engine.Active active, Map<String, Component> open) {
+        List<Story.Step> steps = active.quest().steps();
+        for (Story.Step later : steps.subList(steps.indexOf(active.step()) + 1, steps.size())) {
+            if (!later.spec().has("tasks")) {
+                continue;
+            }
+            for (JsonElement task : later.spec().getAsJsonArray("tasks")) {
+                String key = "wayfarer.task." + task.getAsString() + READY;
+                if (Language.getInstance().has(key)) {
+                    open.put(task.getAsString() + READY, Component.translatable(key));
+                }
             }
         }
     }
@@ -345,7 +396,7 @@ public final class Tasks {
 
     private static void rest(ServerPlayer player, String kind, Predicate<ServerPlayer> rested, Map<String, Component> open) {
         if (kind.equals("caravan") && Clock.nightfall()) {
-            open.put("evening", task("evening"));
+            open.put("evening", task(Clock.camped(player) ? "evening_camp" : "evening"));
             return;
         }
         if (kind.equals("caravan") && !(Clock.afternoon(player.serverLevel()) && Clock.atCaravan(player))) {

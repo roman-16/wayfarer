@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "wwSEQqB6Oxxz9PlnTBFW",
+  "id": "6bfb7f0f",
+  "kept": "29.10.2026",
+  "preview": 1,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 1743925154,
+    "should_enhance": false,
+    "text": "A fire burns low in the grey before dawn. Someone sits by it, waiting for you to wake. You wake on cold ground beside a fire. You don't remember lying down. An old man sits across the flames, propped against a log. His face is grey, and his breath rattles. The fire pops. The old man is dead.",
+    "voice_description": "Native English, British. Female, 40-50. Excellent quality. Persona: a storyteller at a fire, telling an old tale to one listener. Emotion: calm, warm, quietly grave. A low, clear, unhurried voice with a soft warmth, close to the listener but never intimate; even and steady, so it can speak for hours without tiring the ear."
+  }
+}

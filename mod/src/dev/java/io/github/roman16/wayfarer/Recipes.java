@@ -1,17 +1,17 @@
 package io.github.roman16.wayfarer;
 
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayoutDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.IFocus;
@@ -31,6 +31,7 @@ import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -43,10 +44,11 @@ public final class Recipes implements IModPlugin {
     private static final int LARGE_GRID = 3;
     private static final int NAMED_CHOICES = 2;
     private static final int OPEN_TICKS = 40;
+    private static final int OPEN_TRIES = 4;
     @Nullable
     private static IJeiRuntime jei;
 
-    private record Plan(RecipeHolder<CraftingRecipe> recipe, IRecipeSlotsView slots, List<String> missing, boolean small) {}
+    private record Plan(IRecipeSlotsView slots, boolean itself, List<String> missing, boolean small) {}
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -81,11 +83,11 @@ public final class Recipes implements IModPlugin {
         IRecipeManager recipes = jei.getRecipeManager();
         IFocusFactory focuses = jei.getJeiHelpers().getFocusFactory();
         IFocus<ItemStack> focus = focuses.createFocus(RecipeIngredientRole.OUTPUT, VanillaTypes.ITEM_STACK, new ItemStack(item.get()));
-        IRecipeCategory<RecipeHolder<CraftingRecipe>> category = recipes.getRecipeCategory(RecipeTypes.CRAFTING);
         LocalPlayer player = minecraft.player;
-        List<Plan> plans = recipes.createRecipeLookup(RecipeTypes.CRAFTING).limitFocus(List.of(focus)).get()
-                .flatMap(recipe -> recipes.createRecipeLayoutDrawable(category, recipe, focuses.createFocusGroup(List.of(focus))).stream())
-                .map(layout -> plan(player.getInventory(), layout))
+        List<Plan> plans = recipes.createRecipeCategoryLookup().limitFocus(List.of(focus)).get()
+                .filter(category -> recipes.createRecipeCatalystLookup(category.getRecipeType()).getItemStack().anyMatch(stack -> stack.is(Items.CRAFTING_TABLE)))
+                .flatMap(category -> plans(recipes, focuses, focus, category, player.getInventory(), item.get()))
+                .sorted(Comparator.comparing(Plan::itself).thenComparing(plan -> plan.missing().size()))
                 .toList();
         String made = item.get().getDescription().getString();
         if (plans.isEmpty()) {
@@ -96,7 +98,8 @@ public final class Recipes implements IModPlugin {
         Optional<Plan> chosen = plans.stream().filter(plan -> plan.missing().isEmpty() && (table.isPresent() || plan.small())).findFirst();
         if (chosen.isEmpty()) {
             boolean big = plans.stream().anyMatch(plan -> plan.missing().isEmpty());
-            Driver.fail(big ? "craft failed: " + made + " needs a crafting table within reach" : "craft failed: needs " + String.join(", ", plans.getFirst().missing()));
+            Driver.fail(big ? "craft failed: " + made + " needs a crafting table within reach" : "craft failed: needs " + plans.stream()
+                    .map(plan -> String.join(", ", plan.missing())).distinct().limit(NAMED_CHOICES).collect(Collectors.joining("; or ")));
             return;
         }
         String where = table.map(pos -> " at the crafting table, " + Math.round(Math.sqrt(player.blockPosition().distSqr(pos))) + " blocks "
@@ -109,7 +112,12 @@ public final class Recipes implements IModPlugin {
         IntStream.range(0, Inventory.getSelectionSize()).filter(slot -> player.getInventory().getItem(slot).isEmpty()).boxed().findFirst()
                 .or(() -> IntStream.range(0, Inventory.getSelectionSize()).filter(slot -> player.getInventory().getItem(slot).getItem() instanceof TieredItem).boxed().findFirst())
                 .ifPresent(slot -> player.getInventory().selected = slot);
-        Driver.useAt(minecraft, table.get(), missed -> {
+        Hands.settled(minecraft, () -> openTable(minecraft, table.get(), fill, OPEN_TRIES));
+    }
+
+    private static void openTable(Minecraft minecraft, BlockPos table, Runnable fill, int tries) {
+        LocalPlayer player = minecraft.player;
+        Driver.useAt(minecraft, table, missed -> {
             if (missed != null) {
                 Driver.fail("craft failed: the click went to " + missed + ", not to the crafting table");
                 return;
@@ -117,19 +125,30 @@ public final class Recipes implements IModPlugin {
             long from = minecraft.level.getGameTime();
             Driver.after(() -> player.containerMenu instanceof CraftingMenu && minecraft.screen != null || minecraft.level.getGameTime() - from > OPEN_TICKS,
                     "the crafting table to open", () -> {
-                        if (!(player.containerMenu instanceof CraftingMenu) || minecraft.screen == null) {
-                            Driver.fail("craft failed: the crafting table did not open at the click");
-                            return;
+                        if (player.containerMenu instanceof CraftingMenu && minecraft.screen != null) {
+                            Driver.drawn("the crafting table", fill);
+                        } else if (tries > 1) {
+                            openTable(minecraft, table, fill, tries - 1);
+                        } else {
+                            Driver.fail("craft failed: the crafting table did not open at " + OPEN_TRIES + " clicks");
                         }
-                        Driver.drawn("the crafting table", fill);
                     });
         });
     }
 
-    private static Plan plan(Inventory inventory, IRecipeLayoutDrawable<RecipeHolder<CraftingRecipe>> layout) {
-        RecipeHolder<CraftingRecipe> recipe = layout.getRecipe();
-        return new Plan(recipe, layout.getRecipeSlotsView(), missing(inventory, layout.getRecipeSlotsView()),
-                recipe.value().canCraftInDimensions(SMALL_GRID, SMALL_GRID));
+    private static <T> Stream<Plan> plans(IRecipeManager recipes, IFocusFactory focuses, IFocus<ItemStack> focus, IRecipeCategory<T> category, Inventory inventory, Item made) {
+        return recipes.createRecipeLookup(category.getRecipeType()).limitFocus(List.of(focus)).get()
+                .flatMap(recipe -> recipes.createRecipeLayoutDrawable(category, recipe, focuses.createFocusGroup(List.of(focus))).stream())
+                .map(layout -> new Plan(layout.getRecipeSlotsView(), itself(layout.getRecipeSlotsView(), made), missing(inventory, layout.getRecipeSlotsView()), small(layout.getRecipe())));
+    }
+
+    private static boolean itself(IRecipeSlotsView slots, Item made) {
+        return slots.getSlotViews(RecipeIngredientRole.INPUT).stream().anyMatch(slot -> slot.getItemStacks().anyMatch(stack -> stack.is(made)));
+    }
+
+    private static boolean small(Object recipe) {
+        Object crafting = recipe instanceof RecipeHolder<?> holder ? holder.value() : recipe;
+        return crafting instanceof CraftingRecipe found && found.canCraftInDimensions(SMALL_GRID, SMALL_GRID);
     }
 
     private static List<String> missing(Inventory inventory, IRecipeSlotsView slots) {
@@ -170,6 +189,19 @@ public final class Recipes implements IModPlugin {
         LocalPlayer player = minecraft.player;
         AbstractContainerMenu menu = player.containerMenu;
         Inventory inventory = player.getInventory();
+        int side = menu instanceof InventoryMenu ? SMALL_GRID : LARGE_GRID;
+        for (int cell = 1; cell <= side * side; cell++) {
+            if (!menu.getSlot(cell).getItem().isEmpty()) {
+                minecraft.gameMode.handleInventoryMouseClick(menu.containerId, cell, 0, ClickType.QUICK_MOVE, player);
+            }
+        }
+        List<String> stuck = IntStream.rangeClosed(1, side * side).mapToObj(menu::getSlot).filter(slot -> !slot.getItem().isEmpty())
+                .map(slot -> slot.getItem().getCount() + " " + slot.getItem().getHoverName().getString()).toList();
+        if (!stuck.isEmpty()) {
+            Hands.close(minecraft);
+            Driver.fail("craft failed: the grid holds " + String.join(", ", stuck) + " and the inventory has no room to take it back");
+            return;
+        }
         List<String> missing = missing(inventory, plan.slots());
         if (!missing.isEmpty()) {
             Hands.close(minecraft);
@@ -177,7 +209,6 @@ public final class Recipes implements IModPlugin {
             return;
         }
         List<IRecipeSlotView> inputs = plan.slots().getSlotViews(RecipeIngredientRole.INPUT);
-        int side = menu instanceof InventoryMenu ? SMALL_GRID : LARGE_GRID;
         List<Integer> cells = IntStream.range(0, inputs.size()).filter(index -> !inputs.get(index).isEmpty()).boxed().toList();
         if (inputs.size() != LARGE_GRID * LARGE_GRID) {
             Hands.close(minecraft);
@@ -200,7 +231,10 @@ public final class Recipes implements IModPlugin {
             }
             List<ItemStack> choices = inputs.get(cell).getItemStacks().toList();
             int from = IntStream.range(0, INVENTORY).filter(index -> held[index] > 0
-                    && choices.stream().anyMatch(choice -> ItemStack.isSameItem(choice, inventory.getItem(index)))).findFirst().orElseThrow();
+                    && choices.stream().anyMatch(choice -> ItemStack.isSameItem(choice, inventory.getItem(index)))).boxed()
+                    .max(Comparator.comparingInt((Integer index) -> IntStream.range(0, INVENTORY).filter(other -> held[other] > 0
+                            && ItemStack.isSameItem(inventory.getItem(other), inventory.getItem(index))).map(other -> held[other]).sum())
+                            .thenComparingInt(index -> -index)).orElseThrow();
             held[from]--;
             int slot = Hands.menuSlot(menu, inventory, from);
             minecraft.gameMode.handleInventoryMouseClick(menu.containerId, slot, 0, ClickType.PICKUP, player);

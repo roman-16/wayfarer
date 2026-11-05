@@ -17,6 +17,7 @@ import baritone.api.utils.BetterBlockPos;
 import io.github.roman16.wayfarer.client.Conversation;
 import io.github.roman16.wayfarer.mixin.dev.GuiAccessor;
 import io.github.roman16.wayfarer.story.Banners;
+import io.github.roman16.wayfarer.story.StoryChecks;
 import io.github.roman16.wayfarer.story.Tasks;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -30,7 +31,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -41,6 +47,8 @@ import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.InBedChatScreen;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -50,6 +58,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -61,20 +70,30 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.EmptyBlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.SlimeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.Tags;
+import org.lwjgl.glfw.GLFW;
 
 final class Legs {
+    private static final int CAVERN_CELLS = 32;
+    private static final int SHORE_SEARCH = 64;
+    private static final int HOTBAR_SLOTS = 9;
+    private static final float SOFT_HARDNESS = 1;
     private static final double FIGHT_BLOCKS = 16;
     private static final long FIGHT_WAIT_TICKS = 600;
     private static final double LOST_BLOCKS = 24;
@@ -84,6 +103,9 @@ final class Legs {
     private static final String TENTS = "nomadictents";
     private static final int SEGMENT_BLOCKS = 48;
     private static final int SEGMENT_NEAR = 6;
+    private static final int LOOSE_SHARE = 4;
+    private static final double FIGHT_REACH = 4;
+    private static final int STRUCK_TICKS = 5;
     private static final int LOW_FOOD = 6;
     private static final float LOW_HEALTH_SHARE = 1 / 3f;
     private static final float WELL_SHARE = 2 / 3f;
@@ -94,6 +116,10 @@ final class Legs {
     private static final long LISTEN_QUIET_TICKS = 320;
     private static final int UNDERGROUND_BLOCKS = 4;
     private static final int DROP_BLOCKS = 6;
+    private static final int ASK_DROP_BLOCKS = 16;
+    private static final double STEP_UP = 0.625;
+    private static final long WAY_IN_SECONDS = 1;
+    private static final Set<Block> HARMFUL = Set.of(Blocks.CACTUS, Blocks.MAGMA_BLOCK, Blocks.POWDER_SNOW, Blocks.SWEET_BERRY_BUSH, Blocks.WITHER_ROSE);
     private static final int HOLLOW_MOST = 4096;
     private static final long STUCK_TICKS = 800;
     private static final int REPATH_TICKS = 10;
@@ -107,6 +133,10 @@ final class Legs {
     private static final List<String> PARTS = List.of("dawn", "morning", "noon", "afternoon", "dusk", "night");
     private static final long STILL_CLOCK_TICKS = 600;
     private static final double ROW_NEAR = 3;
+    private static final double SAIL_SLOW_BLOCKS = 128;
+    private static final double SAIL_COAST_BLOCKS = 32;
+    private static final int SAIL_PRESS_TICKS = 20;
+    private static final String SAIL_KEY = "key.smallships.ship_sail";
     private static final float ROW_AIM = 8;
     private static final float ROW_AHEAD = 45;
     private static final int ASHORE_TICKS = 20;
@@ -118,26 +148,35 @@ final class Legs {
     private static final double CHART_NEAR = 2;
     private static final double CHART_GAIN = 4;
     private static final int CHART_PATIENCE = 4;
+    private static final int COVER_AHEAD = 4;
     private static final int DETOUR_REACH = 6;
     private static final double HALF_BLOCK = 0.5;
     private static final double LEAP_NEAR = 2;
+    private static final double SAME_WAY = 0.875;
     private static final double CENTRE_SLACK = 0.125;
     private static final int CENTRE_TICKS = 32;
     private static final int CLIMB_BLOCKS = 16;
-    private static final float LOOK_UP = -90;
+    static final float LOOK_UP = -90;
     private static final int TREE_BLOCKS = 32;
     private static final int TREE_REACH = 2;
+    private static final int TREE_DEPTH = 8;
     private static final Map<Item, List<Block>> MINED_FROM = Map.of(Items.COAL, List.of(Blocks.COAL_ORE, Blocks.DEEPSLATE_COAL_ORE), Items.COBBLED_DEEPSLATE,
             List.of(Blocks.DEEPSLATE), Items.COBBLESTONE, List.of(Blocks.STONE), Items.DIAMOND, List.of(Blocks.DIAMOND_ORE, Blocks.DEEPSLATE_DIAMOND_ORE), Items.RAW_COPPER,
             List.of(Blocks.COPPER_ORE, Blocks.DEEPSLATE_COPPER_ORE), Items.RAW_GOLD, List.of(Blocks.GOLD_ORE, Blocks.DEEPSLATE_GOLD_ORE), Items.RAW_IRON,
             List.of(Blocks.IRON_ORE, Blocks.DEEPSLATE_IRON_ORE));
     private static final int CHATTER_CHARS = 256;
     private static final int WADES = 4;
+    private static final int LADDER_RUNGS = 2;
+    private static final int PERSON_HURT_BLOCKS = 32;
+    private static final int CHOPS = 16;
+    private static final double CHOP_REACH = 4.5;
+    private static final long CHOP_TICKS = 100;
+    private static final double STRIKE_REACH = 4;
+    private static final long LADDER_STILL_TICKS = 64;
     private static final double STRIKE_BACK_BLOCKS = 4;
     private static final int STRIKE_BACK_TICKS = 64;
     private static final float SEAT_TURN = 96;
     private static final double SHORE_STOP_BLOCKS = 32;
-    private static final double EDGE_TICKS = 4;
     private static final long WADE_STEP_TICKS = 64;
     private static final ResourceLocation CHOPPED_LOG = ResourceLocation.fromNamespaceAndPath("treechop", "chopped_log");
     private static final long GATHER_DRY_TICKS = 2560;
@@ -166,16 +205,38 @@ final class Legs {
     private static final Set<String> shownTasks = new HashSet<>();
     private static final List<String> told = new ArrayList<>();
     private static boolean hungry = true;
+    @Nullable
+    private static String exposure;
     private static boolean weak;
     @Nullable
     private static Vec3 shore;
     @Nullable
     private static Vec3 cave;
     @Nullable
-    private static Vec3 brink;
-    @Nullable
-    private static Vec3 ledge;
+    private static Halt brink;
     private static boolean configured;
+    private static int miningFloor;
+
+    private record Covered(Goal columns, int ceiling) implements Goal {
+        @Override
+        public boolean isInGoal(int x, int y, int z) {
+            return y <= ceiling && columns.isInGoal(x, y, z);
+        }
+
+        @Override
+        public double heuristic(int x, int y, int z) {
+            return columns.heuristic(x, y, z);
+        }
+    }
+
+    private record Halt(Vec3 at, GoalXZ goal) {
+        boolean resumes(LocalPlayer player, GoalXZ next) {
+            Vec3 before = new Vec3(goal.getX() + 0.5 - at.x, 0, goal.getZ() + 0.5 - at.z);
+            Vec3 after = new Vec3(next.getX() + 0.5 - player.getX(), 0, next.getZ() + 0.5 - player.getZ());
+            return at.distanceTo(player.position()) <= SHORE_BLOCKS && before.lengthSqr() > 0 && after.lengthSqr() > 0
+                    && before.normalize().dot(after.normalize()) >= SAME_WAY;
+        }
+    }
     @Nullable
     private static Action action;
 
@@ -216,7 +277,7 @@ final class Legs {
         boolean burrows;
         boolean stand;
         boolean leaps;
-        boolean edgeless;
+        boolean here;
         int barTime;
         final int slot;
         @Nullable
@@ -235,14 +296,31 @@ final class Legs {
         Vec3 clearPoint;
         long still;
         long detourTicks;
+        long backTicks;
+        @Nullable
+        Vec3 lastBoat;
         float detour;
         List<Vec3> chart = List.of();
         int charted;
+        long sailedAt = Long.MIN_VALUE / 2;
         long unchartedUntil;
+        long markedAt;
         List<BlockPos> wade = List.of();
         int waded;
         long wadeSince;
         final Set<BlockPos> wadeEnds = new HashSet<>();
+        @Nullable
+        BlockPos ladder;
+        double ladderHigh;
+        long ladderSince;
+        final Set<BlockPos> ladders = new HashSet<>();
+        final Set<UUID> struckPeople = new HashSet<>();
+        @Nullable
+        Float heading;
+        @Nullable
+        BlockPos chop;
+        int chops;
+        long chopSince;
         int struck;
         long struckTick;
         @Nullable
@@ -261,8 +339,7 @@ final class Legs {
         long closer;
         int gained;
         long gainedAt;
-        @Nullable
-        BlockState chop;
+        int stage = -1;
         double nearest = Double.MAX_VALUE;
         int count;
 
@@ -291,16 +368,26 @@ final class Legs {
         told.clear();
         IBaritone baritone = baritone();
         baritone.getPathingBehavior().cancelEverything();
+        BaritoneAPI.getSettings().allowDownward.value = true;
         String[] words = argument.isBlank() ? new String[0] : argument.strip().split(" ");
         switch (verb) {
             case "go" -> {
                 Action go = new Action(Kind.GO, argument, player);
                 BaritoneAPI.getSettings().allowBreak.value = false;
                 BaritoneAPI.getSettings().allowPlace.value = false;
-                if (words.length == 1) {
+                if (words.length == 2 && words[1].equals(HERE)) {
+                    go.here = true;
+                    int blocks = Integer.parseInt(words[0]);
+                    go.heading = Body.facing(player);
+                    float yaw = go.heading * Mth.DEG_TO_RAD;
+                    Body.faced();
+                    go.target = new GoalXZ(Mth.floor(player.getX() - Mth.sin(yaw) * blocks), Mth.floor(player.getZ() + Mth.cos(yaw) * blocks));
+                } else if (words.length == 1) {
                     go.loose = true;
                     int blocks = Integer.parseInt(words[0]);
-                    float yaw = player.getYRot() * Mth.DEG_TO_RAD;
+                    go.heading = Body.facing(player);
+                    float yaw = go.heading * Mth.DEG_TO_RAD;
+                    Body.faced();
                     go.target = new GoalXZ(Mth.floor(player.getX() - Mth.sin(yaw) * blocks), Mth.floor(player.getZ() + Mth.cos(yaw) * blocks));
                 } else if (words.length == 2) {
                     BlockPos column = Driver.block(minecraft, words[0], "~", words[1]);
@@ -309,18 +396,17 @@ final class Legs {
                     go.spot = Driver.block(minecraft, words[0], words[1], words[2]);
                     go.target = new GoalXZ(go.spot.getX(), go.spot.getZ());
                 } else {
-                    throw new IllegalArgumentException("go takes <blocks>, <x> <z> or <x> <y> <z>, not " + argument);
+                    throw new IllegalArgumentException("go takes <blocks>, <blocks> here, <x> <z> or <x> <y> <z>, not " + argument);
                 }
                 go.swims = shore != null && shore.distanceTo(player.position()) <= SHORE_BLOCKS;
                 go.burrows = cave != null && cave.distanceTo(player.position()) <= SHORE_BLOCKS;
-                go.leaps = brink != null && brink.distanceTo(player.position()) <= SHORE_BLOCKS;
-                go.edgeless = ledge != null && ledge.distanceTo(player.position()) <= SHORE_BLOCKS;
+                go.leaps = brink != null && brink.resumes(player, go.target);
                 shore = null;
                 cave = null;
                 brink = null;
-                ledge = null;
-                go.arrival = go.spot == null ? around(go.target) : new GoalBlock(go.spot);
-                go.surface = go.spot == null;
+                go.arrival = go.spot != null ? new GoalBlock(go.spot) : go.here ? underground(minecraft, go.target) : around(go.target);
+                go.surface = go.spot == null && !go.here;
+                go.burrows |= go.here;
                 go.goal = segment(minecraft, go);
                 action = go;
                 go.clearOf = pressing(minecraft).orElse(null);
@@ -352,9 +438,11 @@ final class Legs {
                 if (blocks.isEmpty()) {
                     throw new IllegalArgumentException(item.getDescription().getString() + " is no block to gather");
                 }
-                if (blocks.stream().anyMatch(block -> block.defaultBlockState().is(BlockTags.LOGS))) {
+                boolean logs = blocks.stream().anyMatch(block -> block.defaultBlockState().is(BlockTags.LOGS));
+                if (logs) {
                     BuiltInRegistries.BLOCK.getOptional(CHOPPED_LOG).ifPresent(blocks::add);
                 }
+                BaritoneAPI.getSettings().minYLevelWhileMining.value = logs ? player.getBlockY() - TREE_DEPTH : miningFloor;
                 Action gather = new Action(Kind.GATHER, BuiltInRegistries.ITEM.getKey(item).toString(), player);
                 gather.count = Integer.parseInt(last);
                 gather.blocks = blocks;
@@ -389,7 +477,7 @@ final class Legs {
                         throw new IllegalArgumentException("idle until takes one of " + String.join(", ", PARTS) + ", not " + words[1]);
                     }
                     idle.until = words[1];
-                    idle.dayTime = minecraft.level.getDayTime();
+                    idle.dayTime = Senses.dayTime(minecraft);
                 } else {
                     idle.count = Integer.parseInt(argument.strip()) * TICKS_PER_SECOND;
                 }
@@ -432,7 +520,8 @@ final class Legs {
     static void turn(Minecraft minecraft, String argument) {
         String[] words = argument.strip().split(" ");
         LocalPlayer player = minecraft.player;
-        player.setYRot(player.getYRot() + Float.parseFloat(words[0]));
+        player.setYRot(Body.facing(player) + Float.parseFloat(words[0]));
+        Body.faced();
         if (words.length > 1) {
             player.setXRot(Mth.clamp(Float.parseFloat(words[1]), -90, 90));
         }
@@ -492,6 +581,10 @@ final class Legs {
                     current.wadeSince = current.ticks;
                     return;
                 }
+                if (current.ladder != null) {
+                    current.ladderSince = current.ticks;
+                    return;
+                }
                 current.goal = segment(minecraft, current);
                 baritone.getCustomGoalProcess().setGoalAndPath(current.goal);
             }
@@ -534,6 +627,12 @@ final class Legs {
                 if (!current.wade.isEmpty()) {
                     yield wade(minecraft, current);
                 }
+                if (current.ladder != null) {
+                    yield climbLadder(minecraft, current);
+                }
+                if (current.chop != null) {
+                    yield chop(minecraft, current);
+                }
                 BlockPos at = player.blockPosition();
                 boolean there = (current.ground != null ? current.ground : current.arrival).isInGoal(at.getX(), at.getY(), at.getZ())
                         || current.aside != null && current.aside.isInGoal(at.getX(), at.getY(), at.getZ());
@@ -562,27 +661,55 @@ final class Legs {
                     current.landTicks = 0;
                 }
                 int roof = roof(minecraft, player);
-                if (roof >= UNDERGROUND_BLOCKS && current.skyTicks >= LAND_TICKS && !current.burrows && !current.digging) {
+                if (roof >= UNDERGROUND_BLOCKS && current.skyTicks >= LAND_TICKS && !current.burrows && (!current.digging || cavern(minecraft, at))) {
                     cave = player.position();
                     yield stop(minecraft, "stopped: the way goes underground here, under " + roof + " blocks of rock and earth; go again to take it", null);
                 }
                 current.skyTicks = roof >= UNDERGROUND_BLOCKS ? 0 : current.skyTicks + 1;
-                Optional<String> leap = current.leaps || !player.onGround() ? Optional.empty() : leap(player, baritone);
-                if (leap.isPresent()) {
-                    brink = player.position();
-                    yield stop(minecraft, "stopped: " + leap.get() + "; go again to jump", null);
+                Optional<Footing> footing = player.onGround() || player.isInWater() ? footing(minecraft, baritone, current) : Optional.empty();
+                if (footing.isPresent() && footing.get().detour() != null) {
+                    baritone.getPathingBehavior().cancelEverything();
+                    told.add(footing.get().what() + ": round by " + footing.get().detour().toShortString());
+                    current.goal = new GoalBlock(footing.get().detour());
+                    baritone.getCustomGoalProcess().setGoalAndPath(current.goal);
+                    yield new Tick(true, null, null);
                 }
-                Optional<String> edge = current.leaps || current.edgeless || current.digging ? Optional.empty() : edge(minecraft, player);
-                if (edge.isPresent()) {
+                if (footing.isPresent() && footing.get().bough() != null && current.chops < CHOPS
+                        && player.getEyePosition().distanceTo(Vec3.atCenterOf(footing.get().bough())) <= CHOP_REACH) {
+                    baritone.getPathingBehavior().cancelEverything();
+                    player.setDeltaMovement(0, player.getDeltaMovement().y, 0);
+                    current.chops++;
+                    current.chop = footing.get().bough();
+                    current.chopSince = current.ticks;
+                    told.add(footing.get().what() + ": cutting it away, as a player cuts through");
+                    yield new Tick(true, null, null);
+                }
+                if (footing.isPresent() && footing.get().leap() && BaritoneAPI.getSettings().allowParkour.value) {
+                    baritone.getPathingBehavior().cancelEverything();
+                    BaritoneAPI.getSettings().allowParkour.value = false;
+                    told.add(footing.get().what() + ": no more jumps across gaps on this walk, looking for a way round");
+                    baritone.getCustomGoalProcess().setGoalAndPath(current.goal);
+                    yield new Tick(true, null, null);
+                }
+                if (footing.isPresent()) {
                     baritone.getPathingBehavior().cancelEverything();
                     player.setSprinting(false);
                     player.setDeltaMovement(0, player.getDeltaMovement().y, 0);
-                    ledge = player.position();
-                    yield stop(minecraft, null, "go failed: " + edge.get() + "; the walk took it for ground, and the player stopped on the brink");
+                    if (footing.get().asks()) {
+                        brink = new Halt(player.position(), current.target);
+                        yield stop(minecraft, "stopped: " + footing.get().what() + "; go again the same way to take it", null);
+                    }
+                    yield stop(minecraft, null, "go failed: " + footing.get().what() + "; find another way");
                 }
                 Optional<String> refused = refused(minecraft, current);
+                if (refused.isPresent() && startLadder(minecraft, current)) {
+                    yield new Tick(true, null, null);
+                }
                 if (refused.isPresent()) {
-                    yield stop(minecraft, "stopped: digging here, the bar says \"" + refused.get() + "\"; find another way", null);
+                    yield stop(minecraft, "stopped: digging here, the bar says \"" + refused.get() + "\"; find another way" + wayIn(minecraft), null);
+                }
+                if (current.digging && climbing(player) == 0) {
+                    restock(minecraft, player);
                 }
                 if (current.digging && bridging(minecraft, player, current.hollow)) {
                     yield stop(minecraft, null, "go failed: the way on builds out over a drop at " + at.toShortString() + "; step back and find another way");
@@ -592,7 +719,7 @@ final class Legs {
                 }
                 if (current.blocked) {
                     current.blocked = false;
-                    if (startWade(minecraft, current)) {
+                    if (startWade(minecraft, current) || startLadder(minecraft, current)) {
                         yield new Tick(true, null, null);
                     }
                     yield current.dug && !restock(minecraft, player) ? stop(minecraft, null, "go failed: no way there from " + at.toShortString() + climbWith(player)) : dig(minecraft, current);
@@ -643,19 +770,29 @@ final class Legs {
                 if (current.ticks - current.gainedAt > GATHER_DRY_TICKS) {
                     yield stop(minecraft, null, "gather failed: nothing more came in for " + GATHER_DRY_TICKS / TICKS_PER_SECOND + " s, holding " + has);
                 }
+                Optional<String> barred = said(minecraft, current);
+                if (barred.isPresent() && minecraft.hitResult instanceof BlockHitResult aimed && aimed.getType() == HitResult.Type.BLOCK
+                        && current.blocks.contains(minecraft.level.getBlockState(aimed.getBlockPos()).getBlock())) {
+                    yield stop(minecraft, null, "gather failed: the bar says \"" + barred.get() + "\" at " + aimed.getBlockPos().toShortString() + "; gather elsewhere, holding " + has);
+                }
                 if (minecraft.hitResult instanceof BlockHitResult chopping && chopping.getType() == HitResult.Type.BLOCK) {
                     BlockState chopped = minecraft.level.getBlockState(chopping.getBlockPos());
                     if (chopped.is(BlockTags.LOGS) && minecraft.gameMode.isDestroying() && !tree(minecraft, chopping.getBlockPos())) {
                         yield stop(minecraft, null, "gather failed: the " + chopped.getBlock().getName().getString() + " at " + chopping.getBlockPos().toShortString()
                                 + " is part of something built, not a tree; gather elsewhere, holding " + has);
                     }
-                    if (BuiltInRegistries.BLOCK.getKey(chopped.getBlock()).equals(CHOPPED_LOG) && !chopped.equals(current.chop)) {
-                        current.chop = chopped;
+                    int stage = minecraft.gameMode.getDestroyStage();
+                    boolean wood = chopped.is(BlockTags.LOGS) || BuiltInRegistries.BLOCK.getKey(chopped.getBlock()).equals(CHOPPED_LOG);
+                    if (wood && stage < current.stage) {
                         current.closer = current.ticks;
                     }
+                    current.stage = stage;
                 }
                 if (current.ticks > REPATH_TICKS && !baritone.getMineProcess().isActive()) {
                     yield stop(minecraft, null, "gather failed: no more " + current.what + " to be found, holding " + has);
+                }
+                if (climbing(player) == 0) {
+                    restock(minecraft, player);
                 }
                 yield stuck(minecraft, current, closer(current, -has));
             }
@@ -686,7 +823,7 @@ final class Legs {
     }
 
     private static Tick until(Minecraft minecraft, Action current) {
-        long dayTime = minecraft.level.getDayTime();
+        long dayTime = Senses.dayTime(minecraft);
         String time = Senses.time(dayTime);
         if (time.endsWith(", " + current.until)) {
             String waited = current.ticks <= 1 ? "it is " + current.until + " already" : current.until + " came";
@@ -720,32 +857,51 @@ final class Legs {
         if (far <= ROW_NEAR) {
             return stop(minecraft, "arrived", null);
         }
+        OptionalInt sail = sail(boat);
+        boolean coast = far <= SAIL_COAST_BLOCKS;
+        if (sail.isPresent() && (sail.getAsInt() == 0) != coast && current.ticks - current.sailedAt > SAIL_PRESS_TICKS) {
+            Arrays.stream(minecraft.options.keyMappings).filter(mapping -> mapping.getName().equals(SAIL_KEY) && !mapping.isUnbound()).findFirst().ifPresent(mapping -> {
+                long window = minecraft.getWindow().getWindow();
+                minecraft.keyboardHandler.keyPress(window, mapping.getKey().getValue(), 0, GLFW.GLFW_PRESS, 0);
+                minecraft.keyboardHandler.keyPress(window, mapping.getKey().getValue(), 0, GLFW.GLFW_RELEASE, 0);
+            });
+            current.sailedAt = current.ticks;
+            told.add(coast ? "took the sail in, " + Math.round(far) + " blocks from the goal" : "raised the sail");
+        }
+        if (sail.isPresent() && coast && sail.getAsInt() == 0 && boat.getDeltaMovement().horizontalDistance() < BOAT_STILL_SPEED) {
+            return stop(minecraft, "arrived under bare masts, " + Math.round(far) + " blocks short of the goal", null);
+        }
         current.ashore = boat.isInWater() || !boat.onGround() ? 0 : current.ashore + 1;
         if (current.ashore > ASHORE_TICKS) {
             return stop(minecraft, "stopped: reached land", null);
         }
         float bearing = (float) (Mth.atan2(dz, dx) * Mth.RAD_TO_DEG) - 90;
-        current.still = boat.getDeltaMovement().horizontalDistance() < BOAT_STILL_SPEED ? current.still + 1 : 0;
-        if (current.ticks - current.closer > BOAT_STILL_TICKS * CHART_PATIENCE && far <= SHORE_STOP_BLOCKS && Driver.ashore(minecraft, boat.blockPosition())) {
+        Vec3 now = boat.position();
+        boolean held = current.lastBoat != null && now.subtract(current.lastBoat).horizontalDistance() < BOAT_STILL_SPEED;
+        current.lastBoat = now;
+        current.still = held ? current.still + 1 : 0;
+        boolean stalled = current.still > BOAT_STILL_TICKS || current.ticks - current.closer > BOAT_STILL_TICKS * CHART_PATIENCE
+                || current.charted >= current.chart.size() && current.detourTicks <= 0 && underRockAhead(minecraft, boat, bearing);
+        if (current.ticks - Math.max(current.closer, current.markedAt) > BOAT_STILL_TICKS * CHART_PATIENCE && far <= SHORE_STOP_BLOCKS && Driver.ashore(minecraft, boat)) {
             return stop(minecraft, "at the shore, " + Math.round(far) + " blocks short of the goal", null);
         }
         if (current.charted < current.chart.size()) {
             Vec3 mark = current.chart.get(current.charted);
             if (Math.hypot(mark.x - boat.getX(), mark.z - boat.getZ()) < CHART_NEAR) {
                 current.charted++;
-                current.closer = current.ticks;
+                current.markedAt = current.ticks;
             }
-            if (current.still > BOAT_STILL_TICKS * CHART_PATIENCE) {
+            if (current.still > BOAT_STILL_TICKS * CHART_PATIENCE || current.ticks - current.markedAt > BOAT_STILL_TICKS * CHART_PATIENCE * 2) {
                 current.chart = List.of();
                 current.still = 0;
                 current.unchartedUntil = current.ticks + DETOUR_TICKS * 2;
             }
-        } else if (current.still > BOAT_STILL_TICKS && current.detourTicks <= 0 && current.ticks >= current.unchartedUntil) {
+        } else if (stalled && current.detourTicks <= 0 && current.ticks >= current.unchartedUntil) {
             current.chart = chart(minecraft, boat, current.target);
             current.charted = 0;
             if (!current.chart.isEmpty()) {
                 current.still = 0;
-                current.closer = current.ticks;
+                current.markedAt = current.ticks;
                 told.add("charted a way through open water round what blocks the boat, " + current.chart.size() * CHART_STEP + " blocks");
             }
         }
@@ -755,7 +911,7 @@ final class Legs {
         } else if (current.detourTicks > 0) {
             current.detourTicks--;
             bearing = current.detour;
-        } else if (current.still > BOAT_STILL_TICKS) {
+        } else if (stalled) {
             current.still = 0;
             float towards = bearing;
             Optional<Float> open = DETOURS.stream().map(offset -> Mth.wrapDegrees(towards + offset)).filter(way -> open(minecraft, boat, way)).findFirst();
@@ -764,7 +920,20 @@ final class Legs {
                 current.detourTicks = DETOUR_TICKS;
                 told.add("rowed round a rock, heading " + Math.round(Mth.wrapDegrees(current.detour - towards)) + " degrees off the way");
                 bearing = current.detour;
+            } else {
+                current.backTicks = DETOUR_TICKS;
+                current.unchartedUntil = current.ticks;
+                told.add("wedged against what blocks the boat: backed off from it");
             }
+        }
+        if (current.backTicks > 0) {
+            current.backTicks--;
+            current.still = 0;
+            minecraft.options.keyUp.setDown(false);
+            minecraft.options.keyLeft.setDown(false);
+            minecraft.options.keyRight.setDown(false);
+            minecraft.options.keyDown.setDown(true);
+            return stuck(minecraft, current, false);
         }
         Entity foe = Senses.lastAttacker();
         if (foe != null && foe.isAlive() && !foe.isRemoved() && foe.distanceTo(player) <= STRIKE_BACK_BLOCKS && Senses.hurtLately(minecraft, STRIKE_BACK_TICKS)
@@ -773,6 +942,7 @@ final class Legs {
             minecraft.options.keyUp.setDown(false);
             minecraft.options.keyLeft.setDown(false);
             minecraft.options.keyRight.setDown(false);
+            minecraft.options.keyDown.setDown(false);
             if (Body.strike(minecraft, foe, current.ticks, true)) {
                 current.struck = foe == current.struckAt ? current.struck + 1 : 1;
                 current.struckAt = foe;
@@ -787,11 +957,21 @@ final class Legs {
             return new Tick(true, null, null);
         }
         float turn = Mth.wrapDegrees(bearing - boat.getYRot());
+        boolean slow = sail.isPresent() && far <= SAIL_SLOW_BLOCKS;
         minecraft.options.keyRight.setDown(turn > ROW_AIM);
         minecraft.options.keyLeft.setDown(turn < -ROW_AIM);
-        minecraft.options.keyUp.setDown(Math.abs(turn) < ROW_AHEAD);
+        minecraft.options.keyUp.setDown(Math.abs(turn) < ROW_AHEAD && !slow);
+        minecraft.options.keyDown.setDown(slow);
         player.setYRot(bearing);
         return stuck(minecraft, current, closer(current, far));
+    }
+
+    private static OptionalInt sail(Entity boat) {
+        try {
+            return OptionalInt.of(((Number) boat.getClass().getMethod("getSailState").invoke(boat)).intValue());
+        } catch (ReflectiveOperationException absent) {
+            return OptionalInt.empty();
+        }
     }
 
     private static Optional<Entity> pressing(Minecraft minecraft) {
@@ -815,11 +995,15 @@ final class Legs {
     }
 
     private static Optional<String> refused(Minecraft minecraft, Action current) {
+        return said(minecraft, current).filter(line -> current.digging);
+    }
+
+    private static Optional<String> said(Minecraft minecraft, Action current) {
         GuiAccessor gui = (GuiAccessor) minecraft.gui;
         int shown = gui.wayfarer$bar() == null ? 0 : gui.wayfarer$barTime();
         boolean fresh = shown > current.barTime;
         current.barTime = shown;
-        return current.digging && fresh && current.ticks > 1 ? Optional.of(gui.wayfarer$bar().getString()) : Optional.empty();
+        return fresh && current.ticks > 1 ? Optional.of(gui.wayfarer$bar().getString()) : Optional.empty();
     }
 
     private static boolean tree(Minecraft minecraft, BlockPos log) {
@@ -889,6 +1073,7 @@ final class Legs {
 
     private static List<Vec3> chart(Minecraft minecraft, Boat boat, GoalXZ target) {
         int surface = Mth.floor(boat.getY());
+        boolean sky = underSky(minecraft, boat);
         int startX = Mth.floor(boat.getX() - HALF_BLOCK);
         int startZ = Mth.floor(boat.getZ() - HALF_BLOCK);
         int side = CHART_BLOCKS * 2 + 1;
@@ -913,8 +1098,8 @@ final class Legs {
                     }
                     int x = startX + nx - CHART_BLOCKS;
                     int z = startZ + nz - CHART_BLOCKS;
-                    boolean squeezed = dx != 0 && dz != 0 && (!afloat(minecraft, x - dx, surface, z) || !afloat(minecraft, x, surface, z - dz));
-                    if (squeezed || !afloat(minecraft, x, surface, z)) {
+                    boolean squeezed = dx != 0 && dz != 0 && (!afloat(minecraft, x - dx, surface, z, sky) || !afloat(minecraft, x, surface, z - dz, sky));
+                    if (squeezed || !afloat(minecraft, x, surface, z, sky)) {
                         continue;
                     }
                     parent[nz * side + nx] = cell;
@@ -943,13 +1128,14 @@ final class Legs {
         return marks;
     }
 
-    private static boolean afloat(Minecraft minecraft, int x, int y, int z) {
+    private static boolean afloat(Minecraft minecraft, int x, int y, int z, boolean sky) {
         for (int dx = 0; dx <= 1; dx++) {
             for (int dz = 0; dz <= 1; dz++) {
                 BlockPos water = new BlockPos(x + dx, y, z + dz);
                 if (!minecraft.level.getChunkSource().hasChunk(water.getX() >> 4, water.getZ() >> 4) || !minecraft.level.getFluidState(water).is(FluidTags.WATER)
                         || !minecraft.level.getBlockState(water).getCollisionShape(minecraft.level, water).isEmpty()
-                        || !minecraft.level.getBlockState(water.above()).getCollisionShape(minecraft.level, water.above()).isEmpty()) {
+                        || !minecraft.level.getBlockState(water.above()).getCollisionShape(minecraft.level, water.above()).isEmpty()
+                        || sky && !minecraft.level.canSeeSky(water.above())) {
                     return false;
                 }
             }
@@ -962,11 +1148,31 @@ final class Legs {
         double z = Mth.cos(yaw * Mth.DEG_TO_RAD);
         for (int along = 1; along <= DETOUR_REACH; along++) {
             BlockPos water = BlockPos.containing(boat.getX() + x * along, boat.getY() - HALF_BLOCK, boat.getZ() + z * along);
-            if (!minecraft.level.getFluidState(water).is(FluidTags.WATER) || !minecraft.level.getBlockState(water.above()).isAir()) {
+            if (!minecraft.level.getFluidState(water).is(FluidTags.WATER) || !minecraft.level.getBlockState(water.above()).isAir()
+                    || underSky(minecraft, boat) && !minecraft.level.canSeeSky(water.above())) {
                 return false;
             }
         }
         return true;
+    }
+
+    private static boolean underSky(Minecraft minecraft, Boat boat) {
+        return minecraft.level.canSeeSky(BlockPos.containing(boat.getX(), boat.getY() + HALF_BLOCK, boat.getZ()));
+    }
+
+    private static boolean underRockAhead(Minecraft minecraft, Boat boat, float yaw) {
+        if (!underSky(minecraft, boat)) {
+            return false;
+        }
+        double x = -Mth.sin(yaw * Mth.DEG_TO_RAD);
+        double z = Mth.cos(yaw * Mth.DEG_TO_RAD);
+        for (int along = 1; along <= COVER_AHEAD; along++) {
+            BlockPos ahead = BlockPos.containing(boat.getX() + x * along, boat.getY() + HALF_BLOCK, boat.getZ() + z * along);
+            if (minecraft.level.getFluidState(ahead.below()).is(FluidTags.WATER) && !minecraft.level.canSeeSky(ahead)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static int openWater(Minecraft minecraft, Action go) {
@@ -979,7 +1185,7 @@ final class Legs {
         for (int along = WATER_STEP; along <= Math.min(far, FIND_BLOCKS); along += WATER_STEP) {
             BlockPos column = BlockPos.containing(player.getX() + dx / far * along, surface, player.getZ() + dz / far * along);
             if (!minecraft.level.getChunkSource().hasChunk(column.getX() >> 4, column.getZ() >> 4)
-                    || !minecraft.level.getFluidState(column).is(FluidTags.WATER) || !minecraft.level.getFluidState(column.below()).is(FluidTags.WATER)) {
+                    || !Senses.water(minecraft.level, column) || !Senses.water(minecraft.level, column.below())) {
                 break;
             }
             open = along;
@@ -987,9 +1193,22 @@ final class Legs {
         return open;
     }
 
+    private static Goal underground(Minecraft minecraft, GoalXZ target) {
+        int land = minecraft.level.getChunkSource().hasChunk(target.getX() >> 4, target.getZ() >> 4)
+                ? minecraft.level.getHeight(Heightmap.Types.MOTION_BLOCKING, target.getX(), target.getZ())
+                : minecraft.player.getBlockY() + UNDERGROUND_BLOCKS + 1;
+        return new Covered(around(target), land - UNDERGROUND_BLOCKS - 1);
+    }
+
     private static Goal around(GoalXZ target) {
         return new GoalComposite(Stream.concat(Stream.of(target), Direction.Plane.HORIZONTAL.stream()
                 .map(side -> new GoalXZ(target.getX() + side.getStepX(), target.getZ() + side.getStepZ()))).toArray(Goal[]::new));
+    }
+
+    static String worn(LocalPlayer player, boolean digging) {
+        return IntStream.range(0, HOTBAR_SLOTS).mapToObj(player.getInventory()::getItem).filter(LastUse::lastUse)
+                .filter(stack -> digging ? stack.is(ItemTags.PICKAXES) || stack.is(ItemTags.SHOVELS) || stack.is(ItemTags.AXES) : stack.is(ItemTags.AXES)).findFirst()
+                .map(stack -> "; the " + stack.getHoverName().getString() + " in the hotbar is worn bare, no better than a bare hand").orElse("");
     }
 
     static void walkTo(BlockPos pos, int range) {
@@ -1029,6 +1248,15 @@ final class Legs {
         if (!target.isAlive() || target.isRemoved()) {
             return stop(minecraft, current.what + " is dead", null);
         }
+        Entity striker = Senses.lastAttacker();
+        if (striker != null && striker != target && Senses.hurtLately(minecraft, STRUCK_TICKS) && striker.distanceTo(player) <= LOST_BLOCKS) {
+            told.add("turned to " + Senses.describe(striker) + ", which struck from " + Senses.side(player, striker.position()) + ", leaving " + current.what);
+            current.foe = striker;
+            current.what = Senses.describe(striker);
+            current.nearest = Double.MAX_VALUE;
+            current.closer = current.ticks;
+            return new Tick(true, null, null);
+        }
         double distance = target.distanceTo(player);
         if (distance > LOST_BLOCKS) {
             return stop(minecraft, current.what + " is out of reach, " + (int) distance + " blocks away", null);
@@ -1037,6 +1265,14 @@ final class Legs {
             return stop(minecraft, "stopped: " + current.what + " is in deep water", null);
         }
         Body.strike(minecraft, target, current.ticks, current.stand || player.isPassenger());
+        boolean landed = target instanceof LivingEntity living && living.hurtTime > 0;
+        if (landed || current.stand || distance > FIGHT_REACH && closer(current, distance)) {
+            current.closer = current.ticks;
+        }
+        if (current.ticks - current.closer > STUCK_TICKS) {
+            String why = distance <= FIGHT_REACH ? " took no blow for " : " stayed out of reach for ";
+            return stop(minecraft, null, "fight failed: " + current.what + why + STUCK_TICKS / TICKS_PER_SECOND + " s, " + (int) distance + " blocks away");
+        }
         return new Tick(true, null, null);
     }
 
@@ -1101,17 +1337,24 @@ final class Legs {
         }
         if (player.getHealth() < current.health) {
             boolean answered = Senses.lastAttacker() != null && (Body.answering() || current.kind == Kind.ROW);
-            boolean shrugged = (Senses.lastKind().equals(Senses.FALL) || Senses.lastKind().equals(Senses.BERRY_BUSH)) && current.health - player.getHealth() < HURT
+            boolean shrugged = (Senses.lastKind().equals(Senses.FALL) || Senses.lastKind().equals(Senses.BERRY_BUSH) || Senses.pricked()) && current.health - player.getHealth() < HURT
                     || Senses.lastKind().equals("poison") && player.hasEffect(MobEffects.POISON)
-                    || Senses.lastKind().equals(Senses.HUNGER) && hungry;
+                    || Senses.lastKind().equals(Senses.HUNGER) && hungry
+                    || Senses.lastKind().equals(exposure);
             current.health = player.getHealth();
             if (!answered && !shrugged && current.kind != Kind.FIGHT) {
+                exposure = Senses.lastKind().equals(Senses.HEAT) || Senses.lastKind().equals(Senses.COLD) ? Senses.lastKind() : exposure;
                 return Optional.of("stopped: you were hurt, health " + health(player) + ": " + Senses.lastKind());
             }
         }
+        Optional<String> struck = struck(minecraft, current, player);
+        if (struck.isPresent()) {
+            return struck;
+        }
+        exposure = exposure != null && Senses.exposed(player, exposure) ? exposure : null;
         current.health = Math.max(current.health, player.getHealth());
         boolean low = player.getHealth() <= player.getMaxHealth() * LOW_HEALTH_SHARE;
-        if (low && !weak) {
+        if (low && !weak && current.kind != Kind.IDLE) {
             weak = true;
             return Optional.of("stopped: health is low, " + health(player));
         }
@@ -1122,6 +1365,22 @@ final class Legs {
             return Optional.of("stopped: you are hungry, food " + player.getFoodData().getFoodLevel() + " of 20, and nothing to eat in the hotbar");
         }
         hungry &= player.getFoodData().getFoodLevel() <= FED;
+        return Optional.empty();
+    }
+
+    private static Optional<String> struck(Minecraft minecraft, Action current, LocalPlayer player) {
+        if (current.kind == Kind.FIGHT) {
+            return Optional.empty();
+        }
+        for (Entity entity : minecraft.level.entitiesForRendering()) {
+            if (entity instanceof LivingEntity person && Senses.story(entity) && entity.hasCustomName() && person.hurtTime > 0
+                    && entity.distanceTo(player) <= PERSON_HURT_BLOCKS && player.hasLineOfSight(entity) && current.struckPeople.add(entity.getUUID())) {
+                String by = minecraft.level.getEntities(entity, entity.getBoundingBox().inflate(STRIKE_REACH), Senses::hostile).stream()
+                        .min(Comparator.comparingDouble(entity::distanceTo)).map(foe -> ": " + Senses.describe(foe)).orElse("");
+                return Optional.of("stopped: " + entity.getName().getString() + " is hurt, " + Math.round(entity.distanceTo(player)) + " blocks "
+                        + Senses.side(player, entity.position()) + by);
+            }
+        }
         return Optional.empty();
     }
 
@@ -1151,7 +1410,13 @@ final class Legs {
         return floor.<Goal>map(found -> new GoalNear(found.above(), SEGMENT_NEAR)).orElse(go.arrival);
     }
 
-    private static Optional<String> leap(LocalPlayer player, IBaritone baritone) {
+    private record Footing(String what, boolean asks, @Nullable BlockPos detour, boolean leap, @Nullable BlockPos bough) {
+        Footing(String what, boolean asks, @Nullable BlockPos detour) {
+            this(what, asks, detour, false, null);
+        }
+    }
+
+    private static Optional<Footing> footing(Minecraft minecraft, IBaritone baritone, Action current) {
         IPathExecutor executing = baritone.getPathingBehavior().getCurrent();
         if (executing == null) {
             return Optional.empty();
@@ -1159,20 +1424,147 @@ final class Legs {
         List<BetterBlockPos> way = executing.getPath().positions();
         for (int step = Math.max(executing.getPosition(), 0); step + 1 < way.size(); step++) {
             BetterBlockPos from = way.get(step);
-            if (Vec3.atBottomCenterOf(from).distanceTo(player.position()) > LEAP_NEAR) {
+            if (Vec3.atBottomCenterOf(from).distanceTo(minecraft.player.position()) > LEAP_NEAR) {
                 return Optional.empty();
             }
-            BetterBlockPos to = way.get(step + 1);
-            if (from.getY() - to.getY() > SAFE_FALL) {
-                return Optional.of("the way jumps " + (from.getY() - to.getY()) + " blocks down into water at " + to.getX() + ", " + to.getY() + ", " + to.getZ());
+            Optional<Footing> found = footing(minecraft, current, from, way.get(step + 1));
+            if (found.isPresent()) {
+                return found;
             }
         }
         return Optional.empty();
     }
 
+    private static Optional<Footing> footing(Minecraft minecraft, Action current, BlockPos from, BlockPos to) {
+        Level level = minecraft.level;
+        for (BlockPos body : List.of(to, to.above())) {
+            BlockState state = level.getBlockState(body);
+            if (!state.getFluidState().isEmpty() && !state.getCollisionShape(level, body).isEmpty()) {
+                return Optional.of(new Footing("the way goes through " + name(state) + " at " + body.toShortString() + ", which the walk takes for water", false, null, false,
+                        state.getDestroySpeed(level, body) >= 0 && state.getDestroySpeed(level, body) <= SOFT_HARDNESS ? body : null));
+            }
+        }
+        int dx = to.getX() - from.getX();
+        int dz = to.getZ() - from.getZ();
+        if (dx != 0 && dz != 0) {
+            BlockPos alongX = new BlockPos(to.getX(), from.getY(), from.getZ());
+            BlockPos alongZ = new BlockPos(from.getX(), from.getY(), to.getZ());
+            Optional<BlockPos> harmX = Stream.of(alongX, alongX.above()).filter(pos -> harms(level.getBlockState(pos))).findFirst();
+            Optional<BlockPos> harmZ = Stream.of(alongZ, alongZ.above()).filter(pos -> harms(level.getBlockState(pos))).findFirst();
+            Optional<BlockPos> harm = harmX.or(() -> harmZ);
+            if (harm.isPresent()) {
+                String what = "the way brushes " + name(level.getBlockState(harm.get())) + " at " + harm.get().toShortString();
+                return Optional.of(harmX.isPresent() && harmZ.isPresent() ? new Footing(what + " on both sides", false, null)
+                        : new Footing(what, false, harmX.isPresent() ? alongZ : alongX));
+            }
+        }
+        BlockPos foothold = to.below();
+        BlockState under = level.getBlockState(foothold);
+        if (aloft(level, foothold) && (to.getY() > from.getY() || !woody(level, from.below()))) {
+            boolean soft = under.is(BlockTags.LEAVES) || under.is(Blocks.MANGROVE_ROOTS);
+            return Optional.of(new Footing("the way climbs onto a tree, onto " + name(under) + " at " + foothold.toShortString() + ", "
+                    + aboveGround(level, foothold) + " blocks above the ground", false, null, false, soft ? foothold : null));
+        }
+        if (current.digging || current.leaps) {
+            return Optional.empty();
+        }
+        int span = Math.max(Math.abs(dx), Math.abs(dz));
+        for (int across = 1; across < span; across++) {
+            BlockPos gap = new BlockPos(from.getX() + Math.round((float) dx * across / span), Math.min(from.getY(), to.getY()),
+                    from.getZ() + Math.round((float) dz * across / span));
+            int fall = from.getY() - landing(level, gap);
+            if (level.getBlockState(gap.below()).getCollisionShape(level, gap.below()).isEmpty() && !Senses.water(level, gap) && fall > SAFE_FALL) {
+                return Optional.of(new Footing("the way leaps a gap over a drop of " + fall + " blocks at " + gap.toShortString(), false, null, true, null));
+            }
+        }
+        for (int down = 0; to.getY() - down > level.getMinBuildHeight(); down++) {
+            BlockPos cell = to.below(down);
+            boolean water = Senses.water(level, cell);
+            if (water || down > 0 && !level.getBlockState(cell).getCollisionShape(level, cell).isEmpty()) {
+                int fall = from.getY() - (water ? cell.getY() : cell.getY() + 1);
+                if (fall <= SAFE_FALL) {
+                    return Optional.empty();
+                }
+                String what = water ? "the way jumps " + fall + " blocks down into water at " + cell.toShortString()
+                        : "the way steps off a drop of " + fall + " blocks at " + to.toShortString();
+                return Optional.of(new Footing(what, fall <= ASK_DROP_BLOCKS || water && Senses.water(level, cell.below()), null));
+            }
+        }
+        return Optional.of(new Footing("the way steps off into the void at " + to.toShortString(), false, null));
+    }
+
+    private static int landing(Level level, BlockPos gap) {
+        BlockPos.MutableBlockPos cell = gap.mutable();
+        while (cell.getY() > level.getMinBuildHeight() && !Senses.water(level, cell) && level.getBlockState(cell.below()).getCollisionShape(level, cell.below()).isEmpty()) {
+            cell.move(Direction.DOWN);
+        }
+        return cell.getY();
+    }
+
+    private static BlockPos bearing(Level level, BlockPos foothold) {
+        return level.getBlockState(foothold).getCollisionShape(level, foothold).isEmpty() ? foothold.below() : foothold;
+    }
+
+    private static boolean woody(Level level, BlockPos foothold) {
+        BlockPos tree = bearing(level, foothold);
+        BlockState state = level.getBlockState(tree);
+        return state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS) || state.is(Blocks.MANGROVE_ROOTS) || state.is(Blocks.MUDDY_MANGROVE_ROOTS);
+    }
+
+    private static boolean aloft(Level level, BlockPos foothold) {
+        BlockPos tree = bearing(level, foothold);
+        BlockState state = level.getBlockState(tree);
+        return (state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS)) && aboveGround(level, tree) > SAFE_FALL;
+    }
+
+    private static int aboveGround(Level level, BlockPos foothold) {
+        int above = 0;
+        BlockPos.MutableBlockPos below = foothold.below().mutable();
+        while (below.getY() > level.getMinBuildHeight() && !Senses.water(level, below)
+                && (canopy(level.getBlockState(below)) || !level.getBlockState(below).isCollisionShapeFullBlock(level, below))) {
+            above++;
+            below.move(Direction.DOWN);
+        }
+        return above;
+    }
+
+    private static boolean squat(BlockState state) {
+        try {
+            VoxelShape shape = state.getCollisionShape(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
+            return !shape.isEmpty() && shape.max(Direction.Axis.Y) > STEP_UP && !state.isCollisionShapeFullBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO)
+                    && state.isPathfindable(PathComputationType.LAND);
+        } catch (RuntimeException exception) {
+            return false;
+        }
+    }
+
+    private static boolean harms(BlockState state) {
+        return state.is(BlockTags.CAMPFIRES) && state.getValue(CampfireBlock.LIT) || state.is(BlockTags.FIRE) || HARMFUL.contains(state.getBlock());
+    }
+
+    private static String name(BlockState state) {
+        return state.getBlock().getName().getString();
+    }
+
+    private static String wayIn(Minecraft minecraft) {
+        IntegratedServer server = minecraft.getSingleplayerServer();
+        if (server == null) {
+            return "";
+        }
+        BlockPos at = minecraft.player.blockPosition();
+        try {
+            return server.submit(() -> StoryChecks.wayIn(server, at)).get(WAY_IN_SECONDS, TimeUnit.SECONDS).map(way -> "; " + way).orElse("");
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            return "";
+        } catch (ExecutionException | TimeoutException exception) {
+            return "";
+        }
+    }
+
     private static String stalled(String line) {
         IPathExecutor executing = baritone().getPathingBehavior().getCurrent();
-        if (!line.contains("This movement has taken too long") || executing == null) {
+        if (!line.contains("This movement has taken too long") && !line.contains("Movement returns status UNREACHABLE") || executing == null) {
             return line;
         }
         List<IMovement> movements = executing.getPath().movements();
@@ -1192,30 +1584,6 @@ final class Legs {
         }
         BaritoneAPI.getSettings().allowParkour.value = false;
         return move + " No more jumps across gaps on this walk.";
-    }
-
-    private static Optional<String> edge(Minecraft minecraft, LocalPlayer player) {
-        if (!player.onGround() || player.isInWater()) {
-            return Optional.empty();
-        }
-        Vec3 ahead = player.position().add(player.getDeltaMovement().multiply(EDGE_TICKS, 0, EDGE_TICKS));
-        BlockPos column = BlockPos.containing(ahead.x, player.getY() - HALF_BLOCK, ahead.z);
-        if (column.getX() == player.getBlockX() && column.getZ() == player.getBlockZ()) {
-            return Optional.empty();
-        }
-        for (int down = 0; down <= SAFE_FALL + 1; down++) {
-            BlockPos below = column.below(down);
-            if (!minecraft.level.getBlockState(below).getCollisionShape(minecraft.level, below).isEmpty() || !minecraft.level.getFluidState(below).isEmpty()) {
-                return Optional.empty();
-            }
-        }
-        int depth = SAFE_FALL + 1;
-        while (column.below(depth).getY() > minecraft.level.getMinBuildHeight()
-                && minecraft.level.getBlockState(column.below(depth)).getCollisionShape(minecraft.level, column.below(depth)).isEmpty()
-                && minecraft.level.getFluidState(column.below(depth)).isEmpty()) {
-            depth++;
-        }
-        return Optional.of("the way steps off a drop of " + depth + " blocks at " + column.toShortString());
     }
 
     private static Optional<BlockPos> floor(Minecraft minecraft, int x, int z) {
@@ -1254,8 +1622,11 @@ final class Legs {
 
     private static Goal surface(Minecraft minecraft, Action go) {
         if (go.loose) {
+            LocalPlayer player = minecraft.player;
+            double far = Math.hypot(go.target.getX() + 0.5 - player.getX(), go.target.getZ() + 0.5 - player.getZ());
+            int near = Mth.clamp((int) (far / LOOSE_SHARE), 1, SEGMENT_NEAR);
             return floor(minecraft, go.target.getX(), go.target.getZ()).map(found -> level(minecraft, found))
-                    .<Goal>map(found -> new GoalNear(found.above(), SEGMENT_NEAR)).orElse(go.arrival);
+                    .<Goal>map(found -> new GoalNear(found.above(), near)).orElse(go.arrival);
         }
         if (!minecraft.level.getChunkSource().hasChunk(go.target.getX() >> 4, go.target.getZ() >> 4)) {
             return go.arrival;
@@ -1287,7 +1658,7 @@ final class Legs {
 
     private static int roof(Minecraft minecraft, LocalPlayer player) {
         BlockPos.MutableBlockPos at = player.blockPosition().above(2).mutable();
-        int top = minecraft.level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at.getX(), at.getZ());
+        int top = minecraft.level.getHeight(Heightmap.Types.MOTION_BLOCKING, at.getX(), at.getZ());
         int solid = 0;
         for (; at.getY() < top; at.move(Direction.UP)) {
             BlockState state = minecraft.level.getBlockState(at);
@@ -1296,6 +1667,12 @@ final class Legs {
             }
         }
         return solid;
+    }
+
+    private static boolean cavern(Minecraft minecraft, BlockPos at) {
+        return BlockPos.betweenClosedStream(at.offset(-2, 0, -2), at.offset(2, 2, 2))
+                .filter(pos -> minecraft.level.getBlockState(pos).getCollisionShape(minecraft.level, pos).isEmpty() && !minecraft.level.canSeeSky(pos))
+                .count() >= CAVERN_CELLS;
     }
 
     private static void hollows(Minecraft minecraft, BlockPos at, Set<BlockPos> hollow) {
@@ -1317,11 +1694,12 @@ final class Legs {
         }
         for (int down = 1; under.below(down).getY() >= minecraft.level.getMinBuildHeight(); down++) {
             BlockPos below = under.below(down);
-            if (minecraft.level.getFluidState(below).is(FluidTags.WATER)) {
+            if (Senses.water(minecraft.level, below)) {
                 return false;
             }
-            if (!minecraft.level.getBlockState(below).getCollisionShape(minecraft.level, below).isEmpty() || !minecraft.level.getFluidState(below).isEmpty()) {
-                return down > DROP_BLOCKS || !minecraft.level.getFluidState(below).isEmpty();
+            boolean ground = !minecraft.level.getBlockState(below).getCollisionShape(minecraft.level, below).isEmpty();
+            if (ground || !minecraft.level.getFluidState(below).isEmpty()) {
+                return down > DROP_BLOCKS || !ground;
             }
         }
         return true;
@@ -1329,51 +1707,65 @@ final class Legs {
 
     private static boolean buildable(Block block) {
         BlockState state = block.defaultBlockState();
-        return state.isCollisionShapeFullBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO) && !state.hasBlockEntity() && !(block instanceof FallingBlock)
-                && !state.is(Tags.Blocks.ORES) && !state.is(Tags.Blocks.STORAGE_BLOCKS) && !state.is(BlockTags.LEAVES) && state.getLightEmission(EmptyBlockGetter.INSTANCE, BlockPos.ZERO) == 0
+        return state.isCollisionShapeFullBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO) && state.isSolidRender(EmptyBlockGetter.INSTANCE, BlockPos.ZERO) && !state.hasBlockEntity()
+                && !(block instanceof FallingBlock)
+                && !state.is(Tags.Blocks.ORES) && !state.is(Tags.Blocks.STORAGE_BLOCKS) && !state.is(BlockTags.LEAVES) && !state.is(BlockTags.LOGS) && state.getLightEmission(EmptyBlockGetter.INSTANCE, BlockPos.ZERO) == 0
                 && block.defaultDestroyTime() >= 0 && !(block instanceof SlimeBlock) && !state.is(Blocks.TNT);
     }
 
     private static boolean restock(Minecraft minecraft, LocalPlayer player) {
         List<Item> throwaway = BaritoneAPI.getSettings().acceptableThrowawayItems.value;
         Inventory inventory = player.getInventory();
-        int empty = -1;
-        int carried = 0;
-        for (int slot = 0; slot < Inventory.getSelectionSize(); slot++) {
-            ItemStack held = inventory.getItem(slot);
-            if (throwaway.contains(held.getItem())) {
-                carried += held.getCount();
-                if (empty < 0 || !inventory.getItem(empty).isEmpty() && held.getCount() < inventory.getItem(empty).getCount()) {
-                    empty = slot;
-                }
-            } else if (held.isEmpty() && (empty < 0 || !inventory.getItem(empty).isEmpty())) {
-                empty = slot;
-            }
-        }
-        if (empty < 0 || carried >= CLIMB_BLOCKS) {
+        if (climbing(player) >= CLIMB_BLOCKS) {
             return false;
         }
         int found = -1;
         for (int slot = Inventory.getSelectionSize(); slot < inventory.items.size(); slot++) {
             ItemStack stack = inventory.getItem(slot);
-            if (throwaway.contains(stack.getItem()) && stack.getCount() > inventory.getItem(empty).getCount()
-                    && (found < 0 || inventory.getItem(found).is(ItemTags.PLANKS) && !stack.is(ItemTags.PLANKS))) {
+            if (throwaway.contains(stack.getItem()) && (found < 0 || inventory.getItem(found).is(ItemTags.PLANKS) && !stack.is(ItemTags.PLANKS)
+                    || inventory.getItem(found).is(ItemTags.PLANKS) == stack.is(ItemTags.PLANKS) && stack.getCount() > inventory.getItem(found).getCount())) {
                 found = slot;
             }
         }
         if (found < 0) {
             return false;
         }
+        Comparator<Integer> spare = Comparator.<Integer>comparingInt(slot -> inventory.getItem(slot).isEmpty() ? 0 : throwaway.contains(inventory.getItem(slot).getItem()) ? 1 : 2)
+                .thenComparingInt(slot -> inventory.getItem(slot).getCount());
+        Optional<Integer> into = IntStream.range(0, Inventory.getSelectionSize()).boxed()
+                .filter(slot -> slot != inventory.selected && !kept(player, inventory.getItem(slot)))
+                .min(spare);
+        if (into.isEmpty() || inventory.getItem(found).getCount() <= inventory.getItem(into.get()).getCount() && throwaway.contains(inventory.getItem(into.get()).getItem())) {
+            return false;
+        }
         ItemStack stack = inventory.getItem(found);
-        told.add("took " + stack.getCount() + " " + stack.getHoverName().getString() + " into the hotbar to climb with");
-        minecraft.gameMode.handleInventoryMouseClick(player.inventoryMenu.containerId, found, empty, ClickType.SWAP, player);
+        ItemStack out = inventory.getItem(into.get());
+        told.add("took " + stack.getCount() + " " + stack.getHoverName().getString() + " into the hotbar to climb with"
+                + (out.isEmpty() ? "" : ", putting " + Hands.held(out) + " away"));
+        minecraft.gameMode.handleInventoryMouseClick(player.inventoryMenu.containerId, found, into.get(), ClickType.SWAP, player);
         return true;
+    }
+
+    private static boolean kept(LocalPlayer player, ItemStack stack) {
+        return stack.getMaxStackSize() == 1 || stack.getFoodProperties(player) != null || stack.getItem() instanceof BlockItem placed && placed.getBlock() instanceof CampfireBlock;
+    }
+
+    private static int climbing(LocalPlayer player) {
+        List<Item> throwaway = BaritoneAPI.getSettings().acceptableThrowawayItems.value;
+        return IntStream.range(0, Inventory.getSelectionSize()).mapToObj(player.getInventory()::getItem).filter(stack -> throwaway.contains(stack.getItem()))
+                .mapToInt(ItemStack::getCount).sum();
     }
 
     private static String climbWith(LocalPlayer player) {
         List<Item> throwaway = BaritoneAPI.getSettings().acceptableThrowawayItems.value;
-        boolean blocks = IntStream.range(0, Inventory.getSelectionSize()).anyMatch(slot -> throwaway.contains(player.getInventory().getItem(slot).getItem()));
-        return blocks ? "" : "; nothing in the hotbar to climb with: no stone, earth, planks or other plain building block";
+        int hotbar = climbing(player);
+        int stored = player.getInventory().items.stream().skip(Inventory.getSelectionSize()).filter(stack -> throwaway.contains(stack.getItem()))
+                .mapToInt(ItemStack::getCount).sum();
+        if (hotbar > 0) {
+            return "; " + hotbar + " plain building blocks in the hotbar to climb with";
+        }
+        return stored > 0 ? "; " + stored + " plain building blocks in the inventory, and every hotbar slot holds a tool, food, a fire or a tent"
+                : "; nothing left to climb with: no stone, earth, planks or other plain building block in the hotbar or the inventory";
     }
 
     private static boolean canopy(BlockState state) {
@@ -1396,17 +1788,25 @@ final class Legs {
         if (minecraft.level.dimension().location().getNamespace().equals(TENTS)) {
             return stop(minecraft, null, "go failed: no way on by walking from " + at.toShortString() + ", and the tent is not for digging");
         }
+        LocalPlayer player = minecraft.player;
+        boolean blocks = climbing(player) > 0 || restock(minecraft, player);
+        boolean pickaxe = IntStream.range(0, HOTBAR_SLOTS).mapToObj(player.getInventory()::getItem)
+                .anyMatch(stack -> stack.is(ItemTags.PICKAXES) && !LastUse.lastUse(stack));
+        if (!camp && !blocks && !pickaxe) {
+            return stop(minecraft, null, "go failed: no way on by walking from " + at.toShortString() + ", and nothing to dig or climb with: no pickaxe and no plain building block");
+        }
         current.dug = true;
         current.digging = true;
         current.closer = current.ticks;
         BaritoneAPI.getSettings().allowBreak.value = !camp;
-        BaritoneAPI.getSettings().allowPlace.value = true;
-        if (current.goal == current.arrival) {
+        BaritoneAPI.getSettings().allowDownward.value = false;
+        BaritoneAPI.getSettings().allowPlace.value = !camp;
+        if (current.goal == current.arrival && !current.here) {
             current.surface = true;
             current.goal = segment(minecraft, current);
         }
         baritone().getCustomGoalProcess().setGoalAndPath(current.goal);
-        told.add("no way on by walking from " + minecraft.player.blockPosition().toShortString() + (camp ? ": climbing on blocks, breaking nothing at the caravan's camp"
+        told.add("no way on by walking from " + minecraft.player.blockPosition().toShortString() + (camp ? ": climbing over their blocks, building and breaking nothing at the caravan's camp"
                 : ": digging and climbing, as a player with a pickaxe and blocks does"));
         return new Tick(true, null, null);
     }
@@ -1425,7 +1825,7 @@ final class Legs {
         current.wade = way;
         current.waded = 0;
         current.wadeSince = current.ticks;
-        told.add("flowing water all round at " + at.toShortString() + ", where the walk keeps out of it: wading through to " + way.getLast().toShortString() + ", "
+        told.add("water all round at " + at.toShortString() + ", which the walk keeps out of: wading through to " + way.getLast().toShortString() + ", "
                 + way.size() + " blocks");
         return true;
     }
@@ -1454,6 +1854,91 @@ final class Legs {
         return new Tick(true, null, null);
     }
 
+    private static Tick chop(Minecraft minecraft, Action current) {
+        LocalPlayer player = minecraft.player;
+        BlockPos bough = current.chop;
+        BlockState state = minecraft.level.getBlockState(bough);
+        if (!state.is(BlockTags.LEAVES) && !state.is(Blocks.MANGROVE_ROOTS)) {
+            minecraft.gameMode.stopDestroyBlock();
+            current.chop = null;
+            current.closer = current.ticks;
+            baritone().getCustomGoalProcess().setGoalAndPath(current.goal);
+            return new Tick(true, null, null);
+        }
+        if (current.ticks - current.chopSince > CHOP_TICKS) {
+            minecraft.gameMode.stopDestroyBlock();
+            current.chop = null;
+            return stop(minecraft, null, "go failed: the " + name(state) + " at " + bough.toShortString() + " did not break; find another way");
+        }
+        player.lookAt(EntityAnchorArgument.Anchor.EYES, Vec3.atCenterOf(bough));
+        Direction side = Direction.getNearest(player.getEyePosition().subtract(Vec3.atCenterOf(bough)));
+        if (current.ticks == current.chopSince) {
+            minecraft.gameMode.startDestroyBlock(bough, side);
+        } else {
+            minecraft.gameMode.continueDestroyBlock(bough, side);
+        }
+        player.swing(InteractionHand.MAIN_HAND);
+        return new Tick(true, null, null);
+    }
+
+    private static boolean startLadder(Minecraft minecraft, Action current) {
+        BlockPos at = minecraft.player.blockPosition();
+        Optional<BlockPos> rung = BlockPos.betweenClosedStream(at.offset(-1, 0, -1), at.offset(1, 1, 1)).map(BlockPos::immutable)
+                .filter(pos -> minecraft.level.getBlockState(pos).getBlock() instanceof LadderBlock && !current.ladders.contains(pos.atY(0))
+                        && rungs(minecraft, pos) >= LADDER_RUNGS)
+                .min(Comparator.comparingDouble(pos -> pos.distSqr(at)));
+        if (rung.isEmpty()) {
+            return false;
+        }
+        baritone().getPathingBehavior().cancelEverything();
+        current.ladders.add(rung.get().atY(0));
+        current.ladder = rung.get();
+        current.ladderHigh = minecraft.player.getY();
+        current.ladderSince = current.ticks;
+        told.add("no way on by walking from " + at.toShortString() + ": climbing the ladder at " + rung.get().toShortString() + " with the keys, as a player does");
+        return true;
+    }
+
+    private static int rungs(Minecraft minecraft, BlockPos rung) {
+        BlockPos.MutableBlockPos up = rung.mutable();
+        while (minecraft.level.getBlockState(up).getBlock() instanceof LadderBlock) {
+            up.move(Direction.UP);
+        }
+        return up.getY() - rung.getY();
+    }
+
+    private static Tick climbLadder(Minecraft minecraft, Action current) {
+        LocalPlayer player = minecraft.player;
+        BlockPos rung = current.ladder;
+        BlockState state = minecraft.level.getBlockState(rung);
+        BlockPos top = rung.above(rungs(minecraft, rung));
+        if (player.onGround() && !player.onClimbable() && player.getY() >= top.getY() - 1) {
+            Wading.release(minecraft);
+            told.add("climbed the ladder up to " + player.blockPosition().toShortString() + ", walking on");
+            current.ladder = null;
+            current.closer = current.ticks;
+            baritone().getCustomGoalProcess().setGoalAndPath(current.goal);
+            return new Tick(true, null, null);
+        }
+        if (player.getY() > current.ladderHigh + CLOSER) {
+            current.ladderHigh = player.getY();
+            current.ladderSince = current.ticks;
+        }
+        if (current.ticks - current.ladderSince > LADDER_STILL_TICKS) {
+            Wading.release(minecraft);
+            told.add("the ladder at " + rung.toShortString() + " took me no higher than " + player.blockPosition().toShortString());
+            current.ladder = null;
+            return dig(minecraft, current);
+        }
+        BlockPos wall = state.getBlock() instanceof LadderBlock ? rung.relative(state.getValue(LadderBlock.FACING).getOpposite()) : rung;
+        Vec3 aim = Vec3.atCenterOf(wall.atY(player.blockPosition().getY()));
+        float yaw = (float) Math.toDegrees(Math.atan2(-(aim.x - player.getX()), aim.z - player.getZ()));
+        player.setYRot(yaw);
+        player.yRotO = yaw;
+        minecraft.options.keyUp.setDown(true);
+        return new Tick(true, null, null);
+    }
+
     private static boolean crowded(Minecraft minecraft, AABB room) {
         return !minecraft.level.getEntities(minecraft.player, room, entity -> entity instanceof LivingEntity living && living.isAlive()).isEmpty();
     }
@@ -1473,30 +1958,62 @@ final class Legs {
 
     private static Tick stuck(Minecraft minecraft, Action current, boolean closer) {
         if (current.ticks - current.closer > STUCK_TICKS) {
+            if (current.kind == Kind.GO && startLadder(minecraft, current)) {
+                return new Tick(true, null, null);
+            }
             if (current.kind == Kind.GO && !current.dug) {
                 return dig(minecraft, current);
             }
             BlockPos at = minecraft.player.blockPosition();
             return stop(minecraft, null, current.kind.name().toLowerCase(Locale.ROOT) + " failed: no closer for " + STUCK_TICKS / 20 + " s, standing at "
-                    + at.toShortString());
+                    + at.toShortString() + (current.kind == Kind.GO || current.kind == Kind.GATHER ? worn(minecraft.player, current.digging || current.kind == Kind.GATHER) : "")
+                    + (current.kind == Kind.ROW && current.target instanceof GoalXZ column ? ashore(minecraft, column.getX(), column.getZ()) : ""));
         }
         return new Tick(closer, null, null);
+    }
+
+    private static String ashore(Minecraft minecraft, int x, int z) {
+        if (wet(minecraft, x, z)) {
+            return "";
+        }
+        for (int reach = 1; reach <= SHORE_SEARCH; reach++) {
+            for (int dx = -reach; dx <= reach; dx++) {
+                for (int dz = -reach; dz <= reach; dz++) {
+                    if (Math.max(Math.abs(dx), Math.abs(dz)) == reach && wet(minecraft, x + dx, z + dz)) {
+                        return "; the column lies on land, and the nearest water to it is at " + (x + dx) + ", " + (z + dz);
+                    }
+                }
+            }
+        }
+        return "; the column lies on land, with no water within " + SHORE_SEARCH + " blocks of it";
+    }
+
+    private static boolean wet(Minecraft minecraft, int x, int z) {
+        if (!minecraft.level.hasChunk(x >> 4, z >> 4)) {
+            return false;
+        }
+        BlockPos top = new BlockPos(x, minecraft.level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z) - 1, z);
+        return !minecraft.level.getFluidState(top).isEmpty();
     }
 
     private static Tick stop(Minecraft minecraft, @Nullable String done, @Nullable String failed) {
         Action current = action;
         action = null;
         minecraft.options.keyUse.setDown(false);
-        if (current != null && (current.kind == Kind.ROW || current.clearOf != null || !current.wade.isEmpty())) {
+        if (current != null && (current.kind == Kind.ROW || current.clearOf != null || !current.wade.isEmpty() || current.ladder != null)) {
             minecraft.options.keyJump.setDown(false);
             minecraft.options.keyUp.setDown(false);
             minecraft.options.keyLeft.setDown(false);
             minecraft.options.keyRight.setDown(false);
+            minecraft.options.keyDown.setDown(false);
         }
         baritone().getPathingBehavior().cancelEverything();
         LocalPlayer player = minecraft.player;
         if (current != null && player != null && (current.kind == Kind.GATHER || current.kind == Kind.GO || current.kind == Kind.FOLLOW)) {
             player.getInventory().selected = current.slot;
+        }
+        if (current != null && current.chop != null) {
+            minecraft.gameMode.stopDestroyBlock();
         }
         if (current != null && current.digging) {
             BaritoneAPI.getSettings().allowBreak.value = false;
@@ -1508,6 +2025,10 @@ final class Legs {
         if (current != null && player != null && current.kind != Kind.FIGHT) {
             player.setXRot(current.pitch);
             player.xRotO = current.pitch;
+        }
+        if (current != null && player != null && current.heading != null) {
+            player.setYRot(current.heading);
+            player.yRotO = current.heading;
         }
         String walked = current == null || player == null ? "" : ", " + (int) current.from.distanceTo(player.position()) + " blocks from where it began, at "
                 + player.blockPosition().toShortString() + " facing " + Math.round(Mth.wrapDegrees(player.getYRot()));
@@ -1542,8 +2063,8 @@ final class Legs {
     private static Predicate<Entity> matching(String wanted) {
         String name = wanted.strip().toLowerCase(Locale.ROOT);
         return entity -> entity != Minecraft.getInstance().player && (entity.getDisplayName().getString().toLowerCase(Locale.ROOT).contains(name)
-                || BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString().equals(name)
-                || BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).getPath().equals(name));
+                || !Senses.story(entity) && (BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString().equals(name)
+                || BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).getPath().equals(name)));
     }
 
     private static Optional<Entity> nearest(Minecraft minecraft, Predicate<Entity> wanted, double within) {
@@ -1563,8 +2084,9 @@ final class Legs {
         }
         configured = true;
         Settings settings = BaritoneAPI.getSettings();
-        settings.allowBreakAnyway.value = new ArrayList<>(StreamSupport.stream(BuiltInRegistries.BLOCK.getTagOrEmpty(BlockTags.LEAVES).spliterator(), false)
-                .map(holder -> holder.value()).toList());
+        miningFloor = settings.minYLevelWhileMining.value;
+        settings.allowBreakAnyway.value = new ArrayList<>(Stream.concat(StreamSupport.stream(BuiltInRegistries.BLOCK.getTagOrEmpty(BlockTags.LEAVES).spliterator(), false)
+                .map(holder -> holder.value()), Stream.of(Blocks.MANGROVE_ROOTS, Blocks.MUDDY_MANGROVE_ROOTS, Blocks.SNOW)).toList());
         settings.acceptableThrowawayItems.value = BuiltInRegistries.ITEM.stream()
                 .filter(item -> item instanceof BlockItem placed && buildable(placed.getBlock()))
                 .toList();
@@ -1573,6 +2095,7 @@ final class Legs {
         settings.allowPlace.value = false;
         settings.allowSprint.value = true;
         settings.antiCheatCompatibility.value = true;
+        settings.blacklistClosestOnFailure.value = true;
         settings.blockFreeLook.value = false;
         settings.chatControl.value = false;
         settings.chatDebug.value = true;
@@ -1582,7 +2105,8 @@ final class Legs {
         settings.itemSaver.value = true;
         settings.itemSaverThreshold.value = 1;
         settings.maxFallHeightNoWater.value = SAFE_FALL;
-        settings.blocksToAvoid.value = List.of(Blocks.CAMPFIRE, Blocks.SOUL_CAMPFIRE, Blocks.FIRE, Blocks.MAGMA_BLOCK);
+        settings.blocksToAvoid.value = BuiltInRegistries.BLOCK.stream().filter(block -> harms(block.defaultBlockState()) || block.defaultBlockState().is(BlockTags.CAMPFIRES)
+                || block.defaultBlockState().is(BlockTags.CLIMBABLE) && !(block instanceof LadderBlock) || squat(block.defaultBlockState())).toList();
         settings.logger.value = message -> {
             String line = stalled(message.getString());
             chatter.addLast(line.length() > CHATTER_CHARS ? line.substring(0, CHATTER_CHARS) + " …" : line);
@@ -1595,6 +2119,7 @@ final class Legs {
         settings.renderPath.value = false;
         settings.renderSelectionBoxes.value = false;
         settings.toaster.value = (title, message) -> {};
+        settings.useSwordToMine.value = false;
         baritone().getGameEventHandler().registerEventListener(new AbstractGameEventListener() {
             @Override
             public void onPathEvent(PathEvent event) {

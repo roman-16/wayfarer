@@ -2,10 +2,11 @@
 
 Music in the Wayfarer mod:
 
+- The Long Way Home, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/the-long-way-home/
 - Home Was You, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/home-was-you/
 - Amberlight, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/amberlight/
 - White Dawn, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/white-dawn/
-- Heartfelt Battle (loop), by request. CC0 1.0. https://opengameart.org/content/heartfelt-battle-loopable-fantasy-stringspianohorn
+- Battle in the Winter, by Johan Brodd. CC BY 3.0. https://opengameart.org/content/battle-in-the-winter
 - What We Don't Say, by Scott Buckley. CC BY 4.0. https://www.scottbuckley.com.au/library/what-we-dont-say/
 - Emotional Original Soundtrack - BETTER LIFE, by Magmi.Soundtracks. CC BY 4.0. https://freesound.org/people/Magmi.Soundtracks/sounds/522207
 - Memories of a Lost Autumn, by InspectorJ. CC BY 3.0. https://opengameart.org/content/memories-of-a-lost-autumn-rpg-orchestral-essentials-conversation-music

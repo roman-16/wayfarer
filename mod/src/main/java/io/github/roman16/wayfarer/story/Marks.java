@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer.story;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -45,7 +46,8 @@ public final class Marks {
         progress.place(MARK + next, at);
         scratch.putInt(NEXT, (next + 1) % Balance.get().farSight().marks());
         progress.setDirty();
-        Talk.tell(player, Component.translatable("wayfarer.far_sight.marked", (int) Math.sqrt(player.blockPosition().distSqr(at))));
+        player.displayClientMessage(Component.translatable("wayfarer.far_sight.marked", (int) Math.sqrt(player.blockPosition().distSqr(at))).withStyle(ChatFormatting.GRAY),
+                true);
         player.level().playSound(null, player.blockPosition(), SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, SoundSource.PLAYERS, 1, 1);
         Journal.syncAll(player.server);
     }

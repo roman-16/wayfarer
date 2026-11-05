@@ -11,7 +11,25 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 
-from exaroton import OFFLINE, RECORDINGS, ROOT, TRANSFER_SECONDS, Api, ApiError, describe, find_server
+import tomllib
+
+from exaroton import (
+    CARRY,
+    CARRY_SUFFIX,
+    OFFLINE,
+    RECORDINGS,
+    ROOT,
+    TRANSFER_SECONDS,
+    Api,
+    ApiError,
+    carries,
+    describe,
+    find_server,
+    megabytes,
+    opened,
+    options,
+    unopened,
+)
 
 DEV_SERVER = ROOT / "build/devserver"
 SERVER_PACK = ROOT / "build/server/mods"
@@ -20,9 +38,10 @@ DRIVER = ROOT / "scripts/server.py"
 OLD = "carry-old"
 NEW = "carry-new"
 WALKER = "Wayfarer"
-SUFFIX = "-carry"
 STAMP = "%Y-%m-%d_%H-%M"
-CARRY = "carry.json"
+WORLD = "world_%Y_%m_%d_%H_%M"
+QUESTS = ROOT / "story/quests.toml"
+MAIN = "main"
 SEEDS = 4
 WORKERS = 4
 SHOWN = 8
@@ -32,7 +51,6 @@ PARTS = " | "
 PACKED = "road: packed"
 CARRIED = "road: carried to "
 REFUSED = "road failed: "
-LEVEL = re.compile(r"^level-name=(.*)$", re.MULTILINE)
 UUID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
 FETCHED = (
     "advancements",
@@ -70,10 +88,6 @@ def fail(why):
     sys.exit(f"carry failed: {why}")
 
 
-def megabytes(size):
-    return f"{size / 1_000_000:.0f} MB"
-
-
 def took(started):
     seconds = time.monotonic() - started
     return f"{seconds / 60:.0f} min" if seconds >= 90 else f"{seconds:.0f} s"
@@ -93,13 +107,13 @@ def offline(api, server):
         )
 
 
-def properties(api, server):
-    return api.data(f"servers/{server['id']}/files/data/server.properties").decode("utf-8")
-
-
-def level_name(text):
-    found = LEVEL.search(text)
-    return found.group(1).strip() if found and found.group(1).strip() else "world"
+def main_step(step):
+    quest, _, name = step.partition("/")
+    quests = {entry["id"]: entry for entry in tomllib.loads(QUESTS.read_text())["quests"]}
+    if quest not in quests or quests[quest]["kind"] != MAIN:
+        fail(f"{quest} is no main quest of the story")
+    if name not in (entry["id"] for entry in quests[quest].get("steps", [])):
+        fail(f"{quest} has no step {name}")
 
 
 def fetched(relative, folder):
@@ -206,7 +220,7 @@ def pack(folder, team):
         say(f"  {part}")
 
 
-def grow():
+def grow(step):
     tried = []
     for _ in range(SEEDS):
         seed = random.getrandbits(63)
@@ -216,7 +230,7 @@ def grow():
             replies = batch(
                 [
                     f"wayfarer pretend join {WALKER}",
-                    f'wayfarer road follow "{DEV_SERVER / OLD}"',
+                    f'wayfarer road follow "{DEV_SERVER / OLD}"' + (f" {step}" if step else ""),
                     f"await {CARRIED}",
                     f"wayfarer pretend leave {WALKER}",
                 ],
@@ -253,17 +267,19 @@ def size(folder):
     return sum(path.stat().st_size for path in folder.rglob("*") if path.is_file())
 
 
-def carry(api, server):
+def carry(api, server, back):
+    if back:
+        main_step(back)
     offline(api, server)
-    level = level_name(properties(api, server))
-    stamp = datetime.now().strftime(STAMP)
-    folder = RECORDINGS / (stamp + SUFFIX)
+    level = opened(options(api, server))
+    moment = datetime.now()
+    folder = RECORDINGS / (moment.strftime(STAMP) + CARRY_SUFFIX)
     shutil.rmtree(folder, ignore_errors=True)
     download(api, server, level, folder / "old")
     team = players(folder / "old", names(api, server))
     try:
         pack(folder, team)
-        seed, step = grow()
+        seed, step = grow(back)
     except Failure as failure:
         fail(str(failure))
     lay(DEV_SERVER / OLD, DEV_SERVER / NEW)
@@ -278,7 +294,7 @@ def carry(api, server):
                 "server": server["id"],
                 "step": step,
                 "taken": datetime.now().astimezone().isoformat(timespec="seconds"),
-                "to": f"world-{stamp}",
+                "to": moment.strftime(WORLD),
                 "uploaded": None,
             },
             indent=2,
@@ -286,16 +302,6 @@ def carry(api, server):
     )
     say(f"carried into {(folder / 'new').relative_to(ROOT)} ({megabytes(size(folder / 'new'))})")
     say(f"next: just carry {server['name']} upload")
-
-
-def carries(server):
-    found = []
-    for folder in sorted(RECORDINGS.glob("*" + SUFFIX)):
-        if (folder / CARRY).exists():
-            carried = json.loads((folder / CARRY).read_text())
-            if carried["server"] == server["id"]:
-                found.append((folder, carried))
-    return found
 
 
 def compare_mods(api, server):
@@ -359,14 +365,36 @@ def put_world(api, server, source, name):
     say(f"uploaded {name}: {megabytes(sum(path.stat().st_size for path in files))} in {took(started)}")
 
 
+def switch(api, server, level):
+    api.post(f"servers/{server['id']}/files/config/server.properties/", {"level-name": level})
+    kept = opened(options(api, server))
+    if kept != level:
+        fail(
+            f"exaroton kept level-name {kept} after it was set to {level}; set World name to {level} in "
+            f"{server['name']}'s options, then run just carry {server['name']} upload again"
+        )
+
+
+def sweep(api, server, keep):
+    there = {child["name"] for child in api.get(f"servers/{server['id']}/files/info/").get("children") or []}
+    for level in sorted({carried["to"] for _, carried in carries(server) if carried["uploaded"]} - set(keep)):
+        if level not in there:
+            continue
+        why = "carried but never opened" if unopened(api, server, level) else "two worlds back"
+        try:
+            remove(api, server, level)
+            say(f"removed {level} from {server['name']}, {why}")
+        except ApiError as error:
+            say(f"{level} stays on {server['name']}: {error}")
+
+
 def upload(api, server):
     waiting = [(folder, carried) for folder, carried in carries(server) if carried["uploaded"] is None]
     if not waiting:
         fail(f"nothing is carried for {server['name']} yet; run just carry {server['name']} first")
     folder, carried = waiting[-1]
     offline(api, server)
-    text = properties(api, server)
-    current = level_name(text)
+    current = opened(options(api, server))
     if current == carried["to"]:
         fail(f"{server['name']} already plays {carried['to']}")
     taken = carried["taken"][11:16]
@@ -380,31 +408,31 @@ def upload(api, server):
     compare_mods(api, server)
     say(f"{server['name']} is offline, its world unchanged since {taken}, its mods the same as build/server")
     put_world(api, server, folder / "new", carried["to"])
-    switched = (
-        LEVEL.sub(f"level-name={carried['to']}", text) if LEVEL.search(text) else text + f"level-name={carried['to']}\n"
-    )
-    api.put(f"servers/{server['id']}/files/data/server.properties", switched.encode("utf-8"))
-    say(f"{server['name']} plays {carried['to']}; {carried['from']} stays on it as the way back")
-    before = [earlier for _, earlier in carries(server) if earlier["uploaded"] and earlier["to"] == carried["from"]]
-    older = before[-1]["from"] if before else None
-    if older and older not in (carried["from"], carried["to"]):
-        try:
-            remove(api, server, older)
-            say(f"removed {older} from {server['name']}, two worlds back")
-        except ApiError as error:
-            say(f"{older} stays on {server['name']}: {error}")
+    switch(api, server, carried["to"])
     carried["uploaded"] = datetime.now().astimezone().isoformat(timespec="seconds")
     (folder / CARRY).write_text(json.dumps(carried, indent=2))
+    say(
+        f"{server['name']} opens {carried['to']} at its next start, set in exaroton's options; "
+        f"{carried['from']} stays on it as the way back"
+    )
+    sweep(api, server, (carried["from"], carried["to"]))
 
 
 def main():
     parser = argparse.ArgumentParser(
         description="Carry a playtest's road into a fresh world: download the exaroton server's world, pack what stands "
         "in it into its players, grow a new world from a random seed and play it to the team's step with their own "
-        "answers, lay their story and things into it; --upload puts the carried world on the server and switches to it"
+        "answers, or back to an earlier step of it with --step, lay their story and things into it; --upload puts the "
+        "carried world on the server and switches to it"
     )
     parser.add_argument("server", nargs="?", help="server name or id; the account's only server when omitted")
-    parser.add_argument("--upload", action="store_true", help="put the last carried world on the server and play it")
+    chosen = parser.add_mutually_exclusive_group()
+    chosen.add_argument("--upload", action="store_true", help="put the last carried world on the server and play it")
+    chosen.add_argument(
+        "--step",
+        help="a step of the main quest under way, at or before where the road stands, to carry the road back to, "
+        "such as the_keepers_apprentice/the_smoke",
+    )
     arguments = parser.parse_args()
     token = os.environ.get("EXAROTON_API_TOKEN")
     if not token:
@@ -412,7 +440,10 @@ def main():
     api = Api(token)
     server = find_server(api, arguments.server)
     try:
-        (upload if arguments.upload else carry)(api, server)
+        if arguments.upload:
+            upload(api, server)
+        else:
+            carry(api, server, arguments.step)
     except ApiError as error:
         fail(str(error))
 

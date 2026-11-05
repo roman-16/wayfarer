@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "RphqPtSotWvuhIfiezDo",
+  "id": "15b41ffa",
+  "kept": "30.10.2026",
+  "preview": 2,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 610463728,
+    "should_enhance": false,
+    "text": "Pip. Come here. ...Sit down, you. You're shaking. Give me that arm. You've been bleeding since the door. Slow. Like something asleep. Well. It's been a long night. You smell of old pine smoke. Sit down and eat before you tell me anything. Marsh mud to the knees. Boots off, and sit nearer the fire. Eat something. You look like a ghost.",
+    "voice_description": "Native English, British, a plain rural English voice. Female, 50-60. Excellent quality. Persona: a village healer and herb-woman who mothers everyone around her. Emotion: brisk, warm, no-nonsense, quietly worried. A low, warm, slightly husky voice, practical and firm; short commands given gently, the way a nurse talks to someone who won't sit still."
+  }
+}

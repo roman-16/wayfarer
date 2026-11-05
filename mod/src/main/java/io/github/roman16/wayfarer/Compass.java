@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Engine;
 import io.github.roman16.wayfarer.story.Progress;
 import io.github.roman16.wayfarer.story.Sense;
@@ -123,6 +124,11 @@ public final class Compass {
         if (aim.pos() == null) {
             return still(event.rising() ? CompassPayload.Mode.RISING : CompassPayload.Mode.LOST, claimed, markers, shelter, sight);
         }
+        if (markers.stream().anyMatch(marker -> marker.kind() == CompassPayload.Kind.GOAL)) {
+            bearing.heat = 0;
+            bearing.trailStart = null;
+            return still(CompassPayload.Mode.MARKED, claimed, markers, shelter, sight);
+        }
         if (bearing.trailStart == null) {
             bearing.trailStart = pos;
         }
@@ -136,12 +142,12 @@ public final class Compass {
             bearing.heat = heat(horizontal(bearing.trailStart, aim.pos()) - horizontal(pos, aim.pos()), moved);
             bearing.trailStart = pos;
         }
-        return new CompassPayload(CompassPayload.Mode.FAR, bearing.heat, claimed, markers, shelter, sight);
+        return new CompassPayload(CompassPayload.Mode.FAR, bearing.heat, horizontal(pos, aim.pos()) > balance.farBlocks(), claimed, markers, shelter, sight);
     }
 
     private static CompassPayload still(
             CompassPayload.Mode mode, List<ResourceLocation> claimed, List<CompassPayload.Marker> markers, CompassPayload.Shelter shelter, boolean sight) {
-        return new CompassPayload(mode, 0, claimed, markers, shelter, sight);
+        return new CompassPayload(mode, 0, false, claimed, markers, shelter, sight);
     }
 
     private static CompassPayload.Shelter shelter(ServerPlayer player) {
@@ -156,18 +162,19 @@ public final class Compass {
         for (ServerPlayer member : player.server.getPlayerList().getPlayers()) {
             Joining.Place at = Joining.beside(member);
             if (member != player && at.dimension() == player.level().dimension()) {
-                markers.add(new CompassPayload.Marker(CompassPayload.Kind.TEAMMATE, member.getGameProfile().getName(), at.pos().getX(), at.pos().getZ()));
+                markers.add(new CompassPayload.Marker(CompassPayload.Kind.TEAMMATE, member.getGameProfile().getName(), at.pos().getX(), at.pos().getY(), at.pos().getZ()));
             }
         }
         for (Stones.Stone stone : Stones.mine(player)) {
             if (stone.dimension() == player.level().dimension()) {
-                markers.add(new CompassPayload.Marker(CompassPayload.Kind.GRAVE, String.valueOf(stone.things()), stone.pos().getX(), stone.pos().getZ()));
+                markers.add(new CompassPayload.Marker(CompassPayload.Kind.GRAVE, String.valueOf(stone.things()), stone.pos().getX(), stone.pos().getY(), stone.pos().getZ()));
             }
         }
+        Caravan.lentBed(player).ifPresent(bed -> markers.add(new CompassPayload.Marker(CompassPayload.Kind.TENT, "", bed.getX(), bed.getY(), bed.getZ())));
         if (ModList.get().isLoaded(TENTS)) {
             for (Joining.Pitched tent : TentPitch.mine(player)) {
                 if (tent.place().dimension() == player.level().dimension()) {
-                    markers.add(new CompassPayload.Marker(CompassPayload.Kind.TENT, "", tent.place().pos().getX(), tent.place().pos().getZ()));
+                    markers.add(new CompassPayload.Marker(CompassPayload.Kind.TENT, "", tent.place().pos().getX(), tent.place().pos().getY(), tent.place().pos().getZ()));
                 }
             }
         }

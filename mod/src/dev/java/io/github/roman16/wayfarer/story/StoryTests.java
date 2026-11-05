@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
@@ -49,6 +50,7 @@ public final class StoryTests {
     private static final int MARSH_AWAY = 2048;
     private static final int MARSH_DROP = 3;
     private static final int MARSH_HEIGHT = 64;
+    private static final int MARSH_LANE = 128;
     private static final int MARSH_LANDING = 8;
     private static final int MARSH_REACH_UP = 5;
     private static final int MARSH_ROOF = 32;
@@ -346,15 +348,24 @@ public final class StoryTests {
     }
 
     @GameTest(template = "empty", timeoutTicks = MARSH_TIMEOUT_TICKS)
-    public static void theMarshMothersWayIsDryAndOpen(GameTestHelper helper) {
+    public static void theMarshMothersWayIsOpenInALake(GameTestHelper helper) {
+        marsh(helper, 0, pos -> Blocks.WATER.defaultBlockState());
+    }
+
+    @GameTest(template = "empty", timeoutTicks = MARSH_TIMEOUT_TICKS)
+    public static void theMarshMothersWayIsOpenInAMangroveSwamp(GameTestHelper helper) {
+        marsh(helper, 1, pos -> (pos.getX() + pos.getY() + pos.getZ() & 1) == 0 ? Blocks.MUD.defaultBlockState() : Blocks.MUDDY_MANGROVE_ROOTS.defaultBlockState());
+    }
+
+    private static void marsh(GameTestHelper helper, int lane, Function<BlockPos, BlockState> ground) {
         ServerLevel level = helper.getLevel();
         JsonObject plan = Marsh.plan();
-        BlockPos hall = helper.absolutePos(BlockPos.ZERO).offset(MARSH_AWAY, 0, MARSH_AWAY).atY(MARSH_HEIGHT);
+        BlockPos hall = helper.absolutePos(BlockPos.ZERO).offset(MARSH_AWAY, 0, MARSH_AWAY + lane * MARSH_LANE).atY(MARSH_HEIGHT);
         BlockPos low = hall.offset(Prologue.vector(plan.getAsJsonArray("origin")));
         BlockPos high = hall.offset(Prologue.vector(plan.getAsJsonObject("ward").getAsJsonArray("to")));
         for (BlockPos pos : BlockPos.betweenClosed(low.offset(-1, -1, -1), high.offset(1, 0, 1))) {
             boolean rim = pos.getX() < low.getX() || pos.getX() > high.getX() || pos.getZ() < low.getZ() || pos.getZ() > high.getZ() || pos.getY() < low.getY();
-            level.setBlock(pos, rim ? Blocks.MUD.defaultBlockState() : Blocks.WATER.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(pos, rim ? Blocks.MUD.defaultBlockState() : ground.apply(pos), Block.UPDATE_CLIENTS);
         }
         Marsh.build(level, hall, Rotation.NONE);
         BoundingBox within = BoundingBox.fromCorners(low, high.atY(hall.getY() + MARSH_ROOF));

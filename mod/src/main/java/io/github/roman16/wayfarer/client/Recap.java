@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
+import io.github.roman16.wayfarer.Narration;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.github.roman16.wayfarer.client.stamp.Stamp;
 import io.github.roman16.wayfarer.mixin.ConnectScreenAccessor;
@@ -17,8 +18,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Objects;
 import javax.annotation.Nullable;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -60,6 +63,7 @@ public final class Recap {
     private static JsonObject kept;
     @Nullable
     private static Page loading;
+    private static long shownAt;
 
     private Recap() {
     }
@@ -128,8 +132,30 @@ public final class Recap {
         boolean menu = screen instanceof TitleScreen || screen instanceof SelectWorldScreen || screen instanceof JoinMultiplayerScreen
                 || screen instanceof DisconnectedScreen;
         if (menu || minecraft.level != null && status(screen) == null) {
+            if (loading != null && shownAt != 0) {
+                if (menu) {
+                    Speech.stopPages();
+                } else {
+                    Speech.fade();
+                }
+            }
             loading = null;
+            shownAt = 0;
         }
+    }
+
+    public static boolean holding() {
+        return loading != null && !loading.told().isEmpty() && (shownAt == 0 || Util.getMillis() - shownAt < Stamp.RECAP_HOLD_MILLIS);
+    }
+
+    private static void speak(Page page) {
+        shownAt = Util.getMillis();
+        if (page.told().isEmpty()) {
+            return;
+        }
+        String newest = page.told().getLast().getString();
+        Optional<Narration.Clip> clip = page == FIRST ? Narration.said(null, newest, false) : Narration.chosen(YourVoice.chosen().id(), newest);
+        clip.ifPresent(found -> Speech.pages(List.of(found.path())));
     }
 
     static void render(ScreenEvent.Render.Pre event) {
@@ -138,6 +164,9 @@ public final class Recap {
         Component status = status(screen);
         if (page == null || status == null) {
             return;
+        }
+        if (shownAt == 0) {
+            speak(page);
         }
         event.setCanceled(true);
         GuiGraphics graphics = event.getGuiGraphics();

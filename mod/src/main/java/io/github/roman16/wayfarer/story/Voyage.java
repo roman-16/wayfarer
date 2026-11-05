@@ -5,8 +5,10 @@ import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Nights;
 import io.github.roman16.wayfarer.Sea;
+import io.github.roman16.wayfarer.Waves;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import javax.annotation.Nullable;
@@ -21,6 +23,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -28,10 +31,12 @@ import net.minecraft.world.entity.monster.Drowned;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 
-final class Voyage {
+public final class Voyage {
     static final String FAR_SHORE = "far_shore";
     private static final String NIGHTFALL = "21:00";
     private static final String DUSKED = "dusked";
@@ -58,10 +63,15 @@ final class Voyage {
     private static final int SPAWN_NEAR = 6;
     private static final int SPAWN_FAR = 12;
     private static final int SPAWN_DEPTH = 3;
+    private static final int SETTLE_TICKS = 20;
+    private static final String SETTLED = "settled";
     private static final int SINKING = 2;
+    private static final double STATION_PULL = 0.25;
     private static final int TICKS_PER_SECOND = 20;
     @Nullable
     private static CompletableFuture<BlockPos> searching;
+    @Nullable
+    private static UUID station;
 
     private Voyage() {}
 
@@ -84,6 +94,30 @@ final class Voyage {
 
     static void reset() {
         searching = null;
+        station = null;
+    }
+
+    @SubscribeEvent
+    public static void onServerTick(ServerTickEvent.Post event) {
+        if (event.getServer().getTickCount() % SETTLE_TICKS == 0 && Engine.running(event.getServer())) {
+            settle(event.getServer());
+        }
+        if (station == null) {
+            return;
+        }
+        ServerLevel level = Engine.overworld(event.getServer());
+        Entity boat = level.getEntity(station);
+        Optional<ServerPlayer> sailor = sailor(event.getServer(), level);
+        if (boat == null || sailor.isEmpty() || !(sailor.get().getVehicle() instanceof Entity ship) || ship == boat) {
+            return;
+        }
+        Vec3 side = Vec3.directionFromRotation(0, ship.getYRot() + 90).scale(Balance.get().voyage().besideBlocks());
+        Vec3 want = ship.position().add(side.x, 0, side.z);
+        Vec3 off = new Vec3(want.x - boat.getX(), 0, want.z - boat.getZ());
+        if (off.lengthSqr() > 1) {
+            boat.setPos(boat.getX() + off.x * STATION_PULL, boat.getY(), boat.getZ() + off.z * STATION_PULL);
+            boat.setYRot(ship.getYRot());
+        }
     }
 
     static void tick(MinecraftServer server) {
@@ -100,6 +134,42 @@ final class Voyage {
             LOGGER.error("the far shore's search failed: {}", failure.getCause().toString());
         }
         searching = null;
+    }
+
+    private static void settle(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        Optional<BlockPos> shore = progress.place(FAR_SHORE);
+        if (shore.isEmpty() || progress.scratch(FAR_SHORE).getBoolean(SETTLED)) {
+            return;
+        }
+        ServerLevel level = Engine.overworld(server);
+        int reach = Balance.get().voyage().landfallBlocks();
+        if (Engine.players(server).stream().noneMatch(player -> player.level() == level && player.blockPosition().closerThan(shore.get().atY(player.getBlockY()), reach))
+                || !level.isLoaded(shore.get())) {
+            return;
+        }
+        BlockPos best = null;
+        for (int dx = -reach; dx <= reach; dx += CELL) {
+            for (int dz = -reach; dz <= reach; dz += CELL) {
+                BlockPos column = shore.get().offset(dx, 0, dz);
+                if (!level.isLoaded(column) || best != null && column.distSqr(shore.get()) >= best.atY(shore.get().getY()).distSqr(shore.get())) {
+                    continue;
+                }
+                BlockPos ground = Ground.above(level, column);
+                if (level.getFluidState(ground.below()).isEmpty() && level.getFluidState(ground).isEmpty() && !level.getBlockState(ground.below()).is(BlockTags.LEAVES)
+                        && ground.getY() >= level.getChunkSource().getGenerator().getSeaLevel()) {
+                    best = ground;
+                }
+            }
+        }
+        if (best == null) {
+            return;
+        }
+        progress.place(FAR_SHORE, best);
+        progress.scratch(FAR_SHORE).putBoolean(SETTLED, true);
+        progress.setDirty();
+        Journal.syncAll(server);
+        LOGGER.info("the far shore settles on dry land at {}", best);
     }
 
     private static BlockPos landfall(Unseen.Heights heights, BlockPos from, Vec3 out, int sea, int beyond, int farthest) {
@@ -234,6 +304,7 @@ final class Voyage {
         CompoundTag scratch = active.scratch();
         scratch.putBoolean(STARTED, true);
         scratch.putUUID(BOAT, boat.getUUID());
+        station = boat.getUUID();
         scratch.putLong(CALM_AT, level.getGameTime());
         Sea.rise(level, boat.position().add(side.normalize().scale(voyage.riseBlocks())), boat).ifPresent(beast -> scratch.putUUID(BEAST, beast.getUUID()));
         Progress.of(server).setDirty();
@@ -245,6 +316,9 @@ final class Voyage {
         if (!scratch.getBoolean(STARTED)) {
             return;
         }
+        if (!scratch.getBoolean(ENDED) && scratch.hasUUID(BOAT)) {
+            station = scratch.getUUID(BOAT);
+        }
         ServerLevel level = Engine.overworld(server);
         Entity boat = scratch.hasUUID(BOAT) ? level.getEntity(scratch.getUUID(BOAT)) : null;
         Entity beast = scratch.hasUUID(BEAST) ? level.getEntity(scratch.getUUID(BEAST)) : null;
@@ -255,7 +329,7 @@ final class Voyage {
 
     private static void rise(MinecraftServer server, ServerLevel level, Entity boat, int wave, Balance.Voyage voyage) {
         long team = Math.max(1, Engine.players(server).stream().filter(player -> player.level() == level).count());
-        long count = (voyage.firstWave() + (long) voyage.waveGrowth() * wave) * team;
+        int count = Waves.size(server, wave, team);
         int sea = level.getChunkSource().getGenerator().getSeaLevel();
         for (int index = 0; index < count; index++) {
             Drowned drowned = EntityType.DROWNED.create(level);
@@ -285,6 +359,7 @@ final class Voyage {
     private static void end(MinecraftServer server, Engine.Active active, ServerLevel level, String outcome) {
         CompoundTag scratch = active.scratch();
         scratch.putBoolean(ENDED, true);
+        station = null;
         Balance.Voyage voyage = Balance.get().voyage();
         Entity beast = scratch.hasUUID(BEAST) ? level.getEntity(scratch.getUUID(BEAST)) : null;
         if (beast != null) {

@@ -1,15 +1,20 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Ground;
+import io.github.roman16.wayfarer.story.Sight;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
@@ -23,10 +28,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -238,6 +247,45 @@ public final class WayfarerTests {
         check(helper, Fire.inside(fire, new Vec3(radius - 1, 0.5, 0.5), radius) && !Fire.inside(fire, new Vec3(radius + 1, 0.5, 0.5), radius), "the circle has its radius");
         check(helper, Fire.untilTomorrowsDusk(11000) == 25000, "resting at evening lasts to tomorrow's dusk");
         check(helper, Fire.untilTomorrowsDusk(15000) == 21000, "resting at night lasts to tomorrow's dusk");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void aCampCountsOnlyWhileItStands(GameTestHelper helper) {
+        ServerPlayer player = FakePlayerFactory.getMinecraft(helper.getLevel());
+        helper.setBlock(new BlockPos(1, 1, 1), Blocks.CAMPFIRE.defaultBlockState());
+        player.moveTo(helper.absoluteVec(new Vec3(2.5, 1, 1.5)));
+        check(helper, !Clock.camped(player), "standing by a fire with no tent beside it makes no camp");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void everyoneStandsOnTheGroundRule(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        for (int x = 0; x < 3; x++) {
+            helper.setBlock(new BlockPos(x, 0, 1), Blocks.STONE.defaultBlockState());
+        }
+        helper.setBlock(new BlockPos(0, 1, 1), Blocks.SNOW.defaultBlockState().setValue(SnowLayerBlock.LAYERS, 3));
+        helper.setBlock(new BlockPos(1, 1, 1), Blocks.OAK_LEAVES.defaultBlockState());
+        helper.setBlock(new BlockPos(2, 1, 1), Blocks.POWDER_SNOW.defaultBlockState());
+        Vec3 snow = Ground.feet(level, helper.absoluteVec(new Vec3(0.5, 2, 1.5))).orElseThrow();
+        check(helper, Math.abs(snow.y - helper.absoluteVec(new Vec3(0, 1.375, 0)).y) < 1e-6, "feet stand on top of snow layers");
+        check(helper, Ground.feet(level, helper.absoluteVec(new Vec3(1.5, 2, 1.5))).map(feet -> feet.y > helper.absoluteVec(new Vec3(0, 2, 0)).y).orElse(true),
+                "nobody stands in leaves");
+        check(helper, !Ground.standable(level, helper.absoluteVec(new Vec3(2.5, 1, 1.5))), "nobody stands in powder snow");
+        check(helper, !Sight.clear(level, helper.absoluteVec(new Vec3(2.5, 1.5, 0.2)), helper.absoluteVec(new Vec3(2.5, 1.5, 2.8))), "powder snow hides what is behind it");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void placesKnowTheirClimate(GameTestHelper helper) {
+        Registry<Biome> biomes = helper.getLevel().registryAccess().registryOrThrow(Registries.BIOME);
+        check(helper, Climate.of(biomes.getHolderOrThrow(Biomes.DESERT)) == Climate.HOT && Climate.of(biomes.getHolderOrThrow(Biomes.BADLANDS)) == Climate.HOT,
+                "deserts and badlands are hot");
+        check(helper, Climate.of(biomes.getHolderOrThrow(Biomes.SNOWY_PLAINS)) == Climate.COLD && Climate.of(biomes.getHolderOrThrow(Biomes.FROZEN_OCEAN)) == Climate.COLD,
+                "snow and ice are cold");
+        check(helper, Climate.HOT.bears(biomes.getHolderOrThrow(Biomes.PLAINS)) && !Climate.HOT.bears(biomes.getHolderOrThrow(Biomes.SNOWY_PLAINS)),
+                "a hot place settles for mild land, never cold");
         helper.succeed();
     }
 

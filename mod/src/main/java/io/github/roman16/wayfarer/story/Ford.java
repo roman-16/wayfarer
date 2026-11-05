@@ -19,11 +19,9 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.Tags;
 import org.slf4j.Logger;
 
 final class Ford {
@@ -93,7 +91,7 @@ final class Ford {
         int y = heights.surface(x, z);
         Holder<Biome> biome = heights.biome(x, y, z);
         return !heights.wet(x, z) && !biome.is(BiomeTags.IS_OCEAN) && !biome.is(BiomeTags.IS_DEEP_OCEAN) && !biome.is(BiomeTags.IS_RIVER)
-                && !biome.is(BiomeTags.IS_BEACH) && !biome.is(Tags.Biomes.IS_SWAMP) && !(warm && Unseen.snowy(biome, new BlockPos(x, y, z)));
+                && !biome.is(BiomeTags.IS_BEACH) && Sites.open(biome) && !(warm && Unseen.snowy(biome, new BlockPos(x, y, z)));
     }
 
     private static boolean flat(Unseen.Heights heights, Vec3 at, Vec3 way, int half) {
@@ -107,13 +105,27 @@ final class Ford {
         return true;
     }
 
+    private static boolean runs(Unseen.Heights heights, Vec3 at, Vec3 way, int length) {
+        Vec3 side = new Vec3(-way.z, 0, way.x);
+        int water = column(heights, at).getY();
+        for (int along = 1; along <= length; along++) {
+            for (int sign : new int[] {1, -1}) {
+                int y = column(heights, at.add(side.scale(along * sign))).getY();
+                if (y < water || y > water + CREEK_HIGHEST) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private static Optional<Banks> dry(Unseen.Heights heights, Vec3 from, Vec3 way, Balance.Ford balance, boolean warm) {
         int half = balance.widthBlocks() / 2 + 1;
         for (int back = 0; back < balance.aheadBlocks(); back += STEP) {
             for (int sign : back == 0 ? new int[] {1} : new int[] {-1, 1}) {
                 Vec3 at = from.add(way.scale(balance.aheadBlocks() + back * sign));
                 if (land(heights, at.add(way.scale(-half)), warm) && land(heights, at, warm) && land(heights, at.add(way.scale(half)), warm)
-                        && flat(heights, at, way, half)) {
+                        && flat(heights, at, way, half) && runs(heights, at, way, balance.widthBlocks() * 2)) {
                     return Optional.of(creek(heights, at, way, balance));
                 }
             }
@@ -213,14 +225,14 @@ final class Ford {
 
     private static void creek(ServerLevel level, BlockPos near, BlockPos far, Vec3 way, Vec3 side, Balance.Ford balance) {
         BlockPos middle = new BlockPos((near.getX() + far.getX()) / 2, 0, (near.getZ() + far.getZ()) / 2);
-        int water = surface(level, middle).getY();
+        int water = Ground.land(level, middle).getY();
         for (int sign : new int[] {1, -1}) {
             for (int reach = 0; reach <= balance.creekReachBlocks(); reach++) {
                 double bend = Math.sin((reach * sign + middle.getX() % BEND_PHASE) / BEND_LENGTH) * BEND;
                 int half = balance.widthBlocks() / 2 - ((reach * BEND_PHASE + middle.getZ()) % NARROW == 0 ? 1 : 0);
                 boolean open = true;
                 for (int across = -half - 1; across <= half; across++) {
-                    BlockPos top = surface(level, creekColumn(middle, way, side, reach * sign, bend + across, water));
+                    BlockPos top = Ground.land(level, creekColumn(middle, way, side, reach * sign, bend + across, water));
                     open &= top.getY() >= water && top.getY() <= water + CREEK_HIGHEST;
                 }
                 if (!open) {
@@ -257,7 +269,7 @@ final class Ford {
     private static void path(ServerLevel level, BlockPos bank, Vec3 inland, Vec3 side, Balance.Ford balance) {
         for (int along = 0; along < PATH; along++) {
             for (int across = -balance.widthBlocks() / 4; across < balance.widthBlocks() / 4; across++) {
-                BlockPos top = surface(level, BlockPos.containing(Vec3.atLowerCornerOf(bank).add(inland.scale(along)).add(side.scale(across))));
+                BlockPos top = Ground.land(level, BlockPos.containing(Vec3.atLowerCornerOf(bank).add(inland.scale(along)).add(side.scale(across))));
                 if (!level.getBlockState(top).is(BlockTags.DIRT) && !level.getBlockState(top).is(Blocks.SAND)) {
                     continue;
                 }
@@ -272,12 +284,12 @@ final class Ford {
 
     private static BlockPos ashore(ServerLevel level, BlockPos bank, Vec3 inland) {
         for (int along = INLAND; along <= INLAND * INLAND * 2; along++) {
-            BlockPos top = surface(level, BlockPos.containing(Vec3.atLowerCornerOf(bank).add(inland.scale(along))));
+            BlockPos top = Ground.land(level, BlockPos.containing(Vec3.atLowerCornerOf(bank).add(inland.scale(along))));
             if (level.getFluidState(top).isEmpty()) {
                 return top;
             }
         }
-        return surface(level, BlockPos.containing(Vec3.atLowerCornerOf(bank).add(inland.scale(INLAND))));
+        return Ground.land(level, BlockPos.containing(Vec3.atLowerCornerOf(bank).add(inland.scale(INLAND))));
     }
 
     private static void clearing(ServerLevel level, BlockPos feet, Balance.Ford balance) {
@@ -287,7 +299,7 @@ final class Ford {
                 if (x * x + z * z > reach * reach) {
                     continue;
                 }
-                int top = level.getHeight(Heightmap.Types.MOTION_BLOCKING, feet.getX() + x, feet.getZ() + z);
+                int top = Ground.crown(level, feet.getX() + x, feet.getZ() + z) + 1;
                 for (int y = feet.getY(); y < top; y++) {
                     BlockPos at = new BlockPos(feet.getX() + x, y, feet.getZ() + z);
                     BlockState state = level.getBlockState(at);
@@ -301,7 +313,7 @@ final class Ford {
 
     private static void fire(ServerLevel level, BlockPos cadoc, Vec3 side) {
         for (int sign : new int[] {1, -1}) {
-            BlockPos ground = surface(level, BlockPos.containing(Vec3.atLowerCornerOf(cadoc).add(side.scale(FIRE_BESIDE * sign))));
+            BlockPos ground = Ground.land(level, BlockPos.containing(Vec3.atLowerCornerOf(cadoc).add(side.scale(FIRE_BESIDE * sign))));
             if (level.getFluidState(ground).isEmpty() && level.getBlockState(ground).isFaceSturdy(level, ground, Direction.UP)) {
                 level.setBlock(ground.above(), Blocks.CAMPFIRE.defaultBlockState(), Block.UPDATE_ALL);
                 LOGGER.info("the ford lies in the cold; a fire burns on its near bank at {}", ground.above());
@@ -316,10 +328,10 @@ final class Ford {
 
     private static BlockPos outpost(ServerLevel level, BlockPos far, Vec3 way, Balance.Ford balance) {
         BlockPos ahead = BlockPos.containing(Vec3.atLowerCornerOf(far).add(way.scale(balance.outpostBlocks())));
-        BlockPos best = surface(level, ahead);
+        BlockPos best = Ground.land(level, ahead);
         for (int dx = -OUTPOST_SEARCH; dx <= OUTPOST_SEARCH; dx += OUTPOST_GRID) {
             for (int dz = -OUTPOST_SEARCH; dz <= OUTPOST_SEARCH; dz += OUTPOST_GRID) {
-                BlockPos top = surface(level, ahead.offset(dx, 0, dz));
+                BlockPos top = Ground.land(level, ahead.offset(dx, 0, dz));
                 if (top.getY() > best.getY() && level.getFluidState(top).isEmpty()) {
                     best = top;
                 }
@@ -330,15 +342,6 @@ final class Ford {
             LOGGER.info("no Gazebound outpost would stand at {}", best);
         }
         return raised.map(box -> new BlockPos(box.getCenter().getX(), box.minY(), box.getCenter().getZ())).orElse(best);
-    }
-
-    private static BlockPos surface(ServerLevel level, BlockPos at) {
-        BlockPos.MutableBlockPos top = new BlockPos.MutableBlockPos(at.getX(), level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, at.getX(), at.getZ()) - 1, at.getZ());
-        while (top.getY() > level.getMinBuildHeight() && level.getFluidState(top).isEmpty()
-                && (level.getBlockState(top).is(BlockTags.LOGS) || level.getBlockState(top).canBeReplaced())) {
-            top.move(0, -1, 0);
-        }
-        return top.immutable();
     }
 
     private static Vec3 way(MinecraftServer server) {

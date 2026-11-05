@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer.story;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Fire;
@@ -21,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -41,6 +43,7 @@ import net.minecraft.world.phys.Vec3;
 final class Steps {
     static final String CLUE = Wayfarer.MODID + "_clue_";
     static final String CLUE_BOX = Wayfarer.MODID + "_clue_box";
+    static final String FOUND = Wayfarer.MODID + "_found_";
     static final String OWN_CAMP = "own_camp";
     static final String DAWN = "06:00";
     private static final String ENTERED = "entered";
@@ -60,11 +63,13 @@ final class Steps {
     static final String RESTED_TICKS = "rested_ticks";
     private static final String UNTIL = "until";
     private static final int BLIND_TICKS = 40;
+    private static final int SEEN_NEAR = 8;
     private static final int TICKS_PER_SECOND = 20;
     private static final String TOUCH = "touch";
     private static final String LEAVES = "leaves";
     private static final String ASKING = "asking";
     private static final String CALLS = "calls";
+    private static final String MOVED = "moved";
     private static final String MOVES = "moves";
     private static final String FATES = "fates";
     private static final String AWAITS = "awaits";
@@ -73,7 +78,7 @@ final class Steps {
     static final String LIVES = "lives";
     static final String LOST = "lost";
     static final String BUILDS = "builds";
-    private static final Set<String> NIGHT_KINDS = Set.of("dawn", "dusk", "hold");
+    private static final Set<String> NIGHT_KINDS = Set.of("dawn", "dusk", "hold", "sail", "sea");
     private static final double KEPT = 1.5;
 
     private Steps() {}
@@ -87,7 +92,11 @@ final class Steps {
     }
 
     static boolean holdsNight(MinecraftServer server) {
-        return Engine.active(server).stream().anyMatch(active -> entered(active) && NIGHT_KINDS.contains(active.step().kind()));
+        return Engine.active(server).stream().anyMatch(active -> ownNight(active.step()) && (entered(active) || Engine.pursued(server, active.quest())));
+    }
+
+    static boolean ownNight(Story.Step step) {
+        return NIGHT_KINDS.contains(step.kind());
     }
 
     static void reset(MinecraftServer server, Engine.Active active) {
@@ -115,6 +124,11 @@ final class Steps {
         }
         if (step.spec().has(BUILDS)) {
             Places.build(server, step.text(BUILDS));
+        }
+        List<Story.Step> steps = active.quest().steps();
+        int index = steps.indexOf(step);
+        if (index + 1 < steps.size() && steps.get(index + 1).kind().equals("dusk")) {
+            Places.build(server, steps.get(index + 1).text("place"));
         }
         toll(server, active);
         if (active.quest().steps().indexOf(step) == 0) {
@@ -152,9 +166,6 @@ final class Steps {
         if (!SPOKEN_APART.contains(step.kind())) {
             Talk.say(active.quest().id(), null, step.lines(), Engine.fill(Progress.of(server)));
         }
-        if (step.kind().equals("caravan")) {
-            Engine.road(server, active);
-        }
         Journal.syncAll(server);
     }
 
@@ -173,9 +184,16 @@ final class Steps {
             case "rest", "hold" -> Optional.of(step.text("at"));
             case "shard" -> Optional.of(step.text("at"));
             case "clues" -> step.spec().has("place") ? Optional.of(step.text("place")) : Optional.empty();
-            case "memory" -> Optional.of(Story.get().memory(step.text("memory")).place());
+            case "memory" -> Optional.of(step.spec().has("place") ? step.text("place") : Story.get().memory(step.text("memory")).place());
+            case "talk" -> Optional.ofNullable(step.with()).map(person -> Places.PERSON + person + seated(step, person).map(seat -> Places.AT + seat).orElse(""));
             default -> Optional.empty();
         };
+    }
+
+    private static Optional<String> seated(Story.Step step, String person) {
+        return step.spec().has(MOVES) && step.spec().getAsJsonObject(MOVES).has(person)
+                ? Optional.of(step.spec().getAsJsonObject(MOVES).getAsJsonObject(person).get("place").getAsString())
+                : Optional.empty();
     }
 
     static boolean felt(Engine.Active active) {
@@ -232,7 +250,7 @@ final class Steps {
                 String with = step.with();
                 if (!scratch.getBoolean(STARTED) && !scratch.getBoolean(DECLINED) && !Talk.busy() && with != null && Engine.pursued(server, active.quest())
                         && People.find(server, with).filter(body -> seen(server, body, step.spec().has(CALLS) ? step.number(CALLS)
-                                : Balance.get().talk().startBlocks())).isPresent()) {
+                                : Balance.get().talk().startBlocks()) && !(Nights.hard(server) && Caravan.within(server, Engine.overworld(server), body.position()))).isPresent()) {
                     start(server, active);
                 }
             }
@@ -257,8 +275,10 @@ final class Steps {
                 Shores.tick(server, active);
                 Optional<BlockPos> goal = Places.place(server, step.text("place"));
                 int within = Places.arrival(step.text("place"));
-                if (goal.isPresent() && Engine.players(server).stream()
-                        .anyMatch(player -> player.level().dimension() == Level.OVERWORLD && player.blockPosition().distSqr(goal.get()) <= (double) within * within)) {
+                boolean below = goal.filter(at -> !Engine.overworld(server).canSeeSky(at.above())).isPresent();
+                if (goal.isPresent() && Places.ready(server, step.text("place")) && Engine.players(server).stream()
+                        .anyMatch(player -> player.level().dimension() == Level.OVERWORLD && player.blockPosition().distSqr(goal.get()) <= (double) within * within
+                                && (!below || !player.level().canSeeSky(player.blockPosition())) && sees(player, goal.get()))) {
                     Engine.complete(server, active);
                 }
             }
@@ -336,7 +356,7 @@ final class Steps {
                 }
             }
             case "caravan" -> {
-                if (Places.ready(server, Caravan.NAME) && Clock.evening() && home(server)) {
+                if (Clock.evening() && (Places.ready(server, Caravan.NAME) && home(server) || camped(server) && !active.quest().act().equals(Engine.PROLOGUE))) {
                     Engine.complete(server, active);
                 }
             }
@@ -374,19 +394,24 @@ final class Steps {
                 }
             }
             case "memory" -> {
-                if (step.spec().has(TOUCH) && target.getTags().contains(CLUE + step.text(TOUCH))) {
+                if (step.spec().has(TOUCH) && touches(target, step.text(TOUCH))) {
                     Optional<BlockPos> stone = Memories.stone(server, Story.get().memory(step.text("memory")));
                     return stone.isPresent() && Memories.touch(player, stone.get(), player.getMainHandItem());
                 }
             }
             case "clues" -> {
                 for (Story.Clue clue : step.clues()) {
+                    if (target.getTags().contains(CLUE + clue.id()) && !Engine.found(active.scratch()).contains(clue.id()) && waiting(server, active, clue)) {
+                        int left = needed(server, active) - 1 - Engine.found(active.scratch()).size();
+                        player.displayClientMessage(Component.translatable(left == 1 ? "wayfarer.clue.not_yet_one" : "wayfarer.clue.not_yet", left), true);
+                        return true;
+                    }
                     if (target.getTags().contains(CLUE + clue.id()) && !Engine.found(active.scratch()).contains(clue.id()) && !waiting(server, active, clue)) {
                         Engine.find(active.scratch(), clue.id());
                         Progress.of(server).setDirty();
                         Tasks.did(player, "look");
                         Clues.found(player.serverLevel(), target, clue.id());
-                        Talk.say(active.quest().id(), target.position(), new Story.Line(null, clue.text()));
+                        Talk.say(active.quest().id(), target.position(), new Story.Line(clue.by(), clue.text()));
                         if (clue.opens() != null) {
                             Pages.openOldScript(player, clue.opens());
                         }
@@ -428,6 +453,10 @@ final class Steps {
         JsonObject gifts = step.spec().getAsJsonObject("gifts");
         eyes.stream().filter(gifts::has).map(eye -> gifts.get(eye).getAsString()).forEach(progress.gifts::add);
         progress.setDirty();
+    }
+
+    static boolean camped(MinecraftServer server) {
+        return Engine.most(server, Engine.players(server).stream().filter(Clock::camped).count());
     }
 
     static boolean home(MinecraftServer server) {
@@ -575,7 +604,7 @@ final class Steps {
         Progress.of(server).setDirty();
         Talk.say(active.quest().id(), Vec3.atCenterOf(stone), step.lines(ASKING), Engine.fill(Progress.of(server)));
         Talk.ask(new Talk.Offer(active.quest().id(), step.with(), step.choices(), Vec3.atCenterOf(stone),
-                (player, choice) -> Engine.chosen(player, active.quest().id(), step.id(), null, choice), true));
+                (player, choice) -> Engine.chosen(player, active.quest().id(), step.id(), step.with(), choice), true));
     }
 
     private static void inscribe(MinecraftServer server, Engine.Active active, Story.Choice choice) {
@@ -598,12 +627,21 @@ final class Steps {
         for (String key : new String[] {"at", "place"}) {
             if (step.spec().has(key)) {
                 Optional<BlockPos> place = Progress.of(server).place(step.text(key));
+                if (place.isPresent() && step.kind().equals("reach")) {
+                    return arriver(server, place.get(), Places.arrival(step.text(key))).orElseGet(() -> Vec3.atCenterOf(place.get()));
+                }
                 if (place.isPresent()) {
                     return Vec3.atCenterOf(place.get());
                 }
             }
         }
         return null;
+    }
+
+    private static Optional<Vec3> arriver(MinecraftServer server, BlockPos place, int within) {
+        return Engine.players(server).stream().filter(player -> player.level().dimension() == Level.OVERWORLD)
+                .filter(player -> player.blockPosition().distSqr(place) <= (double) within * within)
+                .min(Comparator.comparingDouble(player -> player.blockPosition().distSqr(place))).map(Entity::position);
     }
 
     static void toll(MinecraftServer server, Engine.Active active) {
@@ -641,6 +679,11 @@ final class Steps {
 
     static void moves(MinecraftServer server, Story.Step step) {
         moves(server, step.spec());
+        if (step.spec().has(MOVES)) {
+            CompoundTag moved = Progress.of(server).scratch(MOVED);
+            step.spec().getAsJsonObject(MOVES).keySet().forEach(moved::remove);
+            Progress.of(server).setDirty();
+        }
     }
 
     static void stage(MinecraftServer server, @Nullable JsonObject stage) {
@@ -648,6 +691,11 @@ final class Steps {
             return;
         }
         moves(server, stage);
+        if (stage.has(MOVES)) {
+            CompoundTag moved = Progress.of(server).scratch(MOVED);
+            stage.getAsJsonObject(MOVES).entrySet().forEach(entry -> moved.putString(entry.getKey(), entry.getValue().toString()));
+            Progress.of(server).setDirty();
+        }
         poses(server, stage);
         faces(server, stage);
         if (stage.has(LEAVES)) {
@@ -678,11 +726,16 @@ final class Steps {
             }
             Optional<String> left = Progress.of(server).choice(active.quest().id(), active.step().id()).flatMap(chosen -> active.step().choices().stream()
                     .filter(choice -> choice.id().equals(chosen)).findFirst()).map(Story.Choice::leaves);
-            active.step().spec().getAsJsonObject(MOVES).entrySet().forEach(entry -> Places.seat(server, entry.getValue().getAsJsonObject().get("place").getAsString())
-                    .filter(seat -> level.areEntitiesLoaded(ChunkPos.asLong(BlockPos.containing(seat.at()))) && !People.leaving(entry.getKey())
-                            && !left.filter(entry.getKey()::equals).isPresent()
-                            && People.find(server, entry.getKey()).filter(body -> body.level() == level && body.position().closerThan(seat.at(), KEPT)).isEmpty())
-                    .ifPresent(seat -> move(server, entry.getKey(), entry.getValue().getAsJsonObject())));
+            CompoundTag moved = Progress.of(server).scratch(MOVED);
+            active.step().spec().getAsJsonObject(MOVES).entrySet().forEach(entry -> {
+                JsonObject where = moved.contains(entry.getKey()) ? JsonParser.parseString(moved.getString(entry.getKey())).getAsJsonObject()
+                        : entry.getValue().getAsJsonObject();
+                Places.seat(server, where.get("place").getAsString())
+                        .filter(seat -> level.areEntitiesLoaded(ChunkPos.asLong(BlockPos.containing(seat.at()))) && !People.leaving(entry.getKey())
+                                && !left.filter(entry.getKey()::equals).isPresent()
+                                && People.find(server, entry.getKey()).filter(body -> body.level() == level && body.position().closerThan(seat.at(), KEPT)).isEmpty())
+                        .ifPresent(seat -> move(server, entry.getKey(), where));
+            });
         }
     }
 
@@ -716,14 +769,18 @@ final class Steps {
 
     private static boolean seen(MinecraftServer server, Entity body, int blocks) {
         return Engine.players(server).stream().anyMatch(player -> player.level() == body.level() && player.distanceToSqr(body) <= (double) blocks * blocks
-                && player.hasLineOfSight(body) && Arrivals.there(player));
+                && Sight.sees(player, body) && Arrivals.there(player));
+    }
+
+    private static boolean touches(Entity entity, String clue) {
+        return entity.getTags().contains(CLUE + clue) || entity.getTags().contains(FOUND + clue);
     }
 
     static boolean lookable(MinecraftServer server, Entity entity) {
         return Engine.active(server).stream().anyMatch(active -> switch (active.step().kind()) {
             case "clues" -> active.step().clues().stream().anyMatch(clue -> entity.getTags().contains(CLUE + clue.id())
                     && !Engine.found(active.scratch()).contains(clue.id()) && !waiting(server, active, clue));
-            case "memory" -> active.step().spec().has(TOUCH) && entity.getTags().contains(CLUE + active.step().text(TOUCH));
+            case "memory" -> active.step().spec().has(TOUCH) && touches(entity, active.step().text(TOUCH));
             default -> false;
         });
     }
@@ -740,6 +797,10 @@ final class Steps {
 
     private static boolean waiting(MinecraftServer server, Engine.Active active, Story.Clue clue) {
         return clue.last() && Engine.found(active.scratch()).size() < needed(server, active) - 1;
+    }
+
+    private static boolean sees(ServerPlayer player, BlockPos place) {
+        return player.blockPosition().closerThan(place, SEEN_NEAR) || Sight.clear(player.level(), player.getEyePosition(), Vec3.atCenterOf(place.above()));
     }
 
     static double horizontal(BlockPos a, BlockPos b) {

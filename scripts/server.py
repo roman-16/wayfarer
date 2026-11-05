@@ -9,15 +9,17 @@ from pathlib import Path
 
 import drive
 import hotswap
+import instance
 import states
 from drive import Failure, Server, reply
 
 ROOT = Path(__file__).resolve().parent.parent
-DEV_SERVER = ROOT / "build/devserver"
+SEAT = drive.seat("devserver")
+DEV_SERVER = SEAT.folder
 SNAPSHOT = DEV_SERVER / "driver/classes"
 LAUNCHED = DEV_SERVER / "driver/launched.json"
 PROPERTIES = DEV_SERVER / "server.properties"
-CHECKPOINTS = DEV_SERVER / "checkpoints"
+CHECKPOINTS = ROOT / "build/devserver/checkpoints"
 LEVEL = re.compile(r"^level-name=(.*)$", re.MULTILINE)
 DAY = re.compile(r"(\d+)$")
 START_SECONDS = 900
@@ -67,9 +69,24 @@ def start(arguments):
         cache = states.folder("server", mode, arguments.state)
         start = states.prepare(cache, DEV_SERVER / ("state-lean" if mode == "lean" else "state"), arguments.rebuild)
         os.environ["WAYFARER_STATE"] = arguments.state
-    os.environ |= {"WAYFARER_BACKGROUND": "true", "WAYFARER_DRIVEN": "true"}
+    os.environ |= {
+        "WAYFARER_BACKGROUND": "true",
+        "WAYFARER_DRIVEN": "true",
+        "WAYFARER_GAME_DIRECTORY": str(DEV_SERVER),
+        "WAYFARER_PORT": str(SEAT.offset()),
+        "WAYFARER_SWAP_PORT": str(hotswap.port("server_swap_port") + SEAT.offset()),
+    }
+    drive.room("devserver")
+    if arguments.world:
+        other = drive.holder(arguments.world, "devserver")
+        if other is not None and other.folder != DEV_SERVER:
+            raise Failure(
+                f'"{arguments.world}" is open in session {other.owner() or "of your own"}\'s dev server; ask that session to leave it'
+            )
+        drive.borrowed(DEV_SERVER, ROOT / "build/devserver", arguments.world)
     started = time.monotonic()
-    server.start(arguments.timeout)
+    with drive.locked(ROOT / "build/launch.lock"):
+        server.start(arguments.timeout)
     hotswap.remember(SNAPSHOT)
     LAUNCHED.write_text(
         json.dumps({"digests": states.digests(), "mode": mode, "state": arguments.state, "world": arguments.world})
@@ -84,7 +101,10 @@ def start(arguments):
         at = f" in state {arguments.state}, " + built(arguments.state, start, replies)
     else:
         at = f" in {arguments.world}" if arguments.world else ""
-    print(f"the dev server is running{kind}{at} after {time.monotonic() - started:.0f} s; log in {server.log}")
+    port = instance.DEV_SERVER_PORTS["server"] + SEAT.offset()
+    print(
+        f"the dev server is running{kind}{at} at localhost:{port} after {time.monotonic() - started:.0f} s; log in {server.log}"
+    )
 
 
 def restarting(launched, mode):
@@ -209,7 +229,7 @@ def state(replies):
 
 
 def swap_in(server):
-    result = hotswap.swap(hotswap.port("server_swap_port"), SNAPSHOT)
+    result = hotswap.swap(hotswap.port("server_swap_port") + SEAT.offset(), SNAPSHOT)
     if result["listeners"]:
         server.run("wayfarer listeners " + " ".join(result["listeners"]), STEP_SECONDS)
     return result

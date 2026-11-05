@@ -148,7 +148,7 @@ def village():
 def positions(doors):
     width, _, length = VILLAGE
     return {
-        "morwen": [doors[1][0], 1, doors[1][1] + 3, 0, 1],
+        "murdo": [doors[1][0], 1, doors[1][1] + 3, 0, 1],
         "size": list(VILLAGE),
         "wardens": [[width // 2 - 2, 1, length - 2, 0, 1], [width // 2 + 2, 1, length - 2, 0, 1]],
     }

@@ -19,18 +19,20 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 public final class FrontDoor {
     private static final String ADVANCEMENTS = "gui.advancements";
     private static final List<String> FEEDBACK = List.of("menu.feedback", "menu.sendFeedback");
-    private static final int GAP = 8;
-    private static final String OPTIONS = "menu.options";
-    private static final String PLAYER_REPORTING = "menu.playerReporting";
-    private static final String JOURNEYMAP = "journeymap";
-    private static final String REALMS = "menu.online";
-    private static final String STATISTICS = "gui.stats";
     private static final int FOOTER = 12;
+    private static final String JOURNEYMAP = "journeymap";
     private static final ResourceLocation LOGO = Wayfarer.id("textures/gui/title/logo.png");
     private static final int LOGO_HEIGHT = 64;
     private static final int LOGO_RISE = 10;
     private static final int LOGO_WIDTH = 256;
+    private static final String MODS = "fml.menu.mods";
+    private static final String OPTIONS = "menu.options";
+    private static final int PAUSE_GAP = 8;
+    private static final String PLAYER_REPORTING = "menu.playerReporting";
+    private static final String REALMS = "menu.online";
     private static final int ROW = 24;
+    private static final String STATISTICS = "gui.stats";
+    private static final int TITLE_GAP = 4;
 
     private FrontDoor() {
     }
@@ -45,6 +47,7 @@ public final class FrontDoor {
                     }
                 }
             });
+            button(event, MODS).ifPresent(mods -> reportBeside(event, mods, TITLE_GAP));
         }
         if (event.getScreen() instanceof PauseScreen) {
             button(event, ADVANCEMENTS).ifPresent(advancements -> replace(event, advancements, Component.translatable("wayfarer.journal"),
@@ -64,8 +67,9 @@ public final class FrontDoor {
             });
             button(event, PLAYER_REPORTING).ifPresent(reporting -> {
                 event.removeListener(reporting);
-                button(event, OPTIONS).ifPresent(options -> options.setWidth(options.getWidth() + reporting.getWidth() + GAP));
+                button(event, OPTIONS).ifPresent(options -> options.setWidth(options.getWidth() + reporting.getWidth() + PAUSE_GAP));
             });
+            button(event, MODS).ifPresent(mods -> reportBeside(event, mods, PAUSE_GAP));
         }
     }
 
@@ -83,6 +87,12 @@ public final class FrontDoor {
                         && contents.getKey().equals(key))
                 .map(Button.class::cast)
                 .findFirst();
+    }
+
+    private static void reportBeside(ScreenEvent.Init.Post event, Button mods, int gap) {
+        int half = (mods.getWidth() - gap) / 2;
+        mods.setWidth(half);
+        event.addListener(BugReport.button(event.getScreen(), mods.getX() + half + gap, mods.getY(), half, mods.getHeight()));
     }
 
     private static Button replace(ScreenEvent.Init.Post event, Button old, Component label, Runnable action) {

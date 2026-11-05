@@ -16,6 +16,7 @@ BALANCE = ROOT / "balance.toml"
 GRADLE_PROPERTIES = ROOT / "mod/gradle.properties"
 BARITONE_MIXINS = "mixins.baritone.json"
 PACK = ROOT / "pack"
+DATA_VERSION = 3955
 DEFAULT_OPTIONS = PACK / "config/defaultoptions/options.txt"
 DEFAULT_KEYS = PACK / "config/defaultoptions/keybindings.txt"
 CACHE = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "wayfarer"
@@ -155,6 +156,8 @@ def options(target, mode):
         key: value for key, value in CLIENT_OPTIONS.items() if not (mode == "shipped" and key == "fullscreen")
     }
     kept = [line for line in lines if line.split(":", 1)[0] not in overrides]
+    if not any(line.startswith("version:") for line in kept):
+        kept.insert(0, f"version:{DATA_VERSION}")
     forced = [f"{key}:{value}" for key, value in sorted(overrides.items())]
     path.write_text("\n".join(kept + forced) + "\n")
 
@@ -258,7 +261,8 @@ def dev_server(target, mode):
     settings(target)
     voice = target / "config/voicechat/voicechat-server.properties"
     voice.parent.mkdir(parents=True, exist_ok=True)
-    voice.write_text(f"port={DEV_SERVER_PORTS['voice']}\n")
+    offset = int(os.environ.get("WAYFARER_PORT", "0"))
+    voice.write_text(f"port={DEV_SERVER_PORTS['voice'] + offset}\n")
     world = {"level-name": f"world-{mode}"} if mode in ("far", "lean") else {}
     if os.environ.get("WAYFARER_WORLD"):
         world["level-name"] = os.environ["WAYFARER_WORLD"]
@@ -268,7 +272,7 @@ def dev_server(target, mode):
     if state:
         seed = tomllib.loads(STATES.read_text())["seed"]
         world = {"level-name": "state-lean" if mode == "lean" else "state", "level-seed": seed}
-    properties(target, {"online-mode": "false", "server-port": DEV_SERVER_PORTS["server"]} | world)
+    properties(target, {"online-mode": "false", "server-port": DEV_SERVER_PORTS["server"] + offset} | world)
     (target / "eula.txt").write_text("eula=true\n")
 
 

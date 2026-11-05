@@ -1,13 +1,18 @@
 package io.github.roman16.wayfarer.story;
 
+import com.google.gson.JsonElement;
 import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.Climate;
+import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Compass;
 import io.github.roman16.wayfarer.CompassEvent;
 import io.github.roman16.wayfarer.CompassPayload;
 import io.github.roman16.wayfarer.Halls;
+import io.github.roman16.wayfarer.Handover;
 import io.github.roman16.wayfarer.Library;
 import io.github.roman16.wayfarer.Music;
+import io.github.roman16.wayfarer.Nights;
 import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.OwnStone;
 import io.github.roman16.wayfarer.Record;
@@ -16,8 +21,10 @@ import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
@@ -41,6 +48,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MapItem;
@@ -59,11 +67,19 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 public final class Engine {
     private static final byte CHART_SCALE = 2;
     private static final int HEX = 16;
+    private static final String CARRIES = "carries:";
+    private static final String ROAD = "road";
+    private static final int REACH_TICKS = 640;
+    private static final String STORIES = "stories";
     private static final String GIFT = "gift:";
+    private static final String HOUR = "hour:";
+    private static final String LAND = "land:";
+    private static final String MEMBER = "joined:";
     private static final String TRUSTED = "trusted:";
     private static final int CHECK_TICKS = 10;
     private static final String EMBER = "ember";
@@ -151,6 +167,7 @@ public final class Engine {
                 Steps.resume(server, active);
             }
         }
+        Scenes.resume(server);
         open(server);
         Progress.of(server).setDirty();
     }
@@ -160,6 +177,10 @@ public final class Engine {
         MinecraftServer server = event.getServer();
         if (server.getTickCount() % CHECK_TICKS != 0 || !running(server)) {
             return;
+        }
+        crossing(server);
+        if (server.getTickCount() % REACH_TICKS == 0) {
+            open(server);
         }
         for (Active active : active(server)) {
             if (!Steps.started(active) && !holds(Progress.of(server), active.quest(), active.step())) {
@@ -215,6 +236,10 @@ public final class Engine {
                 return;
             }
         }
+        if (target.getTags().contains(Steps.CLUE_BOX)) {
+            Clues.through(player, target);
+            return;
+        }
         if (!Forge.interact(player, target) && !Dice.interact(player, target) && !Scenes.interact(player, target)) {
             Remarks.answer(player, target);
         }
@@ -238,7 +263,12 @@ public final class Engine {
             return Optional.empty();
         }
         Optional<String> goal = Caravan.homeward(player) ? Optional.of(Caravan.NAME) : tracked(player).flatMap(Steps::goal);
-        return goal.flatMap(name -> Places.aim(Progress.of(server), name));
+        return goal.flatMap(name -> Places.aim(Progress.of(server), player, name));
+    }
+
+    public static boolean sentNear(ServerPlayer player, int blocks) {
+        return !Caravan.homeward(player) && goal(player).filter(pos -> pos.distToCenterSqr(player.getX(), pos.getY(), player.getZ()) <= (double) blocks * blocks)
+                .isPresent();
     }
 
     static Optional<BlockPos> marked(ServerPlayer player) {
@@ -264,20 +294,21 @@ public final class Engine {
         for (Active side : active(server)) {
             if (tracked.map(active -> active.quest() != side.quest()).orElse(true) && Steps.entered(side) && pursued(server, side.quest())) {
                 int exact = Balance.get().compass().exactBlocks();
-                Steps.goal(side).ifPresent(name -> Places.aim(Progress.of(server), name).filter(pos -> !Steps.felt(side)
+                Steps.goal(side).ifPresent(name -> Places.aim(Progress.of(server), event.player(), name).filter(pos -> !Steps.felt(side)
                         || event.player().blockPosition().distToCenterSqr(pos.getX(), event.player().getY(), pos.getZ()) <= (double) exact * exact).ifPresent(pos -> event.markers()
-                        .add(new CompassPayload.Marker(CompassPayload.Kind.LEAD, Places.label(server, name), pos.getX(), pos.getZ()))));
+                        .add(new CompassPayload.Marker(CompassPayload.Kind.LEAD, Places.label(server, name), pos.getX(), pos.getY(), pos.getZ()))));
             }
         }
         Optional<String> goal = Caravan.homeward(event.player()) ? Optional.of(Caravan.NAME) : tracked.flatMap(Steps::goal);
         if (Caravan.homeward(event.player()) && !Caravan.met(server)) {
             event.rise();
         }
-        goal.ifPresent(name -> Places.aim(Progress.of(server), name).ifPresent(pos -> {
-            if (felt(server, event.player(), pos)) {
-                event.aim(new Compass.Aim(pos));
-            } else {
-                event.markers().add(new CompassPayload.Marker(CompassPayload.Kind.GOAL, Places.label(server, name), pos.getX(), pos.getZ()));
+        Optional<Active> searching = Caravan.homeward(event.player()) ? Optional.empty() : tracked.filter(active -> active.step().kind().equals("clues"));
+        goal.ifPresent(name -> Places.aim(Progress.of(server), event.player(), name)
+                .map(place -> searching.flatMap(active -> Clues.nearest(event.player(), active)).orElse(place)).ifPresent(pos -> {
+            event.aim(new Compass.Aim(pos));
+            if (!felt(server, event.player(), pos)) {
+                event.markers().add(new CompassPayload.Marker(CompassPayload.Kind.GOAL, Places.label(server, name), pos.getX(), pos.getY(), pos.getZ()));
             }
         }));
     }
@@ -307,13 +338,11 @@ public final class Engine {
         for (Story.Quest quest : Story.get().quests()) {
             if (!progress.steps.containsKey(quest.id()) && quest.after().stream().allMatch(progress::done) && halls(progress, quest.act()) >= quest.halls()
                     && (quest.found() == null || progress.place(quest.found()).isPresent()) && (quest.read() == null || progress.pages.contains(quest.read()))
-                    && quest.when().stream().allMatch(condition -> holds(progress, condition))) {
+                    && quest.when().stream().allMatch(condition -> holds(progress, condition)) && reachable(server, quest)) {
                 progress.steps.put(quest.id(), 0);
                 progress.scratch.remove(quest.id());
                 progress.setDirty();
-                if (quest.halls() == 0) {
-                    Talk.say(quest.id(), null, quest.road(), fill(progress));
-                }
+                Talk.say(quest.id(), null, carry(server, quest.id() + "/" + ROAD, quest.road()), fill(progress));
                 if (!waiting(progress, quest)) {
                     Talk.then(quest.id(), () -> announce(server, quest));
                 }
@@ -322,6 +351,15 @@ public final class Engine {
         }
         Journal.syncAll(server);
         return opened;
+    }
+
+    private static boolean reachable(MinecraftServer server, Story.Quest quest) {
+        Progress progress = Progress.of(server);
+        int reach = Balance.get().story().reachDays() * Balance.get().caravan().dayBlocks();
+        List<Vec3> team = players(server).stream().filter(player -> player.level().dimension() == Level.OVERWORLD).map(Entity::position).toList();
+        return quest.steps().stream().filter(step -> step.spec().has("place")).map(step -> Places.aim(progress, step.text("place")))
+                .flatMap(Optional::stream).allMatch(place -> team.isEmpty() || team.stream()
+                        .anyMatch(at -> at.multiply(1, 0, 1).distanceTo(Vec3.atCenterOf(place).multiply(1, 0, 1)) <= reach));
     }
 
     static boolean waiting(Progress progress, Story.Quest quest) {
@@ -335,23 +373,57 @@ public final class Engine {
         }
     }
 
+    private static void crossing(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        ServerLevel level = overworld(server);
+        long day = Math.floorDiv(level.getDayTime(), Clock.DAY);
+        if (progress.crossedDay != day) {
+            progress.crossed.clear();
+            progress.crossedDay = day;
+            progress.setDirty();
+        }
+        for (ServerPlayer player : players(server)) {
+            if (player.level() == level && progress.crossed.add(Climate.of(level.getBiome(player.blockPosition())))) {
+                progress.setDirty();
+            }
+        }
+    }
+
     static boolean holds(Progress progress, String when) {
         return when.startsWith("!") ? !met(progress, when.substring(1)) : met(progress, when);
     }
 
     private static boolean met(Progress progress, String condition) {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        if (condition.startsWith(LAND)) {
+            return progress.crossed.contains(Climate.valueOf(condition.substring(LAND.length()).toUpperCase(Locale.ROOT)));
+        }
+        if (condition.startsWith(HOUR)) {
+            String[] span = condition.substring(HOUR.length()).split("-");
+            long now = server == null ? 0 : Math.floorMod(overworld(server).getDayTime(), Clock.DAY);
+            long from = Clock.ticks(span[0]);
+            long to = Clock.ticks(span[1]);
+            return from <= to ? now >= from && now < to : now >= from || now < to;
+        }
+        if (condition.startsWith(CARRIES)) {
+            TagKey<Item> carried = TagKey.create(Registries.ITEM, Wayfarer.id(condition.substring(CARRIES.length())));
+            return server != null && players(server).stream().anyMatch(player -> player.getInventory().contains(carried));
+        }
         if (condition.startsWith(GIFT)) {
             return progress.gift(condition.substring(GIFT.length()));
         }
         if (condition.startsWith(TRUSTED)) {
             return Doors.trusting(progress) >= Integer.parseInt(condition.substring(TRUSTED.length()));
         }
+        if (condition.startsWith(MEMBER)) {
+            return progress.joined.contains(condition.substring(MEMBER.length()));
+        }
         return chose(progress, condition);
     }
 
     static boolean chose(Progress progress, String chose) {
         String[] step = chose.split("=", -1);
-        return progress.choices.getOrDefault(step[0], "").equals(step[1]);
+        return List.of(step[1].split("\\|", -1)).contains(progress.choices.getOrDefault(step[0], ""));
     }
 
     public static String title(Progress progress, Story.Quest quest) {
@@ -363,19 +435,6 @@ public final class Engine {
         return Story.get().quests().stream().filter(quest -> quest.act().equals(act) && quest.hall() && progress.done(quest.id())).count();
     }
 
-    static void road(MinecraftServer server, Active active) {
-        Progress progress = Progress.of(server);
-        Story.Quest hall = active.quest();
-        if (!hall.hall()) {
-            return;
-        }
-        long reached = halls(progress, hall.act()) + 1;
-        Story.get().quests().stream()
-                .filter(quest -> quest.act().equals(hall.act()) && quest.halls() == reached && !progress.steps.containsKey(quest.id())
-                        && quest.after().stream().allMatch(progress::done))
-                .forEach(quest -> Talk.say(quest.id(), null, quest.road(), fill(progress)));
-    }
-
     public static void complete(MinecraftServer server, Active active) {
         Progress progress = Progress.of(server);
         if (progress.step(active.quest().id()) != active.quest().steps().indexOf(active.step())) {
@@ -385,13 +444,53 @@ public final class Engine {
         if (active.step().spec().has("shoots")) {
             People.shoot(server, active.step().text("shoots"));
         }
-        Talk.say(active.quest().id(), anchor, active.step().done(), fill(progress));
+        List<Story.Line> done = active.step().done();
+        if (active.step().kind().equals(Caravan.KIND) && !(Places.ready(server, Caravan.NAME) && Steps.home(server))) {
+            done = carry(server, active.quest().id() + "/" + active.step().id(), done);
+        }
+        Talk.say(active.quest().id(), anchor, done, fill(progress));
         if (active.step().spec().has("finds")) {
             Talk.then(active.quest().id(), () -> open(server));
         }
         if (advance(server, active).isEmpty()) {
             Talk.then(active.quest().id(), () -> open(server));
         }
+    }
+
+    private static List<Story.Line> carry(MinecraftServer server, String key, List<Story.Line> lines) {
+        Progress progress = Progress.of(server);
+        List<Story.Line> said = new ArrayList<>();
+        for (int index = 0; index < lines.size(); index++) {
+            if (absent(server, lines.get(index).by())) {
+                progress.carried.add(key + "/" + index);
+                progress.setDirty();
+            } else {
+                said.add(lines.get(index));
+            }
+        }
+        return said;
+    }
+
+    private static boolean absent(MinecraftServer server, @Nullable String by) {
+        if (by == null || Story.get().person(by).voice()) {
+            return false;
+        }
+        int reach = Balance.get().talk().reachBlocks();
+        return People.find(server, by).filter(body -> players(server).stream().anyMatch(player -> player.level() == body.level() && player.distanceTo(body) <= reach))
+                .isEmpty();
+    }
+
+    public static void retell(MinecraftServer server) {
+        Progress progress = Progress.of(server);
+        for (String carried : List.copyOf(progress.carried)) {
+            String[] key = carried.split("/");
+            int index = Integer.parseInt(key[2]);
+            Story.get().quest(key[0]).flatMap(quest -> key[1].equals(ROAD) ? Optional.of(quest.road().get(index))
+                    : quest.steps().stream().filter(step -> step.id().equals(key[1])).findFirst().map(step -> step.done().get(index)))
+                    .ifPresent(line -> Talk.say(key[0], null, List.of(line), fill(progress)));
+        }
+        progress.carried.clear();
+        progress.setDirty();
     }
 
     static Optional<Active> advance(MinecraftServer server, Active active) {
@@ -453,6 +552,10 @@ public final class Engine {
         Banners.show(Component.translatable("wayfarer.banner.done"), Component.literal(title(progress, quest)));
         Sounds.play(server, QUEST_DONE);
         Deeds.done(server, quest);
+        After.done(server, quest);
+        if (quest.kind().equals(MAIN) && !Caravan.near(server)) {
+            Nights.calm(server);
+        }
         return Optional.empty();
     }
 
@@ -563,7 +666,10 @@ public final class Engine {
     }
 
     private static void record(MinecraftServer server, Progress progress, Story.Quest quest, Story.Step step, Talk.Placeholders fill) {
-        List<String> story = step.spec().has("unwritten") && progress.stone.isEmpty() ? List.of(step.text("unwritten")) : step.story();
+        List<String> story = step.spec().has("unwritten") && progress.stone.isEmpty() ? List.of(step.text("unwritten"))
+                : progress.choice(quest.id(), step.id()).filter(outcome -> step.spec().has(STORIES) && step.spec().getAsJsonObject(STORIES).has(outcome))
+                        .map(outcome -> step.spec().getAsJsonObject(STORIES).getAsJsonArray(outcome).asList().stream().map(JsonElement::getAsString).toList())
+                        .orElse(step.story());
         if (!step.people().isEmpty() || !step.words().isEmpty()) {
             Sounds.play(server, JOURNAL_ENTRY);
         }
@@ -591,9 +697,12 @@ public final class Engine {
         if (reward.isEmpty() || !progress.rewards.contains(key) || progress.claimed(key, player.getUUID())) {
             return false;
         }
-        List<ItemStack> stacks = reward.get().items().stream().map(item -> stack(player, key, item)).toList();
+        List<Story.Item> items = reward.get().items();
+        List<ItemStack> stacks = items.stream().map(item -> stack(player, key, item)).toList();
         long free = player.getInventory().items.stream().filter(ItemStack::isEmpty).count();
-        long needed = stacks.stream().filter(stack -> !stack.isEmpty() && player.getInventory().getSlotWithRemainingSpace(stack) < 0).count();
+        long needed = IntStream.range(0, stacks.size()).filter(index -> !stacks.get(index).isEmpty() && (items.get(index).worn()
+                ? !player.getItemBySlot(player.getEquipmentSlotForItem(stacks.get(index))).isEmpty()
+                : player.getInventory().getSlotWithRemainingSpace(stacks.get(index)) < 0)).count();
         if (needed > free) {
             player.displayClientMessage((needed == 1 ? Component.translatable("wayfarer.journal.room_one") : Component.translatable("wayfarer.journal.room", needed))
                     .withStyle(ChatFormatting.GRAY), true);
@@ -605,16 +714,23 @@ public final class Engine {
                 Pages.read(player.server, item.book());
             }
         }
-        for (ItemStack stack : stacks) {
+        for (int index = 0; index < stacks.size(); index++) {
+            ItemStack stack = stacks.get(index);
             given.add(stack.copy());
-            if (!stack.isEmpty()) {
-                player.getInventory().add(stack);
+            if (items.get(index).worn()) {
+                Handover.wear(player, stack);
+            } else {
+                Handover.give(player, stack);
             }
         }
         Notices.given(player, given);
         Record.event(player.server, "reward", player, line -> line.addProperty("reward", key));
         progress.claims.computeIfAbsent(key, ignored -> new java.util.LinkedHashSet<>()).add(player.getUUID());
         progress.setDirty();
+        Tasks.refresh(player);
+        if (reward.get().given() != null) {
+            Talk.say(Talk.ROAD, player.position(), reward.get().given());
+        }
         Talk.tell(player, Component.literal(reward.get().claimed()));
         Sounds.play(player, REWARD_TAKEN);
         Journal.sync(player);

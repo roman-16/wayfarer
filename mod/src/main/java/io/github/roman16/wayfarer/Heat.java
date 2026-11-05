@@ -6,8 +6,14 @@ import io.github.roman16.wayfarer.story.Progress;
 import java.util.Optional;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.level.block.CampfireBlock;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import toughasnails.api.temperature.IProximityBlockModifier;
 import toughasnails.api.temperature.ITemperature;
 import toughasnails.api.temperature.TemperatureHelper;
 import toughasnails.api.temperature.TemperatureLevel;
@@ -21,7 +27,21 @@ public final class Heat {
     private Heat() {}
 
     public static void setup(FMLCommonSetupEvent event) {
-        TemperatureHelper.registerPlayerTemperatureModifier((player, level) -> Memories.dreaming(player) ? TemperatureLevel.NEUTRAL : warmed(player, level));
+        TemperatureHelper.registerPlayerTemperatureModifier((player, level) -> Memories.dreaming(player) ? TemperatureLevel.NEUTRAL
+                : afloat(player, fire(player, warmed(player, level))));
+        TemperatureHelper.registerProximityBlockModifier((level, pos, state) -> state.is(BlockTags.CAMPFIRES) && CampfireBlock.isLitCampfire(state)
+                && Climate.of(level.getBiome(pos)) != Climate.HOT ? IProximityBlockModifier.Type.HEATING : IProximityBlockModifier.Type.NONE);
+    }
+
+    private static TemperatureLevel afloat(Player player, TemperatureLevel level) {
+        Entity boat = player.getRootVehicle();
+        boolean onWater = boat instanceof Boat && (boat.isInWater() || player.level().getFluidState(boat.blockPosition()).is(FluidTags.WATER)
+                || player.level().getFluidState(boat.blockPosition().below()).is(FluidTags.WATER));
+        return onWater && level.ordinal() > TemperatureLevel.NEUTRAL.ordinal() ? TemperatureLevel.values()[level.ordinal() - 1] : level;
+    }
+
+    private static TemperatureLevel fire(Player player, TemperatureLevel level) {
+        return player instanceof ServerPlayer resting && Fire.resting(resting) && level.ordinal() < TemperatureLevel.NEUTRAL.ordinal() ? TemperatureLevel.NEUTRAL : level;
     }
 
     private static TemperatureLevel warmed(Player player, TemperatureLevel level) {
@@ -74,9 +94,12 @@ public final class Heat {
 
     public static Optional<String> task(ServerPlayer player) {
         TemperatureLevel level = TemperatureHelper.getTemperatureForPlayer(player);
+        TemperatureLevel coming = TemperatureHelper.getTemperatureData(player).getTargetLevel();
         return switch (level) {
             case HOT -> Optional.of("heat");
             case ICY -> Optional.of("cold");
+            case WARM -> coming == TemperatureLevel.HOT ? Optional.of("heat.coming") : Optional.empty();
+            case COLD -> coming == TemperatureLevel.ICY ? Optional.of("cold.coming") : Optional.empty();
             default -> Optional.empty();
         };
     }

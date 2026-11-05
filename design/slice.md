@@ -20,6 +20,6 @@ How phase 4 builds Act 1: quest by quest, each step ending in something the user
 
 Gate stone (M11) is built with the first quest that needs it.
 
-Every step is done when its texts, looks, sounds, music and screens are in; the voice is recorded for all of them in phase 6 (`narration.md`). Every step also gets game tests for the engine's logic it adds, and passes `just lint` and `just test`.
+Every step is done when its texts, looks, sounds, music and screens are in; each line's voice is recorded in the change that writes its text (`narration.md`). Every step also gets game tests for the engine's logic it adds, and passes `just lint` and `just test`.
 
 Phase 4 is done when friends who never read `design/` played Act 1 blind, the session record shows no stall the screen did not explain, and it was not boring.

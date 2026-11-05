@@ -5,8 +5,8 @@ import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
-import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.CallingStoneBlockEntity;
+import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.Halls;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
@@ -48,7 +48,6 @@ import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -414,7 +413,7 @@ public final class Frost {
         Rotation turn = facing(along);
         JsonObject plan = PLAN.get().getAsJsonObject("house");
         BlockPos centre = new BlockPos(local(plan.getAsJsonArray("size")).getX() / 2, 0, local(plan.getAsJsonArray("size")).getZ() / 2);
-        BlockPos origin = site.atY(top(level, site.getX(), site.getZ())).subtract(centre);
+        BlockPos origin = site.atY(Ground.land(level, site.getX(), site.getZ())).subtract(centre);
         Camps.build(level, HOUSE_TEMPLATE, origin, turn);
         StructurePlaceSettings settings = Camps.settings(level, HOUSE_TEMPLATE, turn);
         float yaw = yaw(along);
@@ -450,7 +449,7 @@ public final class Frost {
         Places.empty(level, raised.stone());
         BoundingBox box = raised.box();
         BoundingBox shaft = raised.shaft();
-        BlockPos stair = raised.stair();
+        BlockPos stair = raised.threshold();
         BlockPos stone = raised.stone();
         progress.place(HALL, stair);
         progress.place(STONE, stone);
@@ -459,13 +458,13 @@ public final class Frost {
         progress.place(HALL_HIGH, new BlockPos(box.maxX(), box.maxY(), box.maxZ()));
         progress.place(SHAFT_LOW, new BlockPos(shaft.minX(), shaft.minY(), shaft.minZ()));
         progress.place(SHAFT_HIGH, new BlockPos(shaft.maxX(), shaft.maxY(), shaft.maxZ()));
-        Vec3 home = Vec3.atLowerCornerOf(progress.place(HOUSE_SITE).orElse(site).subtract(stair)).multiply(1, 0, 1).normalize();
+        Vec3 away = new Vec3(stair.getX() + 0.5 - shaft.getCenter().getX() - 0.5, 0, stair.getZ() + 0.5 - shaft.getCenter().getZ() - 0.5).normalize();
         BoundingBox cover = shaft.inflatedBy(1);
-        Vec3 seat = Vec3.atBottomCenterOf(stair).add(home.scale(STAIR_SEAT));
+        Vec3 seat = Vec3.atBottomCenterOf(stair).add(away.scale(STAIR_SEAT));
         for (int out = STAIR_SEAT; cover.intersects(Mth.floor(seat.x), Mth.floor(seat.z), Mth.floor(seat.x), Mth.floor(seat.z)) && out < STAIR_SEAT * 4; out++) {
-            seat = Vec3.atBottomCenterOf(stair).add(home.scale(out));
+            seat = Vec3.atBottomCenterOf(stair).add(away.scale(out));
         }
-        BlockPos stairSeat = BlockPos.containing(seat.x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) Math.floor(seat.x), (int) Math.floor(seat.z)),
+        BlockPos stairSeat = BlockPos.containing(seat.x, Ground.land(level, (int) Math.floor(seat.x), (int) Math.floor(seat.z)) + 1,
                 seat.z);
         progress.place("seat_" + STAIR, stairSeat);
         progress.yaws.put("seat_" + STAIR, yaw(Vec3.atLowerCornerOf(stair.subtract(stairSeat)).multiply(1, 0, 1)));
@@ -496,7 +495,7 @@ public final class Frost {
                 for (int reach : NAVE_REACHES) {
                     Vec3 at = centre.add(axis.scale(NAVE_FROM + row * NAVE_EVERY)).add(across.scale(sign * reach));
                     Optional<BlockPos> cell = BlockPos.betweenClosedStream(BlockPos.containing(at.x, stone.getY() - KEEP_CLEAR, at.z), BlockPos.containing(at.x,
-                            stone.getY(), at.z)).filter(pos -> box.isInside(pos) && !shaft.inflatedBy(1).isInside(pos) && standable(level, pos))
+                            stone.getY(), at.z)).filter(pos -> box.isInside(pos) && !shaft.inflatedBy(1).isInside(pos) && Ground.standable(level, Vec3.atBottomCenterOf(pos)))
                             .map(BlockPos::immutable).findFirst();
                     if (cell.isPresent() && laid.size() < DEAD.length) {
                         laid.add(new Dead(cell.get(), yaw(across.scale(-sign))));
@@ -512,10 +511,6 @@ public final class Frost {
         return BlockPos.betweenClosedStream(pos.offset(-reach, -1, -reach), pos.offset(reach, 1, reach)).anyMatch(at -> what.test(level.getBlockState(at)));
     }
 
-    private static boolean standable(Level level, BlockPos pos) {
-        return level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir() && level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP);
-    }
-
     private static Optional<BlockPos> floor(Level level, BoundingBox box, BlockPos stone, BlockPos door) {
         Vec3 toward = Vec3.atLowerCornerOf(door.subtract(stone)).multiply(1, 0, 1).normalize();
         BlockPos front = BlockPos.containing(Vec3.atLowerCornerOf(stone).add(toward.scale(SEAT_NEAR + 1)));
@@ -523,7 +518,7 @@ public final class Frost {
         int nearest = Integer.MAX_VALUE;
         for (BlockPos pos : BlockPos.betweenClosed(stone.offset(-SEAT_FAR, -SEAT_FAR, -SEAT_FAR), stone.offset(SEAT_FAR, -2, SEAT_FAR))) {
             int distance = Math.abs(pos.getX() - front.getX()) + Math.abs(pos.getZ() - front.getZ());
-            if (distance < nearest && box.isInside(pos) && standable(level, pos)) {
+            if (distance < nearest && box.isInside(pos) && Ground.standable(level, Vec3.atBottomCenterOf(pos))) {
                 best = pos.immutable();
                 nearest = distance;
             }
@@ -568,7 +563,7 @@ public final class Frost {
         Rotation turn = Rotation.values()[progress.yaws.getOrDefault(LAKE_TURN, 0f).intValue()];
         JsonObject plan = PLAN.get().getAsJsonObject("lake");
         BlockPos size = local(plan.getAsJsonArray("size"));
-        BlockPos origin = site.atY(top(level, site.getX(), site.getZ()) - plan.get("surface").getAsInt()).offset(-size.getX() / 2, 0, -size.getZ() / 2);
+        BlockPos origin = site.atY(Ground.land(level, site.getX(), site.getZ()) - plan.get("surface").getAsInt()).offset(-size.getX() / 2, 0, -size.getZ() / 2);
         Camps.build(level, LAKE_TEMPLATE, origin, turn);
         StructurePlaceSettings settings = Camps.settings(level, LAKE_TEMPLATE, turn);
         BlockPos shore = origin.offset(StructureTemplate.calculateRelativePosition(settings, local(plan.getAsJsonArray("shore"))));
@@ -659,7 +654,7 @@ public final class Frost {
     private static void lay(ServerLevel level, Mark mark) {
         int x = (int) Math.floor(mark.at().x);
         int z = (int) Math.floor(mark.at().z);
-        BlockPos ground = new BlockPos(x, top(level, x, z), z);
+        BlockPos ground = new BlockPos(x, Ground.land(level, x, z), z);
         BlockState below = level.getBlockState(ground);
         if (!level.getFluidState(ground).isEmpty() || below.is(Blocks.ICE) || below.is(BlockTags.LEAVES)) {
             return;
@@ -696,7 +691,7 @@ public final class Frost {
                 }
                 int x = centre.getX() + dx;
                 int z = centre.getZ() + dz;
-                BlockPos ground = new BlockPos(x, top(level, x, z), z);
+                BlockPos ground = new BlockPos(x, Ground.land(level, x, z), z);
                 BlockState state = level.getBlockState(ground);
                 for (BlockPos above = ground.above(); level.getBlockState(above).canBeReplaced() && !level.getBlockState(above).isAir()
                         && level.getFluidState(above).isEmpty(); above = above.above()) {
@@ -753,7 +748,7 @@ public final class Frost {
             int x = (int) Math.floor(at.x);
             int z = (int) Math.floor(at.z);
             Mob coat = (index == 1 ? EntityType.PILLAGER : EntityType.VINDICATOR).create(dream);
-            coat.moveTo(at.x, top(dream, x, z) + 1, at.z, yaw(out.scale(-1)), 0);
+            coat.moveTo(at.x, Ground.land(dream, x, z) + 1, at.z, yaw(out.scale(-1)), 0);
             coat.setYHeadRot(yaw(out.scale(-1)));
             coat.setNoAi(true);
             coat.setInvulnerable(true);
@@ -765,11 +760,12 @@ public final class Frost {
 
     static void unbuild(MinecraftServer server, String name) {
         Progress progress = Progress.of(server);
-        progress.places.remove(switch (name) {
-            case NAME -> HOUSE;
-            case HALL -> HALL_LOW;
-            default -> LAKE_ORIGIN;
-        });
+        switch (name) {
+            case NAME -> progress.places.remove(HOUSE);
+            case HALL, STONE -> progress.places.remove(HALL_LOW);
+            case TRACKS -> progress.scratch(LAID).remove(LAID);
+            default -> progress.places.remove(LAKE_ORIGIN);
+        }
         progress.setDirty();
     }
 
@@ -791,15 +787,6 @@ public final class Frost {
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.SUCCESS);
         Halls.openBook(player, COLD);
-    }
-
-    static int top(Level level, int x, int z) {
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1, z);
-        while (pos.getY() > level.getMinBuildHeight() && level.getFluidState(pos).isEmpty()
-                && (level.getBlockState(pos).is(BlockTags.LOGS) || level.getBlockState(pos).canBeReplaced())) {
-            pos.move(0, -1, 0);
-        }
-        return pos.getY();
     }
 
     static Rotation facing(Vec3 along) {

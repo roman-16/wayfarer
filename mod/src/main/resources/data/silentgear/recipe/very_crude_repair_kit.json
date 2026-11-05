@@ -1,0 +1,30 @@
+{
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "minecraft:planks"
+    },
+    "/": {
+      "tag": "c:rods/wooden"
+    },
+    "o": {
+      "tag": "c:stones"
+    }
+  },
+  "neoforge:conditions": [
+    {
+      "modid": "silentgear",
+      "type": "neoforge:mod_loaded"
+    }
+  ],
+  "pattern": [
+    " / ",
+    "#o#",
+    "###"
+  ],
+  "result": {
+    "count": 1,
+    "id": "silentgear:very_crude_repair_kit"
+  },
+  "type": "minecraft:crafting_shaped"
+}

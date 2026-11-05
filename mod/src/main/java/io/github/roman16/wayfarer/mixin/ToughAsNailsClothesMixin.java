@@ -1,6 +1,7 @@
 package io.github.roman16.wayfarer.mixin;
 
 import com.google.common.collect.Iterables;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.roman16.wayfarer.Clothes;
@@ -15,5 +16,10 @@ abstract class ToughAsNailsClothesMixin {
     @WrapOperation(method = "armorModifier", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;getArmorSlots()Ljava/lang/Iterable;", remap = true))
     private static Iterable<ItemStack> wayfarer$clothes(Player player, Operation<Iterable<ItemStack>> original) {
         return Iterables.concat(original.call(player), Clothes.worn(player));
+    }
+
+    @ModifyExpressionValue(method = "armorModifier", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/atomic/AtomicInteger;get()I"))
+    private static int wayfarer$roundedUp(int pieces) {
+        return pieces > 0 ? pieces + 1 : 0;
     }
 }

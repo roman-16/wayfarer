@@ -1,0 +1,52 @@
+name: Bug report
+description: Something in Wayfarer went wrong.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Report a Bug, on the game's title screen and in its pause menu, opens this form with Version, Game, Quest and Place filled in.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you saw, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: again
+    attributes:
+      label: How do you make it happen?
+      description: The steps that bring it back, if you know them.
+      placeholder: |
+        1.
+        2.
+  - type: upload
+    id: files
+    attributes:
+      label: Log, crash report, pictures
+      description: Open the Logs, under Report a Bug in the game, opens the logs folder; drag latest.log here. After a crash, add the crashed game's log, the newest .log.gz in that folder, and the newest file in crash-reports, the folder beside it.
+    validations:
+      accept: ".gz,.jpeg,.jpg,.log,.mov,.mp4,.png,.txt,.webm,.zip"
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Wayfarer's version stands in the game's Mods list and in the name of the pack's zip.
+      placeholder: Wayfarer 0.1.0, Minecraft 1.21.1, NeoForge 21.1.252
+    validations:
+      required: true
+  - type: input
+    id: game
+    attributes:
+      label: Game
+      description: Singleplayer, Singleplayer open to LAN, or a server.
+  - type: input
+    id: quest
+    attributes:
+      label: Quest
+      description: The quest and its objective, as the panel in the top right shows them.
+  - type: input
+    id: place
+    attributes:
+      label: Place
+      description: Where you stood, as the debug screen (F3) shows it.

@@ -52,15 +52,16 @@ def ridge_tent(t, half, depth, canvas):
     ridge = half + 1
     for z in range(1, depth + 1):
         back = z == depth
-        for level in range(half + 1):
-            for x in (ridge - half + level, ridge + half - level):
+        for level in range(half + 2):
+            inset = max(level - 1, 0)
+            for x in (ridge - half + inset, ridge + half - inset):
                 t.set((x, level + 1, z), canvas)
-            for x in range(ridge - half + level + 1, ridge + half - level):
+            for x in range(ridge - half + inset + 1, ridge + half - inset):
                 t.set((x, level + 1, z), canvas if back else AIR)
         for x in range(ridge - half + 1, ridge + half):
             t.set((x, 0, z), "minecraft:spruce_planks")
     for z in (0, depth + 1):
-        for y in range(1, half + 3):
+        for y in range(1, half + 4):
             t.set((ridge, y, z), "minecraft:spruce_fence")
     for x in (0, 2 * ridge):
         for z in (0, depth + 1):
@@ -71,10 +72,10 @@ def ridge_tent(t, half, depth, canvas):
 def tent(contents):
     t = Template()
     ridge = ridge_tent(t, 2, 5, CANVAS)
-    t.set((ridge - 1, 1, 3), "minecraft:brown_bed", facing="south", part="foot", occupied=False)
-    t.set((ridge - 1, 1, 4), "minecraft:brown_bed", facing="south", part="head", occupied=False)
+    t.set((ridge, 1, 3), "minecraft:brown_bed", facing="south", part="foot", occupied=False)
+    t.set((ridge, 1, 4), "minecraft:brown_bed", facing="south", part="head", occupied=False)
     if contents == "books":
-        t.set((ridge, 1, 4), "minecraft:bookshelf")
+        t.set((ridge - 1, 1, 4), "minecraft:bookshelf")
         t.set((ridge + 1, 1, 4), "minecraft:chiseled_bookshelf", facing="west", **shelf(0b101011))
         t.set((ridge + 1, 1, 2), "minecraft:lectern", facing="west", has_book=False, powered=False)
     elif contents == "healer":
@@ -97,8 +98,8 @@ def large_tent():
     ridge = ridge_tent(t, 3, 7, CANVAS)
     for z in (3, 4):
         t.set((ridge - 2, 1, z), "minecraft:brown_carpet")
-    t.set((ridge + 2, 1, 3), "minecraft:light_gray_bed", facing="south", part="foot", occupied=False)
-    t.set((ridge + 2, 1, 4), "minecraft:light_gray_bed", facing="south", part="head", occupied=False)
+    t.set((ridge + 1, 1, 3), "minecraft:light_gray_bed", facing="south", part="foot", occupied=False)
+    t.set((ridge + 1, 1, 4), "minecraft:light_gray_bed", facing="south", part="head", occupied=False)
     t.set((ridge - 1, 1, 6), "minecraft:barrel", facing="up", open=False)
     t.set((ridge + 1, 1, 6), "minecraft:barrel", facing="up", open=False)
     t.set((ridge, 1, 5), "minecraft:white_carpet")

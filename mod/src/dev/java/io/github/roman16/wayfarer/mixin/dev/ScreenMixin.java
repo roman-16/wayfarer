@@ -9,6 +9,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Screen.class)
 abstract class ScreenMixin {
+    @Inject(method = "hasControlDown", at = @At("HEAD"), cancellable = true)
+    private static void wayfarer$controlled(CallbackInfoReturnable<Boolean> info) {
+        if (Driver.controlling()) {
+            info.setReturnValue(true);
+        }
+    }
+
     @Inject(method = "hasShiftDown", at = @At("HEAD"), cancellable = true)
     private static void wayfarer$shifted(CallbackInfoReturnable<Boolean> info) {
         if (Driver.shifting()) {

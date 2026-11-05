@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Ground;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +16,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -69,7 +70,7 @@ public final class Sea {
                 if (dx * dx + dz * dz > reach * reach || !level.hasChunk(x >> 4, z >> 4)) {
                     continue;
                 }
-                BlockPos top = new BlockPos(x, level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z) - 1, z);
+                BlockPos top = new BlockPos(x, Ground.sky(level, x, z), z);
                 if (level.getFluidState(top).isEmpty()) {
                     return false;
                 }
@@ -94,6 +95,8 @@ public final class Sea {
         beast.setHealth(beast.getMaxHealth());
         beast.setPersistenceRequired();
         level.addFreshEntity(beast);
+        call(level, beast);
+        rammed.put(beast.getUUID(), (long) level.getServer().getTickCount());
         if (hunted != null) {
             prey.put(beast.getUUID(), hunted.getUUID());
         }
@@ -105,11 +108,15 @@ public final class Sea {
     }
 
     public static void dive(ServerLevel level, Entity beast) {
-        level.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP, beast.getX(), beast.getY(), beast.getZ(), BUBBLES, 1, 1, 1, 0.1);
-        level.playSound(null, beast.blockPosition(), SoundEvents.ELDER_GUARDIAN_AMBIENT, SoundSource.HOSTILE, 1, 0.5f);
+        call(level, beast);
         prey.remove(beast.getUUID());
         rammed.remove(beast.getUUID());
         beast.discard();
+    }
+
+    private static void call(ServerLevel level, Entity beast) {
+        level.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP, beast.getX(), beast.getY(), beast.getZ(), BUBBLES, 1, 1, 1, 0.1);
+        level.playSound(null, beast.blockPosition(), SoundEvents.ELDER_GUARDIAN_AMBIENT, SoundSource.HOSTILE, 1, 0.5f);
     }
 
     private static int oneIn(MinecraftServer server) {
@@ -138,14 +145,13 @@ public final class Sea {
 
     private static void steer(MinecraftServer server, ServerLevel level, Deep beast, Balance.Sea sea) {
         UUID hunting = prey.get(beast.getUUID());
-        if (hunting == null && !calling(level)) {
-            dive(level, beast);
-            return;
-        }
         Entity target = hunting != null ? level.getEntity(hunting) : null;
         if (target == null || !target.isAlive()) {
-            ServerPlayer nearest = level.getNearestPlayer(beast, BEAST_REACH) instanceof ServerPlayer player ? player : null;
-            if (nearest == null) {
+            prey.remove(beast.getUUID());
+            Player nearest = level.getNearestPlayer(beast.getX(), beast.getY(), beast.getZ(), BEAST_REACH,
+                    candidate -> candidate instanceof ServerPlayer player && !player.isSpectator() && afloat(player));
+            if (nearest == null || !calling(level)) {
+                dive(level, beast);
                 return;
             }
             target = aboard(nearest) instanceof Boat hull ? hull : nearest;

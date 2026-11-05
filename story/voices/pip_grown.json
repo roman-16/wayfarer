@@ -1,0 +1,16 @@
+{
+  "generated_voice_id": "A7kWaorU0RFsudzX3940",
+  "id": "5bc76634",
+  "kept": "30.10.2026",
+  "preview": 1,
+  "request": {
+    "auto_generate_text": false,
+    "guidance_scale": 5,
+    "loudness": 0.5,
+    "model_id": "eleven_ttv_v3",
+    "seed": 325970072,
+    "should_enhance": false,
+    "text": "My mam said Wayfarers weren't real. Then one came down into our cellar, with fire in their hand. Maud walked with the caravan until she could not walk any more, and every evening she still asked how far. Hob made ploughs after. He said a plough was harder to get right than a sword. We still walk. Every evening I look for their fire on the road ahead.",
+    "voice_description": "Native English, British. Male, 30-35. Excellent quality. Persona: a grown-up orphan who once followed a legendary wanderer as a boy, now telling children around a fire what became of everyone. Emotion: warm, wistful, fond, a little wry, proud and sad at once. A clear, warm, light baritone, unhurried and personal, like telling family stories he has told many times; still a trace of the eager boy in it."
+  }
+}

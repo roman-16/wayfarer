@@ -1,0 +1,150 @@
+{
+  "values": [
+    "#minecraft:boats",
+    "#minecraft:chest_boats",
+    {
+      "id": "smallships:acacia_brigg",
+      "required": false
+    },
+    {
+      "id": "smallships:acacia_cog",
+      "required": false
+    },
+    {
+      "id": "smallships:acacia_drakkar",
+      "required": false
+    },
+    {
+      "id": "smallships:acacia_galley",
+      "required": false
+    },
+    {
+      "id": "smallships:bamboo_brigg",
+      "required": false
+    },
+    {
+      "id": "smallships:bamboo_cog",
+      "required": false
+    },
+    {
+      "id": "smallships:bamboo_drakkar",
+      "required": false
+    },
+    {
+      "id": "smallships:bamboo_galley",
+      "required": false
+    },
+    {
+      "id": "smallships:birch_brigg",
+      "required": false
+    },
+    {
+      "id": "smallships:birch_cog",
+      "required": false
+    },
+    {
+      "id": "smallships:birch_drakkar",
+      "required": false
+    },
+    {
+      "id": "smallships:birch_galley",
+      "required": false
+    },
+    {
+      "id": "smallships:cherry_brigg",
+      "required": false
+    },
+    {
+      "id": "smallships:cherry_cog",
+      "required": false
+    },
+    {
+      "id": "smallships:cherry_drakkar",
+      "required": false
+    },
+    {
+      "id": "smallships:cherry_galley",
+      "required": false
+    },
+    {
+      "id": "smallships:dark_oak_brigg",
+      "required": false
+    },
+    {
+      "id": "smallships:dark_oak_cog",
+      "required": false
+    },
+    {
+      "id": "smallships:dark_oak_drakkar",
+      "required": false
+    },
+    {
+      "id": "smallships:dark_oak_galley",
+      "required": false
+    },
+    {
+      "id": "smallships:jungle_brigg",
+      "required": false
+    },
+    {
+      "id": "smallships:jungle_cog",
+      "required": false
+    },
+    {
+      "id": "smallships:jungle_drakkar",
+      "required": false
+    },
+    {
+      "id": "smallships:jungle_galley",
+      "required": false
+    },
+    {
+      "id": "smallships:mangrove_brigg",
+      "required": false
+    },
+    {
+      "id": "smallships:mangrove_cog",
+      "required": false
+    },
+    {
+      "id": "smallships:mangrove_drakkar",
+      "required": false
+    },
+    {
+      "id": "smallships:mangrove_galley",
+      "required": false
+    },
+    {
+      "id": "smallships:oak_brigg",
+      "required": false
+    },
+    {
+      "id": "smallships:oak_cog",
+      "required": false
+    },
+    {
+      "id": "smallships:oak_drakkar",
+      "required": false
+    },
+    {
+      "id": "smallships:oak_galley",
+      "required": false
+    },
+    {
+      "id": "smallships:spruce_brigg",
+      "required": false
+    },
+    {
+      "id": "smallships:spruce_cog",
+      "required": false
+    },
+    {
+      "id": "smallships:spruce_drakkar",
+      "required": false
+    },
+    {
+      "id": "smallships:spruce_galley",
+      "required": false
+    }
+  ]
+}

@@ -8,7 +8,9 @@
     "burn_out": 256,
     "kindle": 256,
     "linger": 8192,
-    "read": 64
+    "read": 64,
+    "recap_hold": 1024,
+    "voice_fade": 1024
   },
   "ramps": {
     "ash": [

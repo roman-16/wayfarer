@@ -19,7 +19,7 @@ key_key.dynamic_fps.toggle_forced:key.keyboard.unknown
 key_key.entityculling.toggle:key.keyboard.unknown
 key_key.hide_icons:key.keyboard.unknown
 key_key.immersive_aircraft.boost:key.keyboard.unknown
-key_key.immersive_aircraft.dismount:key.keyboard.unknown
+key_key.immersive_aircraft.dismount:key.keyboard.r
 key_key.immersive_aircraft.fallback_control_backward:key.keyboard.unknown
 key_key.immersive_aircraft.fallback_control_down:key.keyboard.unknown
 key_key.immersive_aircraft.fallback_control_forward:key.keyboard.unknown

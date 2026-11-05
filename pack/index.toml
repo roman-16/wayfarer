@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "e574c8279465f83a9460f8e416dfb85d33a7c47c1af6d0c00903f7343af549c9"
+hash = "f4ece92a95a144fae9b95448f3866734228f34861b45ae7e9281c444927334a8"
 
 [[files]]
 file = "config/DistantHorizons.toml"
@@ -82,7 +82,7 @@ hash = "01064a300391147f410c79abfb7c5955bf049c4d700827832fbb97a6bc374482"
 
 [[files]]
 file = "config/defaultoptions/keybindings.txt"
-hash = "7bfb52220333bec7834ccdb9c3200e9c36a4eefba0faf3a9ce2d0f6262f7c827"
+hash = "f6a27131273962502c96a8847515eda6a493c55b54830d55f4c19cc44eafa742"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
@@ -118,7 +118,7 @@ hash = "9d38050a5f0e9107f2c1de582264d53eac91e52ec1fcbe307a23102e00ca5859"
 
 [[files]]
 file = "config/hordes-common.toml"
-hash = "2dd0cef3f49b033d814e2974622ad488df570da27d6a39ed1a76ef63ccc3cc49"
+hash = "044a2785ce34a6be27f776822aab0c578adc1a4c9ff274e2dd04037242c6d9eb"
 
 [[files]]
 file = "config/horseman-server.toml"
@@ -127,6 +127,10 @@ hash = "603c67b768a7d6cf66366692f2b2fe9bd7170d687cad80921f449efe66dbda59"
 [[files]]
 file = "config/immersive-hotbar.json5"
 hash = "acb2355da3de8add82c5f5f075956a00306ce0344873b081eaef2ddfdfd91178"
+
+[[files]]
+file = "config/immersive_aircraft.json"
+hash = "9db40b9e2af72a4b841a586048413c46f6f3f998679389c1ee92e9d03df7e894"
 
 [[files]]
 file = "config/improvedmobs/client.toml"
@@ -202,11 +206,15 @@ hash = "e111dcdde85384ce4e8c7c8a0d834d23ad95fffa77996a070f2927e5301d2578"
 
 [[files]]
 file = "config/silentgear-common.toml"
-hash = "2416be04d3f29cde1e428e3f34deed8c59ee527253d0b25b11a0dcc8de22c760"
+hash = "4e9c767777179526b362b2b289d972ba5f4119f71ccdbe48977d079258bba73d"
 
 [[files]]
 file = "config/simplyswords/loot.toml"
 hash = "7e0203de5c0d20913fc1485b0872a9d1ae33e0af411caade3ed776462a39410d"
+
+[[files]]
+file = "config/smallships-client.toml"
+hash = "3d8f883d0fdfb6167f56e6c19a4c7f9395e87c692cc9882b66d3ec2242323e2d"
 
 [[files]]
 file = "config/snowrealmagic-common.yaml"
@@ -259,10 +267,6 @@ hash = "3d250b12fd11a56d4d3355f40474f6e69ad2f7693ae20b2f0b8afa6945f30bb6"
 [[files]]
 file = "config/tectonic.json"
 hash = "c3212bde9bd4aac94bd3b4c7e290eb71664256b97ec212cd6048b52a6d3d7b94"
-
-[[files]]
-file = "config/toughasnails/temperature.toml"
-hash = "bec888eed59626e49993ee452a05792976ce5b99789dd2cbe35c60bacd70cb9c"
 
 [[files]]
 file = "config/toughasnails/thirst.toml"

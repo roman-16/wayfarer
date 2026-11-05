@@ -46,6 +46,10 @@ TOO_MANY_REQUESTS = 429
 TRANSFER_SECONDS = 600
 RECORD = "wayfarer/record"
 RECORD_FOLDER = "record"
+CARRY = "carry.json"
+CARRY_SUFFIX = "-carry"
+NAMED = 2
+DAY = "%d.%m"
 LOG_SECONDS = 300
 RECONNECT_SECONDS = 5
 SILENCE_SECONDS = 90
@@ -91,6 +95,9 @@ class Api:
             return self.open("GET", path, timeout=timeout)
         except urllib.error.HTTPError as error:
             raise ApiError(f"{path}: HTTP {error.code}") from None
+
+    def post(self, path, values):
+        self.change("POST", path, json.dumps(values).encode(), {"Content-Type": "application/json"})
 
     def put(self, path, body, kind="application/octet-stream"):
         self.change("PUT", path, body, {"Content-Type": kind})
@@ -228,6 +235,48 @@ def describe(status):
     return STATUSES.get(status, str(status))
 
 
+def megabytes(size):
+    return f"{size / 1_000_000:.0f} MB"
+
+
+def options(api, server):
+    return {
+        option["key"]: option["value"] for option in api.get(f"servers/{server['id']}/files/config/server.properties/")
+    }
+
+
+def opened(values):
+    return values.get("level-name") or "world"
+
+
+def carries(server):
+    found = []
+    for folder in sorted(RECORDINGS.glob("*" + CARRY_SUFFIX)):
+        if (folder / CARRY).exists():
+            carried = json.loads((folder / CARRY).read_text())
+            if carried["server"] == server["id"]:
+                found.append((folder, carried))
+    return found
+
+
+def unopened(api, server, level):
+    try:
+        api.get(f"servers/{server['id']}/files/info/{level}/session.lock")
+    except ApiError:
+        return True
+    return False
+
+
+def carried_elsewhere(api, server, level):
+    uploaded = [carried for _, carried in carries(server) if carried["uploaded"]]
+    if not uploaded or uploaded[-1]["to"] == level:
+        return None
+    last = uploaded[-1]
+    never = " and never opened" if unopened(api, server, last["to"]) else ""
+    day = datetime.fromisoformat(last["uploaded"]).strftime(DAY)
+    return f"{server['name']} opens {level}, but the road was carried to {last['to']} on {day}{never}"
+
+
 def find_server(api, wanted):
     servers = api.get("servers/")
     chosen = [server for server in servers if wanted in (server["id"], server["name"])] if wanted else servers
@@ -238,7 +287,7 @@ def find_server(api, wanted):
 
 def begin(api, server, session):
     path = f"servers/{server['id']}"
-    properties = {option["key"]: option["value"] for option in api.get(f"{path}/files/config/server.properties/")}
+    properties = options(api, server)
     mods = api.get(f"{path}/files/info/mods/").get("children") or []
     session.write(
         "session.json",
@@ -256,7 +305,7 @@ def begin(api, server, session):
             indent=2,
         ),
     )
-    return properties.get("level-name") or "world"
+    return opened(properties)
 
 
 def fetch_log(api, server, session):
@@ -294,19 +343,57 @@ def fetch_record(api, server, session, level):
         session.read[day["name"]] = len(lines)
 
 
+def listed(names, sizes):
+    shown = ", ".join(f"{name} ({sizes[name]})" for name in names[:NAMED])
+    more = f" and {len(names) - NAMED} more" if len(names) > NAMED else ""
+    return shown + more
+
+
+def lost(before, after, since):
+    gone = sorted((name for name in before if name not in after), key=lambda name: -before[name])
+    shrunk = sorted(
+        (name for name in before if name in after and after[name] < before[name]),
+        key=lambda name: after[name] - before[name],
+    )
+    found = {}
+    if gone:
+        found["region_files_gone"] = [{"name": name, "bytes": before[name]} for name in gone]
+        say(
+            f"region files gone since {since}: {listed(gone, {name: megabytes(before[name]) for name in gone})}, "
+            f"{megabytes(sum(before[name] for name in gone))} in all"
+        )
+    if shrunk:
+        found["region_files_shrunk"] = [{"name": name, "from": before[name], "to": after[name]} for name in shrunk]
+        sizes = {name: f"{megabytes(before[name])} to {megabytes(after[name])}" for name in shrunk}
+        say(
+            f"region files smaller since {since}: {listed(shrunk, sizes)}, "
+            f"{megabytes(sum(before[name] - after[name] for name in shrunk))} in all"
+        )
+    return found
+
+
 def poll(api, server, session, level):
     path = f"servers/{server['id']}"
     since_log = LOG_SECONDS
+    sizes = None
+    since = None
     while True:
         snapshot = {}
         try:
             state = api.get(path)
             snapshot["status"] = state["status"]
             snapshot["players"] = state["players"]
-            regions = api.get(f"{path}/files/info/{level}/region/").get("children") or []
+            regions = {
+                region["name"]: region["size"]
+                for region in api.get(f"{path}/files/info/{level}/region/").get("children") or []
+            }
             snapshot["region_files"] = len(regions)
-            snapshot["empty_region_files"] = sum(1 for region in regions if region["size"] == 0)
-            snapshot["region_bytes"] = sum(region["size"] for region in regions)
+            snapshot["empty_region_files"] = sum(1 for size in regions.values() if size == 0)
+            snapshot["region_bytes"] = sum(regions.values())
+            if sizes is not None:
+                snapshot |= lost(sizes, regions, since)
+            sizes = regions
+            since = f"{datetime.now():%H:%M}"
             snapshot["distant_horizons_bytes"] = api.get(f"{path}/files/info/{level}/data/DistantHorizons.sqlite/")[
                 "size"
             ]
@@ -376,7 +463,10 @@ def main():
     folder.mkdir(parents=True, exist_ok=True)
     session = Session(folder)
     level = begin(api, server, session)
-    say(f"recording {server['name']} into {folder.relative_to(ROOT)} - Escape or Ctrl+C stops it")
+    say(f"recording {server['name']}, which opens {level}, into {folder.relative_to(ROOT)} - Escape or Ctrl+C stops it")
+    warning = carried_elsewhere(api, server, level)
+    if warning:
+        say(warning)
     threading.Thread(target=poll, args=(api, server, session, level), daemon=True).start()
     while True:
         try:

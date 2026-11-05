@@ -1,0 +1,270 @@
+[design]
+guidance = 5
+like_strength = 0.25
+loudness = 0.5
+model = "eleven_ttv_v3"
+
+[lang]
+hob = ["wayfarer.gear.smith"]
+journal = ["wayfarer.deed.*.line"]
+narrator = [
+  "wayfarer.afterwards.*.*",
+  "wayfarer.caravan.bowl",
+  "wayfarer.caravan.evening",
+  "wayfarer.caravan.stayed",
+  "wayfarer.ending.deep",
+  "wayfarer.ending.frame",
+  "wayfarer.fire.warm",
+  "wayfarer.first.dawn",
+  "wayfarer.first.far_camp",
+  "wayfarer.first.hall",
+  "wayfarer.first.waystone",
+  "wayfarer.gaze.lifted",
+  "wayfarer.hall.sinks",
+  "wayfarer.hearts.*",
+  "wayfarer.hold.cry",
+  "wayfarer.hold.waiting",
+  "wayfarer.hold.waiting_door",
+  "wayfarer.night.chat",
+  "wayfarer.night.ejected",
+  "wayfarer.night.let_go",
+  "wayfarer.night.uneasy_chat",
+  "wayfarer.omen.marked",
+  "wayfarer.recap.first",
+  "wayfarer.respawn.*",
+  "wayfarer.stillness.*",
+  "wayfarer.tent.brought",
+]
+
+[check]
+least_match = 0.875
+model = "scribe_v2"
+takes = 3
+
+[fills]
+"wayfarer.hold.cry" = "kept"
+
+[gaze]
+filter = "asplit=2[dry][low];[low]asetrate={rate}*0.5946,aresample={rate},atempo=1.6818,lowpass=f=1024,volume=0.5[under];[dry][under]amix=inputs=2:normalize=0,aecho=0.8:0.5:64:0.25"
+reads = ["stranger"]
+
+[record]
+model = "eleven_v4"
+sample_rate = 22050
+similarity = 0.75
+stability = 0.5
+
+[say]
+
+[voices.agna]
+description = "Native English, British, a plain rural English voice. Female, 50-60. Excellent quality. Persona: a village healer and herb-woman who mothers everyone around her. Emotion: brisk, warm, no-nonsense, quietly worried. A low, warm, slightly husky voice, practical and firm; short commands given gently, the way a nurse talks to someone who won't sit still."
+reads = ["agna"]
+text = "Pip. Come here. ...Sit down, you. You're shaking. Give me that arm. You've been bleeding since the door. Slow. Like something asleep. Well. It's been a long night. You smell of old pine smoke. Sit down and eat before you tell me anything. Marsh mud to the knees. Boots off, and sit nearer the fire. Eat something. You look like a ghost."
+
+[voices.alruna]
+description = "Native English, British. Female, 20-25. Excellent quality. Persona: a scholar's apprentice who grew up among old books and has never left the library. Emotion: earnest, curious, precise, quietly warm. A clear, bright, articulate voice with light, careful diction; quick when something excites her, soft and steady when she reads aloud."
+reads = ["alruna"]
+text = "Those who lived tore the Eye out, and the dragon went blind. So they broke it in twelve, and sent each shard to a people at the far ends of the world. Never settle, never shine, everything carried. He made me copy it every morning. Take me with you. I can carry books, and I can read them. Say it again, slower. I want to write it right."
+
+[voices.bram]
+description = "Native English, British, a plain rural English voice, a West Country lilt. Male, 40-50. Excellent quality. Persona: a shepherd from the hills, a gentle, simple man whose son was taken. Emotion: desperate, humble, worn, quietly grateful. A soft, slightly rough, plain voice, hesitant and earnest; not used to talking much, and not used to asking anyone for help."
+reads = ["bram"]
+text = "Bram. I kept sheep, up the valley. Three nights back the grey coats took my boy. Davy. He's eleven. Their outpost's a day on, the way you're going. I'm no good with a blade. Please. Then I'll follow your smoke, and wait at the edge of it. Sit down, Davy. ...No. Over there, where I can see you. We'll camp with you, if you'll have us. I can mind animals. It's all I can do."
+
+[voices.cadoc]
+description = "Native English, British. Male, 30-40. Excellent quality. Persona: a deserter from a cult's army, scarred, watchful, always ready to run. Emotion: quiet, guarded, haunted, with a dry, bitter wit. A low, rough, tired voice, clipped and plain, in short sentences, never raised; softer when he speaks of his brother."
+reads = ["cadoc"]
+text = "I know that light. I'd know it anywhere. He's dead, then. Good. ...No. Not good. I've pitched my tent at the edge of the light. Your people shouldn't have to sleep next to a grey coat. It's true. Captain Wend. I served under him six winters. I never said it. It's not a name you say twice. They're not hunting you. They're herding you."
+
+[voices.child]
+description = "Native English, British. Female, 18-20, petite, with a small, soft, high voice. Excellent quality. Persona: a shy farm girl, frightened and far from home, trying to be brave. Emotion: timid, uncertain, hopeful, a little shaky. Quiet and plain, short breaths between words, never cartoonish or squeaky; brightens a little when someone is kind."
+pitch = 2
+reads = [
+  "bram_son",
+  "captive_1",
+  "captive_2",
+  "captive_3",
+  "cecily",
+  "malgven_child",
+  "novice",
+]
+text = "Davy. Did Da send you? ...Is he angry? They said the night won't look at me now. It doesn't. Things walk right past me. Are you one of them? I wasn't crying. Is it far? I'm Cecily. I can walk. I'm not tired. I'm not."
+
+[voices.diggers]
+description = "Native English, British, a broad Yorkshire mining accent. Male, 55-65. Excellent quality. Persona: an elder of a people of miners who lived underground for generations and wrote a last message before going down into the deep. Emotion: steady, plain, proud, quietly resigned, tender towards the young. A deep, earthy, gravelly voice, slow and measured, with the weight of stone in it; matter-of-fact even about the end."
+reads = ["book:The Diggers"]
+text = "We dug down because the eye in the sky cannot see through stone. The shard hums on its stone in this hall, and while it hums, the ground above us stays dark to that eye. Our children grew up under lamps and never missed the sun. But the seams near the hall ran out, and the young ones wanted to follow the ore down, past the shard's ground. We go down with them tonight. If you are reading this, we did not come back up. Take the shard if you must, and walk softly in the deep."
+
+[voices.drifa]
+description = "English with a light Scandinavian accent. Female, 35-45. Excellent quality. Persona: a lone hunter from the snows, the last of her people, carrying a long grief and a cold anger. Emotion: cold, curt, guarded, grieving underneath. A low, cool, steady voice with a clipped, sparing delivery; few words, no warmth spent on strangers, breaking only when she speaks of her dead."
+reads = ["book:The Frost Walkers", "drifa"]
+text = "You came. Down, then. Someone took it. I want a name. Well? Who was it? Then it's mine to bury, when we find it. Not his. Twenty winters. I can wait a few days more. Don't stand behind me. My people wintered on this shore once, in the snow. Walk with me. I don't want to do it alone. There. They're home."
+
+[voices.drowned_city]
+description = "Native English, a soft, refined Irish lilt. Female, 40-50. Excellent quality. Persona: one of the last survivors of a beautiful city the sea swallowed, writing her people's story in a hall in the red rocks. Emotion: wistful, elegant, sorrowful, dignified, with a cool pride. A clear, graceful, musical voice, unhurried and poised; grief held behind good manners."
+reads = ["book:The Drowned City"]
+text = "We were the Drowned City, the most beautiful place on the coast. Beautiful things are seen. The eye looked at us for one summer, and the sea came up and took the city. The few of us left climbed up here to our hall in the red rock and lifted our stone's shard, and carried it down to the one bay on the coast the eye could not see. The Tide Folk keep it now, under their fire pit. If you came here for it, you came to the wrong shore."
+
+[voices.edda]
+description = "Native English, British, a plain coastal Cornish voice. Female, 40-50. Excellent quality. Persona: the last shipwright on a lonely coast, a widow whose husband the sea took. Emotion: blunt, stubborn, guarded, grief held tight, a dry gallows humour. A firm, slightly husky working woman's voice, short and plain, used to shouting over wind and hammering; it catches only when she speaks of him."
+reads = ["edda"]
+text = "Don't touch it. It's not for sailing. Edda. The last shipwright on this coast. Nobody wants a boat that goes anywhere. Nobody crosses that water. My man tried, three summers back. Nine days. He made it across in nine days. It was coming home that killed him. Coming home to me. The sea's flat today. It lies."
+
+[voices.first_village]
+description = "Native English, British, a soft, gentle southern English voice. Male, 65-75. Excellent quality. Persona: the last priest of an old village founded by wanderers who stayed too long, telling how his people fell. Emotion: rueful, gentle, sorrowful, humble, quietly reverent. A soft, warm, slightly hoarse old voice, slow and kindly, like a sermon given to an empty church."
+reads = ["book:The First Village"]
+text = "The First Village was built by Wayfarers who swore they would only stay one winter. They stayed a hundred. Their priests said the shard in their temple kept them safe. It was the shard that kept them seen. When the gaze came, the last priest carried it out into the grass and buried it here. The village is gone. The grass remembers."
+
+[voices.gazebound_man]
+description = "Native English, British. Male, 40-50. Excellent quality. Persona: a disciplined officer of a grey-clad cult that serves a would-be king; a zealot who believes the world should be watched. Emotion: cold, controlled, contemptuous, quietly fanatical. A hard, clipped, level voice with a dry edge, used to giving orders and reading them out; flat calm that turns to a sharp bark when he shouts."
+reads = [
+  "book:A Gazebound captain",
+  "book:The Gazebound",
+  "brannoc",
+  "gazebound",
+]
+text = "By the heir's word, to every outpost on the south roads. Watch for smoke where no village stands. Do not fight whoever carries an ember. Leave them food: a carrier who eats well walks further. Seen anyone with a glowing coal in their hand? Nothing, he says. Take his purse for the lie. There! The ember! Take it! The road's long, finder. Nobody would blame you for sitting a while."
+
+[voices.grave_keepers]
+description = "Native English, British. Female, 55-65. Excellent quality. Persona: a keeper of graves from a people who buried fallen travellers under the oldest trees, speaking calmly from among the dead. Emotion: calm, hushed, serene, kind, unafraid of death. A low, soft, hushed voice, close and quiet, almost a whisper but warm and steady; every word laid down gently."
+reads = ["book:The Grave Keepers"]
+text = "The Grave Keepers buried the Wayfarers who fell on the road, under the oldest trees, where the ground is soft. They noticed that the dead are never seen by the gaze, and they took the undead shard to hide among them. We are among them now. Take the shard and keep walking. We will keep the graves."
+
+[voices.heir]
+description = "Native English, British, a refined, aristocratic voice. Male, 35-45. Excellent quality. Persona: the son of a fallen king who leads a cult of zealots, a charming idealist who believes the world should be watched for its own good. Emotion: calm, courteous, amused, quietly dangerous, utterly convinced. A smooth, cultured, mellow voice, unhurried and polite, never raised; the menace lies in how reasonable he sounds."
+reads = ["heir"]
+text = "The Grass King's son, since you're too polite to ask. I've been here four days. It won't lift for me. I want a world where everything is seen, and nothing hides in the dark. No thieves. No war. That someone watches. Someone always watched. I'd only make it kind. Lift it. I'll take it from you at the gate."
+
+[voices.hob]
+description = "Native English, British, a plain working English voice. Male, 45-55. Excellent quality. Persona: a big, strong village blacksmith, a man of few words. Emotion: steady, gruff, kind underneath, with a dry, homely humour. A deep, broad, chesty voice, slow and plain, in short sentences; warm and fatherly when he looks after people."
+reads = ["hob"]
+text = "Here. I made it for a man who won't be fetching it now. Three hundred years of iron in my forge, and all I saved is a hammer. That blade's yours now. When it's dull you bring it to me. Don't you dare throw it away. I can build a hull. I've never built one that floats. Hold your hands to the fire. Cold hands drop blades."
+
+[voices.malgven]
+description = "Native English, British. Female, 35-40. Excellent quality. Persona: a hooded spellcaster of a grey-clad cult, raised by an old captain she still loves, torn between her oath and the stranger she watches over. Emotion: quiet, measured, mysterious, sad, a guarded tenderness. A low, soft, velvety voice, calm and deliberate, with long silences in it; she gives nothing away, and means every word."
+reads = ["book:M.", "book:Malgven", "malgven"]
+text = "So he's dead. I knew his smoke before I knew your face. Names are for people who stay. Eat. You walk further on bread. His name was Wend. A Wayfarer once, and then ours: a captain of the heir's finders. He raised me. Not tonight. He isn't leading you where you think. I can't. I swore. Look at what he wants, not what he says."
+
+[voices.man]
+description = "Native English, British, a plain everyday Midlands accent. Male, 30-40. Excellent quality. Persona: an ordinary working man of the roads and the coast, a herder, a pedlar, a fisherman, a sailor keeping a log. Emotion: plain, friendly, wary, quick to fear, honest. A clear, natural, mid-pitched voice, conversational and unpolished; easy to listen to, with no strong character of its own, so it can be many men."
+reads = [
+  "book:A shipwright",
+  "dicer",
+  "fisher",
+  "herder",
+  "pedlar",
+  "tide_warden_1",
+  "tide_warden_2",
+  "traveller",
+]
+text = "Here. Bread's yesterday's, but it's bread. Keep off the ridges today. There were men in grey up there at first light, asking at every fire. I've seen nothing! I sell needles, that's all! Bones, traveller? Day 9. Land. A bay where they fish by night and nothing comes for them. Day 14. Halfway, by the stars. It's back. It follows the lamp, so the lamp's out. It follows anyway."
+
+[voices.maud]
+description = "Native English, British, a plain rural English voice. Female, 55-65. Excellent quality. Persona: the elder of a burnt river town, leading its last survivors. Emotion: steady, dry, guarded, tender underneath. A low, firm, slightly hoarse voice, practical and unhurried; short plain sentences from someone used to being listened to, with a hard edge of doubt and a dry humour."
+reads = ["maud"]
+text = "They never come back. What did you bring? The bell comes with us. It rang for every child born in Tollbridge. It comes. Hob, the cart. You brought one of the men in grey to our fire. So. Your dead man says there's a valley past the sea where nothing comes at night. Ask him again how far. Boats. Forty-five summers on the river, and now boats."
+
+[voices.murdo]
+description = "Native English, Scottish, a soft island lilt from the Hebrides. Male, 50-60. Excellent quality. Persona: the elder of a small fishing people on a hidden bay, who keeps his people's old promise. Emotion: calm, dignified, guarded, honest, with a quiet sorrow. A low, clear, weathered voice, steady and plain-spoken, used to wind and sea; warm with his own people, careful with strangers."
+reads = ["book:Murdo", "book:The Tide Folk", "murdo"]
+text = "Murdo. I keep this bay, as my father did. We're the Tide Folk, what's left of us. Nothing comes up out of this bay at night, so our boats go out with lamps lit, and we eat. There's no valley. There's sea, and more sea, and then the cold. Ours keeps the eye off our boats. Theirs keeps the deep things out of the bay. The bay's been kind to us. Don't make me regret you."
+
+[voices.narrator]
+description = "Native English, British. Female, 40-50. Excellent quality. Persona: a storyteller at a fire, telling an old tale to one listener. Emotion: calm, warm, quietly grave. A low, clear, unhurried voice with a soft warmth, close to the listener but never intimate; even and steady, so it can speak for hours without tiring the ear."
+reads = ["narrator"]
+text = "A fire burns low in the grey before dawn. Someone sits by it, waiting for you to wake. You wake on cold ground beside a fire. You don't remember lying down. An old man sits across the flames, propped against a log. His face is grey, and his breath rattles. The fire pops. The old man is dead."
+
+[voices.old_man]
+description = "Native English, British, a plain rural English voice. Male, 65-75. Excellent quality. Persona: an old villager or craftsman who has settled down after a long life; homely, tired, set in his ways. Emotion: weary, gentle, grumbling, fond. A warm, round, slightly croaky old voice, unhurried and conversational, like an old man by his own hearth; soft and close when he writes in his journal."
+reads = [
+  "book:A Wayfarer",
+  "book:An archivist of the deep city",
+  "founder",
+  "settled_wayfarer",
+  "wil",
+]
+text = "Oswin. I walked for forty years. Then I met a woman with a garden, and I stopped. She's gone now. The coal's going too. I'm tired. Sit. The fire's warm. That's all a man needs. Maud sent you? Maud's alive? Well. Of course she is. Spring. I meant to go. The roof needed mending, and then the garden. One more winter here. I'll walk in spring."
+
+[voices.old_woman]
+description = "Native English, British. Female, 70-80. Excellent quality. Persona: an old woman of the road and of a vanished people, a pilgrim with a staff, a grandmother who sang lullabies. Emotion: gentle, hopeful, frail, quietly sad, with a soft stubbornness. A soft, thin, warm old voice, slow and tender, a little breathy; it sings a lullaby the way it speaks, and never hardens."
+reads = ["book:The Jungle Folk", "frost_elder", "pilgrim"]
+text = "Hesper. I'm walking to the Keepers. Everyone says they'll take in anyone. Walk with me? They'll let us in. They have to. Sleep, little locks. Sleep, and keep what is ours. Sleep through the rain and the root and the years. Our stone sleeps. If you woke it, you knew our word, and you are welcome. We are sorry there is nobody left to say so."
+
+[voices.oldest_keeper]
+description = "Native English, British. Male, 75-85. Excellent quality. Persona: the eldest of an order of hermit scholars who have guarded an ancient gate at the edge of the world for generations. Emotion: grave, weary, stern, with a dry, bitter wisdom and a buried kindness. An old, thin, dry but steady voice, slow and deliberate, every word weighed; the voice of a man who has outlived everyone he knew."
+reads = ["book:A Keeper", "book:The Keepers", "oldest_keeper"]
+text = "Sit. You've walked far enough to be listened to. We barred our door to him, and he gave it to you. Of course he did. Twelve shards in their halls. And the Eye's last piece walks. You. You're what it's been walking towards. There it is. The frame takes whatever of the Eye it's brought. Choose. The last entry. The others have gone down to sleep with the old Keepers. I stay to write, because someone should."
+
+[voices.pip]
+description = "Native English, British. Female, 18-20, petite, with a high, light, soft voice. Excellent quality. Persona: an orphan from a burnt town who dreams of becoming a wanderer. Emotion: eager, curious, hopeful, a little brave. Clear and natural, quick when excited, small and quiet when scared; not cartoonish, not squeaky."
+pitch = 1
+reads = ["pip"]
+text = "You're back! What did you see? Will you teach me? To be a Wayfarer? In the stories every Wayfarer has a horse. Find me one? A brown one. She's mine? She's really mine? Bramble. Her name's Bramble. I'm not scared. I'm not. I'll watch for you tonight. From the very first smoke."
+
+[voices.pip_grown]
+description = "Native English, British. Male, 30-35. Excellent quality. Persona: a grown-up orphan who once followed a legendary wanderer as a boy, now telling children around a fire what became of everyone. Emotion: warm, wistful, fond, a little wry, proud and sad at once. A clear, warm, light baritone, unhurried and personal, like telling family stories he has told many times; still a trace of the eager boy in it."
+reads = ["pip_grown"]
+text = "My mam said Wayfarers weren't real. Then one came down into our cellar, with fire in their hand. Maud walked with the caravan until she could not walk any more, and every evening she still asked how far. Hob made ploughs after. He said a plough was harder to get right than a sword. We still walk. Every evening I look for their fire on the road ahead."
+
+[voices.player_man]
+chosen = "man"
+description = "Native English, British, a neutral, natural southern English voice. Male, 25-35. Excellent quality. Persona: a young wanderer with no memory who carries a dying stranger's ember and writes down the road in a journal. Emotion: thoughtful, earnest, quietly brave, a little lost, warm underneath. A clear, natural, mid-low voice, plain and unforced, like someone telling a friend what happened to them; never theatrical, easy to listen to for hours."
+reads = ["journal", "player"]
+text = "Who are you? I'll carry it. I don't even know who I am. I woke by a stranger's fire with no name and no memory of the road. He is dying, and he wants to talk. He gave me his ember, cold as a stone, and told me to walk with it. I buried him by his fire, and left his stone bare. I didn't know what to write. Sixty-four fires, and not one of them home. There is nothing past the fog. I went to see. The road has started to recognise me."
+
+[voices.player_woman]
+chosen = "woman"
+description = "Native English, British, a neutral, natural southern English voice. Female, 25-35. Excellent quality. Persona: a young wanderer with no memory who carries a dying stranger's ember and writes down the road in a journal. Emotion: thoughtful, earnest, quietly brave, a little lost, warm underneath. A clear, natural, mid-pitched voice, plain and unforced, like someone telling a friend what happened to them; never theatrical, easy to listen to for hours."
+reads = ["journal", "player"]
+text = "Who are you? I'll carry it. I don't even know who I am. I woke by a stranger's fire with no name and no memory of the road. He is dying, and he wants to talk. He gave me his ember, cold as a stone, and told me to walk with it. I buried him by his fire, and left his stone bare. I didn't know what to write. Sixty-four fires, and not one of them home. There is nothing past the fog. I went to see. The road has started to recognise me."
+
+[voices.rue]
+description = "Native English, British, a broad rural accent of the East Anglian fens. Female, 70-80. Excellent quality. Persona: the eldest of three swamp witches who keep an old hut over black water, sharp-tongued and proud. Emotion: suspicious, scornful, grudging, with a sly, earthy humour. A cracked, reedy, sharp old voice, slow and biting, used to sending people away; softer, almost warm, once she decides to trust."
+reads = ["book:The Marsh Mothers", "rue"]
+text = "That's far enough. We know that light. A man carried it here once. He sat on this porch and swore by it, and his word was worth less than the mud. I'm Rue. That's Sedge, and the girl is Tansy. Go down, or go home. Don't stand on my porch. Mud and water, light-bearer. That's all there is out here."
+
+[voices.scribes]
+description = "Native English, British, a precise, educated English voice. Male, 40-50. Excellent quality. Persona: a scholar of an order of hermit scribes who lived on the highest peaks and wrote down what an ancient relic whispered to them, some of it madness. Emotion: austere, precise, intense, quietly haunted, solemn. A thin, dry, clipped voice, careful and exact, every word chosen; a hollow calm, as if still listening to something far away."
+reads = ["book:The Scribes of the Peaks"]
+text = "The Scribes climbed as high as the land would let them and wrote down everything the shard whispered. Most of it was madness. Some of it was the way the true gate was built, and why it must never be built again. We burned the madness and kept the rest. The shard we leave to you. Read before you carry it."
+
+[voices.sedge]
+description = "Native English, British, a broad rural accent of the East Anglian fens. Female, 45-55. Excellent quality. Persona: a hard-faced swamp witch who lost her hut to fire and forgives nobody. Emotion: bitter, curt, hostile, contemptuous. A harsh, flat, gravelly voice, few words spat out short; a bog-dweller who has no patience left for strangers."
+reads = ["sedge"]
+text = "He got what he came for. We got two huts burned. Mind where you put your feet. The bog keeps what it gets."
+
+[voices.sefa]
+description = "Native English, Welsh, a warm, melodic Welsh lilt. Female, 35-45. Excellent quality. Persona: the singer of a nomad people of the desert, who keeps their history in songs. Emotion: warm, playful, proud, serene, with a teasing humour. A rich, round, musical voice that half-sings even when she talks, unhurried and rhythmic; hushed and reverent when she speaks of the worm."
+reads = ["book:The Sand Singers", "sefa"]
+text = "...and the sand lay down, and the sand lay still, and the worm went under the hill. Sefa. I sing for my people, the Sand Singers. It grew. It sees. Nothing on two legs crosses its ground. A man with a coal in his hand fought it once, and ran. His song is the funniest we have. Keep your heads covered. The sun out here eats fools first."
+
+[voices.shadow_circle]
+description = "Native English, British. Male, 55-65. Excellent quality. Persona: the last master of a secret order of spellcasters who learned to bend an ancient light into magic and saw others learn the wrong lessons. Emotion: grave, stern, solemn, quietly scornful, commanding. A deep, resonant, dark voice, slow and deliberate, almost like an incantation; it never rises, and it does not ask twice."
+reads = ["book:The Shadow Circle"]
+text = "The Shadow Circle learned to bend the shard's light into spells. The Illagers learned from them, and learned the wrong lessons. Their mansions in the dark woods are copies of our halls, built by people who wanted the shard's power without its burden. The burden is the point. Carry it."
+
+[voices.tansy]
+description = "Native English, British, a broad rural accent of the East Anglian fens. Female, 20-25. Excellent quality. Persona: the youngest of three swamp witches, a seer who sees more than she wants to. Emotion: watchful, uneasy, blunt, a little defiant, quietly frightened. A low, soft, slightly husky voice, slow and intent, as if looking through the person she talks to."
+reads = ["tansy"]
+text = "Wait. Let me look at you. Hold still. Something looks out of you. Suit yourself. But nobody goes down there without our leave. Hold the light up when you're under. It knows the way better than you do. Don't look at me like that. I saw what I saw."
+
+[voices.warden]
+description = "Native English, British, a firm Northern English accent. Male, 60-70. Excellent quality. Persona: the old gate warden of a besieged walled kingdom on the grasslands, a veteran soldier who keeps the last ward. Emotion: stern, proud, weary, honest, with a soldier's dry gravity. A deep, strong, gravelly old voice that carries across a wall, measured and formal; a commander's voice used to being obeyed, tired underneath."
+reads = ["book:The Grass Kingdom", "warden"]
+text = "Wayfarer! Their champion has called out whoever carries the light. Beat him, and we open the gate. We tore it from our king's crown. He saw everything that stood still, for one summer, and it ate him. Lift it, and the ward falls with it, and they come over the walls tonight. Leave it, and we stand, and we'll remember who left it. The ward holds. For now."
+
+[voices.wend]
+description = "Native English, British, a light northern English accent. Male, 60-70. Excellent quality. Persona: an old wanderer who has walked the roads all his life. Emotion: warm, wry, tired. A low, weathered, slightly gravelly voice with dry humour under it. Speaks unhurried and close, like a man talking across a campfire at night, in short sentences with small pauses."
+text = "Don't look so surprised. Did you think I'd let you carry it alone? A frame. You'll know one when you see it. No more burning towns. I made my first camp by a lake, under three pines. I'd like to see it again. She can't hear me. Only you can. Half-blind, then. As I've always been. Walk, little light."
+reads = [
+  "book:A young Wayfarer",
+  "book:An old Wayfarer",
+  "book:Wend",
+  "stranger",
+  "wend_reading",
+]
+
+[voices.woman]
+description = "Native English, British, a soft Northern English accent. Female, 30-40. Excellent quality. Persona: an ordinary woman of a town or a besieged kingdom, a villager at her door, a king's granddaughter who stayed with her people. Emotion: wary, tired, kind underneath, quietly brave. A clear, warm, natural mid-pitched voice, plain and conversational; easy to listen to, with no strong character of its own, so it can be many women."
+reads = ["heirs_sister", "villager"]
+text = "Strangers bring the burning. One trade, then go. Keep that ember in your pocket while you're in our street. If you're going where I think you're going, take bread. Take two. Linnet. Tell my brother I'm alive. He thinks the walls ate me too. He went looking for the sight our grandfather had for one summer. I stayed for the people who lived through it."
