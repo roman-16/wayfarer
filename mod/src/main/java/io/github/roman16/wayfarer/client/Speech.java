@@ -40,18 +40,24 @@ public final class Speech {
     public static void band(String clip, Talk.Source source) {
         stop();
         paged = false;
-        start(new Voice(clip, source));
+        start(new Voice(clip, source, true));
     }
 
     public static void pages(List<String> clips) {
         stop();
         paged = true;
-        clips.forEach(clip -> waiting.add(new Voice(clip, Talk.Source.HEAD)));
+        clips.forEach(clip -> waiting.add(new Voice(clip, Talk.Source.HEAD, true)));
         next();
     }
 
+    public static void loading(String clip) {
+        stop();
+        paged = true;
+        start(new Voice(clip, Talk.Source.HEAD, false));
+    }
+
     public static void after(String clip) {
-        waiting.add(new Voice(clip, Talk.Source.HEAD));
+        waiting.add(new Voice(clip, Talk.Source.HEAD, true));
         if (playing == null) {
             next();
         }
@@ -120,22 +126,24 @@ public final class Speech {
     private static final class Voice extends AbstractTickableSoundInstance {
         private final ResourceLocation file;
         private final Talk.Source source;
+        private final boolean streamed;
         private int age;
         private boolean began;
         private int fading;
         private int fadeTicks;
 
-        private Voice(String clip, Talk.Source source) {
+        private Voice(String clip, Talk.Source source, boolean streamed) {
             super(SoundEvent.createVariableRangeEvent(Wayfarer.id(FOLDER + clip)), SoundSource.VOICE, SoundInstance.createUnseededRandom());
             this.file = Wayfarer.id(FOLDER + clip);
             this.source = source;
+            this.streamed = streamed;
             place();
         }
 
         @Override
         public WeighedSoundEvents resolve(SoundManager manager) {
             WeighedSoundEvents events = new WeighedSoundEvents(file, null);
-            sound = new Sound(file, ConstantFloat.of(1), ConstantFloat.of(1), 1, Sound.Type.FILE, true, false, Balance.get().talk().reachBlocks());
+            sound = new Sound(file, ConstantFloat.of(1), ConstantFloat.of(1), 1, Sound.Type.FILE, streamed, false, Balance.get().talk().reachBlocks());
             events.addSound(sound);
             return events;
         }

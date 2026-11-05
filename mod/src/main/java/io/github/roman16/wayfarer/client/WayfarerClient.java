@@ -113,8 +113,10 @@ public final class WayfarerClient {
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Init.Post.class, Reading::init);
         NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingIn.class, YourVoice::loggingIn);
         NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingOut.class, event -> {
-            Speech.stop();
-            Reading.leave();
+            if (event.getPlayer() != null) {
+                Speech.stop();
+                Reading.leave();
+            }
         });
         NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingOut.class, Ending::leave);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> OwnInventory.tick(Minecraft.getInstance()));
