@@ -620,6 +620,7 @@ def tower():
                 t.set((x, g + 1, z), "minecraft:gray_concrete_powder")
     char(t, (lo + 1, g + 1, hi - 2), "z")
     char(t, (lo + 1, g + 1, hi - 1), "z")
+    t.entrance((lo + TOWER // 2, g, hi), "south")
     return t
 
 
@@ -1001,13 +1002,22 @@ def entrance(name, t):
     return [*t.door], MARGIN
 
 
+def entered(name, t):
+    if name not in OPEN:
+        x, z = t.door
+        t.entrance((x, 0, z), "south")
+    return t
+
+
 def catalog():
     pieces = {}
     for name, build in PIECES.items():
         t = build()
         doorway, margin = entrance(name, t)
-        pieces[name] = {"door": doorway, "margin": margin, "size": size(t)} | (
-            {"hearth": hearth(t)} if name.rsplit("_", 1)[0] in KINDS and hearth(t) else {}
+        pieces[name] = (
+            {"margin": margin, "size": size(t)}
+            | ({"door": doorway} if name in OPEN else {})
+            | ({"hearth": hearth(t)} if name.rsplit("_", 1)[0] in KINDS and hearth(t) else {})
         )
     return pieces
 
@@ -1046,9 +1056,7 @@ def plan():
             "bell_seat": list(BELL_SEAT),
             "clue": [mid, CELLAR + 1, hi],
             "hatch": [lo + 2, CELLAR + 1, lo + 2],
-            "door": [mid, hi],
             "fire": [hi - 1, 1, hi - 1],
-            "ground": CELLAR,
             "margin": 1,
             "seats": {
                 "agna": [hi - 2, 1, hi - 1, "sitting_crossed"],

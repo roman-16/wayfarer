@@ -119,6 +119,7 @@ import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
@@ -1902,15 +1903,14 @@ public final class Driver {
 
     private static void clearPlant(Minecraft minecraft, BlockPos pos, int clears, Runnable then) {
         BlockState there = minecraft.level.getBlockState(pos);
-        if (there.isAir() || !there.getCollisionShape(minecraft.level, pos).isEmpty() || !soft(minecraft, pos) || clears <= 0) {
+        if (there.isAir() || !brushedAside(minecraft, pos) || clears <= 0) {
             then.run();
             return;
         }
         within(minecraft, pos, at -> {
             minecraft.player.lookAt(EntityAnchorArgument.Anchor.EYES, at);
             drawn("the crosshair to settle on the " + there.getBlock().getName().getString(), () -> {
-                if (!(minecraft.hitResult instanceof BlockHitResult plant) || plant.getType() != HitResult.Type.BLOCK || !soft(minecraft, plant.getBlockPos())
-                        || !minecraft.level.getBlockState(plant.getBlockPos()).getCollisionShape(minecraft.level, plant.getBlockPos()).isEmpty()) {
+                if (!(minecraft.hitResult instanceof BlockHitResult plant) || plant.getType() != HitResult.Type.BLOCK || !brushedAside(minecraft, plant.getBlockPos())) {
                     then.run();
                     return;
                 }
@@ -2301,6 +2301,11 @@ public final class Driver {
             synced = false;
             then.accept(hand);
         });
+    }
+
+    private static boolean brushedAside(Minecraft minecraft, BlockPos pos) {
+        BlockState state = minecraft.level.getBlockState(pos);
+        return soft(minecraft, pos) && (state.is(Blocks.SNOW) || state.getCollisionShape(minecraft.level, pos).isEmpty());
     }
 
     private static boolean soft(Minecraft minecraft, BlockPos pos) {

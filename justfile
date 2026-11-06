@@ -17,9 +17,9 @@ clean:
 exaroton server="":
     python3 scripts/exaroton.py {{ server }}
 
-[doc("Carry the exaroton server's road into a fresh world under exaroton/: download its world, pack what stands in it into its players, grow a new world from a random seed played to the team's step with their own answers, and lay their story and things into it; `just carry <server> <quest/step>` carries it back to that step of the main quest under way, and `just carry <server> upload` puts the carried world on the server and switches to it")]
+[doc("Carry the exaroton server's road into a fresh world under exaroton/: download its world, pack what stands in it into its players, grow a new world from a random seed played to the team's step with their own answers, and lay their story and things into it; `just carry <server> <quest/step>` carries it back to that step of the main quest under way, `just carry <server> upload` puts the carried world on the server and switches to it, and `just carry <server> pack` puts the server pack from `just pack` on it")]
 carry server="" word="":
-    python3 scripts/carry.py {{ server }} {{ if word == "upload" { "--upload" } else if word == "" { "" } else { "--step " + quote(word) } }}
+    python3 scripts/carry.py {{ server }} {{ if word == "upload" { "--upload" } else if word == "pack" { "--pack" } else if word == "" { "" } else { "--step " + quote(word) } }}
 
 [doc("Boot the whole pack on a headless dedicated server after auditing its jars, and check the world with /locate")]
 boot: build boot-server

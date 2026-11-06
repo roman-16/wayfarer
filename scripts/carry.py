@@ -10,6 +10,7 @@ import sys
 import time
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
+from pathlib import Path
 
 import tomllib
 
@@ -32,7 +33,11 @@ from exaroton import (
 )
 
 DEV_SERVER = ROOT / "build/devserver"
-SERVER_PACK = ROOT / "build/server/mods"
+SERVER = ROOT / "build/server"
+SERVER_PACK = SERVER / "mods"
+MIRRORED = ("config", "journeymap", "mods")
+NEOFORGE = "libraries/net/neoforged/neoforge"
+READ_BACK = 1 << 20
 DEV_DATA = ROOT / "mod/src/generated/dev/data"
 DRIVER = ROOT / "scripts/server.py"
 OLD = "carry-old"
@@ -306,7 +311,7 @@ def carry(api, server, back):
 
 def compare_mods(api, server):
     if not SERVER_PACK.exists():
-        fail("build/server holds no server pack; run just pack and put dist's server pack on the server first")
+        fail(f"build/server holds no server pack; run just pack, then just carry {server['name']} pack")
     local = {path.name: path.stat().st_size for path in SERVER_PACK.glob("*.jar")}
     remote = {
         entry["name"]: entry["size"]
@@ -325,8 +330,87 @@ def compare_mods(api, server):
         more = f" and {len(differ) - SHOWN} more" if len(differ) > SHOWN else ""
         fail(
             f"{server['name']}'s mods differ from build/server: {', '.join(differ[:SHOWN])}{more}; "
-            "put the server pack from just pack on it first"
+            f"run just carry {server['name']} pack first"
         )
+
+
+def tree(api, server, folder):
+    try:
+        children = api.get(f"servers/{server['id']}/files/info/{folder}/").get("children") or []
+    except ApiError:
+        return {}
+    found = {}
+    for child in children:
+        path = child["path"].strip("/")
+        if child["isDirectory"]:
+            found.update(tree(api, server, path))
+        else:
+            found[path] = child["size"]
+    return found
+
+
+def stale(api, server, path, size):
+    local = SERVER / path
+    if size != local.stat().st_size:
+        return True
+    return size <= READ_BACK and api.data(f"servers/{server['id']}/files/data/{path}") != local.read_bytes()
+
+
+def put_pack(api, server):
+    if not SERVER_PACK.exists():
+        fail("build/server holds no server pack; run just pack first")
+    offline(api, server)
+    started = time.monotonic()
+    wanted = next((SERVER / NEOFORGE).iterdir()).name
+    there = sorted(
+        child["name"] for child in api.get(f"servers/{server['id']}/files/info/{NEOFORGE}/").get("children") or []
+    )
+    if wanted not in there:
+        fail(
+            f"{server['name']} runs NeoForge {', '.join(there) or 'unknown'}, the pack {wanted}; choose {wanted} in its software first"
+        )
+    remote = {}
+    for folder in MIRRORED:
+        remote.update(tree(api, server, folder))
+    local = [
+        path.relative_to(SERVER).as_posix()
+        for folder in MIRRORED
+        for path in (SERVER / folder).rglob("*")
+        if path.is_file()
+    ]
+    sent = [path for path in local if path not in remote or stale(api, server, path, remote[path])]
+    kept = set(local)
+    dropped = sorted(path for path in remote if path not in kept)
+    folders = {parent.as_posix() for path in sent for parent in Path(path).parents if parent != Path(".")}
+    for folder in sorted(folders, key=lambda name: len(Path(name).parts)):
+        if not any(path.startswith(folder + "/") for path in remote):
+            api.put(f"servers/{server['id']}/files/data/{folder}", b"", "inode/directory")
+
+    def send(path):
+        api.put(f"servers/{server['id']}/files/data/{path}", (SERVER / path).read_bytes())
+
+    def tried(path):
+        try:
+            send(path)
+        except ApiError:
+            return path
+        return None
+
+    with ThreadPoolExecutor(WORKERS) as pool:
+        refused = [path for path in pool.map(tried, sent) if path is not None]
+    for path in refused:
+        send(path)
+    for path in dropped:
+        api.delete(f"servers/{server['id']}/files/data/{path}")
+    compare_mods(api, server)
+    shown = ", ".join(sent[:SHOWN]) + (f" and {len(sent) - SHOWN} more" if len(sent) > SHOWN else "")
+    say(
+        f"put the server pack on {server['name']}: {len(sent)} files up ({megabytes(sum((SERVER / path).stat().st_size for path in sent))})"
+        + (f": {shown}" if sent else "")
+        + f", {len(dropped)} removed"
+        + (f": {', '.join(dropped[:SHOWN])}" if dropped else "")
+        + f", in {took(started)}"
+    )
 
 
 def remove(api, server, path):
@@ -423,11 +507,16 @@ def main():
         description="Carry a playtest's road into a fresh world: download the exaroton server's world, pack what stands "
         "in it into its players, grow a new world from a random seed and play it to the team's step with their own "
         "answers, or back to an earlier step of it with --step, lay their story and things into it; --upload puts the "
-        "carried world on the server and switches to it"
+        "carried world on the server and switches to it, --pack the server pack"
     )
     parser.add_argument("server", nargs="?", help="server name or id; the account's only server when omitted")
     chosen = parser.add_mutually_exclusive_group()
     chosen.add_argument("--upload", action="store_true", help="put the last carried world on the server and play it")
+    chosen.add_argument(
+        "--pack",
+        action="store_true",
+        help="put the server pack just pack built on the server: its mods, configs and JourneyMap settings, as build/server holds them",
+    )
     chosen.add_argument(
         "--step",
         help="a step of the main quest under way, at or before where the road stands, to carry the road back to, "
@@ -440,7 +529,9 @@ def main():
     api = Api(token)
     server = find_server(api, arguments.server)
     try:
-        if arguments.upload:
+        if arguments.pack:
+            put_pack(api, server)
+        elif arguments.upload:
             upload(api, server)
         else:
             carry(api, server, arguments.step)

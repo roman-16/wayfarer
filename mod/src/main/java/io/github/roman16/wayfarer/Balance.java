@@ -26,6 +26,7 @@ public record Balance(
         FirstCamp firstCamp,
         FirstVillage firstVillage,
         Flare flare,
+        Footing footing,
         Ford ford,
         Forge forge,
         Frost frost,
@@ -54,6 +55,7 @@ public record Balance(
         Sky sky,
         Sleep sleep,
         Smoke smoke,
+        Sound sound,
         Spawns spawns,
         Stare stare,
         Stillness stillness,
@@ -75,7 +77,7 @@ public record Balance(
         World world,
         Worm worm) {
 
-    public record Clock(int afternoonSeconds, int caravanBlocks, int dawnSeconds, String dusk, int duskRunSeconds, String evening, String night, String road,
+    public record Clock(String afternoon, int afternoonSeconds, int caravanBlocks, int dawnSeconds, String dusk, int duskRunSeconds, String evening, String night, String road,
             String runFrom) {}
 
     public record After(int homeBlocks) {}
@@ -108,6 +110,8 @@ public record Balance(
     public record FirstVillage(int aheadBlocks, int searchBlocks) {}
 
     public record Flare(int charges, int reachBlocks) {}
+
+    public record Footing(int approachBlocks, int shiftBlocks) {}
 
     public record Gate(int quietBlocks, int reachBlocks) {}
 
@@ -187,6 +191,8 @@ public record Balance(
 
     public record Smoke(int aloftFromBlocks, int aloftPuffs, int columnBlocks, int puffTicks, int widthBlocks) {}
 
+    public record Sound(int streams) {}
+
     public record Spawns(int creatureCap) {}
 
     public record Nights(int waveSeconds, int waves) {}
@@ -236,6 +242,7 @@ public record Balance(
                 new Chase(toml.getInt("chase.caught_blocks"), toml.getInt("chase.far_blocks"), toml.getInt("chase.fast_sixteenths"), toml.getInt("chase.near_blocks"),
                         toml.getInt("chase.slow_sixteenths"), toml.getInt("chase.start_blocks")),
                 new Clock(
+                        toml.get("clock.afternoon"),
                         toml.getInt("clock.afternoon_seconds"),
                         toml.getInt("clock.caravan_blocks"),
                         toml.getInt("clock.dawn_seconds"),
@@ -274,6 +281,7 @@ public record Balance(
                 new FirstCamp(toml.getInt("first_camp.ahead_blocks"), toml.getInt("first_camp.lake_blocks")),
                 new FirstVillage(toml.getInt("first_village.ahead_blocks"), toml.getInt("first_village.search_blocks")),
                 new Flare(toml.getInt("flare.charges"), toml.getInt("flare.reach_blocks")),
+                new Footing(toml.getInt("footing.approach_blocks"), toml.getInt("footing.shift_blocks")),
                 new Ford(toml.getInt("ford.ahead_blocks"), toml.getInt("ford.clearing_blocks"), toml.getInt("ford.creek_reach_blocks"), toml.getInt("ford.notice_blocks"),
                         toml.getInt("ford.outpost_blocks"), toml.getInt("ford.width_blocks")),
                 new Forge(toml.getInt("forge.vein_lumps")),
@@ -357,6 +365,7 @@ public record Balance(
                         toml.<Number>get("sky.moon_full").doubleValue()),
                 new Sleep(toml.getInt("sleep.players_percentage")),
                 new Smoke(toml.getInt("smoke.aloft_from_blocks"), toml.getInt("smoke.aloft_puffs"), toml.getInt("smoke.column_blocks"), toml.getInt("smoke.puff_ticks"), toml.getInt("smoke.width_blocks")),
+                new Sound(toml.getInt("sound.streams")),
                 new Spawns(toml.getInt("spawns.creature_cap")),
                 new Stare(toml.getInt("stare.cone_degrees"), toml.getInt("stare.flee_blocks"), toml.getInt("stare.flee_seconds"), toml.getInt("stare.reach_blocks")),
                 new Stillness(toml.getInt("stillness.dimming_days"), toml.getInt("stillness.horde_days"), toml.getInt("stillness.radius_blocks")),

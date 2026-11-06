@@ -26,11 +26,13 @@ public final class FrontDoor {
     private static final int LOGO_RISE = 10;
     private static final int LOGO_WIDTH = 256;
     private static final String MODS = "fml.menu.mods";
+    private static final String MULTIPLAYER = "menu.multiplayer";
     private static final String OPTIONS = "menu.options";
     private static final int PAUSE_GAP = 8;
     private static final String PLAYER_REPORTING = "menu.playerReporting";
     private static final String REALMS = "menu.online";
     private static final int ROW = 24;
+    private static final String SINGLEPLAYER = "menu.singleplayer";
     private static final String STATISTICS = "gui.stats";
     private static final int TITLE_GAP = 4;
 
@@ -48,6 +50,13 @@ public final class FrontDoor {
                 }
             });
             button(event, MODS).ifPresent(mods -> reportBeside(event, mods, TITLE_GAP));
+            for (String key : List.of(MULTIPLAYER, SINGLEPLAYER)) {
+                button(event, key).ifPresent(play -> {
+                    Button asking = replace(event, play, play.getMessage(), () -> VoiceQuestion.first(title, play::onPress));
+                    asking.active = play.active;
+                    asking.setTooltip(play.getTooltip());
+                });
+            }
         }
         if (event.getScreen() instanceof PauseScreen) {
             button(event, ADVANCEMENTS).ifPresent(advancements -> replace(event, advancements, Component.translatable("wayfarer.journal"),

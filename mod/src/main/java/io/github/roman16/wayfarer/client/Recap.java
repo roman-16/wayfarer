@@ -155,7 +155,7 @@ public final class Recap {
         }
         String newest = page.told().getLast().getString();
         Optional<Narration.Clip> clip = page == FIRST ? Narration.said(null, newest, false) : Narration.chosen(YourVoice.chosen().id(), newest);
-        clip.ifPresent(found -> Speech.loading(found.path()));
+        clip.ifPresent(found -> Speech.pages(List.of(found.path())));
     }
 
     static void render(ScreenEvent.Render.Pre event) {

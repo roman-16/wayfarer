@@ -7,6 +7,7 @@ import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Burning;
+import io.github.roman16.wayfarer.Footing;
 import io.github.roman16.wayfarer.TollbridgeBell;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
@@ -83,7 +84,6 @@ public final class Tollbridge {
     private static final int INDOORS = 5;
     private static final int DRY = 4;
     private static final int FLAGS = Block.UPDATE_CLIENTS;
-    private static final int FOUNDATION = 8;
     private static final int GAP = 1;
     private static final int INNER = 24;
     private static final int LANE = 16;
@@ -749,10 +749,12 @@ public final class Tollbridge {
     }
 
     private static BlockPos door(ServerLevel level, String piece, int minX, int minZ, Rotation rotation) {
-        JsonArray at = piece.equals(TOWER_PIECE) ? tower().getAsJsonArray("door") : spec(piece).getAsJsonArray("door");
-        StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(rotation);
+        StructurePlaceSettings settings = Footing.settings(rotation, BlockPos.ZERO);
         BlockPos origin = origin(level, piece, settings, minX, 0, minZ);
-        return StructureTemplate.calculateRelativePosition(settings, new BlockPos(at.get(0).getAsInt(), 0, at.get(1).getAsInt())).offset(origin);
+        return Footing.entrances(template(level, piece), settings, origin).stream().findFirst().map(way -> way.at().atY(0)).orElseGet(() -> {
+            JsonArray open = spec(piece).getAsJsonArray("door");
+            return StructureTemplate.calculateRelativePosition(settings, new BlockPos(open.get(0).getAsInt(), 0, open.get(1).getAsInt())).offset(origin);
+        });
     }
 
     private static BlockPos origin(ServerLevel level, String piece, StructurePlaceSettings settings, int minX, int base, int minZ) {
@@ -914,66 +916,11 @@ public final class Tollbridge {
 
     private static Placed place(ServerLevel level, Lot lot) {
         StructureTemplate template = template(level, lot.piece());
-        StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(lot.rotation());
-        BoundingBox box = box(lot);
-        int margin = margin(lot.piece());
-        List<Integer> heights = new ArrayList<>();
-        for (int x = box.minX() + margin; x <= box.maxX() - margin; x++) {
-            for (int z = box.minZ() + margin; z <= box.maxZ() - margin; z++) {
-                heights.add(Ground.land(level, x, z));
-            }
-        }
-        heights.sort(Integer::compare);
-        int ground = lot.piece().equals(TOWER_PIECE) ? tower().get("ground").getAsInt() : 0;
-        int floor = lot.base() != null ? lot.base() + 1 : heights.get(heights.size() / 2);
-        int base = lot.base() != null ? lot.base() : floor - ground;
-        int top = base + template.getSize().getY();
-        for (int x = box.minX(); x <= box.maxX(); x++) {
-            for (int z = box.minZ(); z <= box.maxZ(); z++) {
-                boolean inner = x >= box.minX() + margin && x <= box.maxX() - margin && z >= box.minZ() + margin && z <= box.maxZ() - margin;
-                int column = Ground.land(level, x, z);
-                BlockState surface = level.getBlockState(new BlockPos(x, column, z));
-                for (int y = floor + 1; y <= Math.max(top, column); y++) {
-                    BlockPos pos = new BlockPos(x, y, z);
-                    if (!level.getBlockState(pos).isAir() && (inner || y <= column || Ground.cover(level.getBlockState(pos)))) {
-                        level.setBlock(pos, Blocks.AIR.defaultBlockState(), FLAGS);
-                    }
-                }
-                if (!inner && column > floor && lot.base() == null) {
-                    level.setBlock(new BlockPos(x, floor, z), surface, FLAGS);
-                }
-            }
-        }
-        BlockPos origin = origin(level, lot.piece(), settings, box.minX(), base, box.minZ());
-        template.placeInWorld(level, origin, origin, settings, level.random, FLAGS);
-        for (int x = box.minX(); x <= box.maxX() && lot.base() == null; x++) {
-            for (int z = box.minZ(); z <= box.maxZ(); z++) {
-                boolean inner = x >= box.minX() + margin && x <= box.maxX() - margin && z >= box.minZ() + margin && z <= box.maxZ() - margin;
-                foundation(level, x, z, base, floor, inner ? Blocks.COBBLESTONE : Blocks.DIRT);
-            }
-        }
+        StructurePlaceSettings settings = Footing.settings(lot.rotation(), BlockPos.ZERO);
+        BlockPos corner = origin(level, lot.piece(), settings, lot.minX(), 0, lot.minZ());
+        BlockPos origin = lot.base() != null ? corner.atY(lot.base()) : Footing.settle(level, template, settings, corner, 0);
+        Footing.build(level, template, settings, origin, 0);
         return new Placed(lot, origin, settings);
-    }
-
-    private static void foundation(ServerLevel level, int x, int z, int base, int floor, Block fill) {
-        int lowest = Integer.MIN_VALUE;
-        for (int y = base; y <= floor; y++) {
-            if (!level.getBlockState(new BlockPos(x, y, z)).isAir()) {
-                lowest = y;
-                break;
-            }
-        }
-        if (lowest == Integer.MIN_VALUE) {
-            return;
-        }
-        for (int depth = 1; depth <= FOUNDATION; depth++) {
-            BlockPos below = new BlockPos(x, lowest - depth, z);
-            BlockState state = level.getBlockState(below);
-            if (!state.isAir() && !state.canBeReplaced()) {
-                return;
-            }
-            level.setBlock(below, fill.defaultBlockState(), FLAGS);
-        }
     }
 
     private static void smoke(ServerLevel level, Town town) {

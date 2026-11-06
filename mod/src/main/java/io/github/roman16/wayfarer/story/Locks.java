@@ -6,12 +6,14 @@ import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Camps;
+import io.github.roman16.wayfarer.Footing;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -157,8 +159,11 @@ final class Locks {
         progress.place(ORIGIN, origin);
         progress.yaws.put(TURN, (float) turn.ordinal());
         progress.place(NAME, world(progress, level, PLAN.get().getAsJsonArray("front")));
-        Camps.approach(level, world(progress, level, PLAN.get().getAsJsonArray("front")), centre);
-        Camps.approach(level, world(progress, level, PLAN.get().getAsJsonArray("back")), centre);
+        for (String side : List.of("back", "front")) {
+            BlockPos outside = world(progress, level, PLAN.get().getAsJsonArray(side));
+            Direction out = Direction.getNearest(outside.getX() - centre.getX(), 0, outside.getZ() - centre.getZ());
+            Footing.approach(level, outside.below().relative(out.getOpposite()), out);
+        }
         progress.ward(NAME, template.getBoundingBox(settings, origin));
         progress.setDirty();
         for (JsonElement mark : PLAN.get().getAsJsonArray("marks")) {

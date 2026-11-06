@@ -9,6 +9,7 @@ from nbt import Byte
 AIR = "minecraft:air"
 LAMP = "minecraft:waxed_exposed_copper_bulb"
 DATA_VERSION = 3955
+ENTRANCE = "wayfarer:entrance"
 NEIGHBOURS = [(dx, dy, dz) for dx in (-1, 0, 1) for dy in (-1, 0, 1) for dz in (-1, 0, 1) if (dx, dy, dz) != (0, 0, 0)]
 FACING = {"east": (1, 0), "north": (0, -1), "south": (0, 1), "west": (-1, 0)}
 OPPOSITE = {"east": "west", "north": "south", "south": "north", "west": "east"}
@@ -136,6 +137,25 @@ class Template:
     def get(self, pos):
         found = self.blocks.get(tuple(pos))
         return found[0] if found else None
+
+    def entrance(self, pos, facing):
+        name, properties, _ = self.blocks[tuple(pos)]
+        state = name + ("[" + ",".join(f"{key}={value}" for key, value in properties) + "]" if properties else "")
+        self.set(
+            pos,
+            "minecraft:jigsaw",
+            {
+                "final_state": state,
+                "id": "minecraft:jigsaw",
+                "joint": "rollable",
+                "name": ENTRANCE,
+                "placement_priority": 0,
+                "pool": "minecraft:empty",
+                "selection_priority": 0,
+                "target": "minecraft:empty",
+            },
+            orientation=f"{facing}_up",
+        )
 
     def unsupported(self):
         for (x, y, z), (name, properties, _) in self.blocks.items():

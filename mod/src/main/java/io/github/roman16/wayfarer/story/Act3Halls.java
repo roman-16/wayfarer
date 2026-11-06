@@ -255,7 +255,6 @@ final class Act3Halls {
         JsonObject plan = PLAN.get().getAsJsonObject("house");
         BlockPos origin = Camps.place(level, HOUSE, centre, turn, plan.get("floor").getAsInt());
         StructurePlaceSettings settings = Camps.settings(level, HOUSE, turn);
-        Camps.approach(level, local(origin, settings, plan, "front"), centre);
         BlockPos stand = local(origin, settings, plan, "stand");
         level.setBlock(stand, Wayfarer.CALLING_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
         if (level.getBlockEntity(stand) instanceof CallingStoneBlockEntity calling) {

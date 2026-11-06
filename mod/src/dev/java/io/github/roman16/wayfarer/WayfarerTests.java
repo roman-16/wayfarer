@@ -32,8 +32,12 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -42,12 +46,60 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(Wayfarer.MODID)
 @PrefixGameTestTemplate(false)
 public final class WayfarerTests {
+    private static final List<String> SLOPED = List.of("act3/house", "first_village/house_0", "frost/house", "reading_house/house", "shipyard/yard",
+            "tollbridge/barn_1", "tollbridge/bell_tower", "tollbridge/cottage_2", "tollbridge/home_6");
+    private static final int SLOPE_AWAY = 4096;
+    private static final int SLOPE_BASE = 96;
+    private static final int SLOPE_DEPTH = 16;
+    private static final int SLOPE_SIZE = 64;
+
     private WayfarerTests() {}
 
     private static void check(GameTestHelper helper, boolean condition, String message) {
         if (!condition) {
             helper.fail(message);
         }
+    }
+
+    @GameTest(template = "empty", timeoutTicks = 400)
+    public static void everyEntranceMeetsTheLand(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos slope = helper.absolutePos(BlockPos.ZERO).offset(SLOPE_AWAY, 0, 0).atY(SLOPE_BASE);
+        for (String piece : SLOPED) {
+            for (int x = 0; x < SLOPE_SIZE; x++) {
+                int top = SLOPE_BASE + x / 2;
+                for (int z = 0; z < SLOPE_SIZE; z++) {
+                    for (int y = SLOPE_BASE - SLOPE_DEPTH; y <= top + SLOPE_SIZE; y++) {
+                        BlockPos at = slope.offset(x, y - SLOPE_BASE, z);
+                        level.setBlock(at, y < top ? Blocks.STONE.defaultBlockState() : y == top ? Blocks.GRASS_BLOCK.defaultBlockState() : Blocks.AIR.defaultBlockState(), 2);
+                    }
+                }
+            }
+            StructureTemplate template = level.getStructureManager().getOrCreate(Wayfarer.id(piece));
+            StructurePlaceSettings settings = Footing.settings(Rotation.NONE, BlockPos.ZERO);
+            BlockPos corner = slope.offset(SLOPE_SIZE / 2 - template.getSize().getX() / 2, 0, SLOPE_SIZE / 2 - template.getSize().getZ() / 2).atY(0);
+            BlockPos origin = Footing.settle(level, template, settings, corner, 0);
+            Footing.build(level, template, settings, origin, 0);
+            List<Footing.Entrance> ways = Footing.entrances(template, settings, origin);
+            check(helper, !ways.isEmpty(), piece + " has no entrance");
+            check(helper, template.filterBlocks(origin, settings, Blocks.JIGSAW).stream().noneMatch(info -> level.getBlockState(info.pos()).is(Blocks.JIGSAW)),
+                    piece + " left its entrance marker standing");
+            BoundingBox own = template.getBoundingBox(settings, origin);
+            for (Footing.Entrance way : ways) {
+                double last = way.at().getY() + 1;
+                for (int step = 1; step <= Balance.get().footing().approachBlocks(); step++) {
+                    BlockPos column = way.at().relative(way.front(), step);
+                    if (own.isInside(column.atY(own.minY()))) {
+                        continue;
+                    }
+                    Optional<Vec3> feet = Ground.feet(level, new Vec3(column.getX() + 0.5, last, column.getZ() + 0.5));
+                    check(helper, feet.isPresent() && Math.abs(feet.get().y - last) <= 1, piece + ": the way out of its entrance at " + way.at().toShortString()
+                            + " has no step within a block at " + column.atY((int) last).toShortString());
+                    last = feet.get().y;
+                }
+            }
+        }
+        helper.succeed();
     }
 
     @GameTest(template = "empty")

@@ -253,6 +253,10 @@ file = "config/streamsreflowing-common.toml"
 hash = "22df05c63f0730c35ee098e04a9541f1c6907c4a2dc8fe23929b3f5c8c93d3dd"
 
 [[files]]
+file = "config/subtle_effects/blocks.toml"
+hash = "e25d1252b4681eadebb53ecd3c123b9e0ac7cc8a1d11b5113068e9b041249987"
+
+[[files]]
 file = "config/subtle_effects/environment.toml"
 hash = "0c611f4601d90815d61fb760c47f9412d0ee78d9e308ad2f8d9d2d2aeabae6a2"
 

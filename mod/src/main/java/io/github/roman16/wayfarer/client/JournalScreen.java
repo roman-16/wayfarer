@@ -84,7 +84,6 @@ public final class JournalScreen extends Screen {
     private static final Map<Tab, String> CHOSEN_ENTRY = new EnumMap<>(Tab.class);
     private static final Map<String, String> CHOSEN_THING = new HashMap<>();
     private static final Set<String> MARKED = new HashSet<>();
-    private static final String JOURNAL = "journal:";
     private static String voiced = "";
     private static final String CHAPTER = "chapter";
     private final Set<String> seen = new HashSet<>();
@@ -251,11 +250,7 @@ public final class JournalScreen extends Screen {
         String voicing = chosen == null ? "" : chosen.key();
         if (!voicing.equals(voiced)) {
             voiced = voicing;
-            if (!voices.isEmpty() && Reading.once(JOURNAL + voicing)) {
-                Speech.pages(voices);
-            } else {
-                Speech.stopPages();
-            }
+            Speech.stopPages();
         }
         slots = chosen != null && chosen.kind() == Kind.REWARD ? stacks(chosen.data()) : List.of();
         int ribbonY = top + COVER_EDGE + RIBBON_GAP * 2;

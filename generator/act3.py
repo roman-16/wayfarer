@@ -134,6 +134,7 @@ def house(orders):
                 )
     for y in (FLOOR + 1, FLOOR + 2):
         t.set((width // 2, y, 0), AIR)
+    t.entrance((width // 2, FLOOR, 0), "north")
     t.set(DESK, "minecraft:dark_oak_slab", type="top", waterlogged=False)
     t.set((DESK[0] + 1, DESK[1], DESK[2]), "minecraft:dark_oak_slab", type="top", waterlogged=False)
     t.set((DESK[0], DESK[1] + 1, DESK[2]), "minecraft:candle", candles=3, lit=False, waterlogged=False)

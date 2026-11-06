@@ -196,12 +196,16 @@ public final class Clock {
             return;
         }
         int share = Balance.get().sleep().playersPercentage();
-        if (Math.floorMod(now, DAY) >= ticks(clock.runFrom())) {
+        long hour = Math.floorMod(now, DAY);
+        if (hour >= ticks(clock.runFrom())) {
             int reach = clock.caravanBlocks();
             long near = players.stream().filter(player -> caravan != null && near(player, level, reach) || camped(player)).count();
             if (near * 100 >= (long) players.size() * share) {
                 begin(level, now, clock.duskRunSeconds());
             }
+            return;
+        }
+        if (hour < ticks(clock.afternoon())) {
             return;
         }
         long sat = players.stream().filter(player -> rested.contains(player.getUUID()) || camped(player)).count();

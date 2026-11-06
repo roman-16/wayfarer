@@ -5,6 +5,7 @@ import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.Wayfarer;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.Options;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.sounds.SoundEvent;
@@ -39,7 +40,12 @@ public final class MusicPlayer {
     }
 
     public static boolean playing(String piece) {
-        return playing != null && playing.piece.equals(piece);
+        return playing != null && playing.piece.equals(piece) && Minecraft.getInstance().getSoundManager().isActive(playing);
+    }
+
+    public static boolean audible() {
+        Options options = Minecraft.getInstance().options;
+        return options.getSoundSourceVolume(SoundSource.MASTER) > 0 && options.getSoundSourceVolume(SoundSource.MUSIC) > 0;
     }
 
     private static void fade() {

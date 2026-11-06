@@ -18,6 +18,7 @@
     "IrisBeltLanternMixin",
     "LecternScreenMixin",
     "LevelLoadingScreenAccessor",
+    "LibraryStreamsMixin",
     "LightTextureMixin",
     "LocalPlayerMixin",
     "LogoRendererMixin",

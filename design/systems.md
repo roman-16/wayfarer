@@ -186,7 +186,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Evening comes at sea | On the nearest land ahead; a night on the water only when a quest wants it, as in The Crossing (2.2) |
   | Someone is underground | On the surface near where they went down |
   | A quest keeps everyone away for days | No camp; the quest says "camp alone tonight" and sets the clock (D2) |
-  | The ground | Where a real camp would stand: level, neither a hollow nor an exposed top, near water but not in it, with grass and wood near, and at least 32 blocks from any structure. The whole camp is judged, every few blocks across it: more than an eighth of its ground under water, or a rise of more than 4 blocks across the fire's circle, passes a spot over. These are wishes: within 128 blocks past the nearest spot out of sight the camp takes the best spot it finds and settles for it, and never walks on to find a better land. A wagon stands on ground within 2 blocks of its own middle, on at most 2 blocks of fill of the land's own surface block, and goes to another spot round the fire rather than onto a ledge |
+  | The ground | Where a real camp would stand: level, neither a hollow nor an exposed top, near water but not in it, with grass and wood near, and at least 32 blocks from any structure. The whole camp is judged, every few blocks across it: more than an eighth of its ground under water, or a rise of more than 4 blocks across the fire's circle, passes a spot over. These are wishes: within 128 blocks past the nearest spot out of sight the camp takes the best spot it finds and settles for it, and never walks on to find a better land. A wagon stands on ground within 2 blocks of its own middle, on at most 2 blocks of fill of the land's own surface block, and goes to another spot round the fire rather than onto a ledge; every piece sits on its land as M59 says |
   | Danger | Never within 16 blocks of lava, fire or another danger, nor on top of a structure |
 
 - The camp is built like a village: the fire in the middle, and around it each household as its own small piece, a tent, a wagon or a lean-to, set at the height of the ground under it, with paths between them that follow the ground. There is no flattened square. A bigger household gets a bigger piece, a person who joins brings a new piece, and after the breaking the pieces of the dead are missing. When the camp is taken down, the blocks it replaced go back.
@@ -723,7 +723,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 ### M20 Heading in early
 
 - From 17:00, heading in starts the run home: the clock runs to 20:00 in about a minute, and monsters come out on the way (M6).
-- Before 17:00, heading in leaves the clock alone, and the team walks in by daylight. Once most of the team has rested at the caravan's fire, the afternoon passes as a time-lapse, the shadows stretching and the sky going gold, then red, in about half a minute from noon, and the evening begins at the fire, inside its circle.
+- Before 17:00, heading in leaves the clock alone, and the team walks in by daylight. Once most of the team has rested at the caravan's fire from noon on, the afternoon passes as a time-lapse, the shadows stretching and the sky going gold, then red, in about half a minute from noon, and the evening begins at the fire, inside its circle.
 
   ```text
   Noon   [Main] Make for the caravan.   Compass ◆ 600 blocks
@@ -1319,7 +1319,7 @@ It raises, for its build: keeping each act's foes out of the world until their a
 ### M58 Nights, holds and the caravan keep their word
 
 - A hold says aloud when it waits: "Where you stand, nothing reaches you. They gather at the door, and wait." once, and again every 64 s. Its clock pauses only while no monster of the wave can see a player, stands at the door or has a path that reaches. No wild creature spawns within a hold's reach while it runs, nor in a memory's world, so a hold's waves are its own (no creeper in the first act's tower).
-- The afternoon runs to evening for a player resting at their own fire with their tent beside it, as it does at the caravan's fire, and the task says "Sleep in your tent by your fire" there.
+- The afternoon runs to evening for a player resting at their own fire with their tent beside it, as it does at the caravan's fire, and the task says "Sleep in your tent by your fire" there. It runs only from noon (`balance.toml` `[clock]` `afternoon`), at either fire: a team that wakes beside its tent and fire in the morning walks into a day that eases out as on the road.
 - The caravan camps only where every player's tent has flat room within its circle, where a player can walk at least 32 blocks out from the fire, and at least 64 blocks from a structure already standing.
 - People vanish only when out of every player's sight for 4 s and more than 24 blocks from all of them; one stuck on the way while out of sight is brought nearer, out of sight, and walks on.
 - A player comes to at the fire they last rested at, theirs or anyone's, or at the caravan's when that is nearer their stone.
@@ -1329,6 +1329,22 @@ It raises, for its build: keeping each act's foes out of the world until their a
 - A taken bell leaves Tollbridge once nobody sees the spot.
 
 **Why:** In the 29.10. and 05.11. playthroughs the hold at Tollbridge waited 20 silent minutes in the cellar and then let a creeper into the tower; one's own camp waited out a slowed afternoon; the caravan camped in a pocket of basalt with no way out and beside a village; the survivors vanished before the player's eyes; the player came to 1,700 blocks from the fire they sat at; komodo dragons walked into a lit camp; Sefa's fire burned a player in her shade; four more worms rose after the worm died; and wolves followed the player for 1,800 blocks unseen.
+
+### M59 Every place the story builds sits on its land as a village house does
+
+- **The door meets the ground.** A building with a way in has it marked in its template (a jigsaw block named `wayfarer:entrance`, as vanilla marks where a village house joins its street); its floor is set level with the land a player stands on before that door. A place without a way in (a camp, a ring of stones, a field) stands at the height that moves the least earth.
+- **The land meets the walls.** Around a building, within 12 blocks as vanilla's `beard_thin`, the land rises to its low side and falls from its high side along vanilla's curve, e^(-d²/16), in the column's own blocks (grass over dirt, sand, terracotta, snow); under the building the gap is filled with the same blocks; no column of dirt or cobblestone and no sheer cut.
+- **Every way in can be walked.** From each entrance, steps of at most one block lead out to the land, up to 16 blocks (`balance.toml` `[footing]` `approach_blocks`), three wide, cut or built of the land's own blocks where the curve leaves a higher step.
+- **Places look for good ground.** A place put down near an aim tries spots up to 8 blocks from it (`[footing]` `shift_blocks`), keeps its turn, and takes the one that moves the least earth with no water under it. A place set by something else (a town's planned lot, a yard by the sea, a scene at its spot) keeps its spot and gets the rest.
+
+  ```text
+  Ash · Go down into the cellar.
+  The square slopes up to the bell tower, and its door opens at the height you walk on; behind it the tower is set into the rise.
+  ```
+
+- **Edge cases.** A doorstep over water keeps the floor at the water's surface, as a jetty's, and its steps end at the water. Several entrances at different heights: the floor follows the median of their doorsteps and every other door gets its steps. A cliff no spot avoids: the place still stands, at the least earth. Players near: places are still built out of sight. Trees on reshaped land are felled whole and floating leaves cleared. The caravan's camp and a road scene put every block back when they go, the reshaped land included. Places that stand in water or underground keep their own rules: the Marsh Mothers' hut on stilts, the halls, the vaults, the tunnels and the mines.
+
+**Why:** In the 05.11. play on a hillside the bell tower's door stood six blocks above the square, because every place took the median height of its footprint whatever its door; vanilla sets a village house by where its door meets the street and blends the land round it, and the pack's places are built after the land exists, so they do the same with blocks.
 
 ## Open
 

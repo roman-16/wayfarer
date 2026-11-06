@@ -94,6 +94,7 @@ public final class WayfarerClient {
         modBus.addListener(FMLClientSetupEvent.class, event -> {
             CuriosRendererRegistry.register(Items.LANTERN, BeltLanternRenderer::new);
             CuriosRendererRegistry.register(Items.SOUL_LANTERN, BeltLanternRenderer::new);
+            SoundClock.start();
         });
         modBus.addListener(RegisterClientReloadListenersEvent.class, event -> {
             event.registerReloadListener((ResourceManagerReloadListener) DeepRenderer::reload);
@@ -108,7 +109,10 @@ public final class WayfarerClient {
         NeoForge.EVENT_BUS.addListener(ViewportEvent.ComputeFov.class, FarSight::zoom);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, FarSight::mark);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, Ending::tick);
-        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Speech.tick(Minecraft.getInstance()));
+        NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> {
+            Speech.tick(Minecraft.getInstance());
+            SoundClock.ticked();
+        });
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> Reading.tick(Minecraft.getInstance()));
         NeoForge.EVENT_BUS.addListener(ScreenEvent.Init.Post.class, Reading::init);
         NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingIn.class, YourVoice::loggingIn);
@@ -164,7 +168,7 @@ public final class WayfarerClient {
             Minecraft minecraft = Minecraft.getInstance();
             if (minecraft.level != null && minecraft.screen == null && MusicPlayer.playing(TITLE)) {
                 MusicPlayer.play(new Music.Play("", false));
-            } else if (minecraft.level == null && minecraft.screen != null && !MusicPlayer.playing(TITLE)) {
+            } else if (minecraft.level == null && minecraft.screen != null && !MusicPlayer.playing(TITLE) && MusicPlayer.audible()) {
                 MusicPlayer.play(new Music.Play(TITLE, true));
             }
         });

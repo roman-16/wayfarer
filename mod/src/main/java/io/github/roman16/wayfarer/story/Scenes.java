@@ -9,6 +9,7 @@ import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.CompassEvent;
 import io.github.roman16.wayfarer.CompassPayload;
+import io.github.roman16.wayfarer.Footing;
 import io.github.roman16.wayfarer.Handover;
 import io.github.roman16.wayfarer.Journey;
 import io.github.roman16.wayfarer.Leaving;
@@ -661,21 +662,13 @@ public final class Scenes {
         scene.leader = leader.getUUID();
         scene.placed = level.getGameTime();
         scene.keep = kind.equals(CACHE);
-        StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(spot.turn());
+        StructurePlaceSettings settings = Footing.settings(spot.turn(), BlockPos.ZERO);
         BlockPos origin = spot.centre();
         Optional<StructureTemplate> template = template(level, kind);
         if (template.isPresent()) {
             Vec3i size = template.get().getSize();
             origin = spot.centre().subtract(StructureTemplate.calculateRelativePosition(settings, new BlockPos(size.getX() / 2, 0, size.getZ() / 2)));
-            BoundingBox box = template.get().getBoundingBox(settings, origin);
-            for (BlockPos pos : BlockPos.betweenClosed(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY() + 2, box.maxZ())) {
-                BlockState state = level.getBlockState(pos);
-                scene.originals.put(pos.immutable(), state);
-                if (pos.getY() > origin.getY() && state.canBeReplaced() && state.getFluidState().isEmpty() && !state.isAir()) {
-                    level.setBlock(pos, Blocks.AIR.defaultBlockState(), FLAGS);
-                }
-            }
-            template.get().placeInWorld(level, origin, origin, settings, level.random, FLAGS);
+            Footing.build(level, template.get(), settings, origin, 0, pos -> scene.originals.putIfAbsent(pos, level.getBlockState(pos)));
         }
         RandomSource random = level.getRandom();
         Vec3 facing = leader.position();

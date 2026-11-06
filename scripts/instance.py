@@ -2,6 +2,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -37,6 +38,7 @@ CLIENT_OPTIONS = {
 }
 SETTINGS = ("config", "journeymap")
 FAR_VIEW = {"mods/distanthorizons.pw.toml", "mods/distant-horizons-seedgen.pw.toml"}
+PLAYED_OR_DRAWN = re.compile(r"^assets/[^/]+/(sounds|textures)/")
 STATES = ROOT / "story/states.toml"
 SIDES = {"client": {"both", "client"}, "server": {"both", "server"}}
 DEV_SERVER_PORTS = {"server": 25566, "voice": 24455}
@@ -246,11 +248,18 @@ def server(target, jar):
     (target / "mods").mkdir(parents=True)
     neoforge(target)
     files(target, "server", {"mods"})
-    shutil.copyfile(jar, target / "mods" / jar.name)
+    served(jar, target / "mods" / jar.name)
     settings(target)
     properties(target, {})
     (target / "user_jvm_args.txt").unlink()
     (target / "user_jvm_args.txt").write_text(f"-Xmx{tomllib.loads(BALANCE.read_text())['heap']['gigabytes']}G\n")
+
+
+def served(jar, target):
+    with zipfile.ZipFile(jar) as source, zipfile.ZipFile(target, "w") as copy:
+        for entry in source.infolist():
+            if not PLAYED_OR_DRAWN.match(entry.filename):
+                copy.writestr(entry, source.read(entry))
 
 
 def dev_server(target, mode):

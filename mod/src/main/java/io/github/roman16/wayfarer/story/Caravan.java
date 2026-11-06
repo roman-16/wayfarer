@@ -9,6 +9,7 @@ import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Fire;
 import io.github.roman16.wayfarer.Firsts;
+import io.github.roman16.wayfarer.Footing;
 import io.github.roman16.wayfarer.Handover;
 import io.github.roman16.wayfarer.Joining;
 import io.github.roman16.wayfarer.Journey;
@@ -129,7 +130,6 @@ public final class Caravan {
     private static final int FARTHER = 16;
     private static final int FIRE_SHIFT = 8;
     private static final int FLAGS = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE;
-    private static final int FOUNDATION = 2;
     private static final int GAP = 2;
     private static final int APART_BLOCKS = 8;
     private static final int STANDBY = 4;
@@ -1544,8 +1544,7 @@ public final class Caravan {
     private static Placed place(ServerLevel level, Camp camp, String piece, BlockPos at, Rotation rotation, List<BoundingBox> taken) {
         StructureTemplate template = level.getStructureManager().get(ResourceLocation.fromNamespaceAndPath(Wayfarer.MODID, "caravan/" + piece)).orElseThrow();
         BlockPos pivot = new BlockPos(template.getSize().getX() / 2, 0, template.getSize().getZ() / 2);
-        StructurePlaceSettings settings = new StructurePlaceSettings().setRotation(rotation).setRotationPivot(pivot).setIgnoreEntities(true)
-                .setKnownShape(true);
+        StructurePlaceSettings settings = Footing.settings(rotation, pivot).setIgnoreEntities(true).setKnownShape(true);
         BlockPos origin = at.subtract(pivot);
         BoundingBox footprint = template.getBoundingBox(settings, origin);
         if (taken.stream().anyMatch(box -> box.inflatedBy(1).intersects(footprint.minX(), footprint.minZ(), footprint.maxX(), footprint.maxZ()))) {
@@ -1569,26 +1568,7 @@ public final class Caravan {
         }
         BlockPos placedOrigin = origin.atY(y);
         BoundingBox box = template.getBoundingBox(settings, placedOrigin);
-        for (BlockPos pos : BlockPos.betweenClosed(box.minX(), y - FOUNDATION, box.minZ(), box.maxX(), box.maxY(), box.maxZ())) {
-            remember(level, camp, pos);
-        }
-        for (BlockPos pos : BlockPos.betweenClosed(box.minX(), y - FOUNDATION, box.minZ(), box.maxX(), Math.max(box.maxY(), y + BUSH), box.maxZ())) {
-            if (growth(level.getBlockState(pos))) {
-                remember(level, camp, pos);
-                level.setBlock(pos, Blocks.AIR.defaultBlockState(), FLAGS);
-            }
-        }
-        for (int x = box.minX(); x <= box.maxX(); x++) {
-            for (int z = box.minZ(); z <= box.maxZ(); z++) {
-                terrace(level, camp, x, z, y);
-            }
-        }
-        template.placeInWorld(level, placedOrigin, placedOrigin, settings, level.getRandom(), FLAGS);
-        for (int x = box.minX(); x <= box.maxX(); x++) {
-            for (int z = box.minZ(); z <= box.maxZ(); z++) {
-                foundation(level, camp, x, z, y, box.maxY());
-            }
-        }
+        Footing.build(level, template, settings, placedOrigin, 0, pos -> remember(level, camp, pos));
         taken.add(box);
         Direction front = rotation.rotate(Direction.NORTH);
         BlockPos centre = at.atY(y);
@@ -1608,47 +1588,6 @@ public final class Caravan {
     private static boolean growth(BlockState state) {
         return state.is(BlockTags.LEAVES) || state.is(BlockTags.LOGS) || state.is(Blocks.BROWN_MUSHROOM_BLOCK) || state.is(Blocks.RED_MUSHROOM_BLOCK)
                 || state.is(Blocks.MUSHROOM_STEM) || !state.isAir() && state.canBeReplaced() && state.getFluidState().isEmpty();
-    }
-
-    private static void terrace(ServerLevel level, Camp camp, int x, int z, int y) {
-        int top = ground(level, x, z);
-        if (top <= y) {
-            return;
-        }
-        BlockState surface = level.getBlockState(new BlockPos(x, top, z));
-        for (int height = y; height <= top; height++) {
-            remember(level, camp, new BlockPos(x, height, z));
-            level.setBlock(new BlockPos(x, height, z), height == y ? surface : Blocks.AIR.defaultBlockState(), FLAGS);
-        }
-    }
-
-    private static BlockState soil(ServerLevel level, int x, int z) {
-        BlockPos ground = new BlockPos(x, ground(level, x, z), z);
-        BlockState state = level.getBlockState(ground);
-        return state.isCollisionShapeFullBlock(level, ground) && state.getFluidState().isEmpty() && !state.hasBlockEntity() ? state : Blocks.DIRT.defaultBlockState();
-    }
-
-    private static void foundation(ServerLevel level, Camp camp, int x, int z, int y, int top) {
-        int lowest = Integer.MIN_VALUE;
-        for (int height = y; height <= top; height++) {
-            BlockPos pos = new BlockPos(x, height, z);
-            if (!level.getBlockState(pos).isAir() && !level.getBlockState(pos).equals(camp.originals.get(pos))) {
-                lowest = height;
-                break;
-            }
-        }
-        if (lowest == Integer.MIN_VALUE) {
-            return;
-        }
-        for (int depth = 1; depth <= FOUNDATION; depth++) {
-            BlockPos below = new BlockPos(x, lowest - depth, z);
-            BlockState state = level.getBlockState(below);
-            if (!state.isAir() && !state.canBeReplaced() || !state.getFluidState().isEmpty()) {
-                return;
-            }
-            remember(level, camp, below);
-            level.setBlock(below, soil(level, x, z), FLAGS);
-        }
     }
 
     private static void path(ServerLevel level, Camp camp, Placed placed, List<BoundingBox> taken) {

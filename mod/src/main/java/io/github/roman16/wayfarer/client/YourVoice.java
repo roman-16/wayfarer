@@ -20,27 +20,34 @@ public enum YourVoice {
     private static final String KEY = "wayfarer.options.voice";
 
     public static YourVoice chosen() {
-        String kept = ClientConfig.SPEC.isLoaded() ? ClientConfig.VOICE.get() : "";
-        if (!kept.isEmpty()) {
-            return valueOf(kept.toUpperCase(Locale.ROOT));
+        if (answered()) {
+            return valueOf(ClientConfig.VOICE.get().toUpperCase(Locale.ROOT));
         }
         Minecraft minecraft = Minecraft.getInstance();
         return minecraft.getSkinManager().getInsecureSkin(minecraft.getGameProfile()).model() == PlayerSkin.Model.SLIM ? WOMAN : MAN;
+    }
+
+    static boolean answered() {
+        return ClientConfig.SPEC.isLoaded() && !ClientConfig.VOICE.get().isEmpty();
+    }
+
+    static void choose(YourVoice voice) {
+        ClientConfig.VOICE.set(voice.id());
+        ClientConfig.SPEC.save();
+        tell();
     }
 
     public String id() {
         return this == SILENT ? Narration.SILENT : name().toLowerCase(Locale.ROOT);
     }
 
+    Component label() {
+        return Component.translatable(KEY + "." + id());
+    }
+
     public static OptionInstance<YourVoice> option() {
-        return new OptionInstance<>(KEY, OptionInstance.noTooltip(),
-                (caption, voice) -> Component.translatable(KEY + "." + voice.id()),
-                new OptionInstance.Enum<>(Arrays.asList(values()), Codec.STRING.xmap(YourVoice::valueOf, YourVoice::name)),
-                chosen(), voice -> {
-                    ClientConfig.VOICE.set(voice.id());
-                    ClientConfig.SPEC.save();
-                    tell();
-                });
+        return new OptionInstance<>(KEY, OptionInstance.noTooltip(), (caption, voice) -> voice.label(),
+                new OptionInstance.Enum<>(Arrays.asList(values()), Codec.STRING.xmap(YourVoice::valueOf, YourVoice::name)), chosen(), YourVoice::choose);
     }
 
     static void loggingIn(ClientPlayerNetworkEvent.LoggingIn event) {

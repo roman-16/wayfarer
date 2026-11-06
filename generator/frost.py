@@ -47,6 +47,9 @@ class Shifted:
     def set(self, pos, name, entity=None, **properties):
         self.template.set((pos[0] + self.shift, pos[1], pos[2] + self.shift), name, entity, **properties)
 
+    def entrance(self, pos, facing):
+        self.template.entrance((pos[0] + self.shift, pos[1], pos[2] + self.shift), facing)
+
 
 def roof_height(x):
     middle = (WALLS[0] - 1) / 2
@@ -143,6 +146,7 @@ def build(t):
         open=False,
         powered=False,
     )
+    t.entrance((door_x, FLOOR - 1, door_z), "south")
     t.set((door_x - 1, FLOOR + 2, door_z + 1), "minecraft:brown_wool")
     t.set((door_x + 1, FLOOR + 2, door_z + 1), "minecraft:brown_wool")
     t.set((door_x, FLOOR + 2, door_z + 1), "minecraft:spruce_slab", type="top", waterlogged=False)

@@ -114,6 +114,7 @@ def house(index):
                 t.set((x, 1, z), GROWTH[(x * 7 + z * 3 + index) % len(GROWTH)])
             elif growth < 0.3:
                 t.set((x, 1, z), "minecraft:moss_carpet")
+    t.entrance((door, 0, DOOR_SIDE), "north")
     return t
 
 

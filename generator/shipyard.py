@@ -105,6 +105,7 @@ def cottage(t):
             open=False,
             powered=False,
         )
+    t.entrance((door_x, 0, door_z), "east")
     for pos, sides in (
         ((x0, 2, 3), ("north", "south")),
         ((x0, 2, 7), ("north", "south")),

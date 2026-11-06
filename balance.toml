@@ -14,6 +14,7 @@ slow_sixteenths = 2
 start_blocks = 8
 
 [clock]
+afternoon = "12:00"
 afternoon_seconds = 32
 caravan_blocks = 256
 dawn_seconds = 30
@@ -98,6 +99,10 @@ search_blocks = 2048
 [flare]
 charges = 1
 reach_blocks = 16
+
+[footing]
+approach_blocks = 16
+shift_blocks = 8
 
 [ford]
 ahead_blocks = 1024
@@ -294,6 +299,9 @@ aloft_puffs = 4
 column_blocks = 96
 puff_ticks = 1
 width_blocks = 4
+
+[sound]
+streams = 32
 
 [spawns]
 creature_cap = 20

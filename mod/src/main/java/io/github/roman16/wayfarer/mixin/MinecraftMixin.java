@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import io.github.roman16.wayfarer.client.Sight;
+import io.github.roman16.wayfarer.client.SoundClock;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -14,6 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Minecraft.class)
@@ -29,6 +31,13 @@ abstract class MinecraftMixin {
         }
     }
 
+    @Inject(method = "runTick", at = @At("HEAD"))
+    private void wayfarer$soundKeepsTime(boolean renderLevel, CallbackInfo info) {
+        if (!renderLevel) {
+            SoundClock.frame();
+        }
+    }
+
     @Shadow
     private boolean clientLevelTeardownInProgress;
 
@@ -36,7 +45,7 @@ abstract class MinecraftMixin {
     public abstract MusicManager getMusicManager();
 
     @WrapOperation(method = "updateScreenAndTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/SoundManager;stop()V"))
-    private void wayfarer$keepMusic(SoundManager sounds, Operation<Void> original) {
+    private void wayfarer$keepMusicAndVoices(SoundManager sounds, Operation<Void> original) {
         if (level == null) {
             return;
         }
@@ -45,7 +54,7 @@ abstract class MinecraftMixin {
             return;
         }
         for (SoundSource source : SoundSource.values()) {
-            if (source != SoundSource.MUSIC) {
+            if (source != SoundSource.MUSIC && source != SoundSource.VOICE) {
                 sounds.stop(null, source);
             }
         }

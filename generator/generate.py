@@ -68,7 +68,7 @@ from skins import skin
 from tide import VILLAGE as TIDE_VILLAGE
 from tide import positions as tide_positions
 from tide import village as tide_village
-from tollbridge import PIECES, plan, size, tower
+from tollbridge import PIECES, entered, plan, size, tower
 from townsfolk import (
     act3folk,
     brother_of,
@@ -915,7 +915,7 @@ def main():
     )
     tower().save(MAIN / "data/wayfarer/structure/tollbridge/bell_tower.nbt")
     for name, piece in PIECES.items():
-        built = piece()
+        built = entered(name, piece())
         built.save(MAIN / f"data/wayfarer/structure/tollbridge/{name}.nbt", size(built))
     write_json(MAIN / "wayfarer/tollbridge.json", plan())
     for kind, loot in balance["tollbridge"]["loot"].items():

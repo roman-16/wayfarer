@@ -377,6 +377,7 @@
   "wayfarer.options.hud_size.normal": "Normal",
   "wayfarer.options.hud_size.small": "Small",
   "wayfarer.options.voice": "Your voice",
+  "wayfarer.options.voice.ask": "The story is read aloud. This voice says your answers and reads your journal to you. You can change it later in Options, Music & Sounds.",
   "wayfarer.options.voice.man": "A man",
   "wayfarer.options.voice.silent": "Silent",
   "wayfarer.options.voice.woman": "A woman",

@@ -113,6 +113,7 @@ def house():
     fires(t)
     rubble(t)
     t.set(LECTERN, "minecraft:lectern", facing="north", has_book=False, powered=False)
+    t.entrance((MIDDLE, 0, FRONT), "north")
     return t
 
 
