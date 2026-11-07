@@ -38,6 +38,7 @@ SERVER_PACK = SERVER / "mods"
 MIRRORED = ("config", "journeymap", "mods")
 NEOFORGE = "libraries/net/neoforged/neoforge"
 READ_BACK = 1 << 20
+SERVER_BACKUPS = ".bak"
 DEV_DATA = ROOT / "mod/src/generated/dev/data"
 DRIVER = ROOT / "scripts/server.py"
 OLD = "carry-old"
@@ -380,7 +381,7 @@ def put_pack(api, server):
     ]
     sent = [path for path in local if path not in remote or stale(api, server, path, remote[path])]
     kept = set(local)
-    dropped = sorted(path for path in remote if path not in kept)
+    dropped = sorted(path for path in remote if path not in kept and not path.endswith(SERVER_BACKUPS))
     folders = {parent.as_posix() for path in sent for parent in Path(path).parents if parent != Path(".")}
     for folder in sorted(folders, key=lambda name: len(Path(name).parts)):
         if not any(path.startswith(folder + "/") for path in remote):
@@ -392,7 +393,7 @@ def put_pack(api, server):
     def tried(path):
         try:
             send(path)
-        except ApiError:
+        except (ApiError, OSError):
             return path
         return None
 
@@ -438,7 +439,7 @@ def put_world(api, server, source, name):
     def tried(path):
         try:
             send(path)
-        except ApiError:
+        except (ApiError, OSError):
             return path
         return None
 

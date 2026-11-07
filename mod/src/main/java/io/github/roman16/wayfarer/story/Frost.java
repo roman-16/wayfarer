@@ -446,7 +446,7 @@ public final class Frost {
         if (progress.place(SNOWFIELD + HALL).isPresent()) {
             snowfield(level, site);
         }
-        Places.Hall raised = Places.raise(level, COLD, site);
+        Places.Hall raised = Places.raise(level, COLD, site, progress.place(SNOWFIELD + HALL).isPresent());
         Places.empty(level, raised.stone());
         BoundingBox box = raised.box();
         BoundingBox shaft = raised.shaft();

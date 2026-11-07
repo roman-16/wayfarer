@@ -85,6 +85,10 @@ public final class HallStructure extends Structure {
         return climate;
     }
 
+    public HallStructure anywhere() {
+        return new HallStructure(modifiableStructureInfo().getOriginalStructureInfo().structureSettings(), Climate.ANY, layout, pieces, shaft);
+    }
+
     public Layout layout() {
         return layout;
     }

@@ -16,6 +16,7 @@ from drive import Failure, Server, reply
 ROOT = Path(__file__).resolve().parent.parent
 SEAT = drive.seat("devserver")
 DEV_SERVER = SEAT.folder
+STORE = ROOT / "build/devserver"
 SNAPSHOT = DEV_SERVER / "driver/classes"
 LAUNCHED = DEV_SERVER / "driver/launched.json"
 PROPERTIES = DEV_SERVER / "server.properties"
@@ -41,6 +42,12 @@ def start(arguments):
     server = dev_server(mode)
     if arguments.state:
         states.check(arguments.state)
+    if arguments.world:
+        other = drive.holder(arguments.world, "devserver")
+        if other is not None and other.folder != DEV_SERVER:
+            raise Failure(
+                f'start failed: "{arguments.world}" is open in session {other.owner() or "of your own"}\'s dev server; ask that session to leave it'
+            )
     if server.alive():
         launched = json.loads(LAUNCHED.read_text()) if LAUNCHED.exists() else None
         world = (
@@ -57,9 +64,7 @@ def start(arguments):
             print("restarting: " + "; ".join(reasons))
         server.stop(STOP_SECONDS)
     if arguments.fresh or arguments.seed is not None:
-        shutil.rmtree(
-            DEV_SERVER / (arguments.world or ("world" if mode == "full" else f"world-{mode}")), ignore_errors=True
-        )
+        empty(saved(arguments.world or ("world" if mode == "full" else f"world-{mode}"), arguments.world is not None))
     if arguments.seed is not None:
         os.environ["WAYFARER_SEED"] = str(arguments.seed)
     if arguments.world:
@@ -78,12 +83,7 @@ def start(arguments):
     }
     drive.room("devserver")
     if arguments.world:
-        other = drive.holder(arguments.world, "devserver")
-        if other is not None and other.folder != DEV_SERVER:
-            raise Failure(
-                f'"{arguments.world}" is open in session {other.owner() or "of your own"}\'s dev server; ask that session to leave it'
-            )
-        drive.borrowed(DEV_SERVER, ROOT / "build/devserver", arguments.world)
+        drive.borrowed(DEV_SERVER, STORE, arguments.world)
     started = time.monotonic()
     with drive.locked(ROOT / "build/launch.lock"):
         server.start(arguments.timeout)
@@ -105,6 +105,25 @@ def start(arguments):
     print(
         f"the dev server is running{kind}{at} at localhost:{port} after {time.monotonic() - started:.0f} s; log in {server.log}"
     )
+
+
+def saved(name, shared):
+    world = DEV_SERVER / name
+    if world.exists() or world.is_symlink():
+        return world.resolve()
+    return (STORE if shared else DEV_SERVER) / name
+
+
+def empty(save):
+    if drive.opened(save):
+        raise Failure(f'start failed: "{save.name}" is open in another game; stop that game first')
+    try:
+        shutil.rmtree(save)
+    except FileNotFoundError:
+        pass
+    except OSError as error:
+        raise Failure(f'start failed: "{save.name}" could not be emptied: {error}') from None
+    save.mkdir(parents=True)
 
 
 def restarting(launched, mode):

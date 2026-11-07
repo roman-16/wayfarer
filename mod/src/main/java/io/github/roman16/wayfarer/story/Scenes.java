@@ -446,7 +446,7 @@ public final class Scenes {
 
     private static List<String> kinds(MinecraftServer server, Ledger ledger, RandomSource random) {
         Progress progress = Progress.of(server);
-        if (progress.done(PULL) && progress.place(CACHE).isEmpty() && ledger.scenes.stream().noneMatch(scene -> scene.kind.equals(CACHE))) {
+        if (progress.done(PULL) && !progress.done(CACHE_QUEST) && progress.place(CACHE).isEmpty() && ledger.scenes.stream().noneMatch(scene -> scene.kind.equals(CACHE))) {
             return List.of(CACHE);
         }
         List<String> kinds = new ArrayList<>(ROAD);

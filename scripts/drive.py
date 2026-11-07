@@ -165,9 +165,14 @@ def opened(world):
 
 def holder(world_name, kind):
     for other in seats(kind):
+        if not playing(other.folder):
+            continue
+        launched = other.folder / "driver" / "launched.json"
+        if launched.exists() and json.loads(launched.read_text()).get("world") == world_name:
+            return other
         for name in ("save.json", "world.json"):
             record = other.folder / "driver" / name
-            if playing(other.folder) and record.exists() and world_name in record.read_text():
+            if record.exists() and world_name in record.read_text():
                 return other
     return None
 

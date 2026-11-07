@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer.story;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.CallingStoneBlockEntity;
+import io.github.roman16.wayfarer.HallStructure;
 import io.github.roman16.wayfarer.ShaftPiece;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.HashMap;
@@ -116,11 +117,12 @@ public final class Places {
 
     record Hall(BoundingBox box, BoundingBox shaft, BlockPos threshold, BlockPos stone, List<BoundingBox> rooms) {}
 
-    static Hall raise(ServerLevel level, ResourceLocation id, BlockPos site) {
-        Structure hall = level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(id);
-        if (hall == null) {
+    static Hall raise(ServerLevel level, ResourceLocation id, BlockPos site, boolean landMade) {
+        Structure registered = level.registryAccess().registryOrThrow(Registries.STRUCTURE).get(id);
+        if (registered == null) {
             throw new IllegalStateException("the game has no structure " + id);
         }
+        Structure hall = landMade && registered instanceof HallStructure halls ? halls.anywhere() : registered;
         StructureStart start = StructureStart.INVALID_START;
         ChunkPos middle = new ChunkPos(site);
         for (int ring = 0; ring <= SPIRAL && !start.isValid(); ring++) {

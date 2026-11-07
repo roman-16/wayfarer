@@ -270,7 +270,7 @@ hash = "3d250b12fd11a56d4d3355f40474f6e69ad2f7693ae20b2f0b8afa6945f30bb6"
 
 [[files]]
 file = "config/tectonic.json"
-hash = "c3212bde9bd4aac94bd3b4c7e290eb71664256b97ec212cd6048b52a6d3d7b94"
+hash = "f1c2afb369af36949ca105e6a00d281bee4aec030ef63fced6907fc49071b924"
 
 [[files]]
 file = "config/toughasnails/thirst.toml"

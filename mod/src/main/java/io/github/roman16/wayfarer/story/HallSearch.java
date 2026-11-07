@@ -101,7 +101,7 @@ final class HallSearch {
     }
 
     static Found raise(ServerLevel level, ResourceLocation id, BlockPos site) {
-        Places.Hall hall = Places.raise(level, id, site);
+        Places.Hall hall = Places.raise(level, id, site, false);
         return new Found(hall.threshold(), hall.box(), hall.rooms());
     }
 

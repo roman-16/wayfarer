@@ -1063,10 +1063,11 @@ It raises, for its build: keeping each act's foes out of the world until their a
   - The world's spawn is on the home land on every seed, since the land round the Last Camp is lifted; a lake at the very centre still moves the spawn to its shore, as vanilla does.
 
 - **Caves open often.** Cave mouths are about twice as common as Tectonic's own: caves reach the surface (`depth_cutoff_start` -0.1) and its noodle and cheese caves run wider (`noodle_additive` -0.2, `cheese_additive` 0.18, `pack/config/tectonic.json`). On four 256-block squares of the states' seed the openings went from 159 to 286, so a team on foot finds a way down most days without digging.
+- **Climates.** Across the home land the climate changes about every 800 blocks along a straight line, and no seed leaves more than about a sixth of its cold land over 1,024 blocks from warmer ground. Tectonic's `temperature_scale` stands at its own 0.25, while `vegetation_scale` 0.125 keeps forests and plains wide (`pack/config/tectonic.json`).
 
-**Why:** On six seeds measured (`ShapeSpike`, dev code that never ships), today's world was about half sea in islands of 2 to 314 km², usually 25 to 47, so most seeds put Act 1's places across water, and two put the Last Camp on an island of 2 km². Built into the game, the shape gives a home land of 117 to 132 km² reaching about 7,750 blocks on every seed measured, a closed sea, and 28 to 34% land beyond it; the acts' own travel, on foot, by ship, by air, then follows the land.
+**Why:** On six seeds measured (`ShapeSpike`, dev code that never ships), today's world was about half sea in islands of 2 to 314 km², usually 25 to 47, so most seeds put Act 1's places across water, and two put the Last Camp on an island of 2 km². Built into the game, the shape gives a home land of 117 to 132 km² reaching about 7,750 blocks on every seed measured, a closed sea, and 28 to 34% land beyond it; the acts' own travel, on foot, by ship, by air, then follows the land. Half that temperature scale put the camp of one seed in four inside an icy core thousands of blocks across, where a team walks for a quarter of an hour without the land getting warmer.
 
-**The spike measured** (`/wayfarer shape <seed> <radius> <step>` and `/wayfarer preview <seed> <home> <sea> <sink>` on the dev server, pictures in `build/shape/`):
+**The spike measured** (`/wayfarer shape <seed> <radius> <step>`, `/wayfarer preview <seed> <home> <sea> <sink>` and `/wayfarer climate <seed> <step>` on the dev server, pictures in `build/shape/`):
 
 | Seed | Today: the camp's land, its reach | With the shape |
 |---|---|---|
@@ -1086,6 +1087,7 @@ It raises, for its build: keeping each act's foes out of the world until their a
 | Added to `full_continents`, the term moved only the biomes: Tectonic's terrain reads `raw_continents`, and land rose under ocean biomes past the Last Sea | The term goes on `raw_continents`, which both read |
 | Tectonic grows islands wherever `raw_continents` falls below -0.5, which the sinks reach | Over the two seas the value is held at -0.5 |
 | The previews' lift of 0.5 and outer sink of 0.15, measured on the climate's continentalness, left the real home land at 56 to 85 km² with inland seas and the world beyond at 40% land: `raw_continents` runs from -0.8 to about 0.45 | A lift of 0.625 and an outer sink of 0.25 gave 117 to 132 km² and 28 to 34% |
+| On eight seeds, read as Tough As Nails reads the land by day (a step colder above y 160) with patches under 512 blocks square counted with what surrounds them, Tectonic's `temperature_scale` 0.125 changed the climate every 941 blocks along a straight line and left 17% of the cold land over 1,024 blocks from warmer ground, 46 and 56% on the two seeds whose camp sat in an icy core; 0.25 gave 811 blocks and 5%, at most 17% | `temperature_scale` 0.25 |
 | On a fresh world of the states' seed the game showed snowy forest on the home land at 6,000 blocks and open water at 9,000; from the Last Camp the nearest Act 2 hall stood 16,209 blocks out, the nearest Act 3 hall 33,187, no Frost Walkers' hall grew, and the nearest frame stood on land at 34,080 | |
 
 ### M40 Where each act's halls stand
@@ -1174,7 +1176,7 @@ It raises, for its build: keeping each act's foes out of the world until their a
   /wayfarer step skip   Done as if played: The Deserter, 1 of 3: ...
   ```
 
-**Why:** In the third server playtest the ford and the swamp's hall, both built while nobody was near, were gone when the team arrived, and nothing in the logs showed why; a quest's place that is not there ends the playthrough for everyone. A check before the team sees the spot mends it without them knowing, and the commands are the last resort a stuck team needs.
+**Why:** In the third server playtest the ford and the swamp's hall, both built while nobody was near, were gone when the team arrived, and nothing in the logs showed why; a quest's place that is not there ends the playthrough for everyone. On exaroton the cause shows in the world's files: after the stop on 06.11., 45 of its 56 region files were gone, among them the Keepers' house built that evening, and the 11 left held only chunks written that evening. A check before the team sees the spot mends it without them knowing, and the commands are the last resort a stuck team needs.
 
 ### M48 The settled and the grey coats speak
 

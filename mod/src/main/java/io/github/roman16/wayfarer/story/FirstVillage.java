@@ -239,7 +239,7 @@ final class FirstVillage {
         Progress progress = Progress.of(server);
         Rotation turn = Rotation.values()[progress.yaws.getOrDefault(TURN, 0f).intValue()];
         Camps.clearing(level, site.atY(Ground.land(level, site.getX(), site.getZ())), CLEARING, false);
-        Places.Hall hall = Places.raise(level, EVIL, site);
+        Places.Hall hall = Places.raise(level, EVIL, site, false);
         Places.empty(level, hall.stone());
         BlockPos well = hall.threshold();
         progress.place(GREEN).ifPresent(any -> green(level, well));
