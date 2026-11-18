@@ -129,35 +129,35 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 
 | Question | Answer |
 |---|---|
-| Who was the stranger? | Wend, a Wayfarer who broke the oath. Young, he walked happily and looked in on the Diggers' hall every few winters, leaving its shard where it lay. Then he hid a shard in a young town's bell to keep it from the Gazebound, served them as their finder while his ember still burned, bought the swamp's witches' sight with a word he broke, stole the Frost Walkers' shard, and one winter night took their bread and stopped walking. His ember went dark in his ninth winter in their grass halls; he became their captain anyway, raised Malgven, and read in the Scribes' books what a thirteenth shard is |
+| Who was the stranger? | Wend, a Wayfarer who broke the oath. Young, he walked happily and looked in on the Diggers' hall every few winters, leaving its shard where it lay. Then he hid a shard in a young town's bell to keep it from the Gazebound, served them as their finder while his ember still burned, bought the swamp's witches' sight with a word he broke, lifted five shards for his masters, stole the Frost Walkers' shard and hid it from them, and one winter night took their bread and stopped walking. His ember went dark in his ninth winter in their grass halls; he became their captain anyway, raised Malgven, and read in the Scribes' books what a thirteenth shard is |
 | Who is Malgven? | A Gazebound evoker Wend raised from a child; it was her hand that held out the bread the night he gave in. She follows the smoke of my fire, visits it as a guest, leaves bread as she once did for him, keeps her name back in his words, "Names are for people who stay", names Wend, and at the frame opens his letter and turns on her own band |
 | Who left the Cache? | A Wayfarer nobody can name, who signed their journal only with the circle mark. They found a place they loved, built a cabin for one winter and stayed; the ember grew small, and one winter it went out. Their stone of one's own waited, wrapped in cloth, for someone who walks |
 | Why can no one hurt Malgven at a fire? | She comes as a guest and leaves in smoke before anything can happen; nothing fights at a fire shared freely |
-| Why did Wend sink the Frost Walkers' shard in the ice? | To keep it from the Gazebound he served. As their finder he led them to the hall, and the Frost Walkers died on its stair; he told his masters the stone was empty, and sank the shard in a frozen lake a day east, where only he knew, as he had hidden one in a young town's bell years before |
+| Why did Wend sink the Frost Walkers' shard in the ice? | To keep it from the Gazebound he served. As their finder he led them to the hall, and the Frost Walkers died on its stair; he told his masters the stone was empty, and sank the shard in a frozen lake east of the hall, where only he knew, as he had hidden one in a young town's bell years before |
 | Who is Drifa? | The last of the Frost Walkers. Twenty winters ago, a girl out hunting, she came home to her people dead on their hall's stair, grey-coat tracks in the snow and the hall empty; she never saw who took the shard. Her people's calling stone shows the past, but only to a Wayfarer's fire, so she has lived on in their winter house and waited for one. She wants a name |
-| Who is Edda? | The last shipwright on the home land's coast. Nobody crosses the sea, and her husband tried three summers ago: he made landfall on the far shore, at a bay where people fish by night and nothing comes for them, and the sea took him on the way home. His wreck and his log lay on the beach near her yard, and she would build no hull for sailing until someone read the log to its end |
+| Who is Edda? | The last shipwright on the home land's coast. Nobody crosses the sea, and her husband tried three summers ago: he made landfall on the far shore, at a bay where people fish by night and nothing comes for them, and the sea took him on the way home. His wreck and his log lie on the beach near her yard. She built hulls for a crossing nobody makes and gives them to the first who will, and finishes his last hull for whoever reads his log to its end |
 | Why has nobody crossed the sea? | Something lives below the open water and comes up at night to look at a light; boats that go out past the last headland do not come back. The coast's people fish within sight of land |
-| Who is Cadoc? | A Gazebound deserter, an Illager born to the Grass Kingdom's outcasts, with their scar over his heart. He served under the stranger for six winters and will not say his name; he knows Malgven from the stranger's company and will not say hers either, and she lets him be; the heir hunts him, and his brother still serves at the outpost above the ford where the caravan found him |
+| Who is Cadoc? | A Gazebound deserter, an Illager born to the Grass Kingdom's outcasts, with their scar over his heart. He served under the stranger for six winters and swore at his fire never to say his name, and he says so; he knows Malgven from the stranger's company and will not say hers either, and she lets him be; the heir hunts him, and his brother still serves at the outpost above the ford where the caravan found him |
 | Who is Murdo? | The Tide Folk's elder. His people keep two shards on one stone under their fire pit, their own and the Drowned City's, and the guardians of their bay bow to anyone who carries an ember. He will not stop a Wayfarer who takes them, only say what it costs |
 | Who were the Drowned City's last people? | The few left when the sea took the most beautiful city on the coast. They climbed to their hall in the red canyons, lifted their shard and carried it to the one bay the eye could not see, the Tide Folk's, and swore the Tide Folk to keep it |
 | Who is Sefa? | The Sand Singers' singer. She sings the worm's song, and the song of the man with a coal in his hand who fought it and ran, which is the funniest they have |
 | Who was the girl in grey? | Malgven, as a child. Thirty winters ago, at Wend's last camp, she held out the Gazebound's bread with both hands, a tiny eye stitched on her coat, and he took it and stopped walking |
-| Who waits in the Jungle Folk's hall? | The Grass King's heir, with Wend's maps of the halls. He found the way in and cannot lift the shard, since only an ember wakes a stone, so he waits for one |
-| Who is the Grass King's heir? | The leader of the Gazebound, of the Grass King's line. He wants a world that is seen, with no crime and no war, as his ancestor's kingdom had for one summer, at the price of everyone being watched |
-| Who was the Grass King? | The king of the grasslands, one of the Twelve Peoples. He kept his people's shard in his crown instead of hiding it, and for one summer he saw everything that stood still in his kingdom. His own people tore it from his crown and sealed it, and drove out his heirs and everyone who followed them |
+| Who holds the shards Wend lifted for the Gazebound? | The Grass King's heir: the witches', the Jungle Folk's, the Grass Kingdom's, the Shadow Circle's and the Grave Keepers'. Only an ember lifts a shard, but once lifted anyone can carry it, and he carries those five to the frame |
+| Who is the Grass King's heir? | The leader of the Gazebound, of the Grass King's line, who holds five shards. He wants a world that is seen, with no crime and no war, as his ancestor's kingdom had for one summer, at the price of everyone being watched |
+| Who was the Grass King? | The king of the grasslands, one of the Twelve Peoples. He kept his people's shard in his crown instead of hiding it, and for one summer he saw everything that stood still in his kingdom. His own people tore it from his crown and sealed it, and drove out his heirs and everyone who followed them. Wend lifted it from under the seal for the heir's father, and the kingdom fell without it |
 
 ## The peoples and factions
 
 | Question | Answer |
 |---|---|
 | Who were the Diggers? | A people of the forests who followed ore down. Their tunnels run under half the world, and many of its old mines are theirs. Over their hall the shard kept their forest dark to the gaze, but they dug on, past the edge of that ground and down into the dark where the gaze's creatures wait out the day, and the dark took them one drift at a time. Their tunnels are full of those creatures still |
-| Who are the swamp's witches? | The Marsh Mothers' heirs, a living people of the swamps, and people, not monsters: no witch comes with the night. They keep a hut on stilts over a black pool because their mothers did, and have forgotten why: it stands over the Marsh Mothers' stair down to their hall. Their brews heal because the pool's water carries the shard's sight, and their water once showed far places |
-| What did Wend bargain with the witches? | As the Gazebound's finder, with his ember still burning, he asked their black water where the halls lay, and it showed him; his maps of the halls began there. He paid with his word that no Gazebound would ever come into the swamp. The next autumn they came and burned two huts looking for the hall, and never found it. The witches curse his name, and the debt is owed by whoever carries his ember |
+| Who are the swamp's witches? | The Marsh Mothers' heirs, a living people of the swamps, and people, not monsters: no witch comes with the night. They kept a hut on stilts over a black pool because their mothers did, and had forgotten why: it stood over the Marsh Mothers' stair down to their hall. Their brews healed while the pool's water carried the shard's sight; since Wend lifted it, the pool is plain water, and they are scattered through the swamps |
+| What did Wend bargain with the witches? | As the Gazebound's finder, with his ember still burning, he asked their black water where the halls lay, and it showed him; his maps of the halls began there. He paid with his word that no Gazebound would ever come into the swamp. The next autumn he led them down the stair himself and lifted the shard for his masters. The witches curse his name |
 | Who are the Tide Folk? | A living people of a sheltered bay who fish by night. Their shard keeps the eye off their boats and the Drowned City's keeps the deep things out of the bay; the bay's guardians bow to an ember |
 | Who are the Sand Singers? | Nomads of the desert who dug a hall under the dunes. A great worm came up out of the deep sand and swallowed their stone; they sing to it, and it keeps the raiders off their ground |
 | What is the worm? | A worm that swallowed the Sand Singers' shard and grew on it. It sees, it rises to a horn's song, and it can be hurt only while it is up |
-| Who were the Jungle Folk? | A people of the jungle whose shard taught them how red dust carries a thought from stone to stone. They built locks that never slept, and the eye never found the way in, so it found them one by one. Their stone sleeps until someone writes their word: wake |
-| Who are the Twelve Peoples now? | Four still live in their land: the swamp's witches, heirs of the Marsh Mothers; the Tide Folk; the Sand Singers; and the Grass Kingdom. The rest are scattered or dead, and only their places remain |
+| Who were the Jungle Folk? | A people of the jungle whose shard taught them how red dust carries a thought from stone to stone. They built locks that never slept, and the eye never found the way in, so it found them one by one. Wend cracked the locks with his maps and lifted their shard for the Gazebound; the locks closed behind him, and their stone sleeps empty until someone writes their word: wake |
+| Who are the Twelve Peoples now? | Two still live as peoples in their land: the Tide Folk and the Sand Singers. The swamp's witches lost their pool and the Grass Kingdom its walls when Wend lifted their shards for the Gazebound: the witches are scattered through the swamps, and the kingdom is the heir's. The rest are scattered or dead, and only their places remain |
 | What are the peoples' places? | What each people left near its hall: a winter house, a ship, a temple, a grave. What they could not carry is still there, and some of it, such as the Frost Walkers' snowshoes, opens the land |
 | Who are the settled? | The villages, towns and capitals: the people who forgot the oath. The gaze burns them, one by one |
 | What do the settled remember? | Wayfarers only as a story told to children: walkers who carried fire and never stayed. They have no name for what burns their towns; they say "they", or "the night" |
@@ -178,17 +178,17 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 | Hall | Land | Act | What is in it | Gift |
 |---|---|---|---|---|
 | The Diggers' | Forest | 1 | The shard, at the end of their tunnels | Trail-sight |
-| The Marsh Mothers' | Swamp | 1 | Sunk under a black pool where no reflection lives, kept by the witches, whose hut stands over its stair | True-sight |
 | The Frost Walkers' | Snow | 1 | Empty: Wend took it and buried it in the ice | Dark-sight |
 | The First Village's | Plains | 1 | Empty: its shard is in Maud's bell | Warmth |
 | The Tide Folk's | Coast | 2 | Two shards, theirs and the Drowned City's, hallowing their bay | Deep-sight, Stare |
-| The Drowned City's | Badlands | 2 | Empty: its last people carried it to the Tide Folk | |
 | The Sand Singers' | Desert | 2 | In the great worm that swallowed it | Far-sight |
-| The Jungle Folk's | Jungle | 2 | Behind locks that never sleep | |
-| The Grass Kingdom's | Savanna | 3 | Under the seal, powering the ward around the kingdom | Sky-veil |
-| The Shadow Circle's | Dark forest | 3 | Taken to a Gazebound mansion | Night-walk |
 | The Scribes' | Mountains | 3 | Among their books, which speak of a thirteenth | The Flare |
-| The Grave Keepers' | Old-growth taiga | 3 | Among the dead they buried | Hush: the dead are never seen |
+| The Drowned City's | Badlands | | Empty: its last people carried it to the Tide Folk | |
+| The Marsh Mothers' | Swamp | | Empty: Wend lifted it for the Gazebound, and the heir carries it | |
+| The Jungle Folk's | Jungle | | Empty behind its locks: Wend lifted it for the Gazebound, and the heir carries it | |
+| The Grass Kingdom's | Savanna | | Empty under its broken seal: Wend lifted it for the heir's father, and the heir carries it | |
+| The Shadow Circle's | Dark forest | | Empty: Wend lifted it, the Gazebound kept it in a house copied from the Circle's halls, and the heir carries it | |
+| The Grave Keepers' | Old-growth taiga | | Empty among the dead they buried: Wend lifted it, and the heir carries it | |
 
 ## The ending
 
@@ -201,7 +201,7 @@ The truth behind the scenes, which this pack only hints at: in the deep dark, it
 
 | Question | Answer |
 |---|---|
-| What opens Keep the oath? | The trust of at least two of the living peoples, who take the shards back and hide them again |
+| What opens Keep the oath? | The trust of both living peoples, the Tide Folk and the Sand Singers, who take the shards back and hide them again: I left the Tide Folk at least one of their shards, and the worm lives |
 | What opens Close the Eye? | The words that close an Eye, which only the Scribes' books hold and only Alruna can read, or what she taught me of them |
 | Does any door end the silence? | No. Far below, in the deep dark, the sculk creeps on |
 

@@ -15,7 +15,7 @@ Development checks each change in the running game as far as the change needs, a
 
 ## The order
 
-1. `just voice record`, which records every line the change wrote or rewrote, then `just lint`, fixing every finding. The report names what was recorded, what it cost and the scenes to hear.
+1. `just voice prune`, which deletes the clips of the texts the change rewrote, then `just lint`, fixing every finding. Lines and speakers waiting for the recording are no finding: recording waits for the user's word. The report says how many wait.
 2. The walkthrough of the list, fixing every finding.
 3. `just test`.
 4. The report.

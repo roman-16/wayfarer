@@ -635,8 +635,6 @@ def voices():
             yield f"story/voices.toml: {voice} needs both a description and a preview text, or neither"
         if "text" in spec and not PREVIEW_TEXT[0] <= len(spec["text"]) <= PREVIEW_TEXT[1]:
             yield f"story/voices.toml: {voice}'s preview text is {len(spec['text'])} characters; ElevenLabs needs 100 to 1,000"
-        if not (ROOT / f"story/voices/{voice}.json").exists():
-            yield f"story/voices.toml: {voice} is not designed yet; the sound skill designs it with just voice design {voice}"
     lang = json.loads(LANG.read_text())
     patterns = [pattern for keys in config["lang"].values() for pattern in keys]
     for source in sorted((MOD / "main/java").rglob("*.java")):
@@ -653,15 +651,6 @@ def voices():
         if len(sharing) > 1:
             yield f"story/voices.toml: {voice} reads {' and '.join(sorted(sharing))}, who both speak in {step}"
     voiced = spoken.readers(config)
-    unvoiced = {}
-    for line in lines:
-        if line.by not in voiced:
-            unvoiced.setdefault(line.by, line.step)
-    for speaker, step in sorted(unvoiced.items()):
-        yield (
-            f"story/voices.toml: {speaker} speaks in {step}, and no voice reads them: add them to a voice's reads, "
-            "or design one with the sound skill"
-        )
     for line in lines:
         if line.by in voiced and not line.recordable():
             words = ", ".join(sorted(set(spoken.PLACEHOLDER.findall(line.text))))
@@ -673,16 +662,6 @@ def voices():
     for (voice, shown), texts in sorted(worded.items()):
         if len(texts) > 1:
             yield f'story/: {voice} says "{shown[:48]}" with different tags: {" | ".join(sorted(texts))}'
-    done = spoken.recordings()
-    silent = [
-        take
-        for take in takes
-        if (ROOT / f"story/voices/{take.voice}.json").exists() and not spoken.recorded(done, take)
-    ]
-    if silent:
-        named = ", ".join(f"{take.line.group}:{take.line.number} ({take.voice})" for take in silent[:SILENT_NAMED])
-        more = f" and {len(silent) - SILENT_NAMED:,} more" if len(silent) > SILENT_NAMED else ""
-        yield f"{len(silent):,} lines are silent: {named}{more}; just voice record"
     lang = json.loads(LANG.read_text())
     for key, text in sorted(lang.items()):
         if spoken.TAG.search(text):
@@ -698,6 +677,47 @@ def voices():
     for path in sorted((ROOT / "story/voices").glob("*.json")):
         if path.name != "recordings.json" and path.stem not in config["voices"]:
             yield f"story/voices/{path.name} keeps a design for {path.stem}, which story/voices.toml does not have"
+
+
+def listed(items):
+    shown = ", ".join(items[:SILENT_NAMED])
+    return f"{shown} and {len(items) - SILENT_NAMED:,} more" if len(items) > SILENT_NAMED else shown
+
+
+def amount(number, one, many):
+    return f"{number:,} {one if number == 1 else many}"
+
+
+def waiting():
+    config = spoken.voices()
+    lines = spoken.lines(config)
+    voiced = spoken.readers(config)
+    unvoiced = {}
+    for line in lines:
+        if line.by not in voiced:
+            unvoiced.setdefault(line.by, line.step)
+    undesigned = [voice for voice in sorted(config["voices"]) if not (ROOT / f"story/voices/{voice}.json").exists()]
+    done = spoken.recordings()
+    silent = [
+        f"{take.line.group}:{take.line.number} ({take.voice})"
+        for take in spoken.takes(config, lines)
+        if (ROOT / f"story/voices/{take.voice}.json").exists() and not spoken.recorded(done, take)
+    ]
+    speakers = [f"{speaker} ({step})" for speaker, step in sorted(unvoiced.items())]
+    notes = []
+    if silent:
+        notes.append(
+            f"{amount(len(silent), 'line is', 'lines are')} silent, waiting for the recording: {listed(silent)}"
+        )
+    if speakers:
+        notes.append(
+            f"{amount(len(speakers), 'speaker has', 'speakers have')} no voice yet, waiting for the recording: {listed(speakers)}"
+        )
+    if undesigned:
+        notes.append(
+            f"{amount(len(undesigned), 'voice is', 'voices are')} not designed yet, waiting for the recording: {listed(undesigned)}"
+        )
+    return notes
 
 
 def interface():
@@ -948,6 +968,8 @@ def main():
     ]
     for finding in findings:
         print(finding)
+    for note in waiting():
+        print(note)
     if findings:
         sys.exit(f"{len(findings)} rule findings")
 

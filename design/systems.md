@@ -49,7 +49,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Failing | Falling never fails a quest; a story that goes wrong turns the quest into a worse version; a challenge that goes wrong lets its step be tried again, resetting only the quest's own people and places; a main quest always leaves a way on | D6 |
   | Clocks | A few quests carry a clock the journal shows, and turn when it runs out | D6 |
   | Rewards | Things and story, never XP: gear, supplies, a people's gift, a shard and its gift. A reward waits in the journal until claimed, so every player claims their own, and a player who was away finds every reward they missed | D7, D11 |
-  | Unlocks | Ships, flight, sight through stone, the memories and the frame open with their quests, never with a number of shards | D15 |
+  | Unlocks | Ships, sight through stone, the memories and the frame open with their quests, never with a number of shards | D15 |
   | One state | Quests, choices, shards and people belong to the world, as far as the team has got; what one player does, the world does | D11 |
   | The day | "Make for the caravan" is always there; a quest can keep the player out for a night and set the clock itself, or keep them at a place for a while | D2, D14 |
   | Lines in chat | Every line goes to everyone, within reach as a subtitle and farther away in chat, and waits for its voice before the next line of its own conversation | D11, `narration.md` |
@@ -84,7 +84,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Pages | Every book and letter read, to read again |
   | Conversations | Every talk with the voice, Malgven and the people |
 
-- The map is JourneyMap's world map, opened from its tab in the journal or with M. There is no minimap anywhere on screen, no cave mapping, no radar and no waypoints of the player's own; the places they have found are added by the Wayfarer mod: the Last Camp, Tollbridge and the caravan from the start, and every place a quest leads to once a player has stood within 64 blocks of it, his first camp, the old tunnels, the ford and the rest, so the map keeps where the team has been. The caravan's newest camp is a lit campfire named The caravan, and every camp it made before is a faint campfire whose name shows only under the pointer ("The caravan's camp, day 7"), so a long road reads as a trail without burying the places' names; a camp within 64 blocks of a named place is left to that place. Map Atlases leaves the pack.
+- The map is JourneyMap's world map, opened from its tab in the journal or with M. There is no minimap anywhere on screen, no cave mapping, no radar and no waypoints of the player's own; the places they have found are added by the Wayfarer mod: the Last Camp, Tollbridge and the caravan from the start, and every place a quest leads to once a player has stood within 64 blocks of it, the old tunnels, the ford, the winter house and the rest, so the map keeps where the team has been. The caravan's newest camp is a lit campfire named The caravan, and every camp it made before is a faint campfire whose name shows only under the pointer ("The caravan's camp, day 7"), so a long road reads as a trail without burying the places' names; a camp within 64 blocks of a named place is left to that place. Map Atlases leaves the pack.
 - The compass is on screen from the first moment of the world, before the ember wakes: until then it reads "the ember is cold" and shows only friends, the player's own tent (▲) and their stones. A tent standing more than 256 blocks away gets its own line under the compass, so a tent left at an old camp is never lost. The first time a goal shows, the task panel says to follow its mark at the top of the screen.
 - The compass shows the tracked quest's goal, the player's friends and their stones. A goal known by feeling shows only the ember's flaring, in gold, and its guttering, in blue, with no distance until the exact mark within 256 blocks (D6). Every fall leaves its own stone where the player fell; the compass shows all of them, the one holding the most the strongest. In the journal a stone can be tracked, so the compass points at it like a quest, or let go, which takes it off the compass, as when a player gives their old things up and starts afresh.
 
@@ -183,7 +183,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Case | The camp |
   |---|---|
   | The team is spread apart | Ahead of the group with the most players, on the main quest's way |
-  | Evening comes at sea | On the nearest land ahead; a night on the water only when a quest wants it, as in The Crossing (2.2) |
+  | Evening comes at sea | On the nearest land ahead; a night on the water only when a quest wants it, as in The Crossing (2.1) |
   | Someone is underground | On the surface near where they went down |
   | A quest keeps everyone away for days | No camp; the quest says "camp alone tonight" and sets the clock (D2) |
   | The ground | Where a real camp would stand: level, neither a hollow nor an exposed top, near water but not in it, with grass and wood near, and at least 32 blocks from any structure. The whole camp is judged, every few blocks across it: more than an eighth of its ground under water, or a rise of more than 4 blocks across the fire's circle, passes a spot over. These are wishes: within 128 blocks past the nearest spot out of sight the camp takes the best spot it finds and settles for it, and never walks on to find a better land. A wagon stands on ground within 2 blocks of its own middle, on at most 2 blocks of fill of the land's own surface block, and goes to another spot round the fire rather than onto a ledge; every piece sits on its land as M59 says |
@@ -238,7 +238,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
 - By day, danger is shade, storms, people and the land: dense forests and caves keep the gaze's creatures alive in daylight, a thunderstorm darkens the sky enough for them to walk, the Gazebound are people and the sun means nothing to them, predators hunt, and the cold, the heat and the water are the land's gates.
 - A quest gets no exception from the stillness rule, which dims the ember only after a whole day in one place and brings the horde after two; a quest that keeps the player longer happens on a living people's hallowed land (S6), where the gaze cannot see them.
 - No night event comes from a calendar. A night the story already holds (a hold, a scripted hard night) takes no other with it, and every horde ends when the sun rises. While the story holds a night, no bed takes anyone, and the refusal says why: "Not tonight. The sky over the ridge is red."
-- The gaze finds the caravan when a quest calls for it (The Bell, The Hollow, The Empty Grave), when the caravan has slept three nights in one place, or by a chance each night that grows with the player's shine, and more while Maud's bell is with the caravan: the chance is the shine over 128, doubled while the bell travels with it, and never more than one in four (`balance.toml` `[shine]` `found_most`), rolled once as the camp's evening begins, and never on a night the story already holds (a hold, a red moon, a visit at the fire), on the night after a sleepless one, or on the night a main quest ends away from the caravan's fire. Within the caravan's fire's circle the ember never dims for staying still, since the caravan moves on each morning. When it falls, the ember warns as the camp goes up: "The ember is uneasy tonight." That night nobody sleeps, no tent opens, the fire's circle holds nothing back, the clock runs on at its own speed instead of waiting at 20:00, the horde comes at midnight, and the next day begins on the road at 6:00. The horde holds only the Overworld's creatures: The Hordes' Nether ones are swapped for their Overworld kin as they spawn (`generator/nether.toml` `[creatures]`), and whatever of it still stands after sunrise leaves the moment nobody sees it. The horde is sized for the player it comes for: each wave a few of the gaze's creatures per player online, growing with the shine and never with the days (`balance.toml` `[nights]`), and a player who falls is let go until dawn, so waking by the fire never wakes into the horde: "Whatever is looking has seen enough of you tonight. It looks elsewhere until dawn." The rest of the team still holds. The red moon comes only when the story wants it, once an act, on its climax (`story.md`, S25).
+- The gaze finds the caravan when a quest calls for it (The Bell, The Hollow), when the caravan has slept three nights in one place, or by a chance each night that grows with the player's shine, and more while Maud's bell is with the caravan: the chance is the shine over 128, doubled while the bell travels with it, and never more than one in four (`balance.toml` `[shine]` `found_most`), rolled once as the camp's evening begins, and never on a night the story already holds (a hold, a red moon, a visit at the fire), on the night after a sleepless one, or on the night a main quest ends away from the caravan's fire. Within the caravan's fire's circle the ember never dims for staying still, since the caravan moves on each morning. When it falls, the ember warns as the camp goes up: "The ember is uneasy tonight." That night nobody sleeps, no tent opens, the fire's circle holds nothing back, the clock runs on at its own speed instead of waiting at 20:00, the horde comes at midnight, and the next day begins on the road at 6:00. The horde holds only the Overworld's creatures: The Hordes' Nether ones are swapped for their Overworld kin as they spawn (`generator/nether.toml` `[creatures]`), and whatever of it still stands after sunrise leaves the moment nobody sees it. The horde is sized for the player it comes for: each wave a few of the gaze's creatures per player online, growing with the shine and never with the days (`balance.toml` `[nights]`), and a player who falls is let go until dawn, so waking by the fire never wakes into the horde: "Whatever is looking has seen enough of you tonight. It looks elsewhere until dawn." The rest of the team still holds. The red moon comes only when the story wants it, once an act, on its climax (`story.md`, S25).
 
 **Why:** A clock the story drives lets every night land where the people are and every hard night land as a set piece, and easing out keeps the sky moving so time never visibly stops. Counting days in nights slept cannot be cheated, and daylight that is safe only in the open keeps the forest, the storm and the Gazebound dangerous on a long day's road.
 
@@ -319,7 +319,7 @@ Every mechanic the pack needs to tell `story.md`, why the world has it, and the 
   | Found | The chance each night that the gaze finds the caravan grows with it (M6) |
 
 - It is felt, never shown as a number: the ember on the compass burns brighter, the player's eyes glow in the dark, and the journal says it as "I": "I shine like a lantern now. They find me before I find them."
-- The eyes glow from the evening Cadoc first sees them (2.7) on, in the gaze's violet: the eyes each player's skin draws light up, whatever their size, shape and place, the white of an eye paler than the rest, on the hat layer where that is what shows. The game finds them in the skin itself, so every machine lights the same pixels. They are seen by friends, in third person and on the inventory's figure, brighter the more of the twelve shards the team has taken, fading as the light around the player rises and gone from light 8 up (`balance.toml` `[shine]` `glow_light`).
+- The eyes glow from the evening Cadoc first sees them (2.3) on, in the gaze's violet: the eyes each player's skin draws light up, whatever their size, shape and place, the white of an eye paler than the rest, on the hat layer where that is what shows. The game finds them in the skin itself, so every machine lights the same pixels. They are seen by friends, in third person and on the inventory's figure, brighter the more of the twelve shards the team has taken, fading as the light around the player rises and gone from light 8 up (`balance.toml` `[shine]` `glow_light`).
   - A face whose eyes cannot be read stays dark, as under a mask: a skin with no eyes drawn, a visor or sunglasses over them, a single eye under a patch, or a face the game is unsure of. Cadoc's line comes all the same.
   - Nobody corrects a guess: there is no setting, and the face test in `just test` holds a glow off the eyes to at most 1 in 16 of the community faces in `generator/faces.toml`.
   - Eyes of two sizes or two colours both glow, eyes up to a pixel off the mirror are still a pair, and a closed eye pairs with the open one. A full helmet covers them and an invisible player shows none.
@@ -380,9 +380,6 @@ Act 2:
 | Activity | System | Source |
 |---|---|---|
 | Sail | Sailing ships, the sea's own scenes (M4), and a night held on the water when a quest wants it | Small Ships, and the Wayfarer mod |
-| Earn | A people's trust, a number per people in the world's state: none, enough to let the team in, or full, which counts towards Keep the oath; raised by a short chain of small quests, each with a turn and never a chore, the first T1 in Act 1 (`story.md`, S29) | The quest engine |
-| Raid | Fighting into a Gazebound camp to free someone or take something back | Their outposts and mansions, Improved Mobs, the quest engine |
-| Solve | Redstone locks built into a hall's template, and seals that open to a word typed into them | The generator, and a seal block of the Wayfarer mod |
 | Survive | Land that kills with heat and cold: body temperature, with the peoples' gifts and the Warmth gift (S6) as warmth and shade | Tough As Nails, with its thirst switched off (`enable_thirst`) |
 | Hunt | One unique creature: read about it, find what it hates, track it, fight it | The Wayfarer mod's own creatures, animated with GeckoLib |
 
@@ -391,12 +388,18 @@ Act 3:
 | Activity | System | Source |
 |---|---|---|
 | Sneak | Creatures and Gazebound see and hear: light, weather, stance and movement decide how visible the player is, and noise draws them, a voice in voice chat as much as a clang; a voice also sets off sculk sensors and the Warden as a footstep does, unless it whispers, talks while sneaking or speaks only to its group | Attract to Sound; the Wayfarer mod, through Simple Voice Chat |
-| Disguise | Gazebound robes make their people take the player for one of them, unless one looks too long or too close; True-sight (S6) shows others' disguises | The Wayfarer mod |
-| Heist | Planned at the camp, quiet or loud, with roles, then carried through by sneaking, disguise or a raid | The Wayfarer mod, on Sneak and Disguise |
-| Duel | One against one in a ring the quest marks, which the others watch and cannot step into | Better Combat and Combat Roll, and a GeckoLib champion |
 | Chase | A rider who flees along a route; losing sight of him too long tries the step again | Easy NPC's flee objective, vanilla horses, the Wayfarer mod |
-| Escort | People walked through danger and kept alive | Easy NPC's follow-player objective |
 | Carry | Someone on the player's back: no sprinting, and running wakes them | The Wayfarer mod |
+
+The side quests (`story.md`, S17):
+
+| Activity | System | Source |
+|---|---|---|
+| Earn | Work for someone until they do what the team needs, as Edda's timber for her husband's last hull (W13) | The quest engine |
+| Raid | Fighting into a Gazebound camp to free someone or take something back | Their outposts and mansions, Improved Mobs, the quest engine |
+| Solve | Locks built into a place's template, opened by looking: levers, a word, weights | The generator, and the Wayfarer mod |
+| Heist | Planned at the camp, quiet or loud, with roles, then carried through by sneaking or a raid | The Wayfarer mod, on Sneak |
+| Escort | People walked through danger and kept alive | Easy NPC's follow-player objective |
 | Tame | Vanilla taming, and the horse that never sleeps with a rule of its own | Vanilla, and the Wayfarer mod |
 
 - Only the land and the weather can make a player dangerously hot or cold: deserts and badlands by day, icy land by night. The season colours the land and brings its snow, but never makes a warm land hot or a cool one icy (M25). The first time a player is too hot or too cold, the task panel says what helps, and one step before it, while the body is still only warm or cool and heading further, it says so while there is time: "Getting hot: find shade or water soon". Cooling or warming pieces count by halves rounded up, so one leaf poncho cools a step and three or four cool two. Fires, lanterns, ovens, running, armour and what they hold warm or cool them, but never past warm or cool, and in the cold lands a fire still brings them back to comfortable. Shade is anything over the player's head, a roof, a canopy, a cave: out of the sun and out of the wind the land's heat and cold do not reach them, at any height (the Wayfarer mod lifts Tough As Nails' altitude cap, `design/mods.md`), so the panel's "get into shade" and "out of the wind" are true on a mountain as in a valley.
@@ -435,10 +438,10 @@ Act 3:
   | Land: deep water | Drowning, and no sight far | The snorkel, the flippers, Deep-sight |
   | Land: darkness | No light, and the gaze's creatures live in the dark | Torches, Dark-sight |
   | Strength | A harder fight, and maybe a fall | Better gear (M18) |
-  | Trust | Forcing a way in makes the people hostile and loses their trust, a choice that comes back (D1) | Their trust (Earn) |
+  | Trust | Forcing a way in makes the people hostile and loses their trust, a choice that comes back (D1) | Their trust |
   | Tool | A lesser pick breaks it 8 times slower, and drops to its last use as the block breaks: one pick, one block | A pick of the right material |
   | Travel: sea | A vanilla boat can cross, but on open water the ember shines like a beacon, and the sea's creatures and storms come (M22) | Ships, in Act 2 |
-  | Travel: sky | The hang glider flies, but in the air the phantoms see the player | Flight in Act 3, and Sky-veil |
+  | Travel: sky | The hang glider flies, but in the air the phantoms see the player | The Ember Veil (M18), and staying low |
   | Knowledge | No way through: these are the real walls | The word, the map, the story |
 
 - The gifts are passive, except the Flare, which is on a key and holds one charge: resting at a fire fills it again. In a team everyone has the gifts of the shards the team took (D11):
@@ -446,20 +449,16 @@ Act 3:
   | Gift | What it does | What it opens |
   |---|---|---|
   | Trail-sight | Tracks always glow, without the ember sense | Faster tracking |
-  | True-sight | Disguises, illusions and invisible creatures show as faint outlines | Hidden doors in the halls, and Gazebound in disguise |
   | Dark-sight | A dim sight in the dark | Unlit caves as a way through |
   | Warmth | The ember warms the player like a fire | The cold lands |
   | Deep-sight | Clear sight far under water | Underwater passages, such as a hall's side door |
   | Stare | The weaker of the gaze's creatures flee the player's look | Holding without fighting |
   | Far-sight | Through the spyglass, in the hand or its own slot, the view zooms further, and a strike marks a place on the map from far off | Finding places sooner |
-  | Sky-veil | Phantoms do not see the player | Safe flight |
-  | Night-walk | At night, creatures do not notice the player unless they run | The road by night |
   | The Flare | A burst of the ember's light that crumbles the gaze's creatures within 16 blocks, once until the player rests at a fire | Breaking a horde |
-  | Hush | While the player crouches, their heart's light sinks like a dead man's, and the gaze's creatures lose them | Hiding |
 
 **Why:** A ward closes every way around a seal, which unbreakable blocks alone would not, and it has its reason in the lore already. A price for every soft gate lets a bold player go early without making the key pointless. Passive gifts are felt without being managed, and the one gift worth aiming and timing gets a key; a single charge that only a fire fills lets the Flare break a horde, not every wave, and makes when to spend it the choice. A lesser pick that is spent on one block makes every breach cost a mend.
 
-**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/WardSpike.java`, `GateSpike.java` and `GiftSpike.java`, dev code that never ships, with its numbers in `balance.toml` `[flare]` and `[tool_gate]`): a ward over a hall of 11 by 7 by 11 blocks held against a player breaking and placing, a bucket emptied from inside and from outside, TNT and a creeper at its walls (25 and 8 of its blocks kept while the ground outside cratered), a piston pushing into it, water, lava and fire coming in through its windows, an Enderman beside a grass wall (one outside took a block) and zombies at its door (without the ward they broke it within a minute), and let a fallen player's grave stand; lifted, the same player broke its wall. A lesser pick takes 8 times as long on gate stone as it would if it were the right one, 75 s for diamond and 100 s for iron where netherite takes 8.3 s, drops nothing, and is at its last use once the block breaks; a bare hand takes vanilla's 250 s. Crouching with Hush, four husks hunting a player lost them within a second and stayed lost, crouching without it changed nothing, a husk the player struck still came for them, and standing up brought all four back. The Flare, on a key, crumbled the three husks within 16 blocks and left one 28 blocks off and a pillager standing, refused a second time, and was full again once the player had rested at a fire. Tough As Nails as the pack ships it, measured on a player standing still:
+**The spike works** (`mod/src/dev/java/io/github/roman16/wayfarer/spike/WardSpike.java`, `GateSpike.java` and `GiftSpike.java`, dev code that never ships, with its numbers in `balance.toml` `[flare]` and `[tool_gate]`): a ward over a hall of 11 by 7 by 11 blocks held against a player breaking and placing, a bucket emptied from inside and from outside, TNT and a creeper at its walls (25 and 8 of its blocks kept while the ground outside cratered), a piston pushing into it, water, lava and fire coming in through its windows, an Enderman beside a grass wall (one outside took a block) and zombies at its door (without the ward they broke it within a minute), and let a fallen player's grave stand; lifted, the same player broke its wall. A lesser pick takes 8 times as long on gate stone as it would if it were the right one, 75 s for diamond and 100 s for iron where netherite takes 8.3 s, drops nothing, and is at its last use once the block breaks; a bare hand takes vanilla's 250 s. The Flare, on a key, crumbled the three husks within 16 blocks and left one 28 blocks off and a pillager standing, refused a second time, and was full again once the player had rested at a fire. Tough As Nails as the pack ships it, measured on a player standing still:
 
 | | Cold, snowy plains at night | Heat, desert at noon |
 |---|---|---|
@@ -482,14 +481,13 @@ What it showed:
 | The runes, the enchanting table's letters, did not show in the dev client while other particles did; Subtle Effects changes how those letters are drawn | The runes' look is chosen with the art skill and seen in the exported pack |
 | The game asks how fast a tool digs and whether it is the right one on the server and the client alike, from tags both know | Gate stone is a block tag, the right material is vanilla's own tool-tier tag, and the crack on screen slows with the rule |
 | A pick set to its last use breaks on its next use in vanilla | One pick, one block holds only with M12's last use, where the pick is a bare hand |
-| A monster's target is set through one event, which Hush refuses, but a monster already hunting keeps its target until told; a monster the player strikes in the last 4 seconds may hunt them | Hush refuses new targets and clears the old ones each second, and striking from hiding gives the player away |
 | Resting at a fire is the Warm effect the fire gives, which other code can see arrive | The Flare fills again when the ember warms |
 | Tough As Nails' heat makes the player slightly faster instead of weaker | The Wayfarer mod adds the weakness while the player is overheated |
 | The Flare and the spike journal both took F7 | Keys are chosen with every mod's bindings in view (M10) |
 
 ### M12 The camp and the gear
 
-- Nomadic Tents is changed so that placing a tent builds the whole tent at once, without a frame or a mallet; packing it up is one click. Its own `enter_when_safe` and `pickup_when_safe` are switched on, so nobody enters or packs up a tent while monsters are near (D13); the story's people never count as monsters, though Cadoc, the witches and the hooded woman wear monsters' bodies. A tent keeps no invisible blocks round its walls: what stands in its corners stays when it goes up and when it is packed. Its one invisible block fills the smoke hole at the top of its roof, so nobody drops through it into the tent's shell. When a tent refuses, the player who pitched it sees for the stamp's linger time what is wrong, outlined: whatever stands in the way in bone, and each missing block of ground in the stamp's danger red. It stays the pack's tent because it is the one whose inside is a folded space: Let's Do Camping and Simply Tents pitch an ordinary tent in the world, and both are All Rights Reserved.
+- Nomadic Tents is changed so that placing a tent builds the whole tent at once, without a frame or a mallet; packing it up is one click. Its own `enter_when_safe` and `pickup_when_safe` are switched on, so nobody enters or packs up a tent while monsters are near (D13); the story's people never count as monsters, though Cadoc and the hooded woman wear monsters' bodies. A tent keeps no invisible blocks round its walls: what stands in its corners stays when it goes up and when it is packed. Its one invisible block fills the smoke hole at the top of its roof, so nobody drops through it into the tent's shell. When a tent refuses, the player who pitched it sees for the stamp's linger time what is wrong, outlined: whatever stands in the way in bone, and each missing block of ground in the stamp's danger red. It stays the pack's tent because it is the one whose inside is a folded space: Let's Do Camping and Simply Tents pitch an ordinary tent in the world, and both are All Rights Reserved.
 - The first time anyone steps into a tent, a lantern hangs from its roof two blocks in from the door, unless something already lights it; a tent is never pitch dark inside.
 - A bed inside a tent sleeps only when a lit campfire burns within 16 blocks of the tent outside (D13, `[tent]` `fire_blocks`), room enough to find flat ground for a tent beside the fire. A tent stands only on ground: every block of its floor has ground at most one block below it, so no player fits under it, and elsewhere a tent needs ground right under every block of its floor, and refuses with "Fill the outlined holes, or find flatter ground." Grass, flowers, saplings, mushrooms and whatever else breaks at a touch and can be walked through give way where its walls and door go up, popping off as a hand would break them; anything solid, a fluid, a block with something inside it, and what the story protects, such as the caravan's own tents, still keeps it from standing there, and the refusal names it: "A spruce log stands where the tent goes up." Nor does a tent rise through a body: "Step back: you're standing where the tent goes up.", or "Something stands where the tent goes up." for a creature. A tent anyone is inside is never taken down by the story: a player who logs in inside a tent counts as standing at its door, and the caravan brings back only tents nobody is in.
 - The first tent, the stranger's, is the kind the land around the Last Camp would build, the same for the whole team: a yurt in cold land and mountains, a tepee on plains, meadows and in forests, a Bedouin tent in desert and badlands, an indlu on the savanna, a shamiyana in jungle and swamp. The Gear page's camp row then grows that kind, tiny to large. Every tent is a world of its own, but the night is the team's: a player lies down in their tent and stays lying until two thirds of the team sleep, in their tents or out, and then it is morning for everyone at once (`[sleep]` `players_percentage`). A pitched tent's inside keeps running while its owner is out, so a furnace in it finishes its work; a packed tent stops.
@@ -542,7 +540,7 @@ What it showed:
 - **Backpacks.** Stack upgrades go up to tier 3.
 - **Wild animals.** Twice vanilla's: up to 20 around each player instead of 10, since breeding and planting are cut (D7) and hunting feeds the team.
 - **Floating islands.** Terralith's sky islands go; its sky biomes stay as plain land.
-- **Witches as monsters.** Witches are a living people, the Marsh Mothers' heirs (`story.md`, S29), so none spawn at night, in The Hordes' waves, in raids or in huts, and lightning leaves a villager a villager. The mods' witch huts stand empty, the witches' old huts; the swamp's witches are the story's people.
+- **Witches as monsters.** Witches are a living people, the Marsh Mothers' heirs (`story.md`, S6), so none spawn at night, in The Hordes' waves, in raids or in huts, and lightning leaves a villager a villager. The mods' witch huts stand empty, the witches' old huts; the swamp's witches are the story's people.
 - **Animals added twice.** Each pair from Naturalist and Wilder Nature, and the crab from Friends and Foes as well, is set side by side in the workshop (`tooling.md`, T1), and the one that looks and behaves better stays, with what it drops counting, since hunting is now a main source of food.
 - **Structures.** About one place of a kind every so many blocks:
 
@@ -568,7 +566,7 @@ What it showed:
 - **The dragon in Blind it** fights with the sight it was given: every shard set adds to its health and to the crystals that heal it, and with few shards it is half-blind, missing with its breath and its charges and losing the player when they move out of its line. It scales for a team of one to four.
 
   ```text
-  Five shards in the frame. The dragon's breath sweeps a pillar you left a moment ago.
+  Six shards in the frame. The dragon's breath sweeps a pillar you left a moment ago.
   <The gaze> I can't see you. I can almost see you.
   ```
 
@@ -604,7 +602,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | Part | What it does today | Verdict |
 |---|---|---|
 | The ember (`Ember`) | Wakes after the first day, one per team | Kept, changed: wakes at the end of P2, and a shared fire's light is one for the world (D11) |
-| Halls and shards (`Halls`, `Shards`, the calling stone, the halls) | Twelve halls in two distance tiers, a shard on each calling stone | Kept, changed: the calling stone is the calling stone, the halls have their fates (S6), the two tiers become the three acts' rings, and the Diggers' and the Marsh Mothers' halls are put down ahead by their quests (S24, S29); halls stay free of spawns, now as hallowed ground |
+| Halls and shards (`Halls`, `Shards`, the calling stone, the halls) | Twelve halls in two distance tiers, a shard on each calling stone | Kept, changed: the calling stone is the calling stone, the halls have their fates (S6), the road reaches six of them across the three acts' lands, and every one is put down ahead by its quest (M40); halls stay free of spawns, now as hallowed ground |
 | The compass (`Compass`) | Points at shards, friends and the grave | Kept, changed: the tracked quest's goal as the player knows it (D6), friends and stones (M2) |
 | Leads (`Leads`) | Places someone told the player of | Folded into the quest engine: a lead is a goal someone told of (S7) |
 | The fire (`Fire`, `Warm`) | The circle keeps monsters off, resting warms the ember, the voice speaks at rest | Kept, changed: the circle and the warming stay, and the voice's long talks and the night's stories play at the caravan's fire (S4, M12) |
@@ -613,9 +611,9 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | Daylight (`Daylight`) | The gaze's creatures crumble in the sun | Kept |
 | Stillness (`Stillness`) | Staying in one place dims the ember, then brings the horde | Kept, changed: counts whole days in one place (M6, M57) |
 | Tents (`Tents`) | No spawns inside; thrown out on a Sleepless Night | Kept, changed: one-step tents, sleep by a fire (M12) |
-| The sky (`Gaze`) | In the air phantoms hunt the player, held off longer by the Ember Veil | Kept: the sky stays dangerous, Sky-veil is a shard's gift, and the Ember Veil stays as gear (M18) |
+| The sky (`Gaze`) | In the air phantoms hunt the player, held off longer by the Ember Veil | Kept: the sky stays dangerous, and the Ember Veil stays as gear (M18) |
 | Unlocks (`Rules`) | Ships at four shards, aircraft and gliding at six | Changed: they belong to quests (D15) |
-| Sight (`Sight`) | Monsters seen through stone at seven shards | Changed: the clock's second stage, at the Jungle Folk's hall (S12) |
+| Sight (`Sight`) | Monsters seen through stone at seven shards | Changed: the clock's second stage, at the Sand Singers' hall (S12) |
 | Difficulty (`Difficulty`) | Improved Mobs harder per shard and per day | Changed: follows the shine (M9) |
 | Graves (`Graves`) | The grave, marked on the compass | Changed: stones (M2) |
 | Hordes in halls (`Hordes`) | A horde passes over someone sheltering in a hall | Kept |
@@ -623,7 +621,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 | Malgven (`Malgven`) | Visits the fire and leaves food | Kept, changed: her part in S10 |
 | Story, books, notes and journal (`Story`, `Library`, `Notes`, `Journal`) | The voice's lines, the books, the notes, the FTB Quests book | Replaced by the quest engine and the journal (M1, M2); the books stay as content |
 | Teams (`Teams`) | FTB Teams | Replaced: everyone in the world is one team (D11) |
-| Camps (`Camps`) | The Last Camp and Wend's first and last camps | Kept: the prologue's camp and the memories' places; the camp generator also builds the caravan's pieces (M5) |
+| Camps (`Camps`) | The Last Camp and Wend's first and last camps | Changed: the Last Camp alone, the prologue's camp and the last memory's place; the camp generator also builds the caravan's pieces (M5) |
 | Structure spread and the ring (`Spread`, `ExactRingPlacement`, the world-generation mixins) | Spreads structures 6 times apart and places the ring of frames | Changed: frequencies by owner (M13); the ring stays |
 | Loot (`Loot`) | Fills Lootr chests near players | Kept |
 | Hidden pop-ups (the toast mixin) | Hides vanilla's advancement pop-ups | Kept (D7) |
@@ -638,18 +636,15 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 
 ### M16 Balance: start, measure, tune
 
-- Each system starts its numbers in `balance.toml`, as powers of two (AGENTS.md). What a tool can measure gets one, the way `just survey` measures the halls' legs: how long a day on the road runs, how often a road scene comes, how bright the shine grows. What only a player can judge goes into the `playtest` skill's checklist for the Act 1 slice.
+- Each system starts its numbers in `balance.toml`, as powers of two (AGENTS.md). What a tool can measure gets one, the way each hall's walk is measured against its act's budget (M40): how long a day on the road runs, how often a road scene comes, how bright the shine grows. What only a player can judge goes into the `playtest` skill's checklist for the Act 1 slice.
 - No side of a hard decision is a trap: each side's reward shows within the same act, and its cost no later than the next. The starting point to play and tune:
 
   | Decision | Taking the shard | Leaving it |
   |---|---|---|
-  | The witches' shard (1.4), only for a team that did T1 first | True-sight and a step of shine; the black pool turns plain and their healing with it, and their trust falls back to the minimum | No gift and no shine; their full trust, which counts towards Keep the oath, and two healing brews for each player |
-  | Drifa's shard (1.8) | Dark-sight and a step of shine; Drifa stays but hates the player, which counts at the breaking | No gift and no shine; Drifa leaves in peace and may fight beside the player at the gate (F1) |
-  | Maud's bell (1.10) | Warmth and a step of shine, and the gaze finds the caravan less often; Maud never forgives it, and some families leave | The bell's toll keeps the lesser creatures off the camp, and the townsfolk trust the player; the gaze finds the caravan more often |
-  | The Tide Folk's two shards (2.3) | Up to two gifts, Deep-sight and Stare, and two steps of shine; their boats are seen and they starve, unless Night Fishing (T2) saves them | Their trust, which counts towards Keep the oath, and their bay stays dark even in Give it its sight |
-  | The worm (2.6) | Far-sight and a step of shine; the Sand Singers lose their protector, and the raiders come (T3) | No gift; the Sand Singers trust the player, and the worm stays in the desert |
-  | The Grass Kingdom's ward (3.4) | Sky-veil, which makes flight safe, and a step of shine; the walls fall unless the player holds them, and the heir has his land back | The kingdom stands and trusts the player, which counts towards Keep the oath; the heir looks for another way in |
-  | The shard or the children (3.5) | Night-walk and a step of shine; the children stay captive | No gift; the children join the caravan and help at the gate (F1) |
+  | Drifa's shard (1.3) | Dark-sight and a step of shine; Drifa stays but hates the player, which counts at the breaking | No gift and no shine; Drifa leaves in peace and may fight beside the player at the gate (F1) |
+  | Maud's bell (1.5) | Warmth and a step of shine, and the gaze finds the caravan less often; Maud never forgives it, and some families leave | The bell's toll keeps the lesser creatures off the camp, and the townsfolk trust the player; the gaze finds the caravan more often |
+  | The Tide Folk's two shards (2.2) | Up to two gifts, Deep-sight and Stare, and two steps of shine; both taken, their boats are seen and they starve, unless Night Fishing (T2) saves them, and their trust is lost | Their trust, which Keep the oath needs as long as one is left, and their bay stays dark even in Give it its sight |
+  | The worm (2.4) | Far-sight and a step of shine; the Sand Singers lose their protector, and the raiders come (T3) | No gift; the Sand Singers trust the player, which Keep the oath needs, and the worm stays in the desert |
 
 **Why:** Numbers that start from a reason and are then measured are how the pack already tunes its halls, and leave the player only what a tool cannot judge. A decision is hard only if both ways cost something the player feels soon enough to remember why.
 
@@ -663,7 +658,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   |---|---|---|---|
   | 1 | Flint, copper, iron | Frost iron, from the Frost Walkers' old mine | Copper and iron hooks and backpacks, small and medium tents, the hang glider |
   | 2 | Bort and diamond, from the deep places | Tide steel, Sand Singer glass-bronze | The diamond hook and backpack, large tents, ships |
-  | 3 | | Crimson steel from the deep stone around the Ancient Cities, then the top tier from a far metal, forged by the Keepers' smiths or at the far ring | The top hook, backpack and tent, airships |
+  | 3 | | Crimson steel from the deep stone around the Ancient Cities, then the top tier from a far metal, forged by the Keepers' smiths or at the far ring | The top hook, backpack and tent |
 
 - What vanilla makes from wood, stone and leather stays as vanilla makes it, so the first hours play as Minecraft does; everything of metal and better is Silent Gear's. Hob hands each player his patterns at the caravan's first fire, for every tool he makes and for armour and a shield, and the task panel walks them through the first head and the first tool. Vanilla's metal armour is found, never made, and JEI says so on it.
 
@@ -776,7 +771,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 |---|---|
 | Open water is read from the heights of the loaded chunks around the player, every 8 blocks out to 64, and land in any of them ends it | The rule needs no world data of its own; a coast in an unloaded chunk counts as sea, which the view distance makes rare |
 | Small Ships' ships are boats to the game, with the hull's health in their own config (a cog has 300) | A ship's damage from the beast is tuned against its hull: at 8 every 2 s a cog lasts about 75 s against a beast nobody fights, which is judged in play |
-| Riding a Small Ships ship is refused until 1.11 The Name is done (`Rules`) | The tests stood the player on the deck; ships open as Act 1 ends (D15) |
+| Riding a Small Ships ship is refused until 1.6 The Name is done (`Rules`) | The tests stood the player on the deck; ships open as Act 1 ends (D15) |
 | `/weather rain` takes some seconds to fade in, and only then does the game count it as raining | The beast follows the rain the world shows, not the forecast |
 | Improved Mobs 1.16.0.b crashed the server when a drowned swam at night: its pathfinding reads a search's context outside any search (`SwimNodeEvaluator`). It is the newest build | The Wayfarer mod gives that call a context of its own (`ImprovedMobsPathContextMixin`); a hundred drowned round a boat at night then ran without a crash. Reported upstream as [ImprovedMobs#364](https://github.com/Flemmli97/ImprovedMobs/issues/364); the mixin goes once a fixed build is in the pack |
 | The beast's look is a stand-in | It is made with the art skill, as the worm was (T3) |
@@ -974,30 +969,28 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
 - **Animals leave the team alone unless struck.** Wilder Nature's bison guard their herd only against a player who struck one of them, and every bear in the pack (`#wayfarer:beasts`, Naturalist's bears and black bears) leaves a player be until struck or until the player comes within 16 blocks of its cubs, as a polar bear does.
 - **Who the team meets where.** Every foe belongs to someone, as every place does (D17), and each act brings its land's and its story's foes; nothing shows up before its act, so the world visibly changes with each:
 
-  | Who | Act 1, on foot | Act 2, the sea | Act 3, the sky |
+  | Who | Act 1, the home land | Act 2, the far shore | Act 3, the far ring |
   |---|---|---|---|
   | The gaze's creatures: night, shade and storms; they dig up at dusk and crumble at dawn | Zombies, skeletons, spiders, creepers | Also drowned at sea, husks in the desert | Also strays in the snow, phantoms in the air |
   | The land's beasts: by day, on their own ground | Wolves, bears, boars | Alligators, scorpions, lions, sharks, piranhas | Polar bears, and the cold itself |
   | The Gazebound: people, at any hour | Road patrols: pillagers and vindicators | Raiders with an evoker and its vexes; their outposts | The heir's army: ravagers, evokers, illusioners, iceologers |
-  | The gaze's own beasts: one each, at a story moment | | The sea's beast (M22), the worm (2.6), the horse that never sleeps (W9) | The phantom nest (W12), the dragon (M14) |
+  | The gaze's own beasts: one each, at a story moment | | The sea's beast (M22), the worm (2.4), the horse that never sleeps (W9) | The dragon (M14) |
   | The deep | The Warden in the Ancient Cities, best crept past (W4) | | |
 
-- **Each act's foes come with their act.** The land's beasts, the Gazebound's kinds and the gaze's own kinds in the table spawn only once their act has begun, from biome spawns to the ravagers of vanilla's raids and the spawners in structures, listed in `generator/foes.toml`; what the story spawns for a hold, a duel or a scene is the story's, and a creature born before its act stays where it is.
+- **Each act's foes come with their act.** The land's beasts, the Gazebound's kinds and the gaze's own kinds in the table spawn only once their act has begun, from biome spawns to the ravagers of vanilla's raids and the spawners in structures, listed in `generator/foes.toml`; what the story spawns for a hold, a hunt or a scene is the story's, and a creature born before its act stays where it is.
 - **Monsters carry what they are drawn with:** swords, axes, bows, shields. Nothing throws TNT, a bomb, a potion or a wind charge, lights a fire or casts a pearl, since none of it gives a tell (Improved Mobs' lists in `pack/config/improvedmobs/equipment.json`), and zombie horses never attack, since they belong to nobody in the table.
 - **Nothing hurts without a tell,** heard first and seen second. The gaze's creatures make their digging sound as they come up; the Gazebound shout a line before they charge ("There! The ember!"), and their banners show from afar; beasts growl at the edge of their ground and attack only if pushed, hunters at night aside; a named beast's tell is long, the worm's tremor and rising dust, the sea beast's knock on the hull; a hold's next wave is announced on the band (`interface.md`, I4).
-- **A fight asks for the team, the ground and the gear,** not only damage. Everyday fights reward the fire's circle, the tent, a shield and a bow; each act's foes ask for that act's gear (M18): a shield and a bow on foot, a ship's cannons at sea, rolling and parrying for the duel, flying past phantoms. Getting past a fight, creeping by or walking on, is always an answer and never a loss, save at the ford (1.3), where the patrol has seen the ember and follows a team that walks off (`story.md`, S28). Each named fight has one idea beyond swinging:
+- **A fight asks for the team, the ground and the gear,** not only damage. Everyday fights reward the fire's circle, the tent, a shield and a bow; each act's foes ask for that act's gear (M18): a shield and a bow on foot, a ship's cannons at sea, rolling and parrying against the heir's army. Getting past a fight, creeping by or walking on, is always an answer and never a loss, save at the ford (1.2), where the patrol has seen the ember and follows a team that walks off (`story.md`, S28). Each named fight has one idea beyond swinging:
 
   | Fight | What it asks |
   |---|---|
   | P3 The cellar door | Keep the door standing and the survivors alive; the waves walk in to it and beat on it until it cracks |
-  | 1.3 The ford | Keep Cadoc alive while the Gazebound cross; the water slows them, so the fight is at the crossing |
-  | 1.10 The Bell, under the red moon | The bell draws the gaze to the caravan; hold the camp, then decide whether to melt it |
-  | 2.2 The Crossing | The sea's beast rams the hull: a boat breaks where a ship holds, and the ship's cannons drive it off |
-  | 2.6 The Worm | Learn the Sand Singers' song: the worm comes up to it, and the eye that sees is where it can be hurt; or leave it alive |
-  | 2.10 The Hollow, under the red moon | It cannot be won, only survived; who lives was decided by each person's side quest |
-  | 3.4 The Ward's champion | A duel in a ring, parried and rolled; the team watches and cannot step in |
-  | 3.7 The Empty Grave, under the red moon | The dead rise among the graves until dawn |
-  | 3.8 The Rider | A chase, on horseback or in the air |
+  | 1.2 The ford | Keep Cadoc alive while the Gazebound cross; the water slows them, so the fight is at the crossing |
+  | 1.5 The Bell, under the red moon | The bell draws the gaze to the caravan; hold the camp, then decide whether to melt it |
+  | 2.1 The Crossing | The sea's beast rams the hull: a boat breaks where a ship holds, and the ship's cannons drive it off |
+  | 2.4 The Worm | Learn the Sand Singers' song: the worm comes up to it, and the eye that sees is where it can be hurt; or leave it alive |
+  | 2.6 The Hollow, under the red moon | It cannot be won, only survived; who lives was decided by each person's side quest |
+  | 3.4 The Rider | A chase, on foot or on horseback |
   | F1 The Gate | Hold the frame against the heir's band, until Malgven turns on them |
   | The dragon, in Blind it | It is as blind as the shards set make it (M14) |
 
@@ -1021,42 +1014,41 @@ It raises, for its build: keeping each act's foes out of the world until their a
   | Known on the Road | Met 32 of the road's scenes | "The road has started to recognise me." |
   | Old Friends | Had both the herder's bread and his warning | "The herder's bread one day, his warning the next. His sheep don't scatter from me any more." |
   | The Dice | Won 8 games of dice in the taverns | "The peoples' dice like me. The peoples don't." |
-  | Untouched | Within 32 blocks when the heir's champion fell, never hit by him | "The heir's champion went down in the grass, and he never touched me." |
+  | Untouched | Within 32 blocks when the great worm fell, never hit by it | "The worm went down into the sand, and it never touched me." |
   | Hands Clean | Finished an act's main road with no person killed by the team while it ran | "Not one of them by our hands, this whole season." |
   | Deep Quiet | Came within 32 blocks of an Ancient City's heart and left it with no Warden risen | "I walked through the old city in the deep, and its guard never woke." |
   | The Slow Way | Reached the frame without folding to a waystone | "Every step of it walked. I never let a stone fold the road for me." |
-  | Light Pockets | Reached the frame with four shards or fewer | "I came to the gate nearly empty-handed, and lighter for it." |
-  | All Twelve | Reached the frame with all twelve | "All twelve. It can see so much now." |
+  | Light Pockets | Reached the frame with two shards or fewer | "I came to the gate nearly empty-handed, and lighter for it." |
+  | All Twelve | Reached the frame with all seven shards the road holds, so the frame has all twelve with the heir's five | "All twelve. It can see so much now." |
   | Nobody Left Behind | The Hollow took no one from the caravan | "It took the wagons. It didn't take one of us." |
   | Alone | Reached the frame with nobody left in the caravan | "There is nobody left to follow my marks." |
 
 - No deed is listed before it is earned. When one is, a banner like the quests' slides in under the compass, "A deed: The Long Road", with a sound of its own (`sound.md`), and the deed stands on the journal's Deeds ribbon with its line and the day it was earned; the ribbon appears with the first deed.
-- What a body does is its player's own: walking, sleeping, the villages, the sea, the hard nights, the scenes, the herder, the duel, the dice, the city crept through, the road walked without a fold. What the story decides goes to everyone on the team, joiners included: the frame with four shards or all twelve, the Hollow, Alone, a whole act's clean hands (D11).
+- What a body does is its player's own: walking, sleeping, the villages, the sea, the hard nights, the scenes, the herder, the worm, the dice, the city crept through, the road walked without a fold. What the story decides goes to everyone on the team, joiners included: the frame with two shards or all twelve, the Hollow, Alone, a whole act's clean hands (D11).
 - A person is a player, an Illager, a villager, a wandering trader, a witch or one of the story's people. A hard night counts for whoever was awake at its midnight and did not die before dawn. A scene counts once for each player who saw it, a village once for each village.
 - A deed gives nothing but its line and its place in the journal.
 - Deeds and their counts outlast deaths, logouts and restarts, except what is still under way: a hard night is counted at dawn only for whoever was online at its midnight and at its dawn, and a city crept through counts only if the player leaves it in one visit.
 
 **Why:** Lucas Blair's research on achievements finds that goals announced ahead push players to chase them and change how they play, while unexpected ones reward play that already happened; a deed hidden until earned is a surprise, never a chore, and one that gives nothing is not worth grinding, which the pack takes away everywhere else (D7).
 
-### M39 The world's shape: a home land, a sea round it, and a world of water beyond
+### M39 The world's shape: a home land, a sea round it, and a land beyond
 
 - **The home land.** The Last Camp stands in the middle of one land that reaches 6,000 to 8,000 blocks out, about 116 km², never cut by sea, only by rivers and lakes. Its coast follows the land's own shape, not a circle. Every place of Act 1 lies on it, so Act 1 is walked.
-- **The sea round it.** An open sea all round the home land, about 3,000 blocks wide, deep and without islands, its far shore out of sight. Act 2 begins by crossing it (2.1 Ships for Everyone, 2.2 The Crossing): about six minutes under sail, long enough for 2.2's night on the water.
+- **The sea round it.** An open sea all round the home land, about 3,000 blocks wide, deep and without islands, its far shore out of sight. Act 2 begins by crossing it (2.1 The Crossing): about six minutes under sail, long enough for its night on the water. It is the one sea the road crosses.
 - **The ring's frames stand inland.** Each of the twelve strongholds takes the first spot along the ring, out from its own point in steps of 32 blocks either way, where the land is at least mid-inland (the biomes' continentalness 0.03 and up) and one of the stronghold's biomes lies at sea level, so none lies under the sea. `just test` checks that no stronghold of the ring stands in an ocean.
-- **The world beyond.** About two thirds sea: lands and islands of every size across wide water, so ships carry Act 2 and flight carries Act 3. The land ends at the Last Sea's coast 39,096 blocks out, the ring of frames' 35,000 plus M13's 4,096, and deep sea runs on to Minecraft's own world edge.
+- **The land beyond.** One land again from the far shore out to the Last Sea, cut only by rivers, lakes and inland seas, as the home land is, so Acts 2 and 3 are walked as Act 1 is. The land ends at the Last Sea's coast 4,096 blocks past the ring of frames (M13, M40), and deep sea runs on to Minecraft's own world edge.
 
   ```text
   Day 6. You follow the ember west through forest and hills, wade a river, and come out on a grey coast.
-         Open water to the horizon. The ember pulls back east, towards the swamp.
-  2.2    You push off at dusk. The coast sinks behind you. For a long while there is nothing but water and the ember's light on it.
+         Open water to the horizon. The ember pulls back east, towards the snow.
+  2.1    You push off at dusk. The coast sinks behind you. For a long while there is nothing but water and the ember's light on it.
   ```
 
-- **How it is made.** Tectonic's raw continent value (`tectonic:noise/raw_continents`), from which both its terrain and the biomes' continentalness come, gets a term that depends only on the distance from the Last Camp (`WorldShape`, added where the game wires the noise): a lift of 0.625 over the home land, falling over 4,096 blocks to its coast; a sink of 1.25 across the sea; a sink of 0.25 over the world beyond, so about two thirds of it is sea; and a sink of 2.5 from 1,024 blocks before the Last Sea's coast onwards. Over both seas the value is held at -0.5 or above, where Tectonic grows no islands, so they stay deep and bare. Its numbers live in `balance.toml` `[world]`. Valheim makes its world the same way, a disc whose bands are set by distance on top of its noise, its land ending at 10,000 m.
+- **How it is made.** Tectonic's raw continent value (`tectonic:noise/raw_continents`), from which both its terrain and the biomes' continentalness come, gets a term that depends only on the distance from the Last Camp (`WorldShape`, added where the game wires the noise): a lift of 0.625 over the home land, falling over 4,096 blocks to its coast; a sink of 1.25 across the sea; a lift over the land beyond, so it stays land as the home land does; and a sink of 2.5 from 1,024 blocks before the Last Sea's coast onwards. Over both seas the value is held at -0.5 or above, where Tectonic grows no islands, so they stay deep and bare. Its numbers live in `balance.toml` `[world]`. Valheim makes its world the same way, a disc whose bands are set by distance on top of its noise, its land ending at 10,000 m.
 - **Edge cases.**
   - A team that builds a boat in Act 1 can cross by day in fair weather; nothing forbids it. At night or in rain the sea's beast rams a vanilla boat (M13's sea), so a team crosses for good with ships. On the far shore nothing of Act 2 has opened yet, and what they find and take there counts as everything does (D6).
   - Swimming three kilometres is possible, long and cold at night.
   - A world made before the shape keeps the chunks it has; only new land takes the shape, so it needs a fresh world.
-  - With more sea, fewer villages, towns and ruins stand out there, since they stand only on land; their spacing (M13, `[structures]`) is measured again once the shape is built.
   - A frame of the ring that would fall in the sea moves along the ring to the nearest land.
   - Distant Horizons draws the far land from the same noise, so the far view shows the same shape (not yet looked at).
   - Terralith hangs its skylands, floating islands, over deep water where its weirdness, cold and dryness meet, the seas' as anywhere; they float in the sky and nothing stands on the water.
@@ -1065,7 +1057,7 @@ It raises, for its build: keeping each act's foes out of the world until their a
 - **Caves open often.** Cave mouths are about twice as common as Tectonic's own: caves reach the surface (`depth_cutoff_start` -0.1) and its noodle and cheese caves run wider (`noodle_additive` -0.2, `cheese_additive` 0.18, `pack/config/tectonic.json`). On four 256-block squares of the states' seed the openings went from 159 to 286, so a team on foot finds a way down most days without digging.
 - **Climates.** Across the home land the climate changes about every 800 blocks along a straight line, and no seed leaves more than about a sixth of its cold land over 1,024 blocks from warmer ground. Tectonic's `temperature_scale` stands at its own 0.25, while `vegetation_scale` 0.125 keeps forests and plains wide (`pack/config/tectonic.json`).
 
-**Why:** On six seeds measured (`ShapeSpike`, dev code that never ships), today's world was about half sea in islands of 2 to 314 km², usually 25 to 47, so most seeds put Act 1's places across water, and two put the Last Camp on an island of 2 km². Built into the game, the shape gives a home land of 117 to 132 km² reaching about 7,750 blocks on every seed measured, a closed sea, and 28 to 34% land beyond it; the acts' own travel, on foot, by ship, by air, then follows the land. Half that temperature scale put the camp of one seed in four inside an icy core thousands of blocks across, where a team walks for a quarter of an hour without the land getting warmer.
+**Why:** On six seeds measured (`ShapeSpike`, dev code that never ships), today's world was about half sea in islands of 2 to 314 km², usually 25 to 47, so most seeds put Act 1's places across water, and two put the Last Camp on an island of 2 km². Built into the game, the shape gives a home land of 117 to 132 km² reaching about 7,750 blocks on every seed measured and a closed sea. A land beyond that is land again lets the whole road be walked, the pack's own way to travel, with the sea round the home land as its one crossing. Half that temperature scale put the camp of one seed in four inside an icy core thousands of blocks across, where a team walks for a quarter of an hour without the land getting warmer.
 
 **The spike measured** (`/wayfarer shape <seed> <radius> <step>`, `/wayfarer preview <seed> <home> <sea> <sink>` and `/wayfarer climate <seed> <step>` on the dev server, pictures in `build/shape/`):
 
@@ -1090,27 +1082,28 @@ It raises, for its build: keeping each act's foes out of the world until their a
 | On eight seeds, read as Tough As Nails reads the land by day (a step colder above y 160) with patches under 512 blocks square counted with what surrounds them, Tectonic's `temperature_scale` 0.125 changed the climate every 941 blocks along a straight line and left 17% of the cold land over 1,024 blocks from warmer ground, 46 and 56% on the two seeds whose camp sat in an icy core; 0.25 gave 811 blocks and 5%, at most 17% | `temperature_scale` 0.25 |
 | On a fresh world of the states' seed the game showed snowy forest on the home land at 6,000 blocks and open water at 9,000; from the Last Camp the nearest Act 2 hall stood 16,209 blocks out, the nearest Act 3 hall 33,187, no Frost Walkers' hall grew, and the nearest frame stood on land at 34,080 | |
 
+It raises, for its build: the lift over the land beyond that keeps it land with no sea between the far shore and the Last Sea, measured with `ShapeSpike` on the states' seed and five others, as the home land's was.
+
 ### M40 Where each act's halls stand
 
-- **Act 1's halls are put down by their quests, on the home land** (M39), each about a day's walk ahead of the team, on the nearest fitting ground in the way it is walking and out of sight, as the Diggers' tunnels (1.1, S24) and the Marsh Mothers' hall (1.4, S29) already are: the Frost Walkers' winter house and hall in snow (1.6, 1.7, and the frozen lake of 1.8), the First Village's ruins on open plains (1.10). The world grows no copies of Act 1's halls anywhere.
+- **Every hall is put down by its quest,** about a day's walk ahead of the team, on the nearest fitting ground in the way it is walking and out of sight, as the Diggers' tunnels are (1.1, S24): Act 1's on the home land (M39), the Frost Walkers' winter house, hall and frozen lake in snow (1.3) and the First Village's ruins on open plains (1.5); Act 2's on the far shore, the Tide Folk's village and hall on its coast (2.2) and the Sand Singers' camp and hall in its nearest desert (2.4); Act 3's in the far ring, the Scribes' hall on its nearest mountain (3.3). The world grows no copies of the road's halls anywhere, nor of the five the heir emptied (`story.md`, S6).
 
   ```text
-  The morning after Cadoc joins, the ember pulls north. Two days of walking; the air bites; then snow, and a winter house half buried in it.
+  The morning after Cadoc joins, the ember pulls north. A day of walking; the air bites; then snow, and a winter house half buried in it.
   ```
 
-- **Act 2's and Act 3's halls grow where the world makes them, in bands.** Act 2's (the Tide Folk's bay, the Drowned City's badlands, the Sand Singers' desert, the Jungle Folk's temple) grow only between the sea's far shore and 24,576 blocks from the Last Camp; Act 3's (the Grass Kingdom, the Shadow Circle, the Scribes, the Grave Keepers) only from 24,576 blocks to the Last Sea's coast, the ring of frames among them. The ember pulls to the nearest of its kind. None grows on the home land.
+- **Each walk fits its act's budget.** A hall stands 1,024 to 2,048 blocks ahead (`balance.toml`, each place's `ahead_blocks`), a walk of about a quarter of an hour, so an act's hours (`story.md`, S2) go to what happens at its places, not to the way there. The ring of frames stands where Act 3's walk ends, about 20,480 blocks from the Last Camp (`[strongholds]` `radius_blocks`), with the Last Sea 4,096 blocks past it (M13). The walks and the ring are tuned by play against the acts' budgets (`production.md`, R6).
 - **Edge cases.**
-  - Every place Act 1 puts down, Tollbridge, the Diggers' tunnels, his first camp, the swamp's hall and the ford on the way to it, is picked within 7,168 blocks of the Last Camp, halfway down the home land's falling coast (`Home`): when the way would lead out to sea, the search turns along the coast, 15 degrees at a time, until its farthest point lies on the home land.
-  - A home land without snow: the Frost Walkers' quest puts their hall in the home land's coldest corner and the snow comes with it, as 1.4 makes a bog where no swamp is near.
-  - A team that walks far before tracking an Act 1 quest: its hall is placed from where the team stands when the quest is tracked (D6), still on the home land.
+  - Every place Act 1 puts down, Tollbridge, the Diggers' tunnels, the ford, the Frost Walkers' house, hall and lake, the reading-house and the First Village, is picked within 7,168 blocks of the Last Camp, halfway down the home land's falling coast (`Home`): when the way would lead out to sea, the search turns along the coast, 15 degrees at a time, until its farthest point lies on the home land.
+  - A home land without snow: the Frost Walkers' quest puts their hall in the home land's coldest corner and the snow comes with it, as 1.5 makes a green where no plains are near.
+  - A team that walks far before tracking a quest: its hall is placed from where the team stands when the quest is tracked (D6), still in its act's land.
   - A team that has left the home land by boat: an Act 1 quest still picks its ground on the home land, searching from the home land's side nearest the team, and the compass points back.
-  - A team that sails early and finds an Act 2 or Act 3 hall: it stands there, and what they take counts (D6).
-  - A kind of land missing from its band, or a hall of the kind a quest needs lying far off: an Act 2 or Act 3 quest takes the nearest of its halls the world grew within 8,192 blocks of the caravan (`balance.toml` `[halls]`); with none that near, it raises one of that kind on the nearest fitting land within reach, out of sight, as Act 1 puts its halls down. On the states' seed the nearest Drowned City hall lay 26,000 blocks off.
-  - With two thirds sea, a band's halls stand farther apart, so each act's spacing is measured with `just survey` (AGENTS.md); its legs are walked from the inner edge of the band, and their targets are `balance.toml` `[halls]` `act_two_leg_blocks` (8,192) and `act_three_leg_blocks` (12,288), Act 2 crossed by ship and Act 3 by air.
+  - A team that sails early to the far shore: nothing of Act 2 is put down until The Crossing is done, and what they find there counts as everything does (D6).
+  - A kind of land missing near the way: the quest raises its hall on the nearest fitting land within 8,192 blocks of the caravan (`balance.toml` `[halls]` `reach_blocks`), out of sight.
 
-**Why:** Act 1 is walked, and its quests already lay down the first two halls a day ahead, so the other two follow suit and the act's pace stays a day a hall whatever the seed; Acts 2 and 3 are travelled by ship and by air, where a hall found on a far coast is the reward of the voyage. The census of the land under the shape (`ShapeSpike`, on four seeds) found every Act 1 land on the home land, snow and ice 6 to 52% of it, forest 10 to 18%, plains 13 to 17%, swamp 1 to 4%, and every Act 2 and Act 3 land in both bands, mountains the rarest at 0.3 to 0.6%; dark forest is not counted by its tag, so its share is not yet measured.
+**Why:** Halls put down ahead keep each act's pace a day a hall on every seed, which the world's own halls could not: on the states' seed the nearest Act 2 hall the world grew stood 16,209 blocks from the Last Camp, and the nearest Drowned City hall 26,000. A road walked end to end is as long as its walks, so the walks are set by the hours the road should take, and the ring comes as close as the last walk needs. The census of the land under the shape (`ShapeSpike`, on four seeds) found every Act 1 land on the home land, snow and ice 6 to 52% of it, forest 10 to 18%, plains 13 to 17%, swamp 1 to 4%, and every Act 2 and Act 3 land beyond the sea, mountains the rarest at 0.3 to 0.6%.
 
-**Built and surveyed** (`BandPlacement`, `generator/eyes.toml` `[acts]`): three surveys of five seeds walked 80 legs an act; at spacings of 125 and 189 chunks the median leg was 8,314 blocks in Act 2 and 11,892 in Act 3, against targets of 8,192 and 12,288.
+It raises, for its build: what the ring's new radius moves with it, the Last Sea's coast, the deed The Edge of the Map (M38) and the strongholds' check in `just test`.
 
 ### M41 Leaving the End after Blind it
 
@@ -1165,10 +1158,10 @@ It raises, for its build: keeping each act's foes out of the world until their a
 
 ### M47 Story places are checked when the team comes
 
-- A place a quest puts down far ahead, his first camp, the Diggers' tunnels, the ford and its outpost, the Marsh Mothers' hut and hall, the Frost Walkers' house, hall and lake, the First Village, the shipyard and its wreck, the Keepers' reading-house, the Frost Walkers' old mine, the Tide Folk's village, the Sand Singers' camp, the Jungle Folk's lock house, his last camp, the side roads' villages, waysides, cairns and sealed house, the hollow, the airfield, the Grass Kingdom's gatehouse and the Gazebound house, is checked the first time a player comes within the view distance and 64 blocks of it after each start of the server, before anyone can see it, for as long as a quest that goes there is not done: if its own blocks are gone, it goes up again where it stood, out of sight. What the story itself changes at a place, the sealed house crumbling, the gatehouse's gate and the Mansion's cage opening, the hull finished on the slip, is taken as its new shape. Tollbridge is not checked, since its fires change it as it stands. The Marsh Mothers' hall goes up only once a player is within 512 blocks (`[marsh]` `near_blocks`), as S29 has it.
+- A place a quest puts down far ahead, the Diggers' tunnels, the ford and its outpost, the Frost Walkers' house, hall and lake, the Keepers' reading-house, the First Village, the shipyard and its wreck, the Frost Walkers' old mine, the Tide Folk's village and hall, the Sand Singers' camp and hall, the Scribes' hall, the Jungle Folk's lock house, the side roads' villages, waysides, cairns and sealed house, the hollow and the Gazebound house, is checked the first time a player comes within the view distance and 64 blocks of it after each start of the server, before anyone can see it, for as long as a quest that goes there is not done: if its own blocks are gone, it goes up again where it stood, out of sight. What the story itself changes at a place, the sealed house crumbling, the Mansion's cage opening, the hull finished on the slip, is taken as its new shape. Tollbridge is not checked, since its fires change it as it stands.
 - A hall's skylight is sealed wherever water lies within 2 blocks of where it would open, so the sea never runs down it. The caravan never camps where rock stands over its fire, and avoids a spot with a cliff between the team and it.
 - A house the story builds sits at its ground floor's level, its cellar sunk beneath (the plan's `floor`), stands only where its ground lies within 4 blocks of the hall's mouth, cuts only the land's own blocks when it slopes the ground round itself, and gets a way to each door cut clear of earth and filled under: the Mansion and the Jungle Folk's lock house.
-- An operator has a way past anything the check misses: `/wayfarer step` says the tracked quest's step, its place, how far and which way; `/wayfarer step again` puts the step's place down again, whatever the story builds: the ford, the swamp's hall, the Keepers' reading-house and his last camp anew ahead of the caravan where no player can see them, the others where they stood once no player can see the spot, never while a talk or a hold there is under way, and a place the story only marks, such as the Last Camp, the far shore or the caravan, not at all; `/wayfarer step skip` plays the step's outcome, its first answer, a hold won, a memory dreamt, and moves on. Each takes a quest's id to act on another quest. In singleplayer they need cheats on.
+- An operator has a way past anything the check misses: `/wayfarer step` says the tracked quest's step, its place, how far and which way; `/wayfarer step again` puts the step's place down again, whatever the story builds: the ford and the Keepers' reading-house anew ahead of the caravan where no player can see them, the others where they stood once no player can see the spot, never while a talk or a hold there is under way, and a place the story only marks, such as the Last Camp, the far shore or the caravan, not at all; `/wayfarer step skip` plays the step's outcome, its first answer, a hold won, a memory dreamt, and moves on. Each takes a quest's id to act on another quest. In singleplayer they need cheats on.
 
   ```text
   /wayfarer step        The Deserter, 1 of 3: Follow the pull: walk where the ember flares. The ford at 4268 64 3030, 2610 blocks south-west.
@@ -1271,15 +1264,15 @@ It raises, for its build: keeping each act's foes out of the world until their a
 
 ### M55 Words and places agree with the world
 
-- Every place names its climate once beside its biomes: hot, cold, mild or any (`generator/eyes.toml` for the halls). Every search reads the land as Tough As Nails does, its tags and then the biome's warmth: halls growing in the world, halls a quest raises, the errands' outposts, villages and waysides, His Last Camp. A raised place widens its ring to the act's outer bound before it settles for mild land, and never takes the opposite climate.
+- Every place names its climate once beside its biomes: hot, cold, mild or any (`generator/eyes.toml` for the halls). Every search reads the land as Tough As Nails does, its tags and then the biome's warmth: every hall a quest puts down, the errands' outposts, villages and waysides. A raised place widens its ring to the act's outer bound before it settles for mild land, and never takes the opposite climate.
 - Every search keeps 64 blocks from a structure already standing (`balance.toml` `[structures]` `clear_blocks`), raised places included: one that reaches up to the land, never one wholly underground such as a mineshaft, which lies under every jungle. A place whose raise fails, or which would stand beside another, is searched for again away from every spot refused before, never seated at its bare site; a story check fails an outpost's person seated with no outpost raised.
 - A hall or place with a way in keeps the bounds of its own rooms, its shaft and its stair. The compass marks the way in until the player is in those rooms below the mouth's floor, whatever the box round them holds; digging into a room through a wall counts as inside.
 - A line's `when` can test the world as well as the story: `land:hot` and `land:cold`, the land the team crossed today; `hour:20:00-06:00`; `carries:<item tag>`, such as `carries:ships`. `just lint` fails a line that names heat, cold or a ship it does not hold.
-- Words about distance match the distance: "near here", "nearby", "close by" and "not far" mean 512 blocks or less; "up the road", "a little way along" and "further on" 1,024 or less; "a few days" 4,096 or less. `just lint` ties each place's distance in `balance.toml` to the words its quest uses. His Last Camp goes up within 512 blocks ahead, and "near here" stays.
+- Words about distance match the distance: "near here", "nearby", "close by" and "not far" mean 512 blocks or less; "up the road", "a little way along" and "further on" 1,024 or less; "a few days" 4,096 or less. `just lint` ties each place's distance in `balance.toml` to the words its quest uses.
 - A deadline in a quest's summary, objective, road line or first ask ("before nightfall", "before the third dawn", "tonight, or near it") exists only in a quest with a step that keeps one (`dawns`, `until`, or a dusk the step brings); `just lint` fails the others. The rite was last night: "There was a rite at the outpost ahead, last night. Novices take the scar there."
 - A side quest whose place cannot move (a people's own hall or bay) opens only while that place lies within two wagon days of the team (`balance.toml` `[story]` `reach_days`), and a timed step gives at least that many dawns. A line said while a player sleeps or is between worlds waits until they are up, so a deadline that passes in the night is heard at dawn. The journal writes what happened: a step that ends otherwise has its own story line (`stories.<outcome>`).
 - A notice that names a cause comes from that cause: dying takes the ember's extra hearts without the line about the same food.
-- Nobody is named after a creature of the game unless that creature speaks as them (`creature` in `story/people.toml`, as a villager does for "A villager"); the Grass Kingdom's warden is "The gate warden".
+- Nobody is named after a creature of the game unless that creature speaks as them (`creature` in `story/people.toml`, as a villager does for "A villager").
 - A clues step marks the nearest clue not yet found, wherever its place's mark stands.
 
 **Why:** In the 28.10. playthrough the Red Canyons' hall was raised in an iceberg because Snowy Badlands counts as badlands and the raise took any land; Agna said "burnt through" after two days of ice; "near here" was 1,854 blocks back; "Tonight, or near it" named a deadline the quest never kept; The Fever asked for 5,214 blocks in three dawns and failed without a word; the rite's outpost was a village with nothing raised. Each was one rule missing where every place and line passes through.
@@ -1344,7 +1337,7 @@ It raises, for its build: keeping each act's foes out of the world until their a
   The square slopes up to the bell tower, and its door opens at the height you walk on; behind it the tower is set into the rise.
   ```
 
-- **Edge cases.** A doorstep over water keeps the floor at the water's surface, as a jetty's, and its steps end at the water. Several entrances at different heights: the floor follows the median of their doorsteps and every other door gets its steps. A cliff no spot avoids: the place still stands, at the least earth. Players near: places are still built out of sight. Trees on reshaped land are felled whole and floating leaves cleared. The caravan's camp and a road scene put every block back when they go, the reshaped land included. Places that stand in water or underground keep their own rules: the Marsh Mothers' hut on stilts, the halls, the vaults, the tunnels and the mines.
+- **Edge cases.** A doorstep over water keeps the floor at the water's surface, as a jetty's, and its steps end at the water. Several entrances at different heights: the floor follows the median of their doorsteps and every other door gets its steps. A cliff no spot avoids: the place still stands, at the least earth. Players near: places are still built out of sight. Trees on reshaped land are felled whole and floating leaves cleared. The caravan's camp and a road scene put every block back when they go, the reshaped land included. Places that stand in water or underground keep their own rules: the Tide Folk's huts on stilts, the halls, the vaults, the tunnels and the mines.
 
 **Why:** In the 05.11. play on a hillside the bell tower's door stood six blocks above the square, because every place took the median height of its footprint whatever its door; vanilla sets a village house by where its door meets the street and blends the land round it, and the pack's places are built after the land exists, so they do the same with blocks.
 

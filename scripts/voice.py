@@ -990,7 +990,7 @@ def main():
         help="what to record; everything silent when none is named",
     )
     recording.add_argument("--again", action="store_true", help="record lines that already have a clip anew")
-    commands.add_parser("prune", help="Delete the clips that belong to no line any more")
+    commands.add_parser("prune", help="Delete the clips that belong to no line any more and rewrite the game's index")
     arguments = parser.parse_args()
     match arguments.command:
         case "design":
@@ -1008,6 +1008,7 @@ def main():
         case "prune":
             if not prune():
                 print("nothing to prune: every clip belongs to a line")
+            spoken.write_index()
         case _:
             status()
 

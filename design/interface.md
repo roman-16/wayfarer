@@ -37,8 +37,8 @@ Everything the player reads off the screen outside the world: the HUD, the pack'
 
   ```text
         ◂  SW   Φ   W   NW  ▸  [fire]       MAIN ROAD
-                [3,253]                       Φ His First Camp
-         [THE EMBER · FLARING]                Find his first camp, by a lake.
+                [3,253]                       Φ Tracks in the Snow
+         [THE EMBER · FLARING]                Follow the pull: walk where the ember flares.
                                               ○ Open your journal [J]
            [leather strip]  Φ A NEW ROAD
                             The Pull
@@ -101,7 +101,7 @@ Everything the player reads off the screen outside the world: the HUD, the pack'
 - Each piece is drawn with the `art` skill and judged on the style board and where the player meets it, over bright and dark land, under the shader the pack ships, at interface scales 2, 3 and 4. Jade's box and Travelers Titles' place names follow the same look as far as their configs reach.
 
   ```text
-  Top right    MAIN ROAD / Φ His First Camp (gold) / Find his first camp, by a lake. / ○ Open your journal [J]
+  Top right    MAIN ROAD / Φ Tracks in the Snow (gold) / Follow the pull: walk where the ember flares. / ○ Open your journal [J]
   Compass      [leather band]  SW   W   Φ   NW       [3,253] under the mark
   Press J      A charred leather book opens over the dimmed world, leather ribbons with icons on its edge
   Notice       [leather strip]  Φ A NEW ROAD / The Pull

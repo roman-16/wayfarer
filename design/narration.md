@@ -1,6 +1,6 @@
 # Narration
 
-Everything in Wayfarer that tells the story in words is read aloud: the talk on the band, books and lecterns, the journal, the ending and the recap. The audio comes from ElevenLabs, recorded from the same text the player sees, and plays in the Voice/Speech sound category at twice the gain of its sliders (`design/sound.md`, The mix). A line is recorded in the same change that writes or changes its text. This file holds the decisions.
+Everything in Wayfarer that tells the story in words is read aloud: the talk on the band, books and lecterns, the journal, the ending and the recap. The audio comes from ElevenLabs, recorded from the same text the player sees, and plays in the Voice/Speech sound category at twice the gain of its sliders (`design/sound.md`, The mix). A line is recorded when the user says to record (Recording). This file holds the decisions.
 
 ## How it plays
 
@@ -23,7 +23,7 @@ Edge cases: a player who walks off mid-line hears the voice fade with the distan
 
 - **A line carries its performance.** Its text holds audio tags in square brackets, such as `[sighs]`, `[whispers]`, `[voice breaking]` or `[pause]`, where the delivery changes: breath, laughter, tears, gasps, swallowing, hesitation, emotion and pace, as many as its moment carries. The game shows the words without the tags; the recording sends them. Tags never make a sound effect, such as wind or a door, since the world makes its own sounds.
 - **Every speaker says their own words.** Narration never quotes a person aloud: a quoted line is split, the narrator saying what happens and the person their words in their own voice, and a quoted note, log or journal page is a line of its own that the band shows as narration and the writer's voice reads.
-- **Words only the game knows** are recorded in every form when the forms are few: the direction of Wend's first camp, the words on the stranger's stone, a hold's wave counts, the dawns left, who the hollow took, and the frost iron Hob still needs. When they are many, the line is written so that nothing varying is spoken: the dice's throws, pots and stakes show on the action bar while the voice tells the throw, and a friend who brings the player back is not named.
+- **Words only the game knows** are recorded in every form when the forms are few: the words on the stranger's stone, a hold's wave counts, the dawns left, who the hollow took, and the frost iron Hob still needs. When they are many, the line is written so that nothing varying is spoken: the dice's throws, pots and stakes show on the action bar while the voice tells the throw, and a friend who brings the player back is not named.
 
 **Why:** Tags in the text keep words and performance in one place, so an edit to either records the line again and a clip never plays a delivery its words have outgrown. A narrator quoting a gruff smith in her own voice breaks the spell that a person's own voice keeps.
 
@@ -34,7 +34,7 @@ Every voice is designed for the pack, none is one of ElevenLabs' built-in voices
 | Voice | Reads |
 |---|---|
 | Narrator | Every line nobody speaks: the memories' scene text, the road's scenes, clues, the story's notices on the band, the Afterwards pages, the ending, the first recap, and Years later's leaves when Pip was lost |
-| Wend | Wend at the Last Camp and in the memories, the voice until the first reveal and the gaze after it (one speaker in the story), Wend reading, his ledger, letter and orders, and the books of his first and last camps |
+| Wend | Wend at the Last Camp and in the memories, the voice until the first reveal and the gaze after it (one speaker in the story), Wend reading, his ledger, letter and orders |
 | Pip, Maud, Cadoc, Alruna, Hob, Agna, Drifa | Themselves, and Drifa the Frost Walkers' book |
 | Malgven | Malgven and her notes |
 | Bram | Himself |
@@ -42,14 +42,14 @@ Every voice is designed for the pack, none is one of ElevenLabs' built-in voices
 | A Gazebound man | The Gazebound on the road, Brannoc, the captains' pages but Wend's, and the Gazebound's books |
 | The oldest Keeper | The oldest Keeper, the Keepers' records and library books, and A Keeper's Note |
 | An old man | Oswin, Wil, the man from the crossing, the archivist of the deep city, and the journal in the Cache |
-| Murdo, the heir, Rue, Edda, Sefa, the warden | Themselves; Murdo the Tide Folk's remedy and book, Rue the Marsh Mothers' book, Sefa the Sand Singers' book, the warden the Grass Kingdom's book |
+| Murdo, the heir, Edda, Sefa | Themselves; Murdo the Tide Folk's remedy and book, Sefa the Sand Singers' book |
 | A man | The fisher, the herder, the pedlar, the traveller, the dicer, the Tide wardens and the shipwright's log |
 | A woman | Linnet and the villagers |
 | An old woman | The old woman in furs, Hesper the pilgrim, and the Jungle Folk's prayer and hall book |
-| A child | Davy, Tobin, the captives, Cecily and the girl in grey |
+| A child | Davy, Tobin, the captives and Cecily |
 | Tansy, Sedge | Themselves |
 | The player, a man; the player, a woman | The answers and the journal of each player who picks them |
-| The Diggers, the Drowned City, the First Village, the Grave Keepers, the Scribes of the Peaks, the Shadow Circle | Each dead people's book in its hall, a voice of its own |
+| The Diggers, the First Village, the Scribes of the Peaks | Each dead people's book in its hall, a voice of its own |
 
 - **Young voices are raised.** ElevenLabs refuses to design any young voice, through the API and on its website alike, so Pip and the shared child's voice are a small, light adult voice raised in pitch as each line is recorded (`pitch`, in semitones: Pip one, the child two).
 - **The narrator is a designed voice, dry.** It reads a third of everything spoken, so any effect laid over it would grate long before the end.
@@ -59,16 +59,16 @@ Every voice is designed for the pack, none is one of ElevenLabs' built-in voices
 
 ## Recording
 
-- **Changed text is recorded in the same change.** A clip belongs to its voice and its exact text with its tags: a text rewritten goes silent until `just voice record` records it again, which records everything silent at once, checks it and prunes the clips of texts that changed. Whoever changes a text, the agent included, records it before the change is done, and `just lint` names every line still silent.
+- **Recording waits for the user's word.** A clip belongs to its voice and its exact text with its tags: a text rewritten loses its clip in the same change (`just voice prune`) and stays silent, the game showing it for its reading time, until the user says to record. Then `just voice record` records everything silent at once, checks it and prunes the clips of texts that changed. `just lint` names every line still silent and every speaker still without a voice, and passes; before the release nothing may be silent (`production.md`, R5).
 - **Every take is checked.** ElevenLabs' speech-to-text writes down what each take says and compares it with its words; a take that skips words or reads a tag aloud is recorded again, and the user hears every scene of the story by ear while fire lines, books and the interface's lines rest on the check.
 - **Every voice lives in the repository.** `story/voices.toml` holds each voice's description, preview text and settings; `story/voices/` holds each kept design, the exact request that made it with its seed and the preview it made, and every clip's text and how it was made. An account is only where a voice is saved for the moment: any account rebuilds it from the repository, and `just voice record` saves the voices it needs and drops the one used longest ago when every slot is taken. The seed makes a new take of the same request, never the same audio, so the rebuilt take is heard beside the kept preview before it is saved, and a voice that came out too far off is designed again from its own preview and clips as reference audio.
 - **A voice is chosen as the game will play it.** A design's three previews come from the design model, and the lines are recorded by `eleven_v4`, which renders the same voice cleaner and steadier; so each candidate is saved and read by `eleven_v4` before the user chooses by ear, and the two not chosen are deleted again.
-- **A new character gets a voice before their first line is done.** A role that never speaks in the same step as a shared voice's roles, and fits it, joins that voice's reads; any other is designed with the `sound` skill and put to the user.
+- **A new character gets a voice when the user calls the recording.** Until then their lines stay silent. Then a role that never speaks in the same step as a shared voice's roles, and fits it, joins that voice's reads; any other is designed with the `sound` skill and put to the user, before the lines are recorded.
 - **Clips are mono Ogg Vorbis at 22,050 Hz**, trimmed of silence and matched in loudness, about 6.5 KB a second.
 
 Edge cases: a run cut off by credits, voice changes or the network keeps every clip it made and goes on from there; a voice redesigned after its lines were recorded keeps those clips, counted as by an earlier design until recorded anew; a new account saves each voice again from the repository before recording.
 
-**Why:** A clip tied to its exact text and tags is never paid for twice and never plays over words that changed, and recording in the same change keeps the pack from drifting silent line by line. A voice that exists only in an account is lost with the account, and the seed alone is not proof, since a model update can break it without saying so.
+**Why:** A clip tied to its exact text and tags is never paid for twice and never plays over words that changed, and recording only on the user's word spends credits once, on words that have settled, while `just lint` keeps every silent line in sight so none is forgotten. A voice that exists only in an account is lost with the account, and the seed alone is not proof, since a model update can break it without saying so.
 
 ## What it costs
 

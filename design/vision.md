@@ -67,7 +67,7 @@ Hard nights come with the story and the caravan, never with the calendar. A Slee
 |---|---|
 | Minute | Sees something to focus on about every 40 seconds, most of it travelling with them: wildlife and monsters, weather, the skyline, the voice. About every five minutes a written scene waits out of sight ahead |
 | Day | Sets out from the caravan, walks the day's quests, makes for the caravan when they are done or whenever the team chooses, and spends the night at its fire. The road's scenes make each day its own, and quests bend its shape |
-| Act | A ring farther from the Last Camp, opened by a new way to travel, with the gear its land asks for and harder nights, and closed by a revelation at a fire |
+| Act | A land farther from the Last Camp, reached only through the one before it, with the gear its land asks for and harder nights, and closed by a revelation at a fire |
 
 A typical day (every name a placeholder):
 
@@ -97,7 +97,7 @@ The clock's curve, what counts a day, daylight's dangers and staying at a place 
   Wend's first camp       no shard: who he was when he was young
   ```
 
-- Main and side quests are built from 22 activities in six groups:
+- Main and side quests are built from 20 activities in six groups:
 
   | Group | Activity | Like | In Wayfarer |
   |---|---|---|---|
@@ -106,11 +106,9 @@ The clock's curve, what counts a day, daylight's dangers and staying at a place 
   | | Solve | | A seal that opens to a word from another people's book |
   | | Talk | The Witcher's and Cyberpunk's conversations | Talking the elder round, or lying to a Gazebound captain |
   | Get in | Sneak | Cyberpunk's stealth | Slipping into a Gazebound hall at night |
-  | | Disguise | Hitman | Gazebound robes their own people do not look at twice |
   | | Heist | GTA V's heists | The theft from the grass halls: quiet through the cellars or loud over the wall, each player of a team in a role |
   | | Raid | Far Cry's outposts | Fighting into a camp |
   | Fight | Hunt | The Witcher's contracts | Reading up on the beast that sees, brewing what it hates, finding its lair |
-  | | Duel | Red Dead Redemption 2's duels, The Witcher's fist fights | A Gazebound champion, one on one |
   | | Hold | | The herder's fold through a Sleepless Night |
   | | Chase | GTA's chases | A thief riding off with the shard |
   | Cross | Reach | Zelda's climbing | A summit, the sea floor, the deep dark |
@@ -124,7 +122,7 @@ The clock's curve, what counts a day, daylight's dangers and staying at a place 
   | | Play | Gwent, Red Dead Redemption 2's poker | The peoples' dice game at the fire |
   | | Tame | Red Dead Redemption 2's horse breaking | The horse that never sleeps |
 
-- The activities come in waves: Act 1 brings a handful, and every act adds new ones together with its new way to travel.
+- The activities come in waves: Act 1 brings a handful, and every act adds new ones together with its new land: Act 2 Sail and Hunt, Act 3 Carry, Chase and Sneak. The side quests carry the ones the main road leaves out (`story.md`, S16).
 
 **Why:** Letting each shard's story set its length puts a quick seal beside a four-quest hunt for a caravan, the way Cyberpunk 2077's 33 main missions differ in size. Many activities keep "No quest is a chore" true over a long road, and adding them act by act leaves something new to learn until the end, as Ghost of Tsushima does with the ghost's tools.
 
@@ -151,7 +149,7 @@ It raises:
   | Knowledge | A seal, a hidden way | A word, a map, a story | Another people's book, someone met on the road |
   | Trust | A people's camp, a guarded valley | Their trust | Helping them, or someone who speaks for the player |
   | Tool | Stone a lesser pick does not break | A tool of a material from elsewhere | The deep dark's netherite and the like |
-  | Travel | The sea, the sky | A ship, wings, an aircraft | An act's turn |
+  | Travel | The sea | A ship | An act's turn |
   | Shard's gift | What only the Eye's powers pass, such as a dark only the Eye sees through | A power the shard gives | A hall; a shard left behind means going on without its gift |
 
 - In a team, knowledge and trust count for everyone, and every player carries their own gear.
@@ -207,9 +205,9 @@ The reveals' places are settled in `story.md` (S2), and the voice's in S4.
 
   ```text
   Done: The Pull.        Task panel: (empty)
-  New in your journal J: His First Camp
+  New in your journal J: The Deserter
   ...the team builds, hunts, explores...
-  Journal › His First Camp › [Track]    A new road: His First Camp
+  Journal › The Deserter › [Track]    A new road: The Deserter
   ```
 
 - What failing means depends on what went wrong:
@@ -275,7 +273,7 @@ A system, place, creature or item, from vanilla or from a mod, goes or changes w
 | Artifacts: Eternal Steak, Everlasting Beef, Golden Hook, Helium Flamingo, Warp Drive, Villager Hat, Whoopee Cushion, Novelty and Plastic Drinking Hats | Cut | |
 | Artifacts' Crystal Heart, five extra hearts from a Gazebound outpost's chest in Act 1 | Two extra hearts, so it is worth wearing without doubling a player's health a week into the road | |
 | Harvest, blue and super moons | Cut | The red moon |
-| Immersive Aircraft's biplane and quadrocopter, Exposure's film cameras | Cut | The airships and the gyrodyne |
+| Immersive Aircraft, Silent Gear's elytra, Exposure's film cameras | Cut | The paraglider and horses: the road is walked (D8) |
 
 Kept on purpose: furnaces, brewing, horses, boats, maps, rails and minecarts, coordinates on the debug screen, waystones, which only fold roads already walked, the volcanic and basalt biomes, the Rascal and the Glare, and Supplementaries' road signs.
 
@@ -292,19 +290,20 @@ Turn back, or the cold takes you.
 
 The Last Sea, enchanting, ore, the stack upgrade, the animals added twice, the structures and the Nether blocks are settled in `systems.md` (M13).
 
-### D8 Scope: a 25-30 hour road
+### D8 Scope: a 12 hour road, walked
 
 | Part | Size |
 |---|---|
-| Main story | About 25-30 hours, 12-15 evenings of two hours, in about 30-40 main quests |
-| Side content | About half again: 12-15 hours, perhaps 30 side quests |
-| Road scenes | A pool of about 60-80 scenes that come back in variants, each three or four times over a run and never twice close together |
+| Main story | About 12 hours, 6 evenings of two hours, in 23 main quests and six halls (`story.md`, S2, S16) |
+| Side content | 26 side quests on top, each filling a valley between the main road's peaks; about as long again for a team that plays every one |
+| Travel | On foot the whole road, with the paraglider and horses, and across the sea once by boat |
+| Road scenes | A pool of scenes that come back in variants, each two or three times over a run and never twice close together |
 
 ```text
 The herder again, further north now. His dogs know you before he does.
 ```
 
-**Why:** A group of friends can finish 25-30 hours before life gets in the way, as Cyberpunk 2077 (26 hours) and GTA V (32) show, and D11's catch-up covers the evenings someone misses. Side content of half again, as in GTA V, keeps the main road in front; a scene that comes back in a variant, as Red Dead Redemption 2's encounters do, carries D2's five-minute cadence and can remember the player.
+**Why:** Two friends playing the road on a server stopped around the ninth hour of a thirty-hour road, still in its first act: every day had the same shape, the ember's pull, a place and the caravan's fire, and it wore out before the road changed. About twelve hours, as It Takes Two (about 14) and A Way Out (about 6) show for story games friends finish together, gives each kind of play and each land its turn before it repeats, and D11's catch-up covers the evening someone misses. Walking keeps the wild land and the far view the pack's own way to travel. Side content on top keeps the main road in front; a scene that comes back in a variant, as Red Dead Redemption 2's encounters do, carries D2's five-minute cadence and can remember the player.
 
 ### D9 The ending: four doors the road opens
 
@@ -335,7 +334,7 @@ What opens the closed doors, the shards' part and the world after each door are 
 
 ### D10 The shards: twelve fates, and not all of them taken
 
-- The ember still leads to twelve hidden halls, but what is in a hall starts its main quest instead of ending it. Every shard has met its own fate since the breaking, and no two are found the same way: one still waits behind a seal, one was taken by the Gazebound, two lie on one calling stone, one has grown into a beast that sees, one warms a living people's children.
+- The ember leads to six of the twelve hidden halls, and what is in a hall starts its main quest instead of ending it. Every shard has met its own fate since the breaking, and no two are found the same way: one lies under a frozen lake where a thief sank it, one was cast into a town's bell, two lie on one calling stone, one has grown into a beast that sees, and five were taken by the Gazebound's heir, who carries them to the frame (`story.md`, S6).
 
   ```text
   The ember draws you down a stair under a dead oak. The calling stone is cracked and bare.
@@ -384,7 +383,7 @@ The balance of each decision is settled in `systems.md` (M16).
   |---|---|
   | Their tent stands more than 256 blocks from where they appear | It is packed up and put back in their inventory with its inside and everything stored in it, or dropped at their feet if the inventory is full. A tent closer by stays where it is |
   | Their horse or pack animal is more than 256 blocks away | It comes along |
-  | Their boat, ship or aircraft is far away | It stays, and the map shows where |
+  | Their boat or ship is far away | It stays, and the map shows where |
   | They died before logging out | Their grave stays where they fell, and the compass marks it |
   | Their respawn fire is far away | Their respawn point moves to the fire of the teammate they joined |
   | The team is in a challenge or a decision | They join it as it stands; decisions made stay made |
@@ -467,14 +466,13 @@ What opens a new part of the game belongs to a quest or an act, never to a numbe
 | Unlock | Belongs to |
 |---|---|
 | The voice speaks | The first hall |
-| Ships | 1.11 The Name, which ends Act 1 and turns the road to the sea |
-| Flight | The quest that opens Act 3 |
-| Seeing through stone | The quest where the Eye in the player first sees |
+| Ships | 1.6 The Name, which ends Act 1 and turns the road to the sea |
+| Seeing through stone | 2.4 The Worm, where the Eye in the player first sees |
 | Monsters growing stronger | How brightly the player shines, stage by stage (S12), not each shard or day |
 | The memories | Their quests |
 | The ember knowing the frame | The quest that opens the finale |
 
-**Why:** D10 lets a player leave shards behind, and a count would lock them out of the sea or the sky for being kind. Tying each unlock to a quest also lets the story place it where it lands best.
+**Why:** D10 lets a player leave shards behind, and a count would lock them out of the sea for being kind. Tying each unlock to a quest also lets the story place it where it lands best.
 
 ### D16 Quests use the world's own places
 
@@ -515,6 +513,18 @@ It raises:
 **Why:** A quest that sends the player to a temple of the Sand Singers only means something if there are few of them and they are theirs, and a ruin explains itself once it is a town the gaze burned. Giving every kind an owner keeps all the world's places telling the same story.
 
 The frequencies and the pass through every structure kind are settled in `systems.md` (M13).
+
+### D18 The story speaks plainly
+
+- Every quest's first lines say who, what and why. What stays a mystery is what the characters themselves do not know yet: who the player is, what speaks in the ember, what the stranger meant.
+- A person who keeps something back says why, in the same line, so the player knows what is withheld and by whom.
+
+  ```text
+  <Cadoc> That light was my captain's. I swore at his fire never to say his name,
+          and I keep what I swear. The Gazebound woman who follows your smoke will.
+  ```
+
+**Why:** The two friends who played the road called its cryptic telling one of its main problems, and Captains' Orders went over their heads: a mystery told as a riddle reads as a puzzle the player failed, while a secret with its reason said aloud is a hook. The `lore` skill writes every line to this.
 
 ## Open
 

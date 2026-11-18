@@ -67,6 +67,25 @@ Unreleased and in development: nothing is published yet, and a world made with o
 
 **Why:** A silent observer is how studios test blind, and a hint that counts against the bar keeps the user honest. The agent cannot watch the evening, so the world has to tell it afterwards where people stood, what they tried and said and where they waited; positions with the distance to the goal show a team lost long before anyone says so, and chat and screens show what they looked for.
 
+### R6 How long each step should take
+
+R3's report sets each main quest's time against its budget, and each act's against the act's (`story.md`, S2). Steps inside a quest show their time alone.
+
+| Part | Budget | Its main quests |
+|---|---|---|
+| Prologue | 1 h | The three together |
+| Act 1 | 4 h | The Pull 1 h, The Deserter ½ h, The Frost Walkers 1¼ h, The Bell 1¼ h, The Hooded Traveller and The Name a few minutes each |
+| Act 2 | 4 h | The Crossing 1 h, The Tide Folk 1 h, The Worm 1¼ h, The Hollow ¾ h, Your Eyes and Malgven's Warning a few minutes each |
+| Act 3 | 2½ h | The Morning After ¼ h, The Scribes' Books 1 h, The Rider ¼ h, The Keepers' Door ½ h, The Dreaming a few minutes, and the walk out of the hollow |
+| Finale | ½ h | The Gate and The Doors; the dragon in Blind it on top |
+
+```text
+1.3 The Frost Walkers   1 h 32 min   budget 1 h 15 min
+Act 1                   4 h 40 min   budget 4 h
+```
+
+**Why:** The road runs about twelve hours (`vision.md`, D8), so a quest that runs long is found by its number, not by a feeling that the evening dragged; a hall's quest is mostly its walk, so its budget is what tunes the distance to the next hall (`systems.md`, M40).
+
 ## Open
 
 ### R2 Updates and saves
@@ -79,8 +98,4 @@ English only, or German too, and when.
 
 ### R5 Release and credits
 
-Private, or published on Modrinth; and how the pack credits the mods, sounds, music and voices it ships (`pack/CREDITS.md` holds the music today).
-
-### R6 How long each step should take
-
-R3's report is to set each step's time against the time it should take, but no document gives those times. They could come from the design's distances and the talks' lengths, or be measured from the first blind plays and the agent's playthroughs. Until this is settled, the report shows each step's time alone.
+Private, or published on Modrinth; and how the pack credits the mods, sounds, music and voices it ships (`pack/CREDITS.md` holds the music today). Whatever it settles, nothing ships silent: every line is recorded and every speaker has a voice (`narration.md`, Recording).
