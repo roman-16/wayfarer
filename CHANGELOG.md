@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-19
+
+### Fixed
+
+- Fixed the Prism instance stopping at its pre-launch command before it fetched the pack, so the game never started. An instance already imported keeps the broken command: import it again from `https://roman-16.github.io/wayfarer/1/Wayfarer.zip`.
+
 ## [1.0.0] - 2026-11-19
 
 ### Added
@@ -15,5 +21,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - The world's shape: the home land, the deep sea round it, the outer continent out to the Last Sea, and the ring of frames.
 - Updates that arrive by themselves: the Prism instance fetches each new 1.x version before it starts, and a road begun on 1.x loads in every later 1.x.
 
-[unreleased]: https://github.com/roman-16/wayfarer/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/roman-16/wayfarer/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/roman-16/wayfarer/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/roman-16/wayfarer/releases/tag/v1.0.0

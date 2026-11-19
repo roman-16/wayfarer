@@ -61,6 +61,10 @@ def bootstrap():
     return cached
 
 
+def quoted(value):
+    return '"' + str(value).replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
 def instance(icon, version, versions, gigabytes):
     major = version.split(".")[0]
     settings = {
@@ -82,7 +86,7 @@ def instance(icon, version, versions, gigabytes):
         "formatVersion": 1,
     }
     with zipfile.ZipFile(DIST / f"Wayfarer-{major}.zip", "w", zipfile.ZIP_DEFLATED) as archive:
-        archive.writestr("instance.cfg", "[General]\n" + "".join(f"{key}={value}\n" for key, value in settings.items()))
+        archive.writestr("instance.cfg", "[General]\n" + "".join(f"{key}={quoted(value)}\n" for key, value in settings.items()))
         archive.writestr("mmc-pack.json", json.dumps(components, indent=2) + "\n")
         archive.write(icon, f"{ICON}.png")
         archive.write(bootstrap(), "minecraft/packwiz-installer-bootstrap.jar")
