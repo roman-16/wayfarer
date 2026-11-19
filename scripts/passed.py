@@ -7,7 +7,7 @@ import sys
 import zipfile
 from pathlib import Path
 
-import tomllib
+import changelog
 
 ROOT = Path(__file__).resolve().parent.parent
 RECORD = ROOT / "build/passed.json"
@@ -38,8 +38,7 @@ INPUTS = (
 
 
 def jar():
-    version = tomllib.loads((ROOT / "pack/pack.toml").read_text())["version"]
-    return ROOT / f"mod/build/libs/wayfarer-{version}.jar"
+    return ROOT / f"mod/build/libs/wayfarer-{changelog.version()}.jar"
 
 
 def digest():

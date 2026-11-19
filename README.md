@@ -28,11 +28,10 @@ https://roman-16.github.io/wayfarer/1/Wayfarer.zip
 
 Before every launch the instance fetches what changed in the newest 1.x version. Offline, packwiz's window offers to continue without updating.
 
-To build and publish a version:
+To release a version, give it its dated section in `CHANGELOG.md` (`## [1.2.3] - 2026-11-19`) and push it to main: the Release workflow lints it, builds it and makes it the GitHub release of its version, which GitHub Pages serves. `just pack` builds the same into `dist/` locally:
 
 ```console
-$ just pack      # dist/: the Prism instance, the pack it hosts, the Wayfarer jar and the server pack
-$ just publish   # the GitHub release of the version in pack/pack.toml, which GitHub Pages serves
+$ just pack   # dist/: the Prism instance, the pack it hosts, the Wayfarer jar and the server pack
 ```
 
 | File in `dist/` | Use |

@@ -1,6 +1,6 @@
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
-packVersion := `sed --quiet 's/^version = "\(.*\)"$/\1/p' pack/pack.toml`
+packVersion := `python3 scripts/changelog.py`
 jar := "mod/build/libs/wayfarer-" + packVersion + ".jar"
 
 export JAVA_HOME := env("DEVBOX_PACKAGES_DIR") / "lib/openjdk"
@@ -57,7 +57,7 @@ lint: generate compile
     cd pack && packwiz refresh
     python3 scripts/rules.py
 
-[doc("Export into dist/ the Prism instance that updates itself from the hosted address, the pack it hosts, the Wayfarer jar and the server pack; refuses a version without its section in CHANGELOG.md")]
+[doc("Export into dist/ the Prism instance that updates itself from the hosted address, the pack it hosts, the Wayfarer jar and the server pack, of the version CHANGELOG.md's newest section names")]
 pack: build
     #!/usr/bin/env bash
     set -euo pipefail
@@ -67,10 +67,6 @@ pack: build
     python3 scripts/export.py {{ jar }} build/icon.png
     python3 scripts/instance.py server build/server {{ jar }}
     python3 -c 'import shutil, sys; shutil.make_archive(sys.argv[1], "zip", sys.argv[2])' "dist/Wayfarer-{{ packVersion }}-server" build/server
-
-[doc("Publish what just pack put in dist/ as the GitHub release of its version, which the Pages workflow serves at the hosted address; refuses a version already released or work not yet pushed")]
-publish:
-    python3 scripts/publish.py
 
 [doc("Open the pack in a dev client on a fresh natural world, played in survival the way a player meets it; `just play lean` loads only the Wayfarer mod and what it needs, in a world of its own; `just play far` keeps Distant Horizons' far view on")]
 play mode="full":

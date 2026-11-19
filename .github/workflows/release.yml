@@ -1,0 +1,126 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      release: ${{ steps.decide.outputs.release }}
+      sha: ${{ steps.decide.outputs.sha }}
+      tag: ${{ steps.decide.outputs.tag }}
+      version: ${{ steps.decide.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          sparse-checkout: |
+            CHANGELOG.md
+            scripts/changelog.py
+          sparse-checkout-cone-mode: false
+
+      - name: Decide what to release
+        id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          nothing() {
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            echo "$1" | tee --append "$GITHUB_STEP_SUMMARY"
+            exit 0
+          }
+
+          python3 scripts/changelog.py --check
+          version=$(python3 scripts/changelog.py)
+          tag="v$version"
+
+          state=$(gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json isDraft --jq '.isDraft' 2>/dev/null || echo missing)
+          if [ "$state" = "false" ]; then
+            nothing "$tag is already published; CHANGELOG.md asks for nothing new."
+          fi
+
+          tagged=$(gh api "repos/$GITHUB_REPOSITORY/commits/$tag" --jq '.sha' 2>/dev/null || true)
+          if [ -n "$tagged" ]; then
+            status=$(gh api "repos/$GITHUB_REPOSITORY/compare/$tagged...$GITHUB_SHA" --jq '.status')
+            if [ "$status" != "ahead" ] && [ "$status" != "identical" ]; then
+              echo "::error::$tag names $tagged, which is not in main's history at $GITHUB_SHA; delete the tag or publish it by hand."
+              exit 1
+            fi
+            echo "$tag is tagged at $tagged without a published release; releasing that commit."
+            sha="$tagged"
+          else
+            sha="$GITHUB_SHA"
+          fi
+
+          {
+            echo "release=true"
+            echo "sha=$sha"
+            echo "tag=$tag"
+            echo "version=$version"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "## Releasing $tag"
+            echo
+            python3 scripts/changelog.py --notes
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  release:
+    needs: resolve
+    if: needs.resolve.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+
+      - uses: jetify-com/devbox-install-action@v0.16.0
+        with:
+          enable-cache: true
+
+      - name: Lint
+        run: |
+          set -euo pipefail
+          devbox run just lint
+          changed=$(git status --porcelain)
+          if [ -n "$changed" ]; then
+            echo "$changed"
+            git diff
+            echo "::error::just lint changed the tree; run it, commit what it writes and push again."
+            exit 1
+          fi
+
+      - name: Pack
+        run: devbox run just pack
+
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ needs.resolve.outputs.sha }}
+          TAG: ${{ needs.resolve.outputs.tag }}
+          VERSION: ${{ needs.resolve.outputs.version }}
+        run: |
+          set -euo pipefail
+          if [ "$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq '.isDraft' 2>/dev/null)" = "true" ]; then
+            gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --yes
+          fi
+          python3 scripts/changelog.py --notes > "$RUNNER_TEMP/notes.md"
+          gh release create "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --target "$SHA" --title "Wayfarer $VERSION" --notes-file "$RUNNER_TEMP/notes.md"
+
+  pages:
+    needs: release
+    uses: ./.github/workflows/pages.yml
+    permissions:
+      contents: read
+      id-token: write
+      pages: write

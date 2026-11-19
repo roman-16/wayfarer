@@ -5,6 +5,7 @@ import sys
 import zipfile
 from pathlib import Path
 
+import changelog
 import instance
 import spoken
 import tomllib
@@ -949,6 +950,7 @@ def main():
         *voices(),
         *enchantments(),
         *foes(),
+        *changelog.problems(changelog.CHANGELOG.read_text()),
     ]
     for finding in findings:
         print(finding)

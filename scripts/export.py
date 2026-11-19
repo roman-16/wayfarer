@@ -1,14 +1,13 @@
 import argparse
 import hashlib
 import json
-import re
 import shutil
 import subprocess
-import sys
 import urllib.request
 import zipfile
 from pathlib import Path
 
+import changelog
 import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -24,15 +23,6 @@ BOOTSTRAP = (
 MEGABYTES_PER_GIGABYTE = 1024
 LEAST_MEGABYTES = 512
 ICON = "wayfarer"
-
-
-def fail(why):
-    sys.exit(f"pack failed: {why}")
-
-
-def released(version):
-    if not re.search(rf"^## \[{re.escape(version)}\]", (ROOT / "CHANGELOG.md").read_text(), re.MULTILINE):
-        fail(f"CHANGELOG.md has no section for {version}")
 
 
 def hosted(jar, version):
@@ -86,7 +76,9 @@ def instance(icon, version, versions, gigabytes):
         "formatVersion": 1,
     }
     with zipfile.ZipFile(DIST / f"Wayfarer-{major}.zip", "w", zipfile.ZIP_DEFLATED) as archive:
-        archive.writestr("instance.cfg", "[General]\n" + "".join(f"{key}={quoted(value)}\n" for key, value in settings.items()))
+        archive.writestr(
+            "instance.cfg", "[General]\n" + "".join(f"{key}={quoted(value)}\n" for key, value in settings.items())
+        )
         archive.writestr("mmc-pack.json", json.dumps(components, indent=2) + "\n")
         archive.write(icon, f"{ICON}.png")
         archive.write(bootstrap(), "minecraft/packwiz-installer-bootstrap.jar")
@@ -100,8 +92,7 @@ def main():
     parser.add_argument("icon", type=Path)
     arguments = parser.parse_args()
     pack = tomllib.loads((PACK / "pack.toml").read_text())
-    version = pack["version"]
-    released(version)
+    version = changelog.version()
     DIST.mkdir(parents=True, exist_ok=True)
     hosted(arguments.jar, version)
     gigabytes = tomllib.loads((ROOT / "balance.toml").read_text())["heap"]["gigabytes"]

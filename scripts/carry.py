@@ -14,6 +14,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 
+import changelog
 import tomllib
 
 from exaroton import (
@@ -231,7 +232,7 @@ def began(stamp):
 
 
 def admit(world):
-    major = int(tomllib.loads((ROOT / "pack/pack.toml").read_text())["version"].split(".")[0])
+    major = int(changelog.version().split(".")[0])
     if (world / RELEASE).exists() and began(world / RELEASE) == major:
         return
     fields = (

@@ -3,11 +3,11 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.148'
 }
 
-var packVersion = providers.fileContents(layout.projectDirectory.file('../pack/pack.toml')).asText.get() =~ /(?m)^version = "(.+)"$/
-if (!packVersion.find()) {
-    throw new GradleException('pack/pack.toml names no version')
+var released = providers.fileContents(layout.projectDirectory.file('../CHANGELOG.md')).asText.get() =~ /(?m)^## \[(\d+\.\d+\.\d+)\] - \d{4}-\d{2}-\d{2}$/
+if (!released.find()) {
+    throw new GradleException('CHANGELOG.md has no version section like "## [1.2.3] - 2026-11-19"')
 }
-version = packVersion.group(1)
+version = released.group(1)
 group = mod_group_id
 
 base {
