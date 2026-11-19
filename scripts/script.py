@@ -2,8 +2,9 @@ import json
 import re
 from pathlib import Path
 
-import spoken
 import tomllib
+
+import spoken
 
 ROOT = Path(__file__).resolve().parent.parent
 STORY = ROOT / "story"

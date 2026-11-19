@@ -4,6 +4,8 @@ import math
 import shutil
 from pathlib import Path
 
+import tomllib
+
 import crafting
 import credits
 import enchantments
@@ -12,7 +14,6 @@ import png
 import poses
 import spoken
 import stamp
-import tomllib
 from blocks import LAMP, Template, box, cuboid, text
 from camp import FIRE, GRAVE, HEADSTONE, STRANGER, WAKE, camp, grave
 from camp import SIZE as CAMP

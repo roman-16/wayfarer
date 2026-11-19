@@ -4,8 +4,9 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
-import instance
 import tomllib
+
+import instance
 
 ROOT = Path(__file__).resolve().parent.parent
 PACK = ROOT / "pack"

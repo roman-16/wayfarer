@@ -7,8 +7,9 @@ import urllib.request
 import zipfile
 from pathlib import Path
 
-import changelog
 import tomllib
+
+import changelog
 
 ROOT = Path(__file__).resolve().parent.parent
 PACK = ROOT / "pack"

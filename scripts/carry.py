@@ -14,9 +14,9 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
 
-import changelog
 import tomllib
 
+import changelog
 from exaroton import (
     CARRY,
     CARRY_SUFFIX,

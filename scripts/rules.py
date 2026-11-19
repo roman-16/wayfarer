@@ -5,10 +5,11 @@ import sys
 import zipfile
 from pathlib import Path
 
+import tomllib
+
 import changelog
 import instance
 import spoken
-import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "generator"))

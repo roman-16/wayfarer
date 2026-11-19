@@ -13,11 +13,12 @@ from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
+import tomllib
+
 import drive
 import hotswap
 import instance
 import states
-import tomllib
 from drive import Failure, crashes, running
 
 ROOT = Path(__file__).resolve().parent.parent
