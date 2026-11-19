@@ -257,7 +257,7 @@ public final class Tasks {
                         .orElse(objective);
             }
             tasks(player, active, open);
-        } else if (Engine.active(server).stream().anyMatch(active -> !active.quest().act().equals(Engine.PROLOGUE))) {
+        } else if (Engine.active(server).stream().anyMatch(active -> !active.quest().follows())) {
             open.put("choose", task("choose", key(JOURNAL_KEY)));
         }
         if (Clock.evening() && !Talk.busy() && (Caravan.standing(server).isPresent() || Clock.camped(player)) && !Tents.isTent(player.level().dimension())

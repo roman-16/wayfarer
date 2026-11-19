@@ -201,6 +201,14 @@ tasks.matching { it.name == 'runServer' }.configureEach {
     standardInput = System.in
 }
 
+var freshGameTestWorld = tasks.register('freshGameTestWorld', Delete) {
+    delete 'run/world'
+}
+
+tasks.matching { it.name == 'runGameTestServer' }.configureEach {
+    dependsOn freshGameTestWorld
+}
+
 tasks.register('vineflower', Sync) {
     from configurations.vineflower
     into layout.buildDirectory.dir('vineflower')
@@ -227,6 +235,9 @@ neoForge.ideSyncTask generateModMetadata
 
 processResources {
     from(rootProject.file('../balance.toml')) {
+        into 'wayfarer'
+    }
+    from(rootProject.file('../CHANGELOG.md')) {
         into 'wayfarer'
     }
 }

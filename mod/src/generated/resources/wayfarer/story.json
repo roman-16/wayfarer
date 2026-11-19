@@ -1382,6 +1382,7 @@
   "quests": [
     {
       "act": "prologue",
+      "follows": true,
       "id": "the_last_fire",
       "kind": "main",
       "reward": {
@@ -1652,6 +1653,7 @@
       "after": [
         "the_last_fire"
       ],
+      "follows": true,
       "id": "the_first_day",
       "kind": "main",
       "steps": [
@@ -1740,6 +1742,7 @@
       "after": [
         "the_first_day"
       ],
+      "follows": true,
       "id": "ash",
       "kind": "main",
       "steps": [
@@ -9284,6 +9287,7 @@
       "after": [
         "the_doors"
       ],
+      "follows": true,
       "id": "a_home",
       "kind": "main",
       "steps": [
@@ -9320,6 +9324,7 @@
       "after": [
         "the_doors"
       ],
+      "follows": true,
       "id": "pips_home",
       "kind": "main",
       "steps": [
@@ -9358,6 +9363,7 @@
       "after": [
         "the_doors"
       ],
+      "follows": true,
       "id": "the_promised_home",
       "kind": "main",
       "steps": [
@@ -9398,6 +9404,7 @@
       "after": [
         "the_doors"
       ],
+      "follows": true,
       "id": "the_road_goes_on",
       "kind": "main",
       "steps": [

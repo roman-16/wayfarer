@@ -8,7 +8,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
+import io.github.roman16.wayfarer.Changelog;
 import io.github.roman16.wayfarer.Narration;
+import io.github.roman16.wayfarer.Release;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.github.roman16.wayfarer.client.stamp.Stamp;
 import io.github.roman16.wayfarer.mixin.ConnectScreenAccessor;
@@ -49,10 +51,11 @@ public final class Recap {
     private static final String LINES = "lines";
     private static final String STORY = "story";
     private static final String TITLE = "title";
+    private static final String VERSION = "version";
     private static final String SERVER = "server:";
     private static final Component TERRAIN = Component.translatable("multiplayer.downloadingTerrain");
-    private static final Page FIRST = new Page("", List.of(Component.translatable("wayfarer.recap.first")));
-    private static final Page WAITING = new Page("", List.of());
+    private static final Page FIRST = new Page("", List.of(Component.translatable("wayfarer.recap.first")), Optional.empty());
+    private static final Page WAITING = new Page("", List.of(), Optional.empty());
     private static String world = "";
     private static String server = "";
     private static final int MARGIN = 12;
@@ -107,6 +110,7 @@ public final class Recap {
             page = new JsonObject();
             page.add(TITLE, chapter.get(TITLE));
             page.add(LINES, chapter.get(LINES));
+            page.addProperty(VERSION, Release.version());
         }
         JsonObject recaps = kept();
         if (Objects.equals(recaps.get(key), page) && (server.isEmpty() || Objects.equals(recaps.get(server), page))) {
@@ -184,7 +188,8 @@ public final class Recap {
         int head = page.title().isEmpty() ? Stamp.MARK_HEIGHT + JournalScreen.TITLE_GAP
                 : Stamp.DISPLAY_HEIGHT + JournalScreen.TITLE_GAP + Stamp.DIVIDER_HEIGHT + 2;
         int frame = JournalScreen.COVER_EDGE * 2 + JournalScreen.PAD * 2 + head;
-        int room = floor - MARGIN - STATUS_GAP - font.lineHeight;
+        int notice = page.notice().isPresent() ? font.lineHeight + STATUS_GAP : 0;
+        int room = floor - MARGIN - STATUS_GAP - font.lineHeight - notice;
         List<FormattedCharSequence> lines = page.tail(font, textWidth, Math.max(0, (room - frame) / JournalScreen.LINE));
         int height = frame + lines.size() * JournalScreen.LINE;
         int left = (screen.width - width) / 2;
@@ -214,8 +219,10 @@ public final class Recap {
                 y += JournalScreen.LINE;
             }
         }
+        page.notice().map(Component::getString).ifPresent(updated -> Stamp.label(graphics, font, updated, (screen.width - Stamp.labelWidth(font, updated)) / 2,
+                top + height + STATUS_GAP, Stamp.LABEL, true));
         String said = status.getString();
-        Stamp.label(graphics, font, said, (screen.width - Stamp.labelWidth(font, said)) / 2, top + height + STATUS_GAP, Stamp.LABEL, true);
+        Stamp.label(graphics, font, said, (screen.width - Stamp.labelWidth(font, said)) / 2, top + height + STATUS_GAP + notice, Stamp.LABEL, true);
         for (Renderable renderable : screen.renderables) {
             if (renderable instanceof AbstractButton button) {
                 button.render(graphics, event.getMouseX(), event.getMouseY(), event.getPartialTick());
@@ -253,11 +260,11 @@ public final class Recap {
         return Minecraft.getInstance().gameDirectory.toPath().resolve(Wayfarer.MODID).resolve(FILE);
     }
 
-    private record Page(String title, List<Component> told) {
+    private record Page(String title, List<Component> told, Optional<Component> notice) {
         static Page of(JsonObject page) {
             List<Component> told = new ArrayList<>();
             page.getAsJsonArray(LINES).forEach(line -> told.add(Component.literal(line.getAsString())));
-            return new Page(page.get(TITLE).getAsString(), told);
+            return new Page(page.get(TITLE).getAsString(), told, Changelog.since(page.has(VERSION) ? page.get(VERSION).getAsString() : null));
         }
 
         List<FormattedCharSequence> tail(Font font, int width, int room) {

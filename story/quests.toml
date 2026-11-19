@@ -1,5 +1,6 @@
 [[quests]]
 act = "prologue"
+follows = true
 id = "the_last_fire"
 kind = "main"
 summary = "I woke by a stranger's fire with no name and no memory of the road. He is dying, and he wants to talk."
@@ -165,6 +166,7 @@ text = "Leave it bare."
 [[quests]]
 act = "prologue"
 after = ["the_last_fire"]
+follows = true
 id = "the_first_day"
 kind = "main"
 summary = "He knew my face, and the ember might know the rest. Take it to new ground, and make a camp of my own before dark."
@@ -220,6 +222,7 @@ words.ember = "It woke on my first evening on the road. It's warm now, it glows,
 [[quests]]
 act = "prologue"
 after = ["the_first_day"]
+follows = true
 id = "ash"
 kind = "main"
 summary = "Something is burning over the ridge, a whole town of it. Go and see."
@@ -4483,6 +4486,7 @@ text = "[firm, quiet] It goes in the ground with me."
 [[quests]]
 act = "finale"
 after = ["the_doors"]
+follows = true
 id = "a_home"
 kind = "main"
 summary = "The gaze is gone. Nothing comes at night that you don't let in, and seeds take root again. Build a home."
@@ -4501,6 +4505,7 @@ tasks = ["bed"]
 [[quests]]
 act = "finale"
 after = ["the_doors"]
+follows = true
 id = "pips_home"
 kind = "main"
 summary = "The one Pip followed walked into the frame, and the dark closed behind them. Pip carries the ember now. Build a home."
@@ -4522,6 +4527,7 @@ tasks = ["bed"]
 [[quests]]
 act = "finale"
 after = ["the_doors"]
+follows = true
 id = "the_promised_home"
 kind = "main"
 summary = "The gaze kept its promise: where your people sleep, nothing comes at night. Everywhere else, it sees, and its creatures hunt. Go home."
@@ -4544,6 +4550,7 @@ story = ["The gaze kept its promise. Where my people sleep, nothing comes at nig
 [[quests]]
 act = "finale"
 after = ["the_doors"]
+follows = true
 id = "the_road_goes_on"
 kind = "main"
 summary = "The shards went back to the peoples, and the gaze stays half-blind. The caravan walks on, and so do I. Make for their smoke."

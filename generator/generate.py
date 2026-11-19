@@ -4,6 +4,7 @@ import math
 import shutil
 from pathlib import Path
 
+import crafting
 import credits
 import enchantments
 import fonts
@@ -12,7 +13,6 @@ import poses
 import spoken
 import stamp
 import tomllib
-import tweaks
 from blocks import LAMP, Template, box, cuboid, text
 from camp import FIRE, GRAVE, HEADSTONE, STRANGER, WAKE, camp, grave
 from camp import SIZE as CAMP
@@ -883,13 +883,11 @@ def main():
     )
     write_json(MAIN / "wayfarer/dice.json", spoken.shown_data(tomllib.loads((ROOT / "story/dice.toml").read_text())))
     music = tomllib.loads((ROOT / "story/sounds.toml").read_text())
-    tweaked = tomllib.loads((ROOT / "generator/tweaks.toml").read_text())
     sounds(music)
     credits.write(
         music["music"],
         music["effects"],
         faces,
-        tweaked,
         tomllib.loads((ROOT / "story/voices.toml").read_text())["voices"],
         MAIN,
     )
@@ -897,7 +895,11 @@ def main():
     places(balance, written)
     books(written, halled, library(written, halled))
     shaders()
-    tweaks.write(MAIN, tomllib.loads((ROOT / "generator/nether.toml").read_text()), tweaked)
+    crafting.write(
+        MAIN,
+        tomllib.loads((ROOT / "generator/nether.toml").read_text()),
+        tomllib.loads((ROOT / "generator/crafting.toml").read_text()),
+    )
     enchantments.write(MAIN, tomllib.loads((ROOT / "generator/enchantments.toml").read_text()))
     spoken.write_index()
 

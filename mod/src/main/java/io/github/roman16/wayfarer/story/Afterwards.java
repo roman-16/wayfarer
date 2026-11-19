@@ -7,7 +7,9 @@ import io.netty.buffer.ByteBuf;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
@@ -19,20 +21,25 @@ public final class Afterwards {
     private static final String SEEN = "seen";
     private static final String SIGHT = "sight";
     private static final List<People> PEOPLES = List.of(
-            new People("diggers", "the_pull", "", Map.of("", "taken"), Set.of()),
+            new People("diggers", "the_pull", "", Map.of("", "taken"), Set.of(), ""),
             new People("drowned_city", "the_tide_folk", "the_tide_folk/the_shards", Map.of("both", "taken", "drowned", "taken", "none", "left", "theirs", "left"),
-                    Set.of("none", "theirs")),
-            new People("first_village", "the_bell", "the_bell/the_bell", Map.of("keep", "rung", "melt", "melted"), Set.of()),
-            new People("frost_walkers", "the_frost_walkers", "the_frost_walkers/the_shard", Map.of("give", "given", "keep", "kept"), Set.of("give")),
-            new People("jungle_folk", "the_locks", "", Map.of("", "emptied"), Set.of()),
-            new People("sand_singers", "the_worm", "the_worm/the_worm", Map.of("killed", "killed", "spared", "spared"), Set.of("spared")),
-            new People("scribes", "the_scribes", "the_scribes/the_shard", Map.of("leave", "left", "take", "taken"), Set.of("leave")),
+                    Set.of("none", "theirs"), TideFolk.NAME),
+            new People("first_village", "the_bell", "the_bell/the_bell", Map.of("keep", "rung", "melt", "melted"), Set.of(), ""),
+            new People("frost_walkers", "the_frost_walkers", "the_frost_walkers/the_shard", Map.of("give", "given", "keep", "kept"), Set.of("give"), Frost.HALL),
+            new People("jungle_folk", "the_locks", "", Map.of("", "emptied"), Set.of(), ""),
+            new People("sand_singers", "the_worm", "the_worm/the_worm", Map.of("killed", "killed", "spared", "spared"), Set.of("spared"), SandSingers.NAME),
+            new People("scribes", "the_scribes", "the_scribes/the_shard", Map.of("leave", "left", "take", "taken"), Set.of("leave"), Scribes.NAME),
             new People("tide_folk", "the_tide_folk", "the_tide_folk/the_shards", Map.of("both", "both", "drowned", "drowned", "none", "none", "theirs", "theirs"),
-                    Set.of("drowned", "none")));
+                    Set.of("drowned", "none"), TideFolk.NAME));
 
     private Afterwards() {}
 
-    private record People(String id, String met, String decided, Map<String, String> halls, Set<String> dark) {}
+    private record People(String id, String met, String decided, Map<String, String> halls, Set<String> dark, String land) {}
+
+    static List<BlockPos> darkLands(Progress progress) {
+        return PEOPLES.stream().filter(people -> people.dark().contains(progress.choices.getOrDefault(people.decided(), "")))
+                .map(people -> progress.place(people.land())).flatMap(Optional::stream).distinct().toList();
+    }
 
     public record Open() implements CustomPacketPayload {
         public static final Type<Open> TYPE = new Type<>(Wayfarer.id("afterwards"));

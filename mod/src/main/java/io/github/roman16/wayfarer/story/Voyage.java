@@ -40,6 +40,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -143,10 +144,11 @@ public final class Voyage {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onMend(PlayerInteractEvent.EntityInteract event) {
         Player player = event.getEntity();
-        if (station == null || !event.getTarget().getUUID().equals(station) || !(event.getTarget() instanceof Boat hull) || hull.getDamage() <= 0
+        Entity clicked = People.story(event.getTarget()) && event.getTarget().getVehicle() != null ? event.getTarget().getVehicle() : event.getTarget();
+        if (station == null || !clicked.getUUID().equals(station) || !(clicked instanceof Boat hull) || hull.getDamage() <= 0
                 || !event.getItemStack().is(Items.IRON_NUGGET) || !player.getInventory().contains(stack -> stack.is(ItemTags.PLANKS))) {
             return;
         }

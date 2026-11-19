@@ -1,6 +1,6 @@
 # Wayfarer
 
-Unreleased and in development: nothing is published yet, and a world made with one version may not open in the next.
+Wayfarer 1: every 1.x version loads into a road begun on 1.x, and the Prism instance fetches each one by itself before it starts.
 
 A Minecraft modpack about a nomadic journey, for Minecraft 1.21.1 on NeoForge, for one to four players. You wake at a dying stranger's fire with no name, and he gives you his ember. It leads to twelve hidden halls across a vast, sparse world, where the shards of the dragon's broken Eye each met their own fate. A caravan of survivors follows your marks, and each day you walk from its fire into the road's people, scenes and nights. Every choice comes back.
 
@@ -20,15 +20,26 @@ Keys for outside services live in `.env`, which devbox loads. `.env.example` nam
 
 ## Play
 
-```console
-$ just pack
+In Prism Launcher: **Add Instance → Import**, and give it the address of the major version's instance:
+
+```text
+https://roman-16.github.io/wayfarer/1/Wayfarer.zip
 ```
 
-This writes two files to `dist/`:
+Before every launch the instance fetches what changed in the newest 1.x version. Offline, packwiz's window offers to continue without updating.
 
-| File | Use |
+To build and publish a version:
+
+```console
+$ just pack      # dist/: the Prism instance, the pack it hosts, the Wayfarer jar and the server pack
+$ just publish   # the GitHub release of the version in pack/pack.toml, which GitHub Pages serves
+```
+
+| File in `dist/` | Use |
 |---|---|
-| `Wayfarer-<version>.zip` | In Prism Launcher: **Add Instance → Import**, pick the zip |
+| `Wayfarer-<major>.zip` | The Prism instance that updates itself from the hosted address |
+| `Wayfarer-<version>-pack.zip` | The pack the address hosts |
+| `wayfarer-<version>.jar` | The Wayfarer mod, which the hosted pack downloads from the release |
 | `Wayfarer-<version>-server.zip` | Unpack on the server and run `run.sh --nogui` (or `run.bat`). The pack sets `difficulty=normal` |
 
 To look at the pack without installing it anywhere:

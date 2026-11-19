@@ -1,7 +1,6 @@
 package io.github.roman16.wayfarer.story;
 
 import com.google.gson.JsonElement;
-import de.markusbordihn.easynpc.entity.easynpc.EasyNPC;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Climate;
 import io.github.roman16.wayfarer.Clock;
@@ -131,7 +130,7 @@ public final class Engine {
         String chosen = Progress.of(player.server).tracking.get(player.getUUID());
         List<Active> active = active(player.server);
         return active.stream().filter(open -> open.quest().id().equals(chosen)).findFirst()
-                .or(() -> active.stream().filter(open -> open.quest().kind().equals(MAIN) && open.quest().act().equals(PROLOGUE)).findFirst());
+                .or(() -> active.stream().filter(open -> open.quest().follows()).findFirst());
     }
 
     static boolean pursued(MinecraftServer server, Story.Quest quest) {
@@ -228,7 +227,7 @@ public final class Engine {
     @SubscribeEvent
     public static void onInteract(PlayerInteractEvent.EntityInteract event) {
         Entity target = event.getTarget();
-        if (!(target instanceof EasyNPC<?>) && !target.getTags().contains(People.TAG) && target.getTags().stream().noneMatch(tag -> tag.startsWith(Steps.CLUE))) {
+        if (!People.story(target) && target.getTags().stream().noneMatch(tag -> tag.startsWith(Steps.CLUE))) {
             return;
         }
         event.setCanceled(true);

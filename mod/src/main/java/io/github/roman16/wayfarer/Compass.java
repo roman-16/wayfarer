@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.After;
 import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Engine;
 import io.github.roman16.wayfarer.story.Progress;
@@ -151,7 +152,7 @@ public final class Compass {
     }
 
     private static CompassPayload.Shelter shelter(ServerPlayer player) {
-        if (Halls.inside(player)) {
+        if (Halls.inside(player) || After.dark(player)) {
             return CompassPayload.Shelter.HALL;
         }
         return Fire.sheltered(player) ? CompassPayload.Shelter.FIRE : CompassPayload.Shelter.NONE;

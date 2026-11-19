@@ -57,19 +57,20 @@ lint: generate compile
     cd pack && packwiz refresh
     python3 scripts/rules.py
 
-[doc("Export the CurseForge-format client zip and the server pack into dist/")]
+[doc("Export into dist/ the Prism instance that updates itself from the hosted address, the pack it hosts, the Wayfarer jar and the server pack; refuses a version without its section in CHANGELOG.md")]
 pack: build
     #!/usr/bin/env bash
     set -euo pipefail
-    rm --recursive --force build/pack dist
+    rm --recursive --force build/hosted dist
     mkdir --parents build dist
-    cp --recursive pack build/pack
-    cp {{ jar }} build/pack/mods/
-    (cd build/pack && packwiz refresh && packwiz curseforge export --yes --output "../../dist/Wayfarer-{{ packVersion }}.zip")
     magick mod/src/generated/resources/assets/wayfarer/textures/item/ember_lit.png -filter point -resize 1600% build/icon.png
-    python3 scripts/export.py "dist/Wayfarer-{{ packVersion }}.zip" build/icon.png
+    python3 scripts/export.py {{ jar }} build/icon.png
     python3 scripts/instance.py server build/server {{ jar }}
     python3 -c 'import shutil, sys; shutil.make_archive(sys.argv[1], "zip", sys.argv[2])' "dist/Wayfarer-{{ packVersion }}-server" build/server
+
+[doc("Publish what just pack put in dist/ as the GitHub release of its version, which the Pages workflow serves at the hosted address; refuses a version already released or work not yet pushed")]
+publish:
+    python3 scripts/publish.py
 
 [doc("Open the pack in a dev client on a fresh natural world, played in survival the way a player meets it; `just play lean` loads only the Wayfarer mod and what it needs, in a world of its own; `just play far` keeps Distant Horizons' far view on")]
 play mode="full":
@@ -117,10 +118,6 @@ sounds *names:
 [positional-arguments]
 voice *arguments:
     python3 scripts/voice.py "$@"
-
-[doc("Fetch the Vanilla Tweaks resource and crafting tweaks listed in generator/tweaks.toml into generator/tweaks/, which just generate writes into the mod")]
-tweaks:
-    python3 scripts/tweaks.py
 
 [doc("Unpack Minecraft's and NeoForge's code with Parchment names and every mod decompiled with Vineflower into build/sources/, for searching with rg; only what changed is redone")]
 sources:

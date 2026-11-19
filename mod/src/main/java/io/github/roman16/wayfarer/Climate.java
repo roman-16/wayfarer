@@ -18,11 +18,11 @@ public enum Climate implements StringRepresentable {
     public static final Codec<Climate> CODEC = StringRepresentable.fromEnum(Climate::values);
     private static final float COLD_BELOW = 0.45f;
     private static final float HOT_FROM = 0.85f;
-    private static final TagKey<Biome> COLD_BIOMES = tan("cold_biomes");
-    private static final TagKey<Biome> HOT_BIOMES = tan("hot_biomes");
-    private static final TagKey<Biome> ICY_BIOMES = tan("icy_biomes");
-    private static final TagKey<Biome> NEUTRAL_BIOMES = tan("neutral_biomes");
-    private static final TagKey<Biome> WARM_BIOMES = tan("warm_biomes");
+    static final TagKey<Biome> COLD_BIOMES = tan("cold_biomes");
+    static final TagKey<Biome> HOT_BIOMES = tan("hot_biomes");
+    static final TagKey<Biome> ICY_BIOMES = tan("icy_biomes");
+    static final TagKey<Biome> NEUTRAL_BIOMES = tan("neutral_biomes");
+    static final TagKey<Biome> WARM_BIOMES = tan("warm_biomes");
 
     public static Climate of(Holder<Biome> biome) {
         if (biome.is(ICY_BIOMES) || biome.is(COLD_BIOMES)) {

@@ -25,7 +25,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 
 public final class Progress extends SavedData {
     private static final String DONE = "done";
-    static final String NAME = "wayfarer_story";
+    public static final String NAME = "wayfarer_story";
 
     final Map<String, Integer> steps = new LinkedHashMap<>();
     final Map<String, CompoundTag> scratch = new LinkedHashMap<>();

@@ -1,0 +1,331 @@
+colours = [
+  "white",
+  "orange",
+  "magenta",
+  "light_blue",
+  "yellow",
+  "lime",
+  "pink",
+  "gray",
+  "light_gray",
+  "cyan",
+  "purple",
+  "blue",
+  "brown",
+  "green",
+  "red",
+  "black",
+]
+
+[dyes]
+black = ["minecraft:ink_sac", "minecraft:black_dye"]
+blue = ["minecraft:lapis_lazuli", "minecraft:blue_dye"]
+brown = ["minecraft:cocoa_beans", "minecraft:brown_dye"]
+white = ["minecraft:bone_meal", "minecraft:white_dye"]
+
+[dyeing]
+bleach = "minecraft:ice"
+bleached = { candle = "minecraft:candle", stained_glass = "minecraft:glass", stained_glass_pane = "minecraft:glass_pane", terracotta = "minecraft:terracotta" }
+families = [
+  "candle",
+  "concrete_powder",
+  "glazed_terracotta",
+  "stained_glass",
+  "stained_glass_pane",
+  "terracotta",
+]
+
+[smelted]
+concrete_powder = "stained_glass"
+
+[joined.slabs]
+"minecraft:acacia_slab" = "minecraft:acacia_planks"
+"minecraft:andesite_slab" = "minecraft:andesite"
+"minecraft:bamboo_mosaic_slab" = "minecraft:bamboo_mosaic"
+"minecraft:bamboo_slab" = "minecraft:bamboo_planks"
+"minecraft:birch_slab" = "minecraft:birch_planks"
+"minecraft:blackstone_slab" = "minecraft:blackstone"
+"minecraft:brick_slab" = "minecraft:bricks"
+"minecraft:cherry_slab" = "minecraft:cherry_planks"
+"minecraft:cobbled_deepslate_slab" = "minecraft:cobbled_deepslate"
+"minecraft:cobblestone_slab" = "minecraft:cobblestone"
+"minecraft:crimson_slab" = "minecraft:crimson_planks"
+"minecraft:cut_copper_slab" = "minecraft:cut_copper"
+"minecraft:cut_red_sandstone_slab" = "minecraft:cut_red_sandstone"
+"minecraft:cut_sandstone_slab" = "minecraft:cut_sandstone"
+"minecraft:dark_oak_slab" = "minecraft:dark_oak_planks"
+"minecraft:dark_prismarine_slab" = "minecraft:dark_prismarine"
+"minecraft:deepslate_brick_slab" = "minecraft:deepslate_bricks"
+"minecraft:deepslate_tile_slab" = "minecraft:deepslate_tiles"
+"minecraft:diorite_slab" = "minecraft:diorite"
+"minecraft:end_stone_brick_slab" = "minecraft:end_stone_bricks"
+"minecraft:exposed_cut_copper_slab" = "minecraft:exposed_cut_copper"
+"minecraft:granite_slab" = "minecraft:granite"
+"minecraft:jungle_slab" = "minecraft:jungle_planks"
+"minecraft:mangrove_slab" = "minecraft:mangrove_planks"
+"minecraft:mossy_cobblestone_slab" = "minecraft:mossy_cobblestone"
+"minecraft:mossy_stone_brick_slab" = "minecraft:mossy_stone_bricks"
+"minecraft:mud_brick_slab" = "minecraft:mud_bricks"
+"minecraft:nether_brick_slab" = "minecraft:nether_bricks"
+"minecraft:oak_slab" = "minecraft:oak_planks"
+"minecraft:oxidized_cut_copper_slab" = "minecraft:oxidized_cut_copper"
+"minecraft:polished_andesite_slab" = "minecraft:polished_andesite"
+"minecraft:polished_blackstone_brick_slab" = "minecraft:polished_blackstone_bricks"
+"minecraft:polished_blackstone_slab" = "minecraft:polished_blackstone"
+"minecraft:polished_deepslate_slab" = "minecraft:polished_deepslate"
+"minecraft:polished_diorite_slab" = "minecraft:polished_diorite"
+"minecraft:polished_granite_slab" = "minecraft:polished_granite"
+"minecraft:polished_tuff_slab" = "minecraft:polished_tuff"
+"minecraft:prismarine_brick_slab" = "minecraft:prismarine_bricks"
+"minecraft:prismarine_slab" = "minecraft:prismarine"
+"minecraft:purpur_slab" = "minecraft:purpur_block"
+"minecraft:quartz_slab" = "minecraft:quartz_block"
+"minecraft:red_nether_brick_slab" = "minecraft:red_nether_bricks"
+"minecraft:red_sandstone_slab" = "minecraft:red_sandstone"
+"minecraft:sandstone_slab" = "minecraft:sandstone"
+"minecraft:smooth_quartz_slab" = "minecraft:smooth_quartz"
+"minecraft:smooth_red_sandstone_slab" = "minecraft:smooth_red_sandstone"
+"minecraft:smooth_sandstone_slab" = "minecraft:smooth_sandstone"
+"minecraft:smooth_stone_slab" = "minecraft:smooth_stone"
+"minecraft:spruce_slab" = "minecraft:spruce_planks"
+"minecraft:stone_brick_slab" = "minecraft:stone_bricks"
+"minecraft:stone_slab" = "minecraft:stone"
+"minecraft:tuff_brick_slab" = "minecraft:tuff_bricks"
+"minecraft:tuff_slab" = "minecraft:tuff"
+"minecraft:warped_slab" = "minecraft:warped_planks"
+"minecraft:waxed_cut_copper_slab" = "minecraft:waxed_cut_copper"
+"minecraft:waxed_exposed_cut_copper_slab" = "minecraft:waxed_exposed_cut_copper"
+"minecraft:waxed_oxidized_cut_copper_slab" = "minecraft:waxed_oxidized_cut_copper"
+"minecraft:waxed_weathered_cut_copper_slab" = "minecraft:waxed_weathered_cut_copper"
+"minecraft:weathered_cut_copper_slab" = "minecraft:weathered_cut_copper"
+
+[joined.stairs]
+"minecraft:acacia_stairs" = "minecraft:acacia_planks"
+"minecraft:andesite_stairs" = "minecraft:andesite"
+"minecraft:bamboo_mosaic_stairs" = "minecraft:bamboo_mosaic"
+"minecraft:bamboo_stairs" = "minecraft:bamboo_planks"
+"minecraft:birch_stairs" = "minecraft:birch_planks"
+"minecraft:blackstone_stairs" = "minecraft:blackstone"
+"minecraft:brick_stairs" = "minecraft:bricks"
+"minecraft:cherry_stairs" = "minecraft:cherry_planks"
+"minecraft:cobbled_deepslate_stairs" = "minecraft:cobbled_deepslate"
+"minecraft:cobblestone_stairs" = "minecraft:cobblestone"
+"minecraft:crimson_stairs" = "minecraft:crimson_planks"
+"minecraft:cut_copper_stairs" = "minecraft:cut_copper"
+"minecraft:dark_oak_stairs" = "minecraft:dark_oak_planks"
+"minecraft:dark_prismarine_stairs" = "minecraft:dark_prismarine"
+"minecraft:deepslate_brick_stairs" = "minecraft:deepslate_bricks"
+"minecraft:deepslate_tile_stairs" = "minecraft:deepslate_tiles"
+"minecraft:diorite_stairs" = "minecraft:diorite"
+"minecraft:end_stone_brick_stairs" = "minecraft:end_stone_bricks"
+"minecraft:exposed_cut_copper_stairs" = "minecraft:exposed_cut_copper"
+"minecraft:granite_stairs" = "minecraft:granite"
+"minecraft:jungle_stairs" = "minecraft:jungle_planks"
+"minecraft:mangrove_stairs" = "minecraft:mangrove_planks"
+"minecraft:mossy_cobblestone_stairs" = "minecraft:mossy_cobblestone"
+"minecraft:mossy_stone_brick_stairs" = "minecraft:mossy_stone_bricks"
+"minecraft:mud_brick_stairs" = "minecraft:mud_bricks"
+"minecraft:nether_brick_stairs" = "minecraft:nether_bricks"
+"minecraft:oak_stairs" = "minecraft:oak_planks"
+"minecraft:oxidized_cut_copper_stairs" = "minecraft:oxidized_cut_copper"
+"minecraft:polished_andesite_stairs" = "minecraft:polished_andesite"
+"minecraft:polished_blackstone_brick_stairs" = "minecraft:polished_blackstone_bricks"
+"minecraft:polished_blackstone_stairs" = "minecraft:polished_blackstone"
+"minecraft:polished_deepslate_stairs" = "minecraft:polished_deepslate"
+"minecraft:polished_diorite_stairs" = "minecraft:polished_diorite"
+"minecraft:polished_granite_stairs" = "minecraft:polished_granite"
+"minecraft:polished_tuff_stairs" = "minecraft:polished_tuff"
+"minecraft:prismarine_brick_stairs" = "minecraft:prismarine_bricks"
+"minecraft:prismarine_stairs" = "minecraft:prismarine"
+"minecraft:purpur_stairs" = "minecraft:purpur_block"
+"minecraft:quartz_stairs" = "minecraft:quartz_block"
+"minecraft:red_nether_brick_stairs" = "minecraft:red_nether_bricks"
+"minecraft:red_sandstone_stairs" = "minecraft:red_sandstone"
+"minecraft:sandstone_stairs" = "minecraft:sandstone"
+"minecraft:smooth_quartz_stairs" = "minecraft:smooth_quartz"
+"minecraft:smooth_red_sandstone_stairs" = "minecraft:smooth_red_sandstone"
+"minecraft:smooth_sandstone_stairs" = "minecraft:smooth_sandstone"
+"minecraft:spruce_stairs" = "minecraft:spruce_planks"
+"minecraft:stone_brick_stairs" = "minecraft:stone_bricks"
+"minecraft:stone_stairs" = "minecraft:stone"
+"minecraft:tuff_brick_stairs" = "minecraft:tuff_bricks"
+"minecraft:tuff_stairs" = "minecraft:tuff"
+"minecraft:warped_stairs" = "minecraft:warped_planks"
+"minecraft:waxed_cut_copper_stairs" = "minecraft:waxed_cut_copper"
+"minecraft:waxed_exposed_cut_copper_stairs" = "minecraft:waxed_exposed_cut_copper"
+"minecraft:waxed_oxidized_cut_copper_stairs" = "minecraft:waxed_oxidized_cut_copper"
+"minecraft:waxed_weathered_cut_copper_stairs" = "minecraft:waxed_weathered_cut_copper"
+"minecraft:weathered_cut_copper_stairs" = "minecraft:weathered_cut_copper"
+
+[split]
+"minecraft:andesite" = "minecraft:andesite_slab"
+"minecraft:bamboo_mosaic" = "minecraft:bamboo_mosaic_slab"
+"minecraft:blackstone" = "minecraft:blackstone_slab"
+"minecraft:bricks" = "minecraft:brick_slab"
+"minecraft:cobbled_deepslate" = "minecraft:cobbled_deepslate_slab"
+"minecraft:cobblestone" = "minecraft:cobblestone_slab"
+"minecraft:cut_copper" = "minecraft:cut_copper_slab"
+"minecraft:cut_red_sandstone" = "minecraft:cut_red_sandstone_slab"
+"minecraft:cut_sandstone" = "minecraft:cut_sandstone_slab"
+"minecraft:dark_prismarine" = "minecraft:dark_prismarine_slab"
+"minecraft:deepslate_bricks" = "minecraft:deepslate_brick_slab"
+"minecraft:deepslate_tiles" = "minecraft:deepslate_tile_slab"
+"minecraft:diorite" = "minecraft:diorite_slab"
+"minecraft:end_stone_bricks" = "minecraft:end_stone_brick_slab"
+"minecraft:exposed_cut_copper" = "minecraft:exposed_cut_copper_slab"
+"minecraft:granite" = "minecraft:granite_slab"
+"minecraft:mossy_cobblestone" = "minecraft:mossy_cobblestone_slab"
+"minecraft:mossy_stone_bricks" = "minecraft:mossy_stone_brick_slab"
+"minecraft:mud_bricks" = "minecraft:mud_brick_slab"
+"minecraft:nether_bricks" = "minecraft:nether_brick_slab"
+"minecraft:oxidized_cut_copper" = "minecraft:oxidized_cut_copper_slab"
+"minecraft:polished_andesite" = "minecraft:polished_andesite_slab"
+"minecraft:polished_blackstone_bricks" = "minecraft:polished_blackstone_brick_slab"
+"minecraft:polished_deepslate" = "minecraft:polished_deepslate_slab"
+"minecraft:polished_diorite" = "minecraft:polished_diorite_slab"
+"minecraft:polished_granite" = "minecraft:polished_granite_slab"
+"minecraft:polished_tuff" = "minecraft:polished_tuff_slab"
+"minecraft:prismarine" = "minecraft:prismarine_slab"
+"minecraft:prismarine_bricks" = "minecraft:prismarine_brick_slab"
+"minecraft:purpur_block" = "minecraft:purpur_slab"
+"minecraft:quartz_block" = "minecraft:quartz_slab"
+"minecraft:red_nether_bricks" = "minecraft:red_nether_brick_slab"
+"minecraft:red_sandstone" = "minecraft:red_sandstone_slab"
+"minecraft:sandstone" = "minecraft:sandstone_slab"
+"minecraft:smooth_quartz" = "minecraft:smooth_quartz_slab"
+"minecraft:smooth_red_sandstone" = "minecraft:smooth_red_sandstone_slab"
+"minecraft:smooth_sandstone" = "minecraft:smooth_sandstone_slab"
+"minecraft:smooth_stone" = "minecraft:smooth_stone_slab"
+"minecraft:stone_bricks" = "minecraft:stone_brick_slab"
+"minecraft:tuff" = "minecraft:tuff_slab"
+"minecraft:tuff_bricks" = "minecraft:tuff_brick_slab"
+"minecraft:waxed_cut_copper" = "minecraft:waxed_cut_copper_slab"
+"minecraft:waxed_exposed_cut_copper" = "minecraft:waxed_exposed_cut_copper_slab"
+"minecraft:waxed_oxidized_cut_copper" = "minecraft:waxed_oxidized_cut_copper_slab"
+"minecraft:waxed_weathered_cut_copper" = "minecraft:waxed_weathered_cut_copper_slab"
+"minecraft:weathered_cut_copper" = "minecraft:weathered_cut_copper_slab"
+
+[[shaped]]
+id = "diamond_horse_armor"
+key = { "#" = "minecraft:diamond", "_" = "minecraft:saddle" }
+pattern = ["  #", "###", "#_#"]
+result = "minecraft:diamond_horse_armor"
+
+[[shaped]]
+id = "dispenser"
+key = { "#" = "minecraft:dropper", "/" = "minecraft:string", "S" = "minecraft:stick" }
+pattern = [" S/", "S#/", " S/"]
+result = "minecraft:dispenser"
+
+[[shaped]]
+id = "golden_horse_armor"
+key = { "#" = "minecraft:gold_ingot", "_" = "minecraft:saddle" }
+pattern = ["  #", "###", "#_#"]
+result = "minecraft:golden_horse_armor"
+
+[[shaped]]
+id = "gravel"
+key = { "#" = "minecraft:flint" }
+pattern = ["##", "##"]
+result = "minecraft:gravel"
+
+[[shaped]]
+id = "iron_horse_armor"
+key = { "#" = "minecraft:iron_ingot", "_" = "minecraft:saddle" }
+pattern = ["  #", "###", "#_#"]
+result = "minecraft:iron_horse_armor"
+
+[[shaped]]
+count = 6
+id = "powered_rail"
+key = { "#" = "minecraft:stick", "R" = "minecraft:redstone", "X" = "minecraft:copper_ingot" }
+pattern = ["X X", "X#X", "XRX"]
+result = "minecraft:powered_rail"
+
+[[shaped]]
+count = 2
+id = "smooth_stone"
+key = { "#" = "minecraft:smooth_stone_slab" }
+pattern = ["##", "##"]
+result = "minecraft:smooth_stone"
+
+[[shapeless]]
+id = "black_dye_from_charcoal"
+ingredients = ["minecraft:charcoal"]
+result = "minecraft:black_dye"
+
+[[shapeless]]
+id = "black_dye_from_coal"
+ingredients = ["minecraft:coal"]
+result = "minecraft:black_dye"
+
+[[shapeless]]
+id = "bread"
+ingredients = ["minecraft:wheat", "minecraft:wheat", "minecraft:wheat"]
+result = "minecraft:bread"
+
+[[shapeless]]
+id = "dispenser_from_bow"
+ingredients = ["minecraft:dropper", "minecraft:bow"]
+result = "minecraft:dispenser"
+
+[[shapeless]]
+count = 3
+id = "paper"
+ingredients = [
+  "minecraft:sugar_cane",
+  "minecraft:sugar_cane",
+  "minecraft:sugar_cane",
+]
+result = "minecraft:paper"
+
+[[shapeless]]
+count = 8
+id = "red_sand"
+ingredients = [
+  "minecraft:sand",
+  "minecraft:sand",
+  "minecraft:sand",
+  "minecraft:sand",
+  "minecraft:sand",
+  "minecraft:sand",
+  "minecraft:sand",
+  "minecraft:sand",
+  "minecraft:red_dye",
+]
+result = "minecraft:red_sand"
+
+[[shapeless]]
+count = 2
+id = "red_sandstone"
+ingredients = [
+  "minecraft:sandstone",
+  "minecraft:sandstone",
+  "minecraft:red_dye",
+]
+result = "minecraft:red_sandstone"
+
+[[shapeless]]
+id = "shulker_box"
+ingredients = [
+  "minecraft:shulker_shell",
+  "minecraft:shulker_shell",
+  "minecraft:chest",
+]
+result = "minecraft:shulker_box"
+
+[[shapeless]]
+count = 2
+id = "smooth_red_sandstone"
+ingredients = [
+  "minecraft:smooth_sandstone",
+  "minecraft:smooth_sandstone",
+  "minecraft:red_dye",
+]
+result = "minecraft:smooth_red_sandstone"
+
+[[shapeless]]
+count = 4
+id = "string"
+ingredients = ["#minecraft:wool"]
+result = "minecraft:string"

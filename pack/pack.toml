@@ -1,12 +1,12 @@
 name = "Wayfarer"
 author = "roman-16"
-version = "0.1.0"
+version = "1.0.0"
 pack-format = "packwiz:1.1.0"
 
 [index]
 file = "index.toml"
 hash-format = "sha256"
-hash = "24f182f2e84974eb8a2dfd93e1a0d5f0a77ac348095483eac0f31d5d5aeb191b"
+hash = "34435d8013c9a19c06ab38778a69d411aa63c6669f453af0d93a148983cda4f6"
 
 [versions]
 minecraft = "1.21.1"

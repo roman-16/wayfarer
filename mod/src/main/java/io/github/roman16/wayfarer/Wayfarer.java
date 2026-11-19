@@ -286,6 +286,7 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(People.class);
         NeoForge.EVENT_BUS.register(Places.class);
         NeoForge.EVENT_BUS.register(Record.class);
+        NeoForge.EVENT_BUS.register(Release.class);
         NeoForge.EVENT_BUS.register(Respawn.class);
         NeoForge.EVENT_BUS.register(Rowing.class);
         NeoForge.EVENT_BUS.register(Rules.class);
@@ -336,6 +337,7 @@ public final class Wayfarer {
     }
 
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {
+        event.registrar(Release.version()).playToClient(Release.Handshake.TYPE, Release.Handshake.STREAM_CODEC, (payload, context) -> {});
         PayloadRegistrar registrar = event.registrar("1");
         registrar.configurationToClient(WorldSetup.WorldId.TYPE, WorldSetup.WorldId.STREAM_CODEC, (payload, context) -> Recap.world(payload.id()));
         registrar.playToClient(Banners.Payload.TYPE, Banners.Payload.STREAM_CODEC, (payload, context) -> HudState.banners.add(payload));

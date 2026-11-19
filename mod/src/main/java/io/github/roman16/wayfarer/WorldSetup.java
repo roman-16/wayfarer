@@ -32,7 +32,6 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.network.configuration.ICustomConfigurationTask;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.slf4j.Logger;
-import toughasnails.init.ModTags;
 
 public final class WorldSetup {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -159,11 +158,11 @@ public final class WorldSetup {
     private static boolean mild(ServerLevel level, int x, int z) {
         BlockPos at = new BlockPos(x, ground(level, x, z), z);
         Holder<Biome> biome = biome(level, at);
-        if (biome.value().coldEnoughToSnow(at) || biome.is(ModTags.Biomes.ICY_BIOMES) || biome.is(ModTags.Biomes.COLD_BIOMES) || biome.is(ModTags.Biomes.HOT_BIOMES)) {
+        if (biome.value().coldEnoughToSnow(at) || biome.is(Climate.ICY_BIOMES) || biome.is(Climate.COLD_BIOMES) || biome.is(Climate.HOT_BIOMES)) {
             return false;
         }
         float temperature = biome.value().getBaseTemperature();
-        return biome.is(ModTags.Biomes.NEUTRAL_BIOMES) || biome.is(ModTags.Biomes.WARM_BIOMES) || temperature >= MILD_LEAST && temperature < MILD_MOST;
+        return biome.is(Climate.NEUTRAL_BIOMES) || biome.is(Climate.WARM_BIOMES) || temperature >= MILD_LEAST && temperature < MILD_MOST;
     }
 
     private static boolean land(ServerLevel level, int x, int z) {

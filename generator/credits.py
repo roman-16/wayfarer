@@ -16,7 +16,7 @@ FOLDERS = {"mods": "Mods", "resourcepacks": "Resource packs", "shaderpacks": "Sh
 OWNED = "LicenseRef-"
 
 
-def write(music, effects, faces, tweaked, voices, main):
+def write(music, effects, faces, voices, main):
     works = listed()
     known = json.loads(FETCHED.read_text()) if FETCHED.exists() else {}
     kept = {key: known[key] for key, work in works.items() if key in known and known[key]["project"] == work["project"]}
@@ -42,7 +42,6 @@ def write(music, effects, faces, tweaked, voices, main):
         "Fonts in the Wayfarer mod": [
             entry(face["name"], [face["author"]], face["licence"], face["url"]) for _, face in sorted(faces.items())
         ],
-        "Vanilla Tweaks in the Wayfarer mod": tweaks(tweaked),
         "Voices in the Wayfarer mod": [
             f"- The story's {len(voices)} voices, designed for Wayfarer and made with ElevenLabs. https://elevenlabs.io"
         ],
@@ -164,14 +163,6 @@ def curseforge(works):
             "project": work["project"],
         }
     return out
-
-
-def tweaks(spec):
-    site = spec["credit"].split(": ", 1)[1]
-    return [
-        f"- {label}: {', '.join(sorted(name for names in spec[kind].values() for name in names))}. {site}"
-        for kind, label in (("resources", "Resource packs"), ("crafting", "Crafting tweaks"))
-    ]
 
 
 def composers(music):

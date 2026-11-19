@@ -778,6 +778,10 @@ public final class People {
         return Optional.empty();
     }
 
+    public static boolean story(Entity body) {
+        return body instanceof EasyNPC<?> || body.getTags().contains(TAG);
+    }
+
     public static Optional<String> who(Entity body) {
         return body.getTags().stream().filter(tag -> tag.startsWith(TAG + "_")).map(tag -> tag.substring(TAG.length() + 1)).findFirst();
     }

@@ -84,7 +84,7 @@ public record Balance(
     public record Clock(String afternoon, int afternoonSeconds, int caravanBlocks, int dawnSeconds, String dusk, int duskRunSeconds, String evening, String night, String road,
             String runFrom) {}
 
-    public record After(int homeBlocks) {}
+    public record After(int darkBlocks, int homeBlocks) {}
 
     public record Caravan(int dayBlocks, int farBlocks) {}
 
@@ -252,7 +252,7 @@ public record Balance(
 
     private static Balance load(Config toml) {
         return new Balance(
-                new After(toml.getInt("after.home_blocks")),
+                new After(toml.getInt("after.dark_blocks"), toml.getInt("after.home_blocks")),
                 new Caravan(toml.getInt("caravan.day_blocks"), toml.getInt("caravan.far_blocks")),
                 new Chase(toml.getInt("chase.caught_blocks"), toml.getInt("chase.far_blocks"), toml.getInt("chase.fast_sixteenths"), toml.getInt("chase.near_blocks"),
                         toml.getInt("chase.slow_sixteenths"), toml.getInt("chase.start_blocks")),

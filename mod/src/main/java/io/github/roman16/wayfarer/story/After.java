@@ -99,12 +99,17 @@ public final class After {
         return door(progress).filter(door -> door.equals(BLIND) || door.equals(CLOSE) || door.equals(SIGHT) && home(progress, at)).isPresent();
     }
 
+    public static boolean dark(ServerPlayer player) {
+        return hunted(player.server) && dark(Progress.of(player.server), player.blockPosition());
+    }
+
     public static boolean hunted(MinecraftServer server) {
         return Engine.running(server) && door(Progress.of(server)).filter(SIGHT::equals).isPresent();
     }
 
     public static boolean sheltered(ServerPlayer player) {
-        return hunted(player.server) && home(Progress.of(player.server), player.blockPosition());
+        Progress progress = Progress.of(player.server);
+        return hunted(player.server) && (home(progress, player.blockPosition()) || dark(progress, player.blockPosition()));
     }
 
     public static boolean gone(MinecraftServer server) {
@@ -124,6 +129,11 @@ public final class After {
     private static boolean home(Progress progress, BlockPos at) {
         int reach = Balance.get().after().homeBlocks();
         return progress.place(HOME).filter(home -> Steps.horizontal(home, at) <= (double) reach * reach).isPresent();
+    }
+
+    private static boolean dark(Progress progress, BlockPos at) {
+        int reach = Balance.get().after().darkBlocks();
+        return Afterwards.darkLands(progress).stream().anyMatch(land -> Steps.horizontal(land, at) <= (double) reach * reach);
     }
 
     private static void begin(MinecraftServer server, String door) {
@@ -238,7 +248,7 @@ public final class After {
     @SubscribeEvent
     public static void onPotentialSpawns(LevelEvent.PotentialSpawns event) {
         if (event.getMobCategory() == MobCategory.MONSTER && event.getLevel() instanceof ServerLevel level && level.dimension() == Level.OVERWORLD
-                && hunted(level.getServer()) && home(Progress.of(level.getServer()), event.getPos())) {
+                && hunted(level.getServer()) && (home(Progress.of(level.getServer()), event.getPos()) || dark(Progress.of(level.getServer()), event.getPos()))) {
             event.setCanceled(true);
         }
     }

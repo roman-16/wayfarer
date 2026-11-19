@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "c6fba996561a40c3945c1342d48b18b58659e1c0e3fa5ff3d8b9863b80387e0c"
+hash = "85d058caa2c57bf9df9adfce9bc44a3fdacee7fc4fd46854ac8e6ad79a75d012"
 
 [[files]]
 file = "config/DistantHorizons.toml"

@@ -94,7 +94,7 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
     public record Leaf(@Nullable String by, boolean lost, String text, boolean told, List<String> when) {}
 
     public record Quest(String id, String kind, String act, List<String> after, List<String> when, int halls, List<Line> road, @Nullable String found,
-            @Nullable String read, String title, Map<String, String> renamed, String summary, @Nullable Reward reward, List<Step> steps) {
+            @Nullable String read, String title, Map<String, String> renamed, String summary, @Nullable Reward reward, List<Step> steps, boolean follows) {
         public boolean hall() {
             return steps.stream().anyMatch(step -> HALL_KINDS.contains(step.kind()));
         }
@@ -167,7 +167,7 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
                 strings(quest, "when"), quest.has("halls") ? quest.get("halls").getAsInt() : 0, list(quest, "road", Story::line),
                 quest.has("found") ? quest.get("found").getAsString() : null, quest.has("read") ? quest.get("read").getAsString() : null,
                 quest.get("title").getAsString(), texts(quest, "renamed"),
-                quest.get("summary").getAsString(), reward(id, quest), steps);
+                quest.get("summary").getAsString(), reward(id, quest), steps, quest.has("follows") && quest.get("follows").getAsBoolean());
     }
 
     private static Memory memory(JsonObject memory) {

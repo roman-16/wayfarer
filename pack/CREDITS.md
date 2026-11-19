@@ -237,11 +237,6 @@ Fonts in the Wayfarer mod:
 - m5x7, by Daniel Linssen. CC0 1.0. https://managore.itch.io/m5x7
 - Alagard, by Pix3M. CC BY 3.0. https://opengameart.org/content/pixel-fonts-by-pix3m
 
-Vanilla Tweaks in the Wayfarer mod:
-
-- Resource packs: AnimatedCampfireItem, LowerFire, LowerShield, PingColorIndicator, RandomCoarseDirtRotation, RandomMossRotation, RandomSunflowerRotation, StickyPistonSides, TransparentPumpkin, VariatedBookshelves, VariatedBricks, VariatedCobblestone, VariatedDirt, VariatedEndStone, VariatedGravel, VariatedLogs, VariatedMushroomBlocks, VariatedPlanks, VariatedPumpkins, VariatedStone, VariatedTerracotta, VariatedUnpolishedStones. https://vanillatweaks.net/
-- Crafting tweaks: back to blocks, charcoal to black dye, coal to black dye, copper powered rails, craftable gravel, craftable horse armor, double slabs, dropper to dispenser, powder to glass, sandstone dyeing, straight to shapeless, universal dyeing, unpackable wool. https://vanillatweaks.net/
-
 Voices in the Wayfarer mod:
 
 - The story's 28 voices, designed for Wayfarer and made with ElevenLabs. https://elevenlabs.io

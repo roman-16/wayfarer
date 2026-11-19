@@ -107,7 +107,7 @@ public final class Journal {
             entry.addProperty("id", quest.id());
             entry.addProperty("title", Engine.title(progress, quest));
             entry.addProperty("kind", quest.kind());
-            entry.addProperty("prologue", quest.act().equals(Engine.PROLOGUE));
+            entry.addProperty("follows", quest.follows());
             entry.addProperty("summary", quest.summary());
             boolean done = progress.done(quest.id());
             entry.addProperty("done", done);

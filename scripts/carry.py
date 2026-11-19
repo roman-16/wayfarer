@@ -1,10 +1,12 @@
 import argparse
+import gzip
 import hashlib
 import json
 import os
 import random
 import re
 import shutil
+import struct
 import subprocess
 import sys
 import time
@@ -42,6 +44,7 @@ SERVER_BACKUPS = ".bak"
 DEV_DATA = ROOT / "mod/src/generated/dev/data"
 DRIVER = ROOT / "scripts/server.py"
 OLD = "carry-old"
+RELEASE = Path("data/wayfarer_release.dat")
 NEW = "carry-new"
 WALKER = "Wayfarer"
 STAMP = "%Y-%m-%d_%H-%M"
@@ -205,9 +208,45 @@ def parts(said, start):
     return said.removeprefix(start).split(PARTS)
 
 
+def named(name):
+    encoded = name.encode()
+    return struct.pack(">H", len(encoded)) + encoded
+
+
+def began(stamp):
+    data = gzip.decompress(stamp.read_bytes())
+    at = 3 + struct.unpack(">H", data[1:3])[0]
+    while data[at] != 0:
+        kind = data[at]
+        length = struct.unpack(">H", data[at + 1 : at + 3])[0]
+        name = data[at + 3 : at + 3 + length].decode()
+        at += 3 + length
+        if kind == 3:
+            if name == "began":
+                return struct.unpack(">i", data[at : at + 4])[0]
+            at += 4
+        else:
+            at += 2 + struct.unpack(">H", data[at : at + 2])[0]
+    return 0
+
+
+def admit(world):
+    major = int(tomllib.loads((ROOT / "pack/pack.toml").read_text())["version"].split(".")[0])
+    if (world / RELEASE).exists() and began(world / RELEASE) == major:
+        return
+    fields = (
+        b"\x03" + named("began") + struct.pack(">i", major),
+        b"\x08" + named("played") + named("0.0.0"),
+        b"\x03" + named("migrated") + struct.pack(">i", 0),
+    )
+    (world / RELEASE).parent.mkdir(parents=True, exist_ok=True)
+    (world / RELEASE).write_bytes(gzip.compress(b"\x0a" + named("") + b"".join(fields) + b"\x00"))
+
+
 def pack(folder, team):
     shutil.rmtree(DEV_SERVER / OLD, ignore_errors=True)
     shutil.copytree(folder / "old", DEV_SERVER / OLD)
+    admit(DEV_SERVER / OLD)
     driver("start", "--world", OLD)
     try:
         replies = batch(

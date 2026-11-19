@@ -1,9 +1,9 @@
 # Production
 
-How the pack reaches its players and keeps up with them. Until the first release it reads:
+How the pack reaches its players and keeps up with them. Its README opens:
 
 ```text
-Unreleased and in development: nothing is published yet, and a world made with one version may not open in the next.
+Wayfarer 1: every 1.x version loads into a road begun on 1.x, and the Prism instance fetches each one by itself before it starts.
 ```
 
 ## Settled
@@ -41,18 +41,20 @@ Unreleased and in development: nothing is published yet, and a world made with o
 - Every version is numbered major.minor.patch, and the number says what it does to a world being played: a patch (1.3.1) fixes and tunes, a minor version (1.4.0) adds content, and both load into a running world; a major version (2.0.0) changes the land's shape or the story's structure, and a world begun with an older major stays with it.
 
   ```text
-  Wayfarer 1.3 -> 1.4   You join: "Wayfarer was updated: 2 fixes." Your road goes on.
+  Wayfarer 1.3 -> 1.4   Under the recap on the loading screen: "Wayfarer was updated: 2 fixes." Your road goes on.
   Wayfarer 1.4 -> 2.0   This road was begun with Wayfarer 1. Finish it with Wayfarer 1, or start a new road.
   ```
 
 - Within a major, the Wayfarer mod moves its own saved story data forward with numbered migrations that run once when a world first opens in the new version; what a minor or patch changes in the land's generation shows only in land not yet made, so a minor never changes the land's shape.
-- The pack is hosted at one web address per major version, and the player's Prism Launcher instance updates itself before every launch through packwiz's installer: patches and minor versions arrive by themselves, and a new major is a new instance beside the old one, so a road begun on 1.x is finished on 1.x. The server runs the same version, put there with `just carry <server> pack`; the friends' server crosses a major by having its road carried to a fresh world (`tooling.md`, T6).
+- The pack is hosted at one web address per major version, `https://roman-16.github.io/wayfarer/<major>/`, where GitHub Pages serves each major's newest release of the public repository, and the player's Prism Launcher instance, imported once from `<major>/Wayfarer.zip` there, updates itself before every launch through packwiz's installer: patches and minor versions arrive by themselves, and a new major is a new instance beside the old one, so a road begun on 1.x is finished on 1.x. The server runs the same version, put there with `just carry <server> pack`; the friends' server crosses a major by having its road carried to a fresh world (`tooling.md`, T6).
 
   ```text
-  You click Play. A small window: "Updating Wayfarer 1.3 -> 1.4 ... 3 files". The game starts.
+  You click Play. packwiz's small window fetches the 3 files that changed. The game starts.
   ```
 
-- **Edge cases.** Offline at launch, the instance starts with the version it has. A world opened in an older version than it was last played in refuses with the version it needs ("This road was last played with Wayfarer 1.4; update to open it"). A player whose version differs from the server's sees the versions on the refused join and gets the server's on the next launch. A world begun before the first release (`Unreleased and in development`) is not migrated: development worlds are carried or begun again.
+- Each version is published only on the user's word: `just pack` builds it, refusing a version without its section in `CHANGELOG.md`, and `just publish` makes it the release of its version, refusing one already released. Minecraft's and NeoForge's versions move only with a major, since packwiz's installer cannot change the loader of a Prism instance before the launch it runs in.
+
+- **Edge cases.** Offline at launch, packwiz's window offers to continue without updating, and the instance starts with the version it has. A world opened in an older version than it was last played in refuses with the version it needs ("This road was last played with Wayfarer 1.4; update to open it"), in singleplayer from the world list and on a dedicated server by stopping with that line in its log. A player whose version differs from the server's sees both versions on the refused join and gets the server's on the next launch. A world begun before Wayfarer 1.0.0 is refused ("This road was begun before Wayfarer 1. Start a new road."): development worlds are carried or begun again. A migration that fails leaves the world's files as they were and names itself. The update notice shows once per world on each player's game, the first time that game opens the world in a newer version; a world the game never opened shows none.
 
 **Why:** Most updates are fixes, and they reach every world without a step from the player; nobody walks into seams between old and new land or into a story half moved, and no carry has to ship as a game feature. Pinning by major is how modpacks that keep long-running servers stay safe, and an instance that updates itself means no friend plays an outdated version against the server.
 
@@ -95,8 +97,8 @@ Unreleased and in development: nothing is published yet, and a world made with o
 
 ### R5 Release and credits: private first, credited from the pack
 
-- The first release goes to friends through the hosted address (R2), not to the public. Whether Wayfarer is published on Modrinth is decided after the blind plays, in phase 5, together with what publishing asks: the two mods from CurseForge (Inventory Sorter, Nomadic Tents) on Modrinth or permitted, the voices recorded on a paid ElevenLabs plan, which publishing for others needs, and a public page.
-- `just generate` writes `pack/CREDITS.md` from the pack itself: every mod with its author, licence and page; every piece of music and sound with its licence; the fonts; the Vanilla Tweaks the mod carries, which their terms ask to be credited and never sold; and the voices, made with ElevenLabs. The ending's credits after Years later name the people and the music and end with "and the mods listed in the pack's credits", their number filled in.
+- The first release goes to friends through the hosted address (R2), announced nowhere else; the repository is public so that GitHub can host it. Whether Wayfarer is published on Modrinth is decided after the blind plays, in phase 5, together with what publishing asks: the two mods from CurseForge (Inventory Sorter, Nomadic Tents) on Modrinth or permitted, the voices recorded on a paid ElevenLabs plan, which publishing for others needs, and a public page.
+- `just generate` writes `pack/CREDITS.md` from the pack itself: every mod with its author, licence and page; every piece of music and sound with its licence; the fonts; and the voices, made with ElevenLabs. The ending's credits after Years later name the people and the music and end with "and the mods listed in the pack's credits", their number filled in.
 - Nothing ships silent: before the first release every line is recorded and every speaker has a voice (`narration.md`, Recording).
 
 **Why:** Nothing can be judged ready for the public before friends have played it blind, and a private release keeps every licence question open without risk. A credits file written from the pack cannot fall behind it, and a roll of every mod's name would bury the ending.

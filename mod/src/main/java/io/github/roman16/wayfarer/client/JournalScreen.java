@@ -286,7 +286,7 @@ public final class JournalScreen extends Screen {
         if (chosen != null && chosen.kind() == Kind.QUEST && !chosen.data().get("id").getAsString().equals(tracked())) {
             String quest = chosen.data().get("id").getAsString();
             action("wayfarer.journal.track", () -> PacketDistributor.sendToServer(new Journal.Track(quest)));
-        } else if (chosen != null && chosen.kind() == Kind.QUEST && !chosen.data().get("prologue").getAsBoolean()) {
+        } else if (chosen != null && chosen.kind() == Kind.QUEST && !chosen.data().get("follows").getAsBoolean()) {
             action("wayfarer.journal.untrack", () -> PacketDistributor.sendToServer(new Journal.Track("")));
         }
         if (chosen != null && chosen.data().has("memory") && (chosen.kind() == Kind.QUEST || chosen.kind() == Kind.DONE)) {
