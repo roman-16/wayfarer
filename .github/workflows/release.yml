@@ -48,7 +48,7 @@ jobs:
             nothing "$tag is already published; CHANGELOG.md asks for nothing new."
           fi
 
-          tagged=$(gh api "repos/$GITHUB_REPOSITORY/commits/$tag" --jq '.sha' 2>/dev/null || true)
+          tagged=$(gh api "repos/$GITHUB_REPOSITORY/commits/$tag" --jq '.sha' 2>/dev/null) || tagged=""
           if [ -n "$tagged" ]; then
             status=$(gh api "repos/$GITHUB_REPOSITORY/compare/$tagged...$GITHUB_SHA" --jq '.status')
             if [ "$status" != "ahead" ] && [ "$status" != "identical" ]; then
