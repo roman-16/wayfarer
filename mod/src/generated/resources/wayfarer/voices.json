@@ -173,10 +173,6 @@
         "agna/4dd9b02833dd60a2",
         4.23
       ],
-      "The Sand Singers kept that worm the way we keep a fire. Who keeps the raiders off them now?": [
-        "agna/bbb620b7abbe6b5b",
-        6.06
-      ],
       "The Tide Folk can. If she's in their bay before the third dawn. Take her.": [
         "agna/f80445a38d72aca1",
         4.66
@@ -201,10 +197,6 @@
         "agna/db6887c59768bcd9",
         6.92
       ],
-      "You carry fire. In the stories, a Wayfarer can feel the way. Lead us somewhere they can't find us.": [
-        "agna/6103cb3e8429ade0",
-        7.9
-      ],
       "You've been up near the snow. Come to the fire.": [
         "agna/3f92ee89cfc270e1",
         2.6
@@ -215,33 +207,9 @@
       ]
     },
     "alruna": {
-      "\"Never settle, never shine, everything carried.\" The oath. He made me copy it every morning.": [
-        "alruna/f9f185821bdc0fc4",
-        8.4
-      ],
-      "\"So they broke it in twelve, and sent each shard to a people at the far ends of the world. Those who carried its light walked.\"": [
-        "alruna/a37edd7b56ab081f",
-        8.5
-      ],
-      "\"The Eye sat in the portal between the worlds, and through it the dragon watched everything that stood still. Where it looked, its creatures came.\"": [
-        "alruna/25a0941613566fd0",
-        10.0
-      ],
-      "\"Those who lived tore the Eye out, and the dragon went blind. Fire, the sea and the hammer could only break it.\"": [
-        "alruna/dc4cc9fa3ecc1487",
-        8.0
-      ],
       "...All right.": [
         "alruna/d1c2114826535806",
         1.28
-      ],
-      "A lit ember. Master Ansel waited sixty years for someone to carry one through that door.": [
-        "alruna/aff02c76f782243a",
-        6.3
-      ],
-      "And the last line, in his hand: \"A frame takes whatever of the Eye it is brought. One shard or twelve, it closes the same.\"": [
-        "alruna/a86cdc42a23aa7f2",
-        10.1
       ],
       "Close it, not break it. I'll copy those words out tonight, so they can't be lost.": [
         "alruna/d4825243707f966d",
@@ -307,10 +275,6 @@
         "alruna/f6a79161e5473e83",
         6.0
       ],
-      "Master Ansel's pages name a Keepers' house on this shore. Now that we've crossed, I can look for it. Come to the fire when you have a moment.": [
-        "alruna/03713f91d405ea9f",
-        7.9
-      ],
       "Now. The old script. Sit.": [
         "alruna/2ee18b5e3283a650",
         2.21
@@ -351,10 +315,6 @@
         "alruna/8139a4fdae5f8b5e",
         2.82
       ],
-      "The seal takes three words of the oath. You'll see them better than I will, with that thing.": [
-        "alruna/c00815e9374d8e25",
-        6.3
-      ],
       "There's room by the fire. You talk; I'll write.": [
         "alruna/25abe6e3c5d88266",
         3.49
@@ -363,10 +323,6 @@
         "alruna/fa2c0171e348fea1",
         3.68
       ],
-      "Three nights ago, things came out of the dark for it. He sent me down to the vault with the oldest books, and he held the door.": [
-        "alruna/48d518bcba75747b",
-        8.8
-      ],
       "Tonight I'll just listen. I'll ask you everything tomorrow.": [
         "alruna/054be759fc01c2cd",
         4.1
@@ -374,14 +330,6 @@
       "Walk carefully. We follow where you walk.": [
         "alruna/70d1d44b32e159a0",
         3.23
-      ],
-      "Wayfarers came here to learn the oath, in the old script, in the old days. None came in his lifetime.": [
-        "alruna/ec80d8812c86e38f",
-        8.2
-      ],
-      "Wayfarers who stopped walking on purpose, to guard the frames out past the edge of every map. I've never seen one but him.": [
-        "alruna/b0a8023ddf7c61e7",
-        8.5
       ],
       "Who were you listening to?": [
         "alruna/57043562d7f55adb",
@@ -393,10 +341,6 @@
       ]
     },
     "bram": {
-      "Bram. I kept sheep, up the valley. Three nights back the grey coats took my boy. Davy. He's eleven.": [
-        "bram/e692372112558541",
-        8.1
-      ],
       "Davy's eaten. That's something. Go on.": [
         "bram/2bb5b12731dd1746",
         3.59
@@ -522,10 +466,6 @@
       "I've kept up with worse than you. Lead on.": [
         "cadoc/85f1ac754c3b83bc",
         3.73
-      ],
-      "I've pitched my tent at the edge of the light. Your people shouldn't have to sleep next to a grey coat.": [
-        "cadoc/a3f34b6362806d33",
-        6.0
       ],
       "If you see banners, don't wave. Come back to the wagons; they'll be on your marks.": [
         "cadoc/f449c5aba9c4a583",
@@ -705,10 +645,6 @@
         "drifa/bdcf9547b25de019",
         1.93
       ],
-      "And the guilty. I counted the grey coats on the stair, and I heard one name they called. Cadoc.": [
-        "drifa/4f91390b6041e664",
-        7.3
-      ],
       "Don't stand behind me.": [
         "drifa/ef29e16dca1f07da",
         1.47
@@ -785,10 +721,6 @@
         "drifa/45e446ac8c86ea5e",
         4.1
       ],
-      "There you are. My people wintered on this shore once, in the snow. I'll raise a cairn there for each of them.": [
-        "drifa/04d79bd7ed41ab38",
-        7.7
-      ],
       "There. They're home.": [
         "drifa/dbdf8ca5b4925274",
         2.92
@@ -800,10 +732,6 @@
       "Tracks are freshest at first light. Go now.": [
         "drifa/6aae35a5488b8cf3",
         2.92
-      ],
-      "Twenty winters ago I came home from a hunt and found my people dead on the stair to our hall. The hall was empty.": [
-        "drifa/a68c0e3a1334fa4a",
-        7.8
       ],
       "Twenty winters. I can wait a few days more.": [
         "drifa/9698496dc95916d5",
@@ -927,10 +855,6 @@
         "gazebound_man/be2fdf802ef47048",
         3.52
       ],
-      "I chose it. The scar, the quiet. He chose the road; I chose the quiet. Nothing looks for me any more.": [
-        "gazebound_man/da5bcb2625e2e4ca",
-        9.3
-      ],
       "Keep close to their camp, and closer on the night of the red moon. So it was written in the old captain's own hand, and his page is kept at his house in the dark wood.": [
         "gazebound_man/2ea063019533e620",
         11.1
@@ -1032,10 +956,6 @@
       "He served my father. He thought he was clever. Then he stopped walking.": [
         "heir/0dcf8205c0c79974",
         5.7
-      ],
-      "I want a world where everything is seen, and nothing hides in the dark. No thieves. No war. Nobody needs a tent in a world like that.": [
-        "heir/5a6e730c6f09efbc",
-        9.3
       ],
       "Not here. Not yet.": [
         "heir/986953d8d69a6700",
@@ -1195,10 +1115,6 @@
         "hob/a7550e560559e3ed",
         4.86
       ],
-      "Drifa's people mined a metal no fire of mine can melt. Come by the fire one evening: I want a word about it.": [
-        "hob/cb28ea0ee4b3bc89",
-        7.57
-      ],
       "Find me where they dug that metal, and I'll make a hammer worth the name. Then bring me anything.": [
         "hob/f175ae99c72fa4c2",
         6.11
@@ -1311,10 +1227,6 @@
         "hob/66f5b4b000c1dd60",
         5.47
       ],
-      "My hammer cracked the night the town burned. Since then I mend everything halfway, and it shows.": [
-        "hob/bebdd289bbe23c57",
-        7.9
-      ],
       "Not till I have a hammer for it.": [
         "hob/db79488dfb4487f9",
         2.89
@@ -1358,10 +1270,6 @@
       "Suit yourself. You know where I sit.": [
         "hob/1460023dcab3f29b",
         3.26
-      ],
-      "That Frost Walker let me look at her knife once, while she camped with us. Twenty winters old. Not a fleck of rust on it.": [
-        "hob/bba81b6180d521dd",
-        9.5
       ],
       "That blade's yours now. When it's dull you bring it to me. Don't you dare throw it away.": [
         "hob/399b94c42ede4220",
@@ -1653,10 +1561,6 @@
         "maud/b0f7596578031e17",
         8.9
       ],
-      "A herder came by while you were out, asking for the one with the light. Said he'd come back after dark.": [
-        "maud/6f514a276de5bd2c",
-        6.41
-      ],
       "A night and a day, she said. It was one night, and it was long enough.": [
         "maud/715be6d934280469",
         5.6
@@ -1712,10 +1616,6 @@
       "Good. You're all back.": [
         "maud/69ab24ae0dedb6cf",
         1.94
-      ],
-      "He went to his sister's village the spring before Tollbridge burned. Up the valley, he said. Go and see if he's alive.": [
-        "maud/f8b2ab9f921f67bd",
-        8.0
       ],
       "I was nine when they hung it. I carried charcoal for that fire.": [
         "maud/669760103936f8bd",
@@ -1901,10 +1801,6 @@
         "maud/b34eeec0d6a00db1",
         2.3
       ],
-      "Wil the cooper. Of everyone from Tollbridge, he's the one I know nothing about. Alive or dead.": [
-        "maud/96a74df295cf7479",
-        7.5
-      ],
       "Wil. Sit, you old fool. Sit by me.": [
         "maud/63d4beac09445bfe",
         4.0
@@ -1951,10 +1847,6 @@
         "murdo/7e08ac9271fe2b2e",
         7.7
       ],
-      "Bladderwrack and salt, steeped in our water. It breaks the fever, and for a day the night's creatures look past you. We use it on the boats.": [
-        "murdo/a52f26059b3befb7",
-        9.9
-      ],
       "Come down under the fire pit, and see what you'd be taking.": [
         "murdo/2d63b8a0334e8813",
         3.72
@@ -1987,10 +1879,6 @@
         "murdo/15750c35496a8815",
         3.79
       ],
-      "My grandmother told of people who carried a fire in their hand. Wayfarers. She said one would come for what's under the fire pit.": [
-        "murdo/c393429cf37ad693",
-        10.5
-      ],
       "Ours keeps the eye off our boats. Theirs keeps the deep things out of the bay.": [
         "murdo/d89eb2f874c88e72",
         5.4
@@ -2014,10 +1902,6 @@
       "The boats go out tonight, and something will see them now. Come with them. Please.": [
         "murdo/93511ec4e7cb9b05",
         6.4
-      ],
-      "The boats go out tonight, for the first time since you came to our stone. Find me by them before dark. I have something to ask you.": [
-        "murdo/5f9e614052c659f8",
-        8.8
       ],
       "The boats go out tonight. Come with them.": [
         "murdo/5923a8802760c343",
@@ -2046,10 +1930,6 @@
       "We are the Tide Folk, and this is our bay. Nothing comes up out of it at night, so our boats go out with lamps lit, and we eat.": [
         "murdo/8df3df99f9c2b562",
         9.1
-      ],
-      "We're the Tide Folk, what's left of us. Nothing comes up out of this bay at night, so our boats go out with lamps lit, and we eat.": [
-        "murdo/031c7149adbbed3d",
-        9.0
       ]
     },
     "narrator": {
@@ -2068,10 +1948,6 @@
       "A boat comes up alongside you out of the dark: Maud's, with Pip in the bow.": [
         "narrator/c575532968a61279",
         5.5
-      ],
-      "A book on a lectern the fire didn't reach. The letters are like nothing you know: the marks that crawl over an enchanting table.": [
-        "narrator/85b41b59646629ac",
-        9.1
       ],
       "A bowl of sand ringed with old bones. In the middle, a broken spear.": [
         "narrator/22d24574eb313e8e",
@@ -2136,14 +2012,6 @@
       "A journal, swollen with rain. It is signed with a circle cut through by a line: the mark from the tunnels.": [
         "narrator/a28cfdd6b7d3bd43",
         8.32
-      ],
-      "A lake frozen white, as it was in the memory. On a stone by the shore, his sign: a circle with a line through it.": [
-        "narrator/0acf6051b6379af8",
-        10.6
-      ],
-      "A ledger in his hand: the halls he found for them, one by one. On the last page, a girl's name, Malgven, and two words after it: mine now.": [
-        "narrator/9c59a4166d347eef",
-        13.2
       ],
       "A long, low house of mossy stone at the head of a stair, its door open. Bars inside it, one behind the other.": [
         "narrator/4d98b806ef0097c6",
@@ -2221,10 +2089,6 @@
         "narrator/e542d4dcbbd6b517",
         6.22
       ],
-      "A woman in furs stands on the roof, an arrow on the string. She looks at the ember in your hand for a long breath.": [
-        "narrator/2e8457bd7da00672",
-        9.6
-      ],
       "A woman in green cries out: something has reached them.": [
         "narrator/b2b543987ed47371",
         3.9
@@ -2240,10 +2104,6 @@
       "A wounded man cries out: something has reached them.": [
         "narrator/9ee4d2e21f63635e",
         4.01
-      ],
-      "A young woman in a grey robe comes up out of the dark, an armful of books against her chest and a little knife held the wrong way round.": [
-        "narrator/adb5935b4ab51521",
-        9.4
       ],
       "Across the fire Cadoc is looking at you, and keeps looking.": [
         "narrator/4f0b0bda3eccf921",
@@ -2317,10 +2177,6 @@
         "narrator/fb451049dfe647f5",
         6.65
       ],
-      "An old man in a grey robe lies across the doorway, his chest cut open like the dead of Tollbridge. There is ink on his fingers.": [
-        "narrator/99f6805271754f5f",
-        9.4
-      ],
       "An old man sits across the flames, propped against a log. His face is grey, and his breath rattles.": [
         "narrator/31d475e8081c9fb5",
         7.9
@@ -2328,10 +2184,6 @@
       "An old man sits by the well, mending a barrel hoop.": [
         "narrator/49678cec774c2cc5",
         4.0
-      ],
-      "An old ore cart, half buried in the snow, still loaded with dark stone. Its iron bands are as bright as the day they were forged.": [
-        "narrator/c31c102108a63fff",
-        9.8
       ],
       "Another barrel by the way, the rope on it older. Bread, fish, and a note in the same hand.": [
         "narrator/240c194fa16266d1",
@@ -2412,10 +2264,6 @@
       "Boots on the stair. The heir's band comes down into the hall of the frame, and the heir with them.": [
         "narrator/443d6192b466fc64",
         7.0
-      ],
-      "Bram comes in out of the dark. He holds his son a long time. Over the boy's shoulder he looks at the fire, at the dark, anywhere but at the scar.": [
-        "narrator/f6208d427ec30ff4",
-        11.5
       ],
       "Bram kept sheep again, and learned to look at his son.": [
         "narrator/4abd770d22766390",
@@ -2504,10 +2352,6 @@
       "Doors barred, shutters nailed. They know what's coming, and they can't walk away from it.": [
         "narrator/c7134b6d3d8e4783",
         6.5
-      ],
-      "Down the stronghold's stairs, a hall of the frame, and old people in hoods waiting by it as if they knew you'd come.": [
-        "narrator/dbe7b91a0ec5390f",
-        7.5
       ],
       "Drifa follows you up the stair.": [
         "narrator/44afba35832ff427",
@@ -2641,10 +2485,6 @@
         "narrator/dc0737a9c7b30587",
         8.4
       ],
-      "His log, wrapped in oilcloth and still dry. Near the end, the day he found land: a bay where they fish by night, and nothing comes for them.": [
-        "narrator/e6bda2588d861189",
-        11.9
-      ],
       "His men saw who killed him. They'll take it out on the next village you walk into.": [
         "narrator/14585f04b9729e05",
         4.78
@@ -2705,10 +2545,6 @@
         "narrator/fbd765d94f91cf18",
         7.7
       ],
-      "Hooves out of the dark, a rider in grey, and he's through the fire and away with a child across his saddle.": [
-        "narrator/27485ff4ae480742",
-        5.36
-      ],
       "Huts on stilts above the tideline, boats turned keel up on the sand. The village sleeps by day.": [
         "narrator/9d2dd6aa5ba7a5a3",
         7.6
@@ -2768,10 +2604,6 @@
       "Long tents of striped cloth, camels, a fire of thorn. Somebody is singing.": [
         "narrator/08b89b51608c17de",
         6.9
-      ],
-      "Low walls in the grass, in a ring round an empty green. Black beams half sunk in the turf. In the middle, an old well.": [
-        "narrator/4a0141a1fbc8e73e",
-        10.81
       ],
       "Many years later. The house you built, Pip, and children round its fire. The ember burns in a lamp by the door.": [
         "narrator/a7353fdcd19ce9e1",
@@ -2997,10 +2829,6 @@
         "narrator/16666cfe9bf01fa9",
         0.77
       ],
-      "Sefa sings it: the sand lying down, the worm under the hill, and a man with a coal in his hand, running. Everyone laughs at the same place.": [
-        "narrator/73bd8c4931cc8c3b",
-        11.2
-      ],
       "Sefa's people bank their fire low and keep their eyes on the dunes.": [
         "narrator/745de517de9923e0",
         4.7
@@ -3077,17 +2905,9 @@
         "narrator/0edef2d931fb5702",
         2.28
       ],
-      "Someone set these stones along old roads long ago. One folds the road back to any stone you have touched, so it only carries you along roads you have walked.": [
-        "narrator/dde45dcf019d46f7",
-        10.7
-      ],
       "Someone sits up in the furs. Then another. A shout, in words you don't know.": [
         "narrator/1ce0ade4352679ef",
         5.52
-      ],
-      "Someone walks out of the dark and sits down across the fire. A grey hood, a grey coat, an eye stitched over the heart.": [
-        "narrator/adc72d81c3cb8992",
-        9.8
       ],
       "Someone walks out of the dark and sits down across the fire. The grey hood. The eye stitched over the heart.": [
         "narrator/1d8ca7caf86970dd",
@@ -3109,17 +2929,9 @@
         "narrator/a72c54617a637540",
         5.24
       ],
-      "Somewhere in the ember, something laughs, low and long, and doesn't stop for a while. It doesn't sound like a man.": [
-        "narrator/c92568dc7ff0fb9a",
-        9.31
-      ],
       "Somewhere up in the deep snow, Drifa is waiting at a stair.": [
         "narrator/698c8b69d5bd6791",
         4.51
-      ],
-      "Stone under the snow, rimed with frost. Along the walls her people lie in rows, where a girl laid them out twenty winters ago.": [
-        "narrator/095fadb103491c82",
-        9.9
       ],
       "That night you walk east, alone, with the shard against your chest.": [
         "narrator/c104ab1dc72289af",
@@ -3368,14 +3180,6 @@
       "The dragon stayed half-blind. Towns still burn when they grow too bright, but someone walks the road who knows why.": [
         "narrator/c2e7d5fb340e1c14",
         8.36
-      ],
-      "The drift ends in a wall that isn't rock: dressed black stone, older than anything above, broken through in the middle.": [
-        "narrator/31919f051f501031",
-        8.4
-      ],
-      "The drift opens into a small square hall, cut into the rock under a timber roof. On a stone at its far end, something hums.": [
-        "narrator/91751af59756a3eb",
-        10.6
       ],
       "The ember in your hand grows warm. Then, for the first time, it glows.": [
         "narrator/76482ef71bb04889",
@@ -3749,10 +3553,6 @@
         "narrator/30c65e87a4c2dbb9",
         1.84
       ],
-      "The keel is bitten clean through below the waterline. The marks are a jaw's, and the jaw was wider than your arm is long.": [
-        "narrator/5ed889f69516724c",
-        8.6
-      ],
       "The land here is new to you. The coal in your hand is a little less cold.": [
         "narrator/3774bd0933eb5e4f",
         5.21
@@ -3937,29 +3737,13 @@
         "narrator/22ce6175b946dccc",
         4.0
       ],
-      "The shard sinks into the ember. A warmth spreads out from your chest: from now on the ember warms you like a fire.": [
-        "narrator/422c684ee4cd8bd0",
-        9.32
-      ],
-      "The shard sinks into the ember. Far off, the horizon sharpens: from now on far places show sharp through a spyglass.": [
-        "narrator/2b39d2ddcf1d83db",
-        9.8
-      ],
       "The shard sinks into the ember. From now on the weaker things of the night run from your look.": [
         "narrator/18d989c475fd94d6",
         6.97
       ],
-      "The shard sinks into the ember. Hold the ember up when something strikes you, and it bursts: the night's creatures near you crumble. Then it needs a fire before it bursts again.": [
-        "narrator/6d75982a4b9c2998",
-        13.0
-      ],
       "The shard sinks into the ember. The dark under the ice thins: from now on the dark shows what's in it, dimly.": [
         "narrator/db866848c97c31e2",
         8.9
-      ],
-      "The shard sinks into the ember. Under the water, far down, the dark goes clear: from now on you see far under water.": [
-        "narrator/5ae830786645130a",
-        10.18
       ],
       "The shard sinks into your ember for good. Nothing can take it out again, not even death.": [
         "narrator/7f878defb4c6217b",
@@ -4169,10 +3953,6 @@
         "narrator/3a3c823249874785",
         7.5
       ],
-      "Under the trees, a mouth in the hillside, framed in old timber. Old rails run out of it into the grass, broken in places, past a heap of spoil.": [
-        "narrator/aaa939f4a2b3812c",
-        11.5
-      ],
       "Up at the edge of the hole, Drifa waits with her hand out.": [
         "narrator/48a60a34a503bcdd",
         4.85
@@ -4229,14 +4009,6 @@
         "narrator/d76b308ede15f21a",
         6.37
       ],
-      "Where you stand, nothing reaches you. Out in the dark, they wait for you to come where they can.": [
-        "narrator/b6929118a660a2fd",
-        6.8
-      ],
-      "Where you stand, nothing reaches you. They gather at the door, and wait.": [
-        "narrator/28da8f20bf732f63",
-        6.0
-      ],
       "Where your people last made camp, the night is empty. Nobody keeps watch, and nobody needs to.": [
         "narrator/f8e607b7354cdbe0",
         6.8
@@ -4244,10 +4016,6 @@
       "Whoever built this hall hallowed it: no monster is born here, and no horde follows you in.": [
         "narrator/a2a1cad01f3d6fa6",
         6.69
-      ],
-      "Whoever is left of the wagons takes them from you at the cart's tail, and nobody says thank you, and nobody needs to.": [
-        "narrator/f61b152fbb7ac199",
-        7.7
       ],
       "With the dragon dead, a town could grow without burning, which was all the First Village had ever done wrong.": [
         "narrator/930e7133808fc095",
@@ -4324,10 +4092,6 @@
       "You blew the horn on the worm's ground and killed what the Sand Singers sang to, and the raiders came back to their tents.": [
         "narrator/b402669c11b12dd8",
         7.34
-      ],
-      "You break it and eat. It's good bread, dark and sweet, an open eye pressed into the crust.": [
-        "narrator/ed66c537c1e89ec6",
-        7.4
       ],
       "You built a house by the river, and stayed. In the old stories, no Wayfarer ever stayed.": [
         "narrator/df3b6e48170b3d64",
@@ -4565,14 +4329,6 @@
         "narrator/fe006e9eb6b2dc8b",
         6.9
       ],
-      "You wake on cold ground beside a fire. You don't remember lying down. You don't remember anything before this fire.": [
-        "narrator/1cd7bfbf21e899b9",
-        8.7
-      ],
-      "You wake with a start. In the dream you looked down at the world from very high, and it was very small, and everything in it stood still.": [
-        "narrator/61efd22a91a2fb2a",
-        10.6
-      ],
       "You walked away from the worm's ground, and the Sand Singers sang you its song. No raider crossed their sand.": [
         "narrator/48afef3c95363880",
         7.5
@@ -4663,10 +4419,6 @@
         "old_man/2c5fe38a6cdb6927",
         7.2
       ],
-      "Oswin. I walked for forty years. Then I met a woman with a garden, and I stopped.": [
-        "old_man/0fb96429271b100c",
-        8.1
-      ],
       "Our masters found power in the burning world below and built a gate of our own, to strike back through the dark. You have seen its frame at the heart of the city.": [
         "old_man/f07613b93685f617",
         12.0
@@ -4720,10 +4472,6 @@
       "...They turned him away too, didn't they? Your Wend.": [
         "old_woman/af5f1aebf913819f",
         4.0
-      ],
-      "Hesper. I'm walking to the Keepers. Everyone says they'll take in anyone. Walk with me?": [
-        "old_woman/7f7d6c6604f30a18",
-        5.89
       ],
       "Our stone sleeps while you sleep. Let it sleep until our children come home.\n\nOnly the word our children knew will rouse you, and our children knew one word before all others: WAKE.": [
         "old_woman/c25c19a7cebb5288",
@@ -4811,14 +4559,6 @@
         "oldest_keeper/48bf953f764d7974",
         1.49
       ],
-      "Then say the words, and step in. It'll be dark. It'll be the first dark it's ever had.": [
-        "oldest_keeper/1a73cf4def106d41",
-        7.5
-      ],
-      "Then set what you carry in the frame, and go through. It'll see only what you give it.": [
-        "oldest_keeper/4f1f643be25f36bc",
-        6.3
-      ],
       "Then take them back to the peoples who'll hide them, and walk. The road goes on.": [
         "oldest_keeper/04ac7c27d94d5f48",
         5.6
@@ -4834,10 +4574,6 @@
       "Twelve halls like this one stand in a ring, all the same distance from where the first fire was lit, and every one of them guards a gate. The ember will lead you to the nearest.": [
         "oldest_keeper/387b5d89ab189463",
         12.71
-      ],
-      "Twelve shards in their halls. And the Eye's last piece walks. A frame takes whatever of the Eye it's brought.": [
-        "oldest_keeper/418a72907431dad5",
-        9.7
       ],
       "We barred our door to him, and he gave it to you. Of course he did.": [
         "oldest_keeper/f0d2e582269fecc6",
@@ -5057,10 +4793,6 @@
         "pip/d5657d032ca82a25",
         4.09
       ],
-      "The sand people say there's a horse on the plains ahead that never sleeps. It just stands there and watches.": [
-        "pip/a80086048cec5cd2",
-        6.7
-      ],
       "The wagons are burning.": [
         "pip/3d3f67e9f94d524b",
         1.55
@@ -5092,10 +4824,6 @@
       "Will you teach me? To be a Wayfarer?": [
         "pip/b75ed6dec7f3cf1b",
         2.65
-      ],
-      "You found a shard, like in the stories! In the stories every Wayfarer has a horse, too. Find me one? A brown one.": [
-        "pip/d5d4929a3abac5db",
-        8.37
       ],
       "You woke up so tired today. I want to ask you something at the fire. Just us.": [
         "pip/c16068b9fc1a1bc8",
@@ -9171,10 +8899,6 @@
         "sefa/42dc1c48c726f467",
         7.0
       ],
-      "And this. Blow it on its ground, and it comes up to see who sings. Its eye is where it can be hurt.": [
-        "sefa/cb93e642de6e7c07",
-        7.8
-      ],
       "It grew. It sees. Nothing on two legs crosses its ground, so no raider has troubled us since.": [
         "sefa/a716716054d13a3c",
         8.35
@@ -9219,10 +8943,6 @@
         "sefa/1ec8fb160700902f",
         3.48
       ],
-      "Under the dunes is our hall. One summer the deep sand opened, and something came up and swallowed our stone whole.": [
-        "sefa/143120241a180f6b",
-        8.4
-      ],
       "We are the Sand Singers. We dug this hall under the dunes and set our stone in it, and sang to it, and the desert was quiet around us.": [
         "sefa/dad1caa9aa0ac635",
         9.84
@@ -9256,10 +8976,6 @@
       "All twelve, or none of this matters.": [
         "wend/5bc96c41deb8e970",
         2.84
-      ],
-      "And never sleep in the open. A tent, with a fire by it. Sleep in the open and something comes to look.": [
-        "wend/5459c02051cb6247",
-        9.4
       ],
       "And the other one? Soft.": [
         "wend/942d3c51e696a40a",
@@ -9296,10 +9012,6 @@
       "Don't let it... the shards. I took them. Don't let it have...": [
         "wend/3c8495f7887d4f7e",
         6.6
-      ],
-      "Don't look at me like that. I'm dying, that's all. I'm old, and I walked further than I had left in me.": [
-        "wend/c5cd91223d50adcc",
-        8.6
       ],
       "Don't look for it. It's looking already.": [
         "wend/235f05b35ac3f311",
@@ -9513,10 +9225,6 @@
         "wend/d3d36304226912a0",
         7.0
       ],
-      "They didn't. Spring doesn't come for someone who stops. Take the stone. They'd want it back on the road.": [
-        "wend/ca3cdd5c5f493132",
-        7.7
-      ],
       "They walked alone, at night. Don't.": [
         "wend/6510e751e08ca18a",
         3.86
@@ -9576,10 +9284,6 @@
       "When the last shard is lifted, wait at the frame. They will open it, because they will think it is theirs to open. I will not be there. Find someone to carry it.": [
         "wend/1af96f3b527e8456",
         12.4
-      ],
-      "You heard me at the fire. The shards. Gather them, bring them to a frame, and we put its eye out forever.": [
-        "wend/ca70997373f1b9b1",
-        7.8
       ],
       "You read too much. He did too.": [
         "wend/9b1979358c427f1b",

@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "85d058caa2c57bf9df9adfce9bc44a3fdacee7fc4fd46854ac8e6ad79a75d012"
+hash = "f0f2fc1aa608bdb7e474ddf52e0c64d142ef474d85c81575bf0618b771cde797"
 
 [[files]]
 file = "config/DistantHorizons.toml"
@@ -82,7 +82,7 @@ hash = "01064a300391147f410c79abfb7c5955bf049c4d700827832fbb97a6bc374482"
 
 [[files]]
 file = "config/defaultoptions/keybindings.txt"
-hash = "0b59d671b1a32f1617199a9728541dddc9923e93271f0bbf4157da2db6fe211c"
+hash = "2390aea397765fb042cf4831ef4f973f0160b60a3c4374daa6b2cc615cd33e67"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
@@ -1065,11 +1065,6 @@ metafile = true
 [[files]]
 file = "mods/trek.pw.toml"
 hash = "856519bd5d0f0736c86a2ebbc833b8499075be4b1d6613988f4e5104ba2d9a32"
-metafile = true
-
-[[files]]
-file = "mods/visual-workbench.pw.toml"
-hash = "2684f71394862cff4c20d0f4d8491c0f86f12e66879381295e9088e0eded025d"
 metafile = true
 
 [[files]]

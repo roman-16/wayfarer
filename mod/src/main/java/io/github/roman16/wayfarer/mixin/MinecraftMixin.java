@@ -6,6 +6,7 @@ import io.github.roman16.wayfarer.client.Sight;
 import io.github.roman16.wayfarer.client.SoundClock;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.DebugScreenOverlay;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.sounds.MusicManager;
 import net.minecraft.client.sounds.SoundManager;
@@ -29,6 +30,11 @@ abstract class MinecraftMixin {
         if (Sight.shows(entity)) {
             result.setReturnValue(true);
         }
+    }
+
+    @WrapOperation(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/DebugScreenOverlay;showDebugScreen()Z"))
+    private boolean wayfarer$timeTheGraphicsCard(DebugScreenOverlay overlay, Operation<Boolean> original) {
+        return level != null || original.call(overlay);
     }
 
     @Inject(method = "runTick", at = @At("HEAD"))

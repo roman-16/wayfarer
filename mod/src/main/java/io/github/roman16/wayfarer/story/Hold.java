@@ -48,6 +48,7 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.PlayerTeam;
@@ -113,9 +114,11 @@ public final class Hold {
         private final BlockPos door;
         private final Map<BlockPos, Long> blows = new HashMap<>();
         private final Set<UUID> monsters = new HashSet<>();
+        private final Set<UUID> arriving = new HashSet<>();
         private final long started;
         private boolean spawned;
         private boolean unreached;
+        private long stuckSince = -1;
         private long unseenSince = -1;
         private long toldWaiting = -1;
         private final Set<UUID> cried = new HashSet<>();
@@ -147,6 +150,8 @@ public final class Hold {
     private static final class Besiege extends Goal {
         private final Mob mob;
         private int repath;
+        private int measured;
+        private boolean shut;
 
         private Besiege(Mob mob) {
             this.mob = mob;
@@ -155,7 +160,16 @@ public final class Hold {
 
         @Override
         public boolean canUse() {
-            return running != null && mob.getTarget() == null;
+            return running != null && (mob.getTarget() == null || running.door != null && shut());
+        }
+
+        private boolean shut() {
+            if (measured-- <= 0) {
+                measured = REPATH_TICKS;
+                Path path = mob.getNavigation().createPath(mob.getTarget(), 0);
+                shut = path == null || !path.canReach();
+            }
+            return shut;
         }
 
         @Override
@@ -167,7 +181,7 @@ public final class Hold {
         public void tick() {
             if (running != null && repath-- <= 0) {
                 repath = REPATH_TICKS;
-                BlockPos goal = running.door == null ? running.at : running.door;
+                BlockPos goal = running.door == null ? running.at : outside(mob.level(), running.door);
                 mob.getNavigation().moveTo(goal.getX() + 0.5, goal.getY(), goal.getZ() + 0.5, 1.0);
             }
         }
@@ -176,6 +190,13 @@ public final class Hold {
         public void stop() {
             mob.getNavigation().stop();
         }
+    }
+
+    private static BlockPos outside(Level level, BlockPos door) {
+        Direction facing = level.getBlockState(door).getOptionalValue(DoorBlock.FACING).orElse(Direction.NORTH);
+        BlockPos front = door.relative(facing);
+        BlockPos back = door.relative(facing.getOpposite());
+        return front.distSqr(running.at) >= back.distSqr(running.at) ? front : back;
     }
 
     public static boolean active(MinecraftServer server) {
@@ -302,6 +323,8 @@ public final class Hold {
             });
             return;
         }
+        running.arriving.stream().map(level::getEntity).filter(entity -> entity instanceof Mob).forEach(entity -> Waves.ring(level, (Mob) entity, running.door));
+        running.arriving.clear();
         blows(level, now, hold);
         long elapsed = now - running.waveStarted;
         long ticks = (long) (across ? crossing.waveSeconds() : hold.waveSeconds()) * TICKS_PER_SECOND;
@@ -312,11 +335,15 @@ public final class Hold {
         boolean working = standing.stream().anyMatch(monster -> alive.stream().anyMatch(monster::hasLineOfSight)
                 || running.door != null && monster.blockPosition().closerThan(running.door, DOOR_WORK)
                 || monster.getNavigation().getPath() != null && monster.getNavigation().getPath().canReach());
-        running.unreached = !across && running.spawned && !cleared && !working;
-        if (running.unreached) {
-            if (running.toldWaiting < 0 || now - running.toldWaiting >= (long) WAITING_SECONDS * TICKS_PER_SECOND) {
+        boolean stuck = !across && running.spawned && !cleared && !working;
+        if (stuck && running.stuckSince < 0) {
+            running.stuckSince = now;
+        }
+        running.unreached = stuck && now - running.stuckSince >= (long) hold.unreachedSeconds() * TICKS_PER_SECOND;
+        if (stuck) {
+            if (running.unreached && (running.toldWaiting < 0 || now - running.toldWaiting >= (long) WAITING_SECONDS * TICKS_PER_SECOND)) {
                 running.toldWaiting = now;
-                Talk.notice(Component.translatable(running.door == null ? "wayfarer.hold.waiting" : "wayfarer.hold.waiting_door"));
+                Talk.notice(Component.translatable("wayfarer.hold.waiting"));
             }
             running.waveStarted++;
             if (running.unseenSince < 0) {
@@ -327,6 +354,7 @@ public final class Hold {
             }
             return;
         }
+        running.stuckSince = -1;
         running.unseenSince = -1;
         if (cleared && elapsed >= TICKS_PER_SECOND || elapsed >= ticks) {
             running.waveStarted = -1;
@@ -408,7 +436,8 @@ public final class Hold {
 
     private static void blows(ServerLevel level, long now, Balance.Hold hold) {
         Map<BlockPos, Integer> beating = new HashMap<>();
-        for (Mob mob : level.getEntitiesOfClass(Mob.class, new AABB(running.at).inflate(REACH), mob -> Fire.fears(mob) && mob.getTarget() != null)) {
+        for (Mob mob : level.getEntitiesOfClass(Mob.class, new AABB(running.at).inflate(REACH),
+                mob -> Fire.fears(mob) && (mob.getTarget() != null || running.monsters.contains(mob.getUUID())))) {
             BlockPos.betweenClosedStream(mob.getBoundingBox().inflate(1)).filter(pos -> level.getBlockState(pos).is(BlockTags.DOORS)
                     || level.getBlockState(pos).is(BlockTags.TRAPDOORS)).findFirst().map(pos -> lower(level, pos))
                     .ifPresent(door -> beating.merge(door, 1, Integer::sum));
@@ -548,6 +577,9 @@ public final class Hold {
         running.monsters.add(monster.getUUID());
         if (!event.loadedFromDisk() && running.waveStarted >= 0) {
             running.spawned = true;
+            if (running.door != null) {
+                running.arriving.add(monster.getUUID());
+            }
         }
     }
 
@@ -562,6 +594,10 @@ public final class Hold {
     }
 
     private static void ring(ServerLevel level, Monster monster) {
+        if (running.door != null) {
+            Waves.ring(level, monster, running.door);
+            return;
+        }
         Optional<Vec3> below = underground(level);
         if (below.isPresent()) {
             monster.moveTo(below.get().x, below.get().y, below.get().z, monster.getYRot(), 0);

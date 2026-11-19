@@ -15,7 +15,7 @@ Then read the text around the change as the player meets it: `just script` write
 
 - **Spoken, not narrated.** People speak in their own voice, on the conversation band at the bottom of the screen (`design/interface.md`, I4): the stranger tired and dry, Maud hard, Agna practical, Hob gruff and kind, Pip a child. The voice speaks as Wend, warm and wry, from the first hall on, named as the stranger until Malgven names him in The Name. The journal speaks as "I", plainly, the way the player would tell a friend. A line nobody speaks is the narrator's: second person, present tense, what is seen ("The fire pops."). Books are written by whoever wrote them: the peoples to whoever finds their hall, the Keepers dry, careful and tired.
 - **Only what they know.** A person says only what they could know: the settled have no name for what burns their towns. The journal holds only what the team knows so far, and an entry grows as they learn.
-- **Short lines, as many as the moment needs.** A spoken line is one or two sentences; a moment that matters gets more lines, never longer ones. A quest summary is two sentences and one concrete instruction, an objective one instruction, a journal line one or two sentences. A book page holds about 250 characters; aim for three sentences.
+- **Short lines, as many as the moment needs.** A spoken line is one or two sentences and fits two rows of the band, its speaker's name included (`just lint` measures it); a moment that matters gets more lines, never longer ones. A quest summary is two sentences and one concrete instruction, an objective one instruction, a journal line one or two sentences. A book page holds about 250 characters; aim for three sentences.
 - **Say the thing itself.** Every line means exactly what its words say, so a player who reads English as a second language gets it the first time: no idioms ("can't account for", "everyone's in", "walks in your smoke"), no word in its old sense ("wants" for needs), and no figure of speech or title standing in for a fact ("the finder's ember is dark", "the fire that walks", "opened over the heart"). A mystery is something not told yet, never something told as a riddle: a hook names what it hints at plainly ("the dragon's eye", not "the eye of the one who flies"). The Crown of the Grass King is the model: plain sentences, and a hook that names its dragon.
 - **Plain words.** No fantasy vocabulary for its own sake, no capitalised Concepts beyond the lore's own names (the Eye, the ember, the gaze, the Keepers, the Gazebound, the Twelve Peoples, the halls, the calling stones, the frames).
 - **The rule, then the reason.** When text explains a mechanic, say what happens and why the world makes it happen: "It will not take root: roots are stillness, and the ember withers what a Wayfarer plants."
@@ -45,14 +45,17 @@ A moment that matters is played as a scene on the band, line by line, never told
 - **Give it room.** Important information comes in focused moments with nothing else to do; small talk can happen while walking. Do not rush the scenes that are meant to be remembered.
 - **Go cold after.** Grief is a line, not a paragraph: the road goes on, and the dead push the living onward.
 - **The player opens screens.** Never open a screen on the player unasked. A choice that needs typing is offered as an answer first, with ready answers beside it, and only that answer opens the screen, with a task saying what to do there.
+- **A team hears a line once.** A line that belongs to the moment, such as a handover or a reaction, is said once for the team; one meant for a single player goes to that player alone.
+- **Remarks come in sets.** What a person answers when right-clicked during a step is at least two lines, so the second click says something new.
 - **Answers are lines the character says.** A choice reads as something the player's character says or does, in their voice, and makes clear what happens when clicked.
 
 ## Teaching
 
 - **Say what to do, where the player looks.** Every step's objective is one instruction, shown in the task panel (`design/interface.md`, I1); a player who never opens the journal still knows what to do next.
 - **Name every key the first time.** A step that needs a key or a click lists its task in the panel, worded with the key itself (`Open your journal %s`, filled by the key the player has bound through `Tasks.key` and drawn in a key cap, so never in brackets), the first time it is needed. How-to lines never go to chat, which keeps the story.
+- **One new thing at a time, before the stakes.** A step teaches one new control or rule, where getting it wrong costs little, and a later step asks for it under pressure; a fight, a hold or a chase never introduces a rule.
 - **Count what takes long.** Walking and waiting show how far along they are: blocks to go, whom the team waits for. A short rest shows no countdown.
-- **Every refusal says why and what to do.** "It will not stand here: a Wayfarer keeps no hoard in the world, only in a tent." names the rule, the reason and the way.
+- **Every refusal and every wait says why and what moves it on.** "It will not stand here: a Wayfarer keeps no hoard in the world, only in a tent." names the rule, the reason and the way.
 
 ## Where text lives
 

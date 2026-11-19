@@ -215,10 +215,11 @@ public final class Talk {
         }
     }
 
-    public record Answers(List<Component> choices) implements CustomPacketPayload {
+    public record Answers(List<Component> choices, boolean again) implements CustomPacketPayload {
         public static final Type<Answers> TYPE = new Type<>(Wayfarer.id("answers"));
-        public static final StreamCodec<RegistryFriendlyByteBuf, Answers> STREAM_CODEC = ComponentSerialization.TRUSTED_STREAM_CODEC.apply(ByteBufCodecs.list())
-                .map(Answers::new, Answers::choices);
+        public static final StreamCodec<RegistryFriendlyByteBuf, Answers> STREAM_CODEC = StreamCodec.composite(
+                ComponentSerialization.TRUSTED_STREAM_CODEC.apply(ByteBufCodecs.list()), Answers::choices, ByteBufCodecs.BOOL, Answers::again, Answers::new);
+        static final Answers NONE = new Answers(List.of(), false);
 
         @Override
         public Type<Answers> type() {
@@ -237,6 +238,7 @@ public final class Talk {
     }
 
     public record Pick(int index) implements CustomPacketPayload {
+        public static final int AGAIN = -1;
         public static final Type<Pick> TYPE = new Type<>(Wayfarer.id("pick"));
         public static final StreamCodec<ByteBuf, Pick> STREAM_CODEC = ByteBufCodecs.VAR_INT.map(Pick::new, Pick::index);
 
@@ -384,12 +386,12 @@ public final class Talk {
 
     static void offerTo(ServerPlayer player, List<Story.Choice> choices, Answer answer) {
         personal.put(player.getUUID(), new Personal(choices, answer));
-        PacketDistributor.sendToPlayer(player, new Answers(choices.stream().map(choice -> (Component) Component.literal(choice.text())).toList()));
+        PacketDistributor.sendToPlayer(player, new Answers(choices.stream().map(choice -> (Component) Component.literal(choice.text())).toList(), false));
     }
 
     static void withdraw(ServerPlayer player) {
         if (personal.remove(player.getUUID()) != null) {
-            PacketDistributor.sendToPlayer(player, new Answers(List.of()));
+            PacketDistributor.sendToPlayer(player, Answers.NONE);
         }
     }
 
@@ -413,7 +415,7 @@ public final class Talk {
         reset();
         answering.clear();
         personal.clear();
-        server.getPlayerList().getPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, new Answers(List.of())));
+        server.getPlayerList().getPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, Answers.NONE));
     }
 
     public static void reset() {
@@ -683,7 +685,7 @@ public final class Talk {
         if (clock - conversation.huntedAt < (long) talk.safeSeconds() * TICKS_PER_SECOND) {
             return true;
         }
-        if (listeners.stream().noneMatch(player -> screens.contains(player.getUUID()))) {
+        if (listeners.isEmpty() || !listeners.stream().allMatch(player -> screens.contains(player.getUUID()))) {
             return false;
         }
         if (conversation.heldSince == NEVER) {
@@ -751,7 +753,7 @@ public final class Talk {
         if (own != null) {
             if (index >= 0 && index < own.choices().size()) {
                 personal.remove(player.getUUID());
-                PacketDistributor.sendToPlayer(player, new Answers(List.of()));
+                PacketDistributor.sendToPlayer(player, Answers.NONE);
                 Sounds.play(server, ANSWER_CHOSEN);
                 String answer = own.choices().get(index).text();
                 PacketDistributor.sendToPlayer(player, Subtitle.answered(player, Component.translatable("wayfarer.talk.chose", player.getDisplayName(), answer), answer));
@@ -761,15 +763,20 @@ public final class Talk {
         }
         String key = answering.get(player.getUUID());
         Conversation conversation = key == null ? null : conversations.get(key);
-        if (conversation == null || conversation.offer == null || index < 0) {
+        if (conversation == null || conversation.offer == null) {
             return;
         }
         Offer answered = conversation.offer;
-        if (index == answered.choices().size() && !conversation.told.isEmpty()) {
+        if (index == Pick.AGAIN && !conversation.told.isEmpty()) {
+            long offered = conversation.offered;
+            Record.event(server, "again", player, line -> {
+                line.addProperty("quest", answered.fire());
+                line.addProperty("seconds", (clock - offered) / TICKS_PER_SECOND);
+            });
             replay(server, conversation);
             return;
         }
-        if (index >= answered.choices().size()) {
+        if (index < 0 || index >= answered.choices().size()) {
             return;
         }
         Story.Choice picked = answered.choices().get(index);
@@ -785,7 +792,7 @@ public final class Talk {
             if (!Engine.most(server, agreed)) {
                 Component chose = Component.translatable("wayfarer.talk.chose", player.getDisplayName(), picked.text());
                 deliver(server, Subtitle.of(server, null, chose), answered.at(), null);
-                Answers tally = new Answers(answers(server, conversation));
+                Answers tally = answers(server, conversation);
                 answering.forEach((id, shown) -> {
                     ServerPlayer asked = server.getPlayerList().getPlayer(id);
                     if (asked != null && shown.equals(conversation.key)) {
@@ -820,25 +827,21 @@ public final class Talk {
             String before = answering.get(player.getUUID());
             if (shown.isPresent() && !shown.get().key.equals(before)) {
                 answering.put(player.getUUID(), shown.get().key);
-                PacketDistributor.sendToPlayer(player, new Answers(answers(server, shown.get())));
+                PacketDistributor.sendToPlayer(player, answers(server, shown.get()));
             } else if (shown.isEmpty() && answering.remove(player.getUUID()) != null) {
-                PacketDistributor.sendToPlayer(player, new Answers(List.of()));
+                PacketDistributor.sendToPlayer(player, Answers.NONE);
             }
         }
     }
 
-    private static List<Component> answers(MinecraftServer server, Conversation conversation) {
+    private static Answers answers(MinecraftServer server, Conversation conversation) {
         Offer shown = conversation.offer;
         List<String> texts = shown.choices().stream().map(Story.Choice::text).toList();
         int online = Engine.players(server).size();
-        List<Component> answers = new ArrayList<>(IntStream.range(0, texts.size())
+        return new Answers(IntStream.range(0, texts.size())
                 .mapToObj(index -> (Component) Component.literal(!shown.vote() || online < 2 ? texts.get(index)
                         : texts.get(index) + " " + conversation.votes.values().stream().filter(vote -> vote == index).count() + "/" + online))
-                .toList());
-        if (!conversation.told.isEmpty()) {
-            answers.add(Component.translatable("wayfarer.talk.again"));
-        }
-        return answers;
+                .toList(), !conversation.told.isEmpty());
     }
 
     private static boolean listened(MinecraftServer server, Speech speech) {

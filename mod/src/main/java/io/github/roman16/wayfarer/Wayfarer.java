@@ -10,6 +10,7 @@ import io.github.roman16.wayfarer.client.JournalScreen;
 import io.github.roman16.wayfarer.client.MusicPlayer;
 import io.github.roman16.wayfarer.client.PickUps;
 import io.github.roman16.wayfarer.client.Recap;
+import io.github.roman16.wayfarer.client.WakingScreen;
 import io.github.roman16.wayfarer.story.After;
 import io.github.roman16.wayfarer.story.Afterwards;
 import io.github.roman16.wayfarer.story.Arrivals;
@@ -311,6 +312,7 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Tents.class);
         NeoForge.EVENT_BUS.register(Trail.class);
         NeoForge.EVENT_BUS.register(Voyage.class);
+        NeoForge.EVENT_BUS.register(Waking.class);
         NeoForge.EVENT_BUS.register(Wards.class);
         NeoForge.EVENT_BUS.register(Weather.class);
         NeoForge.EVENT_BUS.register(WorldSetup.class);
@@ -358,6 +360,7 @@ public final class Wayfarer {
             Tasks.refresh((ServerPlayer) context.player());
         });
         registrar.playToServer(Sense.Payload.TYPE, Sense.Payload.STREAM_CODEC, (payload, context) -> Sense.sense((ServerPlayer) context.player()));
+        registrar.playToServer(Sorting.Auto.TYPE, Sorting.Auto.STREAM_CODEC, (payload, context) -> Sorting.auto((ServerPlayer) context.player(), payload.on()));
         registrar.playToServer(Sorting.Looking.TYPE, Sorting.Looking.STREAM_CODEC, (payload, context) -> Sorting.look((ServerPlayer) context.player(), payload.open()));
         registrar.playToClient(Tasks.Panel.TYPE, Tasks.Panel.STREAM_CODEC, (payload, context) -> HudState.panel = payload);
         registrar.playToClient(Caravan.Smoke.TYPE, Caravan.Smoke.STREAM_CODEC, (payload, context) -> HudState.smoke = payload.fire());
@@ -370,6 +373,8 @@ public final class Wayfarer {
         registrar.playToServer(Marks.Mark.TYPE, Marks.Mark.STREAM_CODEC, (payload, context) -> Marks.mark((ServerPlayer) context.player(), payload.at()));
         registrar.playToServer(Record.Frames.TYPE, Record.Frames.STREAM_CODEC, (payload, context) -> Record.frames((ServerPlayer) context.player(), payload));
         registrar.playToServer(Arrivals.Arrived.TYPE, Arrivals.Arrived.STREAM_CODEC, (payload, context) -> Arrivals.arrive((ServerPlayer) context.player()));
+        registrar.playToClient(Waking.Page.TYPE, Waking.Page.STREAM_CODEC, (payload, context) -> WakingScreen.page(payload));
+        registrar.playToServer(Waking.Wake.TYPE, Waking.Wake.STREAM_CODEC, (payload, context) -> Waking.press((ServerPlayer) context.player(), payload.awake()));
         registrar.playToServer(Record.Opened.TYPE, Record.Opened.STREAM_CODEC, (payload, context) -> Record.opened((ServerPlayer) context.player(), payload));
         registrar.playToClient(CompassPayload.TYPE, CompassPayload.STREAM_CODEC, (payload, context) -> HudState.compass = payload);
         registrar.playToClient(GazePayload.TYPE, GazePayload.STREAM_CODEC, (payload, context) -> HudState.gaze = payload);

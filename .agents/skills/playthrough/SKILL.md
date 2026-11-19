@@ -145,10 +145,11 @@ At every step a newcomer asks these; a no to any is a finding. The `finish` skil
 | Why not? | An action does nothing, or a refusal does not say why and what to do instead |
 | Who opened this screen? | A screen opens that the player did not ask for, or opens without a word on what it is for |
 | Am I there yet? | A line, a talk or a task comes while the land is still drawing in, or in the first seconds of arriving anywhere |
-| Is this fun? | A stretch of walking, waiting or repeating goes on with nothing new said, seen or decided; the same failure is punished twice; something hard-won is lost |
+| Is this fun? | A stretch of walking, waiting or repeating goes on with nothing new said, seen or decided; the same failure is punished twice; something hard-won is lost; a peak (a hold, a hall, a fight the story builds to) is over before it starts because of something found on the way |
+| Did I mean that? | A key or click meant for one thing does another: a hotbar number picks an answer or says a talk again, a click lands on something unseen in front of the block |
 | Does it remember me? | The world forgets what the player did: a choice, a grave, a place left changed |
 | What about alone? | Something waits for, asks for or needs a second player, or a fight or a hold is out of reach for one |
-| What about my teammate? | One player is done and does not know whom they wait for, or the other does not know they are waited for |
+| What about my teammate? | One player is done and does not know whom they wait for, or the other does not know they are waited for; one player's screen or key holds up, replays or skips a talk for everyone; a line of the moment is said once per player |
 | What about a restart? | Stopping the server inside the step (mid-dusk, mid-hold, mid-build) and starting it again moves the clock, repeats lines, builds twice or crashes |
 | What about odd land? | A place the story puts down crashes, floats or comes out thin on another seed |
 | What about meanwhile? | The player does something else while the step waits: walks off, goes underground, sleeps in a tent, dies, logs out, untracks the quest, or a teammate does the opposite |

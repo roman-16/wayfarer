@@ -1,6 +1,7 @@
 package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Wayfarer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -13,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.FloatTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -52,9 +54,7 @@ final class Clues {
         if (!active.step().spec().has("clues")) {
             return Optional.empty();
         }
-        List<String> found = Engine.found(active.scratch());
-        Set<String> left = active.step().spec().getAsJsonArray("clues").asList().stream().map(clue -> clue.getAsJsonObject().get("id").getAsString())
-                .filter(clue -> !found.contains(clue)).map(clue -> Steps.CLUE + clue).collect(Collectors.toSet());
+        Set<String> left = Steps.wanted(player.server, active).stream().map(clue -> Steps.CLUE + clue).collect(Collectors.toSet());
         return player.level().getEntities((Entity) null, player.getBoundingBox().inflate(SEARCH_REACH),
                         entity -> entity.getTags().contains(Steps.CLUE_BOX) && entity.getTags().stream().anyMatch(left::contains)).stream()
                 .min(Comparator.comparingDouble(player::distanceToSqr)).map(Entity::blockPosition);
@@ -63,8 +63,21 @@ final class Clues {
     static void door(ServerLevel level, BlockPos lower, String clue) {
         display(level, lower, MARKER_SCALE, clue).addTag(DOOR);
         display(level, lower.above(), MARKER_SCALE, clue).addTag(DOOR);
-        box(level, Vec3.atBottomCenterOf(lower), clue);
-        box(level, Vec3.atBottomCenterOf(lower.above()), clue);
+        box(level, Vec3.atBottomCenterOf(lower), clue).addTag(DOOR);
+        box(level, Vec3.atBottomCenterOf(lower.above()), clue).addTag(DOOR);
+    }
+
+    static void clear(MinecraftServer server, Story.Step step) {
+        Set<String> left = step.clues().stream().map(clue -> Steps.CLUE + clue.id()).collect(Collectors.toSet());
+        for (ServerLevel level : server.getAllLevels()) {
+            List<Entity> standing = new ArrayList<>();
+            level.getAllEntities().forEach(entity -> {
+                if (entity.getTags().stream().anyMatch(left::contains)) {
+                    standing.add(entity);
+                }
+            });
+            standing.forEach(Entity::discard);
+        }
     }
 
     static void found(ServerLevel level, Entity found, String clue) {

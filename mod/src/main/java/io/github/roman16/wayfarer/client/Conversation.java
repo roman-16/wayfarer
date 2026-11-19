@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer.client;
 
+import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.github.roman16.wayfarer.client.stamp.Stamp;
 import io.github.roman16.wayfarer.story.Talk;
@@ -44,6 +45,7 @@ public final class Conversation {
     private static final int ANSWER_X = 14;
     private static final int ANSWER_PAD = 7;
     private static final int ANSWER_GAP_ROWS = 2;
+    private static final int AGAIN_GAP = 6;
     private static final int ANSWER_WIDTH = 160;
     private static final int OPAQUE = 0xFF;
     private static final int LOGGED = 32;
@@ -52,6 +54,8 @@ public final class Conversation {
     private static final Deque<Shown> lines = new ArrayDeque<>();
     private static final Deque<Logged> log = new ArrayDeque<>();
     private static List<String> answers = List.of();
+    private static boolean again;
+    private static long askedAt;
     private static long clock;
     private static boolean screenOpen;
     static int answersTop = Integer.MAX_VALUE;
@@ -87,10 +91,19 @@ public final class Conversation {
     }
 
     public static void ask(Talk.Answers offered) {
-        answers = offered.choices().stream().map(Component::getString).toList();
-        if (!answers.isEmpty()) {
-            note("answers: " + String.join(" | ", answers));
+        if (answers.isEmpty()) {
+            askedAt = clock;
         }
+        answers = offered.choices().stream().map(Component::getString).toList();
+        again = offered.again() && !answers.isEmpty();
+        if (!answers.isEmpty()) {
+            note("answers: " + String.join(" | ", answers)
+                    + (again ? " · " + WayfarerClient.AGAIN.getTranslatedKeyMessage().getString() + ": " + Component.translatable("wayfarer.talk.again").getString() : ""));
+        }
+    }
+
+    public static boolean locked() {
+        return !answers.isEmpty() && clock - askedAt < Balance.get().talk().answerLockTicks();
     }
 
     public static List<Logged> since(long seq) {
@@ -100,6 +113,7 @@ public final class Conversation {
     public static void forget() {
         lines.clear();
         answers = List.of();
+        again = false;
     }
 
     private static void note(String text) {
@@ -128,17 +142,25 @@ public final class Conversation {
         if (answers.isEmpty() || minecraft.screen != null) {
             return;
         }
+        boolean locked = locked();
         KeyMapping[] slots = minecraft.options.keyHotbarSlots;
         for (int index = 0; index < Math.min(answers.size(), slots.length); index++) {
-            boolean pressed = false;
-            while (slots[index].consumeClick()) {
-                pressed = true;
-            }
-            if (pressed) {
+            if (pressed(slots[index]) && !locked) {
                 PacketDistributor.sendToServer(new Talk.Pick(index));
                 return;
             }
         }
+        if (pressed(WayfarerClient.AGAIN) && again && !locked) {
+            PacketDistributor.sendToServer(new Talk.Pick(Talk.Pick.AGAIN));
+        }
+    }
+
+    private static boolean pressed(KeyMapping key) {
+        boolean pressed = false;
+        while (key.consumeClick()) {
+            pressed = true;
+        }
+        return pressed;
     }
 
     static void render(GuiGraphics graphics, DeltaTracker delta) {
@@ -225,7 +247,7 @@ public final class Conversation {
         }
         Minecraft minecraft = Minecraft.getInstance();
         int x = width / 2 + ANSWER_X;
-        int keyWidth = 0;
+        int keyWidth = again ? Stamp.keycapWidth(font, WayfarerClient.AGAIN.getTranslatedKeyMessage().getString()) : 0;
         for (int index = 0; index < answers.size(); index++) {
             keyWidth = Math.max(keyWidth, Stamp.keycapWidth(font, key(minecraft, index).getString()));
         }
@@ -238,8 +260,10 @@ public final class Conversation {
             wrapped.add(split);
             rows += split.size();
         }
-        int tall = rows * LINE + answers.size() * (ANSWER_LINE - LINE) + (answers.size() - 1) * ANSWER_GAP_ROWS + ANSWER_PAD * 2;
-        int broadest = wrapped.stream().flatMap(List::stream).mapToInt(font::width).max().orElse(0);
+        Component sayAgain = Component.translatable("wayfarer.talk.again");
+        int tall = rows * LINE + answers.size() * (ANSWER_LINE - LINE) + (answers.size() - 1) * ANSWER_GAP_ROWS + ANSWER_PAD * 2
+                + (again ? AGAIN_GAP + ANSWER_LINE : 0);
+        int broadest = Math.max(wrapped.stream().flatMap(List::stream).mapToInt(font::width).max().orElse(0), again ? font.width(sayAgain) : 0);
         int right = textX + broadest + ANSWER_PAD;
         int top = Math.max(ANSWER_TOP, Math.min(height / 2 - tall / 2, bandTop - ANSWER_GAP - tall));
         answersTop = Math.round(top * scale);
@@ -253,6 +277,11 @@ public final class Conversation {
                 y += LINE;
             }
             y += ANSWER_LINE - LINE + ANSWER_GAP_ROWS;
+        }
+        if (again) {
+            y += AGAIN_GAP - ANSWER_GAP_ROWS;
+            Stamp.keycap(graphics, font, WayfarerClient.AGAIN.getTranslatedKeyMessage().getString(), x + ANSWER_PAD, y);
+            graphics.drawString(font, sayAgain, textX, y, Stamp.QUIET, true);
         }
     }
 

@@ -16,6 +16,7 @@ import io.github.roman16.wayfarer.client.Graphics;
 import io.github.roman16.wayfarer.client.Hud;
 import io.github.roman16.wayfarer.client.JournalScreen;
 import io.github.roman16.wayfarer.client.Recap;
+import io.github.roman16.wayfarer.client.WakingScreen;
 import io.github.roman16.wayfarer.mixin.dev.GuiAccessor;
 import io.github.roman16.wayfarer.story.StoryDev;
 import io.github.roman16.wayfarer.story.Tasks;
@@ -262,6 +263,8 @@ public final class Driver {
     private static final Map<String, Integer> checks = new LinkedHashMap<>();
     private static boolean leaving;
     private static boolean opened;
+    private static boolean own;
+    private static boolean woke;
     private static boolean running;
     private static boolean turns;
     private static boolean designing;
@@ -553,6 +556,8 @@ public final class Driver {
     private static List<String> enter(Minecraft minecraft, String world) {
         String[] words = world.split(" ");
         standing(minecraft, words[0], words.length > 1 ? words[1] : null);
+        own = true;
+        woke = false;
         switch (words[0]) {
             case "showroom" -> {
                 enter(minecraft, SHOWROOM_WORLD, GameType.CREATIVE, SEED);
@@ -618,6 +623,7 @@ public final class Driver {
     }
 
     private static void leave(Minecraft minecraft) {
+        own = false;
         if (minecraft.level != null) {
             left = Recap.world();
             boolean local = minecraft.isLocalServer();
@@ -761,6 +767,10 @@ public final class Driver {
     private static boolean ready(Minecraft minecraft, String step) {
         String verb = step.split(" ", 2)[0];
         if (minecraft.screen instanceof ReceivingLevelScreen) {
+            return false;
+        }
+        if (own && !woke && minecraft.screen instanceof WakingScreen) {
+            wake(minecraft);
             return false;
         }
         if (verb.equals("settle")) {
@@ -1427,8 +1437,9 @@ public final class Driver {
             Frames.Summary frames = count.stop();
             IntegratedServer server = minecraft.getSingleplayerServer();
             String tick = server == null ? "no server" : "%.1f ms a server tick".formatted(server.getAverageTickTimeNanos() / NANOS_PER_MILLI);
-            note("perf: %.0f fps on average over %d s, 1%% low %.0f fps, worst frame %.0f ms, %s, drawn by %s".formatted(frames.fps(), seconds, frames.low(),
-                    frames.worstMillis(), tick, GlUtil.getRenderer()));
+            String graphicsCard = frames.graphicsCardPercent().map(percent -> ", graphics card busy %.0f%%".formatted(percent)).orElse("");
+            note("perf: %.0f fps on average over %d s, 1%% low %.0f fps, worst frame %.0f ms%s, %s, drawn by %s".formatted(frames.fps(), seconds, frames.low(),
+                    frames.worstMillis(), graphicsCard, tick, GlUtil.getRenderer()));
         };
     }
 
@@ -1701,7 +1712,22 @@ public final class Driver {
         ConnectScreen.startConnecting(new TitleScreen(), minecraft, ServerAddress.parseString(address), new ServerData(address, address, ServerData.Type.OTHER),
                 false, null);
         until = () -> minecraft.player != null && minecraft.level != null && !minecraft.isLocalServer()
-                && (minecraft.screen == null || minecraft.screen instanceof DeathScreen) && loaded(minecraft);
+                && (minecraft.screen == null || minecraft.screen instanceof DeathScreen || minecraft.screen instanceof WakingScreen) && loaded(minecraft);
+        then = () -> {
+            if (minecraft.screen instanceof WakingScreen) {
+                note("join: the world waits asleep at the Last Camp; press Wake to wake");
+            }
+        };
+    }
+
+    private static void wake(Minecraft minecraft) {
+        woke = true;
+        String label = Component.translatable("wayfarer.waking.wake").getString();
+        widgets(minecraft).stream().filter(widget -> widget instanceof Button && widget.getMessage().getString().equals(label)).findFirst()
+                .ifPresent(widget -> {
+                    note("note: woke the world the driver opened, which waited asleep at the Last Camp");
+                    ((Button) widget).onPress();
+                });
     }
 
     private static void hold(Minecraft minecraft, String argument) {
@@ -1717,6 +1743,14 @@ public final class Driver {
     }
 
     private static void key(Minecraft minecraft, String name) {
+        if (Conversation.locked()) {
+            after(() -> !Conversation.locked(), "the answers to take keys", () -> pressKey(minecraft, name));
+            return;
+        }
+        pressKey(minecraft, name);
+    }
+
+    private static void pressKey(Minecraft minecraft, String name) {
         Screen before = minecraft.screen;
         if (name.equals("escape")) {
             if (minecraft.screen != null) {

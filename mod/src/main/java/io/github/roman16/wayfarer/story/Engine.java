@@ -17,13 +17,17 @@ import io.github.roman16.wayfarer.OwnStone;
 import io.github.roman16.wayfarer.Record;
 import io.github.roman16.wayfarer.RestEvent;
 import io.github.roman16.wayfarer.Sounds;
+import io.github.roman16.wayfarer.Waking;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
@@ -179,7 +183,7 @@ public final class Engine {
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
         MinecraftServer server = event.getServer();
-        if (server.getTickCount() % CHECK_TICKS != 0 || !running(server)) {
+        if (server.getTickCount() % CHECK_TICKS != 0 || !running(server) || Waking.asleep(server)) {
             return;
         }
         crossing(server);
@@ -517,6 +521,9 @@ public final class Engine {
             line.addProperty("step", step.id());
         });
         People.introduce(server, introduced(step));
+        if (!step.clues().isEmpty()) {
+            Clues.clear(server, step);
+        }
         if (step.spec().has("finds")) {
             Vec3 anchor = Steps.anchor(server, step);
             progress.place(step.text("finds"), anchor == null ? overworld(server).getSharedSpawnPos() : BlockPos.containing(anchor));
@@ -734,10 +741,12 @@ public final class Engine {
         }
         Notices.given(player, given);
         Record.event(player.server, "reward", player, line -> line.addProperty("reward", key));
-        progress.claims.computeIfAbsent(key, ignored -> new java.util.LinkedHashSet<>()).add(player.getUUID());
+        Set<UUID> claimed = progress.claims.computeIfAbsent(key, ignored -> new LinkedHashSet<>());
+        boolean first = claimed.isEmpty();
+        claimed.add(player.getUUID());
         progress.setDirty();
         Tasks.refresh(player);
-        if (reward.get().given() != null) {
+        if (first && reward.get().given() != null) {
             Talk.say(Talk.ROAD, player.position(), reward.get().given());
         }
         Talk.tell(player, Component.literal(reward.get().claimed()));

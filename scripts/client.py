@@ -88,6 +88,7 @@ PANORAMA_TIMES = {"dawn": 23400, "dusk": 12600, "night": 13600, "noon": 6000, "s
 SOUTH, WEST, NORTH, EAST = (0, 1), (-1, 0), (0, -1), (1, 0)
 BENCH_SEED = tomllib.loads((ROOT / "story/states.toml").read_text())["seed"]
 BENCH_SECONDS = 32
+BENCH_LOADING_SECONDS = 60
 BENCH_HEIGHT = 256
 BENCH_PITCH = 32
 BENCH_SPEED = 8
@@ -105,9 +106,12 @@ MINIMUM_STEPS = (("low", "off"), ("medium", "off"))
 MINIMUM_MHZ = 1100
 MINIMUM_THREADS = 12
 MINIMUM_MHZ_LIMIT = 1200
+FLOOR = tomllib.loads((ROOT / "balance.toml").read_text())["graphics"]
 OTHERS_PERCENT = 5
 SERVER_FAR_VIEW = CLIENT / "Distant_Horizons_server_data"
-PERF = re.compile(r"(\d+) fps on average over \d+ s, 1% low (\d+) fps, worst frame (\d+) ms")
+PERF = re.compile(
+    r"(\d+) fps on average over \d+ s, 1% low (\d+) fps, worst frame (\d+) ms(?:, graphics card busy (\d+)%)?"
+)
 STANDING = re.compile(r"(-?[\d.]+) -?[\d.]+ (-?[\d.]+) facing")
 
 
@@ -871,7 +875,7 @@ def bench(arguments):
     steps = MINIMUM_STEPS if minimum else BENCH_STEPS
     dev_server = drive.seat("devserver")
     address = f"localhost:{instance.DEV_SERVER_PORTS['server'] + dev_server.offset()}"
-    places = (("alone", []), ("server", [f"join {address}"])) if minimum else (("alone", []),)
+    places = (("alone", []), ("server", [f"join {address}", "press Wake"])) if minimum else (("alone", []),)
     nvidia = shutil.which("nvidia-smi")
     locking = minimum and not at_pc()
     for ending in (signal.SIGHUP, signal.SIGTERM):
@@ -934,11 +938,9 @@ def measure(minimum, cpus, steps, places, weather):
         )
         for where, joining in places:
             first, shaders = steps[0]
-            report = batch(
-                [*joining, *BENCH_SETTLED, weather, f"graphics {first} shaders {shaders}", "pos"], RUN_SECONDS
-            )
+            print(camp(where, joining, first, shaders), flush=True)
+            report = batch([*BENCH_SETTLED, weather, f"graphics {first} shaders {shaders}", "pos"], RUN_SECONDS)
             spawn = [float(value) for value in STANDING.search(report).groups()]
-            print(opening(where, spawn), flush=True)
             for index, (step, shaders) in enumerate(steps):
                 watch = subprocess.Popen(
                     ["nvidia-smi", "pmon", "--delay", "1", "--select", "u"], stdout=subprocess.PIPE, text=True
@@ -1009,21 +1011,42 @@ def leg(step, shaders, spawn, heading):
     return [PERF.search(entry["perf"][0]).groups() for entry in entries if "perf" in entry]
 
 
-def opening(where, spawn):
-    x, z = spawn
-    report = batch(
-        [f"/tp @s {x:.1f} {BENCH_HEIGHT} {z:.1f} 0 {BENCH_PITCH}", "fly on", f"perf {BENCH_SECONDS}"], RUN_SECONDS
+def camp(where, joining, step, shaders):
+    steps = [
+        *joining,
+        "vsync off",
+        f"graphics {step} shaders {shaders}",
+        "settle",
+        f"perf {BENCH_LOADING_SECONDS}",
+        f"perf {BENCH_SECONDS}",
+    ]
+    entries = parse(batch(steps, RUN_SECONDS))
+    errors = [error for entry in entries for error in entry.get("error", [])]
+    if errors:
+        sys.exit(f"bench failed at the Last Camp: {'; '.join(errors)}")
+    loading, standing = (PERF.search(entry["perf"][0]).groups() for entry in entries if "perf" in entry)
+    return (
+        f"{'opening':<7} {where:<7} {frames('standing', loading)}\n"
+        f"{'camp':<7} {where:<7} {frames('standing', standing)}{floor(step, [standing])}"
     )
-    fps, low, worst = PERF.search(report).groups()
-    return f"{'opening':<7} {where:<7} hovering {fps:>4} fps, 1% low {low:>4}, worst {worst:>4} ms"
 
 
 def row(step, where, hovering, flying):
-    def frames(name, values):
-        fps, low, worst = values
-        return f"{name} {fps:>4} fps, 1% low {low:>4}, worst {worst:>4} ms"
+    return f"{step:<7} {where:<7} {frames('hovering', hovering)}   {frames('flying', flying)}{floor(step, [hovering, flying])}"
 
-    return f"{step:<7} {where:<7} {frames('hovering', hovering)}   {frames('flying', flying)}"
+
+def frames(name, values):
+    fps, low, worst, card = values
+    busy = f", card {card:>3}%" if card else ""
+    return f"{name} {fps:>4} fps, 1% low {low:>4}, worst {worst:>4} ms{busy}"
+
+
+def floor(step, measured):
+    if step != MINIMUM_STEPS[0][0] or all(
+        int(fps) >= FLOOR["floor_fps"] and int(low) >= FLOOR["floor_low_fps"] for fps, low, _, _ in measured
+    ):
+        return ""
+    return f"   below the floor ({FLOOR['floor_fps']}, 1% low {FLOOR['floor_low_fps']})"
 
 
 def slowest_cores():
@@ -1181,8 +1204,9 @@ def main():
     panorama_parser.add_argument("--timeout", type=int, default=START_SECONDS)
     bench_parser = commands.add_parser(
         "bench",
-        help="measure the frames of every graphics step on the hidden screen, with the far view as shipped: arriving "
-        "somewhere new and flying over new land, alone and, with --minimum, on the dev server; prints one row per run",
+        help="measure the frames of every graphics step on the hidden screen, with the far view as shipped: standing at "
+        "the Last Camp while the world opens and through the opening talk, then hovering and flying over new land, alone "
+        "and, with --minimum, on the dev server; prints one row per run and marks Low's rows that fall below the floor",
     )
     bench_parser.add_argument(
         "--minimum",

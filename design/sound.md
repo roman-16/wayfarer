@@ -76,7 +76,7 @@ Each quest adds its moments here as it is built, along the road's curve (`story.
 | The night on the water (2.1), beside Maud's boat while the sea's beast and the drowned come | The battle piece, looping | As at every hold |
 | Act 2's first morning (2.1), from the first sight of the far shore over the landing | White Dawn, slow strings and pads lifting, 4 s to 100 s, fading over the last 16 s, once | Scott Buckley, CC BY 4.0, [scottbuckley.com.au](https://www.scottbuckley.com.au/library/white-dawn/) |
 | Years later and the credits after every door (`story.md`, S53), from the first leaf, fading over three seconds when the button is pressed | The Long Way Home, soft piano with strings under it, once | Scott Buckley, CC BY 4.0, [scottbuckley.com.au](https://www.scottbuckley.com.au/library/the-long-way-home/) |
-| The title screen and the loading screens after it, until the world shows (`interface.md`, I6) | FORGIVENESS, piano, strings and a music box, looping | Magmi.Soundtracks, CC0, [Freesound](https://freesound.org/people/Magmi.Soundtracks/sounds/478246) |
+| The title screen and the loading screens after it, a new world's waking page included, until the world shows (`interface.md`, I6) | FORGIVENESS, piano, strings and a music box, looping | Magmi.Soundtracks, CC0, [Freesound](https://freesound.org/people/Magmi.Soundtracks/sounds/478246) |
 
 Every sound the pack makes for its own things is its own, from a free library, chosen by ear; where a file is cut or faded, the table says so.
 

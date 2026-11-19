@@ -14,7 +14,7 @@ public abstract class PlayerMixin {
     @ModifyVariable(method = "causeFoodExhaustion", at = @At("HEAD"), argsOnly = true)
     private float wayfarer$burn(float exhaustion) {
         Player player = (Player) (Object) this;
-        if (player instanceof ServerPlayer server && Journey.over(server.server)) {
+        if (player instanceof ServerPlayer server && (Journey.over(server.server) || !Journey.awake(server.server))) {
             return exhaustion;
         }
         Balance.Hunger hunger = Balance.get().hunger();

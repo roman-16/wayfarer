@@ -368,11 +368,22 @@ The balance of each decision is settled in `systems.md` (M16).
 - What one player does, the world does. Progress, decisions and the ending count for everyone; only what is a player's own stays theirs: their inventory, gear, tent and where they stand.
 - The story's state belongs to the world, not to a player: one set of quests, decisions, shards and people, always as far as the team has got. Whoever is online, the world behaves as if the furthest player were there.
 - The journal is the team's, shared and always up to date for every player. The story's lines in chat go to everyone.
+- A new world waits for its team. Everyone who joins it before it wakes lies asleep by the stranger's fire: their loading page stays up, showing who is by the fire and a Wake button (`interface.md`, I6), and the world stands still, its clock, weather and creatures held and no quest begun, until every player online has pressed Wake. Then every page falls at once, and the prologue begins. Alone, one press wakes it.
+
+  | Edge case | What happens |
+  |---|---|
+  | Someone joins while the team waits | They lie asleep at the Last Camp too, and every page lists them |
+  | A sleeper leaves, or their game crashes | They drop off the list; when everyone left online is awake, the world wakes at once, and they come back as anyone who joins later |
+  | Someone leaves and comes back before it wakes | They are asleep again |
+  | Everyone leaves | The world stays asleep, across restarts, until a team wakes it |
+  | A friend never presses Wake | The world waits; nothing wakes it over them |
+  | Someone takes their press back | Lie down again makes them asleep until they press Wake again |
+
 - Joining later is a rule of the game, not a scene of the story:
 
   | Who joins | Where they appear | What they have |
   |---|---|---|
-  | The world's very first player | The Last Camp, with the prologue | The normal start |
+  | Everyone who joins a new world before it wakes | The Last Camp, asleep by the fire until the team wakes | The normal start |
   | A new player, while others are online | Next to a teammate, on safe ground | An empty inventory, as after a death but with no grave; the team's shards and progress at once, and every reward of every quest the team finished waiting unclaimed in the journal, the early quests' backpack and tent among them |
   | A returning player, while others are online | Next to a teammate, unless they are already close by | Their own inventory and every reward they missed |
   | Anyone, while nobody else is online | A returning player where they logged out; a new player where the last player logged out | As above |
@@ -394,7 +405,7 @@ Lena joined the road.
 Journal: 3 quests were finished while you were away. Their rewards are waiting
 ```
 
-**Why:** Up to four friends on one server should never manage teams, and a friend who misses an evening must not fall behind the people they play with. One state for the whole world means nobody is ever behind, and placing a joiner next to the team keeps everyone together without a scene the story has to explain.
+**Why:** Up to four friends on one server should never manage teams, and a friend who misses an evening must not fall behind the people they play with. One state for the whole world means nobody is ever behind, and placing a joiner next to the team keeps everyone together without a scene the story has to explain. A story that began on the first arrival would make friends who join a minute later miss the opening, so the opening the story already has, someone waiting for you to wake, holds the world until everyone has come and says they are ready.
 
 The catch-up lives in the quest engine (`systems.md`, M1), and the distances and votes for joining in M7.
 

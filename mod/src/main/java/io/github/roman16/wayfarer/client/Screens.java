@@ -24,6 +24,7 @@ final class Screens {
             case InventoryScreen inventory -> "inventory";
             case PauseScreen pause -> "pause";
             case DeathScreen death -> "death";
+            case WakingScreen waking -> "waking";
             case AbstractContainerScreen<?> container -> "container " + container.getTitle().getString();
             default -> MapLink.shown(screen) ? "map" : screen.getClass().getSimpleName();
         });

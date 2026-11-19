@@ -11,6 +11,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -62,6 +63,10 @@ public final class Record {
         event(player.server, "frames", player, line -> {
             line.addProperty("fps", frames.fps());
             line.addProperty("low", frames.low());
+            frames.graphicsCardPercent().ifPresent(percent -> line.addProperty("gpu", percent));
+            if (frames.onBattery()) {
+                line.addProperty("battery", true);
+            }
             line.addProperty("worst_ms", frames.worstMillis());
             line.addProperty("seconds", frames.seconds());
             line.addProperty("preset", frames.preset());
@@ -171,19 +176,21 @@ public final class Record {
         }
     }
 
-    public record Frames(int fps, int low, int worstMillis, int seconds, String preset, boolean shaders, int farView, int heapMegabytes,
-                         int heapMaxMegabytes) implements CustomPacketPayload {
+    public record Frames(int fps, int low, Optional<Integer> graphicsCardPercent, boolean onBattery, int worstMillis, int seconds, String preset,
+                         boolean shaders, int farView, int heapMegabytes, int heapMaxMegabytes) implements CustomPacketPayload {
         public static final Type<Frames> TYPE = new Type<>(Wayfarer.id("frames"));
         public static final StreamCodec<FriendlyByteBuf, Frames> STREAM_CODEC = StreamCodec.ofMember(Frames::write, Frames::new);
 
         private Frames(FriendlyByteBuf buf) {
-            this(buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readUtf(), buf.readBoolean(), buf.readVarInt(), buf.readVarInt(),
-                    buf.readVarInt());
+            this(buf.readVarInt(), buf.readVarInt(), buf.readOptional(FriendlyByteBuf::readVarInt), buf.readBoolean(), buf.readVarInt(), buf.readVarInt(),
+                    buf.readUtf(), buf.readBoolean(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
         }
 
         private void write(FriendlyByteBuf buf) {
             buf.writeVarInt(fps);
             buf.writeVarInt(low);
+            buf.writeOptional(graphicsCardPercent, FriendlyByteBuf::writeVarInt);
+            buf.writeBoolean(onBattery);
             buf.writeVarInt(worstMillis);
             buf.writeVarInt(seconds);
             buf.writeUtf(preset);

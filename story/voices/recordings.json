@@ -419,27 +419,6 @@
     "text": "[low] Breathe. Slowly. [firm] You're here, and you're staying by this fire tonight.",
     "voice": "agna"
   },
-  "agna/6103cb3e8429ade0": {
-    "check": {
-      "heard": "You carry fire. In the stories, a wayfarer can feel the way. Lead us somewhere they can't find us",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "15b41ffa",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "w8OC5Dq4OX6IYdRJaGAH",
-    "seconds": 7.9,
-    "seed": 239415295,
-    "sent": "[earnest, pleading] You carry fire. In the stories, a Wayfarer can feel the way. Lead us somewhere they can't find us.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[earnest, pleading] You carry fire. In the stories, a Wayfarer can feel the way. Lead us somewhere they can't find us.",
-    "voice": "agna"
-  },
   "agna/6c9439e475395801": {
     "check": {
       "heard": "Go. We'll follow, and I'll keep the child from running after you",
@@ -839,27 +818,6 @@
     "text": "[gently] Drink some water before you lie down.",
     "voice": "agna"
   },
-  "agna/bbb620b7abbe6b5b": {
-    "check": {
-      "heard": "The Sandsingers kept that worm the way we keep a fire. Who keeps the raiders off them now?",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "15b41ffa",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "MkDbhJNUfgzF6l6OBo0s",
-    "seconds": 6.06,
-    "seed": 1288139233,
-    "sent": "[quiet, troubled] The Sand Singers kept that worm the way we keep a fire. Who keeps the raiders off them now?",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[quiet, troubled] The Sand Singers kept that worm the way we keep a fire. Who keeps the raiders off them now?",
-    "voice": "agna"
-  },
   "agna/bcb14e442e5c5ecd": {
     "check": {
       "heard": "Show me your hands. Fine. Go and get warm",
@@ -1091,27 +1049,6 @@
     "text": "[tired, gently] Pip, sit still. Let them be.",
     "voice": "agna"
   },
-  "alruna/03713f91d405ea9f": {
-    "check": {
-      "heard": "Master Ansel's pages name a keeper's house on this shore. Now that we've crossed, I can look for it. Come to the fire when you have a moment",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "78206138",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "KOununpvKIVGmKqQ0f6U",
-    "seconds": 7.9,
-    "seed": 1983888920,
-    "sent": "[eager] Master Ansel's pages name a Keepers' house on this shore. Now that we've crossed, I can look for it. Come to the fire when you have a moment.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[eager] Master Ansel's pages name a Keepers' house on this shore. Now that we've crossed, I can look for it. Come to the fire when you have a moment.",
-    "voice": "alruna"
-  },
   "alruna/054be759fc01c2cd": {
     "check": {
       "heard": "Tonight, I'll just listen. I'll ask you everything tomorrow",
@@ -1238,27 +1175,6 @@
     "text": "[excited, breathless] Here. These words. They close an Eye. [emphatic] Not break it. Close it.",
     "voice": "alruna"
   },
-  "alruna/25a0941613566fd0": {
-    "check": {
-      "heard": "The eye sat in the portal between the worlds, and through it, the dragon watched everything that stood still. Where it looked, its creatures came",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "78206138",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "IfkhYk0wnCcwSdrvJAIo",
-    "seconds": 10.0,
-    "seed": 1387822422,
-    "sent": "[reading aloud, careful] \"The Eye sat in the portal between the worlds, and through it the dragon watched everything that stood still. Where it looked, its creatures came.\"",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[reading aloud, careful] \"The Eye sat in the portal between the worlds, and through it the dragon watched everything that stood still. Where it looked, its creatures came.\"",
-    "voice": "alruna"
-  },
   "alruna/25abe6e3c5d88266": {
     "check": {
       "heard": "There's room by the fire. You talk, I'll write",
@@ -1341,27 +1257,6 @@
       "stability": 0.5
     },
     "text": "[grave, determined] If I die, nobody will be left who can read the Keepers' words. That can't happen.",
-    "voice": "alruna"
-  },
-  "alruna/48d518bcba75747b": {
-    "check": {
-      "heard": "Three nights ago, things came out of the dark for it. He sent me down to the vault with the oldest books, and he held the door",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "78206138",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "4K1oSBFFMBc0NozheGuS",
-    "seconds": 8.8,
-    "seed": 1609740512,
-    "sent": "[shaky] Three nights ago, things came out of the dark for it. He sent me down to the vault with the oldest books, [voice breaking] and he held the door.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[shaky] Three nights ago, things came out of the dark for it. He sent me down to the vault with the oldest books, [voice breaking] and he held the door.",
     "voice": "alruna"
   },
   "alruna/57043562d7f55adb": {
@@ -1553,27 +1448,6 @@
     "text": "[warmly] Sit down, then. [quickly] Not that one. That one's sad.",
     "voice": "alruna"
   },
-  "alruna/a37edd7b56ab081f": {
-    "check": {
-      "heard": "So they broke it in 12 and sent each shard to a people at the far ends of the world. Those who carried its light walked",
-      "match": 0.962,
-      "takes": 1
-    },
-    "design": "78206138",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "N7QabgAh5X75a6ZLT24w",
-    "seconds": 8.5,
-    "seed": 695620613,
-    "sent": "[reading aloud] \"So they broke it in twelve, and sent each shard to a people at the far ends of the world. Those who carried its light walked.\"",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[reading aloud] \"So they broke it in twelve, and sent each shard to a people at the far ends of the world. Those who carried its light walked.\"",
-    "voice": "alruna"
-  },
   "alruna/a4606a4e71f7ef45": {
     "check": {
       "heard": "You're back. Tell me where you went . Slowly",
@@ -1593,69 +1467,6 @@
       "stability": 0.5
     },
     "text": "[eager] You're back. Tell me where you went. [laughs] Slowly.",
-    "voice": "alruna"
-  },
-  "alruna/a86cdc42a23aa7f2": {
-    "check": {
-      "heard": "And the last line, In His Hand: A frame takes whatever of the eye it is brought. One shard or 12, it closes the same",
-      "match": 0.96,
-      "takes": 1
-    },
-    "design": "78206138",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "R47bCdxPA25xXZRu0K8Q",
-    "seconds": 10.1,
-    "seed": 894372537,
-    "sent": "[softly] And the last line, in his hand: \"A frame takes whatever of the Eye it is brought. One shard or twelve, it closes the same.\"",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[softly] And the last line, in his hand: \"A frame takes whatever of the Eye it is brought. One shard or twelve, it closes the same.\"",
-    "voice": "alruna"
-  },
-  "alruna/aff02c76f782243a": {
-    "check": {
-      "heard": "A lit ember Master Ansel waited sixty years for someone to carry one through that door",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "78206138",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "BVwfFiSxwRF3H9NZZOzI",
-    "seconds": 6.3,
-    "seed": 1929232563,
-    "sent": "[breathless, amazed] A lit ember. [voice catching] Master Ansel waited sixty years for someone to carry one through that door.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[breathless, amazed] A lit ember. [voice catching] Master Ansel waited sixty years for someone to carry one through that door.",
-    "voice": "alruna"
-  },
-  "alruna/b0a8023ddf7c61e7": {
-    "check": {
-      "heard": "Wayfarers who stopped walking on purpose to guard the frames out past the edge of every map. I've never seen one but him",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "78206138",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "sMnAXNguQLK7SjRbMDYZ",
-    "seconds": 8.5,
-    "seed": 472793170,
-    "sent": "[precise, eager] Wayfarers who stopped walking on purpose, to guard the frames out past the edge of every map. [quieter] I've never seen one but him.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[precise, eager] Wayfarers who stopped walking on purpose, to guard the frames out past the edge of every map. [quieter] I've never seen one but him.",
     "voice": "alruna"
   },
   "alruna/b47bb7149641ca83": {
@@ -1698,27 +1509,6 @@
       "stability": 0.5
     },
     "text": "[shy, pleased] I wrote down your day. Tell me if I got it wrong.",
-    "voice": "alruna"
-  },
-  "alruna/c00815e9374d8e25": {
-    "check": {
-      "heard": "The seal takes three words of the oath. You'll see them better than I will with that thing",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "78206138",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "Jda7FJXBlDYgJPe6kG2s",
-    "seconds": 6.3,
-    "seed": 1067703449,
-    "sent": "The seal takes three words of the oath. [wry] You'll see them better than I will, with that thing.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "The seal takes three words of the oath. [wry] You'll see them better than I will, with that thing.",
     "voice": "alruna"
   },
   "alruna/d1c2114826535806": {
@@ -1826,27 +1616,6 @@
     "text": "[thin, shaking, trying to sound brave] Stay where you are. I have a knife.",
     "voice": "alruna"
   },
-  "alruna/dc4cc9fa3ecc1487": {
-    "check": {
-      "heard": "Those who lived tore the eye out and the dragon went blind. Fire, the sea, and the hammer could only break it",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "78206138",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "fEM4IeLwh3leVQ7Li6PG",
-    "seconds": 8.0,
-    "seed": 1696151099,
-    "sent": "[reading aloud] \"Those who lived tore the Eye out, and the dragon went blind. Fire, the sea and the hammer could only break it.\"",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[reading aloud] \"Those who lived tore the Eye out, and the dragon went blind. Fire, the sea and the hammer could only break it.\"",
-    "voice": "alruna"
-  },
   "alruna/e62e87b6a8fc3efc": {
     "check": {
       "heard": "Take me with you. I can carry books and I can read them",
@@ -1889,27 +1658,6 @@
     "text": "[bright] I saved you a seat. And a page.",
     "voice": "alruna"
   },
-  "alruna/ec80d8812c86e38f": {
-    "check": {
-      "heard": "Wayfarers came here to learn the oath in the old script in the old days. None came in his lifetime",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "78206138",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "eLrx8AZdQyHipBrmhEln",
-    "seconds": 8.2,
-    "seed": 355232565,
-    "sent": "Wayfarers came here to learn the oath, in the old script, in the old days. [sadly] None came in his lifetime.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "Wayfarers came here to learn the oath, in the old script, in the old days. [sadly] None came in his lifetime.",
-    "voice": "alruna"
-  },
   "alruna/f0a83a2f1150f683": {
     "check": {
       "heard": "Go on. I'll ask you everything tonight",
@@ -1950,27 +1698,6 @@
       "stability": 0.5
     },
     "text": "[wistful] Master Ansel copied that book three times. [quietly] I can still smell the smoke on it.",
-    "voice": "alruna"
-  },
-  "alruna/f9f185821bdc0fc4": {
-    "check": {
-      "heard": "Never settle, never shine, everything carried. The oath. He made me copy it every morning",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "78206138",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "hO0woAf1t6cT8zcwYzHQ",
-    "seconds": 8.4,
-    "seed": 104274370,
-    "sent": "[reciting, reverent] \"Never settle, never shine, everything carried.\" [fond] The oath. He made me copy it every morning.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[reciting, reverent] \"Never settle, never shine, everything carried.\" [fond] The oath. He made me copy it every morning.",
     "voice": "alruna"
   },
   "alruna/fa2c0171e348fea1": {
@@ -2076,27 +1803,6 @@
       "stability": 0.5
     },
     "text": "Their outpost's a day on, the way you're going. [ashamed] I'm no good with a blade. [pleading] Please.",
-    "voice": "bram"
-  },
-  "bram/e692372112558541": {
-    "check": {
-      "heard": "Bram, I kept sheep up the valley. Three nights back, the Grey Coats took my boy, Davey. He's 11",
-      "match": 0.895,
-      "takes": 1
-    },
-    "design": "86c922c4",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "p03uGZu0dzKaDjB64Vnr",
-    "seconds": 8.1,
-    "seed": 195021254,
-    "sent": "[hesitant, desperate] Bram. I kept sheep, up the valley. Three nights back the grey coats took my boy. [voice breaking] Davy. He's eleven.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[hesitant, desperate] Bram. I kept sheep, up the valley. Three nights back the grey coats took my boy. [voice breaking] Davy. He's eleven.",
     "voice": "bram"
   },
   "bram/ebb6df1202d854a5": {
@@ -2834,27 +2540,6 @@
     "text": "[shakes head] Not now. When you're stronger. I'll tell you when.",
     "voice": "cadoc"
   },
-  "cadoc/a3f34b6362806d33": {
-    "check": {
-      "heard": "I've pitched my tent at the edge of the light. Your people shouldn't have to sleep next to a Grey Coat",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "58c7c7e1",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "VZnoqgqPO9cbK6ypR7OK",
-    "seconds": 6.0,
-    "seed": 396380438,
-    "sent": "[quietly] I've pitched my tent at the edge of the light. [bitter] Your people shouldn't have to sleep next to a grey coat.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[quietly] I've pitched my tent at the edge of the light. [bitter] Your people shouldn't have to sleep next to a grey coat.",
-    "voice": "cadoc"
-  },
   "cadoc/a9dd983943289e52": {
     "check": {
       "heard": "They're gaze-bound. My own company until last night",
@@ -3548,27 +3233,6 @@
     "text": "[steady, plain] We dug down because the eye in the sky cannot see through stone. The shard hums on its stone in this hall, and while it hums, the ground above us stays dark to that eye.",
     "voice": "diggers"
   },
-  "drifa/04d79bd7ed41ab38": {
-    "check": {
-      "heard": "There you are. My people wintered on this shore once in the snow. I'll raise a cairn there for each of them",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "01689004",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "Rz0VSWETlWWQu1eB9OoR",
-    "seconds": 7.7,
-    "seed": 2118973413,
-    "sent": "[quiet, steady] There you are. My people wintered on this shore once, in the snow. I'll raise a cairn there for each of them.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[quiet, steady] There you are. My people wintered on this shore once, in the snow. I'll raise a cairn there for each of them.",
-    "voice": "drifa"
-  },
   "drifa/0de5c9e94e617a52": {
     "check": {
       "heard": "I am too old for the stair. The shouting up there has stopped. I can hear the snow",
@@ -3735,27 +3399,6 @@
       "stability": 0.5
     },
     "text": "[long pause] [cold, steady] Then it's mine to bury, when we find it. Not his.",
-    "voice": "drifa"
-  },
-  "drifa/4f91390b6041e664": {
-    "check": {
-      "heard": "And the guilty. I counted the gray coats on the stair, and I heard one name they called, Cadoc",
-      "match": 0.947,
-      "takes": 1
-    },
-    "design": "01689004",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "m3g5Gh27Cq4BeohbyYgO",
-    "seconds": 7.3,
-    "seed": 1471056328,
-    "sent": "[hardening] And the guilty. I counted the grey coats on the stair, and I heard one name they called. [cold fury] Cadoc.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[hardening] And the guilty. I counted the grey coats on the stair, and I heard one name they called. [cold fury] Cadoc.",
     "voice": "drifa"
   },
   "drifa/5fa5571e2130f4e5": {
@@ -4029,27 +3672,6 @@
       "stability": 0.5
     },
     "text": "[bitter] Then he left too late.",
-    "voice": "drifa"
-  },
-  "drifa/a68c0e3a1334fa4a": {
-    "check": {
-      "heard": "Twenty winters ago, I came home from a hunt and found my people dead on the stair to our hall. The hall was empty",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "01689004",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "mAS3Rb0XEjNjMHzFnN2k",
-    "seconds": 7.8,
-    "seed": 1202134711,
-    "sent": "[controlled, cold] Twenty winters ago I came home from a hunt and found my people dead on the stair to our hall. [voice tight] The hall was empty.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[controlled, cold] Twenty winters ago I came home from a hunt and found my people dead on the stair to our hall. [voice tight] The hall was empty.",
     "voice": "drifa"
   },
   "drifa/a865f45e2bbb8d0d": {
@@ -5165,27 +4787,6 @@
     "text": "[shouts] There! The ember! Take it!",
     "voice": "gazebound_man"
   },
-  "gazebound_man/da5bcb2625e2e4ca": {
-    "check": {
-      "heard": "I chose it. The scar, the quiet. He chose the road. I chose the quiet. Nothing looks for me anymore",
-      "match": 0.927,
-      "takes": 1
-    },
-    "design": "15889c40",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "7PSYnxtyK5HngkF6lZVR",
-    "seconds": 9.3,
-    "seed": 2085760400,
-    "sent": "[serene, cold] I chose it. The scar, the quiet. He chose the road; I chose the quiet. [almost peaceful] Nothing looks for me any more.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[serene, cold] I chose it. The scar, the quiet. He chose the road; I chose the quiet. [almost peaceful] Nothing looks for me any more.",
-    "voice": "gazebound_man"
-  },
   "gazebound_man/e3706c0354d0d79e": {
     "check": {
       "heard": "Well, finder?",
@@ -5289,27 +4890,6 @@
       "stability": 0.5
     },
     "text": "[dry, amused] He served my father. He thought he was clever. [pause] Then he stopped walking.",
-    "voice": "heir"
-  },
-  "heir/5a6e730c6f09efbc": {
-    "check": {
-      "heard": "I want a world where everything is seen and nothing hides in the dark. No thieves, no war. Nobody needs a tent in a world like that",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "09a24e51",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "Lelovl214aiScKcn14aT",
-    "seconds": 9.3,
-    "seed": 1245689060,
-    "sent": "[earnest, reasonable] I want a world where everything is seen, and nothing hides in the dark. No thieves. No war. [gently] Nobody needs a tent in a world like that.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[earnest, reasonable] I want a world where everything is seen, and nothing hides in the dark. No thieves. No war. [gently] Nobody needs a tent in a world like that.",
     "voice": "heir"
   },
   "heir/986953d8d69a6700": {
@@ -6656,48 +6236,6 @@
     "text": "[rueful] Want me to see to it? Halfway is the best this hammer does. You'll have it back at the next fire.",
     "voice": "hob"
   },
-  "hob/bba81b6180d521dd": {
-    "check": {
-      "heard": "That Frost Walker let me look at her knife once while she camped with us. Twenty winters old. Not a fleck of rust on it",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "a6662292",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "lz215DR1twZKpdzeSIvH",
-    "seconds": 9.5,
-    "seed": 709138976,
-    "sent": "[admiring] That Frost Walker let me look at her knife once, while she camped with us. Twenty winters old. [whistles softly] Not a fleck of rust on it.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[admiring] That Frost Walker let me look at her knife once, while she camped with us. Twenty winters old. [whistles softly] Not a fleck of rust on it.",
-    "voice": "hob"
-  },
-  "hob/bebdd289bbe23c57": {
-    "check": {
-      "heard": "My hammer cracked the night the town burned. Since then, I mend everything halfway, and it shows",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "a6662292",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "qAFBh2BMSeEA7k10kp44",
-    "seconds": 7.9,
-    "seed": 1569558546,
-    "sent": "[heavily] My hammer cracked the night the town burned. Since then I mend everything halfway, [grumbling] and it shows.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[heavily] My hammer cracked the night the town burned. Since then I mend everything halfway, [grumbling] and it shows.",
-    "voice": "hob"
-  },
   "hob/bf534a2db5c6bc8e": {
     "check": {
       "heard": "You found us then. Pots on",
@@ -6843,27 +6381,6 @@
       "stability": 0.5
     },
     "text": "[practical] Anything gone dull, give it here. I'll look at it by the fire.",
-    "voice": "hob"
-  },
-  "hob/cb28ea0ee4b3bc89": {
-    "check": {
-      "heard": "\"Dreefa's people mined a metal no fire of mine can melt. Come by the fire one evening. I want a word about it.\"",
-      "match": 0.957,
-      "takes": 1
-    },
-    "design": "a6662292",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "Mje8pD8jOrDAH29MLqwd",
-    "seconds": 7.57,
-    "seed": 944426208,
-    "sent": "[intrigued, gruff] Drifa's people mined a metal no fire of mine can melt. Come by the fire one evening: I want a word about it.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[intrigued, gruff] Drifa's people mined a metal no fire of mine can melt. Come by the fire one evening: I want a word about it.",
     "voice": "hob"
   },
   "hob/cff728ce1680cb42": {
@@ -9113,27 +8630,6 @@
     "text": "[dry, weary] Sit, if you're staying. We've nothing to give you but the fire.",
     "voice": "maud"
   },
-  "maud/6f514a276de5bd2c": {
-    "check": {
-      "heard": "A herder came by while you were out, asking for the one with the light. Said he'd come back after dark",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "ca295e39",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "igw7ngRM2ImllwxIKRiF",
-    "seconds": 6.41,
-    "seed": 428025049,
-    "sent": "[curious] A herder came by while you were out, asking for the one with the light. Said he'd come back after dark.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[curious] A herder came by while you were out, asking for the one with the light. Said he'd come back after dark.",
-    "voice": "maud"
-  },
   "maud/715be6d934280469": {
     "check": {
       "heard": "\"A night and a day,\" she said. \"It was one night, and it was long enough.\"",
@@ -9342,27 +8838,6 @@
       "stability": 0.5
     },
     "text": "[taken aback] Past the sea. [resigned] Then we need boats.",
-    "voice": "maud"
-  },
-  "maud/96a74df295cf7479": {
-    "check": {
-      "heard": "Will the cooper. Of everyone from Tolbridge, he's the one I know nothing about, alive or dead",
-      "match": 0.882,
-      "takes": 1
-    },
-    "design": "ca295e39",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "jRPpHEE36rPR1d0OvrIa",
-    "seconds": 7.5,
-    "seed": 2060864147,
-    "sent": "[fond, worried] Wil the cooper. Of everyone from Tollbridge, he's the one I know nothing about. [pause] Alive or dead.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[fond, worried] Wil the cooper. Of everyone from Tollbridge, he's the one I know nothing about. [pause] Alive or dead.",
     "voice": "maud"
   },
   "maud/9b8ab0210f68d836": {
@@ -9974,27 +9449,6 @@
     "text": "[uneasy, quietly] Listen to it. It's never done that.",
     "voice": "maud"
   },
-  "maud/f8b2ab9f921f67bd": {
-    "check": {
-      "heard": "He went to his sister's village the spring before Tolbridge burned. \"Up the valley,\" he said. Go and see if he's alive",
-      "match": 0.955,
-      "takes": 1
-    },
-    "design": "ca295e39",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "2yLArIOZi09HRmeuHrl5",
-    "seconds": 8.0,
-    "seed": 1203467279,
-    "sent": "He went to his sister's village the spring before Tollbridge burned. Up the valley, he said. [softly] Go and see if he's alive.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "He went to his sister's village the spring before Tollbridge burned. Up the valley, he said. [softly] Go and see if he's alive.",
-    "voice": "maud"
-  },
   "maud/fbf2b575079b52a3": {
     "check": {
       "heard": "Sleep. Someone has to walk ahead tomorrow",
@@ -10015,27 +9469,6 @@
     },
     "text": "[dry, gentle] Sleep. Someone has to walk ahead tomorrow.",
     "voice": "maud"
-  },
-  "murdo/031c7149adbbed3d": {
-    "check": {
-      "heard": "We're the Tide Folk, what's left of us. Nothing comes up out of this bay at night, so our boats go out with lamps lit and we eat",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "e0f52b47",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "NrGBapZI6soz8NITCEcw",
-    "seconds": 9.0,
-    "seed": 327351929,
-    "sent": "[quiet pride] We're the Tide Folk, what's left of us. Nothing comes up out of this bay at night, so our boats go out with lamps lit, and we eat.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[quiet pride] We're the Tide Folk, what's left of us. Nothing comes up out of this bay at night, so our boats go out with lamps lit, and we eat.",
-    "voice": "murdo"
   },
   "murdo/0737c76bfbbd08fe": {
     "check": {
@@ -10247,27 +9680,6 @@
     "text": "[calm] The boats go out tonight. Come with them.",
     "voice": "murdo"
   },
-  "murdo/5f9e614052c659f8": {
-    "check": {
-      "heard": "The boats go out tonight for the first time since you came to our stone. Find me by them before dark. I have something to ask you",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "e0f52b47",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "GeKWxzdwZJyRT8K8eO7T",
-    "seconds": 8.8,
-    "seed": 2086648339,
-    "sent": "[quiet, uneasy] The boats go out tonight, for the first time since you came to our stone. Find me by them before dark. I have something to ask you.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[quiet, uneasy] The boats go out tonight, for the first time since you came to our stone. Find me by them before dark. I have something to ask you.",
-    "voice": "murdo"
-  },
   "murdo/6aaa2cc1baa8c85b": {
     "check": {
       "heard": "It breaks the marsh fever. It does one thing more. For a day, the night's creatures look past you. We use it on the boats. Use it well",
@@ -10415,27 +9827,6 @@
     "text": "[grave] The boats go out tonight, and something will see them now. Come with them. [quietly] Please.",
     "voice": "murdo"
   },
-  "murdo/a52f26059b3befb7": {
-    "check": {
-      "heard": "Bladderwrack and salt steeped in our water. It breaks the fever, and for a day the night's creatures look past you. We use it on the boats",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "e0f52b47",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "PXvvPX1h5W3ZU7gUaTvo",
-    "seconds": 9.9,
-    "seed": 784134056,
-    "sent": "[steady, kind] Bladderwrack and salt, steeped in our water. It breaks the fever, and for a day the night's creatures look past you. We use it on the boats.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[steady, kind] Bladderwrack and salt, steeped in our water. It breaks the fever, and for a day the night's creatures look past you. We use it on the boats.",
-    "voice": "murdo"
-  },
   "murdo/ba6922c19f6ca6c1": {
     "check": {
       "heard": "They see us now! Hold them off the boats",
@@ -10455,27 +9846,6 @@
       "stability": 0.5
     },
     "text": "[shouts] They see us now! Hold them off the boats!",
-    "voice": "murdo"
-  },
-  "murdo/c393429cf37ad693": {
-    "check": {
-      "heard": "My grandmother told of people who carried a fire in their hand, wayfarers. She said one would come for what's under the fire pit",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "e0f52b47",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "zbsl4yxiLaph0odmVnwC",
-    "seconds": 10.5,
-    "seed": 1039562712,
-    "sent": "[slowly] My grandmother told of people who carried a fire in their hand. Wayfarers. [grave] She said one would come for what's under the fire pit.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[slowly] My grandmother told of people who carried a fire in their hand. Wayfarers. [grave] She said one would come for what's under the fire pit.",
     "voice": "murdo"
   },
   "murdo/d465e241fb7910ae": {
@@ -11045,27 +10415,6 @@
     "text": "[tense] The red moon: wave 4 of 4",
     "voice": "narrator"
   },
-  "narrator/095fadb103491c82": {
-    "check": {
-      "heard": "Stone under the snow rimed with frost. Along the walls her people lie in rows where a girl laid them out twenty winters ago",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "uGJH31BYgZXos1NZt0rs",
-    "seconds": 9.9,
-    "seed": 159896665,
-    "sent": "[quietly, grave] Stone under the snow, rimed with frost. Along the walls her people lie in rows, where a girl laid them out twenty winters ago.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[quietly, grave] Stone under the snow, rimed with frost. Along the walls her people lie in rows, where a girl laid them out twenty winters ago.",
-    "voice": "narrator"
-  },
   "narrator/096307856b1edfa7": {
     "check": {
       "heard": "Nobody took the tents down. Tonight, the caravan camp's where it stood",
@@ -11106,27 +10455,6 @@
       "stability": 0.5
     },
     "text": "They take his purse and walk on, [pause] laughing.",
-    "voice": "narrator"
-  },
-  "narrator/0acf6051b6379af8": {
-    "check": {
-      "heard": "A lake frozen white as it was in the memory. On a stone by the shore, his sign, a circle with a line through it",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "GqWEAjLxNEaP1IzNyJpe",
-    "seconds": 10.6,
-    "seed": 456972248,
-    "sent": "A lake frozen white, as it was in the memory. [pause] On a stone by the shore, his sign: a circle with a line through it.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "A lake frozen white, as it was in the memory. [pause] On a stone by the shore, his sign: a circle with a line through it.",
     "voice": "narrator"
   },
   "narrator/0b9c052df0af89dd": {
@@ -11969,27 +11297,6 @@
     "text": "You took the Tide Folk's own shard, and after that their boats fished close in, within sight of the shore.",
     "voice": "narrator"
   },
-  "narrator/1cd7bfbf21e899b9": {
-    "check": {
-      "heard": "You wake on cold ground beside a fire. You don't remember lying down. You don't remember anything before this fire",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "uEQPlt2LQM8cl2cRxOO2",
-    "seconds": 8.7,
-    "seed": 1728729234,
-    "sent": "[softly] You wake on cold ground beside a fire. You don't remember lying down. [pause] You don't remember anything before this fire.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[softly] You wake on cold ground beside a fire. You don't remember lying down. [pause] You don't remember anything before this fire.",
-    "voice": "narrator"
-  },
   "narrator/1ce0ade4352679ef": {
     "check": {
       "heard": "Someone sits up in the furs. Then another. A shout in words you don't know",
@@ -12494,27 +11801,6 @@
     "text": "His pack lies by the fire. He won't need it now.",
     "voice": "narrator"
   },
-  "narrator/27485ff4ae480742": {
-    "check": {
-      "heard": "Hooves out of the dark, a rider in gray, and he's through the fire and away with a child across his saddle",
-      "match": 0.988,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "lqE87dKsFELsBzsmHH2a",
-    "seconds": 5.36,
-    "seed": 1447371489,
-    "sent": "[urgent, fast] Hooves out of the dark, a rider in grey, and he's through the fire and away with a child across his saddle.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[urgent, fast] Hooves out of the dark, a rider in grey, and he's through the fire and away with a child across his saddle.",
-    "voice": "narrator"
-  },
   "narrator/2824163543bec877": {
     "check": {
       "heard": "Thirty-five winters ago, a spear in your hand, the ember warm in the other, and the sand very still",
@@ -12597,27 +11883,6 @@
       "stability": 0.5
     },
     "text": "[tense] They come across the ford: 3 of 4",
-    "voice": "narrator"
-  },
-  "narrator/28da8f20bf732f63": {
-    "check": {
-      "heard": "Where you stand, nothing reaches you. They gather at the door and wait",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "tssyBURxArKxRSADpjgK",
-    "seconds": 6.0,
-    "seed": 1861908004,
-    "sent": "Where you stand, nothing reaches you. They gather at the door, and wait.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "Where you stand, nothing reaches you. They gather at the door, and wait.",
     "voice": "narrator"
   },
   "narrator/28f9aaea7719734f": {
@@ -12746,27 +12011,6 @@
     "text": "The grey hood comes out of the dark again, and sits down across the fire. [pause] Her hands are empty.",
     "voice": "narrator"
   },
-  "narrator/2b39d2ddcf1d83db": {
-    "check": {
-      "heard": "The shard sinks into the ember. Far off, the horizon sharpens. From now on, far places show sharp through a spyglass",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "lTXSiy1W30HFMDM1qheU",
-    "seconds": 9.8,
-    "seed": 1577321201,
-    "sent": "The shard sinks into the ember. Far off, the horizon sharpens: from now on far places show sharp through a spyglass.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "The shard sinks into the ember. Far off, the horizon sharpens: from now on far places show sharp through a spyglass.",
-    "voice": "narrator"
-  },
   "narrator/2c03056f8c30f16c": {
     "check": {
       "heard": "Her staff cracks across the stair and the band breaks back the way it came",
@@ -12870,27 +12114,6 @@
       "stability": 0.5
     },
     "text": "[dreamy, slow] Forty-five summers ago. The hall smells of dust and old smoke, and on the stone the shard hums.",
-    "voice": "narrator"
-  },
-  "narrator/2e8457bd7da00672": {
-    "check": {
-      "heard": "A woman in furs stands on the roof, an arrow on the string. She looks at the ember in your hand for a long breath",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "JWUZCNhoRelzSygmn0YP",
-    "seconds": 9.6,
-    "seed": 1287555445,
-    "sent": "A woman in furs stands on the roof, an arrow on the string. [slowly] She looks at the ember in your hand for a long breath.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "A woman in furs stands on the roof, an arrow on the string. [slowly] She looks at the ember in your hand for a long breath.",
     "voice": "narrator"
   },
   "narrator/2eb33b9377dda5a4": {
@@ -13080,27 +12303,6 @@
       "stability": 0.5
     },
     "text": "It stands at the edge of the firelight, watching you. [pause] The other animals keep away from it.",
-    "voice": "narrator"
-  },
-  "narrator/31919f051f501031": {
-    "check": {
-      "heard": "The drift ends in a wall that isn't rock, dressed black stone, older than anything above, broken through in the middle",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "sf4ihazdoGrLZBnyAchT",
-    "seconds": 8.4,
-    "seed": 485132294,
-    "sent": "[uneasy] The drift ends in a wall that isn't rock: dressed black stone, older than anything above, broken through in the middle.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[uneasy] The drift ends in a wall that isn't rock: dressed black stone, older than anything above, broken through in the middle.",
     "voice": "narrator"
   },
   "narrator/31d475e8081c9fb5": {
@@ -13964,27 +13166,6 @@
     "text": "She lays a stone on every cairn, one for each name, and the last one on the stone in the middle.",
     "voice": "narrator"
   },
-  "narrator/422c684ee4cd8bd0": {
-    "check": {
-      "heard": "The shard sinks into the ember. A warmth spreads out from your chest. From now on, the ember warms you like a fire",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "xLjmT1iGLzWZ37ZMEkzv",
-    "seconds": 9.32,
-    "seed": 1346027499,
-    "sent": "The shard sinks into the ember. A warmth spreads out from your chest: from now on the ember warms you like a fire.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "The shard sinks into the ember. A warmth spreads out from your chest: from now on the ember warms you like a fire.",
-    "voice": "narrator"
-  },
   "narrator/423ca092f7417609": {
     "check": {
       "heard": "With the dragon dead, the thirteenth their book spoke of was only a page, and the mountain kept their shelves.",
@@ -14571,27 +13752,6 @@
       "stability": 0.5
     },
     "text": "[tense] The band: wave 2 of 2",
-    "voice": "narrator"
-  },
-  "narrator/4a0141a1fbc8e73e": {
-    "check": {
-      "heard": "Low walls in the grass in a ring round an empty green. Black beams half sunk in the turf. In the middle, an old well",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "C1PbdEIHYBr21t2v1lVH",
-    "seconds": 10.81,
-    "seed": 1517127806,
-    "sent": "Low walls in the grass, in a ring round an empty green. Black beams half sunk in the turf. [pause] In the middle, an old well.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "Low walls in the grass, in a ring round an empty green. Black beams half sunk in the turf. [pause] In the middle, an old well.",
     "voice": "narrator"
   },
   "narrator/4a9fbb568a408586": {
@@ -15413,27 +14573,6 @@
     "text": "[slow, heavy] A tiredness comes over you, as if you had walked all night.",
     "voice": "narrator"
   },
-  "narrator/5ae830786645130a": {
-    "check": {
-      "heard": "The shard sinks into the ember. Under the water, far down, the dark goes clear. From now on, you see far underwater",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "iTbXtS6h1pDZC9SATlBn",
-    "seconds": 10.18,
-    "seed": 1621607507,
-    "sent": "The shard sinks into the ember. Under the water, far down, the dark goes clear: from now on you see far under water.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "The shard sinks into the ember. Under the water, far down, the dark goes clear: from now on you see far under water.",
-    "voice": "narrator"
-  },
   "narrator/5bbe31bf6b904429": {
     "check": {
       "heard": "Agna asked you to lead them somewhere they can't be found. You don't know where that is",
@@ -15602,27 +14741,6 @@
     "text": "[tense] The village: wave 1 of 3",
     "voice": "narrator"
   },
-  "narrator/5ed889f69516724c": {
-    "check": {
-      "heard": "The keel is bitten clean through below the waterline. The marks are a jaw's and the jaw was wider than your arm is long",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "fsAXx9PeJla7vMOQME4J",
-    "seconds": 8.6,
-    "seed": 1412818317,
-    "sent": "[low] The keel is bitten clean through below the waterline. [pause] The marks are a jaw's, and the jaw was wider than your arm is long.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[low] The keel is bitten clean through below the waterline. [pause] The marks are a jaw's, and the jaw was wider than your arm is long.",
-    "voice": "narrator"
-  },
   "narrator/6067807986686ea5": {
     "check": {
       "heard": "You pack the loaf. It still smells of the fire",
@@ -15726,27 +14844,6 @@
       "stability": 0.5
     },
     "text": "[tense] The band: wave 1 of 4",
-    "voice": "narrator"
-  },
-  "narrator/61efd22a91a2fb2a": {
-    "check": {
-      "heard": "You wake with a start. In the dream, you look down at the world from very high, and it was very small, and everything in it stood still",
-      "match": 0.99,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "QB8mbCv2JFc9Aegwtz6x",
-    "seconds": 10.6,
-    "seed": 119874137,
-    "sent": "[gasps] You wake with a start. [slow, dreamlike] In the dream you looked down at the world from very high, and it was very small, and everything in it stood still.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[gasps] You wake with a start. [slow, dreamlike] In the dream you looked down at the world from very high, and it was very small, and everything in it stood still.",
     "voice": "narrator"
   },
   "narrator/624dbf32a6193644": {
@@ -16337,27 +15434,6 @@
     "text": "[awed, dread] The frame opens like an eye. Everything that stands still, everywhere, is seen at once.",
     "voice": "narrator"
   },
-  "narrator/6d75982a4b9c2998": {
-    "check": {
-      "heard": "The shard sinks into the ember. Hold the ember up when something strikes you and it bursts. The night's creatures near you crumble. Then it needs a fire before it bursts again",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "XQB7i1f3H8NA1lXyH2GF",
-    "seconds": 13.0,
-    "seed": 543498538,
-    "sent": "The shard sinks into the ember. Hold the ember up when something strikes you, and it bursts: the night's creatures near you crumble. Then it needs a fire before it bursts again.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "The shard sinks into the ember. Hold the ember up when something strikes you, and it bursts: the night's creatures near you crumble. Then it needs a fire before it bursts again.",
-    "voice": "narrator"
-  },
   "narrator/6da77f583ad290ad": {
     "check": {
       "heard": "Agnia looks for herself. She stops laughing",
@@ -16566,27 +15642,6 @@
       "stability": 0.5
     },
     "text": "[softly] One winter you gave the ember to someone kind at a fire, and walked on without it.",
-    "voice": "narrator"
-  },
-  "narrator/73bd8c4931cc8c3b": {
-    "check": {
-      "heard": "Sefer sings it. The sand lying down, the worm under the hill, and a man with a coal in his hand running. Everyone laughs at the same place",
-      "match": 0.986,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "ni5Bl9aZn6CCC64jxDzO",
-    "seconds": 11.2,
-    "seed": 134687624,
-    "sent": "Sefa sings it: the sand lying down, the worm under the hill, and a man with a coal in his hand, running. [amused] Everyone laughs at the same place.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "Sefa sings it: the sand lying down, the worm under the hill, and a man with a coal in his hand, running. [amused] Everyone laughs at the same place.",
     "voice": "narrator"
   },
   "narrator/73c122ff043f6403": {
@@ -17261,27 +16316,6 @@
     "text": "The ember tugs at your hand again: [slowly] steady, patient, towards something a long way off.",
     "voice": "narrator"
   },
-  "narrator/85b41b59646629ac": {
-    "check": {
-      "heard": "A book on a lectern the fire didn't reach. The letters are like nothing you know, the marks that crawl over an enchanting table",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "Hvu0dFxJAm2ZyBK4Gkdb",
-    "seconds": 9.1,
-    "seed": 188681933,
-    "sent": "A book on a lectern the fire didn't reach. The letters are like nothing you know: the marks that crawl over an enchanting table.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "A book on a lectern the fire didn't reach. The letters are like nothing you know: the marks that crawl over an enchanting table.",
-    "voice": "narrator"
-  },
   "narrator/85c1ab7d829dd582": {
     "check": {
       "heard": "Alruna wrote everything down since nobody inside the stones could go and see it",
@@ -17891,27 +16925,6 @@
     "text": "[tense] The raid: wave 1 of 4",
     "voice": "narrator"
   },
-  "narrator/91751af59756a3eb": {
-    "check": {
-      "heard": "The drift opens into a small square hall cut into the rock under a timber roof. On a stone at its far end, something hums",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "Qx0bHPOWVJOZhvORZEBi",
-    "seconds": 10.6,
-    "seed": 733963432,
-    "sent": "The drift opens into a small square hall, cut into the rock under a timber roof. [pause] On a stone at its far end, something hums.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "The drift opens into a small square hall, cut into the rock under a timber roof. [pause] On a stone at its far end, something hums.",
-    "voice": "narrator"
-  },
   "narrator/91de00bdca8484ce": {
     "check": {
       "heard": "The band. Wave two of three",
@@ -18395,27 +17408,6 @@
     "text": "You left the shard in Maud's bell, where it had been since she was nine, and let it ring.",
     "voice": "narrator"
   },
-  "narrator/99f6805271754f5f": {
-    "check": {
-      "heard": "An old man in a gray robe lies across the doorway his chest cut open like the dead of Tolbridge There is ink on his fingers",
-      "match": 0.923,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "jU85cZ7eyN4PxKgRHHGD",
-    "seconds": 9.4,
-    "seed": 2058828367,
-    "sent": "[quietly] An old man in a grey robe lies across the doorway, his chest cut open like the dead of Tollbridge. [pause] There is ink on his fingers.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[quietly] An old man in a grey robe lies across the doorway, his chest cut open like the dead of Tollbridge. [pause] There is ink on his fingers.",
-    "voice": "narrator"
-  },
   "narrator/9a94e65570fc37e3": {
     "check": {
       "heard": "At the fire, you tell them what you saw",
@@ -18477,27 +17469,6 @@
       "stability": 0.5
     },
     "text": "[quietly] Cecily coughs in her sleep. Dawns left: 2.",
-    "voice": "narrator"
-  },
-  "narrator/9c59a4166d347eef": {
-    "check": {
-      "heard": "A ledger in his hand. The halls he found for them, one by one. On the last page, a girl's name, Malgvin, and two words after it, mine now",
-      "match": 0.99,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "cEc5yjWeP6QzwHHnaX5P",
-    "seconds": 13.2,
-    "seed": 1234676918,
-    "sent": "A ledger in his hand: the halls he found for them, one by one. [slowly] On the last page, a girl's name, Malgven, and two words after it: [quietly] mine now.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "A ledger in his hand: the halls he found for them, one by one. [slowly] On the last page, a girl's name, Malgven, and two words after it: [quietly] mine now.",
     "voice": "narrator"
   },
   "narrator/9cab2e2b249c303c": {
@@ -19277,27 +18248,6 @@
     "text": "[softly] The child has held your hand all the way back to the fire, and won't let go until morning.",
     "voice": "narrator"
   },
-  "narrator/aaa939f4a2b3812c": {
-    "check": {
-      "heard": "Under the trees, a mouth in the hillside framed in old timber. Old rails run out of it into the grass, broken in places past a heap of spoil",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "Kf9AblgzKzg3ecJpd9RA",
-    "seconds": 11.5,
-    "seed": 2011030871,
-    "sent": "Under the trees, a mouth in the hillside, framed in old timber. Old rails run out of it into the grass, broken in places, past a heap of spoil.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "Under the trees, a mouth in the hillside, framed in old timber. Old rails run out of it into the grass, broken in places, past a heap of spoil.",
-    "voice": "narrator"
-  },
   "narrator/aabbc674dcebd287": {
     "check": {
       "heard": "Hob's blade is plain and heavy, and sharper than it looks",
@@ -19424,27 +18374,6 @@
     "text": "You throw. [pause] A one: your pot is lost.",
     "voice": "narrator"
   },
-  "narrator/adb5935b4ab51521": {
-    "check": {
-      "heard": "A young woman in a gray robe comes up out of the dark, an armful of books against her chest and a little knife held the wrong way round",
-      "match": 0.966,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "lJRTGAAvmsVeL10Oiaw3",
-    "seconds": 9.4,
-    "seed": 2129386210,
-    "sent": "A young woman in a grey robe comes up out of the dark, an armful of books against her chest [wry] and a little knife held the wrong way round.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "A young woman in a grey robe comes up out of the dark, an armful of books against her chest [wry] and a little knife held the wrong way round.",
-    "voice": "narrator"
-  },
   "narrator/adb8151b936cb4d6": {
     "check": {
       "heard": "The Hollow took Pip, Hob, and Maud. Nobody tells it the way Pip would have",
@@ -19464,27 +18393,6 @@
       "stability": 0.5
     },
     "text": "[softly, grieving] The hollow took Pip, Hob and Maud. [pause] Nobody tells it the way Pip would have.",
-    "voice": "narrator"
-  },
-  "narrator/adc72d81c3cb8992": {
-    "check": {
-      "heard": "Someone walks out of the dark and sits down across the fire. A gray hood, a gray coat, an eye stitched over the heart",
-      "match": 0.917,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "1zCT091jmkDYaVDgWf9M",
-    "seconds": 9.8,
-    "seed": 880761093,
-    "sent": "[tense] Someone walks out of the dark and sits down across the fire. [slowly] A grey hood, a grey coat, an eye stitched over the heart.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[tense] Someone walks out of the dark and sits down across the fire. [slowly] A grey hood, a grey coat, an eye stitched over the heart.",
     "voice": "narrator"
   },
   "narrator/add34c68f7e6e604": {
@@ -19947,27 +18855,6 @@
       "stability": 0.5
     },
     "text": "[softly, grieving] The hollow took Pip, Agna, Alruna and Drifa. [pause] Nobody tells it the way Pip would have.",
-    "voice": "narrator"
-  },
-  "narrator/b6929118a660a2fd": {
-    "check": {
-      "heard": "Where you stand, nothing reaches you. Out in the dark, they wait for you to come where they can",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "uSwQlLJ36F5ReZH9ZR2x",
-    "seconds": 6.8,
-    "seed": 1527017666,
-    "sent": "Where you stand, nothing reaches you. Out in the dark, they wait for you to come where they can.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "Where you stand, nothing reaches you. Out in the dark, they wait for you to come where they can.",
     "voice": "narrator"
   },
   "narrator/b6c814ca5c98900a": {
@@ -20537,27 +19424,6 @@
     "text": "With the dragon dead, nothing hunted the desert at night but the cold, and the Sand Singers pitched their tents where they liked.",
     "voice": "narrator"
   },
-  "narrator/c31c102108a63fff": {
-    "check": {
-      "heard": "An old ore cart, half buried in the snow, still loaded with dark stone. Its iron bands are as bright as the day they were forged",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "yOW4cwNS8iy55ExZHVbu",
-    "seconds": 9.8,
-    "seed": 1820713185,
-    "sent": "An old ore cart, half buried in the snow, still loaded with dark stone. [wondering] Its iron bands are as bright as the day they were forged.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "An old ore cart, half buried in the snow, still loaded with dark stone. [wondering] Its iron bands are as bright as the day they were forged.",
-    "voice": "narrator"
-  },
   "narrator/c326e32ff480d7ae": {
     "check": {
       "heard": "The dragon stayed half blind, and the Sand Singers went on moving their tents across the sand, singing.",
@@ -20934,27 +19800,6 @@
       "stability": 0.5
     },
     "text": "[tense] The village: wave 2 of 3",
-    "voice": "narrator"
-  },
-  "narrator/c92568dc7ff0fb9a": {
-    "check": {
-      "heard": "Somewhere in the ember, something laughs low and long and doesn't stop for a while. It doesn't sound like a man",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "KXp6Qnn4Qz46K5WkNdhi",
-    "seconds": 9.31,
-    "seed": 1502337386,
-    "sent": "[uneasy, low] Somewhere in the ember, something laughs, low and long, and doesn't stop for a while. [pause] It doesn't sound like a man.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[uneasy, low] Somewhere in the ember, something laughs, low and long, and doesn't stop for a while. [pause] It doesn't sound like a man.",
     "voice": "narrator"
   },
   "narrator/c9ef0c0b35c22dfd": {
@@ -21860,27 +20705,6 @@
     "text": "The shard sinks into the ember. The dark under the ice thins: from now on the dark shows what's in it, dimly.",
     "voice": "narrator"
   },
-  "narrator/dbe7b91a0ec5390f": {
-    "check": {
-      "heard": "Down the strumhold stairs a hall of the frame and old people in hoods waiting by it as if they knew you'd come",
-      "match": 0.966,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "owggjtd86SrLeHeMdkJe",
-    "seconds": 7.5,
-    "seed": 1935855519,
-    "sent": "[hushed] Down the stronghold's stairs, a hall of the frame, and old people in hoods waiting by it as if they knew you'd come.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[hushed] Down the stronghold's stairs, a hall of the frame, and old people in hoods waiting by it as if they knew you'd come.",
-    "voice": "narrator"
-  },
   "narrator/dc0737a9c7b30587": {
     "check": {
       "heard": "His gray coat is open. Over his heart, a cut that never closed. Whatever looked in didn't let go",
@@ -21984,27 +20808,6 @@
       "stability": 0.5
     },
     "text": "[tense] The red moon: wave 3 of 3",
-    "voice": "narrator"
-  },
-  "narrator/dde45dcf019d46f7": {
-    "check": {
-      "heard": "Someone set these stones along old roads long ago. One folds the road back to any stone you have touched, so it only carries you along roads you have walked",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "viUThKO9XOGN39mxS77d",
-    "seconds": 10.7,
-    "seed": 1901536107,
-    "sent": "Someone set these stones along old roads long ago. One folds the road back to any stone you have touched, so it only carries you along roads you have walked.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "Someone set these stones along old roads long ago. One folds the road back to any stone you have touched, so it only carries you along roads you have walked.",
     "voice": "narrator"
   },
   "narrator/de1468a0d2314fc0": {
@@ -22553,27 +21356,6 @@
     "text": "[softly, grieving] Alruna's book tent is ash. [pause] She was in it, reading.",
     "voice": "narrator"
   },
-  "narrator/e6bda2588d861189": {
-    "check": {
-      "heard": "His log, wrapped in oilcloth and still dry. Near the end, the day he found land, a bay where they fish by night and nothing comes for them",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "VwsMrllB8ZorNG3rvQ8B",
-    "seconds": 11.9,
-    "seed": 1584531603,
-    "sent": "His log, wrapped in oilcloth and still dry. [pause] Near the end, the day he found land: a bay where they fish by night, and nothing comes for them.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "His log, wrapped in oilcloth and still dry. [pause] Near the end, the day he found land: a bay where they fish by night, and nothing comes for them.",
-    "voice": "narrator"
-  },
   "narrator/e6bea9cc779fb15d": {
     "check": {
       "heard": "You wake in a bed under your own roof, grown with an ember of your own. Nothing is watching",
@@ -23036,27 +21818,6 @@
     "text": "[steady] You take the shards back out into the world, one by one, to the peoples who'll hide them again.",
     "voice": "narrator"
   },
-  "narrator/ed66c537c1e89ec6": {
-    "check": {
-      "heard": "You break it and eat. It's good bread, dark and sweet, an open eye pressed into the crust",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "QFeg6Oegq88XxcWf286X",
-    "seconds": 7.4,
-    "seed": 516670114,
-    "sent": "You break it and eat. It's good bread, dark and sweet, an open eye pressed into the crust.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "You break it and eat. It's good bread, dark and sweet, an open eye pressed into the crust.",
-    "voice": "narrator"
-  },
   "narrator/ede59d0a97a7d6e9": {
     "check": {
       "heard": "The Hollow took Pip, Elruna, Cadoc, Drifa, and Hob. Nobody tells it the way Pip would have",
@@ -23475,48 +22236,6 @@
       "stability": 0.5
     },
     "text": "At the edge of the light, Cadoc looks away.",
-    "voice": "narrator"
-  },
-  "narrator/f61b152fbb7ac199": {
-    "check": {
-      "heard": "Whoever is left of the wagons takes them from you at the cart's tail, and nobody says thank you, and nobody needs to",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "QXIS8NzfxNigiayaIqDk",
-    "seconds": 7.7,
-    "seed": 1765600279,
-    "sent": "[quietly] Whoever is left of the wagons takes them from you at the cart's tail, and nobody says thank you, [pause] and nobody needs to.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[quietly] Whoever is left of the wagons takes them from you at the cart's tail, and nobody says thank you, [pause] and nobody needs to.",
-    "voice": "narrator"
-  },
-  "narrator/f6208d427ec30ff4": {
-    "check": {
-      "heard": "Bram comes in out of the dark. He holds his son a long time. Over the boy's shoulder, he looks at the fire, at the dark, anywhere but at the scar",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "6bfb7f0f",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "WENkysz9RhLoiufZnc6d",
-    "seconds": 11.5,
-    "seed": 1023847302,
-    "sent": "Bram comes in out of the dark. [softly] He holds his son a long time. [pause] Over the boy's shoulder he looks at the fire, at the dark, anywhere but at the scar.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "Bram comes in out of the dark. [softly] He holds his son a long time. [pause] Over the boy's shoulder he looks at the fire, at the dark, anywhere but at the scar.",
     "voice": "narrator"
   },
   "narrator/f67a3b3a7a9267eb": {
@@ -24021,27 +22740,6 @@
       "stability": 0.5
     },
     "text": "[cosy, pleased] The cabin stands. I sleep in a bed for the first time since I was a child. [softer] The ember is quieter. It's resting, I think. We've walked a long way.",
-    "voice": "old_man"
-  },
-  "old_man/0fb96429271b100c": {
-    "check": {
-      "heard": "Oswin, I walked for 40 years. Then I met a woman with a garden, and I stopped",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "a6da7597",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "mq7IQL9XCQnTCJ8qCpup",
-    "seconds": 8.1,
-    "seed": 1055312577,
-    "sent": "[weary, warm] Oswin. I walked for forty years. [fond] Then I met a woman with a garden, and I stopped.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[weary, warm] Oswin. I walked for forty years. [fond] Then I met a woman with a garden, and I stopped.",
     "voice": "old_man"
   },
   "old_man/18fcfdc7dfcd95c4": {
@@ -24611,27 +23309,6 @@
     "text": "[pleading, voice breaking] Please.",
     "voice": "old_woman"
   },
-  "old_woman/7f7d6c6604f30a18": {
-    "check": {
-      "heard": "Hesper, I'm walking to the Keepers. Everyone says they'll take in anyone. Walk with me?",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "a06b76a4",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "D5CRqJFFYHwcifZEqzXF",
-    "seconds": 5.89,
-    "seed": 1869461040,
-    "sent": "[warm, hopeful] Hesper. I'm walking to the Keepers. Everyone says they'll take in anyone. Walk with me?",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[warm, hopeful] Hesper. I'm walking to the Keepers. Everyone says they'll take in anyone. Walk with me?",
-    "voice": "old_woman"
-  },
   "old_woman/83c3f03ab1b78969": {
     "check": {
       "heard": "The eye looked for our stone for a hundred summers and never found the way in. So it looked at us instead, one by one, until nobody was left to open the locks.",
@@ -24842,27 +23519,6 @@
     "text": "[grave, tired] There it is. The frame takes whatever of the Eye it's brought. [pause] Choose.",
     "voice": "oldest_keeper"
   },
-  "oldest_keeper/1a73cf4def106d41": {
-    "check": {
-      "heard": "Then say the words and step in. It'll be dark. It'll be the first dark it's ever had",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "cb483ce7",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "pm9iiQw4YwyG3n6NYyvB",
-    "seconds": 7.5,
-    "seed": 6598345,
-    "sent": "[softly, with awe] Then say the words, and step in. It'll be dark. [pause] It'll be the first dark it's ever had.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[softly, with awe] Then say the words, and step in. It'll be dark. [pause] It'll be the first dark it's ever had.",
-    "voice": "oldest_keeper"
-  },
   "oldest_keeper/21a221709fb7295b": {
     "check": {
       "heard": "We told him what we tell them all. A wayfarer who stops lets the gaze in. He said we had shut him out. He cursed us and the oath and the road",
@@ -24947,27 +23603,6 @@
     "text": "Twelve halls like this one stand in a ring, all the same distance from where the first fire was lit, and every one of them guards a gate. The ember will lead you to the nearest.",
     "voice": "oldest_keeper"
   },
-  "oldest_keeper/418a72907431dad5": {
-    "check": {
-      "heard": "Twelve shards in their halls and the eye's last piece walks. A frame takes whatever of the eye it's brought",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "cb483ce7",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "wSdOLGHCxO2LnDjfvro8",
-    "seconds": 9.7,
-    "seed": 1052294204,
-    "sent": "[grave, slow] Twelve shards in their halls. And the Eye's last piece walks. [pause] A frame takes whatever of the Eye it's brought.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[grave, slow] Twelve shards in their halls. And the Eye's last piece walks. [pause] A frame takes whatever of the Eye it's brought.",
-    "voice": "oldest_keeper"
-  },
   "oldest_keeper/48bf953f764d7974": {
     "check": {
       "heard": "The thirteenth",
@@ -24987,27 +23622,6 @@
       "stability": 0.5
     },
     "text": "[softly, grave] The thirteenth.",
-    "voice": "oldest_keeper"
-  },
-  "oldest_keeper/4f1f643be25f36bc": {
-    "check": {
-      "heard": "Then set what you carry in the frame and go through. It'll see only what you give it",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "cb483ce7",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "Iqn5d8LRndZweUj4mKod",
-    "seconds": 6.3,
-    "seed": 699636455,
-    "sent": "[solemn] Then set what you carry in the frame, and go through. It'll see only what you give it.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[solemn] Then set what you carry in the frame, and go through. It'll see only what you give it.",
     "voice": "oldest_keeper"
   },
   "oldest_keeper/554243993864c906": {
@@ -26123,27 +24737,6 @@
     "text": "[grumbling] Agna says I have to follow with the wagons. [determined] One day I'll walk in front.",
     "voice": "pip"
   },
-  "pip/a80086048cec5cd2": {
-    "check": {
-      "heard": "The sand people say there's a horse on the plains ahead that never sleeps. It just stands there and watches",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "9c8d1514",
-    "model": "eleven_v4",
-    "pitch": 1,
-    "recorded": "05.11.2026",
-    "request": "pWyduZcJZjLVjaOFUvS6",
-    "seconds": 6.7,
-    "seed": 1895001125,
-    "sent": "[awed, hushed] The sand people say there's a horse on the plains ahead that never sleeps. It just stands there and watches.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[awed, hushed] The sand people say there's a horse on the plains ahead that never sleeps. It just stands there and watches.",
-    "voice": "pip"
-  },
   "pip/a8ac1fed6e0a5876": {
     "check": {
       "heard": "Why is the moon red?",
@@ -26394,27 +24987,6 @@
       "stability": 0.5
     },
     "text": "[proud, quietly] The bell rang when I was born. Maud says it rang for everyone.",
-    "voice": "pip"
-  },
-  "pip/d5d4929a3abac5db": {
-    "check": {
-      "heard": "You found a shard like in the stories. In the stories, every wayfarer has a horse too. Find me one, a brown one",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "9c8d1514",
-    "model": "eleven_v4",
-    "pitch": 1,
-    "recorded": "05.11.2026",
-    "request": "ifyFEdujqy7cwrBF0mdA",
-    "seconds": 8.37,
-    "seed": 2004448289,
-    "sent": "[excited] You found a shard, like in the stories! In the stories every Wayfarer has a horse, too. [hopeful, shy] Find me one? A brown one.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[excited] You found a shard, like in the stories! In the stories every Wayfarer has a horse, too. [hopeful, shy] Find me one? A brown one.",
     "voice": "pip"
   },
   "pip/d926a9e24876049d": {
@@ -47795,27 +46367,6 @@
     "text": "[austere] We burned the madness and kept the rest. The shard we leave to you. [pause] Read before you carry it.",
     "voice": "scribes"
   },
-  "sefa/143120241a180f6b": {
-    "check": {
-      "heard": "Under the dunes is our hall. One summer the deep sand opened and something came up and swallowed our stone whole",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "91fa001d",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "f51WAUKxe0eiuQm4w4Zj",
-    "seconds": 8.4,
-    "seed": 1514110075,
-    "sent": "[storytelling] Under the dunes is our hall. One summer the deep sand opened, and something came up [hushed] and swallowed our stone whole.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[storytelling] Under the dunes is our hall. One summer the deep sand opened, and something came up [hushed] and swallowed our stone whole.",
-    "voice": "sefa"
-  },
   "sefa/1ec8fb160700902f": {
     "check": {
       "heard": "Then you need it dead and we need it alive",
@@ -48108,27 +46659,6 @@
       "stability": 0.5
     },
     "text": "[warm, melodic] Sefa. I sing for my people, the Sand Singers.",
-    "voice": "sefa"
-  },
-  "sefa/cb93e642de6e7c07": {
-    "check": {
-      "heard": "And this, blow it on its ground and it comes up to see who sings. Its eye is where it can be hurt",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "91fa001d",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "ddWDt31EsAJhPSPy4Dly",
-    "seconds": 7.8,
-    "seed": 1972016461,
-    "sent": "And this. Blow it on its ground, and it comes up to see who sings. [low] Its eye is where it can be hurt.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "And this. Blow it on its ground, and it comes up to see who sings. [low] Its eye is where it can be hurt.",
     "voice": "sefa"
   },
   "sefa/dad1caa9aa0ac635": {
@@ -48919,28 +47449,6 @@
     "text": "[whispers] Quietly, now. Some of them may still be there.",
     "voice": "wend"
   },
-  "wend/5459c02051cb6247": {
-    "check": {
-      "heard": "And never sleep in the open. A tent with a fire by it. Sleep in the open and something comes to look",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "aa891449",
-    "gaze": "asplit=2[dry][low];[low]asetrate={rate}*0.5946,aresample={rate},atempo=1.6818,lowpass=f=1024,volume=0.5[under];[dry][under]amix=inputs=2:normalize=0,aecho=0.8:0.5:64:0.25",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "pXhCEJVxB6FZu8yeeInu",
-    "seconds": 9.4,
-    "seed": 1771910247,
-    "sent": "[struggling for breath] And never sleep in the open. A tent, with a fire by it. [whispers] Sleep in the open and something comes to look.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[struggling for breath] And never sleep in the open. A tent, with a fire by it. [whispers] Sleep in the open and something comes to look.",
-    "voice": "wend"
-  },
   "wend/5bc96c41deb8e970": {
     "check": {
       "heard": "All 12 or none of this matters",
@@ -49664,28 +48172,6 @@
     "text": "[dismissive] Blow it. It's only a worm.",
     "voice": "wend"
   },
-  "wend/c5cd91223d50adcc": {
-    "check": {
-      "heard": "Don't look at me like that. I'm dying, that's all. I'm old, and I walked further than I had left in me",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "aa891449",
-    "gaze": "asplit=2[dry][low];[low]asetrate={rate}*0.5946,aresample={rate},atempo=1.6818,lowpass=f=1024,volume=0.5[under];[dry][under]amix=inputs=2:normalize=0,aecho=0.8:0.5:64:0.25",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "AsOvhMbbVCYizJCiPKI4",
-    "seconds": 8.6,
-    "seed": 1818082372,
-    "sent": "[dryly] Don't look at me like that. [coughs] I'm dying, that's all. [weakly] I'm old, and I walked further than I had left in me.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[dryly] Don't look at me like that. [coughs] I'm dying, that's all. [weakly] I'm old, and I walked further than I had left in me.",
-    "voice": "wend"
-  },
   "wend/c688758f072f6289": {
     "check": {
       "heard": "Yes",
@@ -49706,50 +48192,6 @@
       "stability": 0.5
     },
     "text": "[long pause] [cold, quiet] ...Yes.",
-    "voice": "wend"
-  },
-  "wend/ca3cdd5c5f493132": {
-    "check": {
-      "heard": "They didn't. Spring doesn't come for someone who stops. Take the stone. They'd want it back on the road",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "aa891449",
-    "gaze": "asplit=2[dry][low];[low]asetrate={rate}*0.5946,aresample={rate},atempo=1.6818,lowpass=f=1024,volume=0.5[under];[dry][under]amix=inputs=2:normalize=0,aecho=0.8:0.5:64:0.25",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "BJ26svlmj1FZXniLjDnS",
-    "seconds": 7.7,
-    "seed": 972712502,
-    "sent": "[quietly, sad] They didn't. Spring doesn't come for someone who stops. [gentler] Take the stone. They'd want it back on the road.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "[quietly, sad] They didn't. Spring doesn't come for someone who stops. [gentler] Take the stone. They'd want it back on the road.",
-    "voice": "wend"
-  },
-  "wend/ca70997373f1b9b1": {
-    "check": {
-      "heard": "You heard me at the fire. The shards. Gather them, bring them to a frame, and we put its eye out forever",
-      "match": 1.0,
-      "takes": 1
-    },
-    "design": "aa891449",
-    "gaze": "asplit=2[dry][low];[low]asetrate={rate}*0.5946,aresample={rate},atempo=1.6818,lowpass=f=1024,volume=0.5[under];[dry][under]amix=inputs=2:normalize=0,aecho=0.8:0.5:64:0.25",
-    "model": "eleven_v4",
-    "pitch": 0,
-    "recorded": "05.11.2026",
-    "request": "Wk6S2DhiYjNcHvxckdGZ",
-    "seconds": 7.8,
-    "seed": 2376623,
-    "sent": "You heard me at the fire. The shards. [earnest] Gather them, bring them to a frame, [low, fierce] and we put its eye out forever.",
-    "settings": {
-      "similarity": 0.75,
-      "stability": 0.5
-    },
-    "text": "You heard me at the fire. The shards. [earnest] Gather them, bring them to a frame, [low, fierce] and we put its eye out forever.",
     "voice": "wend"
   },
   "wend/cb1014e496dbadd3": {

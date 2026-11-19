@@ -16,10 +16,13 @@ import urllib.request
 from datetime import datetime
 from pathlib import Path
 
+import tomllib
+
 HOST = "api.exaroton.com"
 AGENT = "wayfarer-exaroton"
 ROOT = Path(__file__).resolve().parent.parent
 RECORDINGS = ROOT / "exaroton"
+FLOOR = tomllib.loads((ROOT / "balance.toml").read_text())["graphics"]
 STREAMS = ("console", "heap", "stats", "tick")
 STATUSES = {
     0: "offline",
@@ -37,8 +40,6 @@ STATUSES = {
 OFFLINE = 0
 ONLINE = 1
 CRASHED = 7
-FLOOR_AVERAGE_FPS = 60
-FLOOR_LOW_FPS = 30
 POLL_SECONDS = 60
 REQUEST_SECONDS = 30
 RATE_TRIES = 8
@@ -335,10 +336,14 @@ def fetch_record(api, server, session, level):
         lines = text.splitlines()
         for line in lines[session.read.get(day["name"], 0) :]:
             event = json.loads(line)
-            if event.get("event") == "frames" and (event["fps"] < FLOOR_AVERAGE_FPS or event["low"] < FLOOR_LOW_FPS):
+            if event.get("event") == "frames" and (
+                event["fps"] < FLOOR["floor_fps"] or event["low"] < FLOOR["floor_low_fps"]
+            ):
+                card = f", graphics card busy {event['gpu']}%" if "gpu" in event else ""
+                card += ", on battery" if event.get("battery") else ""
                 say(
                     f"{event['player']} fell under the floor: {event['fps']} fps on average, 1% low {event['low']} at "
-                    f"{event['preset']}, shaders {'on' if event['shaders'] else 'off'}, far view {event['far_view']} chunks"
+                    f"{event['preset']}, shaders {'on' if event['shaders'] else 'off'}, far view {event['far_view']} chunks{card}"
                 )
         session.read[day["name"]] = len(lines)
 

@@ -146,6 +146,7 @@ key_key.voice_chat_adjust_volumes:key.keyboard.unknown
 key_key.voice_chat_group:key.keyboard.unknown
 key_key.voice_chat_settings:key.keyboard.unknown
 key_key.voice_chat_toggle_recording:key.keyboard.unknown
+key_key.wayfarer.again:key.keyboard.0
 key_key.wayfarer.ember_sense:key.keyboard.z
 key_key.wayfarer.journal:key.keyboard.j
 key_key.wayfarer.map:key.keyboard.m

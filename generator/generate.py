@@ -831,7 +831,7 @@ def main():
         built.save(MAIN / f"data/wayfarer/structure/tollbridge/{name}.nbt", size(built))
     write_json(MAIN / "wayfarer/tollbridge.json", plan())
     for kind, loot in balance["tollbridge"]["loot"].items():
-        write_json(MAIN / f"data/wayfarer/loot_table/chests/tollbridge/{kind}.json", stores(loot))
+        write_json(MAIN / f"data/wayfarer/loot_table/tollbridge/{kind}.json", stores(loot))
     entrance().save(MAIN / "data/wayfarer/structure/diggers/entrance.nbt")
     for name, scene in SCENES.items():
         scene().save(MAIN / f"data/wayfarer/structure/scene/{name}.nbt")

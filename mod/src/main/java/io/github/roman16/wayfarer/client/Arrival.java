@@ -29,7 +29,8 @@ final class Arrival {
 
     static void tick(ClientTickEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (!coming || minecraft.level == null || minecraft.player == null || minecraft.getConnection() == null || loading(minecraft.screen) || !drawn(minecraft)) {
+        if (!coming || minecraft.level == null || minecraft.player == null || minecraft.getConnection() == null || loading(minecraft.screen) || WakingScreen.asleep()
+                || !drawn(minecraft)) {
             return;
         }
         coming = false;

@@ -153,7 +153,6 @@ Mods in the pack:
 - Towns and Towers, by Biban_Auriu, Cristelknight and Kubek. CC-BY-NC-SA-4.0. https://modrinth.com/mod/towns-and-towers
 - Traveler's Titles, by Refresh Studios. LGPL-3.0-only. https://modrinth.com/mod/travelers-titles
 - Trek, by hotsuop, ALDgamer and Hugger. MIT. https://modrinth.com/mod/trek
-- Visual Workbench, by Fuzs and LunaPixelStudios. MPL-2.0. https://modrinth.com/mod/visual-workbench
 - Wakes Reforged, by Leclowndu93150. GPL-3.0-only. https://modrinth.com/mod/wakes-reforged
 - Waystones, by BlayTheNinth. All Rights Reserved (https://mods.twelveiterations.com/permissions). https://modrinth.com/mod/waystones
 - What Are They Up To (Watut), by Corosus. All Rights Reserved. https://modrinth.com/mod/what-are-they-up-to

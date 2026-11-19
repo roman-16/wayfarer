@@ -124,7 +124,7 @@ public record Balance(
     public record Graphics(List<Integer> farViewChunks, List<String> farViewDetail, List<String> farViewThreads, List<String> heldLight, List<String> profiles,
                            List<Integer> renderChunks, List<Integer> simulationChunks) {}
 
-    public record Hold(int blowTicks, int calmSeconds, int doorStrength, int keepHealth, int sideWaves, int waveSeconds, int waves) {}
+    public record Hold(int blowTicks, int calmSeconds, int doorStrength, int keepHealth, int sideWaves, int unreachedSeconds, int waveSeconds, int waves) {}
 
     public record Hollow(int leaveBlocks) {}
 
@@ -220,7 +220,7 @@ public record Balance(
 
     public record Structures(int clearBlocks, double spreadFactor, List<String> spreadFeatures) {}
 
-    public record Talk(int againSeconds, int arriveMostSeconds, int arriveSeconds, int beatTicks, int charactersPerSecond, int eveningGapSeconds, int eveningLines, int huntedBlocks,
+    public record Talk(int againSeconds, int answerLockTicks, int arriveMostSeconds, int arriveSeconds, int beatTicks, int charactersPerSecond, int eveningGapSeconds, int eveningLines, int huntedBlocks,
             int lapseSeconds, int leastSeconds, int musicSixteenths, int pauseSeconds, int presentBlocks, int reachBlocks, int safeSeconds, int screenSeconds, int startBlocks, int voiceGain,
             int waitSeconds) {}
 
@@ -327,6 +327,7 @@ public record Balance(
                         toml.getInt("hold.door_strength"),
                         toml.getInt("hold.keep_health"),
                         toml.getInt("hold.side_waves"),
+                        toml.getInt("hold.unreached_seconds"),
                         toml.getInt("hold.wave_seconds"),
                         toml.getInt("hold.waves")),
                 new Hollow(toml.getInt("hollow.leave_blocks")),
@@ -393,6 +394,7 @@ public record Balance(
                 new Structures(toml.getInt("structures.clear_blocks"), toml.<Number>get("structures.spread_factor").doubleValue(), toml.<List<String>>get("structures.spread_features")),
                 new Talk(
                         toml.getInt("talk.again_seconds"),
+                        toml.getInt("talk.answer_lock_ticks"),
                         toml.getInt("talk.arrive_most_seconds"),
                         toml.getInt("talk.arrive_seconds"),
                         toml.getInt("talk.beat_ticks"),

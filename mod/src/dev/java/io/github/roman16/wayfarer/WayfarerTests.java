@@ -123,7 +123,7 @@ public final class WayfarerTests {
         check(helper, ContainerLoot.filled(ResourceLocation.parse("ctov:chests/village/plains_house")), "a village chest is a container's loot");
         check(helper, ContainerLoot.filled(ResourceLocation.parse("supplementaries:loot/galleon/chest")), "a galleon's chest is a container's loot");
         check(helper, !ContainerLoot.filled(ResourceLocation.parse("minecraft:blocks/chest")), "a broken chest drops itself whole");
-        check(helper, !ContainerLoot.filled(ResourceLocation.parse("wayfarer:chests/tollbridge/strongbox")), "the pack's own containers keep their numbers");
+        check(helper, !ContainerLoot.filled(ResourceLocation.parse("wayfarer:tollbridge/strongbox")), "the pack's own containers keep their numbers");
         helper.succeed();
     }
 

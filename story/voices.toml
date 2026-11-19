@@ -24,7 +24,6 @@ narrator = [
   "wayfarer.hearts.*",
   "wayfarer.hold.cry",
   "wayfarer.hold.waiting",
-  "wayfarer.hold.waiting_door",
   "wayfarer.night.chat",
   "wayfarer.night.ejected",
   "wayfarer.night.let_go",

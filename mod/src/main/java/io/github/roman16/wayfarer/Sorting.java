@@ -44,9 +44,20 @@ public final class Sorting {
             .thenComparingInt(ItemStack::getDamageValue);
     private static final String BACKPACKS = "sophisticatedcore";
     private static final Set<UUID> LOOKING = new HashSet<>();
+    private static final Set<UUID> MANUAL = new HashSet<>();
     private static final Map<UUID, Integer> TIDY = new HashMap<>();
 
     private Sorting() {}
+
+    public record Auto(boolean on) implements CustomPacketPayload {
+        public static final Type<Auto> TYPE = new Type<>(Wayfarer.id("auto_sort"));
+        public static final StreamCodec<ByteBuf, Auto> STREAM_CODEC = ByteBufCodecs.BOOL.map(Auto::new, Auto::on);
+
+        @Override
+        public Type<Auto> type() {
+            return TYPE;
+        }
+    }
 
     public record Looking(boolean open) implements CustomPacketPayload {
         public static final Type<Looking> TYPE = new Type<>(Wayfarer.id("looking"));
@@ -71,6 +82,14 @@ public final class Sorting {
         return namespace.equals(ResourceLocation.DEFAULT_NAMESPACE) ? "" : namespace;
     }
 
+    public static void auto(ServerPlayer player, boolean on) {
+        if (on) {
+            MANUAL.remove(player.getUUID());
+        } else {
+            MANUAL.add(player.getUUID());
+        }
+    }
+
     public static void look(ServerPlayer player, boolean open) {
         if (open) {
             LOOKING.add(player.getUUID());
@@ -81,7 +100,8 @@ public final class Sorting {
 
     @SubscribeEvent
     public static void onTick(PlayerTickEvent.Post event) {
-        if (event.getEntity() instanceof ServerPlayer player && player.containerMenu == player.inventoryMenu && !LOOKING.contains(player.getUUID())) {
+        if (event.getEntity() instanceof ServerPlayer player && player.containerMenu == player.inventoryMenu && !LOOKING.contains(player.getUUID())
+                && !MANUAL.contains(player.getUUID())) {
             if (TIDY.getOrDefault(player.getUUID(), 0) != fingerprint(player.getInventory())) {
                 tidy(player.getInventory());
                 TIDY.put(player.getUUID(), fingerprint(player.getInventory()));
@@ -91,7 +111,7 @@ public final class Sorting {
 
     @SubscribeEvent
     public static void onClose(PlayerContainerEvent.Close event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) {
+        if (!(event.getEntity() instanceof ServerPlayer player) || MANUAL.contains(player.getUUID())) {
             return;
         }
         AbstractContainerMenu menu = event.getContainer();
@@ -106,6 +126,7 @@ public final class Sorting {
     @SubscribeEvent
     public static void onLeave(PlayerEvent.PlayerLoggedOutEvent event) {
         LOOKING.remove(event.getEntity().getUUID());
+        MANUAL.remove(event.getEntity().getUUID());
         TIDY.remove(event.getEntity().getUUID());
     }
 

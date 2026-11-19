@@ -401,12 +401,15 @@ final class Steps {
             }
             case "clues" -> {
                 for (Story.Clue clue : step.clues()) {
-                    if (target.getTags().contains(CLUE + clue.id()) && !Engine.found(active.scratch()).contains(clue.id()) && waiting(server, active, clue)) {
+                    if (!target.getTags().contains(CLUE + clue.id()) || Engine.found(active.scratch()).contains(clue.id())) {
+                        continue;
+                    }
+                    if (clue.last() && !counts(server, active, clue)) {
                         int left = needed(server, active) - 1 - Engine.found(active.scratch()).size();
                         player.displayClientMessage(Component.translatable(left == 1 ? "wayfarer.clue.not_yet_one" : "wayfarer.clue.not_yet", left), true);
                         return true;
                     }
-                    if (target.getTags().contains(CLUE + clue.id()) && !Engine.found(active.scratch()).contains(clue.id()) && !waiting(server, active, clue)) {
+                    if (counts(server, active, clue)) {
                         Engine.find(active.scratch(), clue.id());
                         Progress.of(server).setDirty();
                         Tasks.did(player, "look");
@@ -788,8 +791,7 @@ final class Steps {
 
     static boolean lookable(MinecraftServer server, Entity entity) {
         return Engine.active(server).stream().anyMatch(active -> switch (active.step().kind()) {
-            case "clues" -> active.step().clues().stream().anyMatch(clue -> entity.getTags().contains(CLUE + clue.id())
-                    && !Engine.found(active.scratch()).contains(clue.id()) && !waiting(server, active, clue));
+            case "clues" -> wanted(server, active).stream().anyMatch(clue -> entity.getTags().contains(CLUE + clue));
             case "memory" -> active.step().spec().has(TOUCH) && touches(entity, active.step().text(TOUCH));
             default -> false;
         });
@@ -805,8 +807,18 @@ final class Steps {
         return quest + "/" + clue;
     }
 
-    private static boolean waiting(MinecraftServer server, Engine.Active active, Story.Clue clue) {
-        return clue.last() && Engine.found(active.scratch()).size() < needed(server, active) - 1;
+    static List<String> wanted(MinecraftServer server, Engine.Active active) {
+        return active.step().clues().stream().filter(clue -> !Engine.found(active.scratch()).contains(clue.id()) && counts(server, active, clue))
+                .map(Story.Clue::id).toList();
+    }
+
+    private static boolean counts(MinecraftServer server, Engine.Active active, Story.Clue clue) {
+        boolean lastOnly = Engine.found(active.scratch()).size() >= needed(server, active) - 1;
+        if (clue.last()) {
+            return lastOnly;
+        }
+        Set<String> unlaid = Progress.of(server).unlaid;
+        return !lastOnly || active.step().clues().stream().noneMatch(other -> other.last() && !unlaid.contains(unlaid(active.quest().id(), other.id())));
     }
 
     private static boolean sees(ServerPlayer player, BlockPos place) {

@@ -11,6 +11,10 @@ import spoken
 import tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "generator"))
+
+import fonts  # noqa: E402
+
 PACK = ROOT / "pack"
 MOD = ROOT / "mod/src"
 LANG = MOD / "main/resources/assets/wayfarer/lang/en_us.json"
@@ -66,6 +70,11 @@ ADDRESSED = re.compile(r"(?i)\b(you|your)\b")
 FIRE_WORDS = re.compile(r"(?i)\b(at the fire|by the fire|followed you|I watched)\b")
 LAND_ANSWER = re.compile(r"(?i)\b(trees|woods|forest|water|river|rocks)\b")
 TIMED_KINDS = {"dawn", "dusk", "hold"}
+BAND_ROWS = 2
+REMARK_POOL = 2
+CONVERSATION = INTERFACE / "Conversation.java"
+NAME_SPACE = "  "
+TAG = re.compile(r"\[[^\]]*\]\s*")
 LOADED_HEIGHT = re.compile(r"Heightmap\.Types\.(MOTION_BLOCKING|MOTION_BLOCKING_NO_LEAVES|OCEAN_FLOOR|WORLD_SURFACE)\b")
 
 
@@ -738,6 +747,84 @@ def spoken_lines(spec):
                     yield quest, step, ahead, f"remarks.{person}", {"by": person, "text": remark}
 
 
+def band_room():
+    source = CONVERSATION.read_text()
+    constant = {name: int(value) for name, value in re.findall(r"static final int ([A-Z_]+) = (\d+);", source)}
+    return constant["MAX_WIDTH"] - constant["PAD"] * 2
+
+
+def body_advances():
+    spec = next(
+        face for face in tomllib.loads((ROOT / "generator/fonts.toml").read_text()).values() if face.get("default")
+    )
+    font = fonts.TrueType((ROOT / "generator" / spec["file"]).read_bytes())
+    shapes = fonts.glyphs(spec, font)
+    advances = {
+        chr(code): max(x for row in shape for x, on in enumerate(row) if on) + 2 for code, shape in shapes.items()
+    }
+    advances[" "] = font.advance(font.characters.get(ord(" "), 0)) // (font.units // spec["size"])
+    return advances
+
+
+def rows(text, advances, room):
+    widest = max(advances.values())
+    count, used = 1, 0
+    for word in text.split(" "):
+        width = sum(advances.get(char, widest) for char in word)
+        if used and used + advances[" "] + width > room:
+            count, used = count + 1, width
+        else:
+            used += (advances[" "] if used else 0) + width
+    return count
+
+
+def band():
+    spec = tomllib.loads((ROOT / "story/quests.toml").read_text())
+    people = tomllib.loads((ROOT / "story/people.toml").read_text())
+    lang = json.loads(LANG.read_text())
+    advances, room = body_advances(), band_room()
+    found = []
+
+    def check(where, by, text):
+        shown = TAG.sub("", text).strip()
+        labels = [people[by].get(key, by) for key in ("name", "unnamed") if key in people.get(by, {})] if by else [""]
+        widest = max(labels, key=lambda label: sum(advances.get(char, 0) for char in label.upper()))
+        line = (widest.upper() + NAME_SPACE if widest else "") + shown
+        if shown and rows(line, advances, room) > BAND_ROWS:
+            found.append(f"{where}: wider than {BAND_ROWS} rows of the band, so it is two lines: {shown}")
+
+    for quest, step, _, key, line in spoken_lines(spec):
+        if key in ("summary", "objective"):
+            continue
+        where = f"story/quests.toml {quest['id']}" + (f"/{step['id']}" if step else "") + f" {key}"
+        check(where, line.get("by"), line.get("text", ""))
+        if key.startswith("remarks.") and len(step["remarks"][key.removeprefix("remarks.")]) < REMARK_POOL:
+            found.append(f"{where}: a person's remarks for a step are at least {REMARK_POOL} lines")
+    for quest in spec["quests"]:
+        for step in quest["steps"]:
+            where = f"story/quests.toml {quest['id']}/{step['id']}"
+            for clue in step.get("clues", []):
+                check(f"{where} clue {clue['id']}", clue.get("by"), clue["text"])
+            speaker = next(
+                (line.get("by") for line in reversed(step.get("lines", [])) if line.get("by")), step.get("with")
+            )
+            for choice in step.get("choices", []):
+                if "reply" in choice:
+                    check(f"{where} reply", None if choice.get("narrated") else speaker, choice["reply"])
+            reward = step.get("reward", {})
+            if "given" in reward:
+                check(f"{where} reward", reward["given"].get("by"), reward["given"]["text"])
+    for person, spec_ in people.items():
+        for key in ("evenings", "mornings", "remarks", "returns", "welcomes"):
+            for line in spec_.get(key, []):
+                check(f"story/people.toml {person} {key}", person, line)
+    for path in (MOD / "main/java").rglob("*.java"):
+        for key in BAND.findall(path.read_text()):
+            if key in lang:
+                check(f"{LANG.relative_to(ROOT)} {key}", None, lang[key])
+    return sorted(set(found))
+
+
 def place_distances(balance):
     distances = {
         table: spec["ahead_blocks"]
@@ -948,6 +1035,7 @@ def main():
         *heights(),
         *words(),
         *voices(),
+        *band(),
         *enchantments(),
         *foes(),
         *changelog.problems(changelog.CHANGELOG.read_text()),

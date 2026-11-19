@@ -58,7 +58,7 @@ public final class Arrivals {
         arrived.remove(player.getUUID());
     }
 
-    private static void coming(ServerPlayer player) {
+    public static void coming(ServerPlayer player) {
         if (player.connection.hasChannel(Arrived.TYPE)) {
             coming.put(player.getUUID(), (long) player.server.getTickCount());
             joined.put(player.getUUID(), System.currentTimeMillis());

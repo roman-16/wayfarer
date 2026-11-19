@@ -149,6 +149,8 @@ def conversations(events):
             out.append(
                 f'{clock(event["at"])}  {event["player"]} chose "{event["answer"]}" after {event["seconds"]} s  ({question})'
             )
+        elif event["event"] == "again":
+            out.append(f"{clock(event['at'])}  {event['player']} asked again after {event['seconds']} s")
     return out if len(out) > 2 else []
 
 
@@ -203,9 +205,10 @@ def players(events):
         screens = Counter(event["screen"].split(" ")[0] for event in own if event["event"] == "screen")
         parts = [f"{len([event for event in own if event['event'] == 'death'])} deaths"]
         if frames:
-            parts.append(
-                f"lowest {min(event['fps'] for event in frames)} fps, 1% low {min(event['low'] for event in frames)}"
-            )
+            slowest = min(frames, key=lambda event: event["fps"])
+            card = f", graphics card busy {slowest['gpu']}%" if "gpu" in slowest else ""
+            card += ", on battery" if slowest.get("battery") else ""
+            parts.append(f"lowest {slowest['fps']} fps, 1% low {min(event['low'] for event in frames)}{card}")
             parts.append(f"fullest memory {max(event['heap_mb'] for event in frames)} of {frames[0]['heap_max_mb']} MB")
         if arrivals:
             parts.append(f"land drawn {max(arrivals)} s after arriving at worst")

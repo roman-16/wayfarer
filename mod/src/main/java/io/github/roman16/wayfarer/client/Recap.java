@@ -58,10 +58,10 @@ public final class Recap {
     private static final Page WAITING = new Page("", List.of(), Optional.empty());
     private static String world = "";
     private static String server = "";
-    private static final int MARGIN = 12;
+    static final int MARGIN = 12;
     private static final int MAX_WIDTH = 224;
     private static final int PERCENT = 100;
-    private static final int STATUS_GAP = 6;
+    static final int STATUS_GAP = 6;
     @Nullable
     private static JsonObject kept;
     @Nullable
@@ -135,7 +135,7 @@ public final class Recap {
         Screen screen = minecraft.screen;
         boolean menu = screen instanceof TitleScreen || screen instanceof SelectWorldScreen || screen instanceof JoinMultiplayerScreen
                 || screen instanceof DisconnectedScreen;
-        if (menu || minecraft.level != null && status(screen) == null) {
+        if (menu || minecraft.level != null && status(screen) == null && !(screen instanceof WakingScreen)) {
             if (loading != null && shownAt != 0) {
                 if (menu) {
                     Speech.stopPages();
@@ -182,47 +182,13 @@ public final class Recap {
                 floor = Math.min(floor, button.getY() - STATUS_GAP);
             }
         }
-        int width = Math.min(MAX_WIDTH, screen.width - MARGIN * 2);
-        int pageWidth = width - JournalScreen.COVER_EDGE * 2 - JournalScreen.SPINE;
-        int textWidth = pageWidth - JournalScreen.PAD * 2;
-        int head = page.title().isEmpty() ? Stamp.MARK_HEIGHT + JournalScreen.TITLE_GAP
-                : Stamp.DISPLAY_HEIGHT + JournalScreen.TITLE_GAP + Stamp.DIVIDER_HEIGHT + 2;
-        int frame = JournalScreen.COVER_EDGE * 2 + JournalScreen.PAD * 2 + head;
         int notice = page.notice().isPresent() ? font.lineHeight + STATUS_GAP : 0;
-        int room = floor - MARGIN - STATUS_GAP - font.lineHeight - notice;
-        List<FormattedCharSequence> lines = page.tail(font, textWidth, Math.max(0, (room - frame) / JournalScreen.LINE));
-        int height = frame + lines.size() * JournalScreen.LINE;
-        int left = (screen.width - width) / 2;
-        int top = MARGIN + (room - height) / 2;
-        int pagesTop = top + JournalScreen.COVER_EDGE;
-        int spine = left + JournalScreen.COVER_EDGE;
-        int pageLeft = spine + JournalScreen.SPINE;
-        graphics.blitSprite(Stamp.BOOK, left, top, width, height);
-        graphics.blitSprite(Stamp.SPINE, spine, pagesTop, JournalScreen.SPINE, height - JournalScreen.COVER_EDGE * 2);
-        graphics.blitSprite(Stamp.PAGE_RIGHT, pageLeft, pagesTop, pageWidth, height - JournalScreen.COVER_EDGE * 2);
-        Stamp.mark(graphics, spine + (JournalScreen.SPINE - Stamp.MARK_WIDTH) / 2, top + (JournalScreen.COVER_EDGE - Stamp.MARK_HEIGHT) / 2, false);
-        int x = pageLeft + JournalScreen.PAD;
-        int y = pagesTop + JournalScreen.PAD;
-        if (page.title().isEmpty()) {
-            Stamp.mark(graphics, pageLeft + (pageWidth - Stamp.MARK_WIDTH) / 2, y, true);
-            y += head;
-            for (FormattedCharSequence line : lines) {
-                graphics.drawString(font, line, pageLeft + (pageWidth - font.width(line)) / 2, y, Stamp.INK, false);
-                y += JournalScreen.LINE;
-            }
-        } else {
-            Stamp.title(graphics, font, font.substrByWidth(Stamp.display(page.title()), textWidth).getString(), x, y, Stamp.INK_RED, false);
-            Stamp.divider(graphics, x, y + Stamp.DISPLAY_HEIGHT + JournalScreen.TITLE_GAP, textWidth, true);
-            y += head;
-            for (FormattedCharSequence line : lines) {
-                graphics.drawString(font, line, x, y, Stamp.INK, false);
-                y += JournalScreen.LINE;
-            }
-        }
+        Book book = Book.of(font, screen.width, page, floor - MARGIN - STATUS_GAP - font.lineHeight - notice);
+        book.draw(graphics, font, page);
         page.notice().map(Component::getString).ifPresent(updated -> Stamp.label(graphics, font, updated, (screen.width - Stamp.labelWidth(font, updated)) / 2,
-                top + height + STATUS_GAP, Stamp.LABEL, true));
+                book.bottom() + STATUS_GAP, Stamp.LABEL, true));
         String said = status.getString();
-        Stamp.label(graphics, font, said, (screen.width - Stamp.labelWidth(font, said)) / 2, top + height + STATUS_GAP + notice, Stamp.LABEL, true);
+        Stamp.label(graphics, font, said, (screen.width - Stamp.labelWidth(font, said)) / 2, book.bottom() + STATUS_GAP + notice, Stamp.LABEL, true);
         for (Renderable renderable : screen.renderables) {
             if (renderable instanceof AbstractButton button) {
                 button.render(graphics, event.getMouseX(), event.getMouseY(), event.getPartialTick());
@@ -230,8 +196,16 @@ public final class Recap {
         }
     }
 
+    static int firstBottom(Font font, int screenWidth, int room) {
+        return Book.of(font, screenWidth, FIRST, room).bottom();
+    }
+
+    static void first(GuiGraphics graphics, Font font, int screenWidth, int room) {
+        Book.of(font, screenWidth, FIRST, room).draw(graphics, font, FIRST);
+    }
+
     @Nullable
-    private static Component status(@Nullable Screen screen) {
+    static Component status(@Nullable Screen screen) {
         return switch (screen) {
             case ConnectScreen connect -> ((ConnectScreenAccessor) connect).wayfarer$status();
             case GenericMessageScreen message -> message.getTitle();
@@ -258,6 +232,62 @@ public final class Recap {
 
     private static Path file() {
         return Minecraft.getInstance().gameDirectory.toPath().resolve(Wayfarer.MODID).resolve(FILE);
+    }
+
+    private record Book(int left, int top, int width, int height, List<FormattedCharSequence> lines) {
+        static Book of(Font font, int screenWidth, Page page, int room) {
+            int width = Math.min(MAX_WIDTH, screenWidth - MARGIN * 2);
+            int frame = JournalScreen.COVER_EDGE * 2 + JournalScreen.PAD * 2 + head(page);
+            List<FormattedCharSequence> lines = page.tail(font, textWidth(width), Math.max(0, (room - frame) / JournalScreen.LINE));
+            int height = frame + lines.size() * JournalScreen.LINE;
+            return new Book((screenWidth - width) / 2, MARGIN + (room - height) / 2, width, height, lines);
+        }
+
+        private static int head(Page page) {
+            return page.title().isEmpty() ? Stamp.MARK_HEIGHT + JournalScreen.TITLE_GAP : Stamp.DISPLAY_HEIGHT + JournalScreen.TITLE_GAP + Stamp.DIVIDER_HEIGHT + 2;
+        }
+
+        private static int pageWidth(int width) {
+            return width - JournalScreen.COVER_EDGE * 2 - JournalScreen.SPINE;
+        }
+
+        private static int textWidth(int width) {
+            return pageWidth(width) - JournalScreen.PAD * 2;
+        }
+
+        int bottom() {
+            return top + height;
+        }
+
+        void draw(GuiGraphics graphics, Font font, Page page) {
+            int pageWidth = pageWidth(width);
+            int textWidth = textWidth(width);
+            int pagesTop = top + JournalScreen.COVER_EDGE;
+            int spine = left + JournalScreen.COVER_EDGE;
+            int pageLeft = spine + JournalScreen.SPINE;
+            graphics.blitSprite(Stamp.BOOK, left, top, width, height);
+            graphics.blitSprite(Stamp.SPINE, spine, pagesTop, JournalScreen.SPINE, height - JournalScreen.COVER_EDGE * 2);
+            graphics.blitSprite(Stamp.PAGE_RIGHT, pageLeft, pagesTop, pageWidth, height - JournalScreen.COVER_EDGE * 2);
+            Stamp.mark(graphics, spine + (JournalScreen.SPINE - Stamp.MARK_WIDTH) / 2, top + (JournalScreen.COVER_EDGE - Stamp.MARK_HEIGHT) / 2, false);
+            int x = pageLeft + JournalScreen.PAD;
+            int y = pagesTop + JournalScreen.PAD;
+            if (page.title().isEmpty()) {
+                Stamp.mark(graphics, pageLeft + (pageWidth - Stamp.MARK_WIDTH) / 2, y, true);
+                y += head(page);
+                for (FormattedCharSequence line : lines) {
+                    graphics.drawString(font, line, pageLeft + (pageWidth - font.width(line)) / 2, y, Stamp.INK, false);
+                    y += JournalScreen.LINE;
+                }
+            } else {
+                Stamp.title(graphics, font, font.substrByWidth(Stamp.display(page.title()), textWidth).getString(), x, y, Stamp.INK_RED, false);
+                Stamp.divider(graphics, x, y + Stamp.DISPLAY_HEIGHT + JournalScreen.TITLE_GAP, textWidth, true);
+                y += head(page);
+                for (FormattedCharSequence line : lines) {
+                    graphics.drawString(font, line, x, y, Stamp.INK, false);
+                    y += JournalScreen.LINE;
+                }
+            }
+        }
     }
 
     private record Page(String title, List<Component> told, Optional<Component> notice) {

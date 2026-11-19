@@ -114,6 +114,7 @@ public final class WorldSetup {
         server.getGameRules().getRule(GameRules.RULE_ANNOUNCE_ADVANCEMENTS).set(false, server);
         stopSeasons(server);
         placeLastCamp(server.overworld());
+        Waking.sleep(server);
         state.done = true;
         state.setDirty();
     }

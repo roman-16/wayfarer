@@ -52,6 +52,7 @@ public final class Fire {
     private static final long DUSK = 12000;
     private static final Map<UUID, BlockPos> SHELTERED = new HashMap<>();
     private static final Set<UUID> RESTING = new HashSet<>();
+    private static final Set<UUID> OWED = new HashSet<>();
     private static final ResourceLocation WARMED = Wayfarer.id("warm");
     private static final String RESTED = "rested";
 
@@ -170,6 +171,10 @@ public final class Fire {
         if (!(event.getEntity() instanceof ServerPlayer player) || player.tickCount % REST_CHECK_TICKS != 0) {
             return;
         }
+        if (OWED.contains(player.getUUID()) && !Talk.busy()) {
+            OWED.remove(player.getUUID());
+            warm(player);
+        }
         Optional<BlockPos> fire = Tents.isTent(player.level().dimension()) || Memories.dream(player.level()) || Gaze.airborne(player) || player.isSpectator()
                 ? Optional.empty()
                 : nearest(player.serverLevel(), player.position(), Balance.get().fire().restBlocks());
@@ -190,7 +195,17 @@ public final class Fire {
     private static void rest(ServerPlayer player, BlockPos fire) {
         player.setData(Wayfarer.LAST_FIRE, GlobalPos.of(player.level().dimension(), fire.immutable()));
         NeoForge.EVENT_BUS.post(new RestEvent(player, fire));
-        if (Journey.awake(player.server) && !Journey.over(player.server) && !player.hasEffect(Wayfarer.WARM) && !Talk.busy()) {
+        if (Talk.busy()) {
+            if (Journey.awake(player.server) && !Journey.over(player.server) && !player.hasEffect(Wayfarer.WARM)) {
+                OWED.add(player.getUUID());
+            }
+            return;
+        }
+        warm(player);
+    }
+
+    private static void warm(ServerPlayer player) {
+        if (Journey.awake(player.server) && !Journey.over(player.server) && !player.hasEffect(Wayfarer.WARM)) {
             player.addEffect(new MobEffectInstance(Wayfarer.WARM, untilTomorrowsDusk(player.server.overworld().getDayTime()), 0, true, false, true));
             Talk.tell(player, Component.translatable("wayfarer.fire.warm"));
             Firsts.first(player, "warm");
@@ -205,5 +220,6 @@ public final class Fire {
     public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         SHELTERED.remove(event.getEntity().getUUID());
         RESTING.remove(event.getEntity().getUUID());
+        OWED.remove(event.getEntity().getUUID());
     }
 }

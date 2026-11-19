@@ -572,7 +572,7 @@ public final class People {
             face(body, walk.to);
             return false;
         }
-        while (walk.next < walk.way.size() - 1 && taken(body, walk.way.get(walk.next))) {
+        while (walk.next < walk.way.size() - 1 && (taken(body, walk.way.get(walk.next)) || behind(body, walk.way.get(walk.next), walk.way.get(walk.next + 1)))) {
             walk.next++;
         }
         Vec3 node = walk.way.get(walk.next);
@@ -636,6 +636,10 @@ public final class People {
     private static Optional<Entity> blocker(Entity body, Vec3 to) {
         return body.level().getEntities(body, stepped(body, to), People::someone).stream()
                 .filter(other -> flat(to, other) < flat(body.position(), other) && !(coming(other, body) && body.getUUID().compareTo(other.getUUID()) < 0)).findFirst();
+    }
+
+    private static boolean behind(Entity body, Vec3 node, Vec3 following) {
+        return node.subtract(body.position()).multiply(1, 0, 1).dot(following.subtract(body.position()).multiply(1, 0, 1)) < 0;
     }
 
     private static boolean taken(Entity body, Vec3 node) {

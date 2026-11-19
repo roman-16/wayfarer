@@ -84,7 +84,7 @@ ROTATE_FACING = {"north": "east", "east": "south", "south": "west", "west": "nor
 
 
 def stores(kind):
-    return {"LootTable": f"wayfarer:chests/tollbridge/{kind}"}
+    return {"LootTable": f"wayfarer:tollbridge/{kind}"}
 
 
 def char(t, pos, axis="y"):

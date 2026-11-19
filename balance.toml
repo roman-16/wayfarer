@@ -150,6 +150,8 @@ drop_blocks = 1
 far_view_chunks = [128, 128, 256, 512]
 far_view_detail = ["LOW", "MEDIUM", "MEDIUM", "HIGH"]
 far_view_threads = ["MINIMAL_IMPACT", "LOW_IMPACT", "BALANCED", "BALANCED"]
+floor_fps = 60
+floor_low_fps = 30
 held_light = ["fastest", "fast", "fancy", "fancy"]
 profiles = ["LOW", "MEDIUM", "HIGH", "ULTRA"]
 render_chunks = [6, 10, 12, 16]
@@ -167,6 +169,7 @@ calm_seconds = 30
 door_strength = 128
 keep_health = 64
 side_waves = 2
+unreached_seconds = 48
 wave_seconds = 64
 waves = 4
 
@@ -353,6 +356,7 @@ visit_blocks = 24
 
 [talk]
 again_seconds = 16
+answer_lock_ticks = 10
 arrive_most_seconds = 32
 arrive_seconds = 4
 beat_ticks = 20

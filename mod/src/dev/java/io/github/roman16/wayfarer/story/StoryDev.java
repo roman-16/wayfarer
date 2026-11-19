@@ -13,6 +13,7 @@ import io.github.roman16.wayfarer.Firsts;
 import io.github.roman16.wayfarer.Joining;
 import io.github.roman16.wayfarer.Journey;
 import io.github.roman16.wayfarer.Shards;
+import io.github.roman16.wayfarer.Waking;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -308,6 +309,7 @@ public final class StoryDev {
                 return 1;
             }
         }
+        Waking.wake(server);
         run = new Run(source, target, save, way, server.getPlayerList().getPlayers().getFirst().blockPosition());
         Talk.reset();
         current.filter(Steps::entered).ifPresent(active -> {
