@@ -1,11 +1,12 @@
 package io.github.roman16.wayfarer.story;
 
 import com.mojang.logging.LogUtils;
-import io.github.roman16.wayfarer.Balance;
+import io.github.roman16.wayfarer.WorldShape;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.function.IntSupplier;
 import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -20,15 +21,15 @@ final class HallSite {
     private final String prefix;
     private final ResourceLocation hall;
     private final String goal;
-    private final int act;
+    private final IntSupplier ahead;
     @Nullable
     private CompletableFuture<Optional<BlockPos>> searching;
 
-    HallSite(String prefix, ResourceLocation hall, String goal, int act) {
+    HallSite(String prefix, ResourceLocation hall, String goal, IntSupplier ahead) {
         this.prefix = prefix;
         this.hall = hall;
         this.goal = goal;
-        this.act = act;
+        this.ahead = ahead;
     }
 
     Optional<BlockPos> entrance(Progress progress) {
@@ -49,16 +50,13 @@ final class HallSite {
             return;
         }
         ServerLevel level = Engine.overworld(server);
-        Optional<HallSearch.Found> near = HallSearch.nearest(level, hall, from);
-        if (near.isPresent()) {
-            record(server, near.get());
+        Optional<WorldShape.Coasts> coasts = WorldShape.coasts(level);
+        if (coasts.isEmpty()) {
+            server.getPlayerList().broadcastSystemMessage(Component.literal("the search for ground to raise " + hall + " failed: the overworld has no world shape"),
+                    false);
             return;
         }
-        LOGGER.info("no {} grows within reach of {}; the quest looks for fitting ground to raise one", hall, from.toShortString());
-        Balance.World world = Balance.get().world();
-        searching = HallSearch.ground(level, hall, from, act == 2 ? world.homeBlocks() + world.seaBlocks() - world.shoreBlocks() : Balance.get().halls().actThreeFromBlocks(),
-                act == 2 ? Balance.get().halls().actThreeFromBlocks() : Balance.get().strongholds().radiusBlocks() + world.lastSeaPastRingBlocks(),
-                progress.refused(prefix));
+        searching = HallSearch.ground(level, hall, from, Caravan.way(server), ahead.getAsInt(), coasts.get(), progress.refused(prefix));
     }
 
     void tick(MinecraftServer server) {

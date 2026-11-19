@@ -521,7 +521,7 @@ def main():
     chosen.add_argument(
         "--step",
         help="a step of the main quest under way, at or before where the road stands, to carry the road back to, "
-        "such as the_keepers_apprentice/the_smoke",
+        "such as the_bell/the_smoke",
     )
     arguments = parser.parse_args()
     token = os.environ.get("EXAROTON_API_TOKEN")

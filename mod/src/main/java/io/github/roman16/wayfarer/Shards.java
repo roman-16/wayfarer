@@ -11,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemLore;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -24,6 +25,7 @@ import top.theillusivec4.curios.api.type.capability.ICurioItem;
 public final class Shards {
     public static final String SLOT = "shard";
 
+    public static final int TWELVE = 12;
     private static final String ENDREM = "endrem";
     private static final String EYE_SUFFIX = "_eye";
     private static final String TAKEN = "taken";
@@ -36,6 +38,22 @@ public final class Shards {
     };
 
     private Shards() {}
+
+    public static ResourceLocation id(String eye) {
+        return ResourceLocation.fromNamespaceAndPath(ENDREM, eye + EYE_SUFFIX);
+    }
+
+    public static String eye(ResourceLocation shard) {
+        return shard.getPath().substring(0, shard.getPath().length() - EYE_SUFFIX.length());
+    }
+
+    public static Item item(ResourceLocation shard) {
+        return BuiltInRegistries.ITEM.get(shard);
+    }
+
+    public static Component name(ResourceLocation shard) {
+        return Component.translatable("item." + shard.toLanguageKey());
+    }
 
     public static void setup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> BuiltInRegistries.ITEM.entrySet().stream()
@@ -65,12 +83,12 @@ public final class Shards {
         }
     }
 
-    private static ItemStack shard(ResourceLocation hall) {
-        ItemStack shard = new ItemStack(Halls.eye(hall));
+    private static ItemStack stack(ResourceLocation shard) {
+        ItemStack stack = new ItemStack(item(shard));
         List<Component> lore = new ArrayList<>();
-        gift(Halls.eyeKey(hall)).ifPresent(gift -> lore.add(Component.translatable("wayfarer.gift." + gift).withStyle(ChatFormatting.GOLD)));
-        shard.set(DataComponents.LORE, new ItemLore(lore));
-        return shard;
+        gift(eye(shard)).ifPresent(gift -> lore.add(Component.translatable("wayfarer.gift." + gift).withStyle(ChatFormatting.GOLD)));
+        stack.set(DataComponents.LORE, new ItemLore(lore));
+        return stack;
     }
 
     private static Optional<String> gift(String eye) {
@@ -84,7 +102,7 @@ public final class Shards {
         CuriosApi.getCuriosInventory(player).flatMap(curios -> curios.getStacksHandler(SLOT)).ifPresent(handler -> {
             var stacks = handler.getStacks();
             for (int slot = 0; slot < stacks.getSlots(); slot++) {
-                ItemStack shard = slot < claimed.size() ? shard(claimed.get(slot)) : ItemStack.EMPTY;
+                ItemStack shard = slot < claimed.size() ? stack(claimed.get(slot)) : ItemStack.EMPTY;
                 if (!ItemStack.matches(stacks.getStackInSlot(slot), shard)) {
                     if (stacks.getStackInSlot(slot).isEmpty()) {
                         Notices.given(player, List.of(shard));
@@ -93,8 +111,8 @@ public final class Shards {
                 }
             }
         });
-        for (ResourceLocation hall : claimed) {
-            AdvancementHolder advancement = player.server.getAdvancements().get(Wayfarer.id("shards/" + Halls.eyeKey(hall)));
+        for (ResourceLocation shard : claimed) {
+            AdvancementHolder advancement = player.server.getAdvancements().get(Wayfarer.id("shards/" + eye(shard)));
             if (advancement != null && !player.getAdvancements().getOrStartProgress(advancement).isDone()) {
                 player.getAdvancements().award(advancement, TAKEN);
             }

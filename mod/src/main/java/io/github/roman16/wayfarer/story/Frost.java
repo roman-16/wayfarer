@@ -8,7 +8,7 @@ import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.Footing;
-import io.github.roman16.wayfarer.Halls;
+import io.github.roman16.wayfarer.Shards;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,7 +18,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.function.Predicate;
+import javax.annotation.Nullable;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -28,11 +32,9 @@ import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.ChunkPos;
@@ -45,7 +47,6 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.SnowyDirtBlock;
-import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -53,8 +54,6 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.slf4j.Logger;
 
 public final class Frost {
@@ -88,12 +87,17 @@ public final class Frost {
     private static final String SLEEPER = "sleeper";
     private static final String GREY_COAT = "grey_coat";
     private static final ResourceLocation COLD = Wayfarer.id("hall/cold");
+    private static final ResourceLocation SHARD = Shards.id("cold");
     private static final ResourceLocation HOUSE_TEMPLATE = Wayfarer.id("frost/house");
     private static final ResourceLocation LAKE_TEMPLATE = Wayfarer.id("frost/lake");
     private static final String[] DEAD = {"frost_dead_01", "frost_dead_02", "frost_dead_03", "frost_dead_04", "frost_dead_05", "frost_dead_06",
             "frost_dead_07", "frost_dead_08", "frost_dead_09", "frost_dead_10", "frost_dead_11", "frost_dead_12"};
     private static final String[] SLEEPERS = {"frost_01", "frost_02", "frost_03", "frost_04"};
     private static final Logger LOGGER = LogUtils.getLogger();
+    @Nullable
+    private static CompletableFuture<Found> finding;
+    @Nullable
+    private static CompletableFuture<Sounded> sounding;
     private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/frost.json");
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_frost", Comparator.comparingLong(ChunkPos::toLong));
     private static final int GRID = 64;
@@ -103,7 +107,7 @@ public final class Frost {
     private static final int LAKE_RAISED_COST = 4;
     private static final int LAKE_ROUGH_COST = 16;
     private static final int LAKE_ROUGH_MOST = 8;
-    private static final int LAKE_STEP = 128;
+    private static final int LAKE_STEP = 32;
     private static final int LAKE_SNOW_BONUS = 32;
     private static final int INSIDE_SAMPLE = 32;
     private static final int EDGE_STEP = 8;
@@ -147,71 +151,121 @@ public final class Frost {
 
     private enum Kind { PRINT, DRAG, BLOOD, DRIFT }
 
+    private record Found(BlockPos house, boolean houseSnowy, BlockPos hall, boolean hallSnowy, Vec3 along, BlockPos tracks, boolean edge) {}
+
+    private record Sounded(BlockPos site, boolean snowy, Vec3 way) {}
+
     static void find(MinecraftServer server) {
-        Progress progress = Progress.of(server);
-        if (progress.place(HOUSE_SITE).isPresent()) {
+        if (finding != null || Progress.of(server).place(HOUSE_SITE).isPresent()) {
             return;
         }
-        ServerLevel level = Engine.overworld(server);
         Balance.Frost balance = Balance.get().frost();
-        Home.Aim aim = Home.aim(Caravan.last(server), Caravan.way(server),
-                balance.searchBlocks() + balance.hallBlocks());
-        BlockPos from = aim.from();
-        Unseen.Heights heights = new Unseen.Heights(level);
-        Optional<BlockPos> snow = snow(heights, from, aim.way(), balance);
-        Vec3 inward = snow.map(cell -> Vec3.atLowerCornerOf(cell.subtract(from)).multiply(1, 0, 1).normalize()).orElse(aim.way());
-        BlockPos house = snow.map(cell -> edge(heights, cell, inward)).orElseGet(() -> ground(heights, from, aim.way(), balance.searchBlocks() / 2));
-        if (!snowy(heights, house.getX(), house.getZ())) {
-            progress.place(SNOWFIELD + HOUSE, house);
+        int ahead = Balance.get().frostHall().aheadBlocks();
+        Home.Aim aim = Home.aim(Caravan.last(server), Caravan.way(server), balance.searchBlocks() + ahead);
+        Unseen.Heights heights = new Unseen.Heights(Engine.overworld(server));
+        long started = System.nanoTime();
+        finding = CompletableFuture.supplyAsync(() -> found(heights, aim.from(), aim.way(), balance, ahead), Util.backgroundExecutor())
+                .whenComplete((found, failure) -> LOGGER.info("the Frost Walkers' search took {} ms", (System.nanoTime() - started) / 1_000_000));
+    }
+
+    private static void found(MinecraftServer server) {
+        if (finding == null || !finding.isDone()) {
+            return;
         }
-        BlockPos hall = hall(heights, house, inward, balance);
-        if (!snowy(heights, hall.getX(), hall.getZ())) {
-            progress.place(SNOWFIELD + HALL, hall);
+        Progress progress = Progress.of(server);
+        Found found;
+        try {
+            found = finding.join();
+        } catch (CompletionException failure) {
+            LOGGER.error("the Frost Walkers' search failed: {}", failure.getCause().toString());
+            finding = null;
+            return;
         }
-        Vec3 along = along(heights, house, inward, balance);
-        Vec3 tracks = trail(house, along, balance.trailBlocks());
-        progress.place(TRACKS, new BlockPos((int) Math.floor(tracks.x), heights.surface((int) Math.floor(tracks.x), (int) Math.floor(tracks.z)),
-                (int) Math.floor(tracks.z)));
-        progress.place(HOUSE_SITE, house);
-        progress.place(HALL_SITE, hall);
-        progress.yaws.put(ALONG, (float) Math.atan2(along.z, along.x));
+        finding = null;
+        if (!found.houseSnowy()) {
+            progress.place(SNOWFIELD + HOUSE, found.house());
+        }
+        if (!found.hallSnowy()) {
+            progress.place(SNOWFIELD + HALL, found.hall());
+        }
+        progress.place(TRACKS, found.tracks());
+        progress.place(HOUSE_SITE, found.house());
+        progress.place(HALL_SITE, found.hall());
+        progress.yaws.put(ALONG, (float) Math.atan2(found.along().z, found.along().x));
         progress.setDirty();
-        LOGGER.info("the Frost Walkers' winter house lies at {}{}, their hall at {}, the tracks cross the way at {}", house,
-                snow.isPresent() ? " at the snow's edge" : " in a snowfield the quest makes", hall, progress.place(TRACKS).orElseThrow());
+        LOGGER.info("the Frost Walkers' winter house lies at {}{}, their hall at {}, the tracks cross the way at {}", found.house(),
+                found.edge() ? " at the snow's edge" : " in a snowfield the quest makes", found.hall(), found.tracks());
+    }
+
+    private static Found found(Unseen.Heights heights, BlockPos from, Vec3 way, Balance.Frost balance, int ahead) {
+        Optional<BlockPos> snow = snow(heights, from, way, balance);
+        Vec3 inward = snow.map(cell -> Vec3.atLowerCornerOf(cell.subtract(from)).multiply(1, 0, 1).normalize()).orElse(way);
+        BlockPos house = snow.map(cell -> edge(heights, cell, inward)).orElseGet(() -> ground(heights, from, way, balance.searchBlocks() / 2));
+        BlockPos hall = hall(heights, house, inward, ahead);
+        Vec3 along = along(heights, house, inward, balance);
+        Vec3 trail = trail(house, along, balance.trailBlocks());
+        int x = (int) Math.floor(trail.x);
+        int z = (int) Math.floor(trail.z);
+        return new Found(house, snowy(heights, house.getX(), house.getZ()), hall, snowy(heights, hall.getX(), hall.getZ()), along,
+                new BlockPos(x, heights.surface(x, z), z), snow.isPresent());
     }
 
     static void lake(MinecraftServer server) {
         Progress progress = Progress.of(server);
-        if (progress.place(LAKE_SITE).isPresent()) {
+        if (sounding != null || progress.place(LAKE_SITE).isPresent()) {
             return;
         }
-        ServerLevel level = Engine.overworld(server);
-        Balance.Frost balance = Balance.get().frost();
         BlockPos from = progress.place(HALL_SITE).orElseGet(() -> Caravan.last(server));
-        Home.Aim aim = Home.aim(from, new Vec3(1, 0, 0), balance.lakeBlocks());
-        Unseen.Heights heights = new Unseen.Heights(level);
-        BlockPos site = hollow(heights, aim.from(), aim.way(), balance);
-        if (!snowy(heights, site.getX(), site.getZ())) {
-            progress.place(SNOWFIELD + LAKE, site);
+        Home.Aim aim = Home.aim(from, new Vec3(1, 0, 0), Balance.get().frostLake().aheadBlocks());
+        Unseen.Heights heights = new Unseen.Heights(Engine.overworld(server));
+        Balance.FrostLake balance = Balance.get().frostLake();
+        long started = System.nanoTime();
+        sounding = CompletableFuture.supplyAsync(() -> {
+            BlockPos site = hollow(heights, aim.from(), aim.way(), balance);
+            return new Sounded(site, snowy(heights, site.getX(), site.getZ()), aim.way());
+        }, Util.backgroundExecutor()).whenComplete((sounded, failure) -> LOGGER.info("the frozen lake's search took {} ms", (System.nanoTime() - started) / 1_000_000));
+    }
+
+    private static void sounded(MinecraftServer server) {
+        if (sounding == null || !sounding.isDone()) {
+            return;
         }
-        progress.place(LAKE_SITE, site);
-        progress.yaws.put(LAKE_TURN, (float) facing(aim.way().scale(-1)).ordinal());
+        Progress progress = Progress.of(server);
+        Sounded sounded;
+        try {
+            sounded = sounding.join();
+        } catch (CompletionException failure) {
+            LOGGER.error("the frozen lake's search failed: {}", failure.getCause().toString());
+            sounding = null;
+            return;
+        }
+        sounding = null;
+        if (!sounded.snowy()) {
+            progress.place(SNOWFIELD + LAKE, sounded.site());
+        }
+        progress.place(LAKE_SITE, sounded.site());
+        progress.yaws.put(LAKE_TURN, (float) facing(sounded.way().scale(-1)).ordinal());
         progress.setDirty();
-        LOGGER.info("the frozen lake lies at {}", site);
+        LOGGER.info("the frozen lake lies at {}", sounded.site());
     }
 
-    private static BlockPos hollow(Unseen.Heights heights, BlockPos from, Vec3 way, Balance.Frost balance) {
+    static void reset() {
+        finding = null;
+        sounding = null;
+    }
+
+    private static BlockPos hollow(Unseen.Heights heights, BlockPos from, Vec3 way, Balance.FrostLake balance) {
         return hollow(heights, from, way, balance, LAKE_ROUGH_MOST).or(() -> hollow(heights, from, way, balance, Integer.MAX_VALUE))
-                .orElseGet(() -> ground(heights, from, way, balance.lakeBlocks()));
+                .orElseGet(() -> ground(heights, from, way, balance.aheadBlocks()));
     }
 
-    private static Optional<BlockPos> hollow(Unseen.Heights heights, BlockPos from, Vec3 way, Balance.Frost balance, int roughest) {
+    private static Optional<BlockPos> hollow(Unseen.Heights heights, BlockPos from, Vec3 way, Balance.FrostLake balance, int roughest) {
         int reach = PLAN.get().getAsJsonObject("lake").getAsJsonArray("size").get(0).getAsInt() / 2 + LAKE_MARGIN;
         BlockPos best = null;
         double most = Double.NEGATIVE_INFINITY;
-        for (int turned = -balance.lakeFanDegrees(); turned <= balance.lakeFanDegrees(); turned += LAKE_FAN_STEP) {
+        for (int turned = -balance.fanDegrees(); turned <= balance.fanDegrees(); turned += LAKE_FAN_STEP) {
             Vec3 along = way.yRot((float) Math.toRadians(turned));
-            for (int distance = balance.lakeBlocks() - balance.lakeSpreadBlocks(); distance <= balance.lakeBlocks() + balance.lakeSpreadBlocks(); distance += LAKE_STEP) {
+            for (int distance = balance.aheadBlocks() - balance.spreadBlocks(); distance <= balance.aheadBlocks() + balance.spreadBlocks(); distance += LAKE_STEP) {
                 Vec3 at = Vec3.atLowerCornerOf(from).add(along.scale(distance));
                 int x = (int) Math.round(at.x);
                 int z = (int) Math.round(at.z);
@@ -226,7 +280,7 @@ public final class Frost {
                 }
                 around /= 4;
                 double score = -(spread.get()[1] - spread.get()[0]) * LAKE_ROUGH_COST - Math.max(0, y - around) * LAKE_RAISED_COST
-                        + (snowy(heights, x, z) ? LAKE_SNOW_BONUS : 0) - Math.abs(distance - balance.lakeBlocks()) / (double) LAKE_STEP;
+                        + (snowy(heights, x, z) ? LAKE_SNOW_BONUS : 0) - Math.abs(distance - balance.aheadBlocks()) / (double) LAKE_STEP;
                 if (score > most) {
                     most = score;
                     best = new BlockPos(x, y, z);
@@ -327,10 +381,10 @@ public final class Frost {
         return new BlockPos((int) Math.round(at.x), heights.surface((int) Math.round(at.x), (int) Math.round(at.z)), (int) Math.round(at.z));
     }
 
-    private static BlockPos hall(Unseen.Heights heights, BlockPos house, Vec3 inward, Balance.Frost balance) {
+    private static BlockPos hall(Unseen.Heights heights, BlockPos house, Vec3 inward, int ahead) {
         for (int turned = 0; turned <= TURN_MOST_DEGREES; turned += TURN_STEP_DEGREES) {
             for (int sign : turned == 0 ? new int[] {1} : new int[] {1, -1}) {
-                Vec3 at = Vec3.atLowerCornerOf(house).add(inward.yRot((float) Math.toRadians(turned * sign)).scale(balance.hallBlocks()));
+                Vec3 at = Vec3.atLowerCornerOf(house).add(inward.yRot((float) Math.toRadians(turned * sign)).scale(ahead));
                 int x = (int) Math.round(at.x);
                 int z = (int) Math.round(at.z);
                 if (snowy(heights, x, z) && flat(heights, x, z)) {
@@ -338,7 +392,7 @@ public final class Frost {
                 }
             }
         }
-        Vec3 at = Vec3.atLowerCornerOf(house).add(inward.scale(balance.hallBlocks()));
+        Vec3 at = Vec3.atLowerCornerOf(house).add(inward.scale(ahead));
         int x = (int) Math.round(at.x);
         int z = (int) Math.round(at.z);
         return new BlockPos(x, heights.surface(x, z), z);
@@ -377,6 +431,8 @@ public final class Frost {
     }
 
     static void tick(MinecraftServer server) {
+        found(server);
+        sounded(server);
         Progress progress = Progress.of(server);
         ServerLevel level = Engine.overworld(server);
         progress.place(HOUSE_SITE).filter(site -> progress.place(HOUSE).isEmpty() && loaded(level, site)).ifPresent(site -> house(server, site));
@@ -734,7 +790,7 @@ public final class Frost {
         }
         BlockPos stone = progress.place(STONE).orElseThrow();
         if (dream.getBlockEntity(stone) instanceof CallingStoneBlockEntity calling) {
-            calling.hold(Optional.of(COLD));
+            calling.hold(Optional.of(SHARD));
         }
         BoundingBox shaft = BoundingBox.fromCorners(progress.place(SHAFT_LOW).orElseThrow(), progress.place(SHAFT_HIGH).orElseThrow());
         List<Dead> sleepers = dead(dream, box, stone, shaft);
@@ -772,22 +828,6 @@ public final class Frost {
 
     static boolean built(MinecraftServer server) {
         return Progress.of(server).place(HALL_LOW).isPresent();
-    }
-
-    @SubscribeEvent
-    public static void onReadLectern(PlayerInteractEvent.RightClickBlock event) {
-        if (!(event.getEntity() instanceof ServerPlayer player) || player.level().dimension() != Level.OVERWORLD
-                || !(player.level().getBlockEntity(event.getPos()) instanceof LecternBlockEntity)) {
-            return;
-        }
-        Progress progress = Progress.of(player.server);
-        if (progress.place(HALL_LOW).isEmpty() || !BoundingBox.fromCorners(progress.place(HALL_LOW).get(), progress.place(HALL_HIGH).orElseThrow())
-                .isInside(event.getPos())) {
-            return;
-        }
-        event.setCanceled(true);
-        event.setCancellationResult(InteractionResult.SUCCESS);
-        Halls.openBook(player, COLD);
     }
 
     static Rotation facing(Vec3 along) {

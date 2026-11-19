@@ -78,7 +78,7 @@ public final class Stepping {
     private static Component place(CommandSourceStack source, String name, BlockPos pos) {
         BlockPos from = BlockPos.containing(source.getPosition());
         return Component.translatable("wayfarer.step.place", Component.translatable(Places.label(source.getServer(), name)), pos.getX(), pos.getY(), pos.getZ(),
-                (int) Math.round(Math.sqrt(Steps.horizontal(from, pos))), FirstCamp.direction(from, pos));
+                (int) Math.round(Math.sqrt(Steps.horizontal(from, pos))), Steps.direction(from, pos));
     }
 
     private static int again(CommandContext<CommandSourceStack> context, String quest) {

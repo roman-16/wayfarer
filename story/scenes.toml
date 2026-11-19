@@ -83,10 +83,10 @@ seen_dolphins = "Dolphins come up beside you and keep pace a while."
 voice = ["[low, uneasy] Don't look for it. It's looking already."]
 
 [scenes.sea]
-voice = ["[dry] It pulls out over the water. You'll want a boat.", "[amused] It pulls out over the water again. Get your boat wet."]
+voice = ["[dry] It pulls out over the water. You'll want a boat.", "[amused] It pulls out over the water again. Take your boat out."]
 
 [scenes.traveller]
-clues.traveller = "[grim] A traveller lies by the road, cut open over the heart, like the dead in Tollbridge. [pause] The purse on the belt is still full."
+clues.traveller = "[grim] A traveller lies by the road, the chest cut open, like the dead in Tollbridge. [pause] The purse on the belt is still full."
 voice = ["[grave] They walked alone, at night. Don't."]
 
 [scenes.trunk]

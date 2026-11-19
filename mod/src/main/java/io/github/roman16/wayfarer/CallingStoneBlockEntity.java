@@ -13,20 +13,20 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class CallingStoneBlockEntity extends BlockEntity {
-    private static final String HALL = "hall";
+    private static final String SHARD = "shard";
 
-    private ResourceLocation hall;
+    private ResourceLocation shard;
 
     public CallingStoneBlockEntity(BlockPos pos, BlockState state) {
         super(Wayfarer.CALLING_STONE_ENTITY.get(), pos, state);
     }
 
-    public Optional<ResourceLocation> hall() {
-        return Optional.ofNullable(hall);
+    public Optional<ResourceLocation> shard() {
+        return Optional.ofNullable(shard);
     }
 
     public void hold(Optional<ResourceLocation> held) {
-        hall = held.orElse(null);
+        shard = held.orElse(null);
         setChanged();
         if (level != null) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
@@ -36,14 +36,14 @@ public class CallingStoneBlockEntity extends BlockEntity {
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
-        hall = tag.contains(HALL) ? ResourceLocation.parse(tag.getString(HALL)) : null;
+        shard = tag.contains(SHARD) ? ResourceLocation.parse(tag.getString(SHARD)) : null;
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        if (hall != null) {
-            tag.putString(HALL, hall.toString());
+        if (shard != null) {
+            tag.putString(SHARD, shard.toString());
         }
     }
 

@@ -231,14 +231,6 @@
       }
     ]
   },
-  "story_music.first_camp": {
-    "sounds": [
-      {
-        "name": "wayfarer:music/first_camp",
-        "stream": true
-      }
-    ]
-  },
   "story_music.first_fire": {
     "sounds": [
       {
@@ -311,14 +303,6 @@
       }
     ]
   },
-  "story_music.wend_camp": {
-    "sounds": [
-      {
-        "name": "wayfarer:music/wend_camp",
-        "stream": true
-      }
-    ]
-  },
   "task_ticked": {
     "sounds": [
       {
@@ -353,13 +337,5 @@
       }
     ],
     "subtitle": "subtitles.wayfarer.town_burning"
-  },
-  "true_sight": {
-    "sounds": [
-      {
-        "name": "wayfarer:effects/true_sight"
-      }
-    ],
-    "subtitle": "subtitles.wayfarer.true_sight"
   }
 }

@@ -30,7 +30,11 @@ capital = [
   "minecraft:village_taiga",
 ]
 
+coast = ["minecraft:shipwreck_beached"]
+
 cut = [
+  "minecraft:ocean_ruin_cold",
+  "minecraft:ocean_ruin_warm",
   "minecraft:ruined_portal",
   "minecraft:ruined_portal_desert",
   "minecraft:ruined_portal_jungle",
@@ -38,6 +42,7 @@ cut = [
   "minecraft:ruined_portal_nether",
   "minecraft:ruined_portal_ocean",
   "minecraft:ruined_portal_swamp",
+  "minecraft:shipwreck",
   "minecraft:trial_chambers",
   "mvs:beach_bar",
   "mvs:crimson_enchanting_table",
@@ -48,9 +53,15 @@ cut = [
   "mvs:large_warped_tower",
   "mvs:nether_devil",
   "mvs:nether_well",
+  "mvs:ocean_tower",
+  "mvs:prismarine_house_1",
+  "mvs:prismarine_house_2",
   "mvs:ruined_beacon",
+  "mvs:small_ship",
   "mvs:sunzi_gate",
   "mvs:warped_house",
+  "structory:boat",
+  "supplementaries:galleon",
   "terralith:mage_complex",
   "terralith:mage_tower",
   "terralith:mage_tower_autumn",
@@ -58,14 +69,23 @@ cut = [
   "terralith:mage_tower_summer",
   "terralith:mage_tower_winter",
   "towns_and_towers:exclusives/village_piglin",
+  "towns_and_towers:wreckage_ocean",
   "trek:overworld/medium/hobbit_hole",
   "trek:overworld/medium/orbital",
+  "trek:overworld/medium/ruine_bateaux",
   "trek:overworld/medium/snowman",
   "trek:overworld/medium/underwater_sword",
+  "trek:overworld/rare/cottage_island",
   "trek:overworld/rare/maya",
+  "trek:overworld/rare/mushroom_island",
   "trek:overworld/rare/pillager_mansion",
   "trek:overworld/rare/portal_sword",
   "trek:overworld/rare/pyramide_of_anubis",
+  "trek:overworld/rare/sleepy_island",
+  "trek:overworld/rare/sunken_city",
+  "trek:overworld/rare/tower_island",
+  "trek:overworld/rare/villager_island",
+  "trek:overworld/very_rare/coves",
   "trek:overworld/very_rare/farm_island",
   "trek:overworld/very_rare/floating_farm_large",
 ]
@@ -388,28 +408,6 @@ ruin = [
   "trek:overworld/medium/haunted_house",
   "trek:overworld/medium/ruine_cabane",
   "trek:overworld/medium/ruine_tour",
-]
-
-sea = [
-  "minecraft:ocean_ruin_cold",
-  "minecraft:ocean_ruin_warm",
-  "minecraft:shipwreck",
-  "minecraft:shipwreck_beached",
-  "mvs:ocean_tower",
-  "mvs:prismarine_house_1",
-  "mvs:prismarine_house_2",
-  "mvs:small_ship",
-  "structory:boat",
-  "supplementaries:galleon",
-  "towns_and_towers:wreckage_ocean",
-  "trek:overworld/medium/ruine_bateaux",
-  "trek:overworld/rare/cottage_island",
-  "trek:overworld/rare/mushroom_island",
-  "trek:overworld/rare/sleepy_island",
-  "trek:overworld/rare/sunken_city",
-  "trek:overworld/rare/tower_island",
-  "trek:overworld/rare/villager_island",
-  "trek:overworld/very_rare/coves",
 ]
 
 settled = [

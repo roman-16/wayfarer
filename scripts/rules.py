@@ -36,7 +36,7 @@ SILENT_NAMED = 8
 SHOWN_JSON = MOD / "generated/resources/wayfarer"
 SHOWN_BOOKS = MOD / "generated/resources/data/wayfarer/loot_table/books"
 SHOWN_TAG = re.compile(r'"[^"\n]*(\[[A-Za-z][^\]"\n]*\])[^"\n]*"')
-WORLD_CONDITIONS = ("carries:", "gift:", "hour:", "joined:", "land:", "trusted:")
+WORLD_CONDITIONS = ("carries:", "gift:", "hour:", "joined:", "land:", "page:", "trusted:", "trusts:")
 CLAIMS = (
     (re.compile(r"(?i)\b(burnt through|sunburnt|scorched through)\b"), "land:hot"),
     (re.compile(r"(?i)\b(frozen through|half frozen|chilled through)\b"), "land:cold"),
@@ -59,7 +59,7 @@ TIME_WORDS = re.compile(r"(?i)\b(tonight|today|this evening|this morning|tomorro
 WEARS = re.compile(r"(?i)\b(over your head|you put (?:it|them) on|you wear)\b")
 HANDS = re.compile(r"((?:^|[.!?\]]\s+)Here\.|\b[Tt]ake this\b|\b[Tt]his is yours\b)")
 BAND = re.compile(r'Talk\.(?:notice|tell)\((?:[a-z]+, )?Component\.translatable\("(wayfarer\.[a-z_.]+[a-z_])"\s*[,)]')
-SPREADS = ("lake_blocks", "search_blocks", "spread_blocks")
+SPREADS = ("search_blocks", "spread_blocks")
 QUESTION = re.compile(r"[^.!?]*\?")
 ADDRESSED = re.compile(r"(?i)\b(you|your)\b")
 FIRE_WORDS = re.compile(r"(?i)\b(at the fire|by the fire|followed you|I watched)\b")
@@ -75,15 +75,15 @@ def sides():
             yield f"{meta.relative_to(ROOT)}: side is {side!r}; singleplayer runs the server inside the client, so a mod is either client or both"
 
 
-def hall_eyes():
+def shard_eyes():
     return tomllib.loads((ROOT / "generator/eyes.toml").read_text())["eyes"]
 
 
 def eyes():
-    for eye, spec in sorted(hall_eyes().items()):
-        if not spec.get("lore") or not spec.get("people"):
-            yield f"the {eye} eye has no people or lore in generator/eyes.toml"
-        if not (MOD / f"generated/resources/data/wayfarer/structure/hall/{eye}/hall.nbt").exists():
+    for eye, spec in sorted(shard_eyes().items()):
+        if not spec.get("people"):
+            yield f"the {eye} eye has no people in generator/eyes.toml"
+        if "lore" in spec and not (MOD / f"generated/resources/data/wayfarer/structure/hall/{eye}/hall.nbt").exists():
             yield f"the {eye} eye has no hall; run just generate"
 
 
@@ -98,7 +98,7 @@ def translations():
 def titles():
     lang = json.loads(LANG.read_text())
     shown = {key: text for key, text in lang.items() if key.startswith("wayfarer.night.")}
-    shown |= {f"the people of the {eye} eye": spec["people"] for eye, spec in hall_eyes().items()}
+    shown |= {f"the people of the {eye} eye": spec["people"] for eye, spec in shard_eyes().items()}
     for key, text in sorted(shown.items()):
         limit = (
             TITLE_LIMIT
@@ -129,7 +129,7 @@ def story_books():
 
 def books():
     entries = story_books()
-    titles = [entry["title"] for entry in entries] + [spec["people"] for spec in hall_eyes().values()]
+    titles = [entry["title"] for entry in entries] + [spec["people"] for spec in shard_eyes().values()]
     for title in titles:
         if len(title) > BOOK_TITLE_LIMIT:
             yield f"the book title {title!r} is {len(title)} characters; Minecraft allows {BOOK_TITLE_LIMIT}"
@@ -144,14 +144,12 @@ def books():
 
 FATES = {"away", "lives", "lost"}
 KINDS = {
-    "board",
     "bury",
     "camp",
     "caravan",
     "chase",
     "clues",
     "dawn",
-    "duel",
     "dusk",
     "escort",
     "gather",
@@ -178,9 +176,8 @@ KINDS = {
     "wins",
     "worm",
 }
-MEMORY_KINDS = {"away", "cast", "climb", "cook", "gather", "lay", "light", "notch", "say", "take", "talk"}
+MEMORY_KINDS = {"away", "cast", "climb", "say", "take", "talk"}
 PLACES = {
-    "airfield",
     "bell",
     "bell_agna",
     "bell_hob",
@@ -200,13 +197,11 @@ PLACES = {
     "dice",
     "diggers",
     "diggers_hall",
-    "dry",
-    "dry_stone",
+    "edda",
     "errand_outpost",
     "far_shore",
     "fire_1",
     "fire_2",
-    "first_camp",
     "first_gate",
     "first_village",
     "first_village_melt",
@@ -215,8 +210,8 @@ PLACES = {
     "ford_far",
     "frost",
     "frost_door",
-    "frost_hearth",
     "frost_hall",
+    "frost_hearth",
     "frost_inside",
     "frost_lake",
     "frost_lake_stone",
@@ -229,8 +224,6 @@ PLACES = {
     "frost_stair",
     "frost_stone",
     "frost_tracks",
-    "graveyard",
-    "graveyard_stone",
     "hollow",
     "home",
     "keepers",
@@ -238,23 +231,15 @@ PLACES = {
     "last_bundle",
     "last_camp",
     "locks",
-    "locks_heir",
     "locks_stone",
     "malgven",
     "mansion",
     "mansion_captive_1",
     "mansion_captive_2",
     "mansion_captive_3",
-    "mansion_chair",
-    "mansion_hall",
-    "mansion_stand",
-    "marsh",
-    "marsh_cellar",
-    "marsh_fisher",
-    "marsh_hall",
+    "mansion_cellar",
     "mauds_bell",
     "missing",
-    "nest",
     "never_sleeps",
     "novice",
     "reading_house",
@@ -262,7 +247,9 @@ PLACES = {
     "reading_house_vault",
     "rite",
     "sand",
+    "sand_heir",
     "sand_lair",
+    "sand_rim",
     "sand_sefa",
     "scribes",
     "scribes_stone",
@@ -282,13 +269,6 @@ PLACES = {
     "tide_warden_1",
     "tide_warden_2",
     "tollbridge",
-    "ward",
-    "ward_champion",
-    "ward_lines",
-    "ward_stone",
-    "ward_warden",
-    "wend_camp",
-    "wend_camp_chair",
     "wil",
 }
 KNOWN = {"feeling"}
@@ -316,11 +296,14 @@ TASKS = {
 
 
 def unoffered(outcomes, condition):
-    condition = condition.lstrip("!")
-    if not condition or condition.startswith(WORLD_CONDITIONS):
-        return []
-    asked, _, answers = condition.partition("=")
-    return [(asked, answer) for answer in answers.split("|") if answer not in outcomes.get(asked, set())]
+    missing = []
+    for part in condition.split("&"):
+        part = part.lstrip("!")
+        if not part or part.startswith(WORLD_CONDITIONS):
+            continue
+        asked, _, answers = part.partition("=")
+        missing += [(asked, answer) for answer in answers.split("|") if answer not in outcomes.get(asked, set())]
+    return missing
 
 
 def epilogue(spec, outcomes, people):
@@ -439,6 +422,7 @@ def story():
                 yield f"story/scenes.toml: the {scene} scene has {line['by']} speak, who is not in story/people.toml"
     outcomes = {
         f"{quest['id']}/{step['id']}": {choice["id"] for choice in step.get("choices", [])}
+        | set(step.get("objectives", {}))
         | (CHASE_OUTCOMES if step["kind"] == "chase" else set())
         | (DUEL_OUTCOMES if step["kind"] == "duel" else set())
         | (ESCORT_OUTCOMES if step["kind"] == "escort" else set())

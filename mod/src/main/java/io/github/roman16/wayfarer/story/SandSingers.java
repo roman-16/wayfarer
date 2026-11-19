@@ -9,6 +9,7 @@ import io.github.roman16.wayfarer.Journey;
 import io.github.roman16.wayfarer.Shards;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.github.roman16.wayfarer.worm.GreatWorms;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,16 +33,19 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Instrument;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -65,8 +69,8 @@ public final class SandSingers {
     private static final String KILLED = "killed";
     private static final ResourceLocation TEMPLATE = Wayfarer.id("sand/camp");
     private static final String EYE = "old";
-    private static final ResourceLocation HALL = Wayfarer.id("hall/" + EYE);
-    private static final HallSite SITE = new HallSite(NAME, HALL, NAME, 2);
+    private static final ResourceLocation SHARD = Shards.id(EYE);
+    private static final HallSite SITE = new HallSite(NAME, Wayfarer.id("hall/" + EYE), NAME, () -> Balance.get().sand().aheadBlocks());
     private static final ResourceLocation SING = ResourceLocation.withDefaultNamespace("sing_goat_horn");
     private static final String GECKOLIB = "geckolib";
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -80,6 +84,21 @@ public final class SandSingers {
     private static final int DUST = 96;
     private static final int STILL = 1;
     private static final int DRY_STEP = 16;
+    private static final String QUEST = "the_worm";
+    private static final List<String> WAITING = List.of("the_ground", "the_memory", "the_worm", "the_heir");
+    private static final List<String> HIDDEN = List.of("the_ground", "the_memory", "the_worm");
+    private static final String HEIR = "heir";
+    private static final String HEIR_STEP = "the_heir";
+    private static final String MAN = Wayfarer.MODID + "_heirs_man";
+    private static final String CUT = "seat_sand_heir";
+    private static final String RIM = "seat_sand_rim";
+    private static final String MET = "sand_heir_met";
+    private static final int CUT_BELOW = 5;
+    private static final int CUT_HALF = 3;
+    private static final int CUT_HEIGHT = 3;
+    private static final int CLOSE = 8;
+    private static final int COMES = 12;
+    private static final int SIDE = 2;
     private static final TagKey<Biome> SAND = TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath("c", "is_desert"));
     private static final Map<UUID, Vec3> resting = new HashMap<>();
     private static final Map<UUID, Long> restingSince = new HashMap<>();
@@ -98,7 +117,7 @@ public final class SandSingers {
     static void unbuild(MinecraftServer server) {
         Progress progress = Progress.of(server);
         SITE.forget(progress);
-        List.of(CAMP_ORIGIN, LAIR_SITE, LAIR_BUILT, LAIR).forEach(progress.places::remove);
+        List.of(CAMP_ORIGIN, LAIR_SITE, LAIR_BUILT, LAIR, CUT, RIM, MET).forEach(progress.places::remove);
     }
 
     static boolean ready(MinecraftServer server, String name) {
@@ -126,6 +145,88 @@ public final class SandSingers {
             lair(server, level, site);
             HallSearch.release(level, site);
         });
+        progress.place(CUT).filter(cut -> level.areEntitiesLoaded(ChunkPos.asLong(cut))).ifPresent(cut -> watch(server, level, cut));
+    }
+
+    private static Optional<String> step(MinecraftServer server) {
+        return Engine.active(server).stream().filter(active -> active.quest().id().equals(QUEST)).map(active -> active.step().id()).findFirst();
+    }
+
+    private static void watch(MinecraftServer server, ServerLevel level, BlockPos cut) {
+        Progress progress = Progress.of(server);
+        Optional<String> step = step(server);
+        boolean waiting = step.filter(WAITING::contains).isPresent();
+        List<Entity> men = level.getEntities((Entity) null, new AABB(cut).inflate(BOWL), entity -> entity.getTags().contains(MAN));
+        if (!waiting) {
+            men.forEach(Entity::discard);
+            return;
+        }
+        if (men.isEmpty()) {
+            men = men(level, cut);
+        }
+        Optional<Entity> heir = People.find(server, HEIR).filter(body -> body.level() == level);
+        if (progress.place(MET).isEmpty() && heir.filter(body -> level.players().stream().anyMatch(player -> player.distanceToSqr(body) <= (double) CLOSE * CLOSE)).isPresent()) {
+            progress.place(MET, cut);
+            progress.setDirty();
+        }
+        if (step.filter(HEIR_STEP::equals).isPresent()) {
+            heir.ifPresent(body -> Engine.players(server).stream().filter(player -> player.level() == level)
+                    .min(Comparator.comparingDouble(player -> player.distanceToSqr(body))).filter(player -> player.distanceTo(body) > COMES)
+                    .ifPresent(player -> {
+                        People.catchUp(level, HEIR, player.position(), player.getYRot());
+                        if (!People.walking(HEIR)) {
+                            People.walk(server, HEIR, player.position(), People.WALKING);
+                        }
+                    }));
+        }
+        boolean seen = step.filter(HIDDEN::contains).isPresent() && progress.place(MET).isEmpty();
+        heir.filter(body -> body.hasGlowingTag() != seen).ifPresent(body -> body.setGlowingTag(seen));
+        men.stream().filter(man -> man.hasGlowingTag() != seen).forEach(man -> man.setGlowingTag(seen));
+    }
+
+    private static List<Entity> men(ServerLevel level, BlockPos cut) {
+        Progress progress = Progress.of(level.getServer());
+        float yaw = progress.yaws.getOrDefault(CUT, 0f);
+        Vec3 facing = Vec3.directionFromRotation(0, yaw);
+        Vec3 across = new Vec3(-facing.z, 0, facing.x);
+        for (int side : new int[] {SIDE, -SIDE}) {
+            Mob man = EntityType.VINDICATOR.create(level);
+            if (man == null) {
+                continue;
+            }
+            Vec3 at = Vec3.atBottomCenterOf(cut).add(across.scale(side));
+            man.moveTo(at.x, at.y, at.z, yaw, 0);
+            man.setYHeadRot(yaw);
+            man.setNoAi(true);
+            man.setInvulnerable(true);
+            man.setSilent(true);
+            man.setPersistenceRequired();
+            man.addTag(MAN);
+            level.addFreshEntity(man);
+        }
+        return level.getEntities((Entity) null, new AABB(cut).inflate(BOWL), entity -> entity.getTags().contains(MAN));
+    }
+
+    private static void cut(ServerLevel level, Progress progress, BlockPos site, Vec3 away) {
+        Vec3 across = new Vec3(-away.z, 0, away.x);
+        BlockPos middle = BlockPos.containing(Vec3.atLowerCornerOf(site).add(away.scale(BOWL + CUT_HEIGHT)));
+        int floor = Ground.land(level, middle.getX(), middle.getZ()) - CUT_BELOW - CUT_HEIGHT;
+        for (int along = -CUT_HALF; along <= CUT_HALF; along++) {
+            for (int deep = -1; deep <= 1; deep++) {
+                BlockPos column = BlockPos.containing(Vec3.atLowerCornerOf(middle).add(across.scale(along)).add(away.scale(deep)));
+                level.setBlock(column.atY(floor), Blocks.SANDSTONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+                for (int y = floor + 1; y <= floor + CUT_HEIGHT; y++) {
+                    level.setBlock(column.atY(y), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+                }
+                level.setBlock(column.atY(floor + CUT_HEIGHT + 1), Blocks.SANDSTONE.defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
+        }
+        float inward = Frost.yaw(away.scale(-1));
+        progress.place(CUT, middle.atY(floor + 1));
+        progress.yaws.put(CUT, inward);
+        BlockPos rim = BlockPos.containing(Vec3.atLowerCornerOf(site).add(away.scale(BOWL - 1)));
+        progress.place(RIM, rim.atY(Ground.land(level, rim.getX(), rim.getZ()) + 1));
+        progress.yaws.put(RIM, inward);
     }
 
     private static BlockPos dry(ServerLevel level, BlockPos wanted, BlockPos hall) {
@@ -210,6 +311,9 @@ public final class SandSingers {
             BlockPos bone = new BlockPos(x, Ground.land(level, x, z) + 1, z);
             level.setBlock(bone, Blocks.BONE_BLOCK.defaultBlockState(), Block.UPDATE_CLIENTS);
         }
+        Vec3 away = SITE.entrance(progress).map(top -> Vec3.atLowerCornerOf(site.subtract(top)).multiply(1, 0, 1)).filter(way -> way.lengthSqr() > 1)
+                .map(Vec3::normalize).orElse(new Vec3(1, 0, 0));
+        cut(level, progress, site, away);
         BlockPos spear = new BlockPos(site.getX(), Ground.land(level, site.getX(), site.getZ()) + 1, site.getZ());
         level.setBlock(spear, Blocks.SPRUCE_FENCE.defaultBlockState(), Block.UPDATE_CLIENTS);
         Clues.marker(level, spear, "spear");
@@ -393,7 +497,7 @@ public final class SandSingers {
         MinecraftServer server = level.getServer();
         Engine.active(server).stream().filter(active -> active.step().kind().equals("worm")).findFirst().ifPresent(active -> {
             dust(level, event.getEntity().position());
-            Journey.of(server).claim(HALL);
+            Journey.of(server).claim(SHARD);
             server.getPlayerList().getPlayers().forEach(Shards::sync);
             Steps.gifts(Progress.of(server), active.step(), List.of(EYE));
             end(server, active, KILLED);

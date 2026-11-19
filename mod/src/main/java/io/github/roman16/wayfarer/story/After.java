@@ -2,6 +2,8 @@ package io.github.roman16.wayfarer.story;
 
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Journey;
+import io.github.roman16.wayfarer.RestEvent;
+import io.github.roman16.wayfarer.Tents;
 import io.github.roman16.wayfarer.Wayfarer;
 import io.netty.buffer.ByteBuf;
 import java.util.HashMap;
@@ -32,6 +34,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 public final class After {
     static final String DOORS = "the_doors";
     static final String HOME = "home";
+    static final String OWN_FIRE = "own_fire";
+    private static final String HOME_STEP = "the_promised_home/the_camp";
     private static final String FINALE = "finale";
     private static final String BLIND = "blind";
     private static final String SIGHT = "sight";
@@ -113,6 +117,10 @@ public final class After {
         return Engine.running(server) && door(progress).filter(CLOSE::equals).isPresent() && !Engine.holds(progress, PIP_LOST);
     }
 
+    static boolean byOwnFire(Progress progress) {
+        return OWN_FIRE.equals(progress.choices.get(HOME_STEP));
+    }
+
     private static boolean home(Progress progress, BlockPos at) {
         int reach = Balance.get().after().homeBlocks();
         return progress.place(HOME).filter(home -> Steps.horizontal(home, at) <= (double) reach * reach).isPresent();
@@ -122,7 +130,13 @@ public final class After {
         Progress progress = Progress.of(server);
         progress.scratch(SCRATCH).putBoolean(BEGUN, true);
         if (door.equals(SIGHT)) {
-            progress.place(HOME, Caravan.last(server));
+            Optional<BlockPos> fire = progress.place(OWN_FIRE);
+            if (fire.isPresent() && Steps.alone(progress)) {
+                progress.place(HOME, fire.get());
+                progress.choices.put(HOME_STEP, OWN_FIRE);
+            } else {
+                progress.place(HOME, Caravan.last(server));
+            }
         }
         if (door.equals(CLOSE)) {
             Journey.of(server).end();
@@ -161,6 +175,21 @@ public final class After {
                     player.connection.teleport(anchor.x, anchor.y, anchor.z, player.getYRot(), player.getXRot());
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRest(RestEvent event) {
+        ServerPlayer player = event.player();
+        MinecraftServer server = player.server;
+        BlockPos fire = event.fire();
+        if (!Engine.running(server) || player.level().dimension() != Level.OVERWORLD || !Tents.pitchedNear(player.serverLevel(), fire, Balance.get().tent().fireBlocks())
+                || Caravan.fire(server).filter(caravan -> Steps.horizontal(caravan, fire) <= Math.pow(Balance.get().fire().circleBlocks(), 2)).isPresent()) {
+            return;
+        }
+        Progress progress = Progress.of(server);
+        if (progress.place(OWN_FIRE).filter(fire::equals).isEmpty()) {
+            progress.place(OWN_FIRE, fire);
         }
     }
 

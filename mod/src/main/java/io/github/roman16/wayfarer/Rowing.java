@@ -21,7 +21,7 @@ public final class Rowing {
             return;
         }
         Entity vehicle = player.getVehicle();
-        if (vehicle == null || vehicle.getControllingPassenger() != player || vehicle.getType().is(Gaze.AIRCRAFT) || !afloat(vehicle)) {
+        if (vehicle == null || vehicle.getControllingPassenger() != player || !afloat(vehicle)) {
             return;
         }
         Vec3 motion = vehicle.getDeltaMovement();

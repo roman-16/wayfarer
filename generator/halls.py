@@ -19,11 +19,8 @@ from blocks import (
 )
 
 FLOOR = 2
-HIDDEN_ROW = 6
-FALSE_WALL = "wayfarer:false_wall"
 DOOR_HEIGHT = 3
 DOOR_HALF = 1
-CORALS = ["minecraft:dead_brain_coral_block", "minecraft:dead_fire_coral_block", "minecraft:dead_tube_coral_block"]
 ORES = ["minecraft:coal_ore", "minecraft:copper_ore", "minecraft:deepslate_coal_ore", "minecraft:iron_ore"]
 SHAFTS = {
     "black": (
@@ -33,26 +30,13 @@ SHAFTS = {
         [("polished_deepslate", 60), ("deepslate_bricks", 40)],
     ),
     "cold": ("switchback", "polished_diorite_stairs", LAMP, [("calcite", 60), ("packed_ice", 40)]),
-    "corrupted": ("switchback", "acacia_stairs", LAMP, [("stripped_acacia_log", 70), ("acacia_log", 30)]),
     "cryptic": ("spiral", "stone_stairs", LAMP, [("bookshelf", 70), ("chiseled_bookshelf", 30)]),
     "evil": ("ladder", "stone_brick_stairs", LAMP, [("chiseled_stone_bricks", 50), ("stone_bricks", 50)]),
-    "exotic": (
-        "switchback",
-        "red_sandstone_stairs",
-        "minecraft:sea_lantern",
-        [("chiseled_red_sandstone", 50), ("cut_red_sandstone", 50)],
-    ),
     "lost": (
         "switchback",
         "cobbled_deepslate_stairs",
         LAMP,
         [("stripped_spruce_log", 70), ("spruce_log", 30)],
-    ),
-    "magical": (
-        "ladder",
-        "dark_oak_stairs",
-        LAMP,
-        [("dark_oak_log", 70), ("stripped_dark_oak_log", 30)],
     ),
     "old": ("switchback", "sandstone_stairs", LAMP, [("chiseled_sandstone", 40), ("cut_sandstone", 60)]),
     "rogue": (
@@ -61,8 +45,6 @@ SHAFTS = {
         LAMP,
         [("chiseled_stone_bricks", 50), ("mossy_stone_bricks", 50)],
     ),
-    "undead": ("ladder", "tuff_brick_stairs", LAMP, [("chiseled_tuff", 50), ("polished_tuff", 50)]),
-    "witch": ("ladder", "mud_brick_stairs", LAMP, [("mangrove_log", 70), ("stripped_mangrove_log", 30)]),
 }
 
 
@@ -96,7 +78,7 @@ def calling_stone(room, eye, spec, stone, reading, facing):
     room.set(
         stone,
         "wayfarer:calling_stone",
-        entity={"id": "wayfarer:calling_stone"} | ({} if spec.get("empty") else {"hall": f"wayfarer:hall/{eye}"}),
+        entity={"id": "wayfarer:calling_stone"} | ({} if spec.get("empty") else {"shard": f"endrem:{eye}_eye"}),
     )
     for y in range(stone[1] + 1, stone[1] + 4):
         room.air((stone[0], y, stone[2]))
@@ -284,81 +266,6 @@ def cold(eye, spec):
     return done(eye, room, door)
 
 
-def corrupted(eye, spec):
-    wall = m(
-        "corrupted/wall",
-        [
-            ("terracotta", 30),
-            ("orange_terracotta", 18),
-            ("red_terracotta", 14),
-            ("brown_terracotta", 14),
-            ("packed_mud", 12),
-            ("coarse_dirt", 12),
-        ],
-        "mud_brick_stairs",
-        "mud_brick_slab",
-    )
-    floor = m(
-        "corrupted/floor",
-        [("acacia_planks", 38), ("red_terracotta", 20), ("terracotta", 15), ("coarse_dirt", 15), ("rooted_dirt", 12)],
-        "acacia_stairs",
-        "acacia_slab",
-    )
-    ribs = arch.ribs(6, "minecraft:stripped_acacia_wood", wall, 13, LAMP, (6, 1))
-    room = Room([23, 18, 37], wall, floor, ribs, decay=0.25)
-    arch.vault(room, 6, 16, 1, 35, FLOOR, 8, 7)
-    arch.vault(room, 1, 5, 1, 35, FLOOR, 6, 1)
-    arch.vault(room, 17, 21, 1, 35, FLOOR, 6, 1)
-    for x in range(10, 13):
-        for z in range(10, 36):
-            if coherent("carpet", (x, 2, z)) > 0.3:
-                room.set((x, 2, z), "minecraft:red_carpet")
-    for z in range(7, 34, 6):
-        for x in (5, 17):
-            if (x, z) == (17, 19):
-                arch.stump(room, x, z, 2, 3, "minecraft:stripped_acacia_log", wall, wide=True)
-                continue
-            arch.column(
-                room,
-                x,
-                z,
-                2,
-                8,
-                "minecraft:stripped_acacia_log",
-                "minecraft:red_terracotta",
-                "minecraft:stripped_acacia_wood",
-                "minecraft:acacia_stairs",
-                wide=True,
-            )
-            inward = x + (2 if x == 5 else -2)
-            room.set((inward, 6, z), "minecraft:red_wall_banner", facing="east" if x == 5 else "west")
-        for x, facing in ((6, "west"), (16, "east")):
-            if z + 3 < 35:
-                arch.window(room, x, z + 3, facing, 11, 13, "minecraft:orange_stained_glass_pane", LAMP)
-    for z in (10, 16, 22, 28):
-        arch.chandelier(room, 11, z, room.top(11, z, 3), 4)
-    top = arch.dais(room, 6, 16, 1, 8, FLOOR, 3, "minecraft:acacia_stairs", "minecraft:red_terracotta")
-    arch.stair(room, (11, top, 2), "minecraft:acacia_stairs", "north")
-    room.fill((11, top, 1), (11, top + 3, 1), "minecraft:stripped_acacia_log", axis="y")
-    room.set((10, top, 2), "minecraft:acacia_fence")
-    for x, z in ((12, 2), (12, 1), (9, 3), (13, 3)):
-        room.set((x, top - 1, z), "minecraft:coarse_dirt")
-        if noise("dust", x, z) < 0.5:
-            room.set((x, top, z), "minecraft:dead_bush")
-    for x in (9, 13):
-        room.set((x, top + 1, 1), "minecraft:red_wall_banner", facing="south")
-    arch.collapse(room, 3, 28, 2, FLOOR, wall)
-    room.reserve((9, 9), (13, 36))
-    calling_stone(room, eye, spec, (11, top, 4), (9, top, 4), "south")
-    door = doorway(room, 11, 1)
-    detail.cornice(room, "minecraft:acacia_stairs")
-    detail.skirting(room, "minecraft:acacia_stairs")
-    detail.rubble(room, wall, 0.3)
-    detail.roots(room, 0.08)
-    detail.webs(room, 0.3)
-    return done(eye, room, door)
-
-
 def cryptic(eye, spec):
     wall = m(
         "cryptic/wall",
@@ -502,101 +409,6 @@ def evil(eye, spec):
     return done(eye, room, door)
 
 
-def exotic(eye, spec):
-    wall = m(
-        "exotic/wall",
-        [
-            ("cut_red_sandstone", 35),
-            ("smooth_red_sandstone", 25),
-            ("red_sandstone", 20),
-            ("orange_terracotta", 12),
-            ("red_terracotta", 8),
-        ],
-        "red_sandstone_stairs",
-        "red_sandstone_slab",
-        fade=4,
-    )
-    floor = m(
-        "exotic/floor",
-        [("smooth_red_sandstone", 40), ("cut_red_sandstone", 30), ("red_sandstone", 20), ("orange_terracotta", 10)],
-        "smooth_red_sandstone_stairs",
-        "red_sandstone_slab",
-    )
-    coffers = arch.ribs(
-        4,
-        "minecraft:cut_red_sandstone",
-        "minecraft:smooth_red_sandstone",
-        11,
-        "minecraft:sea_lantern",
-        wall=wall,
-    )
-
-    def shell(pos):
-        return "minecraft:prismarine_bricks" if pos[1] == 9 else coffers(pos)
-
-    room = Room([29, 20, 29], wall, floor, shell, decay=-0.35)
-    cx, cz = 14, 14
-    room.fill((1, 1, 1), (27, 1, 27), floor)
-    room.carve((1, 2, 1), (27, 10, 27))
-    arch.dome(room, cx, cz, 12, FLOOR, 9, 10)
-    for x in range(29):
-        for z in range(29):
-            d = distance(x, z, cx, cz)
-            if d > 12.5:
-                continue
-            if 4 <= d < 7:
-                room.set(
-                    (x, 0, z), "minecraft:sea_lantern" if noise("pool", x, z) < 0.3 else "minecraft:prismarine_bricks"
-                )
-                room.water((x, 1, z))
-            elif d < 4:
-                room.set((x, 2, z), "minecraft:chiseled_red_sandstone" if d < 1.5 else "minecraft:cut_red_sandstone")
-            elif 7 <= d < 8:
-                room.set((x, 1, z), "minecraft:prismarine_bricks")
-            elif 8 <= d < 9:
-                room.set((x, 1, z), "minecraft:cut_red_sandstone")
-            elif (x + z) % 2 == 0:
-                room.set((x, 1, z), "minecraft:orange_terracotta" if d < 11 else floor)
-    for z in range(cz + 3, cz + 8):
-        room.set((cx, 1, z), "minecraft:cut_red_sandstone")
-        room.set((cx - 1, 1, z), "minecraft:red_sandstone_slab", type="double", waterlogged=False)
-        room.set((cx + 1, 1, z), "minecraft:red_sandstone_slab", type="double", waterlogged=False)
-    arch.stair(room, (cx, 2, cz + 4), "minecraft:smooth_red_sandstone_stairs", "north")
-    for x, z in ring_points(cx, cz, 5.5, 4, math.pi / 4):
-        room.set((x, 1, z), "minecraft:prismarine_bricks")
-        room.set((x, 2, z), "minecraft:prismarine_wall")
-        room.water((x, 3, z))
-    for x, z in ring_points(cx, cz, 10.3, 16):
-        arch.column(
-            room,
-            x,
-            z,
-            2,
-            9,
-            "minecraft:cut_red_sandstone",
-            "minecraft:chiseled_red_sandstone",
-            "minecraft:chiseled_red_sandstone",
-            "minecraft:red_sandstone_stairs",
-        )
-    for z in range(4, 26, 5):
-        for x, facing in ((2, "west"), (26, "east")):
-            arch.window(room, x, z, facing, 3, 7, "minecraft:cyan_stained_glass_pane", "minecraft:sea_lantern")
-    for x in range(4, 26, 5):
-        arch.window(room, x, 2, "north", 3, 7, "minecraft:cyan_stained_glass_pane", "minecraft:sea_lantern")
-    for x, z in ((3, 3), (25, 3), (3, 25), (25, 25)):
-        room.set((x, 2, z), "minecraft:potted_torchflower")
-        candle(room, (x + (1 if x < cx else -1), 2, z), "minecraft:orange_candle", 3)
-    room.set((cx, room.top(cx, cz, 3), cz), "minecraft:sea_lantern")
-    for x, z in ring_points(cx, cz, 2.8, 4, math.pi / 4):
-        room.set((x, 2, z), "minecraft:sea_lantern")
-    room.reserve((cx - 1, cz + 2), (cx + 1, 28))
-    calling_stone(room, eye, spec, (cx, 3, cz), (cx - 2, 3, cz + 1), "south")
-    door = doorway(room, cx, 1)
-    detail.cornice(room, "minecraft:red_sandstone_stairs")
-    detail.skirting(room, "minecraft:smooth_red_sandstone_stairs")
-    return done(eye, room, door)
-
-
 def lost(eye, spec):
     rock = m(
         "lost/wall",
@@ -662,90 +474,6 @@ def lost(eye, spec):
     door = doorway(room, 12, 1)
     detail.rubble(room, rock, 0.35)
     detail.webs(room, 0.5)
-    return done(eye, room, door)
-
-
-def magical(eye, spec):
-    wall = m(
-        "magical/wall",
-        [
-            ("deepslate_bricks", 40),
-            ("deepslate_tiles", 18),
-            ("polished_deepslate", 10),
-            ("cracked_deepslate_bricks", 14),
-            ("cracked_deepslate_tiles", 8),
-            ("tuff", 10),
-        ],
-        "deepslate_brick_stairs",
-        "deepslate_brick_slab",
-    )
-    panel = m("magical/panel", [("dark_oak_planks", 60), ("stripped_dark_oak_wood", 25), ("dark_oak_wood", 15)])
-    floor = m(
-        "magical/floor",
-        [
-            ("dark_oak_planks", 55),
-            ("stripped_dark_oak_wood", 20),
-            ("deepslate_bricks", 15),
-            ("cracked_deepslate_bricks", 10),
-        ],
-        "dark_oak_stairs",
-        "dark_oak_slab",
-    )
-    room = Room(
-        [25, 16, 27],
-        wall,
-        floor,
-        lambda pos: panel if 2 <= pos[1] <= 5 else "minecraft:stripped_dark_oak_log" if pos[1] == 6 else wall,
-        decay=0.05,
-    )
-    cx, cz = 12, 12
-    arch.dome(room, cx, cz, 11, FLOOR, 6, 9)
-    for x in range(25):
-        for z in range(25):
-            d = distance(x, z, cx, cz)
-            if d > 11:
-                continue
-            if d < 1.5 or 3.5 <= d < 4.5:
-                room.set((x, 1, z), "minecraft:amethyst_block")
-            elif d < 3.5:
-                room.set((x, 1, z), "minecraft:polished_deepslate")
-            elif d < 6:
-                room.set((x, 1, z), wall)
-            if 3.5 <= d < 4.5 and (x + z) % 2 == 0:
-                candle(room, (x, 2, z), "minecraft:purple_candle", 1 + int(noise("candle", x, z) * 4))
-            elif d < 1.5:
-                room.set((x, 2, z), "minecraft:amethyst_block")
-    for index, (x, z) in enumerate(ring_points(cx, cz, 9.0, 12)):
-        if z > cz + 5 and abs(x - cx) <= 2:
-            continue
-        if index == 4:
-            arch.stump(room, x, z, 2, 3, "minecraft:dark_oak_log", wall)
-            continue
-        arch.column(
-            room,
-            x,
-            z,
-            2,
-            9,
-            "minecraft:dark_oak_log",
-            "minecraft:polished_deepslate",
-            "minecraft:amethyst_block",
-            "minecraft:deepslate_brick_stairs",
-        )
-        room.set((x, 10, z), LAMP)
-    for x, z in ring_points(cx, cz, 3.0, 4, math.pi / 4):
-        room.set((x, room.top(x, z, 3), z), LAMP)
-    room.set((cx, room.top(cx, cz, 4), cz), "minecraft:amethyst_block")
-    room.set((cx, room.top(cx, cz, 4) - 1, cz), "minecraft:amethyst_cluster", facing="down", waterlogged=False)
-    for x, z in ring_points(cx, cz, 5.4, 8, math.pi / 8):
-        room.set((x, 2, z), "minecraft:potted_allium")
-    room.reserve((cx - 1, cz + 3), (cx + 1, 26))
-    calling_stone(room, eye, spec, (cx, 3, cz), (cx - 2, 2, cz + 2), "south")
-    door = doorway(room, cx, 3)
-    detail.cornice(room, "minecraft:dark_oak_stairs")
-    detail.rubble(room, wall, 0.25)
-    detail.webs(room, 0.45)
-    detail.floor_lights(room, LAMP, 4, "minecraft:purple_carpet")
     return done(eye, room, door)
 
 
@@ -919,10 +647,24 @@ def rogue(eye, spec):
         for y in range(ceiling - length, ceiling):
             room.set((x, y, z), "minecraft:cave_vines_plant", berries=True)
         room.set((x, ceiling - length - 1, z), "minecraft:cave_vines", age=25, berries=True)
-    for x in (9, 15):
-        room.set((x, 6, 2), "minecraft:moss_block")
-        room.set((x, 7, 2), "minecraft:fern")
+    room.set((9, 6, 2), "minecraft:moss_block")
+    room.set((9, 7, 2), "minecraft:fern")
+    room.set((15, 6, 2), "minecraft:moss_carpet")
     arch.collapse(room, 21, 10, 2, 5, wall)
+    room.carve((16, 6, 0), (17, 8, 0))
+    for x in (16, 17):
+        room.set((x, 8, 0), "minecraft:hanging_roots", waterlogged=False)
+    room.set((17, 6, 0), "minecraft:gray_carpet")
+    for x, z, block in (
+        (16, 0, "minecraft:coarse_dirt"),
+        (17, 0, "minecraft:rooted_dirt"),
+        (16, 1, "minecraft:coarse_dirt"),
+        (17, 1, "minecraft:gravel"),
+        (18, 1, "minecraft:coarse_dirt"),
+        (17, 2, "minecraft:rooted_dirt"),
+    ):
+        room.set((x, 5, z), block)
+    room.reserve((16, 0), (18, 2))
     room.reserve((9, 1), (15, 32))
     calling_stone(room, eye, spec, (12, 6, 2), (10, 6, 3), "south")
     door = doorway(room, 12, 1)
@@ -934,143 +676,12 @@ def rogue(eye, spec):
     return done(eye, room, door)
 
 
-def undead(eye, spec):
-    wall = m(
-        "undead/wall",
-        [
-            ("tuff_bricks", 25),
-            ("tuff", 30),
-            ("polished_tuff", 8),
-            ("cobblestone", 12),
-            ("andesite", 10),
-            ("mossy_cobblestone", 10),
-            ("cobbled_deepslate", 5),
-        ],
-        "tuff_brick_stairs",
-        "tuff_brick_slab",
-    )
-    floor = m(
-        "undead/floor",
-        [
-            ("polished_tuff", 25),
-            ("tuff", 25),
-            ("tuff_bricks", 15),
-            ("cobblestone", 10),
-            ("coarse_dirt", 15),
-            ("rooted_dirt", 10),
-        ],
-        "tuff_stairs",
-        "tuff_slab",
-    )
-    room = Room([9, 7, 11], wall, floor, decay=0.5)
-    arch.vault(room, 1, 7, 1, 9, FLOOR, 2, 3)
-    room.set((4, 1, 2), "minecraft:bone_block", axis="y")
-    for z in (4, 7):
-        for x, back, rotation in ((1, 0, 12), (7, 8, 4)):
-            room.air((back, 3, z))
-            room.set((back, 2, z), "minecraft:tuff_bricks")
-            if noise("skull", x, z) < 0.5:
-                room.set((back, 3, z), "minecraft:skeleton_skull", rotation=rotation)
-            else:
-                candle(room, (back, 3, z), "minecraft:white_candle", 1)
-    arch.collapse(room, 6, 7, 1, FLOOR, wall)
-    calling_stone(room, eye, spec, (4, 2, 2), (2, 2, 3), "south")
-    door = doorway(room, 4, 1)
-    detail.roots(room, 0.3)
-    detail.moss(room, 0.4)
-    detail.rubble(room, wall, 0.35)
-    detail.webs(room, 0.8)
-    return done(eye, room, door)
-
-
-def witch(eye, spec):
-    wall = m(
-        "witch/wall",
-        [
-            ("mud_bricks", 35),
-            ("packed_mud", 20),
-            ("muddy_mangrove_roots", 15),
-            ("mud", 12),
-            ("mossy_cobblestone", 10),
-            ("dirt", 8),
-        ],
-        "mud_brick_stairs",
-        "mud_brick_slab",
-    )
-    floor = m(
-        "witch/floor",
-        [
-            ("packed_mud", 30),
-            ("mud_bricks", 15),
-            ("muddy_mangrove_roots", 15),
-            ("mud", 15),
-            ("rooted_dirt", 12),
-            ("moss_block", 13),
-        ],
-        "mud_brick_stairs",
-        "mud_brick_slab",
-    )
-    room = Room([13, 8, 13], wall, floor, decay=0.45)
-    cx, cz = 6, 5
-    arch.cave(room, 6, 6, 5.5, 5.5, FLOOR, 3, 2, 1.0, "witch")
-    for x in range(13):
-        for z in range(13):
-            d = distance(x, z, cx, cz)
-            if d < 1.6:
-                room.set((x, 2, z), "minecraft:packed_mud")
-            elif d < 2.4 and room.get((x, 2, z)) == AIR:
-                arch.stair(room, (x, 2, z), "minecraft:mud_brick_stairs", facing_towards(x, z, cx, cz))
-    for index in range(16):
-        x = 1 + int(noise("hang", index, 0) * 11)
-        z = 1 + int(noise("hang", index, 1) * 11)
-        if room.get((x, 3, z)) != AIR or distance(x, z, cx, cz) < 2.5:
-            continue
-        top = room.top(x, z, 3)
-        room.fill(
-            (x, top - 1 - int(noise("hang", index, 2) * 2), z),
-            (x, top - 1, z),
-            "minecraft:mangrove_roots",
-            waterlogged=False,
-        )
-    for x, z in ((2, 5), (10, 5)):
-        room.set((x, 2, z), "minecraft:cauldron")
-    room.set((3, 2, 9), "minecraft:barrel", facing="up", open=False)
-    room.set((9, 2, 9), "minecraft:brewing_stand", has_bottle_0=False, has_bottle_1=False, has_bottle_2=False)
-    candle(room, (3, 3, 9), "minecraft:green_candle", 2)
-    calling_stone(room, eye, spec, (cx, 3, cz), (cx - 2, 2, cz + 3), "south")
-    door = doorway(room, 6, 2)
-    hidden = stairway(room, HIDDEN_ROW)
-    detail.moss(room, 0.45)
-    detail.roots(room, 0.15, soil="minecraft:muddy_mangrove_roots")
-    detail.rubble(room, wall, 0.35)
-    detail.webs(room, 0.4)
-    detail.floor_lights(room, LAMP, 4)
-    return done(eye, room, door, hidden=hidden)
-
-
-def stairway(room, z):
-    x = 0
-    while (x, FLOOR, z) not in room.open or (x, FLOOR + 1, z) not in room.open:
-        room.set((x, FLOOR - 1, z), room.floor)
-        room.carve((x, FLOOR, z), (x, FLOOR + 1, z))
-        x += 1
-    room.reserve((0, z - 1), (x, z + 1))
-    for y in (FLOOR, FLOOR + 1):
-        room.set((x - 1, y, z), FALSE_WALL)
-    return [x - 1, FLOOR, z]
-
-
 HALLS = {
     "black": black,
     "cold": cold,
-    "corrupted": corrupted,
     "cryptic": cryptic,
     "evil": evil,
-    "exotic": exotic,
     "lost": lost,
-    "magical": magical,
     "old": old,
     "rogue": rogue,
-    "undead": undead,
-    "witch": witch,
 }

@@ -3,36 +3,28 @@ package io.github.roman16.wayfarer.story;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
+import io.github.roman16.wayfarer.HallRoom;
+import io.github.roman16.wayfarer.Halls;
 import io.github.roman16.wayfarer.Wayfarer;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Interaction;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.LadderBlock;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.TrapDoorBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -42,20 +34,13 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(Wayfarer.MODID)
 @PrefixGameTestTemplate(false)
 public final class StoryTests {
-    private static final Map<String, List<String>> OUTCOMES = Map.of("chase", List.of("caught"), "duel", List.of("won"), "escort", List.of("arrived", "late"),
+    private static final Set<String> BUILT_ON_ENTERING = Set.of("clues", "dusk", "escort", "reach", "sail", "say");
+    private static final Map<String, List<String>> OUTCOMES = Map.of("chase", List.of("caught"), "escort", List.of("arrived", "late"),
             "sea", List.of("held", "sunk"), "worm", List.of("killed", "spared"));
+    private static final Set<String> PUT_DOWN = Set.of(After.HOME, Prologue.LAST_CAMP, Scenes.CACHE);
 
-    private static final List<String> NIGHT_WORDS = List.of("Dusk", "dark", "night", "Torches");
+    private static final List<String> NIGHT_WORDS = List.of("Dusk", "Night", "Torches", "dark", "the night", "tonight");
 
-    private static final int MARSH_AWAY = 2048;
-    private static final int MARSH_DROP = 3;
-    private static final int MARSH_HEIGHT = 64;
-    private static final int MARSH_LANE = 128;
-    private static final int MARSH_LANDING = 8;
-    private static final int MARSH_REACH_UP = 5;
-    private static final int MARSH_ROOF = 32;
-    private static final int MARSH_SETTLE_TICKS = 64;
-    private static final int MARSH_TIMEOUT_TICKS = 256;
 
     private StoryTests() {}
 
@@ -94,14 +79,14 @@ public final class StoryTests {
     }
 
     @GameTest(template = "empty")
-    public static void theEmberFindsTheSwampBeforeItsHallStands(GameTestHelper helper) {
-        Progress progress = new Progress();
-        BlockPos site = new BlockPos(4096, 64, 0);
-        progress.place(Marsh.SITE, site);
-        check(helper, Places.aim(progress, Marsh.NAME).filter(site::equals).isPresent(), "the ember has nothing to aim at while the swamp's hall waits to go up");
-        BlockPos porch = new BlockPos(4104, 72, 8);
-        progress.place(Marsh.NAME, porch);
-        check(helper, Places.aim(progress, Marsh.NAME).filter(porch::equals).isPresent(), "once the hall stands, the ember aims at the witches' porch");
+    public static void theDiggersHallIsAHallAndTheirTunnelsAreNot(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos corner = helper.absolutePos(new BlockPos(1, 1, 1));
+        BoundingBox room = BoundingBox.fromCorners(corner, corner.offset(4, 3, 4));
+        Places.register(level, level.registryAccess().registryOrThrow(Registries.STRUCTURE).getOrThrow(Diggers.LOST), new ChunkPos(room.getCenter()), 0,
+                List.of(new HallRoom(room)));
+        check(helper, Halls.inside(level, room.getCenter()).filter(Diggers.LOST.location()::equals).isPresent(), "the Diggers' hall room is no hall to the game");
+        check(helper, Halls.inside(level, corner.offset(6, 0, 0)).isEmpty(), "the Diggers' tunnels outside their hall room count as the hall");
         helper.succeed();
     }
 
@@ -278,12 +263,46 @@ public final class StoryTests {
     @GameTest(template = "empty")
     public static void lostTrustStaysLost(GameTestHelper helper) {
         Progress progress = new Progress();
-        progress.trust(Map.of("witches", 1));
-        check(helper, progress.trust("witches") == 1, "a people's trust rises to what a step gives");
-        progress.shun("witches");
-        progress.trust(Map.of("witches", 2));
-        check(helper, progress.trust("witches") == -1, "trust lost by forcing the way never comes back");
+        progress.trust(Map.of("tide_folk", 1));
+        check(helper, progress.trust("tide_folk") == 1, "a people's trust rises to what a step gives");
+        progress.shun("tide_folk");
+        progress.trust(Map.of("tide_folk", 2));
+        check(helper, progress.trust("tide_folk") == -1, "trust lost by forcing the way never comes back");
         check(helper, progress.trust("nobody") == 0, "a people never met trusts nobody yet");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void keepTheOathNeedsBothLivingPeoples(GameTestHelper helper) {
+        Progress progress = new Progress();
+        progress.trust(Map.of("tide_folk", 1));
+        check(helper, Doors.trusting(progress) == 1, "the Tide Folk alone are one people of two");
+        progress.choices.put("the_worm/the_worm", "spared");
+        check(helper, Doors.trusting(progress) == 2, "a spared worm keeps the Sand Singers' trust");
+        progress.choices.put("the_worm/the_worm", "killed");
+        check(helper, Doors.trusting(progress) == 1, "a killed worm loses it");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void theHeirBringsTheFiveTheRoadNeverReaches(GameTestHelper helper) {
+        List<String> heirs = Doors.heirs();
+        check(helper, heirs.size() == 5, "the heir carries five shards to the frame, not " + heirs.size());
+        Set<String> onTheRoad = new HashSet<>();
+        Story.get().quests().stream().flatMap(quest -> quest.steps().stream()).filter(step -> step.kind().equals("shard")).forEach(step -> onTheRoad.addAll(Steps.eyes(step)));
+        onTheRoad.add("old");
+        check(helper, heirs.stream().noneMatch(onTheRoad::contains), "the heir's five are none of the shards the road reaches: " + heirs);
+        check(helper, onTheRoad.size() == Doors.road(), "the road holds " + onTheRoad.size() + " shards, the frame counts " + Doors.road());
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void actsTwoAndThreeRunInOrder(GameTestHelper helper) {
+        Map<String, String> after = Map.of("the_worm", "your_eyes", "the_hollow", "malgvens_warning", "the_dreaming", "morning_after", "the_scribes", "the_dreaming",
+                "the_rider", "the_scribes", "keepers_door", "the_rider");
+        after.forEach((quest, before) -> check(helper, Story.get().quest(quest).orElseThrow().after().equals(List.of(before)), quest + " opens after " + before));
+        check(helper, Story.get().quest("your_eyes").orElseThrow().halls() == 1, "Your Eyes opens after Act 2's first hall");
+        check(helper, Story.get().quest("malgvens_warning").orElseThrow().halls() == 2, "Malgven's warning opens after Act 2's second hall");
         helper.succeed();
     }
 
@@ -316,10 +335,14 @@ public final class StoryTests {
                 if (step.spec().has(Steps.BUILDS)) {
                     built.add(step.text(Steps.BUILDS));
                 }
-                if (step.kind().equals("escort")) {
+                if (BUILT_ON_ENTERING.contains(step.kind()) && step.spec().has("place")) {
                     built.add(step.text("place"));
                 }
-                built.forEach(place -> check(helper, Places.buildable(place), quest.id() + "/" + step.id() + " builds " + place + " on entering, which the story has no way to build"));
+                if (step.kind().equals("vision")) {
+                    built.add(step.text("at"));
+                }
+                built.forEach(place -> check(helper, Places.buildable(place) || PUT_DOWN.contains(place),
+                        quest.id() + "/" + step.id() + " builds " + place + " on entering, which the story has no way to build"));
             }
         }
         helper.succeed();
@@ -345,123 +368,5 @@ public final class StoryTests {
             }
         }
         helper.succeed();
-    }
-
-    @GameTest(template = "empty", timeoutTicks = MARSH_TIMEOUT_TICKS)
-    public static void theMarshMothersWayIsOpenInALake(GameTestHelper helper) {
-        marsh(helper, 0, pos -> Blocks.WATER.defaultBlockState());
-    }
-
-    @GameTest(template = "empty", timeoutTicks = MARSH_TIMEOUT_TICKS)
-    public static void theMarshMothersWayIsOpenInAMangroveSwamp(GameTestHelper helper) {
-        marsh(helper, 1, pos -> (pos.getX() + pos.getY() + pos.getZ() & 1) == 0 ? Blocks.MUD.defaultBlockState() : Blocks.MUDDY_MANGROVE_ROOTS.defaultBlockState());
-    }
-
-    private static void marsh(GameTestHelper helper, int lane, Function<BlockPos, BlockState> ground) {
-        ServerLevel level = helper.getLevel();
-        JsonObject plan = Marsh.plan();
-        BlockPos hall = helper.absolutePos(BlockPos.ZERO).offset(MARSH_AWAY, 0, MARSH_AWAY + lane * MARSH_LANE).atY(MARSH_HEIGHT);
-        BlockPos low = hall.offset(Prologue.vector(plan.getAsJsonArray("origin")));
-        BlockPos high = hall.offset(Prologue.vector(plan.getAsJsonObject("ward").getAsJsonArray("to")));
-        for (BlockPos pos : BlockPos.betweenClosed(low.offset(-1, -1, -1), high.offset(1, 0, 1))) {
-            boolean rim = pos.getX() < low.getX() || pos.getX() > high.getX() || pos.getZ() < low.getZ() || pos.getZ() > high.getZ() || pos.getY() < low.getY();
-            level.setBlock(pos, rim ? Blocks.MUD.defaultBlockState() : ground.apply(pos), Block.UPDATE_CLIENTS);
-        }
-        Marsh.build(level, hall, Rotation.NONE);
-        BoundingBox within = BoundingBox.fromCorners(low, high.atY(hall.getY() + MARSH_ROOF));
-        BlockPos stone = hall.offset(Prologue.vector(plan.getAsJsonArray("stone")));
-        BlockPos porch = hall.offset(Prologue.vector(plan.getAsJsonObject("places").getAsJsonArray("rue")));
-        BlockPos pool = hall.offset(Prologue.vector(plan.getAsJsonObject("places").getAsJsonArray("pool")));
-        helper.runAfterDelay(MARSH_SETTLE_TICKS, () -> {
-            BlockPos start = Direction.Plane.HORIZONTAL.stream().flatMap(side -> Stream.of(stone.relative(side), stone.relative(side).above()))
-                    .filter(pos -> dry(level, pos) && dry(level, pos.above()) && !dry(level, pos.below())).findFirst().orElse(null);
-            check(helper, start != null, "nobody can stand beside the Marsh Mothers' calling stone");
-            List<BlockPos> walked = walk(level, start, porch::equals, within);
-            check(helper, !walked.isEmpty(), "no dry way leads from the Marsh Mothers' calling stone up the stair, through the cellar and the hut to the porch");
-            List<BlockPos> swum = swim(level, pool, pos -> pos.distSqr(stone) <= MARSH_LANDING * MARSH_LANDING && level.getBlockState(pos).isAir(), within);
-            check(helper, !swum.isEmpty(), "no way under water leads from the black pool to the Marsh Mothers' hall");
-            int held = 0;
-            int longest = 0;
-            for (BlockPos pos : swum) {
-                held = breathes(level, pos) ? 0 : held + 1;
-                longest = Math.max(longest, held);
-            }
-            check(helper, longest <= Balance.get().marsh().pocketEveryBlocks(),
-                    "the drowned way runs " + longest + " blocks without air, more than the " + Balance.get().marsh().pocketEveryBlocks() + " between its pockets");
-            helper.succeed();
-        });
-    }
-
-    private static boolean dry(ServerLevel level, BlockPos pos) {
-        BlockState state = level.getBlockState(pos);
-        return level.getFluidState(pos).isEmpty() && (state.getCollisionShape(level, pos).isEmpty() || state.getBlock() instanceof DoorBlock
-                || state.getBlock() instanceof TrapDoorBlock || state.getBlock() instanceof LadderBlock);
-    }
-
-    private static boolean ladder(ServerLevel level, BlockPos pos) {
-        return level.getBlockState(pos).getBlock() instanceof LadderBlock;
-    }
-
-    private static List<BlockPos> walk(ServerLevel level, BlockPos from, Predicate<BlockPos> goal, BoundingBox within) {
-        Map<BlockPos, BlockPos> came = new HashMap<>();
-        Deque<BlockPos> queue = new ArrayDeque<>(List.of(from));
-        came.put(from, from);
-        while (!queue.isEmpty()) {
-            BlockPos at = queue.poll();
-            if (goal.test(at)) {
-                return trail(came, at);
-            }
-            List<BlockPos> moves = new ArrayList<>(List.of(at.above(), at.below()));
-            for (Direction side : Direction.Plane.HORIZONTAL) {
-                for (int rise = 1; rise >= -MARSH_DROP; rise--) {
-                    moves.add(at.relative(side).above(rise));
-                }
-            }
-            for (BlockPos to : moves) {
-                boolean climbing = ladder(level, at) || ladder(level, to);
-                boolean up = to.getY() > at.getY();
-                boolean straightUp = up && to.getX() == at.getX() && to.getZ() == at.getZ();
-                boolean standing = !dry(level, to.below()) || ladder(level, to) || ladder(level, to.below());
-                if (came.containsKey(to) || !within.isInside(to) || !dry(level, to) || !dry(level, to.above())
-                        || up && !climbing && (straightUp || !dry(level, at.above(2))) || !standing && !(to.getY() < at.getY())) {
-                    continue;
-                }
-                came.put(to, at);
-                queue.add(to);
-            }
-        }
-        return List.of();
-    }
-
-    private static List<BlockPos> swim(ServerLevel level, BlockPos from, Predicate<BlockPos> goal, BoundingBox within) {
-        Map<BlockPos, BlockPos> came = new HashMap<>();
-        Deque<BlockPos> queue = new ArrayDeque<>(List.of(from));
-        came.put(from, from);
-        while (!queue.isEmpty()) {
-            BlockPos at = queue.poll();
-            if (goal.test(at)) {
-                return trail(came, at);
-            }
-            for (Direction side : Direction.values()) {
-                BlockPos to = at.relative(side);
-                if (!came.containsKey(to) && within.isInside(to) && to.getY() <= from.getY() && level.getBlockState(to).getCollisionShape(level, to).isEmpty()) {
-                    came.put(to, at);
-                    queue.add(to);
-                }
-            }
-        }
-        return List.of();
-    }
-
-    private static boolean breathes(ServerLevel level, BlockPos pos) {
-        return BlockPos.betweenClosedStream(pos.offset(-1, 0, -1), pos.offset(1, MARSH_REACH_UP, 1)).anyMatch(near -> level.getBlockState(near).isAir());
-    }
-
-    private static List<BlockPos> trail(Map<BlockPos, BlockPos> came, BlockPos end) {
-        List<BlockPos> trail = new ArrayList<>();
-        for (BlockPos at = end; !came.get(at).equals(at); at = came.get(at)) {
-            trail.addFirst(at);
-        }
-        return trail;
     }
 }

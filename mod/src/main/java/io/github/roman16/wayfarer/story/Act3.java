@@ -1,12 +1,7 @@
 package io.github.roman16.wayfarer.story;
 
-import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
-import io.github.roman16.wayfarer.Bundled;
-import io.github.roman16.wayfarer.Camps;
-import io.github.roman16.wayfarer.Rules;
-import io.github.roman16.wayfarer.Wayfarer;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -20,26 +15,22 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.placement.ConcentricRingsStructurePlacement;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -49,30 +40,19 @@ import org.slf4j.Logger;
 
 final class Act3 {
     static final String HOLLOW = "hollow";
-    static final String AIRFIELD = "airfield";
     static final String KEEPERS = "keepers";
     private static final String KEEPERS_SITE = "keepers_site";
-    private static final String KEEPERS_FRAME = "keepers_frame";
+    static final String KEEPERS_FRAME = "keepers_frame";
     private static final String FRAME_MARKED = "keepers_frame_marked";
     private static final String FRAME_CLUE = "frame";
     private static final List<ResourceLocation> STRONGHOLDS = List.of(ResourceLocation.fromNamespaceAndPath("betterstrongholds", "stronghold"));
     private static final ResourceLocation FRAME = ResourceLocation.fromNamespaceAndPath("endrem", "ancient_portal_frame");
     private static final int FRAME_SEARCH = 2;
     private static final int FRAME_REACH = 10;
+    private static final int RING = 4;
     private static final int FLOOR_REACH = 1;
     private static final double EYE = 1.6;
     private static final String HOLLOW_MARKED = "hollow_marked";
-    private static final String AIRFIELD_SITE = "airfield_site";
-    private static final String AIRFIELD_ORIGIN = "airfield_origin";
-    private static final String AIRFIELD_TURN = "airfield_turn";
-    private static final int MOORING = 32;
-    private static final int BANNER_SLOT = 4;
-    private static final int DYE_SLOT = 5;
-    private static final int BOILER_SLOT = 6;
-    private static final String WINGS = "wings";
-    private static final ResourceLocation FIELD = Wayfarer.id("act3/airfield");
-    private static final ResourceLocation SHIP = ResourceLocation.fromNamespaceAndPath("immersive_aircraft", "airship");
-    private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/act3.json");
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final String[] WOUNDED = {"wounded_1", "wounded_2", "wounded_3"};
     private static final String[] GRAVES = {"grave_1", "grave_2", "grave_3"};
@@ -80,10 +60,6 @@ final class Act3 {
     private static final int GRAVE_RING = 9;
     private static final int OPEN_TURNS = 4;
     private static final double OPEN_STEP = 16;
-    private static final int TURN_STEP = 20;
-    private static final int WIDEST = 120;
-    private static final int SAMPLE = 64;
-    private static final int HIGH = 24;
 
     private Act3() {}
 
@@ -96,15 +72,6 @@ final class Act3 {
                 if (progress.place(HOLLOW).isEmpty()) {
                     progress.place(HOLLOW, from);
                     progress.setDirty();
-                }
-            }
-            case AIRFIELD -> {
-                if (progress.place(AIRFIELD_SITE).isEmpty()) {
-                    BlockPos site = high(server, from);
-                    progress.place(AIRFIELD_SITE, site);
-                    progress.place(AIRFIELD, site);
-                    progress.setDirty();
-                    LOGGER.info("the Gazebound airfield will stand at {}", site);
                 }
             }
             case KEEPERS -> {
@@ -128,7 +95,6 @@ final class Act3 {
         Progress progress = Progress.of(server);
         switch (name) {
             case HOLLOW -> progress.places.remove(HOLLOW_MARKED);
-            case AIRFIELD -> progress.places.remove(AIRFIELD_ORIGIN);
             case KEEPERS -> List.of(KEEPERS_FRAME, FRAME_MARKED).forEach(progress.places::remove);
             default -> throw new IllegalStateException("act 3 has no place " + name);
         }
@@ -139,7 +105,6 @@ final class Act3 {
         Progress progress = Progress.of(server);
         return switch (name) {
             case HOLLOW -> progress.place(HOLLOW_MARKED).isPresent();
-            case AIRFIELD -> progress.place(AIRFIELD_ORIGIN).isPresent();
             case KEEPERS -> progress.place(KEEPERS_FRAME).isPresent();
             default -> false;
         };
@@ -152,10 +117,6 @@ final class Act3 {
             mark(server, level, centre);
             HallSearch.release(level, centre);
         });
-        progress.place(AIRFIELD_SITE).filter(site -> progress.place(AIRFIELD_ORIGIN).isEmpty() && HallSearch.loaded(level, site)).ifPresent(site -> {
-            field(server, level, site);
-            HallSearch.release(level, site);
-        });
         progress.place(KEEPERS_FRAME).filter(frame -> progress.place(FRAME_MARKED).isEmpty() && level.isLoaded(frame)).ifPresent(frame -> {
             Clues.marker(level, frame.above(), FRAME_CLUE);
             progress.place(FRAME_MARKED, frame);
@@ -165,7 +126,6 @@ final class Act3 {
             frame(server, level, site);
             HallSearch.release(level, site);
         });
-        progress.place(AIRFIELD_ORIGIN).filter(origin -> !progress.done(WINGS) && level.areEntitiesLoaded(ChunkPos.asLong(origin))).ifPresent(origin -> moor(server, level));
     }
 
     private static void mark(MinecraftServer server, ServerLevel level, BlockPos centre) {
@@ -204,21 +164,22 @@ final class Act3 {
     private static void frame(MinecraftServer server, ServerLevel level, BlockPos site) {
         Progress progress = Progress.of(server);
         Optional<BlockPos> frame = Optional.empty();
+        Optional<BoundingBox> room = Optional.empty();
         for (Holder<Structure> kind : strongholds(level)) {
             StructureStart start = level.getChunk(site.getX() >> 4, site.getZ() >> 4, ChunkStatus.STRUCTURE_STARTS).getStartForStructure(kind.value());
             if (start != null && start.isValid()) {
                 BoundingBox box = start.getBoundingBox();
                 ChunkPos.rangeClosed(new ChunkPos(box.minX() >> 4, box.minZ() >> 4), new ChunkPos(box.maxX() >> 4, box.maxZ() >> 4)).forEach(chunk -> level.getChunk(chunk.x, chunk.z));
-                frame = BlockPos.betweenClosedStream(box).filter(pos -> {
-                    var state = level.getBlockState(pos);
-                    return state.is(Blocks.END_PORTAL_FRAME) || BuiltInRegistries.BLOCK.getKey(state.getBlock()).equals(FRAME);
-                }).findFirst().map(BlockPos::immutable);
+                frame = BlockPos.betweenClosedStream(box).filter(pos -> framing(level.getBlockState(pos))).findFirst().map(BlockPos::immutable);
+                room = frame.flatMap(found -> start.getPieces().stream().map(StructurePiece::getBoundingBox).filter(piece -> piece.isInside(found))
+                        .min(Comparator.comparingLong(piece -> (long) piece.getXSpan() * piece.getYSpan() * piece.getZSpan())));
                 break;
             }
         }
         BlockPos at = frame.orElse(site);
-        clear(level, new BoundingBox(at.getX() - FRAME_REACH, at.getY() - FRAME_SEARCH, at.getZ() - FRAME_REACH, at.getX() + FRAME_REACH,
-                at.getY() + FRAME_SEARCH * 2, at.getZ() + FRAME_REACH));
+        BoundingBox near = new BoundingBox(at.getX() - FRAME_REACH, at.getY() - FRAME_SEARCH, at.getZ() - FRAME_REACH, at.getX() + FRAME_REACH,
+                at.getY() + FRAME_SEARCH * 2, at.getZ() + FRAME_REACH);
+        clear(level, room.flatMap(piece -> BoundingBox.encapsulatingBoxes(List.of(piece, near))).orElse(near));
         keep(level, at);
         BlockPos seat = seat(level, at);
         progress.place(KEEPERS_FRAME, at);
@@ -247,6 +208,24 @@ final class Act3 {
         List<Monster> monsters = level.getEntitiesOfClass(Monster.class, new AABB(frame).inflate(reach), Monster::isAlive);
         monsters.forEach(Entity::discard);
         LOGGER.info("the Keepers keep their hall: {} spawners and {} monsters gone within {} blocks of the frame", spawners, monsters.size(), reach);
+    }
+
+    private static boolean framing(BlockState state) {
+        return state.is(Blocks.END_PORTAL_FRAME) || BuiltInRegistries.BLOCK.getKey(state.getBlock()).equals(FRAME);
+    }
+
+    static Vec3 centre(ServerLevel level, BlockPos frame) {
+        double x = 0;
+        double z = 0;
+        int count = 0;
+        for (BlockPos at : BlockPos.betweenClosed(frame.offset(-RING, 0, -RING), frame.offset(RING, 0, RING))) {
+            if (framing(level.getBlockState(at))) {
+                x += at.getX() + 0.5;
+                z += at.getZ() + 0.5;
+                count++;
+            }
+        }
+        return count == 0 ? Vec3.atBottomCenterOf(frame) : new Vec3(x / count, frame.getY(), z / count);
     }
 
     private static BlockPos seat(ServerLevel level, BlockPos frame) {
@@ -327,80 +306,5 @@ final class Act3 {
             }
         }
         return Ground.land(level, around(centre, ring, degrees));
-    }
-
-    static BlockPos high(MinecraftServer server, BlockPos from) {
-        ServerLevel level = Engine.overworld(server);
-        Unseen.Heights heights = new Unseen.Heights(level);
-        int sea = level.getChunkSource().getGenerator().getSeaLevel();
-        int ahead = Balance.get().errands().aheadBlocks();
-        Vec3 way = Caravan.way(server);
-        BlockPos best = null;
-        for (int turned = 0; turned <= WIDEST; turned += TURN_STEP) {
-            for (int sign : turned == 0 ? new int[] {1} : new int[] {1, -1}) {
-                Vec3 bent = way.yRot((float) Math.toRadians(turned * sign));
-                for (int out = ahead; out >= ahead / 2; out -= SAMPLE) {
-                    int x = from.getX() + (int) Math.round(bent.x * out);
-                    int z = from.getZ() + (int) Math.round(bent.z * out);
-                    if (heights.wet(x, z)) {
-                        continue;
-                    }
-                    BlockPos at = new BlockPos(x, heights.surface(x, z), z);
-                    if (at.getY() >= sea + HIGH && Math.abs(heights.surface(x + 8, z) - at.getY()) <= 3 && Math.abs(heights.surface(x, z + 8) - at.getY()) <= 3) {
-                        return at;
-                    }
-                    if (best == null || at.getY() > best.getY()) {
-                        best = at;
-                    }
-                }
-            }
-        }
-        return best == null ? from : best;
-    }
-
-    private static void field(MinecraftServer server, ServerLevel level, BlockPos site) {
-        Progress progress = Progress.of(server);
-        BlockPos from = progress.place(Caravan.NAME).orElse(site);
-        Vec3 toward = Vec3.atLowerCornerOf(from.subtract(site)).multiply(1, 0, 1);
-        Rotation turn = Frost.facing(toward.lengthSqr() < 1 ? new Vec3(0, 0, -1) : toward.normalize().scale(-1));
-        BlockPos origin = Camps.place(level, FIELD, site, turn);
-        progress.place(AIRFIELD_ORIGIN, origin);
-        progress.yaws.put(AIRFIELD_TURN, (float) turn.ordinal());
-        JsonObject plan = PLAN.get().getAsJsonObject(AIRFIELD);
-        progress.place(AIRFIELD, world(level, origin, turn, plan, "rack"));
-        progress.ward(AIRFIELD, level.getStructureManager().getOrCreate(FIELD).getBoundingBox(Camps.settings(level, FIELD, turn), origin));
-        progress.setDirty();
-        Clues.marker(level, world(level, origin, turn, plan, "rack"), "robes");
-        Standing.keep(server, AIRFIELD);
-        LOGGER.info("the Gazebound airfield stands at {}, turned {}", origin, turn);
-        Journal.syncAll(server);
-    }
-
-    private static void moor(MinecraftServer server, ServerLevel level) {
-        Progress progress = Progress.of(server);
-        BlockPos origin = progress.place(AIRFIELD_ORIGIN).orElseThrow();
-        if (!level.getEntities((Entity) null, new AABB(origin).inflate(MOORING), entity -> entity.getTags().contains(Rules.MOORED)).isEmpty()) {
-            return;
-        }
-        Rotation turn = Rotation.values()[progress.yaws.getOrDefault(AIRFIELD_TURN, 0f).intValue()];
-        BlockPos at = world(level, origin, turn, PLAN.get().getAsJsonObject(AIRFIELD), "airship");
-        Optional<Entity> ship = BuiltInRegistries.ENTITY_TYPE.getOptional(SHIP).map(type -> type.create(level));
-        if (ship.isEmpty()) {
-            LOGGER.error("wings failed: Immersive Aircraft's airship is not in this game");
-            return;
-        }
-        ship.get().moveTo(at.getX() + 0.5, at.getY() + 1, at.getZ() + 0.5, 0, 0);
-        ship.get().addTag(Rules.MOORED);
-        if (ship.get() instanceof Container hold) {
-            hold.setItem(BANNER_SLOT, new ItemStack(Items.GRAY_BANNER));
-            hold.setItem(DYE_SLOT, new ItemStack(Items.GRAY_DYE));
-            hold.setItem(BOILER_SLOT, new ItemStack(Items.COAL, Balance.get().errands().airshipCoal()));
-        }
-        level.addFreshEntity(ship.get());
-        LOGGER.info("the Gazebound airship is moored at {}", at);
-    }
-
-    private static BlockPos world(ServerLevel level, BlockPos origin, Rotation turn, JsonObject plan, String key) {
-        return origin.offset(StructureTemplate.calculateRelativePosition(Camps.settings(level, FIELD, turn), Prologue.vector(plan.getAsJsonArray(key))));
     }
 }

@@ -158,7 +158,7 @@ Everything the player reads off the screen outside the world: the HUD, the pack'
 
 ### I9 Afterwards: a page for every people met
 
-- When the door's scene ends (`vision.md`, D9; `story.md`, S8), the journal opens by itself on its last ribbon, Afterwards, "What became of them", with the gold dot. It holds one page for every people the player met, in the order they were met: the twelve halls' peoples, the gone ones known through who is left of them (Drifa for the Frost Walkers, the witches for the Marsh Mothers, the Drowned City's last for theirs). A people is met when the player reached its hall or spoke with its people.
+- When the door's scene ends (`vision.md`, D9; `story.md`, S8), the journal opens by itself on its last ribbon, Afterwards, "What became of them", with the gold dot. It holds one page for every people the player met, in the order they were met: the twelve halls' peoples, the gone ones known through who is left of them (Drifa for the Frost Walkers, the Tide Folk for the Drowned City). A people is met when the player reached its hall or spoke with its people, so the four whose shards only the heir brings have no page.
 - Each page is one short paragraph in the narrator's voice, speaking to "you" in the past tense as Fallout's ending slides do, so it reads the same after every door, made of two parts: what the player did at that people's hall (the shard left, taken, or given to Drifa to bury, and the hall's own decision), and what the door did to their land. Every part is written with the `lore` skill.
 
   ```text

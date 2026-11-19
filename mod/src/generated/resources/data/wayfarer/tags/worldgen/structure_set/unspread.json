@@ -7,14 +7,6 @@
     {
       "id": "minecraft:ancient_cities",
       "required": false
-    },
-    {
-      "id": "wayfarer:halls/act_three",
-      "required": false
-    },
-    {
-      "id": "wayfarer:halls/act_two",
-      "required": false
     }
   ]
 }

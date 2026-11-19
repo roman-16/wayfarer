@@ -64,13 +64,12 @@ final class Ford {
         }
         long started = System.nanoTime();
         ServerLevel level = Engine.overworld(server);
-        BlockPos from = Caravan.last(server);
         Balance.Ford balance = Balance.get().ford();
-        Marsh.find(server);
-        BlockPos hall = progress.place(Marsh.HALL).orElseThrow();
-        Vec3 toward = new Vec3(hall.getX() - from.getX(), 0, hall.getZ() - from.getZ()).normalize();
-        Unseen.Heights heights = new Unseen.Heights(level);
         int ahead = balance.aheadBlocks();
+        Home.Aim along = Home.aim(Caravan.last(server), Caravan.way(server), ahead);
+        BlockPos from = along.from();
+        Vec3 toward = along.way();
+        Unseen.Heights heights = new Unseen.Heights(level);
         Vec3 way = Unseen.warm(heights, from, toward, ahead) ? toward
                 : Home.aim(from, toward, ahead, (origin, bent) -> Unseen.warm(heights, origin, bent, ahead)).way();
         Vec3 start = Vec3.atLowerCornerOf(from);
@@ -81,7 +80,7 @@ final class Ford {
         progress.place(FAR_BANK, banks.far());
         progress.yaws.put(WAY, (float) Math.toDegrees(Math.atan2(-way.x, way.z)));
         progress.setDirty();
-        LOGGER.info("the ford lies between {} and {}, the way turned {} degrees from the hall's, found in {} ms", banks.near(), banks.far(),
+        LOGGER.info("the ford lies between {} and {}, the way turned {} degrees from the caravan's, found in {} ms", banks.near(), banks.far(),
                 Home.degrees(toward, way), (System.nanoTime() - started) / NANOS_PER_MILLI);
     }
 
@@ -157,7 +156,6 @@ final class Ford {
         progress.witnesses.remove(NAME);
         progress.witnesses.remove(OUTPOST);
         progress.setDirty();
-        Marsh.forget(server);
     }
 
     static boolean built(MinecraftServer server) {

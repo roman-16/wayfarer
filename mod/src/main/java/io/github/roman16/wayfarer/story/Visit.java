@@ -117,10 +117,6 @@ final class Visit {
             return;
         }
         Vec3 seat = new Vec3(at.getDouble(0), at.getDouble(1), at.getDouble(2));
-        if (body.get().position().multiply(1, 0, 1).distanceTo(seat.multiply(1, 0, 1)) > 1) {
-            People.walk(server, visitor, seat, People.WALKING);
-            return;
-        }
         body.get().moveTo(seat.x, seat.y, seat.z, body.get().getYRot(), 0);
         sit(server, active, visitor, fire);
     }
@@ -182,12 +178,12 @@ final class Visit {
             progress.bodies.remove(person);
             progress.setDirty();
             if (left != null) {
-                leave(level, at, left);
+                lay(level, at, left, LEFT);
             }
         });
     }
 
-    private static void leave(ServerLevel level, Vec3 at, ResourceLocation item) {
+    static void lay(ServerLevel level, Vec3 at, ResourceLocation item, String mark) {
         Display.ItemDisplay loaf = EntityType.ITEM_DISPLAY.create(level);
         if (loaf == null) {
             return;
@@ -203,7 +199,7 @@ final class Visit {
         tag.put("transformation", shape);
         tag.put("Pos", position(at.add(0, LOAF_RISE, 0)));
         loaf.load(tag);
-        loaf.addTag(LEFT);
+        loaf.addTag(mark);
         level.addFreshEntity(loaf);
     }
 

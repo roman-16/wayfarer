@@ -132,35 +132,12 @@ people = "drifa"
 remarks = ["[cold, patient] Twenty winters. I can wait a few days more.", "[sharp] Don't stand behind me."]
 unnamed = "A woman in furs"
 
-[drowned_1]
-color = "gray"
-name = "A pale figure"
-people = "drowned_1"
-unnamed = "A pale figure"
-
-[drowned_2]
-color = "gray"
-name = "A pale figure"
-people = "drowned_2"
-unnamed = "A pale figure"
-
-[drowned_3]
-color = "gray"
-name = "A pale figure"
-people = "drowned_3"
-unnamed = "A pale figure"
-
 [edda]
 color = "light_purple"
 name = "Edda"
 people = "edda"
 remarks = ["[gruff] Mind the hull. It bites splinters.", "[dark, dry] The sea's flat today. It lies."]
 unnamed = "A woman with a mallet"
-
-[fisher]
-color = "white"
-name = "The fisher"
-unnamed = "A fevered man"
 
 [founder]
 color = "white"
@@ -187,14 +164,8 @@ unnamed = "A man in grey"
 [heir]
 color = "gold"
 name = "The heir"
-remarks = ["[smiling, soft] Not here. Not yet.", "[pleasant, quietly dangerous] Lift it. I'll take it from you at the gate."]
+remarks = ["[smiling, soft] Not here. Not yet.", "[pleasant, quietly dangerous] Bring me yours at the gate."]
 unnamed = "A man in fine grey"
-
-[heirs_sister]
-color = "gold"
-name = "Linnet"
-remarks = ["[quietly, pleading] Tell him. That's all I ask."]
-unnamed = "A woman in ochre"
 
 [herder]
 color = "white"
@@ -235,12 +206,6 @@ welcomes = [
 color = "gray"
 name = "Malgven"
 unnamed = "A hooded woman"
-
-[malgven_child]
-color = "gray"
-name = "A girl in grey"
-people = "malgven_child"
-unnamed = "A girl in grey"
 
 [maud]
 color = "aqua"
@@ -336,22 +301,6 @@ welcomes = [
   "[eager] I bet you saw something. I always miss everything.",
 ]
 
-[rue]
-cold = ["[turning her back, cold] Nothing for you here. Not any more.", "[hissing] Thief. Off my porch."]
-color = "dark_green"
-name = "Rue"
-people = "witches"
-remarks = ["[dry, sour] Mud and water, light-bearer. That's all there is out here."]
-unnamed = "An old woman"
-
-[sedge]
-cold = ["[spits] Go on. Get off our water."]
-color = "green"
-name = "Sedge"
-people = "witches"
-remarks = ["[flat, grim] Mind where you put your feet. The bog keeps what it gets."]
-unnamed = "A hard-faced woman"
-
 [sefa]
 color = "yellow"
 name = "Sefa"
@@ -371,14 +320,6 @@ name = "Wend"
 renamed = { the_gaze = "The gaze" }
 unnamed = "The stranger"
 voice = true
-
-[tansy]
-cold = ["[quietly, not meeting your eyes] Don't. Just... don't look at me."]
-color = "light_purple"
-name = "Tansy"
-people = "witches"
-remarks = ["[defensive, uneasy] Don't look at me like that. I saw what I saw."]
-unnamed = "A young woman"
 
 [tide_warden_1]
 color = "dark_aqua"
@@ -437,12 +378,6 @@ prologue = [
   "[wary, curt] Strangers bring the burning. One trade, then go.",
   "[nervous whisper] Keep that ember in your pocket while you're in our street.",
 ]
-
-[warden]
-color = "gold"
-name = "The gate warden"
-remarks = ["[grave] The ward holds. For now."]
-unnamed = "An old man in ochre"
 
 [wend_reading]
 color = "gold"

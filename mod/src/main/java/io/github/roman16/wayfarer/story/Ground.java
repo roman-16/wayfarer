@@ -1,30 +1,64 @@
 package io.github.roman16.wayfarer.story;
 
+import com.mojang.logging.LogUtils;
+import io.github.roman16.wayfarer.WorldShape;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.slf4j.Logger;
 
 public final class Ground {
+    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final int ASHORE_STEP_BLOCKS = 16;
+    private static final int ASHORE_STEPS = 16;
     private static final int BELOW = 16;
     private static final int CLIMB = 2;
     private static final double HALF_WIDTH = 0.3;
     private static final double HEIGHT = 1.8;
-    private static final int REACH = 8;
+    static final int REACH = 8;
     private static final double ROOM = 0.5;
     private static final int THICK = 2;
     private static final double LAYER = 2 / 16.0;
 
     private Ground() {}
+
+    public static Optional<BlockPos> ashore(ServerLevel level, BlockPos fell) {
+        double angle = WorldShape.Coasts.angle(fell.getX(), fell.getZ());
+        double distance = Math.sqrt((double) fell.getX() * fell.getX() + (double) fell.getZ() * fell.getZ());
+        OptionalDouble shore = WorldShape.coasts(level).map(coasts -> coasts.shore(angle, distance)).orElseGet(OptionalDouble::empty);
+        if (shore.isEmpty()) {
+            return Optional.empty();
+        }
+        Unseen.Heights heights = new Unseen.Heights(level);
+        for (int step = 0; step <= ASHORE_STEPS; step++) {
+            for (int sign : step == 0 ? new int[] {1} : new int[] {-1, 1}) {
+                double along = shore.getAsDouble() + sign * step * ASHORE_STEP_BLOCKS;
+                int x = (int) Math.round(Math.cos(angle) * along);
+                int z = (int) Math.round(Math.sin(angle) * along);
+                if (!heights.wet(x, z)) {
+                    LevelChunk chunk = level.getChunk(SectionPos.blockToSectionCoord(x), SectionPos.blockToSectionCoord(z));
+                    BlockPos ashore = new BlockPos(x, chunk.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) + 1, z);
+                    LOGGER.info("a fall at sea at {} leaves its stone ashore by {}", fell.toShortString(), ashore.toShortString());
+                    return Optional.of(ashore);
+                }
+            }
+        }
+        return Optional.empty();
+    }
 
     public static int land(Level level, int x, int z) {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z) - 1, z);

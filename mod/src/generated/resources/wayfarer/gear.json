@@ -1283,7 +1283,7 @@
     {
       "appears": {
         "feels": "cold",
-        "opened": "the_last_frost_walker"
+        "opened": "the_frost_walkers"
       },
       "id": "cold",
       "ladder": true,

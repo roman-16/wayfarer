@@ -40,7 +40,7 @@ A moment that matters is played as a scene on the band, line by line, never told
 - **Show something a camera could see.** Every beat has a body, an object, a sound: the grey face, the shaking fist, his head dropping to his chest. What a person's body shows in the world matches what the text says (the art skill's poses).
 - **Set up before you take away.** A death, a loss, a betrayal is foreshadowed so it feels inevitable when it comes: the dying say they are dying and why, in their own words, before the end.
 - **Say what happened.** After a big beat, the narrator states it plainly ("The old man is dead."), then leaves a short silence of one line before anything asks the player to act. Never cut from one state to the next with only a new objective.
-- **A reason, and why now.** A side quest's first line says why the person asks now, tied to something the team just lived through ("Drifa came to our fire and counted us. It made me count my own.").
+- **A reason, and why now.** A side quest's first line says why the person asks now, tied to something the team just lived through ("All of that woman's people dead, and she knew every one by name. It made me count my own.").
 - **A reason before a task.** The story gives the reason for an action before the task panel names it: "You can't leave him here for the crows." comes before "Bury him". A rule someone gives comes with its reason in their voice.
 - **Give it room.** Important information comes in focused moments with nothing else to do; small talk can happen while walking. Do not rush the scenes that are meant to be remembered.
 - **Go cold after.** Grief is a line, not a paragraph: the road goes on, and the dead push the living onward.

@@ -7,9 +7,9 @@
   ],
   "placement": {
     "count": 12,
-    "jitter_blocks": 1000,
+    "jitter_blocks": 1024,
     "preferred_biomes": "#minecraft:stronghold_biased_to",
-    "radius_blocks": 35000,
+    "radius_blocks": 17408,
     "salt": 0,
     "type": "wayfarer:exact_ring"
   },

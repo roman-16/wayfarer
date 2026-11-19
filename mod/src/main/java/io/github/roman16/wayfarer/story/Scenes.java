@@ -12,6 +12,7 @@ import io.github.roman16.wayfarer.CompassPayload;
 import io.github.roman16.wayfarer.Footing;
 import io.github.roman16.wayfarer.Handover;
 import io.github.roman16.wayfarer.Journey;
+import io.github.roman16.wayfarer.LastSea;
 import io.github.roman16.wayfarer.Leaving;
 import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.Record;
@@ -288,7 +289,8 @@ public final class Scenes {
             boolean near = ledger.scenes.stream().anyMatch(scene -> !scene.keep
                     && group.stream().anyMatch(player -> scene.centre.closerToCenterThan(player.position(), APART)));
             if (!waiting && !near) {
-                group.stream().filter(player -> headings.containsKey(player.getUUID())).findFirst().ifPresent(leader -> {
+                group.stream().filter(player -> headings.containsKey(player.getUUID())).findFirst()
+                        .filter(leader -> LastSea.past(level, leader.getX(), leader.getZ()).isEmpty()).ifPresent(leader -> {
                     List<String> kinds = Sea.afloat(leader) && Sea.open(level, leader.blockPosition()) ? sea(ledger, level) : kinds(server, ledger, level.getRandom());
                     if (!place(server, level, ledger, leader, group, players, kinds)) {
                         group.forEach(player -> ledger.due.put(player.getUUID(), now + RETRY_SECONDS * TICKS_PER_SECOND));

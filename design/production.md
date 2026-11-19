@@ -36,6 +36,26 @@ Unreleased and in development: nothing is published yet, and a world made with o
 
 **Why:** The pack is made for the friends who play it, on the machines they have, and the far view is what makes its world feel vast, so every step keeps it, Low included. A floor needs a named machine to stand on, and the weakest one a friend played on is the minimum. Playable is judged on the average and the slowest hundredth of frames, since one hitch while new land loads is felt as a stutter and not as an unplayable game. On the minimum machine three things decided the floor, measured with `bench --minimum`: More Darkness read the screen's brightness back from the graphics card every frame and made the processor wait for everything drawn before it, which on a server took Low with the far view from 254 frames a second to 84, so the Wayfarer mod has it read the brightness a few frames later without waiting; Reactive Music's player checked for its next song without pause and kept a third of a core busy, so it rests between checks; and alone, the land generated and kept running around the player costs the processor most, so Low draws and runs 6 chunks and the far view covers what lies beyond. A team in which one friend plays with the shader and another without sees one night, so the dark stays a danger for both and the fire a refuge. One shader means every look is judged once, and one Preset with four steps lets a newcomer pick how hard their machine works without knowing Iris, Distant Horizons and a dozen video settings. It lives where players already look for graphics, in Sodium's Video Settings, and is named Preset because Sodium already has a Graphics option (Fast or Fancy). Prism gives an imported pack 4 GB unless the pack asks for more, too little for this pack and its far view.
 
+### R2 Updates and saves: a world keeps its major version
+
+- Every version is numbered major.minor.patch, and the number says what it does to a world being played: a patch (1.3.1) fixes and tunes, a minor version (1.4.0) adds content, and both load into a running world; a major version (2.0.0) changes the land's shape or the story's structure, and a world begun with an older major stays with it.
+
+  ```text
+  Wayfarer 1.3 -> 1.4   You join: "Wayfarer was updated: 2 fixes." Your road goes on.
+  Wayfarer 1.4 -> 2.0   This road was begun with Wayfarer 1. Finish it with Wayfarer 1, or start a new road.
+  ```
+
+- Within a major, the Wayfarer mod moves its own saved story data forward with numbered migrations that run once when a world first opens in the new version; what a minor or patch changes in the land's generation shows only in land not yet made, so a minor never changes the land's shape.
+- The pack is hosted at one web address per major version, and the player's Prism Launcher instance updates itself before every launch through packwiz's installer: patches and minor versions arrive by themselves, and a new major is a new instance beside the old one, so a road begun on 1.x is finished on 1.x. The server runs the same version, put there with `just carry <server> pack`; the friends' server crosses a major by having its road carried to a fresh world (`tooling.md`, T6).
+
+  ```text
+  You click Play. A small window: "Updating Wayfarer 1.3 -> 1.4 ... 3 files". The game starts.
+  ```
+
+- **Edge cases.** Offline at launch, the instance starts with the version it has. A world opened in an older version than it was last played in refuses with the version it needs ("This road was last played with Wayfarer 1.4; update to open it"). A player whose version differs from the server's sees the versions on the refused join and gets the server's on the next launch. A world begun before the first release (`Unreleased and in development`) is not migrated: development worlds are carried or begun again.
+
+**Why:** Most updates are fixes, and they reach every world without a step from the player; nobody walks into seams between old and new land or into a story half moved, and no carry has to ship as a game feature. Pinning by major is how modpacks that keep long-running servers stay safe, and an instance that updates itself means no friend plays an outdated version against the server.
+
 ### R3 Blind players and the play record
 
 - Two or three friends who never read `design/` play the part under test on the server in one evening. The user plays along as one more teammate and never says what to do or how; voice chat runs as normal and is their thinking aloud. After 10 minutes stuck on one step the user may give one hint, typing `/wayfarer hint` so the record notes it; every hint counts as a stall the screen did not explain, against phase 4's done-when. Friends who played a part blind never test that part blind again.
@@ -67,6 +87,20 @@ Unreleased and in development: nothing is published yet, and a world made with o
 
 **Why:** A silent observer is how studios test blind, and a hint that counts against the bar keeps the user honest. The agent cannot watch the evening, so the world has to tell it afterwards where people stood, what they tried and said and where they waited; positions with the distance to the goal show a team lost long before anyone says so, and chat and screens show what they looked for.
 
+### R4 Languages: English first
+
+- The first release ships in English: every screen, quest, book and journal text and every voice. German comes up again once friends and the first public players have played the road; it would mean translated texts, German voices for every line, and pixel fonts that carry ä, ö, ü and ß (not checked).
+
+**Why:** Every line is voiced, so a second language doubles the recording, and the texts still change with every pass; translated and recorded now, they would be paid for twice.
+
+### R5 Release and credits: private first, credited from the pack
+
+- The first release goes to friends through the hosted address (R2), not to the public. Whether Wayfarer is published on Modrinth is decided after the blind plays, in phase 5, together with what publishing asks: the two mods from CurseForge (Inventory Sorter, Nomadic Tents) on Modrinth or permitted, the voices recorded on a paid ElevenLabs plan, which publishing for others needs, and a public page.
+- `just generate` writes `pack/CREDITS.md` from the pack itself: every mod with its author, licence and page; every piece of music and sound with its licence; the fonts; the Vanilla Tweaks the mod carries, which their terms ask to be credited and never sold; and the voices, made with ElevenLabs. The ending's credits after Years later name the people and the music and end with "and the mods listed in the pack's credits", their number filled in.
+- Nothing ships silent: before the first release every line is recorded and every speaker has a voice (`narration.md`, Recording).
+
+**Why:** Nothing can be judged ready for the public before friends have played it blind, and a private release keeps every licence question open without risk. A credits file written from the pack cannot fall behind it, and a roll of every mod's name would bury the ending.
+
 ### R6 How long each step should take
 
 R3's report sets each main quest's time against its budget, and each act's against the act's (`story.md`, S2). Steps inside a quest show their time alone.
@@ -88,14 +122,5 @@ Act 1                   4 h 40 min   budget 4 h
 
 ## Open
 
-### R2 Updates and saves
+Nothing is open.
 
-Before release: how a running world takes a new version without losing its story, places or things; how players' machines and the server get it; and what a version number promises.
-
-### R4 Languages
-
-English only, or German too, and when.
-
-### R5 Release and credits
-
-Private, or published on Modrinth; and how the pack credits the mods, sounds, music and voices it ships (`pack/CREDITS.md` holds the music today). Whatever it settles, nothing ships silent: every line is recorded and every speaker has a voice (`narration.md`, Recording).

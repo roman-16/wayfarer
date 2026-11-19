@@ -6,6 +6,9 @@ import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
+import io.github.roman16.wayfarer.Climate;
+import io.github.roman16.wayfarer.HallRoom;
+import io.github.roman16.wayfarer.HallStructure;
 import io.github.roman16.wayfarer.Underground;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayDeque;
@@ -15,21 +18,28 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.Vec3;
@@ -38,6 +48,7 @@ import org.slf4j.Logger;
 final class Diggers {
     static final String NAME = "diggers";
     static final String HALL = "diggers_hall";
+    static final ResourceKey<Structure> LOST = ResourceKey.create(Registries.STRUCTURE, Wayfarer.id("hall/lost"));
     private static final String SITE = "diggers_site";
     private static final String TURN = "diggers_turn";
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -121,7 +132,8 @@ final class Diggers {
             Home.Aim aim = Home.aim(progress.place(Caravan.NAME).or(() -> progress.place(Steps.OWN_CAMP)).orElseGet(level::getSharedSpawnPos),
                     Caravan.way(server), ahead);
             Unseen.Heights heights = new Unseen.Heights(level);
-            build.searching = CompletableFuture.supplyAsync(() -> sites(heights, aim.from(), aim.way(), ahead), Util.backgroundExecutor());
+            Climate climate = ((HallStructure) level.registryAccess().registryOrThrow(Registries.STRUCTURE).getHolderOrThrow(LOST).value()).climate();
+            build.searching = CompletableFuture.supplyAsync(() -> sites(heights, aim.from(), aim.way(), ahead, climate), Util.backgroundExecutor());
             return;
         }
         if (!build.searching.isDone()) {
@@ -147,9 +159,8 @@ final class Diggers {
         level.getChunkSource().addRegionTicket(TICKET, build.ticket, build.radius, build.ticket);
     }
 
-    private static List<Site> sites(Unseen.Heights heights, BlockPos from, Vec3 way, int ahead) {
-        List<Site> dry = new ArrayList<>();
-        List<Site> wet = new ArrayList<>();
+    private static List<Site> sites(Unseen.Heights heights, BlockPos from, Vec3 way, int ahead, Climate climate) {
+        List<Candidate> candidates = new ArrayList<>();
         double heading = Math.atan2(way.z, way.x);
         for (int angle = -WIDEST; angle <= WIDEST; angle += ANGLE_STEP) {
             double towards = heading + Math.toRadians(angle);
@@ -158,7 +169,8 @@ final class Diggers {
                 int z = from.getZ() + (int) Math.round(Math.sin(towards) * (ahead + nudge));
                 int surface = heights.surface(x, z);
                 double score = -Math.abs(angle) / 8.0 - Math.abs(nudge) / 32.0;
-                if (heights.biome(x, surface, z).is(BiomeTags.IS_FOREST)) {
+                Holder<Biome> biome = heights.biome(x, surface, z);
+                if (biome.is(BiomeTags.IS_FOREST)) {
                     score += FOREST;
                 }
                 boolean soaked = heights.wet(x, z);
@@ -168,14 +180,22 @@ final class Diggers {
                     score -= Math.max(0, surface - heights.surface(px, pz)) * 2;
                     soaked |= heights.wet(px, pz);
                 }
-                Site site = new Site(new BlockPos(x, surface, z), turn(Math.cos(towards), Math.sin(towards)), score);
-                (soaked ? wet : dry).add(site);
+                candidates.add(new Candidate(new Site(new BlockPos(x, surface, z), turn(Math.cos(towards), Math.sin(towards)), score), soaked, biome));
             }
         }
-        List<Site> sites = dry.isEmpty() ? wet : dry;
-        sites.sort(Comparator.comparingDouble(Site::score).reversed());
-        return sites;
+        for (Predicate<Holder<Biome>> pass : List.<Predicate<Holder<Biome>>>of(climate::fits, climate::bears, biome -> true)) {
+            for (boolean soaked : new boolean[] {false, true}) {
+                List<Site> sites = candidates.stream().filter(candidate -> candidate.soaked() == soaked && pass.test(candidate.biome())).map(Candidate::site)
+                        .sorted(Comparator.comparingDouble(Site::score).reversed()).collect(Collectors.toCollection(ArrayList::new));
+                if (!sites.isEmpty()) {
+                    return sites;
+                }
+            }
+        }
+        return List.of();
     }
+
+    private record Candidate(Site site, boolean soaked, Holder<Biome> biome) {}
 
     private static Rotation turn(double dx, double dz) {
         if (Math.abs(dx) > Math.abs(dz)) {
@@ -187,7 +207,7 @@ final class Diggers {
     private static boolean loaded(ServerLevel level) {
         for (int x = build.ticket.x - build.radius + 1; x < build.ticket.x + build.radius; x++) {
             for (int z = build.ticket.z - build.radius + 1; z < build.ticket.z + build.radius; z++) {
-                if (!level.hasChunk(x, z)) {
+                if (level.getChunkSource().getChunkNow(x, z) == null) {
                     return false;
                 }
             }
@@ -242,8 +262,11 @@ final class Diggers {
         progress.place(HALL + Places.ENTRANCE, door);
         progress.rooms.put(HALL, List.of(template(level, "tunnels").getBoundingBox(settings, tunnelsAt), template(level, "entrance").getBoundingBox(settings, entranceAt)));
         JsonObject hall = tunnels.getAsJsonObject("hall");
-        progress.ward(NAME, BoundingBox.fromCorners(tunnelsAt.offset(turned(settings, vector(hall.getAsJsonArray("from")))),
-                tunnelsAt.offset(turned(settings, vector(hall.getAsJsonArray("to"))))));
+        BoundingBox room = BoundingBox.fromCorners(tunnelsAt.offset(turned(settings, vector(hall.getAsJsonArray("from")))),
+                tunnelsAt.offset(turned(settings, vector(hall.getAsJsonArray("to")))));
+        progress.ward(NAME, room);
+        Places.register(level, level.registryAccess().registryOrThrow(Registries.STRUCTURE).getOrThrow(LOST), new ChunkPos(room.getCenter()), 0,
+                List.of(new HallRoom(room)));
         track(level, door.below());
         for (JsonElement mark : tunnels.getAsJsonArray("marks")) {
             track(level, tunnelsAt.offset(turned(settings, vector(mark.getAsJsonArray()))));

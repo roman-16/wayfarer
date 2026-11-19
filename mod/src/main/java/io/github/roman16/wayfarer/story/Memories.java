@@ -3,11 +3,9 @@ package io.github.roman16.wayfarer.story;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.CallingStoneBlockEntity;
-import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.Handover;
 import io.github.roman16.wayfarer.Heat;
 import io.github.roman16.wayfarer.Music;
-import io.github.roman16.wayfarer.NotchedLog;
 import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
@@ -30,7 +28,6 @@ import javax.annotation.Nullable;
 import net.commoble.infiniverse.api.InfiniverseAPI;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -48,8 +45,6 @@ import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -59,10 +54,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.CampfireBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -70,7 +63,6 @@ import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -155,15 +147,11 @@ public final class Memories {
         }
     }
 
-    public static boolean touch(ServerPlayer player, BlockPos pos, ItemStack stack) {
+    public static boolean touch(ServerPlayer player, BlockPos pos) {
         MinecraftServer server = player.server;
         if (dream != null && player.level() == dream.level) {
-            if (dream.phase == Phase.DREAMING) {
-                switch (dream.current().kind()) {
-                    case "lay" -> lay(player, pos, stack);
-                    case "take" -> take(player, pos);
-                    default -> {}
-                }
+            if (dream.phase == Phase.DREAMING && dream.current().kind().equals("take")) {
+                take(player, pos);
             }
             return true;
         }
@@ -181,12 +169,10 @@ public final class Memories {
 
     static Optional<BlockPos> stone(MinecraftServer server, Story.Memory memory) {
         return switch (memory.place()) {
-            case FirstCamp.NAME -> FirstCamp.built(server) ? Optional.of(FirstCamp.world(server, "hearth")) : Optional.empty();
             case Frost.STONE -> Frost.built(server) ? Progress.of(server).place(Frost.STONE) : Optional.empty();
             case FirstVillage.STONE -> FirstVillage.built(server) ? Progress.of(server).place(FirstVillage.STONE) : Optional.empty();
-            case WendCamp.NAME -> WendCamp.ready(server) ? Progress.of(server).place(WendCamp.NAME) : Optional.empty();
             case SandSingers.LAIR -> SandSingers.ready(server, SandSingers.LAIR) ? Progress.of(server).place(SandSingers.LAIR) : Optional.empty();
-            case Act3Halls.MANSION_CHAIR, Prologue.LAST_CAMP -> Progress.of(server).place(memory.place());
+            case Prologue.LAST_CAMP -> Progress.of(server).place(memory.place());
             default -> throw new IllegalStateException("memory " + memory.id() + " happens at " + memory.place() + ", where no memory can be dreamt");
         };
     }
@@ -290,9 +276,7 @@ public final class Memories {
             return Optional.empty();
         }
         Story.Step step = dream.current();
-        String objective = step.kind().equals("gather") && step.spec().has("count")
-                ? step.objective().replace("{carried}", String.valueOf(Math.min(carried(player, step), step.number("count")))).replace("{count}", step.text("count"))
-                : step.objective().replace("{away}", String.valueOf(Places.leaving(dream.memory.place())));
+        String objective = step.objective().replace("{away}", String.valueOf(Places.leaving(dream.memory.place())));
         return Optional.of(new Tasks.Panel(Component.translatable("wayfarer.journal.memory"), Component.literal(dream.memory.title()),
                 Component.literal(objective), List.of(), List.of()));
     }
@@ -349,15 +333,9 @@ public final class Memories {
             }
         }
         boolean built = switch (dream.memory.place()) {
-            case FirstCamp.NAME -> {
-                Camps.build(dream.level, FirstCamp.THEN, FirstCamp.origin(server), FirstCamp.turn(server));
-                yield true;
-            }
             case Frost.STONE -> Frost.past(server, dream.level);
             case FirstVillage.STONE -> FirstVillage.past(server, dream.level);
-            case WendCamp.NAME -> WendCamp.past(server, dream.level);
             case SandSingers.LAIR -> SandSingers.past(server, dream.level);
-            case Act3Halls.MANSION_CHAIR -> Act3Halls.past(server, dream.level);
             case Prologue.LAST_CAMP -> Prologue.past(server, dream.level);
             default -> throw new IllegalStateException("memory " + dream.memory.id() + " happens at " + dream.memory.place() + ", which has no past to build");
         };
@@ -492,15 +470,7 @@ public final class Memories {
     }
 
     private static boolean done(MinecraftServer server, Story.Step step) {
-        BlockPos fire = dream.stone.above();
-        BlockState state = dream.level.getBlockState(fire);
         return switch (step.kind()) {
-            case "gather" -> dreamers(server).stream().anyMatch(player -> carried(player, step) >= step.number("count"));
-            case "lay" -> state.is(Blocks.CAMPFIRE);
-            case "light" -> state.is(Blocks.CAMPFIRE) && state.getValue(CampfireBlock.LIT);
-            case "cook" -> dream.level.getBlockEntity(fire) instanceof CampfireBlockEntity campfire
-                    && campfire.getItems().stream().anyMatch(stack -> !stack.isEmpty());
-            case "notch" -> FirstCamp.pine(server).stream().anyMatch(pos -> dream.level.getBlockState(pos).is(Wayfarer.NOTCHED_SPRUCE_LOG));
             case "take" -> dream.taken;
             case "cast" -> dream.cast;
             case "climb" -> dreamers(server).stream().anyMatch(player -> player.getY() >= Engine.at(server, step.text("at")).getY() - 1
@@ -511,20 +481,6 @@ public final class Memories {
             default -> throw new IllegalStateException("memory " + dream.memory.id() + "/" + step.id() + " is of the kind " + step.kind()
                     + ", which a memory does not know");
         };
-    }
-
-    private static int carried(ServerPlayer player, Story.Step step) {
-        TagKey<net.minecraft.world.item.Item> tag = TagKey.create(Registries.ITEM, ResourceLocation.parse(step.text("tag")));
-        return player.getInventory().items.stream().filter(stack -> stack.is(tag)).mapToInt(ItemStack::getCount).sum();
-    }
-
-    private static void lay(ServerPlayer player, BlockPos pos, ItemStack stack) {
-        Story.Step step = dream.current();
-        if (!pos.equals(dream.stone) || !stack.is(ItemTags.LOGS) || stack.getCount() < step.number("count") || !dream.level.getBlockState(pos.above()).isAir()) {
-            return;
-        }
-        stack.shrink(step.number("count"));
-        dream.level.setBlock(pos.above(), Blocks.CAMPFIRE.defaultBlockState().setValue(CampfireBlock.LIT, false), Block.UPDATE_ALL);
     }
 
     private static void take(ServerPlayer player, BlockPos pos) {
@@ -622,10 +578,8 @@ public final class Memories {
         if (dream != null && level == dream.level && dream.put.remove(event.getPos())) {
             return;
         }
-        if (dream == null || level != dream.level || dream.phase != Phase.DREAMING || !gathered(player.server, event.getPos(), event.getState())) {
-            event.setCanceled(true);
-            player.displayClientMessage(Component.translatable("wayfarer.memory.kept").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
-        }
+        event.setCanceled(true);
+        player.displayClientMessage(Component.translatable("wayfarer.memory.kept").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
     }
 
     @SubscribeEvent
@@ -643,15 +597,6 @@ public final class Memories {
         }
     }
 
-    private static boolean gathered(MinecraftServer server, BlockPos pos, BlockState state) {
-        Story.Step step = dream.current();
-        if (!step.kind().equals("gather") || !step.spec().has("tag")
-                || !new ItemStack(state.getBlock()).is(TagKey.create(Registries.ITEM, ResourceLocation.parse(step.text("tag"))))) {
-            return false;
-        }
-        return !dream.memory.place().equals(FirstCamp.NAME) || FirstCamp.fallen(server).contains(pos);
-    }
-
     @SubscribeEvent
     public static void onUse(PlayerInteractEvent.RightClickBlock event) {
         if (dream == null || event.getLevel() != dream.level || dream.phase != Phase.DREAMING || !dream.current().kind().equals("cast")
@@ -665,17 +610,6 @@ public final class Memories {
             dream.level.playSound(null, event.getPos(), SoundEvents.LAVA_POP, SoundSource.BLOCKS, 1, 1);
             dream.level.playSound(null, event.getPos(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, CAST_VOLUME, 1);
         }
-    }
-
-    @SubscribeEvent
-    public static void onToolModification(BlockEvent.BlockToolModificationEvent event) {
-        if (dream == null || event.getItemAbility() != ItemAbilities.AXE_STRIP || event.getLevel() != dream.level
-                || !dream.current().kind().equals("notch") || !FirstCamp.pine(dream.level.getServer()).contains(event.getPos())) {
-            return;
-        }
-        Direction face = event.getContext().getClickedFace();
-        event.setFinalState(Wayfarer.NOTCHED_SPRUCE_LOG.get().defaultBlockState()
-                .setValue(NotchedLog.FACING, face.getAxis().isHorizontal() ? face : event.getContext().getHorizontalDirection().getOpposite()));
     }
 
     @SubscribeEvent

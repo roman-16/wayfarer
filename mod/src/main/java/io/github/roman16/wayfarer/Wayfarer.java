@@ -19,12 +19,10 @@ import io.github.roman16.wayfarer.story.CaptainsPages;
 import io.github.roman16.wayfarer.story.Caravan;
 import io.github.roman16.wayfarer.story.Deeds;
 import io.github.roman16.wayfarer.story.Dice;
-import io.github.roman16.wayfarer.story.Duel;
 import io.github.roman16.wayfarer.story.Engine;
 import io.github.roman16.wayfarer.story.Errands;
 import io.github.roman16.wayfarer.story.Fallen;
 import io.github.roman16.wayfarer.story.Foes;
-import io.github.roman16.wayfarer.story.Frost;
 import io.github.roman16.wayfarer.story.Gear;
 import io.github.roman16.wayfarer.story.Hold;
 import io.github.roman16.wayfarer.story.Journal;
@@ -35,7 +33,6 @@ import io.github.roman16.wayfarer.story.Mine;
 import io.github.roman16.wayfarer.story.Pages;
 import io.github.roman16.wayfarer.story.People;
 import io.github.roman16.wayfarer.story.Places;
-import io.github.roman16.wayfarer.story.Robes;
 import io.github.roman16.wayfarer.story.SandSingers;
 import io.github.roman16.wayfarer.story.Scenes;
 import io.github.roman16.wayfarer.story.Sense;
@@ -144,8 +141,6 @@ public final class Wayfarer {
     public static final DeferredHolder<MapCodec<? extends IGlobalLootModifier>, MapCodec<Cuts.Loot>> CUT_LOOT =
             LOOT_MODIFIERS.register("cut", () -> Cuts.Loot.CODEC);
 
-    public static final DeferredHolder<StructurePlacementType<?>, StructurePlacementType<BandPlacement>> BAND =
-            PLACEMENTS.register("band", () -> () -> BandPlacement.CODEC);
     public static final DeferredHolder<StructurePlacementType<?>, StructurePlacementType<ExactRingPlacement>> EXACT_RING =
             PLACEMENTS.register("exact_ring", () -> () -> ExactRingPlacement.CODEC);
     public static final DeferredHolder<MapCodec<? extends DensityFunction>, MapCodec<WorldShape>> WORLD_SHAPE =
@@ -163,16 +158,8 @@ public final class Wayfarer {
     public static final DeferredHolder<StructurePieceType, StructurePieceType> SHAFT_PIECE =
             PIECES.register("shaft", () -> ShaftPiece::new);
 
-    public static final DeferredBlock<FalseWall> FALSE_WALL = BLOCKS.registerBlock("false_wall", FalseWall::new,
-            BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.DIRT)
-                    .strength(1)
-                    .sound(SoundType.PACKED_MUD)
-                    .noCollission()
-                    .noOcclusion()
-                    .isViewBlocking((state, level, pos) -> false)
-                    .isSuffocating((state, level, pos) -> false)
-                    .noLootTable());
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> HALL_ROOM =
+            PIECES.register("room", () -> HallRoom::new);
 
     public static final DeferredBlock<FrostIronOre> FROST_IRON_ORE = BLOCKS.registerBlock("frost_iron_ore", FrostIronOre::new,
             BlockBehaviour.Properties.of()
@@ -181,21 +168,6 @@ public final class Wayfarer {
                     .requiresCorrectToolForDrops()
                     .strength(4.5f, 3)
                     .sound(SoundType.DEEPSLATE));
-
-    public static final DeferredBlock<Hearthstone> HEARTHSTONE = BLOCKS.registerBlock("hearthstone", Hearthstone::new,
-            BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.STONE)
-                    .strength(-1, 3_600_000)
-                    .sound(SoundType.STONE));
-
-    public static final DeferredBlock<NotchedLog> NOTCHED_SPRUCE_LOG = BLOCKS.registerBlock("notched_spruce_log", NotchedLog::new,
-            BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.PODZOL)
-                    .instrument(NoteBlockInstrument.BASS)
-                    .strength(2)
-                    .sound(SoundType.WOOD)
-                    .ignitedByLava()
-                    .noLootTable());
 
     public static final DeferredBlock<CallingStoneBlock> CALLING_STONE = BLOCKS.registerBlock("calling_stone", CallingStoneBlock::new,
             BlockBehaviour.Properties.of()
@@ -284,14 +256,13 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Deeds.class);
         NeoForge.EVENT_BUS.register(Dice.class);
         NeoForge.EVENT_BUS.register(Dragon.class);
-        NeoForge.EVENT_BUS.register(Duel.class);
         NeoForge.EVENT_BUS.register(Ember.class);
         NeoForge.EVENT_BUS.register(Engine.class);
         NeoForge.EVENT_BUS.register(Errands.class);
         NeoForge.EVENT_BUS.register(Fire.class);
+        NeoForge.EVENT_BUS.register(Flare.class);
         NeoForge.EVENT_BUS.register(Foes.class);
         NeoForge.EVENT_BUS.register(Firsts.class);
-        NeoForge.EVENT_BUS.register(Frost.class);
         NeoForge.EVENT_BUS.register(FrostIronOre.class);
         NeoForge.EVENT_BUS.register(Arrivals.class);
         NeoForge.EVENT_BUS.register(Gate.class);
@@ -301,6 +272,7 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Hearts.class);
         NeoForge.EVENT_BUS.register(Hold.class);
         NeoForge.EVENT_BUS.register(Joining.class);
+        NeoForge.EVENT_BUS.register(LastSea.class);
         NeoForge.EVENT_BUS.register(LastUse.class);
         NeoForge.EVENT_BUS.register(Leaving.class);
         NeoForge.EVENT_BUS.register(Locals.class);
@@ -316,7 +288,6 @@ public final class Wayfarer {
         NeoForge.EVENT_BUS.register(Record.class);
         NeoForge.EVENT_BUS.register(Respawn.class);
         NeoForge.EVENT_BUS.register(Rowing.class);
-        NeoForge.EVENT_BUS.register(Robes.class);
         NeoForge.EVENT_BUS.register(Rules.class);
         NeoForge.EVENT_BUS.register(SandSingers.class);
         NeoForge.EVENT_BUS.register(Scenes.class);
@@ -332,7 +303,6 @@ public final class Wayfarer {
         Sounds.loop("town_burning", Tollbridge::burning);
         NeoForge.EVENT_BUS.register(Stare.class);
         NeoForge.EVENT_BUS.register(Stepping.class);
-        NeoForge.EVENT_BUS.register(Veils.class);
         NeoForge.EVENT_BUS.register(Stillness.class);
         NeoForge.EVENT_BUS.register(Talk.class);
         NeoForge.EVENT_BUS.register(Narration.class);
@@ -401,6 +371,7 @@ public final class Wayfarer {
         registrar.playToServer(Record.Opened.TYPE, Record.Opened.STREAM_CODEC, (payload, context) -> Record.opened((ServerPlayer) context.player(), payload));
         registrar.playToClient(CompassPayload.TYPE, CompassPayload.STREAM_CODEC, (payload, context) -> HudState.compass = payload);
         registrar.playToClient(GazePayload.TYPE, GazePayload.STREAM_CODEC, (payload, context) -> HudState.gaze = payload);
+        registrar.playToClient(LastSeaPayload.TYPE, LastSeaPayload.STREAM_CODEC, (payload, context) -> HudState.lastSea = payload.past());
         registrar.playToClient(NightPayload.TYPE, NightPayload.STREAM_CODEC, (payload, context) -> HudState.night = payload);
         registrar.playToClient(After.Credits.TYPE, After.Credits.STREAM_CODEC, (payload, context) -> Ending.credits(payload.epilogue()));
         registrar.playToClient(After.Ending.TYPE, After.Ending.STREAM_CODEC, (payload, context) -> Ending.show(payload.afterwards(), payload.epilogue()));

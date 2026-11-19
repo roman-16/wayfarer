@@ -278,9 +278,8 @@ def positions():
         "yard": {
             "edda": [SLIP[0] - 1, 1, 10, 1, 0],
             "ground": [width, length],
-            "hull": [HULL_X, 1, 10],
+            "hull": [HULL_X, GUNWALE + 1, 10],
             "jetty": [JETTY[0], length, JETTY[1], JETTY[2]],
-            "launch": [JETTY[0] + 1, 1, length - 1, 0, 1],
             "worn": [[x, z] for (x, z), material in ground_cells() if material is GROUND],
             "quay": QUAY,
             "rails": list(RAILS),

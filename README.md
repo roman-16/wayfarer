@@ -75,7 +75,6 @@ Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftE
 | `just server` | Runs the pack's dedicated server locally |
 | `just showroom` | Opens the pack in a creative dev client, in the showroom, with the compass demo; `just showroom lean` with only the Wayfarer mod |
 | `just sources` | Unpacks Minecraft's and NeoForge's code and every mod, decompiled, into `build/sources/` for searching |
-| `just survey` | Walks journeys through five fixed worlds at once, always to the nearest hall not yet taken, and prints each tier's legs in blocks and minutes on foot against the targets in `balance.toml`; `just survey apply` writes tuned spacings |
 | `just test` | Runs `just gametest` beside `just boot`, and fails when either fails |
 | `just update` | Moves every mod and tool to its newest version, then lints and tests |
 | `just voice` | Designs, keeps and saves the story's voices with ElevenLabs from `story/voices.toml`, records every silent line and checks each take (`just voice record`), and shows what is left to record |
@@ -84,9 +83,9 @@ Running a server means you accept the [Minecraft EULA](https://aka.ms/MinecraftE
 
 | Path | Holds |
 |---|---|
-| `balance.toml` | Every balancing number: compass, daylight, difficulty, fire, gate, gaze, the graphics presets, hunger, leads, nights, sight, stillness, unlocks, hall legs and stronghold distances, structure spread |
+| `balance.toml` | Every balancing number: compass, daylight, difficulty, fire, gate, gaze, the graphics presets, hunger, leads, nights, sight, stillness, unlocks, each place's distance ahead, the world's shape and the ring of frames, structure spread |
 | `design/` | What the pack is becoming, decided before it is built (`README.md` names the phase and what comes next), the lore everything else is written from (`lore.md`) and the narration cast (`narration.md`) |
-| `generator/` | The structure generator (the twelve halls, their surface covers, the Last Camp and the stranger's old camps), the twelve eyes, their peoples' places and each tier's hall spacing (`eyes.toml`), the recipe and structure removals, the Nether audit list and the features accepted as natural |
+| `generator/` | The structure generator (the twelve halls, their surface covers, the Last Camp and the stranger's old camps), the twelve eyes and their peoples' places (`eyes.toml`), the recipe and structure removals, the Nether audit list and the features accepted as natural |
 | `mod/` | The Wayfarer mod (NeoForge, Java 21); `src/dev` holds the game tests and the dev client's driver, which never ship |
 | `nix/` | The ElevenLabs CLI's static release build, pinned for devbox (`elevenlabs-cli/`) |
 | `pack/` | The packwiz pack: one file per mod, and the pack's configs |

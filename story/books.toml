@@ -2,8 +2,8 @@
 author = "Wend"
 id = "wend/ledger"
 pages = [
-  "[reading his own notes, clipped] The swamp's hall, under the black pool. The snow hall, the stair, twenty winters gone. The old green, empty. The bay: two, and they bow. The red canyons, empty.",
-  "[clipped] The sands: in the worm. The jungle: locked, and the boy has the maps now. The grasslands: under the seal. [pause] The dark wood: here, on my own stand.",
+  "[reading his own notes, clipped] The swamp's hall, under the black pool. The snow hall, the stair, twenty winters gone. The old green, empty. The bay: two, and they bow.",
+  "[clipped] The sands: in the worm. The jungle: locked, and the boy has the maps now. The grasslands: under the seal. [pause] The dark wood: here, on my own stand, until the boy wants it.",
   "[quietly, possessive] The girl. Malgven. [pause] Mine now.",
 ]
 title = "His Ledger"
@@ -39,7 +39,7 @@ title = "The Jungle Folk's Prayer"
 [[found]]
 author = "M."
 id = "malgven/note"
-pages = ["For whoever carries his light now.\n\nEat. It is a long road on an empty stomach.\n\n- M."]
+pages = ["For whoever carries his ember now.\n\nEat. It is a long road on an empty stomach.\n\n- M."]
 title = "A Note"
 
 [[found]]
@@ -53,24 +53,6 @@ pages = [
   "[weary, quiet] One more winter here. The ember is so small now. [pause] I'll walk in spring.",
 ]
 title = "A Journal"
-
-[[found]]
-author = "A young Wayfarer"
-id = "wend/first_camp"
-pages = [
-  "[young, joyful] First night on my own road. I own a tent, a mallet and a fire, and I have never been this happy. Tomorrow I walk until the ember gutters, then I turn.",
-  "[earnest, warm] Whoever finds this: the road gives more than it takes. Eat what it gives, keep your fire small, [pause] and never stay where they are kind to you for long.",
-]
-title = "A Young Man's Page"
-
-[[found]]
-author = "An old Wayfarer"
-id = "wend/last_camp"
-pages = [
-  "[tired, old] I stopped walking here. My feet hurt and the road was long, [pause] and the men in grass cloaks were kind.",
-  "[tired, rueful] They left bread by my fire. I ate it. Tomorrow I will walk on. [a weak laugh] I wrote that yesterday too.",
-]
-title = "The Last Page"
 
 [[found]]
 author = "Malgven"
@@ -175,7 +157,7 @@ title = "Captain's Orders, IV"
 author = "A Gazebound captain"
 id = "gazebound/orders_5"
 pages = [
-  "[cold] The heir rides to the jungle halls himself. Whatever the carrier cannot open, he will stand beside them and wait.",
+  "[cold] The heir rides to the desert himself. Whatever the carrier can lift and he cannot, he will stand beside them and wait for it.",
   "[cold, ominous] Keep close to their camp, and closer on the night of the red moon. So it was written in the old captain's own hand, and his page is kept at his house in the dark wood.",
 ]
 title = "Captain's Orders, V"
@@ -189,7 +171,7 @@ title = "A Note"
 [[found]]
 author = "M."
 id = "malgven/last"
-pages = ["You fly now. I never could keep up with him either.\n\nEat. He never ate enough either.\n\n- M."]
+pages = ["You walk faster than he ever did. I never could keep up with him either.\n\nEat. He never ate enough either.\n\n- M."]
 title = "The Last Note"
 
 [[found]]

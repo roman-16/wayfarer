@@ -29,12 +29,14 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.common.Tags;
 import org.slf4j.Logger;
 
 final class ReadingHouse {
     static final String NAME = "reading_house";
-    static final String QUEST = "the_keepers_apprentice";
+    private static final String ALRUNA = "alruna";
     private static final String SITE = "reading_house_site";
+    private static final String WAY = "reading_house_way";
     private static final String ORIGIN = "reading_house_origin";
     private static final String TURN = "reading_house_turn";
     private static final String STAIR = "reading_house_stair";
@@ -113,6 +115,7 @@ final class ReadingHouse {
                 : BlockPos.containing(ahead.x, heights.surface((int) Math.round(ahead.x), (int) Math.round(ahead.z)), ahead.z);
         Vec3 along = Vec3.atLowerCornerOf(site.subtract(aim.from())).multiply(1, 0, 1);
         progress.place(SITE, site);
+        progress.yaws.put(WAY, (float) Math.atan2(aim.way().z, aim.way().x));
         progress.yaws.put(TURN, (float) Frost.facing(along.lengthSqr() == 0 ? aim.way() : along.normalize()).ordinal());
         progress.setDirty();
         LOGGER.info("the Keepers' reading-house lies at {}{}", site, best != null ? ", on the best ground near the way" : ", with no fitting ground near");
@@ -120,7 +123,7 @@ final class ReadingHouse {
 
     private static boolean fits(Unseen.Heights heights, int sea, int x, int y, int z, boolean strict) {
         Holder<Biome> biome = heights.biome(x, y, z);
-        return !heights.wet(x, z) && y > sea && !biome.is(BiomeTags.IS_OCEAN) && !biome.is(BiomeTags.IS_RIVER) && !biome.is(Marsh.SWAMPS)
+        return !heights.wet(x, z) && y > sea && !biome.is(BiomeTags.IS_OCEAN) && !biome.is(BiomeTags.IS_RIVER) && !biome.is(Tags.Biomes.IS_SWAMP)
                 && !(strict && Unseen.snowy(biome, new BlockPos(x, y, z)));
     }
 
@@ -143,6 +146,13 @@ final class ReadingHouse {
         return most;
     }
 
+    static Home.Aim beyond(MinecraftServer server) {
+        find(server);
+        Progress progress = Progress.of(server);
+        double way = progress.yaws.get(WAY);
+        return new Home.Aim(progress.place(SITE).orElseThrow(), new Vec3(Math.cos(way), 0, Math.sin(way)));
+    }
+
     static void unbuild(MinecraftServer server) {
         Progress progress = Progress.of(server);
         progress.places.remove(ORIGIN);
@@ -152,7 +162,7 @@ final class ReadingHouse {
     static void forget(MinecraftServer server) {
         Progress progress = Progress.of(server);
         List.of(SITE, ORIGIN, NAME, "seat_" + STAIR, "seat_" + VAULT).forEach(progress.places::remove);
-        List.of(TURN, "seat_" + STAIR, "seat_" + VAULT).forEach(progress.yaws::remove);
+        List.of(TURN, WAY, "seat_" + STAIR, "seat_" + VAULT).forEach(progress.yaws::remove);
         progress.wards.remove(NAME);
         progress.setDirty();
     }
@@ -167,7 +177,7 @@ final class ReadingHouse {
         if (progress.place(ORIGIN).isEmpty() && Frost.loaded(level, site)) {
             build(server, level, site);
         }
-        if (progress.place(ORIGIN).isPresent() && progress.done(QUEST) && !progress.scratch(QUEST).getBoolean(BURIED)) {
+        if (progress.place(ORIGIN).isPresent() && progress.joined.contains(ALRUNA) && !progress.scratch(NAME).getBoolean(BURIED)) {
             bury(server, level);
         }
     }
@@ -240,7 +250,7 @@ final class ReadingHouse {
         }
         level.setBlock(grave, Blocks.STONE_BRICK_WALL.defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(grave.above(), Blocks.CANDLE.defaultBlockState().setValue(CandleBlock.CANDLES, CANDLES), Block.UPDATE_CLIENTS);
-        progress.scratch(QUEST).putBoolean(BURIED, true);
+        progress.scratch(NAME).putBoolean(BURIED, true);
         progress.setDirty();
         LOGGER.info("Alruna buried Ansel at {}", grave);
     }

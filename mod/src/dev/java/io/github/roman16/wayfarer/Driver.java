@@ -2573,26 +2573,14 @@ public final class Driver {
             return;
         }
         Entity ridden = player.getVehicle();
-        String own = "key." + BuiltInRegistries.ENTITY_TYPE.getKey(ridden.getType()).getNamespace() + ".dismount";
-        Optional<KeyMapping> dismount = Arrays.stream(minecraft.options.keyMappings).filter(mapping -> mapping.getName().equals(own)).findFirst();
-        if (dismount.isPresent() && dismount.get().isUnbound()) {
-            fail("dismount failed: the " + ridden.getName().getString() + " gets off with its own key, " + Component.translatable(own).getString()
-                    + ", and it is not bound");
-            return;
-        }
         if (ridden instanceof Boat && !ashore(minecraft, ridden)) {
             fail("dismount failed: open water all round the " + ridden.getName().getString() + ", nowhere to stand; row to a shore first");
             return;
         }
         float yaw = player.getYRot();
         minecraft.options.keyShift.setDown(true);
-        dismount.ifPresent(mapping -> mapping.setDown(true));
-        after(() -> {
-            dismount.filter(mapping -> clicks(mapping) == 0).ifPresent(mapping -> KeyMapping.click(mapping.getKey()));
-            return player.getVehicle() == null;
-        }, "getting off", () -> {
+        after(() -> player.getVehicle() == null, "getting off", () -> {
             minecraft.options.keyShift.setDown(false);
-            dismount.ifPresent(mapping -> mapping.setDown(false));
             note("dismount: " + (player.isInWater() ? "in the water" : "on foot") + " at " + player.blockPosition().toShortString());
             if (ridden instanceof Boat boat && !player.isInWater()) {
                 takeBoat(minecraft, boat, yaw, BOAT_TRIES);

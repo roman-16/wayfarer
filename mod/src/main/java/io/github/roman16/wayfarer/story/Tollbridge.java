@@ -390,7 +390,7 @@ public final class Tollbridge {
         int reach = radius() + SAMPLE;
         for (int x = (build.site.x() - reach) >> 4; x <= (build.site.x() + reach) >> 4; x++) {
             for (int z = (build.site.z() - reach) >> 4; z <= (build.site.z() + reach) >> 4; z++) {
-                if (!level.hasChunk(x, z)) {
+                if (level.getChunkSource().getChunkNow(x, z) == null) {
                     return false;
                 }
             }

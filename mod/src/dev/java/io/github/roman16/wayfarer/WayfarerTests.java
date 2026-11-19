@@ -2,6 +2,7 @@ package io.github.roman16.wayfarer;
 
 import io.github.roman16.wayfarer.story.Ground;
 import io.github.roman16.wayfarer.story.Sight;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
@@ -46,8 +47,9 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(Wayfarer.MODID)
 @PrefixGameTestTemplate(false)
 public final class WayfarerTests {
-    private static final List<String> SLOPED = List.of("act3/house", "first_village/house_0", "frost/house", "reading_house/house", "shipyard/yard",
+    private static final List<String> SLOPED = List.of("first_village/house_0", "frost/house", "mansion/house", "reading_house/house", "shipyard/yard",
             "tollbridge/barn_1", "tollbridge/bell_tower", "tollbridge/cottage_2", "tollbridge/home_6");
+    private static final int CHUNK_BLOCKS = 16;
     private static final int SLOPE_AWAY = 4096;
     private static final int SLOPE_BASE = 96;
     private static final int SLOPE_DEPTH = 16;
@@ -266,24 +268,44 @@ public final class WayfarerTests {
     @GameTest(template = "empty")
     public static void strongholdsKeepTheirRadius(GameTestHelper helper) {
         ServerLevel level = helper.getLevel();
-        ExactRingPlacement ring = new ExactRingPlacement(
-                Vec3i.ZERO, StructurePlacement.FrequencyReductionMethod.DEFAULT, 1, 0, Optional.empty(), 12, 1000, HolderSet.direct(), 35000);
+        Balance.Strongholds strongholds = Balance.get().strongholds();
+        ExactRingPlacement ring = new ExactRingPlacement(Vec3i.ZERO, StructurePlacement.FrequencyReductionMethod.DEFAULT, 1, 0, Optional.empty(), strongholds.count(),
+                strongholds.jitterBlocks(), HolderSet.direct(), strongholds.radiusBlocks());
         List<ChunkPos> positions = ring.positions(
                 42, level.getChunkSource().getGenerator().getBiomeSource(), level.getChunkSource().randomState().sampler()).join();
-        check(helper, positions.size() == 12, "twelve strongholds");
+        check(helper, positions.size() == strongholds.count(), strongholds.count() + " strongholds");
+        int least = strongholds.radiusBlocks() - strongholds.jitterBlocks() - CHUNK_BLOCKS * 2;
+        int most = strongholds.radiusBlocks() + strongholds.jitterBlocks() + CHUNK_BLOCKS * 2;
         for (ChunkPos pos : positions) {
             double distance = Math.sqrt((double) pos.getMinBlockX() * pos.getMinBlockX() + (double) pos.getMinBlockZ() * pos.getMinBlockZ());
-            check(helper, distance > 35000 - 1000 - 32 && distance < 35000 + 1000 + 32, "stronghold at " + (int) distance + " blocks");
+            check(helper, distance > least && distance < most, "stronghold at " + (int) distance + " blocks");
         }
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void aStoneGoesToTheNearestShore(GameTestHelper helper) {
+        int[] home = new int[WorldShape.DIRECTIONS];
+        int[] far = new int[WorldShape.DIRECTIONS];
+        int[] last = new int[WorldShape.DIRECTIONS];
+        Arrays.fill(home, 6912);
+        Arrays.fill(far, 8960);
+        Arrays.fill(last, 21504);
+        WorldShape.Coasts coasts = new WorldShape.Coasts(home, far, last, 2176);
+        check(helper, coasts.shore(1, 7424).orElse(0) == 6912, "a fall near the home coast leaves the stone on the home land");
+        check(helper, coasts.shore(1, 8448).orElse(0) == 8960, "a fall near the far shore leaves the stone on the far shore");
+        check(helper, coasts.shore(1, 23552).orElse(0) == 21504, "a fall on the Last Sea leaves the stone on its coast");
+        check(helper, coasts.shore(1, 15360).isEmpty(), "a fall on the outer continent stays where it is");
+        check(helper, coasts.shore(1, 4096).isEmpty(), "a fall on the home land stays where it is");
         helper.succeed();
     }
 
     @GameTest(template = "empty")
     public static void eachEyeOnce(GameTestHelper helper) {
         Journey progress = new Journey();
-        check(helper, progress.claim(Wayfarer.id("hall/test")), "the first claim takes the eye");
-        check(helper, !progress.claim(Wayfarer.id("hall/test")), "the second claim finds the hall spent");
-        check(helper, progress.claim(Wayfarer.id("hall/second")), "a second hall adds a second shard");
+        check(helper, progress.claim(Shards.id("lost")), "the first claim takes the shard");
+        check(helper, !progress.claim(Shards.id("lost")), "the second claim finds the shard taken");
+        check(helper, progress.claim(Shards.id("cold")), "a second eye adds a second shard");
         check(helper, progress.end() && !progress.end(), "the gaze ends once");
         check(helper, progress.wake() && !progress.wake(), "the world's ember wakes once");
         helper.succeed();

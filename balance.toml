@@ -43,15 +43,15 @@ crumble_seconds = 60
 [deeds]
 city_heart_blocks = 32
 dice_wins = 8
-duel_blocks = 32
 edge_blocks = 1024
 fire_apart_blocks = 256
 fires = 64
 hard_nights = 8
-light_shards = 4
+light_shards = 2
 scenes = 32
 villages = 16
 walked_blocks = 65536
+worm_blocks = 32
 
 [diggers]
 ahead_blocks = 2048
@@ -63,13 +63,8 @@ health_per_player = 128
 health_per_shard = 32
 sight_shards = 6
 
-[duel]
-health_base = 128
-health_per_player = 64
-
 [errands]
 ahead_blocks = 1024
-airship_coal = 32
 search_chunks = 32
 snow_reach_blocks = 4096
 
@@ -88,12 +83,8 @@ circle_blocks = 32
 line_seconds = 3
 rest_blocks = 4
 
-[first_camp]
-ahead_blocks = 1280
-lake_blocks = 512
-
 [first_village]
-ahead_blocks = 2048
+ahead_blocks = 1024
 search_blocks = 2048
 
 [flare]
@@ -119,11 +110,7 @@ vein_lumps = 64
 ahead_blocks = 1024
 dark_sight_sixteenths = 2
 drift_every_blocks = 32
-hall_blocks = 512
 house_blocks = 24
-lake_blocks = 2048
-lake_fan_degrees = 32
-lake_spread_blocks = 512
 leave_blocks = 64
 mine_blocks = 256
 mine_floor = -16
@@ -136,6 +123,14 @@ stair_blocks = 16
 stone_blocks = 24
 trail_blocks = 256
 trail_past_blocks = 48
+
+[frost_hall]
+ahead_blocks = 512
+
+[frost_lake]
+ahead_blocks = 512
+fan_degrees = 32
+spread_blocks = 128
 
 [gate]
 quiet_blocks = 32
@@ -160,10 +155,6 @@ render_chunks = [6, 10, 12, 16]
 simulation_chunks = [6, 10, 12, 12]
 
 [halls]
-act_three_from_blocks = 24576
-act_three_leg_blocks = 12288
-act_two_leg_blocks = 8192
-nearest_blocks = 1024
 reach_blocks = 8192
 
 [heap]
@@ -178,6 +169,9 @@ side_waves = 2
 wave_seconds = 64
 waves = 4
 
+[hollow]
+leave_blocks = 512
+
 [hunger]
 exhaustion_factor = 4.0
 rowing_exhaustion_per_block = 0.0078125
@@ -186,26 +180,24 @@ warm_exhaustion_factor = 1.0
 [join]
 away_blocks = 256
 
+[last_sea]
+fog_blocks = 32
+freezing_blocks = 1024
+
+[locks]
+ahead_blocks = 2048
+
 [loot]
 kept_share = 0.5
 
+[mansion]
+ahead_blocks = 1024
+cellar_blocks = 4
+grove_blocks = 24
+grove_gap = 6
+
 [shipyard]
 wreck_blocks = 64
-
-[marsh]
-ahead_blocks = 2048
-bog_blocks = 3072
-bog_radius_blocks = 64
-cellar_blocks = 2
-drowned_blocks = 128
-hall_blocks = 8
-mark_every_blocks = 16
-near_blocks = 512
-notice_blocks = 16
-pocket_every_blocks = 32
-search_blocks = 4096
-shunned_seconds = 60
-side_blocks = 1024
 
 [memory]
 arrival_blocks = 4
@@ -239,6 +231,9 @@ omen_minutes = 100
 ahead_blocks = 1024
 search_blocks = 256
 
+[sand]
+ahead_blocks = 1024
+
 [scenes]
 ask_blocks = 48
 every_seconds = 300
@@ -250,6 +245,9 @@ nearest_blocks = 64
 sea_blocks = 192
 voice_gap_seconds = 150
 wolves_seconds = 120
+
+[scribes]
+ahead_blocks = 2048
 
 [sea]
 beast_health = 128
@@ -319,9 +317,9 @@ radius_blocks = 256
 
 [strongholds]
 count = 12
-jitter_blocks = 1000
+jitter_blocks = 1024
 land_search_blocks = 8192
-radius_blocks = 35000
+radius_blocks = 17408
 
 [structures]
 clear_blocks = 64
@@ -332,12 +330,12 @@ unspread = ["betterstrongholds:stronghold", "minecraft:ancient_cities"]
 [structures.every_blocks]
 campsite = 512
 capital = 12288
-fort = 6144
+coast = 1024
+fort = 1024
 land = 384
 mine = 384
 outpost = 1536
 ruin = 512
-sea = 1024
 settled = 768
 tavern = 1536
 town = 3072
@@ -378,6 +376,7 @@ fire_blocks = 16
 reminder_blocks = 64
 
 [tide]
+ahead_blocks = 1024
 stone_blocks = 8
 
 [tollbridge]
@@ -522,6 +521,7 @@ quietest_decibels = -48
 vibration_ticks = 16
 
 [voyage]
+astern_blocks = 80
 beside_blocks = 4
 calm_seconds = 16
 landfall_blocks = 256
@@ -546,18 +546,16 @@ blocks_per_food = 256
 days_between_rain = 4
 rain_most_seconds = 576
 
-[wend_camp]
-ahead_blocks = 512
-
 [world]
+beyond_lift = 0.625
+cavern_cover_blocks = 16
+cavern_fade_blocks = 16
 coast_blocks = 4096
+far_shore_blocks = 2048
 highest = 2.0
 home_blocks = 9216
-last_sea_past_ring_blocks = 4096
-last_sea_sink = 2.5
+last_sea_slope_past_ring_blocks = 3072
 lift = 0.625
-outer_sink = 0.25
-sea_blocks = 3072
 sea_floor = -0.5
 sea_sink = 1.25
 shore_blocks = 1024

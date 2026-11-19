@@ -44,10 +44,9 @@ Every voice is designed for the pack, none is one of ElevenLabs' built-in voices
 | An old man | Oswin, Wil, the man from the crossing, the archivist of the deep city, and the journal in the Cache |
 | Murdo, the heir, Edda, Sefa | Themselves; Murdo the Tide Folk's remedy and book, Sefa the Sand Singers' book |
 | A man | The fisher, the herder, the pedlar, the traveller, the dicer, the Tide wardens and the shipwright's log |
-| A woman | Linnet and the villagers |
+| A woman | The villagers |
 | An old woman | The old woman in furs, Hesper the pilgrim, and the Jungle Folk's prayer and hall book |
 | A child | Davy, Tobin, the captives and Cecily |
-| Tansy, Sedge | Themselves |
 | The player, a man; the player, a woman | The answers and the journal of each player who picks them |
 | The Diggers, the First Village, the Scribes of the Peaks | Each dead people's book in its hall, a voice of its own |
 

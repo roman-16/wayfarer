@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "f4ece92a95a144fae9b95448f3866734228f34861b45ae7e9281c444927334a8"
+hash = "c6fba996561a40c3945c1342d48b18b58659e1c0e3fa5ff3d8b9863b80387e0c"
 
 [[files]]
 file = "config/DistantHorizons.toml"
@@ -30,7 +30,7 @@ hash = "677219c1ad26528814ac66dcad8e00ab763402f42947691a1cfbfb1e0a064490"
 
 [[files]]
 file = "config/EndRemastered-NeoForge/Eyes/exotic_eye.json"
-hash = "ac00fdcab86b1590059d3688b65d705c9e30d00d9850ca4cf05159760086252e"
+hash = "fc0a8c39d47d3dd6f420c441841d02c852f824263e5f77e825588d72621c67e8"
 
 [[files]]
 file = "config/EndRemastered-NeoForge/Eyes/lost_eye.json"
@@ -54,7 +54,7 @@ hash = "543033777886ee551a83d8f4845953f597dabcbf6e612161de61e325f395fb37"
 
 [[files]]
 file = "config/EndRemastered-NeoForge/Eyes/witch_eye.json"
-hash = "9f4a9bf7c56cd9853b90e497534fd759cc29efe2cb944d48541a51a31c6f862b"
+hash = "9faf89b7b4189ba62ea451a9446fe3000a99db61e2b0907e34e6bb270562310f"
 
 [[files]]
 file = "config/EndRemastered-NeoForge/endrem.json"
@@ -82,7 +82,7 @@ hash = "01064a300391147f410c79abfb7c5955bf049c4d700827832fbb97a6bc374482"
 
 [[files]]
 file = "config/defaultoptions/keybindings.txt"
-hash = "f6a27131273962502c96a8847515eda6a493c55b54830d55f4c19cc44eafa742"
+hash = "0b59d671b1a32f1617199a9728541dddc9923e93271f0bbf4157da2db6fe211c"
 
 [[files]]
 file = "config/defaultoptions/options.txt"
@@ -127,10 +127,6 @@ hash = "603c67b768a7d6cf66366692f2b2fe9bd7170d687cad80921f449efe66dbda59"
 [[files]]
 file = "config/immersive-hotbar.json5"
 hash = "acb2355da3de8add82c5f5f075956a00306ce0344873b081eaef2ddfdfd91178"
-
-[[files]]
-file = "config/immersive_aircraft.json"
-hash = "9db40b9e2af72a4b841a586048413c46f6f3f998679389c1ee92e9d03df7e894"
 
 [[files]]
 file = "config/improvedmobs/client.toml"
@@ -242,7 +238,7 @@ hash = "b2ce9644c74ba7c36ce239b281ac1193e1db015f1546e5faaf17cf54b47d0d4c"
 
 [[files]]
 file = "config/sparsestructures.json5"
-hash = "5b1408ff2d4bc43a27dc6d05b3dee196f6cbef127ed3e74f1e48ddc5c7d304d0"
+hash = "29a22b468ceee3e961525e22465abf233062ca27dbc05b56536b9fed447ecd4a"
 
 [[files]]
 file = "config/spyglass-improvements/settings.json"
@@ -270,7 +266,7 @@ hash = "3d250b12fd11a56d4d3355f40474f6e69ad2f7693ae20b2f0b8afa6945f30bb6"
 
 [[files]]
 file = "config/tectonic.json"
-hash = "f1c2afb369af36949ca105e6a00d281bee4aec030ef63fced6907fc49071b924"
+hash = "0e88f3933c46c29473c162dbde349f27171afa141d0d32be8df36c7839099980"
 
 [[files]]
 file = "config/toughasnails/thirst.toml"
@@ -629,11 +625,6 @@ metafile = true
 [[files]]
 file = "mods/immediatelyfast.pw.toml"
 hash = "4601b9be31b6e131dca8a148c974d015444bcac7c82fcb66fbd8751a67933a5d"
-metafile = true
-
-[[files]]
-file = "mods/immersive-aircraft.pw.toml"
-hash = "e612f6a7f4d6101651ec929647a42d18a6b321d596e29e2b7821ced0bbccdff9"
 metafile = true
 
 [[files]]

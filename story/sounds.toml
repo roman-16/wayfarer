@@ -293,28 +293,12 @@ page = "https://freesound.org/people/leosalom/sounds/234288"
 reach = 128
 slider = "ambient"
 
-[effects.true_sight]
-credit = "9. Esfumar Vanish, by cabusta9"
-cut = { fade_in = 0.03, fade_out = 0.3, length = 1.7, start = 0.35 }
-downloaded = "09.10.2026"
-gain = -12
-kind = "rare"
-licence = "CC0 1.0"
-page = "https://freesound.org/people/cabusta9/sounds/444710"
-slider = "players"
-
 [music.ending]
 credit = "The Long Way Home, by Scott Buckley"
 cut = { fade_in = 1 }
 downloaded = "21.10.2026"
 licence = "CC BY 4.0"
 page = "https://www.scottbuckley.com.au/library/the-long-way-home/"
-
-[music.first_camp]
-credit = "Home Was You, by Scott Buckley"
-downloaded = "08.10.2026"
-licence = "CC BY 4.0"
-page = "https://www.scottbuckley.com.au/library/home-was-you/"
 
 [music.first_fire]
 credit = "Amberlight, by Scott Buckley"
@@ -337,13 +321,6 @@ downloaded = "21.10.2026"
 licence = "CC BY 3.0"
 loop = true
 page = "https://opengameart.org/content/battle-in-the-winter"
-
-[music.wend_camp]
-credit = "A Dragon's Lullabye, by Scott Buckley"
-cut = { fade_in = 2, fade_out = 8 }
-downloaded = "10.10.2026"
-licence = "CC BY 4.0"
-page = "https://www.scottbuckley.com.au/library/a-dragons-lullabye/"
 
 [music.last_fire]
 credit = "What We Don't Say, by Scott Buckley"

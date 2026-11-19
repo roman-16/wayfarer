@@ -481,7 +481,7 @@ What it showed:
 | The runes, the enchanting table's letters, did not show in the dev client while other particles did; Subtle Effects changes how those letters are drawn | The runes' look is chosen with the art skill and seen in the exported pack |
 | The game asks how fast a tool digs and whether it is the right one on the server and the client alike, from tags both know | Gate stone is a block tag, the right material is vanilla's own tool-tier tag, and the crack on screen slows with the rule |
 | A pick set to its last use breaks on its next use in vanilla | One pick, one block holds only with M12's last use, where the pick is a bare hand |
-| Resting at a fire is the Warm effect the fire gives, which other code can see arrive | The Flare fills again when the ember warms |
+| Resting at a fire is the Slow Hunger effect the fire gives, which other code can see arrive | The Flare fills again when the ember warms |
 | Tough As Nails' heat makes the player slightly faster instead of weaker | The Wayfarer mod adds the weakness while the player is overheated |
 | The Flare and the spike journal both took F7 | Keys are chosen with every mod's bindings in view (M10) |
 
@@ -492,7 +492,7 @@ What it showed:
 - A bed inside a tent sleeps only when a lit campfire burns within 16 blocks of the tent outside (D13, `[tent]` `fire_blocks`), room enough to find flat ground for a tent beside the fire. A tent stands only on ground: every block of its floor has ground at most one block below it, so no player fits under it, and elsewhere a tent needs ground right under every block of its floor, and refuses with "Fill the outlined holes, or find flatter ground." Grass, flowers, saplings, mushrooms and whatever else breaks at a touch and can be walked through give way where its walls and door go up, popping off as a hand would break them; anything solid, a fluid, a block with something inside it, and what the story protects, such as the caravan's own tents, still keeps it from standing there, and the refusal names it: "A spruce log stands where the tent goes up." Nor does a tent rise through a body: "Step back: you're standing where the tent goes up.", or "Something stands where the tent goes up." for a creature. A tent anyone is inside is never taken down by the story: a player who logs in inside a tent counts as standing at its door, and the caravan brings back only tents nobody is in.
 - The first tent, the stranger's, is the kind the land around the Last Camp would build, the same for the whole team: a yurt in cold land and mountains, a tepee on plains, meadows and in forests, a Bedouin tent in desert and badlands, an indlu on the savanna, a shamiyana in jungle and swamp. The Gear page's camp row then grows that kind, tiny to large. Every tent is a world of its own, but the night is the team's: a player lies down in their tent and stays lying until two thirds of the team sleep, in their tents or out, and then it is morning for everyone at once (`[sleep]` `players_percentage`). A pitched tent's inside keeps running while its owner is out, so a furnace in it finishes its work; a packed tent stops.
 - A lit fire's circle reaches 32 blocks (`[fire]` `circle_blocks`): no monster spawns inside it, and one that wanders in turns away and lets the team be, so the caravan's whole camp lies inside and a tent beside the fire is never kept shut by monsters at its door. A hold switches the circle off around its own fight.
-- Resting is being by a lit fire: a player within 4 blocks of one rests at once, with nothing to wait for and no need to stand still. The camp, the afternoon at the caravan's fire, the Warm effect and the Flare all count that rest.
+- Resting is being by a lit fire: a player within 4 blocks of one rests at once, with nothing to wait for and no need to stand still. The camp, the afternoon at the caravan's fire, the Slow Hunger effect and the Flare all count that rest.
 - The fire's stories stay. If a night has one, the voice's long talk, a person's scene or Malgven's visit, it plays once most of the team sits at the caravan's fire, and sleep waits until it is over; a night without one goes straight to sleep. Resting half a minute at a fire still warms the ember, so the player eats like a settled person until the next dusk, a fall included, since the ember goes through a death with them (M36).
 - A player with no tent, theirs lying under a stone or never made again, sleeps in one of the caravan's household tents: each has a bed that takes a player who carries no tent and has none pitched, and the task panel says so in place of pitching one. "Your tent is under your stone. Maud's tent has room tonight: right-click its bed"; Maud: "Mind the pots." Anyone else at that bed gets the bed's usual refusal, and it never sets where they wake (M34).
 - Every tool, weapon and armour, Silent Gear's, Simply Swords', vanilla's and every other mod's, stops at its last use instead of breaking (D13), and at its last use a tool is a bare hand, in speed and in what drops: a diamond pick at its last use takes nothing from obsidian. Silent Gear already keeps broken gear (`breaks_permanently = false`), and the Wayfarer mod brings the rest to the same rule. A piece worn bare says so each time it happens ("Hob's Blade is worn to its last ..."), its tooltip reads "Worn bare: no better than your bare hand until mended", and until the player has mended once the task panel names the bare piece most worth mending, the one in hand, then worn armour, then the hotbar, then the pack: "Mend Hob's Blade by a fire: ...".
@@ -524,7 +524,7 @@ What it showed:
 
 ### M13 What goes
 
-- **The Last Sea.** The land ends 4,096 blocks past the ring's radius, and the sea runs on to Minecraft's own world edge, with no border of the pack's own. Its cold, through Tough As Nails, starts once the player is out on it and grows with every block: freezing about 1,024 blocks out, deadly within a minute after that, so nobody reaches the edge. A player who falls on the Last Sea leaves their stone on the nearest land.
+- **The Last Sea.** The land ends about 4,096 blocks past the ring's radius, its coast wandering with the land (M39), and the sea runs on to Minecraft's own world edge, with no border of the pack's own. Fog closes in over it from its coast, until at the freezing line the water fades out within about 32 blocks. Its cold, through Tough As Nails, starts once the player is out on it, a step colder past the coast and another halfway out, and freezes the player about 1,024 blocks out, where no gift or fire warms them and the frost kills within a minute, so nobody reaches the edge (`balance.toml` `[last_sea]`). No road scene waits on it. A player who falls on the Last Sea leaves their stone on the nearest shore in that direction.
 - **Enchanting.** Enchanted books stay in loot, and only a smith can put one on, overnight: the peoples' smiths for goods, Hob once his side quest is done (C7, `story.md` S33). Mending and every enchantment that runs on XP go, since repair is the fire's and the smith's (M12). A book says so on itself ("Only a smith can put it on a tool or armour. It takes a night."), an anvil says a smith could put the book on, and the first evening someone carries one, Hob says how: before The Lost Ore that his cracked hammer can't do it yet, after it to hold the piece out with the book in the other hand.
 - **Diamonds.** The diamond backpack is Act 2's (M18), and the open stone has no diamonds; the first evening someone carries a gold backpack, Maud says that a bigger one needs diamonds, which only old mines and the deep dark hold.
 - **Ore.**
@@ -548,7 +548,7 @@ What it showed:
   |---|---|---|
   | The Twelve Peoples | Their own places | A handful per people, set near their hall by the generator |
   | The Gazebound | Outposts and camps | 1,536 blocks |
-  | | Forts and mansions | 6,144 blocks |
+  | | Forts and mansions | 1,024-block cells, a fort only where its dark forest stands: about one every 6,000 to 10,000 blocks |
   | The settled world | Villages | 768 blocks |
   | | Towns | 3,072 blocks |
   | | Capitals | 12,288 blocks, a few in the world |
@@ -559,7 +559,7 @@ What it showed:
   Every one of the pack's structure kinds gets its owner or is cut in `generator/owners.toml`, and the kinds this table spaces share one placement each.
 - **Nether blocks.** A swap table in the generator maps each Nether block to its nearest Overworld look, such as nether bricks to deepslate bricks, blackstone to deepslate, crimson wood to mangrove, warped wood to dark oak, glowstone to sea lantern and soul sand to mud, and applies it to every structure but the Ancient Cities. Trek's two structures with lit portals, its pillager mansion and its portal sword, are cut outright.
 
-**Why:** A sea that freezes needs no wall, and a stone on the shore lets a player who fell out there get their things back. Books that only a smith can use keep loot worth finding and give the smiths their part. Ore thin in the open and rich in places sends the player down the road for it (ground truth 3), and frequencies set by owner keep the world's places telling one story.
+**Why:** A sea that freezes needs no wall, and a stone on the shore lets a player who fell out there get their things back. Books that only a smith can use keep loot worth finding and give the smiths their part. Ore thin in the open and rich in places sends the player down the road for it (ground truth 3), and frequencies set by owner keep the world's places telling one story. A kind bound to a rare forest gets small cells, since a cell whose spot misses that forest stays empty: on the bounded land of M39, forts at 6,144-block cells never stood at all on the states' seed, and 1,024-block cells, vanilla's own mansion spacing, gave one about every 8,000 blocks.
 
 ### M14 The endings
 
@@ -888,7 +888,7 @@ Nothing is kept for having been built (ground truth 6). Every part of the Wayfar
   | The settled world | Small places: farms, wells, stalls, watchtowers, graveyards | 512 blocks |
   | | Taverns, where W11's dicers sit | 1,536 blocks |
   | The land | Trees, boulders, log piles, ponds | 256 blocks |
-  | The sea | Wrecks, sunken ruins, islands, lighthouses | 1,024 blocks |
+  | The coast | Wrecks run aground; the seas themselves hold nothing (M39) | 1,024 blocks |
   | Under the ground | Dungeons, buried rooms, old refineries | 512 blocks |
   | | Old mines, where M13's rich ore lies | 256 blocks, about vanilla's mineshafts |
   | The Twelve Peoples | Temples, monuments, crypts | As their mods spread them, until each act's halls set them near their hall (built with Acts 2 and 3) |
@@ -1031,68 +1031,89 @@ It raises, for its build: keeping each act's foes out of the world until their a
 
 **Why:** Lucas Blair's research on achievements finds that goals announced ahead push players to chase them and change how they play, while unexpected ones reward play that already happened; a deed hidden until earned is a surprise, never a chore, and one that gives nothing is not worth grinding, which the pack takes away everywhere else (D7).
 
-### M39 The world's shape: a home land, a sea round it, and a land beyond
+### M39 The world's shape: two continents, a deep sea between them, and the Last Sea
 
 - **The home land.** The Last Camp stands in the middle of one land that reaches 6,000 to 8,000 blocks out, about 116 km², never cut by sea, only by rivers and lakes. Its coast follows the land's own shape, not a circle. Every place of Act 1 lies on it, so Act 1 is walked.
-- **The sea round it.** An open sea all round the home land, about 3,000 blocks wide, deep and without islands, its far shore out of sight. Act 2 begins by crossing it (2.1 The Crossing): about six minutes under sail, long enough for its night on the water. It is the one sea the road crosses.
+- **The sea round it.** A deep sea all round the home land, about 2,048 blocks wide in every direction, its floor about 80 to 90 blocks down, with nothing in it: no islands, no wrecks, no ruins. Its far shore follows the home coast's line, so the crossing is the same width wherever the team sets out, and on High and Ultra the far shore shows as a low line on the horizon. Act 2 begins by crossing it (2.1 The Crossing): about four minutes under sail, long enough for its night on the water, which begins once the boats reach open water. It is the one sea the road crosses.
 - **The ring's frames stand inland.** Each of the twelve strongholds takes the first spot along the ring, out from its own point in steps of 32 blocks either way, where the land is at least mid-inland (the biomes' continentalness 0.03 and up) and one of the stronghold's biomes lies at sea level, so none lies under the sea. `just test` checks that no stronghold of the ring stands in an ocean.
-- **The land beyond.** One land again from the far shore out to the Last Sea, cut only by rivers, lakes and inland seas, as the home land is, so Acts 2 and 3 are walked as Act 1 is. The land ends at the Last Sea's coast 4,096 blocks past the ring of frames (M13, M40), and deep sea runs on to Minecraft's own world edge.
+- **The outer continent.** One land again, all the way round from the far shore out to the Last Sea, cut only by rivers and lakes as the home land is, so Acts 2 and 3 are walked as Act 1 is. Its coast on the Last Sea is no circle: it wanders between about 20,300 and 23,200 blocks from the Last Camp, typically about 4,096 past the ring of frames (M13, M40).
+- **The Last Sea.** Deep sea from that coast to Minecraft's own world edge, with nothing in it; its fog and its cold turn back whoever sails out (M13).
 
   ```text
   Day 6. You follow the ember west through forest and hills, wade a river, and come out on a grey coast.
-         Open water to the horizon. The ember pulls back east, towards the snow.
-  2.1    You push off at dusk. The coast sinks behind you. For a long while there is nothing but water and the ember's light on it.
+         Open water, and far off a low line of land. The ember pulls back east, towards the snow.
+  2.1    You push off at dusk. The coast sinks behind you; ahead the far line of land grows. Halfway over, something knocks against a hull.
   ```
 
-- **How it is made.** Tectonic's raw continent value (`tectonic:noise/raw_continents`), from which both its terrain and the biomes' continentalness come, gets a term that depends only on the distance from the Last Camp (`WorldShape`, added where the game wires the noise): a lift of 0.625 over the home land, falling over 4,096 blocks to its coast; a sink of 1.25 across the sea; a lift over the land beyond, so it stays land as the home land does; and a sink of 2.5 from 1,024 blocks before the Last Sea's coast onwards. Over both seas the value is held at -0.5 or above, where Tectonic grows no islands, so they stay deep and bare. Its numbers live in `balance.toml` `[world]`. Valheim makes its world the same way, a disc whose bands are set by distance on top of its noise, its land ending at 10,000 m.
+- **How it is made.** Tectonic's raw continent value (`tectonic:noise/raw_continents`), from which both its terrain and the biomes' continentalness come, gets a term (`WorldShape`, added where the game wires the noise): a lift of 0.625 over the home land, falling over 4,096 blocks to its coast and on to a sink of 1.25 in the sea; the far shore rising over 1,024 blocks to the same lift of 0.625 over the outer continent, its rise ending 2,048 blocks past the home coast's outermost reach in that direction; and a fall over 4,096 blocks into the Last Sea from 3,072 blocks past the ring. The home coast's reach is read from the noise in 720 directions the first time a world's shape is used, widened to its farthest headland within 5 degrees either way and smoothed over the same, so a headland never comes close to the far shore. Everywhere the value is held at -0.5 or above, where Tectonic grows no islands and draws its flat deep-ocean floor, which `deep_ocean_depth` -0.75 puts about 96 blocks down (`pack/config/tectonic.json`). Every mod's sea places are cut (`generator/owners.toml`); the beached shipwreck stays on the coasts. The numbers live in `balance.toml` `[world]`. Valheim makes its world the same way, a disc whose bands are set by distance on top of its noise, its land ending at 10,000 m.
 - **Edge cases.**
-  - A team that builds a boat in Act 1 can cross by day in fair weather; nothing forbids it. At night or in rain the sea's beast rams a vanilla boat (M13's sea), so a team crosses for good with ships. On the far shore nothing of Act 2 has opened yet, and what they find and take there counts as everything does (D6).
-  - Swimming three kilometres is possible, long and cold at night.
+  - A team that builds a boat in Act 1 can cross by day in fair weather in about four minutes; nothing forbids it. At night or in rain the sea's beast rams a vanilla boat (M22), so a team crosses for good with ships. On the far shore nothing of Act 2 has opened yet, and what they find and take there counts as everything does (D6).
+  - Swimming two kilometres is possible, long and cold at night.
+  - The coasts' own shape leaves a few islets just off both coasts, 1.5 to 4.6 km² on a seed in all; open sea lies beyond them.
+  - Whoever falls on either sea leaves their stone on the nearest shore in that direction, its ground loaded for it (M13).
+  - The caravan never camps across the sea from the team: its search stays on the team's side of the crossing's middle, and its first camp across the sea stands near the landfall (2.1).
   - A world made before the shape keeps the chunks it has; only new land takes the shape, so it needs a fresh world.
   - A frame of the ring that would fall in the sea moves along the ring to the nearest land.
   - Distant Horizons draws the far land from the same noise, so the far view shows the same shape (not yet looked at).
-  - Terralith hangs its skylands, floating islands, over deep water where its weirdness, cold and dryness meet, the seas' as anywhere; they float in the sky and nothing stands on the water.
+  - Terralith's skylands keep their biome over the deep sea, but their floating islands are cut (`generator/removals.toml`), so nothing stands on the water or hangs over it.
   - The world's spawn is on the home land on every seed, since the land round the Last Camp is lifted; a lake at the very centre still moves the spawn to its shore, as vanilla does.
 
-- **Caves open often.** Cave mouths are about twice as common as Tectonic's own: caves reach the surface (`depth_cutoff_start` -0.1) and its noodle and cheese caves run wider (`noodle_additive` -0.2, `cheese_additive` 0.18, `pack/config/tectonic.json`). On four 256-block squares of the states' seed the openings went from 159 to 286, so a team on foot finds a way down most days without digging.
+- **Caves open often.** Cave mouths are more than one and a half times as common as Tectonic's own: caves reach the surface (`depth_cutoff_start` -0.1) and its noodle and cheese caves run wider (`noodle_additive` -0.2, `cheese_additive` 0.18, `pack/config/tectonic.json`), so a team on foot finds a way down most days without digging. Only the narrow caves, the noodle and spaghetti tunnels, reach the surface: the big round caverns (Tectonic's cheese caves) stay closed down to 16 blocks under the land and open fully from 32 (`balance.toml` `[world]` `cavern_cover_blocks` 16 and `cavern_fade_blocks` 16). Tectonic's single depth cutoff covers all three kinds, and a data file of the pack's own cannot override Tectonic's built-in pack, so the mod adds the caverns' cover to Tectonic's cheese term where the noise is wired (`CavernsMixin`). A way down is a sloping tunnel mouth, never a sheer pit 40 blocks deep. **Why:** on the friends' server a cavern broke through open savanna as a sheer pit about 40 by 24 blocks, and the friends took it for broken world generation; a tunnel mouth reads as a cave.
+
+  **Measured** on four squares of 256 by 256 blocks of the states' seed, 1,024 to 1,279 blocks out from the origin on each diagonal, counting as an opening every patch of surface 8 or more blocks below the ground 8 blocks round it (the fourth square is open sea in every run):
+
+  | Caves | Openings | Openings of 128 columns or more |
+  |---|---|---|
+  | Tectonic's own (`depth_cutoff_start` 0.1, `cheese_additive` 0.27, `noodle_additive` -0.075) | 163 | 0 |
+  | The pack's, caverns reaching the surface | 263 | 1, 23 by 23 blocks and 88 deep |
+  | The pack's, caverns covered | 260 | 0 |
+  | Covered, with `noodle_additive` -0.25 | 255 | 0 |
+  | Covered, with `depth_cutoff_start` -0.2 | 255 | 0 |
+
+  The cover costs 3 mouths in 263 and closes the one sheer pit. Wider noodles and a higher cutoff add none, so the pack keeps the numbers above; on the land before the world's shape, the same squares gave 159 and 286.
 - **Climates.** Across the home land the climate changes about every 800 blocks along a straight line, and no seed leaves more than about a sixth of its cold land over 1,024 blocks from warmer ground. Tectonic's `temperature_scale` stands at its own 0.25, while `vegetation_scale` 0.125 keeps forests and plains wide (`pack/config/tectonic.json`).
 
-**Why:** On six seeds measured (`ShapeSpike`, dev code that never ships), today's world was about half sea in islands of 2 to 314 km², usually 25 to 47, so most seeds put Act 1's places across water, and two put the Last Camp on an island of 2 km². Built into the game, the shape gives a home land of 117 to 132 km² reaching about 7,750 blocks on every seed measured and a closed sea. A land beyond that is land again lets the whole road be walked, the pack's own way to travel, with the sea round the home land as its one crossing. Half that temperature scale put the camp of one seed in four inside an icy core thousands of blocks across, where a team walks for a quarter of an hour without the land getting warmer.
+**Why:** On six seeds measured (`ShapeSpike`, dev code that never ships), the world without the shape was about half sea in islands of 2 to 314 km², usually 25 to 47, so most seeds put Act 1's places across water, and two put the Last Camp on an island of 2 km². With the shape every seed measured has two continents, each walked from end to end, and one crossing between them. A far shore at one distance could not keep the crossing even, since the home coast reaches out and falls back by thousands of blocks between its headlands and bays; a far shore set past its farthest nearby headland keeps the crossing's narrowest at 1,280 blocks or more on every seed. Below the home land's own lift, shallow sea channels cut the outer continent into pieces on every seed, so both continents take the same lift. Half Tectonic's temperature scale put the camp of one seed in four inside an icy core thousands of blocks across, where a team walks for a quarter of an hour without the land getting warmer.
 
-**The spike measured** (`/wayfarer shape <seed> <radius> <step>`, `/wayfarer preview <seed> <home> <sea> <sink>` and `/wayfarer climate <seed> <step>` on the dev server, pictures in `build/shape/`):
+**The spike measured** (`/wayfarer shape <seed> <radius> <step> [<beyond_lift> <far_shore>]` and `/wayfarer climate <seed> <step>` on the dev server, pictures in the `shape/` folder beside the dev server's own):
 
-| Seed | Today: the camp's land, its reach | With the shape |
-|---|---|---|
-| 20261005 (the states') | 47 km², 7,223 blocks | 116 km², 7,997 blocks; beyond the sea 22 to 30% land |
-| The second playtest's world | 44 km², 7,273 | 118 km², 7,907 |
-| 1 | 314 km², 47,068 | |
-| 2 | 2 km², an island 286 blocks off the origin | 113 km², 8,108 |
-| 3 | 25 km², 8,707 | |
-| 5 | 2 km², an island | |
+| Seed | Without the shape: the camp's land, its reach | With it: the camp's land, its reach | The crossing: typical, narrowest | The Last Sea's coast, typical | Floors, typical: the crossing, the Last Sea |
+|---|---|---|---|---|---|
+| 20261005 (the states') | 47 km², 7,223 blocks | 119 km², 7,792 | 2,176, 1,280 | 21,760 | y -23, y -26 |
+| The second playtest's world | 44 km², 7,273 | 127 km², 7,733 | 2,176, 1,536 | 21,760 | y -17, y -18 |
+| 1 | 314 km², 47,068 | 145 km², 7,792 | 2,176, 1,408 | 21,760 | y -24, y -27 |
+| 2 | 2 km², an island 286 blocks off the origin | 132 km², 7,795 | 2,304, 1,280 | 21,760 | y -16, y -15 |
+| 3 | 25 km², 8,707 | 117 km², 7,795 | 2,176, 1,536 | 21,760 | y -25, y -22 |
+| 5 | 2 km², an island | 134 km², 7,795 | 2,176, 1,280 | 21,888 | y -15, y -25 |
+
+On every seed the outer continent is one piece with no sea water inside it, and from the far shore it reaches the Last Sea's coast over land in 16 of 16 ways; beaches are 2.5 to 4.3% of it, deserts 1.9 to 3.8%, mountains 0.3 to 0.7%.
 
 | Finding | For the build |
 |---|---|
-| The climate sampler's continentalness with vanilla's ocean edges (-0.19, -0.455) gave the same map as the biomes did (47 km² either way) | The previews are faithful to the world's own seas |
-| A coast falling over 1,024 blocks came out a near circle; over 4,096 it follows the noise | The home's coast falls over 4,096 blocks |
-| A sink of -0.7 left land bridges across the sea; -1.2 closed it on every seed | The sea's sink is -1.2 |
+| The climate sampler's continentalness with vanilla's ocean edges (-0.19, -0.455) gave the same map as the biomes did (47 km² either way) | The measures read the world's own seas |
+| A coast falling over 1,024 blocks came out a near circle; over 4,096 it follows the noise | The home coast and the Last Sea's coast fall over 4,096 blocks |
+| A sink of -0.7 left land bridges across the sea; -1.2 closed it on every seed | The sea's sink is -1.25 |
 | Tectonic's pack is a built-in data pack at the top of the list, so a data file of the pack's own cannot override its continents | The term is added in code where the noise is wired, for every reference to the continents, a plain one or a spline's coordinate (`ContinentsMixin`, `SplineCoordinateMixin`) |
 | Added to `full_continents`, the term moved only the biomes: Tectonic's terrain reads `raw_continents`, and land rose under ocean biomes past the Last Sea | The term goes on `raw_continents`, which both read |
-| Tectonic grows islands wherever `raw_continents` falls below -0.5, which the sinks reach | Over the two seas the value is held at -0.5 |
-| The previews' lift of 0.5 and outer sink of 0.15, measured on the climate's continentalness, left the real home land at 56 to 85 km² with inland seas and the world beyond at 40% land: `raw_continents` runs from -0.8 to about 0.45 | A lift of 0.625 and an outer sink of 0.25 gave 117 to 132 km² and 28 to 34% |
+| Tectonic grows islands wherever `raw_continents` falls below -0.5, and draws the same flat deep-ocean floor at -0.45 and below | The value is held at -0.5 or above everywhere |
+| `raw_continents` runs from -0.8 to about 0.45; a lift of 0.625 gave a home land of 117 to 145 km² | The home land's lift is 0.625 |
+| Over the outer continent, lifts of 0.25, 0.375 and 0.5 left shallow sea channels cutting it into pieces on all six seeds, one piece holding at most 43% of its land; 0.625 left it whole with only rivers | The outer continent's lift is 0.625 |
+| A far shore set from the home coast's mean line in each direction narrowed the crossing to 384 blocks at a headland of the states' seed; set from its farthest headland within 5 degrees, its narrowest was 1,280 | The far shore's rise ends past the home coast's farthest headland |
+| Its rise ending 1,920 blocks past the home coast gave a typical crossing of 1,920 to 2,176, ending 2,048 past gave 2,176 to 2,304 | `far_shore_blocks` 2048 |
+| The Last Sea's fall beginning halfway along it, at the ring plus 2,048, put the coast typically at 20,480; beginning at the ring plus 3,072, at 21,760 | `last_sea_slope_past_ring_blocks` 3072 |
+| Tectonic's `deep_ocean_depth` of -0.75 put the floors at y -15 to -27 typically, the deepest near y -56 | `deep_ocean_depth` -0.75 |
 | On eight seeds, read as Tough As Nails reads the land by day (a step colder above y 160) with patches under 512 blocks square counted with what surrounds them, Tectonic's `temperature_scale` 0.125 changed the climate every 941 blocks along a straight line and left 17% of the cold land over 1,024 blocks from warmer ground, 46 and 56% on the two seeds whose camp sat in an icy core; 0.25 gave 811 blocks and 5%, at most 17% | `temperature_scale` 0.25 |
 | On a fresh world of the states' seed the game showed snowy forest on the home land at 6,000 blocks and open water at 9,000; from the Last Camp the nearest Act 2 hall stood 16,209 blocks out, the nearest Act 3 hall 33,187, no Frost Walkers' hall grew, and the nearest frame stood on land at 34,080 | |
 
-It raises, for its build: the lift over the land beyond that keeps it land with no sea between the far shore and the Last Sea, measured with `ShapeSpike` on the states' seed and five others, as the home land's was.
-
 ### M40 Where each act's halls stand
 
-- **Every hall is put down by its quest,** about a day's walk ahead of the team, on the nearest fitting ground in the way it is walking and out of sight, as the Diggers' tunnels are (1.1, S24): Act 1's on the home land (M39), the Frost Walkers' winter house, hall and frozen lake in snow (1.3) and the First Village's ruins on open plains (1.5); Act 2's on the far shore, the Tide Folk's village and hall on its coast (2.2) and the Sand Singers' camp and hall in its nearest desert (2.4); Act 3's in the far ring, the Scribes' hall on its nearest mountain (3.3). The world grows no copies of the road's halls anywhere, nor of the five the heir emptied (`story.md`, S6).
+- **Every hall is put down by its quest,** about a day's walk ahead of the team, on the nearest fitting ground in the way it is walking and out of sight, as the Diggers' tunnels are (1.1, S24): Act 1's on the home land (M39), the Frost Walkers' winter house, hall and frozen lake in snow (1.3) and the First Village's ruins on open plains (1.5); Act 2's on the far shore, the Tide Folk's village and hall on its coast (2.2) and the Sand Singers' camp and hall in its nearest desert (2.4); Act 3's in the far ring, the Scribes' hall on its nearest mountain (3.3). Acts 2 and 3 share the outer continent (M39): their halls are searched for between the far shore and the Last Sea's coast, ahead of the caravan within 90 degrees of its way first and then all round. The world grows no copies of the road's halls anywhere, nor of the five the heir emptied (`story.md`, S6).
 
   ```text
   The morning after Cadoc joins, the ember pulls north. A day of walking; the air bites; then snow, and a winter house half buried in it.
   ```
 
-- **Each walk fits its act's budget.** A hall stands 1,024 to 2,048 blocks ahead (`balance.toml`, each place's `ahead_blocks`), a walk of about a quarter of an hour, so an act's hours (`story.md`, S2) go to what happens at its places, not to the way there. The ring of frames stands where Act 3's walk ends, about 20,480 blocks from the Last Camp (`[strongholds]` `radius_blocks`), with the Last Sea 4,096 blocks past it (M13). The walks and the ring are tuned by play against the acts' budgets (`production.md`, R6).
+- **Each walk fits its act's budget.** A hall stands 1,024 to 2,048 blocks ahead (`balance.toml`, each place's `ahead_blocks`), a walk of about a quarter of an hour, so an act's hours (`story.md`, S2) go to what happens at its places, not to the way there. The ring of frames stands where Act 3's walk ends, about 17,408 blocks from the Last Camp (`[strongholds]` `radius_blocks`), with the Last Sea about 4,096 blocks past it (M13). The walks and the ring are tuned by play against the acts' budgets (`production.md`, R6).
 - **Edge cases.**
   - Every place Act 1 puts down, Tollbridge, the Diggers' tunnels, the ford, the Frost Walkers' house, hall and lake, the reading-house and the First Village, is picked within 7,168 blocks of the Last Camp, halfway down the home land's falling coast (`Home`): when the way would lead out to sea, the search turns along the coast, 15 degrees at a time, until its farthest point lies on the home land.
   - A home land without snow: the Frost Walkers' quest puts their hall in the home land's coldest corner and the snow comes with it, as 1.5 makes a green where no plains are near.
@@ -1103,7 +1124,6 @@ It raises, for its build: the lift over the land beyond that keeps it land with 
 
 **Why:** Halls put down ahead keep each act's pace a day a hall on every seed, which the world's own halls could not: on the states' seed the nearest Act 2 hall the world grew stood 16,209 blocks from the Last Camp, and the nearest Drowned City hall 26,000. A road walked end to end is as long as its walks, so the walks are set by the hours the road should take, and the ring comes as close as the last walk needs. The census of the land under the shape (`ShapeSpike`, on four seeds) found every Act 1 land on the home land, snow and ice 6 to 52% of it, forest 10 to 18%, plains 13 to 17%, swamp 1 to 4%, and every Act 2 and Act 3 land beyond the sea, mountains the rarest at 0.3 to 0.6%.
 
-It raises, for its build: what the ring's new radius moves with it, the Last Sea's coast, the deed The Edge of the Map (M38) and the strongholds' check in `just test`.
 
 ### M41 Leaving the End after Blind it
 
@@ -1343,6 +1363,4 @@ It raises, for its build: what the ring's new radius moves with it, the Last Sea
 
 ## Open
 
-### O1 Big caves breaking through flat land
-
-Opening caves to the surface (M39, "Caves open often") also lets Tectonic's widened cheese caves, the big round caverns, break through flat land as sheer pits about 40 blocks deep with no slope down: on the friends' server one stands in open savanna at 3205 67 3456, down into a dripstone cave, and grown again from the same seed with today's pack the same cavern opens wider there, about 40 by 24 blocks. The friends took it for broken world generation. Open: whether cheese caves keep reaching the surface, or only the narrow noodle and spaghetti caves make the cave mouths, which Tectonic's single depth cutoff cannot tell apart, so it needs the caves' density functions changed in a data pack. The pit's straight edges on the server are where chunks made by an older pack meet chunks made by a newer one, which every change to the world's generation leaves in a world already played.
+Nothing is open.

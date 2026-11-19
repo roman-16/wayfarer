@@ -7,14 +7,6 @@
     {
       "factor": 1,
       "structure": "minecraft:ancient_cities"
-    },
-    {
-      "factor": 1,
-      "structure": "wayfarer:halls/act_three"
-    },
-    {
-      "factor": 1,
-      "structure": "wayfarer:halls/act_two"
     }
   ],
   "idBasedSalt": true,

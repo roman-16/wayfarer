@@ -91,11 +91,6 @@ server: build
     python3 scripts/instance.py server build/server {{ jar }}
     cd build/server && printf 'eula=true\n' > eula.txt && bash run.sh --nogui
 
-[doc("Walk journeys on fresh headless servers, always to the nearest hall not yet taken, and print each tier's legs against balance.toml's targets; `just survey apply` writes the tuned spacings")]
-survey apply="": build
-    python3 scripts/instance.py server build/server {{ jar }}
-    python3 scripts/boot.py build/server --survey 4 {{ if apply == "apply" { "--apply" } else { "" } }}
-
 [doc("Open the pack in a dev client in the showroom: a flat dimension rebuilt each launch with every hall and item and a compass demo, beside an empty workshop and a kept natural world; `just showroom lean` loads only the Wayfarer mod and what it needs, in a save of its own; `just showroom far` keeps Distant Horizons' far view on")]
 showroom mode="full":
     [ -n "${WAYFARER_DRIVEN:-}" ] || python3 scripts/client.py stop

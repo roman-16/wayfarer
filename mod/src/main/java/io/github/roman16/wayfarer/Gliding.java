@@ -15,10 +15,14 @@ public final class Gliding {
     private static final class Flight {
         private double takeoff;
         private boolean gliding;
+        private boolean aloft;
+        private int asked;
     }
 
     public static boolean allowed(Player player, boolean glider) {
         Flight flight = FLIGHTS.computeIfAbsent(player, key -> new Flight());
+        flight.asked = player.tickCount;
+        flight.aloft = false;
         if (player.onGround() || player.isInWater() || player.isPassenger()) {
             flight.takeoff = player.getY();
             flight.gliding = false;
@@ -30,7 +34,13 @@ public final class Gliding {
         if (!flight.gliding) {
             flight.gliding = dropped(player, flight.takeoff);
         }
+        flight.aloft = flight.gliding;
         return flight.gliding;
+    }
+
+    public static boolean gliding(Player player) {
+        Flight flight = FLIGHTS.get(player);
+        return flight != null && flight.aloft && player.tickCount - flight.asked <= 1;
     }
 
     private static boolean dropped(Player player, double takeoff) {

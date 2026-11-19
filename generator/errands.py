@@ -33,12 +33,6 @@ CAIRN = Material(
         ("minecraft:stone", 15),
     ],
 )
-NEST = 9
-NEST_CENTRE = NEST // 2
-NEST_FLOOR = Material(
-    "errands/nest/floor",
-    [("minecraft:coarse_dirt", 45), ("minecraft:gravel", 35), ("minecraft:bone_block", 20)],
-)
 CAIRNS = 7
 RING = 6
 FIELD = RING * 2 + 3
@@ -111,34 +105,8 @@ def cairns():
     return t
 
 
-def nest():
-    t = Template()
-    for x in range(NEST):
-        for z in range(NEST):
-            distance = math.hypot(x - NEST_CENTRE, z - NEST_CENTRE)
-            if distance > NEST_CENTRE + 0.5:
-                continue
-            t.set((x, 0, z), NEST_FLOOR)
-            rim = distance > NEST_CENTRE - 1
-            if rim and coherent("errands/nest/ribs", (x, 1, z)) > 0.45:
-                t.set(
-                    (x, 1, z), "minecraft:bone_block", axis="x" if abs(x - NEST_CENTRE) < abs(z - NEST_CENTRE) else "z"
-                )
-                if coherent("errands/nest/web", (x, 2, z)) > 0.8:
-                    t.set((x, 2, z), "minecraft:cobweb")
-            elif coherent("errands/nest/brush", (x, 1, z)) > 0.62 and distance > 1:
-                t.set((x, 1, z), "minecraft:dead_bush")
-            else:
-                t.set((x, 1, z), AIR)
-            for y in (2, 3):
-                if (x, 2, z) not in t.blocks:
-                    t.set((x, y, z), AIR)
-    return t
-
-
 def positions():
     return {
-        "nest": {"centre": [NEST_CENTRE, 1, NEST_CENTRE], "size": [NEST, 4, NEST]},
         "cairns": {"centre": [CENTRE, 1, CENTRE], "drifa": [CENTRE, 1, CENTRE - 2], "size": [FIELD, 5, FIELD]},
         "seal": {
             "door": [list(pos) for pos in SEAL],

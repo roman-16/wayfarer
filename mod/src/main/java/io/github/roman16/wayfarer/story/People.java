@@ -531,7 +531,7 @@ public final class People {
         boolean out = walk.arrival != null && body.level() instanceof ServerLevel level && vanished(level, body.position()) && vanished(level, walk.to);
         walk.unseenSince = out ? walk.unseenSince == NEVER ? now : walk.unseenSince : NEVER;
         boolean unseen = out && now - walk.unseenSince >= (long) VANISH_SECONDS * TICKS_PER_SECOND;
-        boolean stuck = walk.arrival != null && now - walk.gained >= (long) STUCK_SECONDS * TICKS_PER_SECOND;
+        boolean stuck = now - walk.gained >= (long) STUCK_SECONDS * TICKS_PER_SECOND;
         if (left <= walk.pace || unseen) {
             if (walk.arrival != null) {
                 Vec3 to = body.level() instanceof ServerLevel level ? room(level, person, walk.to) : walk.to;
@@ -542,7 +542,10 @@ public final class People {
             return true;
         }
         if (stuck) {
-            if (walk.arrival != null && body.level() instanceof ServerLevel level && vanished(level, body.position())) {
+            if (walk.arrival == null) {
+                return true;
+            }
+            if (body.level() instanceof ServerLevel level && vanished(level, body.position())) {
                 Optional<Vec3> nearer = offstage(level, walk.to).filter(spot -> spot.distanceToSqr(walk.to) < body.position().distanceToSqr(walk.to));
                 if (nearer.isPresent()) {
                     body.moveTo(nearer.get().x, nearer.get().y, nearer.get().z, body.getYRot(), 0);

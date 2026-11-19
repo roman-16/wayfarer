@@ -151,7 +151,7 @@
   "sea": {
     "voice": [
       "It pulls out over the water. You'll want a boat.",
-      "It pulls out over the water again. Get your boat wet."
+      "It pulls out over the water again. Take your boat out."
     ]
   },
   "swell": {
@@ -163,7 +163,7 @@
   },
   "traveller": {
     "clues": {
-      "traveller": "A traveller lies by the road, cut open over the heart, like the dead in Tollbridge. The purse on the belt is still full."
+      "traveller": "A traveller lies by the road, the chest cut open, like the dead in Tollbridge. The purse on the belt is still full."
     },
     "voice": [
       "They walked alone, at night. Don't."

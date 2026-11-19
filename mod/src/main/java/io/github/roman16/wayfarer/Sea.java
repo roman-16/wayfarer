@@ -67,7 +67,7 @@ public final class Sea {
             for (int dz = -reach; dz <= reach; dz += SAMPLE_STEP) {
                 int x = at.getX() + dx;
                 int z = at.getZ() + dz;
-                if (dx * dx + dz * dz > reach * reach || !level.hasChunk(x >> 4, z >> 4)) {
+                if (dx * dx + dz * dz > reach * reach || level.getChunkSource().getChunkNow(x >> 4, z >> 4) == null) {
                     continue;
                 }
                 BlockPos top = new BlockPos(x, Ground.sky(level, x, z), z);

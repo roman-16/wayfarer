@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Doors;
 import io.github.roman16.wayfarer.story.Ground;
 import io.github.roman16.wayfarer.story.Progress;
 import io.github.roman16.wayfarer.story.Story;
@@ -64,7 +65,7 @@ public final class Shine {
         if (Journey.over(server) || Progress.of(server).step(EYES_QUEST) < 0) {
             return 0;
         }
-        return Math.min(1, (float) Journey.claimed(server).size() / Halls.count(server.overworld()));
+        return Math.min(1, (float) Journey.claimed(server).size() / Doors.road());
     }
 
     public static int act(MinecraftServer server) {

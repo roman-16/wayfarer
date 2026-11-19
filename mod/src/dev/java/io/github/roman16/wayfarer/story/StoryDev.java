@@ -154,16 +154,7 @@ public final class StoryDev {
                         .then(Commands.literal("unclaim").then(Commands.argument("reward", StringArgumentType.greedyString())
                                 .executes(context -> unclaim(context.getSource(), StringArgumentType.getString(context, "reward")))))
                         .then(Commands.literal("memory").then(Commands.argument("step", StringArgumentType.word())
-                                .executes(context -> memory(context.getSource(), StringArgumentType.getString(context, "step")))))
-                        .then(Commands.literal("marsh").then(Commands.argument("x", IntegerArgumentType.integer())
-                                .then(Commands.argument("z", IntegerArgumentType.integer()).executes(context -> marsh(context.getSource(),
-                                        IntegerArgumentType.getInteger(context, "x"), IntegerArgumentType.getInteger(context, "z"))))))));
-    }
-
-    private static int marsh(CommandSourceStack source, int x, int z) {
-        Marsh.move(source.getServer(), x, z);
-        source.sendSuccess(() -> Component.literal("story: the Marsh Mothers' hall moves under " + x + " " + z), false);
-        return 1;
+                                .executes(context -> memory(context.getSource(), StringArgumentType.getString(context, "step")))))));
     }
 
     private static int memory(CommandSourceStack source, String step) {
@@ -213,6 +204,9 @@ public final class StoryDev {
         Talk.reset();
         progress.steps.put(quest.get().id(), index);
         progress.scratch.remove(quest.get().id());
+        if (source.getEntity() instanceof ServerPlayer player) {
+            progress.tracking.put(player.getUUID(), quest.get().id());
+        }
         progress.setDirty();
         Journal.syncAll(source.getServer());
         source.sendSuccess(() -> Component.literal("story: " + target + " begins"), false);
@@ -390,6 +384,9 @@ public final class StoryDev {
         if (step.spec().has(Steps.BUILDS) && !built(server, step.text(Steps.BUILDS))) {
             return false;
         }
+        if (step.spec().has("place") && Places.buildable(step.text("place")) && !built(server, step.text("place"))) {
+            return false;
+        }
         Steps.toll(server, active);
         switch (step.kind()) {
             case "talk" -> {
@@ -436,7 +433,7 @@ public final class StoryDev {
                     choice.ifPresent(first -> Engine.choose(server, active.quest().id(), step.id(), first));
                 }
                 List<String> taking = choice.map(Story.Choice::takes).orElseGet(() -> Steps.eyes(step));
-                taking.forEach(eye -> Journey.of(server).claim(Steps.hall(eye)));
+                taking.forEach(eye -> Journey.of(server).claim(Steps.shard(eye)));
                 server.getPlayerList().getPlayers().forEach(Shards::sync);
                 Steps.gifts(progress, step, taking);
                 run.here = Engine.at(server, step.text("at"));
@@ -466,20 +463,7 @@ public final class StoryDev {
                 }
                 run.here = Engine.at(server, step.text("at"));
             }
-            case "duel" -> {
-                if (!built(server, step.text("at"))) {
-                    return false;
-                }
-                progress.choices.put(active.key(), outcome(active, Duel.WON));
-                run.here = Engine.at(server, step.text("at"));
-            }
             case "chase" -> progress.choices.put(active.key(), outcome(active, Chase.CAUGHT));
-            case "board" -> {
-                if (!built(server, step.text("place"))) {
-                    return false;
-                }
-                run.here = Engine.at(server, step.text("place"));
-            }
             case "escort" -> {
                 if (!built(server, step.text("place"))) {
                     return false;
@@ -491,7 +475,6 @@ public final class StoryDev {
                 if (!built(server, Locks.NAME)) {
                     return false;
                 }
-                progress.gifts.add("stone_sight");
                 run.here = Engine.at(server, Locks.STONE);
             }
             case "worm" -> {
@@ -693,24 +676,20 @@ public final class StoryDev {
             case Tollbridge.NAME -> Tollbridge.tick(server);
             case Caravan.NAME -> Caravan.tick(server);
             case Diggers.NAME, Diggers.HALL -> Diggers.tick(server);
-            case FirstCamp.NAME -> FirstCamp.tick(server);
             case FirstVillage.NAME, FirstVillage.STONE -> FirstVillage.tick(server);
             case Ford.NAME -> Ford.tick(server);
-            case Marsh.NAME, Marsh.HALL, Marsh.CELLAR -> Marsh.raise(server);
             case Frost.NAME, Frost.TRACKS, Frost.HALL, Frost.STONE, Frost.LAKE, Frost.LAKE_STONE -> Frost.tick(server);
             case Mine.NAME, Mine.DEEP, Mine.CART -> Mine.tick(server);
             case ReadingHouse.NAME -> ReadingHouse.tick(server);
             case Shipyard.NAME, Shipyard.WRECK, Shipyard.LAUNCH -> Shipyard.tick(server);
             case TideFolk.NAME, TideFolk.HALL -> TideFolk.tick(server);
-            case DryCity.NAME, DryCity.STONE -> DryCity.tick(server);
-            case WendCamp.NAME, WendCamp.CHAIR -> WendCamp.tick(server);
             case SandSingers.NAME, SandSingers.LAIR -> SandSingers.tick(server);
             case Locks.NAME, Locks.STONE -> Locks.tick(server);
             case Errands.MISSING, Errands.SETTLED, Errands.BURNING, Errands.OUTPOST, Errands.RITE, Errands.BRAM, Errands.CAIRNS, Errands.SEAL, Errands.DEN,
-                    Errands.BUNDLE, Errands.LAST_BUNDLE, Errands.NEVER_SLEEPS, Errands.NEST, Errands.FIRST_GATE -> Errands.tick(server);
-            case Act3.HOLLOW, Act3.AIRFIELD, Act3.KEEPERS -> Act3.tick(server);
-            case Act3Halls.WARD, Act3Halls.WARD_STONE, Act3Halls.WARD_CHAMPION, Act3Halls.WARD_LINES, Act3Halls.MANSION_HALL, Act3Halls.MANSION, Act3Halls.MANSION_STAND, Act3Halls.SCRIBES,
-                    Act3Halls.SCRIBES_STONE, Act3Halls.GRAVEYARD, Act3Halls.GRAVEYARD_STONE -> Act3Halls.tick(server);
+                    Errands.BUNDLE, Errands.LAST_BUNDLE, Errands.NEVER_SLEEPS, Errands.FIRST_GATE -> Errands.tick(server);
+            case Act3.HOLLOW, Act3.KEEPERS -> Act3.tick(server);
+            case Scribes.NAME, Scribes.STONE -> Scribes.tick(server);
+            case Mansion.NAME, Mansion.CELLAR -> Mansion.tick(server);
             case Voyage.FAR_SHORE -> Voyage.tick(server);
             default -> throw new IllegalStateException("the story has no way to build " + place);
         }

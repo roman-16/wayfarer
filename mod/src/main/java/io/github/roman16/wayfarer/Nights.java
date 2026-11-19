@@ -167,7 +167,7 @@ public final class Nights {
             state.setDirty();
             boolean told = Engine.main(server).filter(active -> active.step().spec().has(AWAKE)).isPresent();
             boolean rests = state.hunted == day - 1 || state.calm == day;
-            if (state.red != day && !told && !Hold.active(server) && !Journey.over(server) && (After.hunted(server) || !rests && level.getRandom().nextDouble() < found(server))) {
+            if (state.red != day && !told && !Hold.active(server) && !Engine.holdsNight(server) && !Journey.over(server) && (After.hunted(server) || !rests && level.getRandom().nextDouble() < found(server))) {
                 state.hunted = day;
                 server.getPlayerList().getPlayers().stream().filter(player -> !After.sheltered(player)).forEach(Nights::uneasy);
             }

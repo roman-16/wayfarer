@@ -6,6 +6,7 @@ import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Camps;
+import io.github.roman16.wayfarer.Rules;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,6 +19,7 @@ import javax.annotation.Nullable;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -25,6 +27,7 @@ import net.minecraft.server.level.TicketType;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -36,6 +39,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 
@@ -52,6 +56,10 @@ final class Shipyard {
     private static final String WRECK_ORIGIN = "shipyard_wreck_origin";
     private static final String LAUNCHING = "shipyard_launching";
     private static final String OUT = "shipyard_out";
+    private static final String BOAT = "shipyard_boat_";
+    private static final String CROSSING = "the_crossing";
+    private static final String PUSHED_OFF = "the_open_sea";
+    private static final ResourceLocation COG = ResourceLocation.fromNamespaceAndPath("smallships", "cog");
     private static final ResourceLocation YARD = Wayfarer.id("shipyard/yard");
     private static final ResourceLocation HULL = Wayfarer.id("shipyard/hull");
     private static final ResourceLocation WRECKAGE = Wayfarer.id("shipyard/wreck");
@@ -86,6 +94,10 @@ final class Shipyard {
     private static final float PACKAGE_WIDTH = 0.4f;
     private static final float PACKAGE_HEIGHT = 0.18f;
     private static final float PACKAGE_DEPTH = 0.3f;
+    private static final int[] BERTHS = {1, 8};
+    private static final int BERTH_OUT = 2;
+    private static final int BERTH_DEPTH = 2;
+    private static final int MOORING = 4;
 
     @Nullable
     private static CompletableFuture<Site> searching;
@@ -106,7 +118,7 @@ final class Shipyard {
         Unseen.Heights heights = new Unseen.Heights(level);
         int sea = level.getChunkSource().getGenerator().getSeaLevel();
         Balance.World world = Balance.get().world();
-        int farthest = world.homeBlocks() + world.coastBlocks() + world.seaBlocks();
+        int farthest = world.homeBlocks();
         int wreck = Balance.get().shipyard().wreckBlocks();
         long started = System.nanoTime();
         searching = CompletableFuture.supplyAsync(() -> search(heights, from, out, sea, farthest, wreck), Util.backgroundExecutor())
@@ -159,12 +171,13 @@ final class Shipyard {
             progress.place(WRECK, site.wreck());
             progress.yaws.put(OUT, (float) Math.atan2(site.out().z, site.out().x));
             progress.setDirty();
-            LOGGER.info("the shipyard will stand at {}, facing the sea {}, the wreck at {}", site.shore(), FirstCamp.direction(BlockPos.ZERO,
+            LOGGER.info("the shipyard will stand at {}, facing the sea {}, the wreck at {}", site.shore(), Steps.direction(BlockPos.ZERO,
                     BlockPos.containing(site.out().scale(CELL))), site.wreck());
             Journal.syncAll(server);
         }
         progress.place(SITE).filter(site -> progress.place(YARD_ORIGIN).isEmpty() && loaded(level, site)).ifPresent(site -> yard(server, site));
         progress.place(WRECK_SITE).filter(site -> progress.place(WRECK_ORIGIN).isEmpty() && loaded(level, site)).ifPresent(site -> wreck(server, site));
+        moor(server, level, progress);
         if (progress.place(LAUNCHING).isPresent() && progress.place(LAUNCH).isEmpty()) {
             progress.place(YARD_ORIGIN).filter(origin -> loaded(level, progress.place(SITE).orElse(origin))).ifPresent(origin -> finish(server, origin));
         }
@@ -370,7 +383,9 @@ final class Shipyard {
                 }
             }
         }
-        jetty(level, origin, settings, plan.getAsJsonArray("jetty"), axis);
+        int built = jetty(level, origin, settings, plan.getAsJsonArray("jetty"), axis);
+        end(progress, origin, settings, plan.getAsJsonArray("jetty"), built, axis);
+        berths(level, progress, origin, settings, plan.getAsJsonArray("jetty"), built, axis);
         for (var rail : plan.getAsJsonArray("rails")) {
             for (int run = 0; run < RAIL_RUN; run++) {
                 BlockPos at = origin.offset(StructureTemplate.calculateRelativePosition(settings, new BlockPos(rail.getAsInt(), 0, length + run)))
@@ -382,7 +397,6 @@ final class Shipyard {
             }
         }
         seat(progress, origin, settings, turn, HULL_SEAT, plan.getAsJsonArray("edda"));
-        seat(progress, origin, settings, turn, JETTY_SEAT, plan.getAsJsonArray("launch"));
         seat(progress, origin, settings, turn, QUAY_SEAT, plan.getAsJsonArray("maud"));
         progress.place(NAME, origin.offset(StructureTemplate.calculateRelativePosition(settings, Prologue.vector(plan.getAsJsonArray("hull")))));
         progress.place(YARD_ORIGIN, origin);
@@ -426,20 +440,20 @@ final class Shipyard {
         }
     }
 
-    private static void jetty(ServerLevel level, BlockPos origin, StructurePlaceSettings settings, JsonArray jetty, Vec3 axis) {
+    private static int jetty(ServerLevel level, BlockPos origin, StructurePlaceSettings settings, JsonArray jetty, Vec3 axis) {
         int first = jetty.get(0).getAsInt();
         int start = jetty.get(1).getAsInt();
         int width = jetty.get(2).getAsInt();
         int length = jetty.get(3).getAsInt();
         int built = 0;
+        boolean afloat = false;
         for (int run = 0; run < length; run++) {
             BlockPos middle = origin.offset(StructureTemplate.calculateRelativePosition(settings, new BlockPos(first + width / 2, 0, start + run)));
-            if (!water(level, middle.below())) {
-                if (run > 1) {
-                    break;
-                }
-                continue;
+            boolean wet = water(level, middle.below());
+            if (afloat && !wet) {
+                break;
             }
+            afloat |= wet;
             built = run;
             for (int across = 0; across < width; across++) {
                 BlockPos deck = origin.offset(StructureTemplate.calculateRelativePosition(settings, new BlockPos(first + across, 0, start + run)));
@@ -460,6 +474,68 @@ final class Shipyard {
             }
         }
         LOGGER.info("the shipyard's jetty runs {} blocks out {}", built + 1, axis);
+        return built;
+    }
+
+    private static void end(Progress progress, BlockPos origin, StructurePlaceSettings settings, JsonArray jetty, int built, Vec3 axis) {
+        BlockPos deck = new BlockPos(jetty.get(0).getAsInt() + jetty.get(2).getAsInt() / 2, 1, jetty.get(1).getAsInt() + built);
+        progress.place("seat_" + JETTY_SEAT, origin.offset(StructureTemplate.calculateRelativePosition(settings, deck)));
+        progress.yaws.put("seat_" + JETTY_SEAT, Frost.yaw(axis.scale(-1)));
+    }
+
+    private static void berths(ServerLevel level, Progress progress, BlockPos origin, StructurePlaceSettings settings, JsonArray jetty, int built, Vec3 axis) {
+        int first = jetty.get(0).getAsInt();
+        int start = jetty.get(1).getAsInt();
+        int[] sides = {first + jetty.get(2).getAsInt() + BERTH_OUT, first - 1 - BERTH_OUT};
+        int moored = 0;
+        for (int back : BERTHS) {
+            int run = built - back;
+            if (run < 0) {
+                continue;
+            }
+            for (int side : sides) {
+                BlockPos at = origin.offset(StructureTemplate.calculateRelativePosition(settings, new BlockPos(side, 0, start + run)));
+                if (deep(level, at)) {
+                    moored++;
+                    progress.place(BOAT + moored, at);
+                    progress.yaws.put(BOAT + moored, Frost.yaw(axis));
+                    break;
+                }
+            }
+        }
+    }
+
+    private static boolean deep(ServerLevel level, BlockPos at) {
+        for (int down = 1; down <= BERTH_DEPTH; down++) {
+            if (!water(level, at.below(down))) {
+                return false;
+            }
+        }
+        return level.getBlockState(at).isAir();
+    }
+
+    private static void moor(MinecraftServer server, ServerLevel level, Progress progress) {
+        boolean gone = progress.past(CROSSING, PUSHED_OFF);
+        for (int index = 1; index <= BERTHS.length; index++) {
+            String name = BOAT + index;
+            progress.place(name).filter(at -> level.areEntitiesLoaded(ChunkPos.asLong(at))).ifPresent(at -> {
+                List<Entity> moored = level.getEntities((Entity) null, new AABB(at).inflate(MOORING), entity -> entity.getTags().contains(name));
+                if (gone) {
+                    moored.forEach(Entity::discard);
+                    return;
+                }
+                if (!moored.isEmpty()) {
+                    return;
+                }
+                BuiltInRegistries.ENTITY_TYPE.getOptional(COG).map(type -> type.create(level)).ifPresentOrElse(boat -> {
+                    boat.moveTo(at.getX() + 0.5, at.getY(), at.getZ() + 0.5, progress.yaws.getOrDefault(name, 0f), 0);
+                    boat.setInvulnerable(true);
+                    boat.addTag(name);
+                    boat.addTag(Rules.MOORED);
+                    level.addFreshEntity(boat);
+                }, () -> LOGGER.error("the shipyard failed: Small Ships' cog is not in this game"));
+            });
+        }
     }
 
     private static void seat(Progress progress, BlockPos origin, StructurePlaceSettings settings, Rotation turn, String name, JsonArray spot) {

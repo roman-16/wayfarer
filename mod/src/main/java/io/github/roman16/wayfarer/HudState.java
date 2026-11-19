@@ -12,6 +12,7 @@ public final class HudState {
     public static final Queue<Banners.Payload> banners = new ConcurrentLinkedQueue<>();
     public static volatile CompassPayload compass = CompassPayload.hidden(List.of());
     public static volatile GazePayload gaze = GazePayload.CLOSED;
+    public static volatile int lastSea;
     public static volatile NightPayload night = NightPayload.CALM;
     public static volatile Tasks.Panel panel = Tasks.Panel.EMPTY;
     public static volatile Optional<BlockPos> smoke = Optional.empty();

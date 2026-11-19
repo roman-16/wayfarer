@@ -46,7 +46,7 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
     }
 
     public record Item(@Nullable ResourceLocation id, @Nullable ResourceLocation tag, int count, @Nullable String name, @Nullable String book, boolean own,
-            @Nullable ResourceLocation potion, @Nullable String tooltip, @Nullable ResourceLocation instrument, @Nullable String dyed, @Nullable String mark, @Nullable String map,
+            @Nullable ResourceLocation potion, @Nullable String tooltip, @Nullable ResourceLocation instrument, @Nullable String map,
             @Nullable String tent, boolean worn) {}
 
     public record Reward(String key, String title, String text, @Nullable Line given, String claimed, List<Item> items) {}
@@ -245,7 +245,6 @@ public record Story(List<Quest> quests, Map<String, Memory> memories, Map<String
                 item.has("name") ? item.get("name").getAsString() : null, item.has("book") ? item.get("book").getAsString() : null,
                 flag(item, "own"), item.has("potion") ? ResourceLocation.parse(item.get("potion").getAsString()) : null,
                 item.has("tooltip") ? item.get("tooltip").getAsString() : null, item.has("instrument") ? ResourceLocation.parse(item.get("instrument").getAsString()) : null,
-                item.has("dyed") ? item.get("dyed").getAsString() : null, item.has("mark") ? item.get("mark").getAsString() : null,
                 item.has("map") ? item.get("map").getAsString() : null, item.has("tent") ? item.get("tent").getAsString() : null, flag(item, "worn"));
     }
 

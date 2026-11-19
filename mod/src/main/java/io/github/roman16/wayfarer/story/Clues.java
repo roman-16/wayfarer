@@ -26,7 +26,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 final class Clues {
-    static final String VEIL = Wayfarer.MODID + "_veil";
     static final String SEEN = Wayfarer.MODID + "_clue_seen";
     private static final int REST_BELOW = 8;
     private static final float BOX = 1.0625f;
@@ -118,23 +117,6 @@ final class Clues {
         tag.putInt("block", Arrays.stream(Direction.values()).mapToInt(side -> level.getBrightness(LightLayer.BLOCK, at.relative(side))).max().orElseThrow());
         tag.putInt("sky", Arrays.stream(Direction.values()).mapToInt(side -> level.getBrightness(LightLayer.SKY, at.relative(side))).max().orElseThrow());
         return tag;
-    }
-
-    static Entity veil(ServerLevel level, BlockPos at) {
-        CompoundTag tag = tag(level.getBlockState(at));
-        tag.put("transformation", transformation(MARKER_SCALE, MARKER_SCALE, MARKER_SCALE, (1 - MARKER_SCALE) / 2, (1 - MARKER_SCALE) / 2, (1 - MARKER_SCALE) / 2));
-        tag.put("brightness", brightness(level, at));
-        tag.putInt("glow_color_override", Sense.TRUE);
-        Entity veil = EntityType.loadEntityRecursive(tag, level, loaded -> {
-            loaded.moveTo(at.getX(), at.getY(), at.getZ(), 0, 0);
-            return loaded;
-        });
-        if (veil == null) {
-            throw new IllegalStateException("a block display could not be made for the false wall at " + at);
-        }
-        veil.addTag(VEIL);
-        level.addFreshEntity(veil);
-        return veil;
     }
 
     static Entity item(ServerLevel level, BlockState state, Vec3 at, float x, float y, float z, String clue) {

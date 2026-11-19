@@ -8,6 +8,7 @@ import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Camps;
+import io.github.roman16.wayfarer.Shards;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -66,6 +67,7 @@ final class FirstVillage {
     private static final String FOUNDER = "founder";
     private static final String RIDER = "rider";
     private static final ResourceLocation EVIL = Wayfarer.id("hall/evil");
+    private static final ResourceLocation SHARD = Shards.id("evil");
     private static final TagKey<Biome> PLAINS = TagKey.create(Registries.BIOME, Wayfarer.id("has_structure/hall/evil"));
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/first_village.json");
@@ -108,8 +110,8 @@ final class FirstVillage {
         }
         ServerLevel level = Engine.overworld(server);
         Balance.FirstVillage balance = Balance.get().firstVillage();
-        BlockPos camp = Caravan.last(server);
-        Home.Aim aim = Home.aim(camp, Caravan.way(server), balance.aheadBlocks());
+        Home.Aim house = ReadingHouse.beyond(server);
+        Home.Aim aim = Home.aim(house.from(), house.way(), balance.aheadBlocks());
         Vec3 ahead = Vec3.atLowerCornerOf(aim.from()).add(aim.way().scale(balance.aheadBlocks()));
         long began = System.nanoTime();
         Unseen.Heights heights = new Unseen.Heights(level);
@@ -166,7 +168,7 @@ final class FirstVillage {
         if (strict) {
             return biome.is(PLAINS) && !biome.is(Tags.Biomes.IS_SNOWY) && !biome.is(Tags.Biomes.IS_ICY);
         }
-        return !biome.is(BiomeTags.IS_OCEAN) && !biome.is(BiomeTags.IS_RIVER) && !biome.is(BiomeTags.IS_BEACH) && !biome.is(Marsh.SWAMPS)
+        return !biome.is(BiomeTags.IS_OCEAN) && !biome.is(BiomeTags.IS_RIVER) && !biome.is(BiomeTags.IS_BEACH) && !biome.is(Tags.Biomes.IS_SWAMP)
                 && !biome.is(Tags.Biomes.IS_MOUNTAIN) && !biome.is(Tags.Biomes.IS_WINDSWEPT) && !biome.is(Tags.Biomes.IS_BADLANDS)
                 && !biome.is(Tags.Biomes.IS_DESERT);
     }
@@ -325,7 +327,7 @@ final class FirstVillage {
         }
         progress.place(GREEN).ifPresent(any -> green(dream, well));
         if (dream.getBlockEntity(progress.place(STONE).orElseThrow()) instanceof CallingStoneBlockEntity stone) {
-            stone.hold(Optional.of(EVIL));
+            stone.hold(Optional.of(SHARD));
         }
         BlockPos melt = progress.place(MELT).orElseThrow();
         dream.setBlock(melt, Blocks.LAVA_CAULDRON.defaultBlockState(), Block.UPDATE_ALL);

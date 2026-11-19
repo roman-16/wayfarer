@@ -27,10 +27,20 @@ public final class Heat {
     private Heat() {}
 
     public static void setup(FMLCommonSetupEvent event) {
+        TemperatureHelper.registerPositionalTemperatureModifier((level, pos, temperature) -> colder(temperature, LastSea.colder(level, pos.getX() + 0.5,
+                pos.getZ() + 0.5)));
         TemperatureHelper.registerPlayerTemperatureModifier((player, level) -> Memories.dreaming(player) ? TemperatureLevel.NEUTRAL
-                : afloat(player, fire(player, warmed(player, level))));
+                : lastSea(player, afloat(player, fire(player, warmed(player, level)))));
         TemperatureHelper.registerProximityBlockModifier((level, pos, state) -> state.is(BlockTags.CAMPFIRES) && CampfireBlock.isLitCampfire(state)
                 && Climate.of(level.getBiome(pos)) != Climate.HOT ? IProximityBlockModifier.Type.HEATING : IProximityBlockModifier.Type.NONE);
+    }
+
+    private static TemperatureLevel colder(TemperatureLevel level, int steps) {
+        return steps == LastSea.FREEZING ? TemperatureLevel.ICY : TemperatureLevel.values()[Math.max(TemperatureLevel.ICY.ordinal(), level.ordinal() - steps)];
+    }
+
+    private static TemperatureLevel lastSea(Player player, TemperatureLevel level) {
+        return LastSea.freezing(player) ? TemperatureLevel.ICY : level;
     }
 
     private static TemperatureLevel afloat(Player player, TemperatureLevel level) {

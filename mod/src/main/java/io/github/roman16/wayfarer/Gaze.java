@@ -1,15 +1,11 @@
 package io.github.roman16.wayfarer;
 
 import io.github.roman16.wayfarer.story.Doors;
-import io.github.roman16.wayfarer.story.Progress;
 import io.github.roman16.wayfarer.story.Talk;
 import java.util.List;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
@@ -23,23 +19,16 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
 
 public final class Gaze {
-    public static final TagKey<EntityType<?>> AIRCRAFT = TagKey.create(Registries.ENTITY_TYPE, Wayfarer.id("aircraft"));
-
     private static final int SYNC_TICKS = 10;
     private static final int TICKS_PER_SECOND = 20;
     private static final int PHANTOM_HEIGHT = 20;
-    private static final String NEST_BURNED = "nest_burned";
     private static final int PHANTOM_SPREAD = 16;
     private static final int SLAYER_REACH = 256;
 
     private Gaze() {}
 
     public static boolean airborne(Player player) {
-        if (player.isFallFlying()) {
-            return true;
-        }
-        Entity vehicle = player.getVehicle();
-        return vehicle != null && vehicle.getType().is(AIRCRAFT) && !vehicle.onGround() && !vehicle.isInWater();
+        return Gliding.gliding(player);
     }
 
     public static int capacity(int veil) {
@@ -106,7 +95,7 @@ public final class Gaze {
         player.setData(Wayfarer.GAZE, filled);
         Balance.Gaze balance = Balance.get().gaze();
         if (airborne && filled >= capacity && player.tickCount % (balance.huntIntervalSeconds() * TICKS_PER_SECOND) == 0) {
-            hunt(player, Progress.of(player.server).gift(NEST_BURNED) ? balance.huntPhantoms() / 2 : balance.huntPhantoms());
+            hunt(player, balance.huntPhantoms());
         }
         if (player.tickCount % SYNC_TICKS == 0) {
             float fill = capacity == 0 ? 0 : (float) filled / capacity;

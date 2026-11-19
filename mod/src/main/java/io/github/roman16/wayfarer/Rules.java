@@ -15,14 +15,12 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityMountEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 public final class Rules {
     public static final TagKey<EntityType<?>> SAILING_SHIPS = TagKey.create(Registries.ENTITY_TYPE, Wayfarer.id("sailing_ships"));
-
     public static final String MOORED = Wayfarer.MODID + "_moored";
+
     private static final int PORTAL_WITNESS_BLOCKS = 8;
-    private static final String FLIGHT_OPEN = "wings";
     private static final String SHIPS_OPEN = "the_name";
 
     private Rules() {}
@@ -46,31 +44,18 @@ public final class Rules {
             return;
         }
         Entity vehicle = event.getEntityBeingMounted();
+        if (vehicle.getTags().contains(MOORED)) {
+            event.setCanceled(true);
+            player.displayClientMessage(Component.translatable("wayfarer.shipyard.moored").withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
         if (vehicle.getType().is(SAILING_SHIPS) && player instanceof ServerPlayer sailor && !shipsOpen(sailor.server)) {
             event.setCanceled(true);
             player.displayClientMessage(Component.translatable("wayfarer.unlock.sailing_ships").withStyle(ChatFormatting.GRAY), true);
-            return;
         }
-        if (!vehicle.getType().is(Gaze.AIRCRAFT) || vehicle.getTags().contains(MOORED) || !(player instanceof ServerPlayer flier) || flightOpen(flier.server)) {
-            return;
-        }
-        event.setCanceled(true);
-        player.displayClientMessage(Component.translatable("wayfarer.unlock.aircraft").withStyle(ChatFormatting.GRAY), true);
-    }
-
-    public static boolean flightOpen(MinecraftServer server) {
-        return !Engine.running(server) || Progress.of(server).done(FLIGHT_OPEN);
     }
 
     public static boolean shipsOpen(MinecraftServer server) {
         return !Engine.running(server) || Progress.of(server).done(SHIPS_OPEN);
-    }
-
-    @SubscribeEvent
-    public static void onPlayerTick(PlayerTickEvent.Post event) {
-        if (event.getEntity() instanceof ServerPlayer player && player.isFallFlying() && !flightOpen(player.server)) {
-            player.stopFallFlying();
-            player.displayClientMessage(Component.translatable("wayfarer.unlock.aircraft").withStyle(ChatFormatting.GRAY), true);
-        }
     }
 }

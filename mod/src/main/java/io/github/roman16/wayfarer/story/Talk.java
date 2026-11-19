@@ -81,7 +81,7 @@ public final class Talk {
 
     private sealed interface Speech permits Said, Replay, Notice, Pause, Then, Ask {}
 
-    private record Said(@Nullable String fire, @Nullable Vec3 at, Story.Line line, String text) implements Speech {}
+    private record Said(@Nullable String fire, @Nullable Vec3 at, Story.Line line, String text, boolean inSight) implements Speech {}
 
     private record Replay(Said said) implements Speech {}
 
@@ -267,6 +267,14 @@ public final class Talk {
     }
 
     public static void say(@Nullable String fire, @Nullable Vec3 at, List<Story.Line> lines, Placeholders placeholders) {
+        say(fire, at, lines, placeholders, false);
+    }
+
+    public static void sayInSight(Vec3 at, Story.Line line) {
+        say(ROAD, at, List.of(line), Placeholders.NONE, true);
+    }
+
+    private static void say(@Nullable String fire, @Nullable Vec3 at, List<Story.Line> lines, Placeholders placeholders, boolean inSight) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         Conversation conversation = conversation(fire, at);
         for (Story.Line line : lines) {
@@ -276,7 +284,7 @@ public final class Talk {
             if (line.pause()) {
                 conversation.queue.add(new Pause());
             }
-            conversation.queue.add(new Said(fire, at, line, placeholders.fill(line.said(server != null && !Engine.overworld(server).isDay()))));
+            conversation.queue.add(new Said(fire, at, line, placeholders.fill(line.said(server != null && !Engine.overworld(server).isDay())), inSight));
         }
     }
 
@@ -502,6 +510,10 @@ public final class Talk {
         while (conversation.offer == null && !conversation.queue.isEmpty() && clock >= conversation.next
                 && (listened(server, conversation.queue.peek()) || clock - conversation.waiting >= wait)) {
             Speech head = conversation.queue.peek();
+            if (head instanceof Said said && said.inSight() && People.find(server, said.line().by()).filter(body -> seen(server, body)).isEmpty()) {
+                conversation.queue.poll();
+                continue;
+            }
             if (head instanceof Said said && (held(server, conversation, said) || occupied(conversation, listeners(server, said)) || away(listeners(server, said)))
                     || head instanceof Replay replay && occupied(conversation, listeners(server, replay.said()))
                     || head instanceof Notice && (occupied(conversation, server.getPlayerList().getPlayers()) || away(server.getPlayerList().getPlayers()))) {
@@ -644,6 +656,12 @@ public final class Talk {
         answering.remove(id);
         hearing.remove(id);
         outside.remove(id);
+    }
+
+    static boolean seen(MinecraftServer server, Entity body) {
+        int reach = Balance.get().talk().reachBlocks();
+        return Engine.players(server).stream().anyMatch(player -> player.level() == body.level() && player.distanceToSqr(body) <= (double) reach * reach
+                && Sight.sees(player, body));
     }
 
     private static boolean held(MinecraftServer server, Conversation conversation, Said said) {

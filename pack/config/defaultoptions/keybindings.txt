@@ -18,17 +18,6 @@ key_key.dynamic_fps.toggle_disabled:key.keyboard.unknown
 key_key.dynamic_fps.toggle_forced:key.keyboard.unknown
 key_key.entityculling.toggle:key.keyboard.unknown
 key_key.hide_icons:key.keyboard.unknown
-key_key.immersive_aircraft.boost:key.keyboard.unknown
-key_key.immersive_aircraft.dismount:key.keyboard.r
-key_key.immersive_aircraft.fallback_control_backward:key.keyboard.unknown
-key_key.immersive_aircraft.fallback_control_down:key.keyboard.unknown
-key_key.immersive_aircraft.fallback_control_forward:key.keyboard.unknown
-key_key.immersive_aircraft.fallback_control_left:key.keyboard.unknown
-key_key.immersive_aircraft.fallback_control_pull:key.keyboard.unknown
-key_key.immersive_aircraft.fallback_control_push:key.keyboard.unknown
-key_key.immersive_aircraft.fallback_control_right:key.keyboard.unknown
-key_key.immersive_aircraft.fallback_control_up:key.keyboard.unknown
-key_key.immersive_aircraft.fallback_use:key.keyboard.unknown
 key_key.inventorysorter.itemin:key.keyboard.unknown
 key_key.inventorysorter.itemout:key.keyboard.unknown
 key_key.inventorysorter.sort:key.mouse.middle

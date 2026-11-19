@@ -107,6 +107,7 @@ public final class WayfarerClient {
         NeoForge.EVENT_BUS.addListener(RenderLevelStageEvent.class, TentOutlines::render);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, Frames::report);
         NeoForge.EVENT_BUS.addListener(ViewportEvent.ComputeFov.class, FarSight::zoom);
+        NeoForge.EVENT_BUS.addListener(ViewportEvent.RenderFog.class, LastSeaFog::render);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Pre.class, FarSight::mark);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, Ending::tick);
         NeoForge.EVENT_BUS.addListener(ClientTickEvent.Post.class, event -> {
@@ -175,6 +176,7 @@ public final class WayfarerClient {
         NeoForge.EVENT_BUS.addListener(ClientPlayerNetworkEvent.LoggingOut.class, event -> {
             HudState.compass = CompassPayload.hidden(List.of());
             HudState.gaze = GazePayload.CLOSED;
+            HudState.lastSea = 0;
             HudState.night = NightPayload.CALM;
             HudState.panel = Tasks.Panel.EMPTY;
             HudState.smoke = Optional.empty();

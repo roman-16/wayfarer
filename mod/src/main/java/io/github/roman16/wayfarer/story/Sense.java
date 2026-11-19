@@ -11,11 +11,9 @@ import io.netty.buffer.ByteBuf;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 import net.minecraft.ChatFormatting;
@@ -28,7 +26,6 @@ import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -36,26 +33,21 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.scores.PlayerTeam;
 import net.minecraft.world.scores.Scoreboard;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class Sense {
     public static final String KEY = "key.wayfarer.ember_sense";
     public static final int AMBER = 0xFFB040;
-    public static final int TRUE = 0xDCE6F0;
     public static final int SEEN = 0xF0F0F0;
     private static final String CLUES_GLOW = "clues_glow";
     private static final String TEAM = Wayfarer.MODID + "_sense";
     static final String TRAIL_SIGHT = "trail_sight";
-    private static final String TRUE_SIGHT = "true_sight";
-    private static final String VEILS = Wayfarer.MODID + "_true";
     private static final String WAY = Wayfarer.MODID + "_way";
     private static final float WAY_SCALE = 1.02f;
     private static final int GLOWING = 1 << 6;
     private static final int TICKS_PER_SECOND = 20;
     private static final Field FLAGS = flags();
     private static final Map<UUID, Sensing> sensing = new HashMap<>();
-    private static final Map<UUID, Set<String>> veiled = new HashMap<>();
 
     private Sense() {}
 
@@ -161,34 +153,6 @@ public final class Sense {
                 }
             }
         }
-        if (server.getTickCount() % TICKS_PER_SECOND == 0 && Engine.running(server) && Progress.of(server).gift(TRUE_SIGHT)) {
-            server.getPlayerList().getPlayers().forEach(Sense::see);
-        }
-    }
-
-    private static void see(ServerPlayer player) {
-        List<Entity> veils = player.serverLevel().getEntities((Entity) null, new AABB(player.blockPosition()).inflate(Balance.get().sense().reachBlocks()),
-                entity -> entity.getTags().contains(Clues.VEIL));
-        if (veils.isEmpty()) {
-            return;
-        }
-        veils.forEach(entity -> glow(player, entity, true));
-        PlayerTeam team = new PlayerTeam(new Scoreboard(), VEILS);
-        team.setColor(ChatFormatting.WHITE);
-        Set<String> known = veiled.get(player.getUUID());
-        if (known == null) {
-            veils.forEach(entity -> team.getPlayers().add(entity.getStringUUID()));
-            player.connection.send(ClientboundSetPlayerTeamPacket.createAddOrModifyPacket(team, true));
-            veiled.put(player.getUUID(), new HashSet<>(team.getPlayers()));
-            return;
-        }
-        veils.stream().map(Entity::getStringUUID).filter(known::add)
-                .forEach(veil -> player.connection.send(ClientboundSetPlayerTeamPacket.createPlayerPacket(team, veil, ClientboundSetPlayerTeamPacket.Action.ADD)));
-    }
-
-    @SubscribeEvent
-    public static void onLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        veiled.remove(event.getEntity().getUUID());
     }
 
     private static PlayerTeam team(List<Entity> glowing) {

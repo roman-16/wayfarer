@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.github.roman16.wayfarer.HudState;
 import io.github.roman16.wayfarer.CallingStoneBlockEntity;
-import io.github.roman16.wayfarer.Halls;
+import io.github.roman16.wayfarer.Shards;
 import java.util.Optional;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
@@ -28,25 +28,25 @@ public final class CallingStoneRenderer implements BlockEntityRenderer<CallingSt
     public CallingStoneRenderer(BlockEntityRendererProvider.Context context) {}
 
     public static Optional<ResourceLocation> floating(CallingStoneBlockEntity stone) {
-        return stone.hall().filter(hall -> !HudState.compass.claimed().contains(hall));
+        return stone.shard().filter(shard -> !HudState.compass.claimed().contains(shard));
     }
 
     public static Optional<AABB> eye(CallingStoneBlockEntity stone) {
         double centre = HEIGHT + GROUND_LIFT * SCALE;
         double half = GROUND_HALF * SCALE;
-        return floating(stone).map(hall -> new AABB(0.5 - half, centre - half - BOB, 0.5 - half, 0.5 + half, centre + half + BOB, 0.5 + half)
+        return floating(stone).map(shard -> new AABB(0.5 - half, centre - half - BOB, 0.5 - half, 0.5 + half, centre + half + BOB, 0.5 + half)
                 .move(stone.getBlockPos()));
     }
 
     @Override
     public void render(CallingStoneBlockEntity stone, float partialTick, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
-        floating(stone).ifPresent(hall -> {
+        floating(stone).ifPresent(shard -> {
             float time = stone.getLevel() == null ? 0 : stone.getLevel().getGameTime() + partialTick;
             pose.pushPose();
             pose.translate(0.5, HEIGHT + Mth.sin(time / 20) * BOB, 0.5);
             pose.mulPose(Axis.YP.rotationDegrees(180 - Minecraft.getInstance().gameRenderer.getMainCamera().getYRot()));
             pose.scale(SCALE, SCALE, SCALE);
-            Minecraft.getInstance().getItemRenderer().renderStatic(new ItemStack(Halls.eye(hall)), ItemDisplayContext.GROUND,
+            Minecraft.getInstance().getItemRenderer().renderStatic(new ItemStack(Shards.item(shard)), ItemDisplayContext.GROUND,
                     LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, pose, buffers, stone.getLevel(), 0);
             pose.popPose();
         });

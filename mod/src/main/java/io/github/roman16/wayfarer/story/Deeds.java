@@ -4,12 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
-import io.github.roman16.wayfarer.Halls;
 import io.github.roman16.wayfarer.Journey;
+import io.github.roman16.wayfarer.LastSea;
 import io.github.roman16.wayfarer.RestEvent;
 import io.github.roman16.wayfarer.Sea;
 import io.github.roman16.wayfarer.Sounds;
 import io.github.roman16.wayfarer.Wayfarer;
+import io.github.roman16.wayfarer.worm.GreatWorm;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,10 +72,8 @@ public final class Deeds {
             SLOW_WAY, LIGHT_POCKETS, ALL_TWELVE, NOBODY_LEFT, ALONE);
     private static final String DATA = Wayfarer.MODID + "_deeds";
     private static final String SOUND = "deed";
-    private static final String CHAMPION = "the_ward";
     private static final String FRAME = "the_doors";
     private static final String HOLLOW = "the_hollow";
-    private static final String DUEL_TAG = Wayfarer.MODID + "_duel_" + CHAMPION;
     private static final String EASY_NPC = "easy_npc";
     private static final List<String> HERDER = List.of("gift", "warning");
     private static final List<String> ACTS = List.of("1", "2", "3");
@@ -312,14 +311,10 @@ public final class Deeds {
         if (shards <= Balance.get().deeds().lightShards()) {
             share(server, LIGHT_POCKETS);
         }
-        if (shards == Halls.count(server.overworld())) {
+        if (shards == Doors.road()) {
             share(server, ALL_TWELVE);
         }
-        Progress progress = Progress.of(server);
-        String prefix = HOLLOW + "/";
-        boolean fated = progress.choices.keySet().stream().anyMatch(key -> key.startsWith(prefix));
-        boolean anyone = progress.choices.entrySet().stream().anyMatch(entry -> entry.getKey().startsWith(prefix) && entry.getValue().equals(Steps.LIVES));
-        if (fated && !anyone) {
+        if (Steps.alone(Progress.of(server))) {
             share(server, ALONE);
         }
         State state = State.of(server);
@@ -375,8 +370,8 @@ public final class Deeds {
         if (dead instanceof ServerPlayer player) {
             nights.remove(player.getUUID());
         }
-        if (dead.getTags().contains(DUEL_TAG)) {
-            int reach = Balance.get().deeds().duelBlocks();
+        if (dead instanceof GreatWorm) {
+            int reach = Balance.get().deeds().wormBlocks();
             for (ServerPlayer player : level.players()) {
                 if (player.distanceToSqr(dead) <= (double) reach * reach && !struck.contains(player.getUUID())) {
                     earn(player, UNTOUCHED);
@@ -402,7 +397,7 @@ public final class Deeds {
 
     @SubscribeEvent
     public static void onHurt(LivingIncomingDamageEvent event) {
-        if (event.getEntity() instanceof ServerPlayer player && event.getSource().getEntity() != null && event.getSource().getEntity().getTags().contains(DUEL_TAG)) {
+        if (event.getEntity() instanceof ServerPlayer player && event.getSource().getEntity() instanceof GreatWorm) {
             struck.add(player.getUUID());
         }
     }
@@ -452,14 +447,10 @@ public final class Deeds {
                 }
             }
             city(player, level, balance);
-            if (Sea.afloat(player) && Math.sqrt(player.getX() * player.getX() + player.getZ() * player.getZ()) >= lastSea() + balance.edgeBlocks()) {
+            if (Sea.afloat(player) && LastSea.past(level, player.getX(), player.getZ()).orElse(0) >= balance.edgeBlocks()) {
                 earn(player, EDGE);
             }
         }
-    }
-
-    private static int lastSea() {
-        return Balance.get().strongholds().radiusBlocks() + Balance.get().world().lastSeaPastRingBlocks();
     }
 
     private static void city(ServerPlayer player, ServerLevel level, Balance.Deeds balance) {

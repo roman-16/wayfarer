@@ -29,6 +29,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
+import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -73,15 +74,11 @@ public final class Places {
         Map<String, Site> sites = new HashMap<>();
         site(sites, (server, name) -> Tollbridge.begin(server), null, (server, name) -> Tollbridge.unbuild(server), null, Tollbridge.NAME);
         site(sites, (server, name) -> Diggers.begin(server), null, (server, name) -> Diggers.unbuild(server), null, Diggers.NAME, Diggers.HALL);
-        site(sites, (server, name) -> FirstCamp.find(server), (server, name) -> FirstCamp.built(server), (server, name) -> FirstCamp.unbuild(server), null,
-                FirstCamp.NAME);
         site(sites, (server, name) -> FirstVillage.find(server), null, (server, name) -> FirstVillage.unbuild(server), null, FirstVillage.NAME, FirstVillage.STONE);
         site(sites, (server, name) -> Ford.find(server), null, (server, name) -> Ford.unbuild(server), (server, name) -> Ford.forget(server), Ford.NAME, Ford.FAR,
                 Ford.OUTPOST);
         site(sites, (server, name) -> Frost.find(server), null, Frost::unbuild, null, Frost.NAME, Frost.TRACKS, Frost.HALL, Frost.STONE);
         site(sites, (server, name) -> Frost.lake(server), null, Frost::unbuild, null, Frost.LAKE, Frost.LAKE_STONE);
-        site(sites, (server, name) -> Marsh.find(server), null, (server, name) -> Marsh.unbuild(server), (server, name) -> Marsh.forget(server), Marsh.NAME,
-                Marsh.HALL, Marsh.CELLAR);
         site(sites, (server, name) -> Mine.find(server), null, Mine::unbuild, null, Mine.NAME, Mine.DEEP, Mine.CART);
         site(sites, (server, name) -> ReadingHouse.find(server), null, (server, name) -> ReadingHouse.unbuild(server), (server, name) -> ReadingHouse.forget(server),
                 ReadingHouse.NAME);
@@ -89,18 +86,14 @@ public final class Places {
         site(sites, (server, name) -> Shipyard.launch(server), Shipyard::ready, null, null, Shipyard.LAUNCH);
         site(sites, (server, name) -> Voyage.find(server), null, null, null, Voyage.FAR_SHORE);
         site(sites, (server, name) -> TideFolk.find(server), TideFolk::ready, (server, name) -> TideFolk.unbuild(server), null, TideFolk.NAME, TideFolk.HALL);
-        site(sites, (server, name) -> DryCity.find(server), DryCity::ready, (server, name) -> DryCity.unbuild(server), null, DryCity.NAME, DryCity.STONE);
-        site(sites, (server, name) -> WendCamp.find(server), (server, name) -> WendCamp.ready(server), (server, name) -> WendCamp.unbuild(server),
-                (server, name) -> WendCamp.forget(server), WendCamp.NAME, WendCamp.CHAIR);
         site(sites, (server, name) -> SandSingers.find(server), SandSingers::ready, (server, name) -> SandSingers.unbuild(server), null, SandSingers.NAME,
                 SandSingers.LAIR);
         site(sites, (server, name) -> Locks.find(server), Locks::ready, (server, name) -> Locks.unbuild(server), null, Locks.NAME, Locks.STONE);
         site(sites, Errands::find, Errands::ready, Errands::unbuild, null, Errands.MISSING, Errands.SETTLED, Errands.BURNING, Errands.OUTPOST, Errands.RITE,
-                Errands.BRAM, Errands.CAIRNS, Errands.SEAL, Errands.DEN, Errands.BUNDLE, Errands.LAST_BUNDLE, Errands.NEVER_SLEEPS, Errands.NEST, Errands.FIRST_GATE);
-        site(sites, Act3::find, Act3::ready, Act3::unbuild, null, Act3.HOLLOW, Act3.AIRFIELD, Act3.KEEPERS);
-        site(sites, Act3Halls::find, Act3Halls::ready, Act3Halls::unbuild, null, Act3Halls.WARD, Act3Halls.WARD_STONE, Act3Halls.WARD_CHAMPION,
-                Act3Halls.WARD_LINES, Act3Halls.MANSION_HALL, Act3Halls.MANSION, Act3Halls.MANSION_STAND, Act3Halls.SCRIBES, Act3Halls.SCRIBES_STONE,
-                Act3Halls.GRAVEYARD, Act3Halls.GRAVEYARD_STONE);
+                Errands.BRAM, Errands.CAIRNS, Errands.SEAL, Errands.DEN, Errands.BUNDLE, Errands.LAST_BUNDLE, Errands.NEVER_SLEEPS, Errands.FIRST_GATE);
+        site(sites, Act3::find, Act3::ready, Act3::unbuild, null, Act3.HOLLOW, Act3.KEEPERS);
+        site(sites, (server, name) -> Scribes.find(server), Scribes::ready, (server, name) -> Scribes.unbuild(server), null, Scribes.NAME, Scribes.STONE);
+        site(sites, (server, name) -> Mansion.find(server), Mansion::ready, (server, name) -> Mansion.unbuild(server), null, Mansion.NAME, Mansion.CELLAR);
         site(sites, (server, name) -> Caravan.headIn(server), (server, name) -> Caravan.standing(server).isPresent() || Caravan.heading(server), null, null,
                 Caravan.NAME);
         return Map.copyOf(sites);
@@ -146,11 +139,20 @@ public final class Places {
                         level.structureManager(), level.getChunkSource().getGenerator(), level.getRandom(),
                         new BoundingBox(chunk.getMinBlockX(), level.getMinBuildHeight(), chunk.getMinBlockZ(), chunk.getMaxBlockX(), level.getMaxBuildHeight(),
                                 chunk.getMaxBlockZ()), chunk));
+        register(level, registered, standing.getChunkPos(), standing.getReferences(), standing.getPieces());
         ShaftPiece shaft = standing.getPieces().stream().filter(piece -> piece instanceof ShaftPiece).map(piece -> (ShaftPiece) piece).findFirst()
                 .orElseThrow(() -> new IllegalStateException(hall + " at " + box + " has no stair"));
         BlockPos stone = BlockPos.betweenClosedStream(box).filter(pos -> level.getBlockState(pos).is(Wayfarer.CALLING_STONE)).findFirst()
                 .map(BlockPos::immutable).orElseThrow(() -> new IllegalStateException(hall + " at " + box + " has no calling stone"));
         return new Hall(box, shaft.getBoundingBox(), shaft.threshold(), stone, standing.getPieces().stream().map(StructurePiece::getBoundingBox).toList());
+    }
+
+    static void register(ServerLevel level, Structure structure, ChunkPos at, int references, List<StructurePiece> pieces) {
+        BoundingBox box = BoundingBox.encapsulatingBoxes(pieces.stream().map(StructurePiece::getBoundingBox).toList()).orElseThrow();
+        level.getChunk(at.x, at.z).setStartForStructure(structure, new StructureStart(structure, at, references, new PiecesContainer(pieces)));
+        ChunkPos.rangeClosed(new ChunkPos(SectionPos.blockToSectionCoord(box.minX()), SectionPos.blockToSectionCoord(box.minZ())),
+                new ChunkPos(SectionPos.blockToSectionCoord(box.maxX()), SectionPos.blockToSectionCoord(box.maxZ())))
+                .forEach(chunk -> level.getChunk(chunk.x, chunk.z).addReferenceForStructure(structure, at.toLong()));
     }
 
     static void empty(ServerLevel level, BlockPos stone) {
@@ -248,7 +250,9 @@ public final class Places {
         if (name.startsWith(PERSON)) {
             return People.label(server, name.substring(PERSON.length()).split(AT, 2)[0]);
         }
-        return "wayfarer.place." + (name.equals(Tollbridge.NAME) && !Progress.of(server).named(Tollbridge.NAME) ? Tollbridge.BURNING : name);
+        Progress progress = Progress.of(server);
+        return "wayfarer.place." + (name.equals(Tollbridge.NAME) && !progress.named(Tollbridge.NAME) ? Tollbridge.BURNING
+                : name.equals(After.HOME) && After.byOwnFire(progress) ? After.OWN_FIRE : name);
     }
 
     static boolean ready(MinecraftServer server, String name) {
@@ -263,13 +267,10 @@ public final class Places {
             case Frost.HALL -> Balance.get().frost().stairBlocks();
             case Frost.LAKE -> Balance.get().frost().shoreBlocks();
             case Frost.STONE -> Balance.get().frost().stoneBlocks();
-            case Marsh.NAME -> Balance.get().marsh().noticeBlocks();
-            case Marsh.HALL -> Balance.get().marsh().hallBlocks();
-            case Marsh.CELLAR -> Balance.get().marsh().cellarBlocks();
             case Mine.NAME -> Balance.get().frost().stairBlocks();
             case Mine.DEEP -> Balance.get().frost().mineWallBlocks();
             case TideFolk.HALL -> Balance.get().tide().stoneBlocks();
-            case Act3Halls.WARD_LINES -> Balance.get().story().nearBlocks();
+            case Mansion.CELLAR -> Balance.get().mansion().cellarBlocks();
             case Voyage.FAR_SHORE -> Balance.get().voyage().landfallBlocks();
             default -> Balance.get().story().arriveBlocks();
         };
@@ -277,6 +278,7 @@ public final class Places {
 
     static int leaving(String name) {
         return switch (name) {
+            case Act3.HOLLOW -> Balance.get().hollow().leaveBlocks();
             case Frost.STONE -> Balance.get().frost().leaveBlocks();
             case SandSingers.LAIR -> Balance.get().worm().fleeBlocks();
             default -> Balance.get().prologue().awayBlocks();
@@ -323,7 +325,8 @@ public final class Places {
     }
 
     private static BlockPos standable(ServerLevel level, BlockPos mark) {
-        if (!level.isLoaded(mark) || !level.canSeeSky(mark.above())) {
+        if (!ChunkPos.rangeClosed(new ChunkPos(mark.offset(-Ground.REACH, 0, -Ground.REACH)), new ChunkPos(mark.offset(Ground.REACH, 0, Ground.REACH)))
+                .allMatch(chunk -> level.getChunkSource().getChunkNow(chunk.x, chunk.z) != null) || !level.canSeeSky(mark.above())) {
             return mark;
         }
         return BlockPos.containing(Ground.stand(level, Vec3.atBottomCenterOf(mark)));
@@ -344,10 +347,7 @@ public final class Places {
     }
 
     static Optional<BlockPos> aim(Progress progress, String name) {
-        return switch (name) {
-            case Marsh.NAME -> progress.place(name).or(() -> Marsh.site(progress));
-            default -> progress.place(name);
-        };
+        return progress.place(name);
     }
 
     static Optional<Seat> seat(MinecraftServer server, String name) {
@@ -365,22 +365,20 @@ public final class Places {
             Caravan.tick(event.getServer());
             Bell.tick(event.getServer());
             Diggers.tick(event.getServer());
-            FirstCamp.tick(event.getServer());
             FirstVillage.tick(event.getServer());
             Ford.tick(event.getServer());
             Frost.tick(event.getServer());
-            Marsh.tick(event.getServer());
             Mine.tick(event.getServer());
             ReadingHouse.tick(event.getServer());
             Shipyard.tick(event.getServer());
             TideFolk.tick(event.getServer());
-            DryCity.tick(event.getServer());
-            WendCamp.tick(event.getServer());
             SandSingers.tick(event.getServer());
             Locks.tick(event.getServer());
             Errands.tick(event.getServer());
             Act3.tick(event.getServer());
-            Act3Halls.tick(event.getServer());
+            Doors.tick(event.getServer());
+            Scribes.tick(event.getServer());
+            Mansion.tick(event.getServer());
             Voyage.tick(event.getServer());
             Standing.tick(event.getServer());
             rebuildUnseen(event.getServer());
@@ -396,13 +394,13 @@ public final class Places {
         Caravan.reset();
         Diggers.reset();
         Ford.reset();
+        Frost.reset();
         Shipyard.reset();
         Voyage.reset();
         TideFolk.reset();
-        DryCity.reset();
         SandSingers.reset();
         Locks.reset();
         Errands.reset();
-        Act3Halls.reset();
+        Scribes.reset();
     }
 }

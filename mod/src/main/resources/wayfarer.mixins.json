@@ -13,6 +13,7 @@
     "DeathScreenMixin",
     "GameRendererMixin",
     "GuiGraphicsLabelMixin",
+    "GuiTitleAccessor",
     "ImageButtonAccessor",
     "ImmersiveHotbarGlowMixin",
     "IrisBeltLanternMixin",
@@ -57,6 +58,7 @@
   "mixins": [
     "BisonThreatMixin",
     "CarvedPumpkinBlockMixin",
+    "CavernsMixin",
     "ChunkGeneratorMixin",
     "ChunkGeneratorStructureStateMixin",
     "CompoundContainerAccessor",
@@ -64,6 +66,7 @@
     "CraftingMenuCrafterMixin",
     "FireBlockMixin",
     "GravestonePlaceMixin",
+    "HolderReferenceAccessor",
     "HangGliderMixin",
     "ImprovedMobsPathContextMixin",
     "InventorySorterLayoutMixin",

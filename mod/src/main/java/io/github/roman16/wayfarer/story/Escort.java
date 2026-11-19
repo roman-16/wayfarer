@@ -1,9 +1,11 @@
 package io.github.roman16.wayfarer.story;
 
+import com.google.gson.JsonElement;
 import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Clock;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -37,16 +39,19 @@ final class Escort {
         }
         Places.build(server, active.step().text("place"));
         ServerLevel level = Engine.overworld(server);
-        String who = active.step().text(WHO);
         int reach = Balance.get().talk().reachBlocks();
-        Engine.players(server).stream().filter(player -> player.level() == level).findFirst()
-                .filter(player -> People.find(server, who).filter(body -> body.level() == level && body.distanceTo(player) <= reach).isEmpty())
-                .ifPresent(player -> People.catchUp(level, who, player.position(), player.getYRot()));
+        Engine.players(server).stream().filter(player -> player.level() == level).findFirst().ifPresent(player -> who(active.step()).stream()
+                .filter(who -> People.find(server, who).filter(body -> body.level() == level && body.distanceTo(player) <= reach).isEmpty())
+                .forEach(who -> People.catchUp(level, who, player.position(), player.getYRot())));
+    }
+
+    private static List<String> who(Story.Step step) {
+        return step.spec().getAsJsonArray(WHO).asList().stream().map(JsonElement::getAsString).toList();
     }
 
     static void tick(MinecraftServer server, Engine.Active active) {
         Story.Step step = active.step();
-        String who = step.text(WHO);
+        List<String> escorted = who(step);
         ServerLevel level = Engine.overworld(server);
         Balance.Escort balance = Balance.get().escort();
         long day = Math.floorDiv(level.getDayTime(), Clock.DAY);
@@ -54,7 +59,7 @@ final class Escort {
         if (step.spec().has(DAWNS)) {
             int dawns = step.number(DAWNS);
             if (passed >= dawns) {
-                People.find(server, who).ifPresent(Entity::discard);
+                escorted.forEach(who -> People.find(server, who).ifPresent(Entity::discard));
                 end(server, active, LATE);
                 return;
             }
@@ -64,10 +69,23 @@ final class Escort {
                 Talk.notice(Component.literal(step.text(EACH).replace("{left}", String.valueOf(dawns - passed))).withStyle(ChatFormatting.GRAY));
             }
         }
+        Optional<BlockPos> goal = Places.place(server, step.text("place"));
+        int within = Places.arrival(step.text("place"));
+        boolean arrived = true;
+        for (String who : escorted) {
+            Optional<Entity> walker = follow(server, level, balance, who);
+            arrived &= walker.isPresent() && goal.filter(at -> walker.get().blockPosition().distSqr(at) <= (double) within * within).isPresent();
+        }
+        if (arrived) {
+            end(server, active, ARRIVED);
+        }
+    }
+
+    private static Optional<Entity> follow(MinecraftServer server, ServerLevel level, Balance.Escort balance, String who) {
         Optional<ServerPlayer> nearest = Engine.players(server).stream().filter(player -> player.isAlive() && player.level().dimension() == Level.OVERWORLD)
                 .min(Comparator.comparingDouble(player -> People.find(server, who).map(player::distanceToSqr).orElse(0.0)));
         if (nearest.isEmpty()) {
-            return;
+            return Optional.empty();
         }
         ServerPlayer player = nearest.get();
         Optional<Entity> body = People.find(server, who).filter(found -> found.level() == level);
@@ -75,18 +93,14 @@ final class Escort {
             People.catchUp(level, who, player.position().subtract(player.getLookAngle().multiply(1, 0, 1).normalize().scale(balance.followBlocks())), player.getYRot());
         }
         if (body.isEmpty()) {
-            return;
+            return Optional.empty();
         }
         Entity walker = body.get();
         double behind = walker.distanceTo(player);
         if (behind > balance.followBlocks() && (!People.walking(who) || level.getGameTime() % RETARGET == 0)) {
             People.walk(server, who, player.position(), behind > balance.jogBlocks() ? People.JOGGING : People.WALKING);
         }
-        Optional<BlockPos> goal = Places.place(server, step.text("place"));
-        int within = Places.arrival(step.text("place"));
-        if (goal.isPresent() && walker.blockPosition().distSqr(goal.get()) <= (double) within * within) {
-            end(server, active, ARRIVED);
-        }
+        return body;
     }
 
     private static void end(MinecraftServer server, Engine.Active active, String outcome) {
@@ -98,7 +112,7 @@ final class Escort {
         progress.choices.put(key, outcome);
         progress.setDirty();
         Talk.say(active.quest().id(), null, active.step().lines(outcome), Engine.fill(progress));
-        LOGGER.info("the escort of {} ends: {}", active.step().text(WHO), outcome);
+        LOGGER.info("the escort of {} ends: {}", String.join(", ", who(active.step())), outcome);
         Talk.then(active.quest().id(), () -> Engine.complete(server, active));
     }
 }

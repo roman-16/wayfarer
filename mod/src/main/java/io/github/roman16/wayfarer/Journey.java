@@ -37,11 +37,11 @@ public class Journey extends SavedData {
         return of(server).over;
     }
 
-    public boolean claim(ResourceLocation hall) {
-        if (claims.contains(hall)) {
+    public boolean claim(ResourceLocation shard) {
+        if (claims.contains(shard)) {
             return false;
         }
-        claims.add(hall);
+        claims.add(shard);
         setDirty();
         return true;
     }
@@ -66,7 +66,7 @@ public class Journey extends SavedData {
 
     private static Journey load(CompoundTag tag, HolderLookup.Provider registries) {
         Journey journey = new Journey();
-        tag.getList(CLAIMS, Tag.TAG_STRING).forEach(hall -> journey.claims.add(ResourceLocation.parse(hall.getAsString())));
+        tag.getList(CLAIMS, Tag.TAG_STRING).forEach(shard -> journey.claims.add(ResourceLocation.parse(shard.getAsString())));
         journey.awake = tag.getBoolean(AWAKE);
         journey.over = tag.getBoolean(OVER);
         return journey;

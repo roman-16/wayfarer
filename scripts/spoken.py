@@ -307,7 +307,7 @@ def books():
     written = tomllib.loads((STORY / "books.toml").read_text())
     eyes = tomllib.loads((ROOT / "generator/eyes.toml").read_text())["eyes"]
     entries = [(entry["id"], entry["author"], entry["pages"]) for entry in written["found"]]
-    entries += [(f"people/{eye}", spec["people"], spec["lore"]) for eye, spec in sorted(eyes.items())]
+    entries += [(f"people/{eye}", spec["people"], spec["lore"]) for eye, spec in sorted(eyes.items()) if "lore" in spec]
     entries += [
         (entry["id"], collection["author"], entry["pages"])
         for collection in written["collections"]

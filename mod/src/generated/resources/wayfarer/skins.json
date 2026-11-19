@@ -43,24 +43,8 @@
     "model": "easy_npc:humanoid_slim",
     "scale": 1.0
   },
-  "drowned_1": {
-    "model": "easy_npc:humanoid_slim",
-    "scale": 1.0
-  },
-  "drowned_2": {
-    "model": "easy_npc:humanoid",
-    "scale": 1.0
-  },
-  "drowned_3": {
-    "model": "easy_npc:humanoid",
-    "scale": 1.0
-  },
   "edda": {
     "model": "easy_npc:humanoid_slim",
-    "scale": 1.0
-  },
-  "fisher": {
-    "model": "easy_npc:humanoid",
     "scale": 1.0
   },
   "founder_01": {
@@ -155,10 +139,6 @@
     "model": "easy_npc:vindicator",
     "scale": 1.0
   },
-  "heirs_sister": {
-    "model": "easy_npc:humanoid_slim",
-    "scale": 1.0
-  },
   "hob": {
     "model": "easy_npc:humanoid",
     "scale": 1.0
@@ -170,10 +150,6 @@
   "malgven": {
     "model": "easy_npc:illusioner",
     "scale": 1.0
-  },
-  "malgven_child": {
-    "model": "easy_npc:illusioner",
-    "scale": 0.75
   },
   "maud": {
     "model": "easy_npc:humanoid_slim",
@@ -259,10 +235,6 @@
     "model": "easy_npc:humanoid_slim",
     "scale": 1.0
   },
-  "rue": {
-    "model": "easy_npc:witch",
-    "scale": 1.0
-  },
   "sand_01": {
     "model": "easy_npc:humanoid",
     "scale": 1.0
@@ -273,10 +245,6 @@
   },
   "sand_03": {
     "model": "easy_npc:humanoid",
-    "scale": 1.0
-  },
-  "sedge": {
-    "model": "easy_npc:witch",
     "scale": 1.0
   },
   "sefa": {
@@ -290,10 +258,6 @@
   "stranger": {
     "model": "easy_npc:humanoid",
     "scale": 1.0
-  },
-  "tansy": {
-    "model": "easy_npc:witch",
-    "scale": 0.9375
   },
   "tide_warden_1": {
     "model": "easy_npc:humanoid",
@@ -430,10 +394,6 @@
   "townsfolk_32": {
     "model": "easy_npc:humanoid_slim",
     "scale": 0.75
-  },
-  "warden": {
-    "model": "easy_npc:humanoid",
-    "scale": 1.0
   },
   "wend_reading": {
     "model": "easy_npc:humanoid",

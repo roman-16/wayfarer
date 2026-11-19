@@ -6,6 +6,7 @@ import io.github.roman16.wayfarer.GazePayload;
 import io.github.roman16.wayfarer.HudState;
 import io.github.roman16.wayfarer.client.stamp.Inline;
 import io.github.roman16.wayfarer.client.stamp.Stamp;
+import io.github.roman16.wayfarer.mixin.GuiTitleAccessor;
 import io.github.roman16.wayfarer.story.Banners;
 import io.github.roman16.wayfarer.story.Tasks;
 import java.text.NumberFormat;
@@ -36,6 +37,7 @@ public final class Hud {
     private static final String[] DIRECTIONS = {"S", "SW", "W", "NW", "N", "NE", "E", "SE"};
     private static final String[] HEAT = {"guttering", "fading", "listening", "glowing", "flaring"};
     private static final String[] NUMERALS = {"", "I", "II", "III"};
+    private static final ResourceLocation PLACE_NAMES = ResourceLocation.fromNamespaceAndPath("travelerstitles", "overlay");
     private static final int BAR_CELLS = 8;
     private static final int FACE = 8;
     private static final int CELL_WIDTH = 4;
@@ -88,6 +90,10 @@ public final class Hud {
     public static void beforeLayer(RenderGuiLayerEvent.Pre event) {
         if (event.getName().equals(VanillaGuiLayers.BOSS_OVERLAY)) {
             bossBottom = 0;
+        }
+        if (event.getName().equals(PLACE_NAMES) && Minecraft.getInstance().gui instanceof GuiTitleAccessor gui && gui.wayfarer$title() != null
+                && gui.wayfarer$titleTime() > 0) {
+            event.setCanceled(true);
         }
     }
 

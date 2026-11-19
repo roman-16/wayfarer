@@ -16,9 +16,11 @@ import io.github.roman16.wayfarer.Journey;
 import io.github.roman16.wayfarer.Nights;
 import io.github.roman16.wayfarer.Notices;
 import io.github.roman16.wayfarer.Record;
+import io.github.roman16.wayfarer.Sea;
 import io.github.roman16.wayfarer.TentPitch;
 import io.github.roman16.wayfarer.Tents;
 import io.github.roman16.wayfarer.Wayfarer;
+import io.github.roman16.wayfarer.WorldShape;
 import io.netty.buffer.ByteBuf;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -642,8 +644,8 @@ public final class Caravan {
         }
         switch (camp.phase) {
             case GONE -> {
-                if (!camp.heading && camp.ever && !Journey.over(server) && !Steps.holdsNight(server)
-                        && Math.floorMod(level.getDayTime(), Clock.DAY) >= Clock.ticks(Balance.get().clock().runFrom())) {
+                if (!camp.heading && camp.ever && !Journey.over(server) && !Engine.holdsNight(server)
+                        && Math.floorMod(level.getDayTime(), Clock.DAY) >= Clock.ticks(Balance.get().clock().runFrom()) && !atSea(server, level)) {
                     headIn(server);
                 }
                 if (camp.heading) {
@@ -768,7 +770,7 @@ public final class Caravan {
         for (JsonElement household : households(server)) {
             for (JsonObject person : people(server, household.getAsJsonObject())) {
                 String id = person.get("person").getAsString();
-                if (Progress.of(server).met(id) && !said.apply(Story.get().person(id)).isEmpty() && People.find(server, id).filter(body -> seen(server, body)).isPresent()) {
+                if (Progress.of(server).met(id) && !said.apply(Story.get().person(id)).isEmpty() && People.find(server, id).filter(body -> Talk.seen(server, body)).isPresent()) {
                     awake.add(id);
                 }
             }
@@ -783,13 +785,7 @@ public final class Caravan {
         int told = camp.greeted.merge(kind + ":" + by, 1, Integer::sum) - 1;
         camp.lastGreeter = by;
         camp.setDirty();
-        Talk.say(Talk.ROAD, People.find(server, by).map(Entity::position).orElse(null), new Story.Line(by, lines.get(told % lines.size())));
-    }
-
-    private static boolean seen(MinecraftServer server, Entity body) {
-        int reach = Balance.get().talk().reachBlocks();
-        return Engine.players(server).stream().anyMatch(player -> player.level() == body.level() && player.distanceToSqr(body) <= (double) reach * reach
-                && Sight.sees(player, body));
+        People.find(server, by).ifPresent(body -> Talk.sayInSight(body.position(), new Story.Line(by, lines.get(told % lines.size()))));
     }
 
     private static void start(MinecraftServer server, ServerLevel level, Camp camp) {
@@ -808,11 +804,13 @@ public final class Caravan {
         int day = Balance.get().caravan().dayBlocks();
         if (near.isEmpty() && camp.ever && walked - day > nearest) {
             Vec3 way = Vec3.atLowerCornerOf(from.subtract(before.atY(from.getY()))).multiply(1, 0, 1).normalize();
-            origin = BlockPos.containing(Vec3.atLowerCornerOf(from).subtract(way.scale(Math.min(walked - day, day))));
+            BlockPos behind = BlockPos.containing(Vec3.atLowerCornerOf(from).subtract(way.scale(Math.min(walked - day, day))));
+            origin = WorldShape.coasts(level).filter(coasts -> coasts.beyond(from) != coasts.beyond(behind)).isPresent() ? from : behind;
         }
         camp.phase = Phase.SEARCHING;
         camp.centre = origin;
         camp.setDirty();
+        LOGGER.info("the caravan looks for its camp from {}, the team at {}, its last camp at {}", origin.toShortString(), from.toShortString(), before.toShortString());
         search = new Search(level, origin, !origin.equals(from));
     }
 
@@ -833,6 +831,7 @@ public final class Caravan {
             Unseen.Heights heights = search.heights;
             List<BlockPos> rejected = List.copyOf(search.rejected);
             BlockPos from = search.from;
+            Optional<WorldShape.Coasts> coasts = WorldShape.coasts(level);
             float facing = camp.facing;
             boolean anywhereBeyond = search.seenPasses >= SEEN_PASSES;
             int widest = Math.min(HALF_TURN, WIDEST_AHEAD + WIDER * search.seenPasses);
@@ -846,7 +845,7 @@ public final class Caravan {
                         BlockPos centre = BlockPos.containing(from.getX() + way.x * distance, 0, from.getZ() + way.z * distance);
                         boolean beyond = Math.abs(angle) > widest;
                         if (beyond && snowy(heights, centre) || rejected.stream().anyMatch(spot -> spot.distSqr(centre.atY(spot.getY())) < AWAY * AWAY * 4)
-                                || misfit(heights, centre) != null) {
+                                || coasts.filter(shape -> shape.beyond(centre) != shape.beyond(from)).isPresent() || misfit(heights, centre) != null) {
                             continue;
                         }
                         spots.add(new Spot(centre.atY(heights.surface(centre.getX(), centre.getZ())), distance,
@@ -877,6 +876,10 @@ public final class Caravan {
         } else {
             widen();
         }
+    }
+
+    private static boolean atSea(MinecraftServer server, ServerLevel level) {
+        return Engine.players(server).stream().anyMatch(player -> player.level() == level && Sea.aboard(player) != null && Sea.open(level, player.blockPosition()));
     }
 
     private static void far(MinecraftServer server, BlockPos centre) {

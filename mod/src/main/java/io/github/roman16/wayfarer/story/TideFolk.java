@@ -3,10 +3,12 @@ package io.github.roman16.wayfarer.story;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
+import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.CallingStoneBlockEntity;
 import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.Journey;
+import io.github.roman16.wayfarer.Shards;
 import io.github.roman16.wayfarer.Wayfarer;
 import java.util.List;
 import java.util.Optional;
@@ -32,8 +34,8 @@ final class TideFolk {
     private static final String SECOND = "tide_second";
     private static final String[] WARDENS = {"tide_warden_1", "tide_warden_2"};
     private static final ResourceLocation TEMPLATE = Wayfarer.id("tide/village");
-    private static final HallSite SITE = new HallSite(NAME, Wayfarer.id("hall/black"), NAME, 2);
-    private static final ResourceLocation SECOND_HALL = Wayfarer.id("hall/exotic");
+    private static final HallSite SITE = new HallSite(NAME, Wayfarer.id("hall/black"), NAME, () -> Balance.get().tide().aheadBlocks());
+    private static final ResourceLocation DROWNED = Shards.id("exotic");
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/tide.json");
     private static final int BESIDE = 20;
@@ -162,7 +164,7 @@ final class TideFolk {
         }
         level.setBlock(beside, Wayfarer.CALLING_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
         if (level.getBlockEntity(beside) instanceof CallingStoneBlockEntity second) {
-            second.hold(Journey.claimed(server).contains(SECOND_HALL) ? Optional.empty() : Optional.of(SECOND_HALL));
+            second.hold(Journey.claimed(server).contains(DROWNED) ? Optional.empty() : Optional.of(DROWNED));
         }
         progress.place(SECOND, beside);
         Vec3 inward = Vec3.atLowerCornerOf(SITE.entrance(progress).orElse(stone).subtract(stone)).multiply(1, 0, 1).normalize();

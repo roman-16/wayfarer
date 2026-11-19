@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
+import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Camps;
 import io.github.roman16.wayfarer.Footing;
@@ -11,7 +12,6 @@ import io.github.roman16.wayfarer.Wayfarer;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -19,13 +19,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeverBlock;
@@ -35,38 +30,26 @@ import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
 
 final class Locks {
     static final String NAME = "locks";
     static final String STONE = "locks_stone";
-    private static final String QUEST = "the_locks";
-    private static final String HEIR_STEP = "the_heir";
-    private static final String SHARD_STEP = "the_shard";
     private static final String ORIGIN = "locks_origin";
     private static final String TURN = "locks_turn";
     private static final String OPENED = "opened";
-    private static final String MAN = Wayfarer.MODID + "_heirs_man";
     private static final String MARK = "mark";
-    private static final String HEIR = "heir";
-    private static final String GIFT = "stone_sight";
     private static final ResourceLocation TEMPLATE = Wayfarer.id("locks/house");
-    private static final HallSite SITE = new HallSite("locks_hall", Wayfarer.id("hall/rogue"), NAME, 2);
+    private static final HallSite SITE = new HallSite("locks_hall", Wayfarer.id("hall/rogue"), NAME, () -> Balance.get().locks().aheadBlocks());
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/locks.json");
-    private static final int AWAY = 32;
     private static final int BESIDE = 2;
-    private static final int CLOSE = 8;
     private static final int COVER = 10;
-    private static final int MEN = 2;
-    private static final int SIDE = 3;
 
     private Locks() {}
 
     static void find(MinecraftServer server) {
-        Progress progress = Progress.of(server);
         SITE.find(server, Caravan.last(server));
     }
 
@@ -98,52 +81,6 @@ final class Locks {
                     }
                     HallSearch.release(level, top);
                 });
-        progress.place(STONE).filter(stone -> level.areEntitiesLoaded(ChunkPos.asLong(stone))).ifPresent(stone -> keep(server, level, stone));
-    }
-
-    private static Optional<String> step(MinecraftServer server) {
-        return Engine.active(server).stream().filter(active -> active.quest().id().equals(QUEST)).map(active -> active.step().id()).findFirst();
-    }
-
-    private static void keep(MinecraftServer server, ServerLevel level, BlockPos stone) {
-        Optional<String> step = step(server);
-        boolean waiting = step.filter(id -> id.equals(HEIR_STEP) || id.equals(SHARD_STEP)).isPresent();
-        Optional<Entity> heir = People.find(server, HEIR).filter(body -> body.level() == level);
-        List<Entity> men = level.getEntities((Entity) null, new AABB(stone).inflate(AWAY), entity -> entity.getTags().contains(MAN));
-        if (waiting && men.isEmpty()) {
-            men = men(level, stone);
-        } else if (!waiting && heir.isEmpty() && !men.isEmpty()) {
-            men.forEach(Entity::discard);
-            return;
-        }
-        boolean seen = step.filter(HEIR_STEP::equals).isPresent() && heir
-                .filter(body -> level.players().stream().noneMatch(player -> player.distanceToSqr(body) <= (double) CLOSE * CLOSE)).isPresent();
-        heir.filter(body -> body.hasGlowingTag() != seen).ifPresent(body -> body.setGlowingTag(seen));
-        men.stream().filter(man -> man.hasGlowingTag() != seen).forEach(man -> man.setGlowingTag(seen));
-    }
-
-    private static List<Entity> men(ServerLevel level, BlockPos stone) {
-        Progress progress = Progress.of(level.getServer());
-        Vec3 seat = progress.place("seat_locks_heir").map(Vec3::atBottomCenterOf).orElse(Vec3.atBottomCenterOf(stone));
-        Vec3 toward = Vec3.atBottomCenterOf(stone).subtract(seat).multiply(1, 0, 1);
-        Vec3 facing = toward.lengthSqr() < 1 ? new Vec3(0, 0, 1) : toward.normalize();
-        Vec3 across = new Vec3(-facing.z, 0, facing.x);
-        for (int index = 0; index < MEN; index++) {
-            Mob man = EntityType.VINDICATOR.create(level);
-            if (man == null) {
-                continue;
-            }
-            Vec3 at = seat.add(across.scale(index == 0 ? SIDE : -SIDE));
-            man.moveTo(at.x, seat.y, at.z, Frost.yaw(facing.scale(-1)), 0);
-            man.setYHeadRot(Frost.yaw(facing.scale(-1)));
-            man.setNoAi(true);
-            man.setInvulnerable(true);
-            man.setSilent(true);
-            man.setPersistenceRequired();
-            man.addTag(MAN);
-            level.addFreshEntity(man);
-        }
-        return level.getEntities((Entity) null, new AABB(stone).inflate(AWAY), entity -> entity.getTags().contains(MAN));
     }
 
     private static void house(MinecraftServer server, ServerLevel level, BlockPos top) {
@@ -186,25 +123,11 @@ final class Locks {
             return;
         }
         BlockPos stone = found.get();
-        Vec3 toward = Vec3.atLowerCornerOf(SITE.entrance(progress).orElse(stone).subtract(stone)).multiply(1, 0, 1);
-        Vec3 inward = toward.lengthSqr() < 1 ? new Vec3(0, 0, 1) : toward.normalize();
-        BlockPos seat = BlockPos.containing(Vec3.atLowerCornerOf(stone).add(inward.scale(BESIDE)));
-        progress.place("seat_locks_heir", seat);
-        progress.yaws.put("seat_locks_heir", Frost.yaw(inward));
         progress.place(STONE, stone);
         progress.setDirty();
-        LOGGER.info("the Jungle Folk's stone is at {}; the heir will wait at {}", stone, seat);
+        LOGGER.info("the Jungle Folk's empty stone is at {}", stone);
     }
 
-    static boolean asleep(ServerPlayer player, BlockPos stone) {
-        MinecraftServer server = player.server;
-        if (!Progress.of(server).place(STONE).filter(stone::equals).isPresent() || step(server).filter(id -> !id.equals(SHARD_STEP)).isEmpty()) {
-            return false;
-        }
-        player.displayClientMessage(Component.translatable(step(server).filter(HEIR_STEP::equals).isPresent() ? "wayfarer.locks.watched" : "wayfarer.locks.asleep")
-                .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), true);
-        return true;
-    }
 
     static void tick(MinecraftServer server, Engine.Active active) {
         ServerLevel level = Engine.overworld(server);
@@ -234,8 +157,6 @@ final class Locks {
             progress.setDirty();
         }
         if (opened + 1 >= doors.size()) {
-            progress.gifts.add(GIFT);
-            progress.setDirty();
             Engine.complete(server, active);
         } else {
             Talk.say(active.quest().id(), Vec3.atCenterOf(door), active.step().lines("opens"), Engine.fill(progress));

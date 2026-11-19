@@ -1,12 +1,8 @@
 import argparse
 import math
-import random
 import re
-import shutil
-import statistics
 import sys
 import time
-from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import tomllib
@@ -19,12 +15,6 @@ ROOT = Path(__file__).resolve().parent.parent
 FOUND = re.compile(r"The nearest (\S+)(?: \([^)]*\))? is at \[(-?\d+), [^,]+, (-?\d+)\] \((\d+) blocks away\)")
 MISSING = re.compile(r"Could not find a structure of type \"?(\S+?)\"? nearby")
 BIOME_SHIFT_BLOCKS = 128
-MAX_STEP = 2.0
-SURVEY_SEEDS = (1, 2, 3, 4, 5)
-SURVEY_PORT = 25600
-VOICE_PORT = 24600
-SHARED = ("libraries", "mods")
-WALK_BLOCKS_PER_SECOND = 4.317
 ASYNC = re.compile(r"(?m)^\s*locateCommandEnabled = false$")
 CONCURRENT = re.compile(r"(?m)^maxConcurrentLocates = \d+$")
 CONCURRENT_SEARCHES = 8
@@ -94,9 +84,7 @@ def check(server):
     balance = tomllib.loads((ROOT / "balance.toml").read_text())
     strongholds = balance["strongholds"]
     eyes = sorted(
-        eye
-        for eye, spec in tomllib.loads((ROOT / "generator/eyes.toml").read_text())["eyes"].items()
-        if not spec.get("story", False)
+        eye for eye, spec in tomllib.loads((ROOT / "generator/eyes.toml").read_text())["eyes"].items() if "lore" in spec
     )
     kinds = balance["structures"]["every_blocks"]
     cut = tomllib.loads((ROOT / "generator/owners.toml").read_text())["cut"]
@@ -115,10 +103,12 @@ def check(server):
     if len(placed) != strongholds["count"]:
         failures.append(f"the ring has {len(placed)} strongholds, not {strongholds['count']}")
     failures += [f"the stronghold at {x}, {z} lies under the sea" for x, z in placed if at_sea(server, x, z)]
-    for eye, structure in halls.items():
-        print(f"nearest {eye} hall: {found[structure][0] if found[structure] else None} blocks")
-        if found[structure] is None:
-            failures.append(f"no {eye} hall was found")
+    grown = [structure for structure in halls.values() if found[structure] is not None]
+    print(f"halls the world grows: {', '.join(grown) or 'none'}")
+    failures += [
+        f"{structure} grows in the world {found[structure][0]} blocks from spawn; every hall is put down by its quest"
+        for structure in grown
+    ]
     for kind, structure in owners.items():
         print(f"nearest {kind}: {found[structure][0] if found[structure] else None} blocks")
         if found[structure] is None:
@@ -130,98 +120,6 @@ def check(server):
             )
     failures += [f"the game rejects our data: {line.strip()[:300]}" for line in server.lines() if REJECTED.search(line)]
     return failures
-
-
-def points(count, radius):
-    rng = random.Random(0)
-    for _ in range(count):
-        angle = rng.random() * math.tau
-        yield round(radius * math.cos(angle)), round(radius * math.sin(angle))
-
-
-def world(server, seed):
-    target = server.parent / "survey" / str(seed)
-    shutil.rmtree(target, ignore_errors=True)
-    target.mkdir(parents=True)
-    for name in SHARED:
-        (target / name).symlink_to(server / name)
-    for path in server.iterdir():
-        if path.is_file() and path.suffix != ".log":
-            shutil.copy2(path, target / path.name)
-    shutil.copytree(server / "config", target / "config")
-    configure(target, {"level-seed": seed, "server-port": SURVEY_PORT + seed})
-    voice = target / "config/voicechat/voicechat-server.properties"
-    voice.parent.mkdir(parents=True, exist_ok=True)
-    voice.write_text(f"port={VOICE_PORT + seed}\n")
-    return target
-
-
-def journey(server, eyes, start, act, legs):
-    pos = start
-    remaining = [eye for eye in sorted(eyes) if eyes[eye]["act"] == act and not eyes[eye].get("story", False)]
-    while remaining:
-        hits = locate(server, [f"wayfarer:hall/{eye}" for eye in remaining], pos)
-        found = [(hit, eye) for eye in remaining if (hit := hits[f"wayfarer:hall/{eye}"])]
-        if not found:
-            break
-        (distance, x, z), eye = min(found)
-        legs[act].append(distance)
-        pos = (x, z)
-        remaining.remove(eye)
-
-
-def minutes(blocks):
-    return blocks / WALK_BLOCKS_PER_SECOND / 60
-
-
-def survey(server, count, apply):
-    balance = tomllib.loads((ROOT / "balance.toml").read_text())
-    targets = {2: balance["halls"]["act_two_leg_blocks"], 3: balance["halls"]["act_three_leg_blocks"]}
-    shores = {
-        2: balance["world"]["home_blocks"] + balance["world"]["sea_blocks"],
-        3: balance["halls"]["act_three_from_blocks"],
-    }
-    eyes_path = ROOT / "generator/eyes.toml"
-    halls = tomllib.loads(eyes_path.read_text())
-
-    def walk(seed):
-        legs = {act: [] for act in targets}
-
-        def measure(server):
-            for act, shore in shores.items():
-                for start in points(count, shore):
-                    journey(server, halls["eyes"], start, act, legs)
-            return []
-
-        boot(world(server, seed), measure)
-        return legs
-
-    legs = {act: [] for act in targets}
-    with ThreadPoolExecutor(max_workers=len(SURVEY_SEEDS)) as pool:
-        for found in pool.map(walk, SURVEY_SEEDS):
-            for act, distances in found.items():
-                legs[act] += distances
-    text = eyes_path.read_text()
-    print(
-        f"{'act':<4} {'legs':>5} {'spacing':>7} {'median':>7} {'walk':>7} {'shortest':>8} {'target':>7} {'walk':>7} {'tuned':>6}"
-    )
-    for act, target in targets.items():
-        spacing = halls["acts"][str(act)]["spacing"]
-        found = legs[act]
-        median = statistics.median(found) if found else 0
-        ratio = min(MAX_STEP, max(1 / MAX_STEP, math.sqrt(target / median))) if median else 1
-        tuned = max(2, round(spacing * ratio))
-        shortest = min(found) if found else 0
-        print(
-            f"{act:<4} {len(found):>5} {spacing:>7} {median:>7.0f} {minutes(median):>5.0f} m {shortest:>8}"
-            + f" {target:>7} {minutes(target):>5.0f} m {tuned:>6}"
-        )
-        text = re.sub(rf"(\[acts\.{act}\]\n)spacing = \d+", rf"\g<1>spacing = {tuned}", text, count=1)
-    if apply:
-        eyes_path.write_text(text)
-        print(
-            f"wrote the tuned spacings to {eyes_path.relative_to(ROOT)}; run just generate, then survey again to confirm"
-        )
 
 
 def configure(directory, overrides):
@@ -251,24 +149,12 @@ def boot(directory, action):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Boot the pack's dedicated server headless and check the world, or survey hall distances"
-    )
+    parser = argparse.ArgumentParser(description="Boot the pack's dedicated server headless and check the world")
     parser.add_argument("server", type=Path)
-    parser.add_argument(
-        "--survey",
-        type=int,
-        metavar="JOURNEYS",
-        help="in each survey world at once, walk this many journeys to the nearest hall not yet taken, instead of checking",
-    )
-    parser.add_argument("--apply", action="store_true", help="write the survey's tuned spacings to generator/eyes.toml")
     arguments = parser.parse_args()
     server = arguments.server.resolve()
     seed = tomllib.loads((ROOT / "story/states.toml").read_text())["seed"]
     try:
-        if arguments.survey:
-            survey(server, arguments.survey, arguments.apply)
-            return
         configure(server, {"level-seed": seed})
         seconds, log = boot(server, check)
     except Failure as failure:

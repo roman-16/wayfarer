@@ -1,9 +1,12 @@
 package io.github.roman16.wayfarer.mixin;
 
 import de.maxhenkel.gravestone.GraveUtils;
+import io.github.roman16.wayfarer.story.Ground;
 import io.github.roman16.wayfarer.story.Sight;
+import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,8 +34,18 @@ abstract class GravestonePlaceMixin {
         BlockPos.findClosestMatch(fell, BESIDE, DRY_RISE, at -> wayfarer$open(level, at) && wayfarer$seen(level, eyes, at) && level.getFluidState(at).isEmpty()
                         && level.getFluidState(at.above()).isEmpty())
                 .or(() -> BlockPos.findClosestMatch(fell, BESIDE, DRY_RISE, at -> wayfarer$open(level, at) && level.getFluidState(at).isEmpty()))
+                .or(() -> wayfarer$ashore(level, fell))
                 .or(() -> BlockPos.findClosestMatch(fell, BESIDE, RISE, at -> wayfarer$open(level, at)))
                 .ifPresent(at -> place.setReturnValue(at.immutable()));
+    }
+
+    @Unique
+    private static Optional<BlockPos> wayfarer$ashore(Level level, BlockPos fell) {
+        if (!(level instanceof ServerLevel server) || level.dimension() != Level.OVERWORLD) {
+            return Optional.empty();
+        }
+        return Ground.ashore(server, fell).flatMap(shore -> BlockPos.findClosestMatch(shore, BESIDE, DRY_RISE, at -> wayfarer$open(level, at)
+                && level.getFluidState(at).isEmpty() && level.getFluidState(at.below()).isEmpty()).map(BlockPos::immutable));
     }
 
     @Unique

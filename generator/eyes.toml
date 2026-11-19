@@ -1,9 +1,3 @@
-[acts.2]
-spacing = 125
-
-[acts.3]
-spacing = 189
-
 [eyes.black]
 act = 2
 climate = "any"
@@ -24,7 +18,6 @@ lore = [
 [eyes.cold]
 act = 1
 climate = "cold"
-story = true
 biomes = ["#c:is_snowy", "#c:is_icy"]
 people = "The Frost Walkers"
 lore = [
@@ -36,15 +29,7 @@ lore = [
 
 
 [eyes.corrupted]
-act = 3
-climate = "any"
-biomes = ["#c:is_savanna", "#minecraft:is_savanna"]
 people = "The Grass Kingdom"
-lore = [
-  "[stern] The Grass Kingdom was given its shard to hide. Its king kept it instead, on a throne, where everyone could see it.",
-  "[grave] The shard showed him what the dragon sees, and he wanted more. [pause] He was the first of the Gazebound.",
-  "[stern, proud] His own people tore the shard from his crown and sealed it here. The throne is dust. [firm] Do not keep what you carry.",
-]
 
 
 [eyes.cryptic]
@@ -62,7 +47,6 @@ lore = [
 [eyes.evil]
 act = 1
 climate = "any"
-story = true
 biomes = [
   "#c:is_plains",
   "minecraft:meadow",
@@ -78,22 +62,12 @@ lore = [
 
 
 [eyes.exotic]
-act = 2
-climate = "hot"
-biomes = ["#c:is_badlands", "#minecraft:is_badlands"]
-empty = true
 people = "The Drowned City"
-lore = [
-  "[wistful, proud] We were the Drowned City, the most beautiful place on the coast. [pause] Beautiful things are seen. The eye looked at us for one summer, and the sea came up and took the city.",
-  "[sorrowful] The few of us left climbed up here to our hall in the red rock and lifted our stone's shard, and carried it down to the one bay on the coast the eye could not see.",
-  "[cool, a faint smile] The Tide Folk keep it now, under their fire pit. If you came here for it, you came to the wrong shore.",
-]
 
 
 [eyes.lost]
 act = 1
-climate = "any"
-story = true
+climate = "mild"
 biomes = ["#c:is_forest", "#minecraft:is_forest"]
 people = "The Diggers"
 lore = [
@@ -104,15 +78,7 @@ lore = [
 
 
 [eyes.magical]
-act = 3
-climate = "any"
-biomes = ["#c:is_dark_forest", "minecraft:dark_forest"]
 people = "The Shadow Circle"
-lore = [
-  "[grave, scornful] The Shadow Circle learned to bend the shard's light into spells. The Illagers learned from them, and learned the wrong lessons.",
-  "[contemptuous] Their mansions in the dark woods are copies of our halls, built by people who wanted the shard's power without its burden.",
-  "[commanding, low] The burden is the point. [pause] Carry it.",
-]
 
 
 [eyes.old]
@@ -132,6 +98,7 @@ lore = [
 act = 2
 climate = "any"
 biomes = ["#c:is_jungle", "#minecraft:is_jungle"]
+empty = true
 people = "The Jungle Folk"
 lore = [
   "[gentle, proud] We were the Jungle Folk. Our shard taught us how red dust carries a thought from one stone to the next, and we built locks that never slept.",
@@ -141,30 +108,8 @@ lore = [
 
 
 [eyes.undead]
-act = 3
-climate = "any"
-biomes = [
-  "minecraft:old_growth_pine_taiga",
-  "minecraft:old_growth_spruce_taiga",
-  "#c:is_old_growth",
-]
 people = "The Grave Keepers"
-lore = [
-  "[hushed, calm] The Grave Keepers buried the Wayfarers who fell on the road, under the oldest trees, where the ground is soft.",
-  "[hushed] They noticed that the dead are never seen by the gaze, and they took the undead shard to hide among them.",
-  "[serene, whispering] We are among them now. Take the shard and keep walking. [softly] We will keep the graves.",
-]
 
 
 [eyes.witch]
-act = 1
-climate = "any"
-story = true
-biomes = ["#c:is_swamp", "minecraft:mangrove_swamp", "minecraft:swamp"]
 people = "The Marsh Mothers"
-lore = [
-  "We brewed with all the swamp gave us, and the shard gave our water its sight. A cup from our pool showed the sick what ailed them, and the lost where they were.",
-  "Then the water showed us something looking back. Far off, past every sky, an eye was searching, and the clearer our water saw, the nearer it came.",
-  "So we sank the shard in the mud, where no reflection lives, and went down the long stair only when a fever would not break. Our daughters keep the hut over the stair.",
-  "If you came by the water, you came the hard way. The stair is ours, and it shows itself to eyes that see true. Leave our daughters their cups.",
-]

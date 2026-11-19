@@ -11,6 +11,12 @@ public final class Deep extends Guardian {
     }
 
     @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        targetSelector.removeAllGoals(goal -> true);
+    }
+
+    @Override
     public boolean removeWhenFarAway(double distance) {
         return false;
     }

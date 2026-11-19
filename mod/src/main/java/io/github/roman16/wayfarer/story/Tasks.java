@@ -42,6 +42,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.Items;
@@ -303,7 +304,7 @@ public final class Tasks {
     }
 
     private static void tasks(ServerPlayer player, Engine.Active active, Map<String, Component> open) {
-        ahead(active, open);
+        ahead(player, active, open);
         if (!active.step().spec().has("tasks") || !Steps.entered(active) || Talk.busy()) {
             return;
         }
@@ -318,7 +319,7 @@ public final class Tasks {
         }
     }
 
-    private static void ahead(Engine.Active active, Map<String, Component> open) {
+    private static void ahead(ServerPlayer player, Engine.Active active, Map<String, Component> open) {
         List<Story.Step> steps = active.quest().steps();
         for (Story.Step later : steps.subList(steps.indexOf(active.step()) + 1, steps.size())) {
             if (!later.spec().has("tasks")) {
@@ -326,11 +327,18 @@ public final class Tasks {
             }
             for (JsonElement task : later.spec().getAsJsonArray("tasks")) {
                 String key = "wayfarer.task." + task.getAsString() + READY;
-                if (Language.getInstance().has(key)) {
+                if (Language.getInstance().has(key) && !ready(player, task.getAsString())) {
                     open.put(task.getAsString() + READY, Component.translatable(key));
                 }
             }
         }
+    }
+
+    private static boolean ready(ServerPlayer player, String task) {
+        return switch (task) {
+            case "hull" -> player.getInventory().contains(stack -> stack.is(Items.IRON_NUGGET)) && player.getInventory().contains(stack -> stack.is(ItemTags.PLANKS));
+            default -> false;
+        };
     }
 
     private static Optional<Component> step(ServerPlayer player, Engine.Active active, String id) {

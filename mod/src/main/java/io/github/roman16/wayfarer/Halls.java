@@ -13,7 +13,6 @@ import java.util.UUID;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket;
@@ -25,8 +24,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
@@ -52,8 +49,7 @@ public final class Halls {
         if (!start.isValid() || !(start.getStructure() instanceof HallStructure hall)) {
             return Optional.empty();
         }
-        boolean within = start.getPieces().stream().anyMatch(piece -> piece instanceof HallPiece part
-                && part.is(hall.pieces().hall())
+        boolean within = start.getPieces().stream().anyMatch(piece -> (piece instanceof HallRoom || piece instanceof HallPiece part && part.is(hall.pieces().hall()))
                 && piece.getBoundingBox().isInside(pos));
         return within ? Optional.ofNullable(level.registryAccess().registryOrThrow(Registries.STRUCTURE).getKey(hall)) : Optional.empty();
     }
@@ -73,10 +69,6 @@ public final class Halls {
                 .orElse(List.of());
     }
 
-    public static int count(ServerLevel level) {
-        return members(level, ALL).size();
-    }
-
     public static ResourceLocation key(Holder<Structure> hall) {
         return hall.unwrapKey().orElseThrow().location();
     }
@@ -85,48 +77,36 @@ public final class Halls {
         return hall.getPath().substring(hall.getPath().lastIndexOf('/') + 1);
     }
 
-    public static Item eye(ResourceLocation hall) {
-        return BuiltInRegistries.ITEM.get(eyeId(hall));
-    }
-
-    public static Component eyeName(ResourceLocation hall) {
-        return Component.translatable("item." + eyeId(hall).toLanguageKey());
-    }
-
-    private static ResourceLocation eyeId(ResourceLocation hall) {
-        return ResourceLocation.fromNamespaceAndPath("endrem", eyeKey(hall) + "_eye");
-    }
-
     private static Component people(ResourceLocation hall) {
-        return Library.get().people(hall).<Component>map(book -> Component.literal(book.title())).orElse(eyeName(hall));
+        return Library.get().people(hall).<Component>map(book -> Component.literal(book.title())).orElse(Shards.name(Shards.id(eyeKey(hall))));
     }
 
     public static void claim(ServerPlayer player, BlockPos stone) {
-        if (Memories.touch(player, stone, ItemStack.EMPTY) || Engine.touches(player, stone)) {
+        if (Memories.touch(player, stone) || Engine.touches(player, stone)) {
             return;
         }
         Optional<ResourceLocation> found = player.level().getBlockEntity(stone) instanceof CallingStoneBlockEntity entity
-                ? entity.hall()
+                ? entity.shard()
                 : Optional.empty();
         if (found.isEmpty()) {
             player.displayClientMessage(Component.translatable("wayfarer.hall.silent").withStyle(ChatFormatting.GRAY), true);
             return;
         }
-        ResourceLocation hall = found.get();
-        if (!Engine.asks(player, stone, hall)) {
-            take(player, hall);
+        ResourceLocation shard = found.get();
+        if (!Engine.asks(player, stone, shard)) {
+            take(player, shard);
         }
     }
 
-    public static void take(ServerPlayer player, ResourceLocation hall) {
-        if (!Journey.of(player.server).claim(hall)) {
-            player.displayClientMessage(Component.translatable("wayfarer.hall.spent", eyeName(hall)).withStyle(ChatFormatting.GRAY), true);
+    public static void take(ServerPlayer player, ResourceLocation shard) {
+        if (!Journey.of(player.server).claim(shard)) {
+            player.displayClientMessage(Component.translatable("wayfarer.hall.spent", Shards.name(shard)).withStyle(ChatFormatting.GRAY), true);
             return;
         }
         int taken = Journey.claimed(player.server).size();
         player.displayClientMessage(Component.translatable("wayfarer.hall.count", taken).withStyle(ChatFormatting.GRAY), true);
         player.server.getPlayerList().getPlayers().stream().filter(other -> other != player)
-                .forEach(other -> other.sendSystemMessage(Component.translatable("wayfarer.hall.claimed", player.getDisplayName(), eyeName(hall)).withStyle(ChatFormatting.GRAY)));
+                .forEach(other -> other.sendSystemMessage(Component.translatable("wayfarer.hall.claimed", player.getDisplayName(), Shards.name(shard)).withStyle(ChatFormatting.GRAY)));
         if (taken == 1) {
             Talk.notice(Component.translatable("wayfarer.hall.sinks"));
         }
@@ -179,7 +159,7 @@ public final class Halls {
         if (hall != null && !hall.equals(before)) {
             player.connection.send(new ClientboundSetTitlesAnimationPacket(20, 60, 30));
             player.connection.send(new ClientboundSetSubtitleTextPacket(people(hall)));
-            player.connection.send(new ClientboundSetTitleTextPacket(eyeName(hall)));
+            player.connection.send(new ClientboundSetTitleTextPacket(Shards.name(Shards.id(eyeKey(hall)))));
         }
     }
 

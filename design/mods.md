@@ -105,7 +105,7 @@ The user and a friend played Prominence II: Hasturian Era on 09.10.2026; the use
 
 ## Cuts in mods already in the pack
 
-Cut from the pack: Comforts' sleeping bags and hammocks, Bountiful, Nature's Compass, Just Enough Resources, Exposure's cameras, FTB Quests, FTB Teams, FTB Library and Patchouli (the journal takes their place), the cut Artifacts, Friends & Foes' Moobloom and built golems, Wilder Nature's Minisheep, Immersive Aircraft, since the road is walked (D8), the cut backpack upgrades, the other moons, and vanilla's enchanting table, anvil, grindstone, beds, ender chest, lodestone and recovery compasses (D7). When Dungeons Arise is cut whole: its forty structures are castles, palaces and multi-storey dungeons far larger than anything vanilla builds, and most of its chests hold diamond gear and high enchantments, so a team found the road's best weapons in its first days.
+Cut from the pack: Comforts' sleeping bags and hammocks, Bountiful, Nature's Compass, Just Enough Resources, Exposure's cameras, FTB Quests, FTB Teams, FTB Library and Patchouli (the journal takes their place), the cut Artifacts, Friends & Foes' Moobloom and built golems, Wilder Nature's Minisheep, Immersive Aircraft, since the road is walked (D8), the cut backpack upgrades, the other moons, and vanilla's enchanting table, anvil, grindstone, beds, ender chest, elytra, lodestone and recovery compasses (D7). When Dungeons Arise is cut whole: its forty structures are castles, palaces and multi-storey dungeons far larger than anything vanilla builds, and most of its chests hold diamond gear and high enchantments, so a team found the road's best weapons in its first days.
 
 Found in the pack's mods, each breaking a Settled rule:
 

@@ -139,7 +139,9 @@ public final class Road {
         }
         Optional<Story.Quest> under = Story.get().quests().stream().filter(quest -> quest.kind().equals(Engine.MAIN) && old.open(quest.id())).findFirst();
         if (under.isEmpty()) {
-            source.sendFailure(Component.literal("road failed: the story has ended on this world; there is no step to carry it to"));
+            List<String> gone = old.steps.keySet().stream().filter(id -> Story.get().quest(id).isEmpty()).toList();
+            source.sendFailure(Component.literal(gone.isEmpty() ? "road failed: the story has ended on this world; there is no step to carry it to"
+                    : "road failed: the road on this world went through quests the story no longer has (" + String.join(", ", gone) + "), so no step of it can be carried"));
             return 0;
         }
         Story.Quest quest = under.get();

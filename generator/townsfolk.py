@@ -330,10 +330,6 @@ def founders():
     return folk("founder", FOUNDERS, "living")
 
 
-def riverfolk():
-    return {"fisher": person("river/fisher", "man", "living")}
-
-
 TRIMS = [
     ["#c8c2b4", "#dcd6ca", "#ece8de"],
     ["#b4ac9c", "#c8c0b0", "#dad4c6"],
@@ -621,31 +617,6 @@ def tidefolk():
     }
 
 
-DROWNED_TONE = (["#b8c4c0", "#c8d4d0", "#d4dedb"], "#a2aeaa")
-SEA_GLASS = [["#5e7e74", "#6e8e84", "#7e9e94"], ["#4e6e6a", "#5e7e7a", "#6e8e8a"], ["#6a7e6a", "#7a8e7a", "#8a9e8a"]]
-
-
-def drownedfolk():
-    people = {}
-    for index, kind in enumerate(["woman", "man", "old_man"], start=1):
-        look = person(f"drowned/{index}", kind, "living", cloths=[SEA_GLASS[index - 1]])
-        look["palette"] = look["palette"] | ({"s": DROWNED_TONE[0]} if "s" in look["palette"] else {})
-        people[f"drowned_{index}"] = look
-    return people
-
-
-CHILD_FACE = {
-    "D": ["#7d8a80", "#87948a", "#919e94"],
-    "f": ["#6e7a70", "#758177", "#7c887e"],
-    "g": "#5e6a60",
-    "y": "#26322a",
-}
-
-
-def girl_in_grey(malgven):
-    return malgven | {"palette": malgven["palette"] | CHILD_FACE, "scale": CHILD}
-
-
 SAND_CLOTHS = [["#c89a5a", "#d8aa6a", "#e4b87a"], ["#a8643a", "#b8744a", "#c4825a"], ["#e0d6c0", "#ece2cc", "#f4ecd8"]]
 
 
@@ -689,15 +660,11 @@ def errandfolk():
     }
 
 
-GRASS_CLOTHS = [["#b0883a", "#c09848", "#d0a856"], ["#7a5a2a", "#8a6a36", "#9a7842"]]
-
-
 def act3folk():
     return {
         "captive_1": person("act3/captive/1", "girl", "living"),
         "captive_2": person("act3/captive/2", "boy", "living"),
         "captive_3": person("act3/captive/3", "girl", "living"),
-        "heirs_sister": person("act3/heirs_sister", "woman", "living", cloths=[GRASS_CLOTHS[1]]),
         "oldest_keeper": keeper(
             "act3/oldest_keeper",
             "old_man",
@@ -706,5 +673,4 @@ def act3folk():
         ),
         "pilgrim": person("act3/pilgrim", "old_woman", "living"),
         "settled_wayfarer": person("act2/settled_wayfarer", "old_man", "living"),
-        "warden": person("act3/warden", "old_man", "living", cloths=[GRASS_CLOTHS[0]]),
     }

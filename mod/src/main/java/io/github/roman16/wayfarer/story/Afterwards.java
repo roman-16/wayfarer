@@ -20,17 +20,13 @@ public final class Afterwards {
     private static final String SIGHT = "sight";
     private static final List<People> PEOPLES = List.of(
             new People("diggers", "the_pull", "", Map.of("", "taken"), Set.of()),
-            new People("drowned_city", "the_dry_city", "the_tide_folk/the_shards", Map.of("both", "taken", "drowned", "taken", "none", "left", "theirs", "left"),
+            new People("drowned_city", "the_tide_folk", "the_tide_folk/the_shards", Map.of("both", "taken", "drowned", "taken", "none", "left", "theirs", "left"),
                     Set.of("none", "theirs")),
             new People("first_village", "the_bell", "the_bell/the_bell", Map.of("keep", "rung", "melt", "melted"), Set.of()),
-            new People("frost_walkers", "the_last_frost_walker", "under_the_ice/the_shard", Map.of("give", "given", "keep", "kept"), Set.of("give")),
-            new People("grass_kingdom", "the_ward", "the_ward/the_seal", Map.of("leave", "left", "take", "taken"), Set.of("leave")),
-            new People("grave_keepers", "the_empty_grave", "the_empty_grave/the_shard", Map.of("leave", "left", "take", "taken"), Set.of("leave")),
-            new People("jungle_folk", "the_locks", "the_locks/the_shard", Map.of("leave", "left", "take", "taken"), Set.of("leave")),
-            new People("marsh_mothers", "the_marsh_mothers", "the_marsh_mothers/shard", Map.of("", "unasked", "leave", "left", "take", "taken"), Set.of("leave")),
+            new People("frost_walkers", "the_frost_walkers", "the_frost_walkers/the_shard", Map.of("give", "given", "keep", "kept"), Set.of("give")),
+            new People("jungle_folk", "the_locks", "", Map.of("", "emptied"), Set.of()),
             new People("sand_singers", "the_worm", "the_worm/the_worm", Map.of("killed", "killed", "spared", "spared"), Set.of("spared")),
             new People("scribes", "the_scribes", "the_scribes/the_shard", Map.of("leave", "left", "take", "taken"), Set.of("leave")),
-            new People("shadow_circle", "the_mansion", "the_mansion/the_cellar", Map.of("children", "children", "shard", "taken"), Set.of()),
             new People("tide_folk", "the_tide_folk", "the_tide_folk/the_shards", Map.of("both", "both", "drowned", "drowned", "none", "none", "theirs", "theirs"),
                     Set.of("drowned", "none")));
 

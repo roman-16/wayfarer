@@ -720,7 +720,7 @@ needs = [
 ]
 
 [[rows]]
-appears = { feels = "cold", opened = "the_last_frost_walker" }
+appears = { feels = "cold", opened = "the_frost_walkers" }
 id = "cold"
 ladder = true
 title = "Against the cold"

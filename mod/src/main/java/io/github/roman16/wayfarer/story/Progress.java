@@ -90,6 +90,11 @@ public final class Progress extends SavedData {
         return Story.get().quest(quest).map(found -> steps.getOrDefault(quest, -1) >= found.steps().size()).orElse(false);
     }
 
+    public boolean past(String quest, String step) {
+        return done(quest) || open(quest) && Story.get().quest(quest)
+                .map(found -> step(quest) > found.steps().stream().map(Story.Step::id).toList().indexOf(step)).orElse(false);
+    }
+
     public int step(String quest) {
         return steps.getOrDefault(quest, -1);
     }

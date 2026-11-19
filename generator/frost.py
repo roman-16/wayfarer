@@ -209,7 +209,7 @@ def lake():
     t.set(
         (centre, stone, centre),
         "wayfarer:calling_stone",
-        entity={"id": "wayfarer:calling_stone", "hall": "wayfarer:hall/cold"},
+        entity={"id": "wayfarer:calling_stone", "shard": "endrem:cold_eye"},
     )
     rock = (centre, LAKE_DEPTH, 0)
     for dx, dy in ((0, 0), (1, 0), (-1, 0), (0, 1)):

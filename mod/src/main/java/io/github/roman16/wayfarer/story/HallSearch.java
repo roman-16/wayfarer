@@ -1,12 +1,10 @@
 package io.github.roman16.wayfarer.story;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.logging.LogUtils;
 import io.github.roman16.wayfarer.Balance;
 import io.github.roman16.wayfarer.Climate;
 import io.github.roman16.wayfarer.HallStructure;
-import io.github.roman16.wayfarer.ShaftPiece;
 import io.github.roman16.wayfarer.Wayfarer;
+import io.github.roman16.wayfarer.WorldShape;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -23,20 +21,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructurePiece;
-import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.phys.Vec3;
-import org.slf4j.Logger;
 
 final class HallSearch {
     private static final int AVOID_BLOCKS = 512;
-    private static final Logger LOGGER = LogUtils.getLogger();
     private static final TicketType<ChunkPos> TICKET = TicketType.create("wayfarer_hall", Comparator.comparingLong(ChunkPos::toLong));
-    private static final int RINGS = 4;
-    private static final int RING_STEP = 256;
+    private static final int RING_STEP = 128;
+    private static final int[] WIDEST_DEGREES = {90, 180};
     private static final int ABOVE_SEA = 8;
     private static final int LOAD_RADIUS = 3;
 
@@ -44,58 +37,56 @@ final class HallSearch {
 
     record Found(BlockPos entrance, BoundingBox box, List<BoundingBox> rooms) {}
 
-    static Optional<Found> nearest(ServerLevel level, ResourceLocation id, BlockPos from) {
-        Holder<Structure> hall = holder(level, id);
-        long started = System.nanoTime();
-        Pair<BlockPos, Holder<Structure>> found = level.getChunkSource().getGenerator().findNearestMapStructure(level, HolderSet.direct(hall), from, RINGS,
-                false);
-        LOGGER.info("the search for the nearest {} from {} took {} ms", hall, from.toShortString(), (System.nanoTime() - started) / 1_000_000);
-        int reach = Balance.get().halls().reachBlocks();
-        if (found == null || found.getFirst().atY(from.getY()).distSqr(from) > (double) reach * reach) {
-            return Optional.empty();
-        }
-        ChunkPos chunk = new ChunkPos(found.getFirst());
-        StructureStart start = level.getChunk(chunk.x, chunk.z, ChunkStatus.STRUCTURE_STARTS).getStartForStructure(hall.value());
-        if (start == null || !start.isValid()) {
-            return Optional.empty();
-        }
-        return start.getPieces().stream().filter(piece -> piece instanceof ShaftPiece).map(piece -> ((ShaftPiece) piece).threshold()).findFirst()
-                .map(threshold -> new Found(threshold, start.getBoundingBox(), start.getPieces().stream().map(StructurePiece::getBoundingBox).toList()));
-    }
-
     private static Holder<Structure> holder(ServerLevel level, ResourceLocation hall) {
         return level.registryAccess().registryOrThrow(Registries.STRUCTURE).getHolderOrThrow(ResourceKey.create(Registries.STRUCTURE, hall));
     }
 
-    static CompletableFuture<Optional<BlockPos>> ground(ServerLevel level, ResourceLocation hall, BlockPos from, int inner, int outer, List<BlockPos> avoid) {
+    static CompletableFuture<Optional<BlockPos>> ground(ServerLevel level, ResourceLocation hall, BlockPos from, Vec3 way, int ahead, WorldShape.Coasts coasts,
+            List<BlockPos> avoid) {
         HolderSet<Biome> fits = holder(level, hall).value().biomes();
         Climate climate = ((HallStructure) holder(level, hall).value()).climate();
         Unseen.Heights heights = new Unseen.Heights(level);
+        List<Unseen.Viewer> viewers = Unseen.viewers(level);
+        int view = level.getServer().getPlayerList().getViewDistance();
         int sea = level.getChunkSource().getGenerator().getSeaLevel();
-        Balance.Halls halls = Balance.get().halls();
-        Vec3 flat = new Vec3(from.getX(), 0, from.getZ());
-        Vec3 origin = flat.length() >= inner || flat.lengthSqr() < 1 ? flat : flat.normalize().scale(inner);
+        int reach = Balance.get().halls().reachBlocks();
         List<BlockPos> refused = List.copyOf(avoid);
         Predicate<BlockPos> clear = at -> refused.stream().allMatch(failed -> failed.distSqr(at.atY(failed.getY())) > (double) AVOID_BLOCKS * AVOID_BLOCKS);
         List<Predicate<Holder<Biome>>> passes = List.of(biome -> fits.contains(biome) && climate.fits(biome), climate::fits,
                 biome -> fits.contains(biome) && climate.bears(biome), climate::bears);
-        return CompletableFuture.supplyAsync(() -> passes.stream().map(pass -> sample(heights, origin, halls, inner, outer, sea, pass, clear))
+        Vec3 flat = new Vec3(way.x, 0, way.z).normalize();
+        return CompletableFuture.supplyAsync(() -> passes.stream().map(pass -> ahead(heights, from, flat, ahead, reach, coasts, sea, pass, clear, viewers, view))
                 .flatMap(Optional::stream).findFirst(), Util.backgroundExecutor());
     }
 
-    private static Optional<BlockPos> sample(Unseen.Heights heights, Vec3 origin, Balance.Halls halls, int inner, int outer, int sea,
-            Predicate<Holder<Biome>> fits, Predicate<BlockPos> clear) {
-        for (int distance = halls.nearestBlocks(); distance <= halls.reachBlocks(); distance += RING_STEP) {
-            int around = (int) Math.ceil(2 * Math.PI * distance / RING_STEP);
-            for (int index = 0; index < around; index++) {
-                double angle = 2 * Math.PI * index / around;
-                int x = (int) Math.round(origin.x + Math.cos(angle) * distance);
-                int z = (int) Math.round(origin.z + Math.sin(angle) * distance);
-                double out = Math.sqrt((double) x * x + (double) z * z);
-                if (out >= inner && out <= outer && clear.test(new BlockPos(x, 0, z)) && fits.test(heights.biome(x, sea + ABOVE_SEA, z)) && !heights.wet(x, z)) {
-                    return Optional.of(new BlockPos(x, heights.surface(x, z), z));
+    private static Optional<BlockPos> ahead(Unseen.Heights heights, BlockPos from, Vec3 way, int ahead, int reach, WorldShape.Coasts coasts, int sea,
+            Predicate<Holder<Biome>> fits, Predicate<BlockPos> clear, List<Unseen.Viewer> viewers, int view) {
+        int narrower = -1;
+        for (int widest : WIDEST_DEGREES) {
+            for (int distance = ahead; distance <= reach; distance += RING_STEP) {
+                double turn = Math.toDegrees((double) RING_STEP / distance);
+                for (double turned = 0; turned <= widest; turned += turn) {
+                    for (int sign : turned == 0 ? new int[] {1} : new int[] {1, -1}) {
+                        if (turned <= narrower) {
+                            continue;
+                        }
+                        Vec3 bent = way.yRot((float) Math.toRadians(turned * sign));
+                        int x = from.getX() + (int) Math.round(bent.x * distance);
+                        int z = from.getZ() + (int) Math.round(bent.z * distance);
+                        double angle = WorldShape.Coasts.angle(x, z);
+                        double out = Math.sqrt((double) x * x + (double) z * z);
+                        if (out < coasts.far(angle) || out > coasts.last(angle) || !clear.test(new BlockPos(x, 0, z))
+                                || !fits.test(heights.biome(x, sea + ABOVE_SEA, z)) || heights.wet(x, z)) {
+                            continue;
+                        }
+                        BlockPos site = new BlockPos(x, heights.surface(x, z), z);
+                        if (Unseen.beyond(viewers, Vec3.atCenterOf(site), view)) {
+                            return Optional.of(site);
+                        }
+                    }
                 }
             }
+            narrower = widest;
         }
         return Optional.empty();
     }

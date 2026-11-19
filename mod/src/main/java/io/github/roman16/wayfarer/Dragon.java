@@ -1,5 +1,6 @@
 package io.github.roman16.wayfarer;
 
+import io.github.roman16.wayfarer.story.Doors;
 import io.github.roman16.wayfarer.story.Engine;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public final class Dragon {
     private Dragon() {}
 
     private static int shards(MinecraftServer server) {
-        return Journey.claimed(server).size();
+        return Doors.frame(server).size();
     }
 
     private static double aimError(MinecraftServer server) {

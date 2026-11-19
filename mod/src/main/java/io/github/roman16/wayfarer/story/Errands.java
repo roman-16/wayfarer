@@ -75,7 +75,6 @@ public final class Errands {
     static final String BUNDLE = "bundle";
     static final String LAST_BUNDLE = "last_bundle";
     static final String NEVER_SLEEPS = "never_sleeps";
-    static final String NEST = "nest";
     static final String FIRST_GATE = "first_gate";
     static final String NEVER_SLEEPS_TAG = Wayfarer.MODID + "_never_sleeps";
     private static final String SITE = "_site";
@@ -90,7 +89,6 @@ public final class Errands {
     private static final String SEAL_MARKS = "the_marks";
     private static final ResourceLocation RUIN = Wayfarer.id("errands/seal");
     private static final ResourceLocation RING = Wayfarer.id("errands/cairns");
-    private static final ResourceLocation NEST_TEMPLATE = Wayfarer.id("errands/nest");
     private static final ResourceLocation CITY = ResourceLocation.withDefaultNamespace("ancient_city");
     private static final String GATE_BOOK = "first_gate/last_record";
     private static final String DEN_CLUE = "den";
@@ -98,7 +96,7 @@ public final class Errands {
     private static final int[] PRINTS_BEYOND = {4, 8};
     private static final List<Outpost> RAISED_OUTPOSTS = List.of(new Outpost(OUTPOST, "brannoc", -40), new Outpost(RITE, "novice", 40), new Outpost(BRAM, "bram_son", 0));
     private static final List<Wayside> WAYSIDES = List.of(new Wayside(DEN, 0), new Wayside(BUNDLE, 20), new Wayside(LAST_BUNDLE, -20),
-            new Wayside(NEVER_SLEEPS, 0), new Wayside(NEST, 0), new Wayside(FIRST_GATE, 0));
+            new Wayside(NEVER_SLEEPS, 0), new Wayside(FIRST_GATE, 0));
     private static final TagKey<Structure> VILLAGES = TagKey.create(Registries.STRUCTURE, Wayfarer.id("owners/village"));
     static final TagKey<Structure> OUTPOSTS = TagKey.create(Registries.STRUCTURE, Wayfarer.id("owners/outpost"));
     private static final Bundled<JsonObject> PLAN = Bundled.json("/wayfarer/errands.json");
@@ -161,11 +159,10 @@ public final class Errands {
                     LOGGER.info("the outpost for {} will stand at {}", outpost.person(), site);
                 }
             }
-            case DEN, BUNDLE, LAST_BUNDLE, NEVER_SLEEPS, NEST, FIRST_GATE -> {
+            case DEN, BUNDLE, LAST_BUNDLE, NEVER_SLEEPS, FIRST_GATE -> {
                 Wayside wayside = WAYSIDES.stream().filter(place -> place.name().equals(name)).findFirst().orElseThrow();
                 if (progress.place(name + SITE).isEmpty()) {
                     BlockPos site = switch (name) {
-                        case NEST -> Act3.high(server, from);
                         case NEVER_SLEEPS -> fitting(server, from, ahead, Errands::grass, wayside.bias())
                                 .or(() -> fitting(server, from, ahead * 2, Errands::grass, wayside.bias())).orElseGet(() -> ahead(server, from, ahead, Errands::grass, 0));
                         case DEN, BUNDLE, LAST_BUNDLE -> ahead(server, from, ahead / 2, (biome, at) -> !Unseen.snowy(biome, at), wayside.bias());
@@ -204,7 +201,7 @@ public final class Errands {
         return switch (name) {
             case MISSING, SETTLED, BURNING -> progress.place(name + BUILT).isPresent();
             case OUTPOST, RITE, BRAM -> RAISED_OUTPOSTS.stream().filter(raised -> raised.name().equals(name)).anyMatch(raised -> progress.place("seat_" + raised.person()).isPresent());
-            case DEN, BUNDLE, LAST_BUNDLE, NEVER_SLEEPS, NEST, FIRST_GATE -> progress.place(name + BUILT).isPresent();
+            case DEN, BUNDLE, LAST_BUNDLE, NEVER_SLEEPS, FIRST_GATE -> progress.place(name + BUILT).isPresent();
             case CAIRNS -> progress.place(CAIRNS_ORIGIN).isPresent();
             case SEAL -> progress.place(SEAL_ORIGIN).isPresent();
             default -> false;
@@ -257,15 +254,10 @@ public final class Errands {
             seal(server, level, site);
             HallSearch.release(level, site);
         });
-        if (progress.place(SEAL_ORIGIN).isPresent() && progress.place(SEAL_OPEN).isEmpty() && opened(progress)
+        if (progress.place(SEAL_ORIGIN).isPresent() && progress.place(SEAL_OPEN).isEmpty() && progress.past(SEAL_QUEST, SEAL_MARKS)
                 && level.isLoaded(progress.place(SEAL_ORIGIN).get())) {
             crumble(server, level);
         }
-    }
-
-    private static boolean opened(Progress progress) {
-        return progress.done(SEAL_QUEST) || progress.open(SEAL_QUEST) && Story.get().quest(SEAL_QUEST)
-                .map(quest -> progress.step(SEAL_QUEST) > quest.steps().stream().map(Story.Step::id).toList().indexOf(SEAL_MARKS)).orElse(false);
     }
 
     private static BlockPos surface(ServerLevel level, BlockPos at) {
@@ -292,7 +284,7 @@ public final class Errands {
         return biome.is(BiomeTags.IS_SAVANNA) || biome.is(Tags.Biomes.IS_PLAINS);
     }
 
-    private static Optional<BlockPos> fitting(MinecraftServer server, BlockPos from, int distance, BiPredicate<Holder<Biome>, BlockPos> fits, int bias) {
+    static Optional<BlockPos> fitting(MinecraftServer server, BlockPos from, int distance, BiPredicate<Holder<Biome>, BlockPos> fits, int bias) {
         BlockPos found = ahead(server, from, distance, fits, bias);
         ServerLevel level = Engine.overworld(server);
         Unseen.Heights heights = new Unseen.Heights(level);
@@ -305,7 +297,7 @@ public final class Errands {
                 .map(goal -> Vec3.atLowerCornerOf(goal.subtract(from)).multiply(1, 0, 1)).filter(way -> way.lengthSqr() > 1).map(Vec3::normalize);
     }
 
-    private static BlockPos ahead(MinecraftServer server, BlockPos from, int distance, BiPredicate<Holder<Biome>, BlockPos> fits, int bias) {
+    static BlockPos ahead(MinecraftServer server, BlockPos from, int distance, BiPredicate<Holder<Biome>, BlockPos> fits, int bias) {
         ServerLevel level = Engine.overworld(server);
         Vec3 way = pull(server, from).orElseGet(() -> Caravan.way(server)).yRot((float) Math.toRadians(bias));
         Unseen.Heights heights = new Unseen.Heights(level);
@@ -529,11 +521,6 @@ public final class Errands {
             case NEVER_SLEEPS -> {
                 horse(level, ground);
                 yield ground;
-            }
-            case NEST -> {
-                BlockPos origin = Camps.place(level, NEST_TEMPLATE, ground, Rotation.NONE);
-                JsonArray centre = PLAN.get().getAsJsonObject("nest").getAsJsonArray("centre");
-                yield origin.offset(Prologue.vector(centre));
             }
             case FIRST_GATE -> gate(level, Objects.requireNonNull(hollowing).start());
             default -> throw new IllegalStateException("errands have no wayside place " + name);

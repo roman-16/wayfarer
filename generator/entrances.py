@@ -301,32 +301,6 @@ def cold(cover, wall):
     scatter(cover, ["minecraft:snow"], 0.8, "cold")
 
 
-def corrupted(cover, wall):
-    knoll(
-        cover,
-        "minecraft:grass_block",
-        m("corrupted/soil", [("dirt", 70), ("coarse_dirt", 30)]),
-        crag=m("corrupted/stone", [("cobblestone", 40), ("andesite", 30), ("mossy_cobblestone", 30)]),
-        peak=4.0,
-        slope=0.75,
-        floor="minecraft:coarse_dirt",
-    )
-    c, last = cover.middle, cover.width - 1
-    for x, height in ((c - 2, 2), (c + 2, 1)):
-        for y in range(height + 1):
-            cover.set((x, y, last), wall)
-        cover.set((x, height + 1, last), "minecraft:moss_carpet")
-    for z in (last - 1, last - 2):
-        cover.set((c + 4, (cover.surface(c + 4, z) or 0) + 1, z), "minecraft:stripped_acacia_log", axis="z")
-    tree(cover, c + 2, c - 2, "minecraft:acacia_log", "minecraft:acacia_leaves", height=4, radius=2)
-    scatter(
-        cover,
-        ["minecraft:short_grass", "minecraft:short_grass", "minecraft:tall_grass", "minecraft:dead_bush"],
-        0.45,
-        "corrupted",
-    )
-
-
 def cryptic(cover, wall):
     rock = m("cryptic/rock", [("stone", 45), ("andesite", 25), ("cobblestone", 20), ("mossy_cobblestone", 10)])
     knoll(
@@ -400,46 +374,6 @@ def evil(cover, wall):
     )
 
 
-def exotic(cover, wall):
-    bands = [
-        "orange_terracotta",
-        "terracotta",
-        "red_terracotta",
-        "white_terracotta",
-        "orange_terracotta",
-        "brown_terracotta",
-    ]
-
-    class Banded(Material):
-        def at(self, pos, age=None):
-            return (
-                f"minecraft:{bands[pos[1] % len(bands)]}"
-                if coherent("exotic/band", pos) > 0.3
-                else "minecraft:red_sandstone"
-            )
-
-    banded = Banded("exotic/banded", [("minecraft:terracotta", 1)])
-    _, mouth = knoll(
-        cover,
-        m("exotic/sand", [("red_sand", 85), ("red_sandstone", 15)]),
-        banded,
-        crag=banded,
-        support=m("exotic/bed", [("red_sandstone", 70), ("cut_red_sandstone", 30)]),
-        peak=4.8,
-        slope=0.85,
-        rough=1.1,
-        craggy=0.4,
-        floor="minecraft:red_sand",
-    )
-    c = cover.middle
-    for x in (c - 1, c + 1):
-        cover.set((x, 1, mouth), "minecraft:chiseled_red_sandstone")
-        cover.set((x, 2, mouth), "minecraft:cut_red_sandstone")
-    cover.set((c, 3, mouth), "minecraft:cut_red_sandstone")
-    cover.set((c - 1, 3, mouth), "minecraft:cut_red_sandstone_slab", type="bottom", waterlogged=False)
-    scatter(cover, ["minecraft:dead_bush"], 0.2, "exotic")
-
-
 def lost(cover, wall):
     _, mouth = knoll(
         cover,
@@ -460,44 +394,6 @@ def lost(cover, wall):
     tree(cover, c - 2, c - 1, "minecraft:birch_log", "minecraft:birch_leaves", height=5, radius=2)
     scatter(
         cover, ["minecraft:short_grass", "minecraft:fern", "minecraft:short_grass", "minecraft:oak_leaves"], 0.5, "lost"
-    )
-
-
-def magical(cover, wall):
-    ground(
-        cover,
-        "minecraft:grass_block",
-        m("magical/floor", [("podzol", 45), ("rooted_dirt", 25), ("coarse_dirt", 15), ("moss_block", 15)]),
-        spread=0.9,
-    )
-    hatch(cover, "minecraft:dark_oak_trapdoor")
-    c, low, high = cover.middle, cover.low, cover.high
-    for x, z in cover.cells():
-        if not cover.shaft(x, z) or cover.interior(x, z) or x in (low, high) and z in (low, high) or (x, z) == (c, low):
-            continue
-        height = 1 + int(noise("magical", "stump", x, z) * 4)
-        for y in range(1, height + 1):
-            cover.set((x, y, z), "minecraft:dark_oak_log", axis="y")
-    for x, z, axis in (
-        (low - 1, c + 1, "x"),
-        (low - 2, c + 1, "x"),
-        (high + 1, c - 1, "x"),
-        (c - 1, high + 1, "z"),
-        (c + 1, low - 1, "z"),
-    ):
-        cover.set((x, 1, z), "minecraft:dark_oak_log", axis=axis)
-    for x, z in ((c - 1, c - 1), (c + 1, c), (c - 1, c + 1)):
-        cover.set((x, 0, z), "minecraft:podzol")
-        cover.plant(
-            (x, 1, z),
-            "minecraft:red_mushroom" if noise("magical", "fungus", x, z) < 0.5 else "minecraft:brown_mushroom",
-        )
-    cover.set((c + 1, 3, c + 1), "minecraft:cobweb")
-    scatter(
-        cover,
-        ["minecraft:fern", "minecraft:short_grass", "minecraft:brown_mushroom", "minecraft:dark_oak_leaves"],
-        0.4,
-        "magical",
     )
 
 
@@ -549,73 +445,12 @@ def rogue(cover, wall):
     )
 
 
-def undead(cover, wall):
-    ground(
-        cover,
-        m("undead/forest", [("podzol", 45), ("grass_block", 35), ("coarse_dirt", 20)]),
-        m("undead/dug", [("coarse_dirt", 45), ("rooted_dirt", 35), ("podzol", 20)]),
-        spread=0.7,
-    )
-    hatch(cover, "minecraft:spruce_trapdoor")
-    c = cover.middle
-    cover.carve([(c, 0, c + 1)])
-    cover.t.set((c, 0, c + 1), "minecraft:ladder", facing="north", waterlogged=False)
-    for x in (c - 1, c + 1):
-        for z in (c, c + 1):
-            cover.set((x, 1, z), m("undead/mound", [("coarse_dirt", 50), ("rooted_dirt", 50)]))
-    cover.set((c, 1, c - 1), "minecraft:smooth_stone_slab", type="bottom", waterlogged=False)
-    cover.set((c, 1, c + 2), "minecraft:mossy_stone_brick_wall")
-    cover.set((c, 2, c + 2), "minecraft:mossy_stone_brick_wall")
-    for x, z in ((c - 3, c - 3), (c + 3, c - 2)):
-        cover.plant((x, 1, z), "minecraft:mossy_cobblestone_wall")
-    cover.plant((c + 3, 1, c + 3), "minecraft:mossy_cobblestone")
-    for z in range(c - 3, c):
-        cover.plant((c - 3, 1, z + 4), "minecraft:spruce_log", axis="z")
-    scatter(
-        cover,
-        ["minecraft:fern", "minecraft:lily_of_the_valley", "minecraft:short_grass", "minecraft:fern"],
-        0.45,
-        "undead",
-    )
-
-
-def witch(cover, wall):
-    ground(
-        cover,
-        m("witch/marsh", [("grass_block", 70), ("mud", 20), ("moss_block", 10)]),
-        m("witch/bog", [("mud", 45), ("muddy_mangrove_roots", 25), ("moss_block", 20), ("grass_block", 10)]),
-        spread=0.8,
-    )
-    hatch(cover, "minecraft:mangrove_trapdoor")
-    c = cover.middle
-    for x, y, z in ((c - 1, 1, c + 2), (c - 1, 2, c + 2), (c, 1, c + 2), (c + 1, 1, c + 2), (c + 2, 1, c + 1)):
-        cover.set((x, y, z), "minecraft:mangrove_roots", waterlogged=False)
-    for x in range(c - 3, c):
-        cover.set((x, 1, c - 2), "minecraft:mangrove_log", axis="x")
-        cover.plant((x, 2, c - 2), "minecraft:moss_carpet")
-    cover.set((c - 2, 0, c - 2), "minecraft:cauldron")
-    if cover.solid((c + 3, 0, c - 3)):
-        cover.set((c + 3, 1, c - 3), "minecraft:oak_fence")
-        cover.set((c + 3, 2, c - 3), "minecraft:oak_fence")
-    scatter(
-        cover,
-        ["minecraft:blue_orchid", "minecraft:moss_carpet", "minecraft:short_grass", "minecraft:short_grass"],
-        0.4,
-        "witch",
-    )
-
-
 ENTRANCES = {
     "black": black,
     "cold": cold,
-    "corrupted": corrupted,
     "cryptic": cryptic,
     "evil": evil,
-    "exotic": exotic,
     "lost": lost,
-    "magical": magical,
     "old": old,
     "rogue": rogue,
-    "undead": undead,
-    "witch": witch,
 }

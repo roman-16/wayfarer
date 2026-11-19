@@ -3,6 +3,7 @@ package io.github.roman16.wayfarer.client;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.github.roman16.wayfarer.Bundled;
 import io.github.roman16.wayfarer.Music;
 import io.github.roman16.wayfarer.Narration;
 import io.github.roman16.wayfarer.client.stamp.Stamp;
@@ -38,6 +39,7 @@ public final class Ending {
     private static final String QUOTE = "\"";
     private static final int MILLIS_PER_SECOND = 1000;
     private static final Field SKIN_LOOKUP = skinLookup();
+    private static final Bundled<JsonObject> CREDITS = Bundled.json("/wayfarer/credits.json");
     private static final Map<UUID, ResourceLocation> skins = new HashMap<>();
     @Nullable
     private static Supplier<Screen> gone;
@@ -117,9 +119,12 @@ public final class Ending {
     }
 
     private static List<Leaf> credits() {
+        JsonObject credits = CREDITS.get();
         return List.of(new Leaf(Stamp.display(Component.translatable("wayfarer.credits.title").getString()), List.of()),
                 new Leaf(null, List.of(Component.translatable("wayfarer.credits.made"))),
-                new Leaf(null, List.of(Component.translatable("wayfarer.credits.with"))),
+                new Leaf(Component.translatable("wayfarer.credits.music"), credits.getAsJsonArray("music").asList().stream()
+                        .map(piece -> (Component) Component.literal(piece.getAsString())).toList()),
+                new Leaf(null, List.of(Component.translatable("wayfarer.credits.with", credits.get("mods").getAsInt()))),
                 new Leaf(null, List.of(Component.translatable("wayfarer.credits.last"))));
     }
 

@@ -6,6 +6,7 @@ import io.github.roman16.wayfarer.Clock;
 import io.github.roman16.wayfarer.Nights;
 import io.github.roman16.wayfarer.Sea;
 import io.github.roman16.wayfarer.Waves;
+import io.github.roman16.wayfarer.WorldShape;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,17 +23,26 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.Drowned;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 
@@ -67,6 +77,11 @@ public final class Voyage {
     private static final String SETTLED = "settled";
     private static final int SINKING = 2;
     private static final double STATION_PULL = 0.25;
+    private static final double CATCH_UP = 1;
+    private static final int APPROACH_TURN = 30;
+    private static final int HALF_TURN = 180;
+    private static final int SMALL_SHIPS_MEND_LEAST = 5;
+    private static final int SMALL_SHIPS_MEND_SPREAD = 5;
     private static final int TICKS_PER_SECOND = 20;
     @Nullable
     private static CompletableFuture<BlockPos> searching;
@@ -84,12 +99,16 @@ public final class Voyage {
         BlockPos from = progress.place(Shipyard.NAME).or(() -> progress.place(Caravan.NAME)).orElseGet(level::getSharedSpawnPos);
         Vec3 flat = new Vec3(from.getX(), 0, from.getZ());
         Vec3 out = flat.lengthSqr() < 1 ? Caravan.way(server) : flat.normalize();
+        Optional<WorldShape.Coasts> coasts = WorldShape.coasts(level);
+        if (coasts.isEmpty()) {
+            LOGGER.error("the far shore's search failed: the overworld has no world shape");
+            return;
+        }
         Unseen.Heights heights = new Unseen.Heights(level);
         int sea = level.getChunkSource().getGenerator().getSeaLevel();
         Balance.World world = Balance.get().world();
-        int beyond = world.homeBlocks() + world.seaBlocks() - world.shoreBlocks();
-        int farthest = world.homeBlocks() + world.seaBlocks() + world.coastBlocks();
-        searching = CompletableFuture.supplyAsync(() -> landfall(heights, from, out, sea, beyond, farthest), Util.backgroundExecutor());
+        searching = CompletableFuture.supplyAsync(() -> landfall(heights, from, out, sea, coasts.get(), world.coastBlocks()),
+                Util.backgroundExecutor());
     }
 
     static void reset() {
@@ -115,8 +134,39 @@ public final class Voyage {
         Vec3 want = ship.position().add(side.x, 0, side.z);
         Vec3 off = new Vec3(want.x - boat.getX(), 0, want.z - boat.getZ());
         if (off.lengthSqr() > 1) {
-            boat.setPos(boat.getX() + off.x * STATION_PULL, boat.getY(), boat.getZ() + off.z * STATION_PULL);
+            Vec3 step = off.scale(STATION_PULL);
+            if (step.length() > CATCH_UP) {
+                step = step.normalize().scale(CATCH_UP);
+            }
+            boat.setPos(boat.getX() + step.x, boat.getY(), boat.getZ() + step.z);
             boat.setYRot(ship.getYRot());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onMend(PlayerInteractEvent.EntityInteract event) {
+        Player player = event.getEntity();
+        if (station == null || !event.getTarget().getUUID().equals(station) || !(event.getTarget() instanceof Boat hull) || hull.getDamage() <= 0
+                || !event.getItemStack().is(Items.IRON_NUGGET) || !player.getInventory().contains(stack -> stack.is(ItemTags.PLANKS))) {
+            return;
+        }
+        event.setCanceled(true);
+        event.setCancellationResult(InteractionResult.SUCCESS);
+        if (event.getLevel().isClientSide()) {
+            return;
+        }
+        int mended = SMALL_SHIPS_MEND_LEAST + hull.getRandom().nextInt(SMALL_SHIPS_MEND_SPREAD);
+        hull.setDamage(Math.max(0, hull.getDamage() - mended));
+        hull.level().playSound(null, hull.getX(), hull.getY() + 1, hull.getZ(), SoundEvents.WOOD_HIT, SoundSource.BLOCKS, 1, 0.9f + 0.2f * hull.getRandom().nextFloat());
+        hull.level().playSound(null, hull.getX(), hull.getY() + 2, hull.getZ(), SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1, 0.9f + 0.2f * hull.getRandom().nextFloat());
+        if (!player.isCreative()) {
+            event.getItemStack().shrink(1);
+            for (ItemStack stack : player.getInventory().items) {
+                if (stack.is(ItemTags.PLANKS)) {
+                    stack.shrink(1);
+                    break;
+                }
+            }
         }
     }
 
@@ -172,15 +222,18 @@ public final class Voyage {
         LOGGER.info("the far shore settles on dry land at {}", best);
     }
 
-    private static BlockPos landfall(Unseen.Heights heights, BlockPos from, Vec3 out, int sea, int beyond, int farthest) {
+    private static BlockPos landfall(Unseen.Heights heights, BlockPos from, Vec3 out, int sea, WorldShape.Coasts coasts, int coast) {
         Vec3 flat = Vec3.atLowerCornerOf(from).multiply(1, 0, 1);
         BlockPos nearest = null;
         for (int turned = -WIDEST_TURN; turned <= WIDEST_TURN; turned += TURN_STEP) {
             Vec3 way = out.yRot((float) Math.toRadians(turned));
-            for (int distance = OFFSHORE; flat.add(way.scale(distance)).length() <= farthest; distance += MARCH) {
+            for (int distance = OFFSHORE; ; distance += MARCH) {
                 Vec3 point = flat.add(way.scale(distance));
+                if (point.length() > coasts.far(WorldShape.Coasts.angle(point.x, point.z)) + coast) {
+                    break;
+                }
                 BlockPos at = BlockPos.containing(point);
-                if (point.length() < beyond || heights.biome(at.getX(), sea, at.getZ()).is(BiomeTags.IS_OCEAN)) {
+                if (!coasts.beyond(at) || heights.biome(at.getX(), sea, at.getZ()).is(BiomeTags.IS_OCEAN) || heights.wet(at.getX(), at.getZ())) {
                     continue;
                 }
                 BlockPos land = at;
@@ -200,7 +253,7 @@ public final class Voyage {
         if (nearest != null) {
             return nearest.atY(heights.surface(nearest.getX(), nearest.getZ()));
         }
-        BlockPos far = BlockPos.containing(flat.add(out.scale(beyond - flat.length())));
+        BlockPos far = BlockPos.containing(out.scale(coasts.far(WorldShape.Coasts.angle(out.x, out.z))));
         return far.atY(sea);
     }
 
@@ -286,27 +339,30 @@ public final class Voyage {
     private static void start(MinecraftServer server, Engine.Active active, ServerLevel level, ServerPlayer sailor) {
         Balance.Voyage voyage = Balance.get().voyage();
         Entity ship = sailor.getVehicle();
-        Vec3 side = Vec3.directionFromRotation(0, (ship == null ? sailor : ship).getYRot() + 90).scale(voyage.besideBlocks());
-        Vec3 at = (ship == null ? sailor : ship).position().add(side);
+        Entity leading = ship == null ? sailor : ship;
+        Vec3 side = Vec3.directionFromRotation(0, leading.getYRot() + 90).scale(voyage.besideBlocks());
+        Vec3 alongside = leading.position().add(side);
         Optional<Entity> made = EntityType.byString(COG.toString()).map(type -> type.create(level));
         if (made.isEmpty() || !(made.get() instanceof Boat boat)) {
             server.getPlayerList().broadcastSystemMessage(Component.literal("the crossing failed: Small Ships has no " + COG).withStyle(ChatFormatting.RED), false);
             return;
         }
         int sea = level.getChunkSource().getGenerator().getSeaLevel();
-        boat.moveTo(at.x, sea - 0.4, at.z, (ship == null ? sailor : ship).getYRot(), 0);
+        Vec3 at = astern(level, leading.getYRot(), alongside, voyage.asternBlocks(), sea);
+        boat.moveTo(at.x, sea - 0.4, at.z, leading.getYRot(), 0);
         boat.setCustomName(Component.translatable("wayfarer.voyage.boat"));
         level.addFreshEntity(boat);
         for (String person : ABOARD) {
             Entity body = People.person(level, person, boat.position(), boat.getYRot(), "sitting");
             body.startRiding(boat, true);
         }
+        boat.getPassengers().forEach(boat::positionRider);
         CompoundTag scratch = active.scratch();
         scratch.putBoolean(STARTED, true);
         scratch.putUUID(BOAT, boat.getUUID());
         station = boat.getUUID();
         scratch.putLong(CALM_AT, level.getGameTime());
-        Sea.rise(level, boat.position().add(side.normalize().scale(voyage.riseBlocks())), boat).ifPresent(beast -> scratch.putUUID(BEAST, beast.getUUID()));
+        Sea.rise(level, alongside.add(side.normalize().scale(voyage.riseBlocks())), boat).ifPresent(beast -> scratch.putUUID(BEAST, beast.getUUID()));
         Progress.of(server).setDirty();
         LOGGER.info("the night on the water begins at {}, Maud's boat beside {}", boat.blockPosition(), sailor.getScoreboardName());
     }
@@ -325,6 +381,20 @@ public final class Voyage {
         if (boat != null && beast != null) {
             Sea.hunt(beast, boat);
         }
+    }
+
+    private static Vec3 astern(ServerLevel level, float heading, Vec3 alongside, int blocks, int sea) {
+        for (int turn = 0; turn <= HALF_TURN; turn += APPROACH_TURN) {
+            for (int side : new int[] {1, -1}) {
+                Vec3 from = alongside.add(Vec3.directionFromRotation(0, heading + HALF_TURN + side * turn).scale(blocks));
+                BlockPos water = BlockPos.containing(from.x, sea - 1, from.z);
+                if (level.getChunkSource().getChunkNow(water.getX() >> 4, water.getZ() >> 4) != null && level.getFluidState(water).is(FluidTags.WATER)
+                        && level.getBlockState(water.above()).isAir()) {
+                    return from;
+                }
+            }
+        }
+        return alongside;
     }
 
     private static void rise(MinecraftServer server, ServerLevel level, Entity boat, int wave, Balance.Voyage voyage) {

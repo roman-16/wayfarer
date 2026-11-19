@@ -96,8 +96,5 @@
     "loop_ticks": 554,
     "reach": 128,
     "slider": "ambient"
-  },
-  "true_sight": {
-    "slider": "players"
   }
 }

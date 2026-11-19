@@ -38,14 +38,6 @@
       "required": false
     },
     {
-      "id": "immersive_aircraft:biplane",
-      "required": false
-    },
-    {
-      "id": "immersive_aircraft:quadrocopter",
-      "required": false
-    },
-    {
       "id": "minecraft:anvil",
       "required": false
     },
@@ -59,6 +51,10 @@
     },
     {
       "id": "minecraft:enchanting_table",
+      "required": false
+    },
+    {
+      "id": "minecraft:elytra",
       "required": false
     },
     {

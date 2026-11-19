@@ -1,0 +1,1480 @@
+{
+  "mods/3dskinlayers": {
+    "authors": [
+      "tr7zw"
+    ],
+    "licence": "tr7zw Protective License (https://github.com/tr7zw/3d-Skin-Layers/blob/1.17/LICENSE)",
+    "page": "https://modrinth.com/mod/3dskinlayers",
+    "project": "zV5r3pPn"
+  },
+  "mods/ambientsounds": {
+    "authors": [
+      "creativemd"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/ambientsounds",
+    "project": "fM515JnW"
+  },
+  "mods/amendments": {
+    "authors": [
+      "MehVahdJukaar",
+      "Plantkillable"
+    ],
+    "licence": "Supplementaries Team License 1.1 (https://github.com/MehVahdJukaar/Supplementaries-Team-License/blob/main/LICENSE.md)",
+    "page": "https://modrinth.com/mod/amendments",
+    "project": "6iTJugQR"
+  },
+  "mods/appleskin": {
+    "authors": [
+      "squeek502"
+    ],
+    "licence": "Unlicense",
+    "page": "https://modrinth.com/mod/appleskin",
+    "project": "EsAfCjCV"
+  },
+  "mods/architectury-api": {
+    "authors": [
+      "architectury"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/architectury-api",
+    "project": "lhGA9TYQ"
+  },
+  "mods/artifacts": {
+    "authors": [
+      "ochotonida",
+      "florens"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/artifacts",
+    "project": "P0Mu4wcQ"
+  },
+  "mods/async-locator-refined": {
+    "authors": [
+      "alvaro842"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/async-locator-refined",
+    "project": "LUIHK4LD"
+  },
+  "mods/atlas-lib": {
+    "authors": [
+      "Smileycorp"
+    ],
+    "licence": "LGPL-2.1-only",
+    "page": "https://modrinth.com/mod/atlas-lib",
+    "project": "G6VHtQr4"
+  },
+  "mods/attract-to-sound": {
+    "authors": [
+      "Sylsatra"
+    ],
+    "licence": "GPL-3.0-only",
+    "page": "https://modrinth.com/mod/attract-to-sound",
+    "project": "zZluixcp"
+  },
+  "mods/auroras": {
+    "authors": [
+      "Verph"
+    ],
+    "licence": "BSD-2-Clause",
+    "page": "https://modrinth.com/mod/auroras",
+    "project": "Q7VPWopC"
+  },
+  "mods/balm": {
+    "authors": [
+      "BlayTheNinth"
+    ],
+    "licence": "All Rights Reserved (https://mods.twelveiterations.com/permissions)",
+    "page": "https://modrinth.com/mod/balm",
+    "project": "MBAkmtvl"
+  },
+  "mods/better-combat": {
+    "authors": [
+      "ZsoltMolnarrr"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/better-combat",
+    "project": "5sy6g3kz"
+  },
+  "mods/bl4cks-sit": {
+    "authors": [
+      "bl4ckscor3"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/bl4cks-sit",
+    "project": "VKXzIykF"
+  },
+  "mods/bookshelf-lib": {
+    "authors": [
+      "Darkhax"
+    ],
+    "licence": "LGPL-2.1-only",
+    "page": "https://modrinth.com/mod/bookshelf-lib",
+    "project": "uy4Cnpcm"
+  },
+  "mods/c2me-neoforge": {
+    "authors": [
+      "ishland"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/c2me-neoforge",
+    "project": "COlSi5iR"
+  },
+  "mods/campsite-structures": {
+    "authors": [
+      "ner07ca"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/campsite-structures",
+    "project": "gA6575EW"
+  },
+  "mods/chatanimation": {
+    "authors": [
+      "Ezzenix"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/chatanimation",
+    "project": "DnNYdJsx"
+  },
+  "mods/cloth-config": {
+    "authors": [
+      "shedaniel"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/cloth-config",
+    "project": "9s6osm5g"
+  },
+  "mods/collective": {
+    "authors": [
+      "Serilum"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/collective",
+    "project": "e0M1UDsY"
+  },
+  "mods/combat-roll": {
+    "authors": [
+      "ZsoltMolnarrr"
+    ],
+    "licence": "GPL-3.0-only",
+    "page": "https://modrinth.com/mod/combat-roll",
+    "project": "wGKYL7st"
+  },
+  "mods/controlling": {
+    "authors": [
+      "jaredlll08"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/controlling",
+    "project": "xv94TkTM"
+  },
+  "mods/corgilib": {
+    "authors": [
+      "CorgiTaco",
+      "JT122406"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/corgilib",
+    "project": "ziOp6EO8"
+  },
+  "mods/coroutil": {
+    "authors": [
+      "Corosus"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/coroutil",
+    "project": "rLLJ1OZM"
+  },
+  "mods/creativecore": {
+    "authors": [
+      "creativemd"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/creativecore",
+    "project": "OsZiaDHq"
+  },
+  "mods/cristel-lib": {
+    "authors": [
+      "Cristelknight"
+    ],
+    "licence": "CC-BY-NC-ND-4.0",
+    "page": "https://modrinth.com/mod/cristel-lib",
+    "project": "cl223EMc"
+  },
+  "mods/ct-overhaul-village": {
+    "authors": [
+      "ChoiceTheorem"
+    ],
+    "licence": "CC-BY-NC-ND-4.0",
+    "page": "https://modrinth.com/mod/ct-overhaul-village",
+    "project": "fgmhI8kH"
+  },
+  "mods/curios": {
+    "authors": [
+      "TheIllusiveC4"
+    ],
+    "licence": "LGPL-3.0-or-later",
+    "page": "https://modrinth.com/mod/curios",
+    "project": "vvuO3ImH"
+  },
+  "mods/data-anchor": {
+    "authors": [
+      "CorgiTaco"
+    ],
+    "licence": "MPL-2.0",
+    "page": "https://modrinth.com/mod/data-anchor",
+    "project": "z2XEADmE"
+  },
+  "mods/default-options": {
+    "authors": [
+      "BlayTheNinth"
+    ],
+    "licence": "All Rights Reserved (https://mods.twelveiterations.com/permissions)",
+    "page": "https://modrinth.com/mod/default-options",
+    "project": "WEg59z5b"
+  },
+  "mods/distant-horizons-seedgen": {
+    "authors": [
+      "mobiusmeansbusiness"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/distant-horizons-seedgen",
+    "project": "iUGLCJTI"
+  },
+  "mods/distant-thunders": {
+    "authors": [
+      "pustoykishka"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/distant-thunders",
+    "project": "cY4e8fDt"
+  },
+  "mods/distanthorizons": {
+    "authors": [
+      "jeseibel",
+      "cola98765",
+      "coolGi",
+      "jckf",
+      "Karnatour",
+      "Morippi",
+      "Ran",
+      "s809",
+      "TomTheFurry",
+      "yeshi__"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/distanthorizons",
+    "project": "uCdwusMi"
+  },
+  "mods/dungeons-and-taverns": {
+    "authors": [
+      "NovaWostra",
+      "Konci",
+      "MiziraGamez",
+      "Whity"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/dungeons-and-taverns",
+    "project": "tpehi7ww"
+  },
+  "mods/dungeons-and-taverns-ancient-city-overhaul": {
+    "authors": [
+      "NovaWostra",
+      "MiziraGamez"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/dungeons-and-taverns-ancient-city-overhaul",
+    "project": "DNuNq5bb"
+  },
+  "mods/dungeons-and-taverns-pillager-outpost-overhaul": {
+    "authors": [
+      "NovaWostra"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/dungeons-and-taverns-pillager-outpost-overhaul",
+    "project": "QIt10I7z"
+  },
+  "mods/dungeons-and-taverns-woodland-mansion-overhaul": {
+    "authors": [
+      "NovaWostra"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/dungeons-and-taverns-woodland-mansion-overhaul",
+    "project": "3GfxWFCy"
+  },
+  "mods/dynamic-fps": {
+    "authors": [
+      "juliand665",
+      "LostLuma"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/dynamic-fps",
+    "project": "LQ3K71Q1"
+  },
+  "mods/easy-npc": {
+    "authors": [
+      "Kaworru"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/easy-npc",
+    "project": "CgGEe1h3"
+  },
+  "mods/easy-npc-config-ui": {
+    "authors": [
+      "Kaworru"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/easy-npc-config-ui",
+    "project": "uTGjf7vA"
+  },
+  "mods/easy-npc-core": {
+    "authors": [
+      "Kaworru"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/easy-npc-core",
+    "project": "Epm6R3P2"
+  },
+  "mods/edf-remastered": {
+    "authors": [
+      "MrGenie151"
+    ],
+    "licence": "GPL-3.0-only",
+    "page": "https://modrinth.com/mod/edf-remastered",
+    "project": "HQsBdHGd"
+  },
+  "mods/enchantment-descriptions": {
+    "authors": [
+      "Darkhax"
+    ],
+    "licence": "LGPL-2.1-only",
+    "page": "https://modrinth.com/mod/enchantment-descriptions",
+    "project": "UVtY3ZAC"
+  },
+  "mods/endrem": {
+    "authors": [
+      "jack-bagel",
+      "maxmitchelson"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/endrem",
+    "project": "ZJTGwAND"
+  },
+  "mods/enhanced-celestials-2-core": {
+    "authors": [
+      "CorgiTaco"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/enhanced-celestials-2-core",
+    "project": "ugCWUHV9"
+  },
+  "mods/enhanced-celestials-2-default-lunar-events": {
+    "authors": [
+      "CorgiTaco",
+      "LudoCrypt"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/enhanced-celestials-2-default-lunar-events",
+    "project": "19P0GlZk"
+  },
+  "mods/enhanced-celestials-2-shader-support": {
+    "authors": [
+      "CorgiTaco",
+      "SIIV"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/enhanced-celestials-2-shader-support",
+    "project": "6cEnKtmZ"
+  },
+  "mods/entity-model-features": {
+    "authors": [
+      "Traben"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/entity-model-features",
+    "project": "4I1XuqiY"
+  },
+  "mods/entityculling": {
+    "authors": [
+      "tr7zw",
+      "Pelotrio",
+      "vicisacat"
+    ],
+    "licence": "tr7zw Protective License (https://github.com/tr7zw/EntityCulling/blob/1.18/LICENSE-EntityCulling)",
+    "page": "https://modrinth.com/mod/entityculling",
+    "project": "NNAgCjsB"
+  },
+  "mods/entitytexturefeatures": {
+    "authors": [
+      "Traben"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/entitytexturefeatures",
+    "project": "BVzZfTc1"
+  },
+  "mods/euphoria-patches": {
+    "authors": [
+      "SpacEagle17"
+    ],
+    "licence": "MPL-2.0",
+    "page": "https://modrinth.com/mod/euphoria-patches",
+    "project": "4H6sumDB"
+  },
+  "mods/explorify": {
+    "authors": [
+      "bebebea_loste"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/explorify",
+    "project": "HSfsxuTo"
+  },
+  "mods/farmers-delight": {
+    "authors": [
+      "vectorwing"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/farmers-delight",
+    "project": "R2OftAxM"
+  },
+  "mods/ferrite-core": {
+    "authors": [
+      "malte0811"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/ferrite-core",
+    "project": "uXXizFIs"
+  },
+  "mods/friends-and-foes-forge": {
+    "authors": [
+      "faboslav"
+    ],
+    "licence": "CC-BY-NC-ND-4.0",
+    "page": "https://modrinth.com/mod/friends-and-foes-forge",
+    "project": "BOCJKD49"
+  },
+  "mods/fzzy-config": {
+    "authors": [
+      "fzzyhmstrs"
+    ],
+    "licence": "TDL M (https://github.com/fzzyhmstrs/Timefall-Development-Licence-Modified)",
+    "page": "https://modrinth.com/mod/fzzy-config",
+    "project": "hYykXjDp"
+  },
+  "mods/geckolib": {
+    "authors": [
+      "Gecko",
+      "DerToaster98",
+      "KyoSleep",
+      "mchorse",
+      "Tslat",
+      "ZigyTheBird"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/geckolib",
+    "project": "8BmcQJ2H"
+  },
+  "mods/geophilic": {
+    "authors": [
+      "bebebea_loste"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/geophilic",
+    "project": "hl5OLM95"
+  },
+  "mods/glitchcore": {
+    "authors": [
+      "Adubbz"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/glitchcore",
+    "project": "s3dmwKy5"
+  },
+  "mods/gravestone-mod": {
+    "authors": [
+      "henkelmax"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/gravestone-mod",
+    "project": "RYtXKJPr"
+  },
+  "mods/hang-glider": {
+    "authors": [
+      "Fuzs",
+      "LunaPixelStudios"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/hang-glider",
+    "project": "uHWrqYcS"
+  },
+  "mods/healing-campfire": {
+    "authors": [
+      "Serilum"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/healing-campfire",
+    "project": "kOuPUitF"
+  },
+  "mods/horseman": {
+    "authors": [
+      "mortuusars"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/horseman",
+    "project": "qIv5FhAA"
+  },
+  "mods/immediatelyfast": {
+    "authors": [
+      "RaphiMC"
+    ],
+    "licence": "LGPL-3.0-or-later",
+    "page": "https://modrinth.com/mod/immediatelyfast",
+    "project": "5ZwdcRci"
+  },
+  "mods/immersive-hotbar": {
+    "authors": [
+      "DerpDerpling"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/immersive-hotbar",
+    "project": "hsPB5xMD"
+  },
+  "mods/immersive-ui": {
+    "authors": [
+      "SSKirillSS",
+      "catboybinary"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/immersive-ui",
+    "project": "9wv7LuMc"
+  },
+  "mods/improved-mobs": {
+    "authors": [
+      "flemmli97"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/improved-mobs",
+    "project": "23MovWyi"
+  },
+  "mods/inventory-sorter": {
+    "authors": [
+      "cpw"
+    ],
+    "licence": "GPLv3",
+    "page": "https://www.curseforge.com/minecraft/mc-mods/inventory-sorter",
+    "project": "240633"
+  },
+  "mods/invmove": {
+    "authors": [
+      "PieKing1215"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/invmove",
+    "project": "REfW2AEX"
+  },
+  "mods/iris": {
+    "authors": [
+      "coderbot",
+      "IMS"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/iris",
+    "project": "YL57xq9U"
+  },
+  "mods/jade": {
+    "authors": [
+      "Snownee"
+    ],
+    "licence": "CC-BY-NC-SA-4.0",
+    "page": "https://modrinth.com/mod/jade",
+    "project": "nvQzSEkH"
+  },
+  "mods/jei": {
+    "authors": [
+      "mezz"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/jei",
+    "project": "u6dRKJwZ"
+  },
+  "mods/journeymap": {
+    "authors": [
+      "mysticdrew"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/journeymap",
+    "project": "lfHFW1mp"
+  },
+  "mods/kambrik": {
+    "authors": [
+      "ejektaflex"
+    ],
+    "licence": "MPL-2.0",
+    "page": "https://modrinth.com/mod/kambrik",
+    "project": "zfbCkvdZ"
+  },
+  "mods/kiwi": {
+    "authors": [
+      "Snownee",
+      "settingdust"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/kiwi",
+    "project": "ufdDoWPd"
+  },
+  "mods/konkrete": {
+    "authors": [
+      "Keksuccino"
+    ],
+    "licence": "Apache-2.0",
+    "page": "https://modrinth.com/mod/konkrete",
+    "project": "J81TRJWm"
+  },
+  "mods/kotlin-for-forge": {
+    "authors": [
+      "thedarkcolour"
+    ],
+    "licence": "LGPL-2.1-only",
+    "page": "https://modrinth.com/mod/kotlin-for-forge",
+    "project": "ordsPcFz"
+  },
+  "mods/lambdynamiclights": {
+    "authors": [
+      "LambdAurora"
+    ],
+    "licence": "Lambda License (https://github.com/LambdAurora/LambDynamicLights/blob/1.21.5/LICENSE)",
+    "page": "https://modrinth.com/mod/lambdynamiclights",
+    "project": "yBW8D80W"
+  },
+  "mods/lets-do-wildernature": {
+    "authors": [
+      "satisfyu",
+      "CR-055"
+    ],
+    "licence": "Custom (https://github.com/satisfyu/WilderNature/blob/f81df933a3311af496793cef5534fe3e589921c8/License)",
+    "page": "https://modrinth.com/mod/lets-do-wildernature",
+    "project": "AAiRU4aQ"
+  },
+  "mods/lithium": {
+    "authors": [
+      "CaffeineMC"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/lithium",
+    "project": "gvQqBUqZ"
+  },
+  "mods/lithostitched": {
+    "authors": [
+      "Apollo"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/lithostitched",
+    "project": "XaDC71GB"
+  },
+  "mods/lootr": {
+    "authors": [
+      "noobanidus",
+      "embeddedt",
+      "ZestyBlaze"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/lootr",
+    "project": "EltpO5cN"
+  },
+  "mods/lukis-grand-capitals": {
+    "authors": [
+      "lukidonu"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/lukis-grand-capitals",
+    "project": "8Lw09aLb"
+  },
+  "mods/mezzconfig": {
+    "authors": [
+      "mezz"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/mezzconfig",
+    "project": "7tEfOcA7"
+  },
+  "mods/modernfix": {
+    "authors": [
+      "embeddedt"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/modernfix",
+    "project": "nmDcB62a"
+  },
+  "mods/moogs-structure-lib": {
+    "authors": [
+      "FinnDog_123"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/moogs-structure-lib",
+    "project": "1oUDhxuy"
+  },
+  "mods/moogs-voyager-structures": {
+    "authors": [
+      "FinnDog_123",
+      "joshieman"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/moogs-voyager-structures",
+    "project": "OQAgZMH1"
+  },
+  "mods/moonlight": {
+    "authors": [
+      "MehVahdJukaar",
+      "xelbayria"
+    ],
+    "licence": "LGPL with additional dependency clause (https://github.com/MehVahdJukaar/Moonlight/blob/1.20/license.md)",
+    "page": "https://modrinth.com/mod/moonlight",
+    "project": "twkfQtEc"
+  },
+  "mods/more-darkness": {
+    "authors": [
+      "Payangar"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/more-darkness",
+    "project": "ghnOnAJe"
+  },
+  "mods/moreculling": {
+    "authors": [
+      "FX",
+      "1Foxy2"
+    ],
+    "licence": "GPL-3.0-only",
+    "page": "https://modrinth.com/mod/moreculling",
+    "project": "51shyZVL"
+  },
+  "mods/mouse-tweaks": {
+    "authors": [
+      "YaLTeR"
+    ],
+    "licence": "BSD-3-Clause",
+    "page": "https://modrinth.com/mod/mouse-tweaks",
+    "project": "aC3cM3Vq"
+  },
+  "mods/mru": {
+    "authors": [
+      "IMB11",
+      "Cassian"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/mru",
+    "project": "SNVQ2c0g"
+  },
+  "mods/naturalist": {
+    "authors": [
+      "crispytwig",
+      "mattdearga"
+    ],
+    "licence": "Custom (https://github.com/starfish-studios/Naturalist/blob/1.19/LICENSE)",
+    "page": "https://modrinth.com/mod/naturalist",
+    "project": "F8BQNPWX"
+  },
+  "mods/no-hostiles-around-campfire": {
+    "authors": [
+      "Serilum"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/no-hostiles-around-campfire",
+    "project": "EJqeyaVz"
+  },
+  "mods/noisiumed": {
+    "authors": [
+      "imbavirus"
+    ],
+    "licence": "GPL-3.0-only",
+    "page": "https://modrinth.com/mod/noisiumed",
+    "project": "M8MasaZG"
+  },
+  "mods/nomadic-tents": {
+    "authors": [
+      "skyjay1",
+      "Chanicle",
+      "KiriCattus"
+    ],
+    "licence": "GNU General Public License v3",
+    "page": "https://www.curseforge.com/minecraft/mc-mods/nomadic-tents",
+    "project": "238794"
+  },
+  "mods/not-enough-animations": {
+    "authors": [
+      "tr7zw"
+    ],
+    "licence": "tr7zw Protective License (https://github.com/tr7zw/NotEnoughAnimations/blob/main/LICENSE)",
+    "page": "https://modrinth.com/mod/not-enough-animations",
+    "project": "MPCX6s5C"
+  },
+  "mods/nullscape": {
+    "authors": [
+      "Stardust Labs"
+    ],
+    "licence": "Stardust Labs License (https://github.com/Stardust-Labs-MC/license/blob/main/license.txt)",
+    "page": "https://modrinth.com/mod/nullscape",
+    "project": "LPjGiSO4"
+  },
+  "mods/packet-fixer": {
+    "authors": [
+      "TonimatasDEV"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/packet-fixer",
+    "project": "c7m1mi73"
+  },
+  "mods/particle-rain": {
+    "authors": [
+      "PigCart"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/particle-rain",
+    "project": "nrikgvxm"
+  },
+  "mods/particular-reforged": {
+    "authors": [
+      "Leclowndu93150"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/particular-reforged",
+    "project": "pYFUU6cq"
+  },
+  "mods/pick-up-notifier": {
+    "authors": [
+      "Fuzs",
+      "LunaPixelStudios"
+    ],
+    "licence": "MPL-2.0",
+    "page": "https://modrinth.com/mod/pick-up-notifier",
+    "project": "ZX66K16c"
+  },
+  "mods/ping-wheel": {
+    "authors": [
+      "Luken",
+      "RXJpaw"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/ping-wheel",
+    "project": "QQXAdCzh"
+  },
+  "mods/playeranimator": {
+    "authors": [
+      "KosmX",
+      "ZigyTheBird"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/playeranimator",
+    "project": "gedNE4y2"
+  },
+  "mods/prickle": {
+    "authors": [
+      "Darkhax"
+    ],
+    "licence": "LGPL-2.1-only",
+    "page": "https://modrinth.com/mod/prickle",
+    "project": "aaRl8GiW"
+  },
+  "mods/puzzles-lib": {
+    "authors": [
+      "Fuzs"
+    ],
+    "licence": "MPL-2.0",
+    "page": "https://modrinth.com/mod/puzzles-lib",
+    "project": "QAGBst4M"
+  },
+  "mods/raritycore": {
+    "authors": [
+      "Yanbwe"
+    ],
+    "licence": "GPL-3.0-or-later",
+    "page": "https://modrinth.com/mod/raritycore",
+    "project": "EtlqmUU6"
+  },
+  "mods/reactive-music": {
+    "authors": [
+      "CircuitLord"
+    ],
+    "licence": "GPL-3.0-only",
+    "page": "https://modrinth.com/mod/reactive-music",
+    "project": "Bqnfeesx"
+  },
+  "mods/resourceful-config": {
+    "authors": [
+      "Team Resourceful"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/resourceful-config",
+    "project": "M1953qlQ"
+  },
+  "mods/resourceful-lib": {
+    "authors": [
+      "Team Resourceful"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/resourceful-lib",
+    "project": "G1hIVOrD"
+  },
+  "mods/respawning-animals": {
+    "authors": [
+      "Fuzs",
+      "LunaPixelStudios"
+    ],
+    "licence": "MPL-2.0",
+    "page": "https://modrinth.com/mod/respawning-animals",
+    "project": "WnwcSeWc"
+  },
+  "mods/scalablelux": {
+    "authors": [
+      "ishland"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/scalablelux",
+    "project": "Ps1zyz6x"
+  },
+  "mods/searchables": {
+    "authors": [
+      "jaredlll08"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/searchables",
+    "project": "fuuu3xnx"
+  },
+  "mods/serene-seasons": {
+    "authors": [
+      "Adubbz",
+      "Forstride"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/serene-seasons",
+    "project": "e0bNACJD"
+  },
+  "mods/shatterbyte-lib": {
+    "authors": [
+      "SSKirillSS",
+      "catboybinary"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/shatterbyte-lib",
+    "project": "RH2KUdKJ"
+  },
+  "mods/shoulder-surfing-reloaded": {
+    "authors": [
+      "Exopandora"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/shoulder-surfing-reloaded",
+    "project": "kepjj2sy"
+  },
+  "mods/silent-gear": {
+    "authors": [
+      "SilentChaos512"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/silent-gear",
+    "project": "73mSSnCf"
+  },
+  "mods/silent-lib": {
+    "authors": [
+      "SilentChaos512"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/silent-lib",
+    "project": "BQhuHQo4"
+  },
+  "mods/simple-voice-chat": {
+    "authors": [
+      "henkelmax",
+      "BreadLoaf",
+      "Stridey"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/simple-voice-chat",
+    "project": "9eGKb6K1"
+  },
+  "mods/simply-swords": {
+    "authors": [
+      "Timefall Development"
+    ],
+    "licence": "Custom (https://legacy.curseforge.com/project/659887/license)",
+    "page": "https://modrinth.com/mod/simply-swords",
+    "project": "bK3Ubu9p"
+  },
+  "mods/simply-tooltips": {
+    "authors": [
+      "Sweenus"
+    ],
+    "licence": "Timefall Development License 1.2 (https://github.com/Sweenus/simplytooltips/blob/master/LICENSE.txt)",
+    "page": "https://modrinth.com/mod/simply-tooltips",
+    "project": "6avVoBVB"
+  },
+  "mods/small-ships": {
+    "authors": [
+      "talhanation",
+      "metroite"
+    ],
+    "licence": "All Rights Reserved (https://github.com/talhanation/smallships/blob/main/LICENSE.txt)",
+    "page": "https://modrinth.com/mod/small-ships",
+    "project": "rGWEHQrP"
+  },
+  "mods/snow-imprints": {
+    "authors": [
+      "nNined"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/snow-imprints",
+    "project": "UhxJgB1o"
+  },
+  "mods/snow-real-magic": {
+    "authors": [
+      "Snownee",
+      "settingdust"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/snow-real-magic",
+    "project": "iJNje1E8"
+  },
+  "mods/snowy-tents": {
+    "authors": [
+      "SuperWarioModTeam"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/snowy-tents",
+    "project": "dxqKAraL"
+  },
+  "mods/sodium": {
+    "authors": [
+      "CaffeineMC"
+    ],
+    "licence": "Polyform Shield 1.0.0 (https://github.com/CaffeineMC/sodium/blob/dev/LICENSE.md)",
+    "page": "https://modrinth.com/mod/sodium",
+    "project": "AANobbMI"
+  },
+  "mods/sophisticated-backpacks": {
+    "authors": [
+      "P3pp3rF1y"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/sophisticated-backpacks",
+    "project": "TyCTlI4b"
+  },
+  "mods/sophisticated-core": {
+    "authors": [
+      "P3pp3rF1y"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/sophisticated-core",
+    "project": "nmoqTijg"
+  },
+  "mods/sound": {
+    "authors": [
+      "IMB11"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/sound",
+    "project": "ZouiUX7t"
+  },
+  "mods/sound-physics-remastered": {
+    "authors": [
+      "henkelmax"
+    ],
+    "licence": "GPL-3.0-only",
+    "page": "https://modrinth.com/mod/sound-physics-remastered",
+    "project": "qyVF9oeo"
+  },
+  "mods/spark": {
+    "authors": [
+      "lucko"
+    ],
+    "licence": "GPL-3.0-only",
+    "page": "https://modrinth.com/mod/spark",
+    "project": "l6YH9Als"
+  },
+  "mods/sparsestructures": {
+    "authors": [
+      "m"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/sparsestructures",
+    "project": "qwvI41y9"
+  },
+  "mods/spawn-animations": {
+    "authors": [
+      "Tschipcraft",
+      "Fyoncle"
+    ],
+    "licence": "Custom License (https://github.com/Tschipcraft/spawnanimations/blob/master/LICENSE)",
+    "page": "https://modrinth.com/mod/spawn-animations",
+    "project": "zrzYrlm0"
+  },
+  "mods/spelunkery": {
+    "authors": [
+      "Silversmith Mods"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/spelunkery",
+    "project": "krskFMfA"
+  },
+  "mods/spice-of-life-onion": {
+    "authors": [
+      "creativemd"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/spice-of-life-onion",
+    "project": "eHGYGKJz"
+  },
+  "mods/spyglass-improvements": {
+    "authors": [
+      "juancarloscp52"
+    ],
+    "licence": "GPL-3.0-only",
+    "page": "https://modrinth.com/mod/spyglass-improvements",
+    "project": "Z6ykjRlM"
+  },
+  "mods/streams-reflowing": {
+    "authors": [
+      "nice.john"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/streams-reflowing",
+    "project": "oLS8HdJ1"
+  },
+  "mods/structory": {
+    "authors": [
+      "Stardust Labs"
+    ],
+    "licence": "Stardust Labs License (https://github.com/Stardust-Labs-MC/license/blob/main/license.txt)",
+    "page": "https://modrinth.com/mod/structory",
+    "project": "aKCwCJlY"
+  },
+  "mods/structure-layout-optimizer": {
+    "authors": [
+      "TelepathicGrunt"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/structure-layout-optimizer",
+    "project": "ayPU0OHc"
+  },
+  "mods/subtle-effects": {
+    "authors": [
+      "MincraftEinstein",
+      "TheEnderCore"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/subtle-effects",
+    "project": "4q8UOK1d"
+  },
+  "mods/supplementaries": {
+    "authors": [
+      "MehVahdJukaar",
+      "Plantkillable"
+    ],
+    "licence": "Supplementaries Team License (https://github.com/MehVahdJukaar/Supplementaries-Team-License/blob/main/LICENSE.md)",
+    "page": "https://modrinth.com/mod/supplementaries",
+    "project": "fFEIiSDQ"
+  },
+  "mods/tectonic": {
+    "authors": [
+      "Apollo",
+      "DawnKiro"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/tectonic",
+    "project": "lWDHr9jE"
+  },
+  "mods/tenshilib": {
+    "authors": [
+      "flemmli97"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/tenshilib",
+    "project": "P2rffivS"
+  },
+  "mods/terralith": {
+    "authors": [
+      "Stardust Labs"
+    ],
+    "licence": "Stardust Labs License (https://github.com/Stardust-Labs-MC/license/blob/main/license.txt)",
+    "page": "https://modrinth.com/mod/terralith",
+    "project": "8oi3bsk5"
+  },
+  "mods/terraphilic": {
+    "authors": [
+      "bebebea_loste"
+    ],
+    "licence": "CC0-1.0",
+    "page": "https://modrinth.com/mod/terraphilic",
+    "project": "8T4mO5eV"
+  },
+  "mods/the-hordes": {
+    "authors": [
+      "Smileycorp"
+    ],
+    "licence": "LGPL-2.1-only",
+    "page": "https://modrinth.com/mod/the-hordes",
+    "project": "O3HDffUR"
+  },
+  "mods/the-roads-more-travelled": {
+    "authors": [
+      "milkucha"
+    ],
+    "licence": "CC-BY-NC-4.0",
+    "page": "https://modrinth.com/mod/the-roads-more-travelled",
+    "project": "74oZhrEe"
+  },
+  "mods/tough-as-nails": {
+    "authors": [
+      "Adubbz",
+      "Forstride"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/tough-as-nails",
+    "project": "ge1sOdFH"
+  },
+  "mods/towns-and-towers": {
+    "authors": [
+      "Biban_Auriu",
+      "Cristelknight",
+      "Kubek"
+    ],
+    "licence": "CC-BY-NC-SA-4.0",
+    "page": "https://modrinth.com/mod/towns-and-towers",
+    "project": "DjLobEOy"
+  },
+  "mods/travelers-titles": {
+    "authors": [
+      "Refresh Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/travelers-titles",
+    "project": "JtifUr64"
+  },
+  "mods/treechop": {
+    "authors": [
+      "hammertater"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/treechop",
+    "project": "gHoB7SHO"
+  },
+  "mods/trek": {
+    "authors": [
+      "hotsuop",
+      "ALDgamer",
+      "Hugger"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/trek",
+    "project": "h2jngREY"
+  },
+  "mods/visual-workbench": {
+    "authors": [
+      "Fuzs",
+      "LunaPixelStudios"
+    ],
+    "licence": "MPL-2.0",
+    "page": "https://modrinth.com/mod/visual-workbench",
+    "project": "kfqD1JRw"
+  },
+  "mods/wakes-reforged": {
+    "authors": [
+      "Leclowndu93150"
+    ],
+    "licence": "GPL-3.0-only",
+    "page": "https://modrinth.com/mod/wakes-reforged",
+    "project": "E0SdeAoH"
+  },
+  "mods/waystones": {
+    "authors": [
+      "BlayTheNinth"
+    ],
+    "licence": "All Rights Reserved (https://mods.twelveiterations.com/permissions)",
+    "page": "https://modrinth.com/mod/waystones",
+    "project": "LOpKHB2A"
+  },
+  "mods/what-are-they-up-to": {
+    "authors": [
+      "Corosus"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/mod/what-are-they-up-to",
+    "project": "AtB5mHky"
+  },
+  "mods/windy": {
+    "authors": [
+      "Bonfire Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/windy",
+    "project": "EwYg6C78"
+  },
+  "mods/yacl": {
+    "authors": [
+      "isxander"
+    ],
+    "licence": "LGPL-3.0-or-later",
+    "page": "https://modrinth.com/mod/yacl",
+    "project": "1eAoo2KR"
+  },
+  "mods/yori3os-grappling-hooks": {
+    "authors": [
+      "Yori3o"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/mod/yori3os-grappling-hooks",
+    "project": "t1p8V2nl"
+  },
+  "mods/yungs-api": {
+    "authors": [
+      "Refresh Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/yungs-api",
+    "project": "Ua7DFN59"
+  },
+  "mods/yungs-better-desert-temples": {
+    "authors": [
+      "Refresh Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/yungs-better-desert-temples",
+    "project": "XNlO7sBv"
+  },
+  "mods/yungs-better-dungeons": {
+    "authors": [
+      "Refresh Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/yungs-better-dungeons",
+    "project": "o1C1Dkj5"
+  },
+  "mods/yungs-better-end-island": {
+    "authors": [
+      "Refresh Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/yungs-better-end-island",
+    "project": "2BwBOmBQ"
+  },
+  "mods/yungs-better-jungle-temples": {
+    "authors": [
+      "Refresh Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/yungs-better-jungle-temples",
+    "project": "z9Ve58Ih"
+  },
+  "mods/yungs-better-mineshafts": {
+    "authors": [
+      "Refresh Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/yungs-better-mineshafts",
+    "project": "HjmxVlSr"
+  },
+  "mods/yungs-better-ocean-monuments": {
+    "authors": [
+      "Refresh Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/yungs-better-ocean-monuments",
+    "project": "3dT9sgt4"
+  },
+  "mods/yungs-better-strongholds": {
+    "authors": [
+      "Refresh Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/yungs-better-strongholds",
+    "project": "kidLKymU"
+  },
+  "mods/yungs-better-witch-huts": {
+    "authors": [
+      "Refresh Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/yungs-better-witch-huts",
+    "project": "t5FRdP87"
+  },
+  "mods/yungs-bridges": {
+    "authors": [
+      "Refresh Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/yungs-bridges",
+    "project": "Ht4BfYp6"
+  },
+  "mods/yungs-extras": {
+    "authors": [
+      "Refresh Studios"
+    ],
+    "licence": "LGPL-3.0-only",
+    "page": "https://modrinth.com/mod/yungs-extras",
+    "project": "ZYgyPyfq"
+  },
+  "resourcepacks/better-leaves": {
+    "authors": [
+      "Motschen"
+    ],
+    "licence": "MIT",
+    "page": "https://modrinth.com/resourcepack/better-leaves",
+    "project": "uvpymuxq"
+  },
+  "resourcepacks/bushy-pinkpetals-wildflowers-leaflitter": {
+    "authors": [
+      "godhusk",
+      "Infernalizard"
+    ],
+    "licence": "Apache-2.0",
+    "page": "https://modrinth.com/resourcepack/bushy-pinkpetals-wildflowers-leaflitter",
+    "project": "IVU3SHSl"
+  },
+  "resourcepacks/detailed-animations": {
+    "authors": [
+      "Cymock"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/resourcepack/detailed-animations",
+    "project": "9pR04wDX"
+  },
+  "resourcepacks/enchant-icons-countxd": {
+    "authors": [
+      "CountXD"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/resourcepack/enchant-icons-countxd",
+    "project": "6vhHOIKw"
+  },
+  "resourcepacks/fresh-animations": {
+    "authors": [
+      "FreshLX"
+    ],
+    "licence": "See Terms of Use in Description",
+    "page": "https://modrinth.com/resourcepack/fresh-animations",
+    "project": "50dA9Sha"
+  },
+  "resourcepacks/leggings-fix": {
+    "authors": [
+      "amongstreality"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/resourcepack/leggings-fix",
+    "project": "9kKRfUOA"
+  },
+  "resourcepacks/simple-grass-flowers": {
+    "authors": [
+      "2DWisp"
+    ],
+    "licence": "All Rights Reserved",
+    "page": "https://modrinth.com/resourcepack/simple-grass-flowers",
+    "project": "ti9KkMHm"
+  },
+  "shaderpacks/complementary-reimagined": {
+    "authors": [
+      "EminGT"
+    ],
+    "licence": "Custom (https://github.com/ComplementaryDevelopment/ComplementaryReimagined/blob/main/License.txt)",
+    "page": "https://modrinth.com/shader/complementary-reimagined",
+    "project": "HVnmMxH1"
+  }
+}

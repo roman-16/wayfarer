@@ -18,35 +18,40 @@ public record Balance(
         Deeds deeds,
         Diggers diggers,
         Dragon dragon,
-        Duel duel,
         Errands errands,
         Escort escort,
         FarSight farSight,
         Fire fire,
-        FirstCamp firstCamp,
         FirstVillage firstVillage,
         Flare flare,
         Footing footing,
         Ford ford,
         Forge forge,
         Frost frost,
+        FrostHall frostHall,
+        FrostLake frostLake,
         Gate gate,
         Gaze gaze,
         Glider glider,
         Graphics graphics,
         Halls halls,
         Hold hold,
+        Hollow hollow,
         Hunger hunger,
         Join join,
+        LastSea lastSea,
+        Locks locks,
         Loot loot,
-        Marsh marsh,
+        Mansion mansion,
         Memory memory,
         Nights nights,
         Ore ore,
         Prologue prologue,
         Raids raids,
         ReadingHouse readingHouse,
+        Sand sand,
         Scenes scenes,
+        Scribes scribes,
         Sea sea,
         Sense sense,
         Shine shine,
@@ -73,7 +78,6 @@ public record Balance(
         Waves waves,
         Waystones waystones,
         Weather weather,
-        WendCamp wendCamp,
         World world,
         Worm worm) {
 
@@ -90,22 +94,20 @@ public record Balance(
 
     public record Daylight(int crumbleSeconds) {}
 
-    public record Deeds(int cityHeartBlocks, int diceWins, int duelBlocks, int edgeBlocks, int fireApartBlocks, int fires, int hardNights, int lightShards, int scenes, int villages,
-            int walkedBlocks) {}
+    public record Deeds(int cityHeartBlocks, int diceWins, int edgeBlocks, int fireApartBlocks, int fires, int hardNights, int lightShards, int scenes, int villages,
+            int walkedBlocks, int wormBlocks) {}
 
     public record Diggers(int aheadBlocks) {}
 
+
     public record Dragon(int blindAimBlocks, int healthBase, int healthPerPlayer, int healthPerShard, int sightShards) {}
 
-    public record Duel(int healthBase, int healthPerPlayer) {}
 
-    public record Errands(int aheadBlocks, int airshipCoal, int searchChunks, int snowReachBlocks) {}
+    public record Errands(int aheadBlocks, int searchChunks, int snowReachBlocks) {}
 
     public record Escort(int followBlocks, int jogBlocks, int leashBlocks) {}
 
     public record Fire(int circleBlocks, int lineSeconds, int restBlocks) {}
-
-    public record FirstCamp(int aheadBlocks, int lakeBlocks) {}
 
     public record FirstVillage(int aheadBlocks, int searchBlocks) {}
 
@@ -124,9 +126,17 @@ public record Balance(
 
     public record Hold(int blowTicks, int calmSeconds, int doorStrength, int keepHealth, int sideWaves, int waveSeconds, int waves) {}
 
+    public record Hollow(int leaveBlocks) {}
+
     public record Hunger(float exhaustionFactor, float rowingExhaustionPerBlock, float warmExhaustionFactor) {}
 
     public record Join(int awayBlocks) {}
+
+    public record LastSea(int fogBlocks, int freezingBlocks) {}
+
+    public record Locks(int aheadBlocks) {}
+
+    public record Mansion(int aheadBlocks, int cellarBlocks, int groveBlocks, int groveGap) {}
 
     public record Loot(double keptShare) {}
 
@@ -141,22 +151,27 @@ public record Balance(
 
     public record Sense(int flareDegrees, int glowDegrees, int glowSeconds, int reachBlocks, int seaBlocks) {}
 
-    public record Halls(int actThreeFromBlocks, int actThreeLegBlocks, int actTwoLegBlocks, int nearestBlocks, int reachBlocks) {}
+
+    public record Halls(int reachBlocks) {}
 
     public record FarSight(int markBlocks, int marks, int zoomSixteenths) {}
 
     public record Shipyard(int wreckBlocks) {}
 
-    public record WendCamp(int aheadBlocks) {}
 
     public record Worm(int biteBlocks, int biteDamage, int biteSeconds, int downSeconds, int fleeBlocks, int groundBlocks, int health, int healthPerPlayer, int lairBlocks,
             int leaveSeconds, double scale, int upSeconds) {}
 
     public record Stare(int coneDegrees, int fleeBlocks, int fleeSeconds, int reachBlocks) {}
 
-    public record Tide(int stoneBlocks) {}
+    public record Sand(int aheadBlocks) {}
 
-    public record Voyage(int besideBlocks, int calmSeconds, int landfallBlocks, int leftSeconds, int listingDamage, int reachBlocks, int riseBlocks, int waveSeconds,
+    public record Scribes(int aheadBlocks) {}
+
+    public record Tide(int aheadBlocks, int stoneBlocks) {}
+
+
+    public record Voyage(int asternBlocks, int besideBlocks, int calmSeconds, int landfallBlocks, int leftSeconds, int listingDamage, int reachBlocks, int riseBlocks, int waveSeconds,
             int waves) {}
 
     public record Shine(List<Integer> act, int bellFound, double foundMost, int foundShine, int glowLight, double noticeBlocksPerShine, int perShard, int spawnEverySeconds, int spawnLimit,
@@ -168,16 +183,16 @@ public record Balance(
 
     public record Forge(int veinLumps) {}
 
-    public record Frost(int aheadBlocks, int darkSightSixteenths, int driftEveryBlocks, int hallBlocks, int houseBlocks, int lakeBlocks, int lakeFanDegrees, int lakeSpreadBlocks, int leaveBlocks,
-            int mineBlocks, int mineFloor, int mineWallBlocks, int searchBlocks, int shoreBlocks, int sideBlocks, int snowRadiusBlocks, int stairBlocks,
-            int stoneBlocks, int trailBlocks, int trailPastBlocks) {}
+    public record Frost(int aheadBlocks, int darkSightSixteenths, int driftEveryBlocks, int houseBlocks, int leaveBlocks, int mineBlocks, int mineFloor, int mineWallBlocks,
+            int searchBlocks, int shoreBlocks, int sideBlocks, int snowRadiusBlocks, int stairBlocks, int stoneBlocks, int trailBlocks, int trailPastBlocks) {}
+
+    public record FrostHall(int aheadBlocks) {}
+
+    public record FrostLake(int aheadBlocks, int fanDegrees, int spreadBlocks) {}
 
     public record Crossing(int retreatSeconds, int waveSeconds, int waves) {}
 
     public record Ford(int aheadBlocks, int clearingBlocks, int creekReachBlocks, int noticeBlocks, int outpostBlocks, int widthBlocks) {}
-
-    public record Marsh(int aheadBlocks, int bogBlocks, int bogRadiusBlocks, int cellarBlocks, int hallBlocks, int nearBlocks, int noticeBlocks, int pocketEveryBlocks,
-            int searchBlocks, int shunnedSeconds, int sideBlocks) {}
 
     public record Memory(int arrivalBlocks, int fadeTicks, int fireBlocks, int togetherBlocks) {}
 
@@ -226,8 +241,8 @@ public record Balance(
 
     public record Weather(int daysBetweenRain, int rainMostSeconds) {}
 
-    public record World(int coastBlocks, double highest, int homeBlocks, int lastSeaPastRingBlocks, double lastSeaSink, double lift, double outerSink, int seaBlocks,
-            double seaFloor, double seaSink, int shoreBlocks) {}
+    public record World(double beyondLift, int cavernCoverBlocks, int cavernFadeBlocks, int coastBlocks, int farShoreBlocks, double highest, int homeBlocks, int lastSeaSlopePastRingBlocks, double lift, double seaFloor,
+            double seaSink, int shoreBlocks) {}
 
     private static final Bundled<Balance> BALANCE = Bundled.of(() -> Bundled.read("/wayfarer/balance.toml", reader -> load(new TomlParser().parse(reader))));
 
@@ -260,9 +275,9 @@ public record Balance(
                         toml.getInt("compass.trail_blocks")),
                 new Crossing(toml.getInt("crossing.retreat_seconds"), toml.getInt("crossing.wave_seconds"), toml.getInt("crossing.waves")),
                 new Daylight(toml.getInt("daylight.crumble_seconds")),
-                new Deeds(toml.getInt("deeds.city_heart_blocks"), toml.getInt("deeds.dice_wins"), toml.getInt("deeds.duel_blocks"), toml.getInt("deeds.edge_blocks"), toml.getInt("deeds.fire_apart_blocks"),
+                new Deeds(toml.getInt("deeds.city_heart_blocks"), toml.getInt("deeds.dice_wins"), toml.getInt("deeds.edge_blocks"), toml.getInt("deeds.fire_apart_blocks"),
                         toml.getInt("deeds.fires"), toml.getInt("deeds.hard_nights"), toml.getInt("deeds.light_shards"), toml.getInt("deeds.scenes"),
-                        toml.getInt("deeds.villages"), toml.getInt("deeds.walked_blocks")),
+                        toml.getInt("deeds.villages"), toml.getInt("deeds.walked_blocks"), toml.getInt("deeds.worm_blocks")),
                 new Diggers(toml.getInt("diggers.ahead_blocks")),
                 new Dragon(
                         toml.getInt("dragon.blind_aim_blocks"),
@@ -270,15 +285,13 @@ public record Balance(
                         toml.getInt("dragon.health_per_player"),
                         toml.getInt("dragon.health_per_shard"),
                         toml.getInt("dragon.sight_shards")),
-                new Duel(toml.getInt("duel.health_base"), toml.getInt("duel.health_per_player")),
-                new Errands(toml.getInt("errands.ahead_blocks"), toml.getInt("errands.airship_coal"), toml.getInt("errands.search_chunks"), toml.getInt("errands.snow_reach_blocks")),
+                new Errands(toml.getInt("errands.ahead_blocks"), toml.getInt("errands.search_chunks"), toml.getInt("errands.snow_reach_blocks")),
                 new Escort(toml.getInt("escort.follow_blocks"), toml.getInt("escort.jog_blocks"), toml.getInt("escort.leash_blocks")),
                 new FarSight(toml.getInt("far_sight.mark_blocks"), toml.getInt("far_sight.marks"), toml.getInt("far_sight.zoom_sixteenths")),
                 new Fire(
                         toml.getInt("fire.circle_blocks"),
                         toml.getInt("fire.line_seconds"),
                         toml.getInt("fire.rest_blocks")),
-                new FirstCamp(toml.getInt("first_camp.ahead_blocks"), toml.getInt("first_camp.lake_blocks")),
                 new FirstVillage(toml.getInt("first_village.ahead_blocks"), toml.getInt("first_village.search_blocks")),
                 new Flare(toml.getInt("flare.charges"), toml.getInt("flare.reach_blocks")),
                 new Footing(toml.getInt("footing.approach_blocks"), toml.getInt("footing.shift_blocks")),
@@ -286,11 +299,12 @@ public record Balance(
                         toml.getInt("ford.outpost_blocks"), toml.getInt("ford.width_blocks")),
                 new Forge(toml.getInt("forge.vein_lumps")),
                 new Frost(toml.getInt("frost.ahead_blocks"), toml.getInt("frost.dark_sight_sixteenths"), toml.getInt("frost.drift_every_blocks"),
-                        toml.getInt("frost.hall_blocks"), toml.getInt("frost.house_blocks"), toml.getInt("frost.lake_blocks"), toml.getInt("frost.lake_fan_degrees"),
-                        toml.getInt("frost.lake_spread_blocks"), toml.getInt("frost.leave_blocks"),
-                        toml.getInt("frost.mine_blocks"), toml.getInt("frost.mine_floor"), toml.getInt("frost.mine_wall_blocks"), toml.getInt("frost.search_blocks"), toml.getInt("frost.shore_blocks"), toml.getInt("frost.side_blocks"),
+                        toml.getInt("frost.house_blocks"), toml.getInt("frost.leave_blocks"), toml.getInt("frost.mine_blocks"), toml.getInt("frost.mine_floor"),
+                        toml.getInt("frost.mine_wall_blocks"), toml.getInt("frost.search_blocks"), toml.getInt("frost.shore_blocks"), toml.getInt("frost.side_blocks"),
                         toml.getInt("frost.snow_radius_blocks"), toml.getInt("frost.stair_blocks"), toml.getInt("frost.stone_blocks"), toml.getInt("frost.trail_blocks"),
                         toml.getInt("frost.trail_past_blocks")),
+                new FrostHall(toml.getInt("frost_hall.ahead_blocks")),
+                new FrostLake(toml.getInt("frost_lake.ahead_blocks"), toml.getInt("frost_lake.fan_degrees"), toml.getInt("frost_lake.spread_blocks")),
                 new Gate(toml.getInt("gate.quiet_blocks"), toml.getInt("gate.reach_blocks")),
                 new Gaze(
                         toml.<List<Number>>get("gaze.capacity_seconds").stream().map(Number::intValue).toList(),
@@ -306,8 +320,7 @@ public record Balance(
                         toml.get("graphics.profiles"),
                         toml.<List<Number>>get("graphics.render_chunks").stream().map(Number::intValue).toList(),
                         toml.<List<Number>>get("graphics.simulation_chunks").stream().map(Number::intValue).toList()),
-                new Halls(toml.getInt("halls.act_three_from_blocks"), toml.getInt("halls.act_three_leg_blocks"), toml.getInt("halls.act_two_leg_blocks"),
-                        toml.getInt("halls.nearest_blocks"), toml.getInt("halls.reach_blocks")),
+                new Halls(toml.getInt("halls.reach_blocks")),
                 new Hold(
                         toml.getInt("hold.blow_ticks"),
                         toml.getInt("hold.calm_seconds"),
@@ -316,15 +329,17 @@ public record Balance(
                         toml.getInt("hold.side_waves"),
                         toml.getInt("hold.wave_seconds"),
                         toml.getInt("hold.waves")),
+                new Hollow(toml.getInt("hollow.leave_blocks")),
                 new Hunger(
                         toml.<Number>get("hunger.exhaustion_factor").floatValue(),
                         toml.<Number>get("hunger.rowing_exhaustion_per_block").floatValue(),
                         toml.<Number>get("hunger.warm_exhaustion_factor").floatValue()),
                 new Join(toml.getInt("join.away_blocks")),
+                new LastSea(toml.getInt("last_sea.fog_blocks"), toml.getInt("last_sea.freezing_blocks")),
+                new Locks(toml.getInt("locks.ahead_blocks")),
                 new Loot(toml.<Number>get("loot.kept_share").doubleValue()),
-                new Marsh(toml.getInt("marsh.ahead_blocks"), toml.getInt("marsh.bog_blocks"), toml.getInt("marsh.bog_radius_blocks"),
-                        toml.getInt("marsh.cellar_blocks"), toml.getInt("marsh.hall_blocks"), toml.getInt("marsh.near_blocks"), toml.getInt("marsh.notice_blocks"),
-                        toml.getInt("marsh.pocket_every_blocks"), toml.getInt("marsh.search_blocks"), toml.getInt("marsh.shunned_seconds"), toml.getInt("marsh.side_blocks")),
+                new Mansion(toml.getInt("mansion.ahead_blocks"), toml.getInt("mansion.cellar_blocks"), toml.getInt("mansion.grove_blocks"),
+                        toml.getInt("mansion.grove_gap")),
                 new Memory(toml.getInt("memory.arrival_blocks"), toml.getInt("memory.fade_ticks"), toml.getInt("memory.fire_blocks"),
                         toml.getInt("memory.together_blocks")),
                 new Nights(toml.getInt("nights.wave_seconds"), toml.getInt("nights.waves")),
@@ -333,10 +348,12 @@ public record Balance(
                 new Prologue(toml.getInt("prologue.away_blocks"), toml.getInt("prologue.camp_search_blocks"), toml.getInt("prologue.camp_step_blocks")),
                 new Raids(toml.getInt("raids.omen_minutes")),
                 new ReadingHouse(toml.getInt("reading_house.ahead_blocks"), toml.getInt("reading_house.search_blocks")),
+                new Sand(toml.getInt("sand.ahead_blocks")),
                 new Scenes(toml.getInt("scenes.ask_blocks"), toml.getInt("scenes.every_seconds"), toml.getInt("scenes.farthest_blocks"),
                         toml.getInt("scenes.gone_blocks"), toml.getInt("scenes.group_blocks"), toml.getInt("scenes.jitter_seconds"),
                         toml.getInt("scenes.nearest_blocks"), toml.getInt("scenes.sea_blocks"), toml.getInt("scenes.voice_gap_seconds"),
                         toml.getInt("scenes.wolves_seconds")),
+                new Scribes(toml.getInt("scribes.ahead_blocks")),
                 new Sea(
                         toml.getInt("sea.beast_health"),
                         toml.getInt("sea.beast_one_in"),
@@ -395,7 +412,7 @@ public record Balance(
                         toml.getInt("talk.voice_gain"),
                         toml.getInt("talk.wait_seconds")),
                 new Tent(toml.getInt("tent.fire_blocks"), toml.getInt("tent.reminder_blocks")),
-                new Tide(toml.getInt("tide.stone_blocks")),
+                new Tide(toml.getInt("tide.ahead_blocks"), toml.getInt("tide.stone_blocks")),
                 new Tollbridge(toml.getInt("tollbridge.ahead_blocks"), toml.getInt("tollbridge.ash_every_ticks"), toml.getInt("tollbridge.ash_flakes"),
                         toml.getInt("tollbridge.ash_reach_blocks"), toml.getInt("tollbridge.clear_blocks"), toml.getInt("tollbridge.least_buildings"),
                         toml.getInt("tollbridge.radius_blocks"),
@@ -404,6 +421,7 @@ public record Balance(
                 new Trail(toml.getInt("trail.position_seconds"), toml.getInt("trail.stall_blocks"), toml.getInt("trail.stall_seconds")),
                 new Voice(toml.getInt("voice.quietest_decibels"), toml.getInt("voice.vibration_ticks")),
                 new Voyage(
+                        toml.getInt("voyage.astern_blocks"),
                         toml.getInt("voyage.beside_blocks"),
                         toml.getInt("voyage.calm_seconds"),
                         toml.getInt("voyage.landfall_blocks"),
@@ -417,16 +435,16 @@ public record Balance(
                         toml.getInt("waves.unseen_seconds")),
                 new Waystones(toml.getInt("waystones.blocks_per_food")),
                 new Weather(toml.getInt("weather.days_between_rain"), toml.getInt("weather.rain_most_seconds")),
-                new WendCamp(toml.getInt("wend_camp.ahead_blocks")),
                 new World(
+                        toml.<Number>get("world.beyond_lift").doubleValue(),
+                        toml.getInt("world.cavern_cover_blocks"),
+                        toml.getInt("world.cavern_fade_blocks"),
                         toml.getInt("world.coast_blocks"),
+                        toml.getInt("world.far_shore_blocks"),
                         toml.<Number>get("world.highest").doubleValue(),
                         toml.getInt("world.home_blocks"),
-                        toml.getInt("world.last_sea_past_ring_blocks"),
-                        toml.<Number>get("world.last_sea_sink").doubleValue(),
+                        toml.getInt("world.last_sea_slope_past_ring_blocks"),
                         toml.<Number>get("world.lift").doubleValue(),
-                        toml.<Number>get("world.outer_sink").doubleValue(),
-                        toml.getInt("world.sea_blocks"),
                         toml.<Number>get("world.sea_floor").doubleValue(),
                         toml.<Number>get("world.sea_sink").doubleValue(),
                         toml.getInt("world.shore_blocks")),

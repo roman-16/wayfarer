@@ -64,7 +64,7 @@ public final class StoryChecks {
     private static final Set<String> stuck = new HashSet<>();
     private static final double JUMP = 8;
     private static final String DOOR = "door:";
-    private static final Set<String> DOORS = Set.of(Act3Halls.MANSION, Locks.NAME);
+    private static final Set<String> DOORS = Set.of(Locks.NAME, Mansion.NAME);
     private static final String ENTRANCE = "_entrance";
     private static final int DOOR_SEEN = 64;
     private static final String OVERLAP = "overlap:";
@@ -323,7 +323,7 @@ public final class StoryChecks {
             ServerLevel level = (ServerLevel) body.level();
             boolean seen = People.seen(level, body.position());
             placed.put(person, new Placed(body.getUUID(), body.position(), seen));
-            boolean jumped = before != null && before.body().equals(body.getUUID()) && before.at().distanceTo(body.position()) > JUMP;
+            boolean jumped = before != null && before.body().equals(body.getUUID()) && !body.isPassenger() && before.at().distanceTo(body.position()) > JUMP;
             if (checking && jumped && watched(level) && (seen || before.seen())) {
                 fail(server, person + " jumped " + (int) before.at().distanceTo(body.position()) + " blocks in sight of a player to " + body.blockPosition().toShortString());
             }

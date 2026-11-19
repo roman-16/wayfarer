@@ -81,7 +81,7 @@
   "minor_version": 1,
   "oceans": {
     // 0 is at sea level, -0.5 is 64 blocks below sea level.
-    "deep_ocean_depth": -0.45,
+    "deep_ocean_depth": -0.75,
     // Offsets (vanilla) ocean monuments to adjust for deeper oceans.
     "monument_offset": -30,
     // 0 is at sea level, -0.5 is 64 blocks below sea level.

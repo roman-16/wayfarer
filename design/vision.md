@@ -92,9 +92,9 @@ The clock's curve, what counts a day, daylight's dangers and staying at a place 
 - A shard takes as many main quests as its story needs: one for some, a chain of several for others. Some main quests carry no shard and tell the story between them: Wend's past, Malgven, the Gazebound, the two reveals.
 
   ```text
-  The Salt Folk's shard   4 quests: the empty hall, the caravan's trail, the winter camp, the cradle
-  The sealed hall         1 quest: find the word, open the seal
-  Wend's first camp       no shard: who he was when he was young
+  The Frost Walkers' shard   1 quest: the tracks, the winter house, the empty hall, the frozen lake
+  The First Village's shard  1 quest: the burnt reading-house on the way, the ruins, the red moon
+  The Hooded Traveller       no shard: a visitor at the fire, and her bread
   ```
 
 - Main and side quests are built from 20 activities in six groups:
@@ -273,7 +273,7 @@ A system, place, creature or item, from vanilla or from a mod, goes or changes w
 | Artifacts: Eternal Steak, Everlasting Beef, Golden Hook, Helium Flamingo, Warp Drive, Villager Hat, Whoopee Cushion, Novelty and Plastic Drinking Hats | Cut | |
 | Artifacts' Crystal Heart, five extra hearts from a Gazebound outpost's chest in Act 1 | Two extra hearts, so it is worth wearing without doubling a player's health a week into the road | |
 | Harvest, blue and super moons | Cut | The red moon |
-| Immersive Aircraft, Silent Gear's elytra, Exposure's film cameras | Cut | The paraglider and horses: the road is walked (D8) |
+| Immersive Aircraft, the elytra (vanilla's and Silent Gear's), Exposure's film cameras | Cut | The paraglider and horses: the road is walked (D8), and the world after the doors is walked too |
 
 Kept on purpose: furnaces, brewing, horses, boats, maps, rails and minecarts, coordinates on the debug screen, waystones, which only fold roads already walked, the volcanic and basalt biomes, the Rascal and the Glare, and Supplementaries' road signs.
 
