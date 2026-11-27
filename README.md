@@ -20,13 +20,13 @@ Keys for outside services live in `.env`, which devbox loads. `.env.example` nam
 
 ## Play
 
-In Prism Launcher: **Add Instance → Import**, and give it the address of the major version's instance:
+In Prism Launcher: **Add Instance → Import**, and give it this address:
 
 ```text
-https://roman-16.github.io/wayfarer/1/Wayfarer.zip
+https://roman-16.github.io/wayfarer/Wayfarer.zip
 ```
 
-Before every launch the instance fetches what changed in the newest 1.x version. Offline, packwiz's window offers to continue without updating.
+Before every launch the instance fetches what changed in the newest version. Offline, packwiz's window offers to continue without updating.
 
 To release a version, give it its dated section in `CHANGELOG.md` (`## [1.2.3] - 2026-11-19`) and push it to main: the Release workflow lints it, builds it and makes it the GitHub release of its version, which GitHub Pages serves. `just pack` builds the same into `dist/` locally:
 
@@ -36,7 +36,7 @@ $ just pack   # dist/: the Prism instance, the pack it hosts, the Wayfarer jar a
 
 | File in `dist/` | Use |
 |---|---|
-| `Wayfarer-<major>.zip` | The Prism instance that updates itself from the hosted address |
+| `Wayfarer.zip` | The Prism instance that updates itself from the hosted address |
 | `Wayfarer-<version>-pack.zip` | The pack the address hosts |
 | `wayfarer-<version>.jar` | The Wayfarer mod, which the hosted pack downloads from the release |
 | `Wayfarer-<version>-server.zip` | Unpack on the server and run `run.sh --nogui` (or `run.bat`). The pack sets `difficulty=normal` |

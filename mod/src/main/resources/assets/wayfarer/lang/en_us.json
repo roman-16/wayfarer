@@ -398,7 +398,7 @@
   "wayfarer.recap.first": "A fire burns low in the grey before dawn. Someone sits by it, waiting for you to wake.",
   "wayfarer.release.before": "This road was begun before Wayfarer %s. Start a new road.",
   "wayfarer.release.newer": "This road was last played with Wayfarer %s; update to open it.",
-  "wayfarer.release.older": "This road was begun with Wayfarer %1$s. Finish it with Wayfarer %1$s, or start a new road.",
+  "wayfarer.release.older": "This road was begun with Wayfarer %s. Start a new road.",
   "wayfarer.respawn.caravan": "You come to by the caravan's fire.",
   "wayfarer.respawn.fire": "You come to by the last fire you rested at.",
   "wayfarer.respawn.friend": "You come to at a friend's side. The ember found the nearest warmth it knew.",

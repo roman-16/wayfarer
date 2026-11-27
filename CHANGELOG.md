@@ -2,9 +2,19 @@
 
 All notable changes to Wayfarer are documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and Wayfarer adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) as the pack reads it: a patch fixes and tunes, a minor version adds content, and both load into a road under way; a major version changes the land's shape or the story's structure, and a road begun on an older major stays with it.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and Wayfarer adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) as the pack reads it: a patch fixes and tunes, a minor version adds content, and both load into a road under way; a major version changes the land's shape or the story's structure, and a road begun on an older major does not open in it.
 
 ## [Unreleased]
+
+## [1.1.0] - 2026-11-27
+
+### Highlights
+
+- **One address for every version** - import the pack once from `https://roman-16.github.io/wayfarer/Wayfarer.zip`; an instance imported from `/1/` no longer updates.
+
+### Changed
+
+- Prism imports the pack from `https://roman-16.github.io/wayfarer/Wayfarer.zip`, and the instance follows every release, majors included, so a new major ends the roads begun before it. An instance imported from `/1/` no longer updates: import the new address once.
 
 ## [1.0.2] - 2026-11-20
 
@@ -55,7 +65,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - The world's shape: the home land, the deep sea round it, the outer continent out to the Last Sea, and the ring of frames.
 - Updates that arrive by themselves: the Prism instance fetches each new 1.x version before it starts, and a road begun on 1.x loads in every later 1.x.
 
-[unreleased]: https://github.com/roman-16/wayfarer/compare/v1.0.2...HEAD
+[unreleased]: https://github.com/roman-16/wayfarer/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/roman-16/wayfarer/compare/v1.0.2...v1.1.0
 [1.0.2]: https://github.com/roman-16/wayfarer/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/roman-16/wayfarer/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/roman-16/wayfarer/releases/tag/v1.0.0
